@@ -1,59 +1,81 @@
-@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+@font-face {
+    font-family: 'Dunkin';
+    src: url('/fonts/Dunkin.eot?') format('eot'),
+    url('/fonts/Dunkin.woff') format('woff'),
+    url('/fonts/Dunkin.ttf')  format('truetype'),
+    url('/fonts/Dunkin.svg#Dunkin') format('svg');
+}
+
+@font-face {
+	font-family: 'DIN';
+	src: url('/fonts/DIN.eot?') format('eot'),
+	     url('/fonts/DIN.woff') format('woff'),
+	     url('/fonts/DIN.ttf')  format('truetype'),
+	     url('/fonts/DIN.svg#DIN') format('svg');
+}
+
+@font-face {
+    font-family: 'DINAlternate-Light';
+    src: url('/fonts/DINAlternate-Light.eot?') format('eot'),
+    url('/fonts/DINAlternate-Light.woff') format('woff'),
+    url('/fonts/DINAlternate-Light.ttf')  format('truetype'),
+    url('/fonts/DINAlternate-Light.svg#DIN') format('svg');
+}
 
 
 body {
   padding-top: 50px;
-  font-family: "Open Sans", "Arial", "sans-serif";
-  background-image: url("/img/bg.png");
+  font-family: "DIN", "Arial", "sans-serif";
+    color: #333333;
+}
+
+h1 {
+    font-family: "Dunkin";
+    font-size: 26pt;
+    color: #6e418e;
+}
+
+h2 {
+    font-family: "DINAlternate-Light";
+    font-size: 28pt;
+    color: #222222;
+}
+
+h3 {
+    font-family: "DIN";
+    font-size: 21pt;
+    color: #999999;
+}
+
+h4 {
+    font-family: "DIN";
+    font-size: 18pt;
+    color: #666666;
 }
 
 
-/* news */
-.news {
-  background: #e8e05d;
-  padding-bottom: 15px;
+h5 {
+    font-family: "DIN";
+    font-size: 14pt;
+    color: #666666;
 }
 
-.nav {
+h6 {
+    font-family: "DIN";
+    font-size: 13pt;
+    color: #222222;
 }
 
-.news-date {
-  font-style: italic;
+.btn-ozwillo {
+    color: white;
+    border-color: white;
+    background-color: transparent;
+    border-radius: 10px;
+    border-width: 2px;
 }
 
-.top-buffer {
-  margin-top:5px;
-}
-
-.center {
-  text-align: center;
-}
-
-div.block {
-  text-align:center;
-  padding-top: 5px;
-  padding-bottom: 20px;
-  margin-left: 5px;
-  margin-right: 5px;
-}
-
-div.apps {
-  background-color: #ade7f6;
-}
-div.apps:hover {
-  background-color: #4cb4f6;
-}
-
-div.data {
-  background-color: #ffcd9a;
-}
-div.data:hover {
-  background-color: #ff9c38;
-}
-
-div.services {
-  background-color: #e7ffa7;
-}
-div.services:hover {
-  background-color: #c9ff38;
+.btn-ozwillo:hover {
+    background-color: white;
+    color: #6e418e;
+    border-color: #6e418e;
 }

@@ -1,97 +1,80 @@
 <!doctype html>
 <html>
-  <head th:replace="includes/header(title='Ozwillo')">
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+<head th:replace="includes/header(title='Ozwillo',page='home')">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>DUMMY Ozwillo</title>
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet" />
-    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap-theme.min.css" rel="stylesheet" />
-    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet" />
-    <link href="../public/css/main.css" rel="stylesheet" />
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="../public/css/main.css" rel="stylesheet"/>
+    <link href="../public/css/home.css" rel="stylesheet"/>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
-  </head>
-  <body>
-    <div th:replace="includes/navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      <div class="container">
-        <div class="navbar-header">
-          <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-            <span class="icon-bar"></span>
-          </button>
-          <a class="navbar-brand" href="#">Ozwillo</a>
-        </div>
-        <div class="collapse navbar-collapse">
-          <ul class="nav navbar-nav">
-            <li class="active"><a href="#">Overview</a></li>
-            <li><a href="#about">Application Store</a></li>
-            <li><a href="#contact">Data Store</a></li>
-            <li><a href="#local">Local Services</a></li>
-          </ul>
-        </div><!--/.nav-collapse -->
-      </div>
-    </div>
+</head>
+<body>
 
+<div class="jumbotron">
     <div class="container">
-      <div class="row">
-        <div class="col-lg-8">
-          <img th:src="@{/img/placeholder.jpg}" src="../public/img/placeholder.jpg" alt="Placeholder image" />
-        </div>
-        <div class="col-lg-4 news">
-          <h2 class="center">Ozwillo News</h2>
-          <div class="row top-buffer">
-            <div class="col-lg-4">
-              <img th:src="@{/img/news-1.png}" src="../public/img/news-1.png" alt="Lyon" />
+        <h2 class="text-center" th:text="#{home.tagline}">Hello, World!</h2>
+
+        <div class="row">
+            <div class="col-md-4 text-center">
+                <h1 th:text="#{home.applications}">Applications</h1>
+
+                <p th:text="#{home.applications.desc}">Bla bla bla?</p>
+
+                <form>
+                    <div class="form-group text-left">
+                        <div class="left-inner-addon">
+                            <i class="fa fa-search"></i>
+                            <input type="search" class="form-control" placeholder="search"
+                                   th:placeholder="#{home.applications.placeholder}"/>
+                        </div>
+                    </div>
+                    <button type="submit" class="btn btn-primary" th:text="#{ui.find}">Search</button>
+                </form>
             </div>
-            <div class="col-lg-8">
-              <div class="news-date">04-07-2014</div>
-              <div class="news-text" th:text="${hostname}"><i class="fa fa-sign-in"></i>Lyon now provides Electoral roll registration to its citizens... <a href="#">Read more</a></div>
+            <div class="col-md-4 col-md-offset-4 text-center">
+                <h1 th:text="#{home.data}">Data</h1>
             </div>
-          </div>
-          <div class="row top-buffer center">
-            <a class="btn btn-default">Older news</a>
-          </div>
         </div>
-      </div>
-      <div class="row top-buffer">
-        <div class="col-md-4">
-          <div class="apps block"> 
-            <h2>Applications</h2>
-            <div>You are looking for a specific application?</div>
-              <form class="form form-inline">
-                  <div class="form-group">
-                      <div class="input-group">
-                          <span class="input-group-addon"><i class="fa fa-search fa-fw"></i></span>
-                          <input type="text" class="form-control" name="appquery" placeholder="Search for an app or a locality" />
-                      </div>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Search</button>
-              </form>
-          </div>
+    </div>
+</div>
+
+
+<div class="navbar navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+
+            <img id="logo" th:src="@{/img/ozwillo-logo-white-small.png}"
+                 src="../public/img/ozwillo-logo-white-small.png"
+                 alt="Ozwillo"/>
         </div>
-        <div class="col-md-4">
-          <div class="data block"> 
-            <h2>Data</h2>
-            <div>Find or contribute to the data collection</div>
-            <div><a class="btn btn-primary">Data Store</a></div>
-          </div>
+        <div class="pull-right">
+            <a href="#about" class="btn btn-ozwillo">Join us!</a>
+            <a href="#about" class="btn btn-ozwillo">Log in</a>
         </div>
-      </div>
+    </div>
+</div>
+
+<div class="container">
 
 
-    </div><!-- /.container -->
+</div>
+<!-- /.container -->
 
-    <th:block th:replace="includes/footer">
+<th:block th:replace="includes/footer">
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-        <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-    </th:block>
-  </body>
+</th:block>
+
+<script src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+<script th:src="@{/js/home.js}" src="../public/js/home.js"></script>
+</body>
 </html>
