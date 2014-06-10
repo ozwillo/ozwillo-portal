@@ -20,6 +20,10 @@
     font-size: 26pt;
 }
 
+.jumbotron p {
+    font-size: 18px;
+}
+
 .jumbotron .left-inner-addon {
     position: relative;
 }
@@ -37,6 +41,11 @@
 .jumbotron input[type=search] {
     border-radius: 20px;
 }
+.jumbotron input[type=search]:focus {
+    border-color: rgba(110, 65, 142, 0.8);
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(110,65,142,.6);
+}
 
 .jumbotron .btn-primary {
     background-color: #6e418e;
@@ -45,6 +54,7 @@
     font-size: 14pt;
     border-color: transparent;
     font-weight: bold;
+    width: 150px;
 }
 
 .jumbotron .btn-primary:hover {
