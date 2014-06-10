@@ -1,0 +1,54 @@
+<div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Ozwillo</a>
+        </div>
+        <div class="collapse navbar-collapse">
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">Overview</a></li>
+                <li><a href="#about">Application Store</a></li>
+                <li><a href="#contact">Data Store</a></li>
+            </ul>
+            <ul class="nav navbar-nav pull-right">
+                <li th:switch="${username}">
+                    <a th:case="null" th:href="@{/login}" href="#">Not signed in</a>
+                    <a th:case="*" th:href="@{/logout}" href="#"><i class="fa fa-sign-out"></i>Signed in as <strong th:text="${username}">Some user</strong></a>
+                </li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" id="language-dropdown">
+                        <span>English</span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="?language=bg">български</a>
+                        </li>
+                        <li>
+                            <a href="?language=ca">Català</a>
+                        </li>
+                        <li>
+                            <a href="?language=es">Español</a>
+                        </li>
+                        <li>
+                            <a href="?language=fr">Français</a>
+                        </li>
+                        <li>
+                            <a href="?language=it">Italiano</a>
+                        </li>
+                        <li>
+                            <a href="?language=tr">Türkçe</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </div><!--/.nav-collapse -->
+    </div>
+
+
+</div>

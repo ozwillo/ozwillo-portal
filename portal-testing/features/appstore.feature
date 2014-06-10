@@ -23,23 +23,23 @@ Feature: App Store
 
 # test objective: check that one can search while not being logged in
 # check that install requires login
-  Scenario: Access from home page
-    Given that I am not logged in
-    When I visit the home page
-    And I click "Application Store" in the main menu
-    Then I should be on the appstore page
-    When I type "liste électorale valence" in the search box
-    And I check "Citizens"
-    And I uncheck "Public Bodies" "Companies"
-    And I click "Find"
-    Then the results list should contain "Inscription sur liste électorale à Valence"
-    And in "Inscription sur liste électorale à Valence" app result the official indicator is present
-    And in "Inscription sur liste électorale à Valence" app result the free badge is present
-    When I click "Inscription sur liste électorale à Valence" app result
-    Then the app detail block should contain "Inscription sur liste électorale à Valence"
-    When I click "Install" in the app detail block
-    Then I should be on the login page
-
+#  Scenario: Access from home page
+#    Given that I am not logged in
+#    When I visit the home page
+#    And I click "Application Store" in the main menu
+#    Then I should be on the appstore page
+#    When I type "liste électorale valence" in the search box
+#    And I check "Citizens"
+#    And I uncheck "Public Bodies" "Companies"
+#    And I click "Find"
+#    Then the results list should contain "Inscription sur liste électorale à Valence"
+#    And in "Inscription sur liste électorale à Valence" app result the official indicator is present
+#    And in "Inscription sur liste électorale à Valence" app result the free badge is present
+#    When I click "Inscription sur liste électorale à Valence" app result
+#    Then the app detail block should contain "Inscription sur liste électorale à Valence"
+#    When I click "Install" in the app detail block
+#    Then I should be on the login page
+#
   Scenario: Access from dashboard
     Given that I am logged in as Alice
     When I visit the dashboard
@@ -48,14 +48,14 @@ Feature: App Store
 
 
 # test objective: subscribe and view the app on the dashboard
-  Scenario: Subscribe to an app
-    Given that I am logged in as Alice
-    When I search the app store for "liste électorale valence"
-    And I click "Install" in the app detail block
-    Then I should be on the Dashboard
-    And the Dashboard should contain "Inscription sur liste électorale à Valence"
-    When I click "Inscription sur liste électorale à Valence"
-    Then I should be in Citizen Kin for Valence
+#  Scenario: Subscribe to an app
+#    Given that I am logged in as Alice
+#    When I search the app store for "liste électorale valence"
+#    And I click "Install" in the app detail block
+#    Then I should be on the Dashboard
+#    And the Dashboard should contain "Inscription sur liste électorale à Valence"
+#    When I click "Inscription sur liste électorale à Valence"
+#    Then I should be in Citizen Kin for Valence
 # from there the user can create a request to register as a voter - but that's another app's tests
 
   Scenario: Review app reviews
@@ -78,5 +78,4 @@ Feature: App Store
     Then I should see 4 reviews
     And review 1 should be by "Alice Legrand"
     And I should not see the voting tools for review 1
-
 

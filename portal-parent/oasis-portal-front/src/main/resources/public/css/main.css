@@ -1,0 +1,59 @@
+@import url(http://fonts.googleapis.com/css?family=Open+Sans);
+
+
+body {
+  padding-top: 50px;
+  font-family: "Open Sans", "Arial", "sans-serif";
+  background-image: url("/img/bg.png");
+}
+
+
+/* news */
+.news {
+  background: #e8e05d;
+  padding-bottom: 15px;
+}
+
+.nav {
+}
+
+.news-date {
+  font-style: italic;
+}
+
+.top-buffer {
+  margin-top:5px;
+}
+
+.center {
+  text-align: center;
+}
+
+div.block {
+  text-align:center;
+  padding-top: 5px;
+  padding-bottom: 20px;
+  margin-left: 5px;
+  margin-right: 5px;
+}
+
+div.apps {
+  background-color: #ade7f6;
+}
+div.apps:hover {
+  background-color: #4cb4f6;
+}
+
+div.data {
+  background-color: #ffcd9a;
+}
+div.data:hover {
+  background-color: #ff9c38;
+}
+
+div.services {
+  background-color: #e7ffa7;
+}
+div.services:hover {
+  background-color: #c9ff38;
+}
