@@ -29,3 +29,8 @@ kernel:
   client_id: 7706ded0-afe4-4826-9df1-ce03782b893d
   client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
   scopes_to_require: openid profile email
+
+
+persistence:
+  mongohost: localhost
+  mongodatabase: portal
