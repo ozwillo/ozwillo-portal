@@ -64,9 +64,26 @@
     border-color: #6e418e;
 }
 
+.after-the-break {
+    position: absolute;
+    left: 50%;
+    top: 600px;
+    margin-left: -29px;
+}
+
 .navbar {
     background: transparent;
     background-color: transparent;
+
+}
+
+.navbar * .btn-ozwillo {
+    margin-top: 3px;
+    margin-left: 13px;
+}
+
+.btn-noborder {
+    border: 0;
 }
 
 .navbar.opaque {

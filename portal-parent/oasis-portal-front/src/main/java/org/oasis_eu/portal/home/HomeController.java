@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.home;
 
+import org.oasis_eu.portal.generic.PortalController;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -15,7 +16,7 @@ import java.net.UnknownHostException;
  * Date: 5/13/14
  */
 @Controller
-public class HomeController {
+public class HomeController extends PortalController {
 
     @ModelAttribute("username")
     public String username() {
@@ -34,6 +35,8 @@ public class HomeController {
             return "Unknown host";
         }
     }
+
+
 
     @RequestMapping("/")
     public String index() {

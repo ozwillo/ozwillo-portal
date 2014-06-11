@@ -7,3 +7,10 @@ $(window).scroll(function() {
         $("#logo").attr("src", "/img/ozwillo-logo-white-small.png");
     }
 });
+
+$('a.after-the-break').click(function () {
+    $('html, body').animate({
+        scrollTop: $($.attr(this, 'href')).offset().top - 50
+    }, 500);
+    return false;
+});

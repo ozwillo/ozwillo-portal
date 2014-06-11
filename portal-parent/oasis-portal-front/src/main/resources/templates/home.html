@@ -5,8 +5,8 @@
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>DUMMY Ozwillo</title>
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="../public/css/main.css" rel="stylesheet"/>
     <link href="../public/css/home.css" rel="stylesheet"/>
     <!--[if lt IE 9]>
@@ -25,10 +25,16 @@
                  src="../public/img/ozwillo-logo-white-small.png"
                  alt="Ozwillo"/>
         </div>
-        <div class="pull-right">
-            <a href="#about" class="btn btn-ozwillo">Join us!</a>
-            <a href="#about" class="btn btn-ozwillo">Log in</a>
-        </div>
+        <ul class="nav navbar-nav navbar-right">
+            <li><a href="#about" class="btn btn-ozwillo" th:text="#{ui.signup}">Join us!</a></li>
+            <li><a href="#about" class="btn btn-ozwillo" ><i class="fa fa-user"></i> <th:block th:text="#{ui.login}">Log in</th:block></a></li>
+            <li class="dropdown">
+                <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown">English <b class="caret"></b></a>
+                <ul class="dropdown-menu" >
+                    <li><a href="#" th:each="lang : ${languages}" th:href="|?lang=${lang.language}|" th:text="${lang.name}">Blablaish</a></li>
+                </ul>
+            </li>
+        </ul>
     </div>
 </div>
 
@@ -58,14 +64,57 @@
                 <button type="submit" class="btn btn-primary" th:text="#{ui.go}">Search</button>
             </div>
         </div>
+
+        <a class="after-the-break" href="#content"><img src="../public/img/icon/scrolldown.png" th:src="@{/img/icon/scrolldown.png}" alt="Scroll" /></a>
     </div>
 </div>
 
 
-
+<a id="content"></a>
 
 <div class="container">
+    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla placerat velit sed tempor dapibus. Morbi ut congue
+        tellus. Nam sagittis, est nec convallis laoreet, turpis dui dapibus dolor, eget pellentesque neque urna sed
+        enim. Phasellus at lorem eu ante consectetur auctor. Cras ornare, lorem vel iaculis molestie, tortor nisl
+        imperdiet est, vel pulvinar dui lacus at augue. Phasellus turpis est, condimentum at accumsan at, suscipit eu
+        mauris. Phasellus luctus diam ut interdum vestibulum. Integer sed faucibus elit. Sed et porttitor purus.
+        Vestibulum fringilla ornare rhoncus. Nulla facilisi. Integer eget ornare libero. Morbi tristique, justo sit amet
+        suscipit fringilla, libero ante ullamcorper augue, vel posuere dolor diam ut justo. Nam pulvinar congue est,
+        eget tristique tellus tincidunt eu. Nunc mi nisi, vestibulum sit amet ullamcorper in, tempus non neque.</p>
 
+    <p>Nullam non nisl nec neque faucibus sollicitudin nec nec sem. Aliquam semper tempor tellus, sit amet mollis odio
+        rutrum in. Nullam eu dolor mi. Nulla vitae laoreet ligula. Praesent a elit mauris. Nulla blandit libero auctor
+        venenatis blandit. Nam sit amet quam id dui feugiat laoreet. Maecenas ut ligula in nulla pulvinar elementum vel
+        non felis. In hac habitasse platea dictumst. Vivamus ultrices, risus id pulvinar varius, turpis diam porta leo,
+        pulvinar tempus nibh nibh vestibulum risus. Suspendisse faucibus ante sed enim viverra, et porta est
+        malesuada.</p>
+
+    <p>Curabitur adipiscing gravida posuere. Integer purus est, aliquet ac malesuada tempus, ullamcorper nec nunc.
+        Praesent nec magna sit amet diam ultrices feugiat eu ac tellus. Nam id metus a erat cursus sollicitudin. Duis
+        viverra nec nulla sed rutrum. Nullam risus turpis, auctor in est a, mattis venenatis sapien. Sed luctus
+        adipiscing ultricies. Curabitur commodo scelerisque iaculis. Aenean neque tellus, imperdiet sed libero a,
+        convallis pulvinar enim. Nulla tincidunt ultrices consequat. Fusce ac velit ullamcorper, iaculis felis pulvinar,
+        molestie tortor. Vivamus ac eros fringilla, dignissim lacus non, ultricies sapien. Vivamus ultricies odio ante,
+        sed tempor augue commodo non. In facilisis, justo sit amet aliquam tempus, ligula quam laoreet tortor, et
+        consectetur tellus sapien lobortis purus. Aenean luctus vitae lorem et placerat. Curabitur porttitor ipsum nec
+        rutrum faucibus.</p>
+
+    <p>Phasellus blandit metus orci, vitae hendrerit nisi tempus adipiscing. Pellentesque viverra aliquam nibh in porta.
+        Vestibulum interdum erat vitae quam lacinia, eget ultricies lectus hendrerit. Etiam volutpat, erat id cursus
+        pharetra, orci libero fermentum tellus, et scelerisque erat tortor sed leo. Aenean egestas et ligula vitae
+        vestibulum. Donec aliquet aliquet scelerisque. Praesent iaculis semper nibh eget tincidunt. Aenean eu vulputate
+        libero. Proin sagittis mauris in est dignissim gravida. Sed viverra nec eros iaculis commodo. Donec feugiat eget
+        libero quis venenatis. Suspendisse elementum massa vitae mi dignissim, eget luctus diam convallis. Quisque velit
+        nibh, sodales vel venenatis id, venenatis nec eros.</p>
+
+    <p>Aenean tempus facilisis dolor, nec scelerisque ipsum volutpat a. Integer varius dolor at quam luctus, eu
+        porttitor diam consequat. Ut erat velit, mollis quis neque nec, tincidunt ultricies justo. Donec eu mi vitae dui
+        ultricies pellentesque. Sed ut mi at massa faucibus scelerisque eget vitae nisl. Mauris id metus semper,
+        adipiscing purus quis, tempus magna. Proin convallis dui ut lorem vestibulum congue. Ut nulla ipsum, molestie et
+        orci nec, faucibus tincidunt nisl. Quisque dignissim accumsan lacus, in imperdiet lorem molestie sit amet. Nulla
+        id placerat purus. Sed convallis volutpat elit et semper. Quisque sollicitudin egestas tortor, vel scelerisque
+        nisi ultricies sit amet. Sed ac eros mollis, rutrum odio id, imperdiet ante. Pellentesque vitae venenatis neque.
+        Cras quis tincidunt dui.</p>
 
 </div>
 <!-- /.container -->

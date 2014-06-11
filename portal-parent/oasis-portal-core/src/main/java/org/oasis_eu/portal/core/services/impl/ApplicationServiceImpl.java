@@ -19,7 +19,7 @@ import java.util.List;
  * User: schambon
  * Date: 5/30/14
  */
-@Service
+//@Service
 public class ApplicationServiceImpl extends GenericCRUDServiceImpl<Application> implements ApplicationService {
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationServiceImpl.class);
