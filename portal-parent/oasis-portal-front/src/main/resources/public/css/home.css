@@ -71,6 +71,13 @@
     margin-left: -29px;
 }
 
+b.caret {
+    border: none;
+    height: 15px;
+    width: 15px;
+    background: url("/img/icon/caret.png");
+}
+
 .navbar {
     background: transparent;
     background-color: transparent;
