@@ -26,7 +26,7 @@
 body {
   padding-top: 50px;
   font-family: "DIN", "Arial", "sans-serif";
-    color: #333333;
+  color: #333333;
 }
 
 h1 {
@@ -66,6 +66,14 @@ h6 {
     color: #222222;
 }
 
+
+b.caret {
+    border: none;
+    height: 15px;
+    width: 15px;
+    background: url("/img/icon/caret.png");
+}
+
 .btn-ozwillo {
     color: white;
     border-color: white;
@@ -78,4 +86,16 @@ h6 {
     background-color: white;
     color: #6e418e;
     border-color: #6e418e;
+}
+
+.btn-noborder {
+    border: 0;
+}
+
+.navbar * .btn {
+    font-size: 14pt;
+}
+.navbar * .btn-ozwillo {
+    margin-top: 3px;
+    margin-left: 13px;
 }

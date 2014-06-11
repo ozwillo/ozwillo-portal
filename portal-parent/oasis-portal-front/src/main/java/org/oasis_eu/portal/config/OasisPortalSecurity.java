@@ -20,7 +20,7 @@ public class OasisPortalSecurity extends OASISSecurityConfiguration {
                 .logout().logoutSuccessHandler(logoutHandler()).and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint()).and()
                 .authorizeRequests()
-                .antMatchers("/dash/**").authenticated()
+                .antMatchers("/my/**").authenticated()
                 .anyRequest().permitAll().and()
                 .addFilterBefore(openIdCAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class);
 

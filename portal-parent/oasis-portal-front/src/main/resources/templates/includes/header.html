@@ -6,7 +6,7 @@
     <link th:href="@{/webjars/bootstrap/3.1.1/css/bootstrap.min.css}" rel="stylesheet" />
     <link th:href="@{/webjars/font-awesome/4.0.3/css/font-awesome.min.css}" rel="stylesheet" />
     <link th:href="@{/css/main.css}" rel="stylesheet" />
-    <link th:href="@{'/css/' + ${page} + '.css'}" rel="stylesheet"/>
+    <link th:if="${page} != null" th:href="@{'/css/' + ${page} + '.css'}" rel="stylesheet"/>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>

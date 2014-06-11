@@ -17,7 +17,7 @@
 </head>
 <body>
 
-<div class="navbar navbar-fixed-top" role="navigation">
+<div class="navbar navbar-fixed-top" role="navigation" th:replace="includes/navbar(logo='white')">
     <div class="container">
         <div class="navbar-header">
 
@@ -26,8 +26,8 @@
                  alt="Ozwillo"/>
         </div>
         <ul class="nav navbar-nav navbar-right">
-            <li><a href="#about" class="btn btn-ozwillo" th:text="#{ui.signup}">Join us!</a></li>
-            <li><a href="#about" class="btn btn-ozwillo" ><i class="fa fa-user"></i> <th:block th:text="#{ui.login}">Log in</th:block></a></li>
+            <li><a href="#" class="btn btn-ozwillo" th:text="#{ui.signup}">Join us!</a></li>
+            <li><a href="#" th:href="@{/my}" class="btn btn-ozwillo" ><i class="fa fa-user"></i> <th:block th:text="#{ui.login}">Log in</th:block></a></li>
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown">English <b class="caret"></b></a>
                 <ul class="dropdown-menu" >
@@ -73,7 +73,7 @@
 <a id="content"></a>
 
 <div class="container text-center main-text" th:utext="${home_content}">
-    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla placerat velit sed tempor dapibus. Morbi ut congue
+    <p><em>Lorem ipsum</em> dolor sit amet, consectetur adipiscing elit. Nulla placerat velit sed tempor dapibus. Morbi ut congue
         tellus. Nam sagittis, est nec convallis laoreet, turpis dui dapibus dolor, eget pellentesque neque urna sed
         enim. Phasellus at lorem eu ante consectetur auctor. Cras ornare, lorem vel iaculis molestie, tortor nisl
         imperdiet est, vel pulvinar dui lacus at augue. Phasellus turpis est, condimentum at accumsan at, suscipit eu
@@ -82,7 +82,7 @@
         suscipit fringilla, libero ante ullamcorper augue, vel posuere dolor diam ut justo. Nam pulvinar congue est,
         eget tristique tellus tincidunt eu. Nunc mi nisi, vestibulum sit amet ullamcorper in, tempus non neque.</p>
 
-    <p>Nullam non nisl nec neque faucibus sollicitudin nec nec sem. Aliquam semper tempor tellus, sit amet mollis odio
+    <p>Nullam non nisl nec neque faucibus sollicitudin nec nec sem. <em>Aliquam</em> semper tempor tellus, sit amet mollis odio
         rutrum in. Nullam eu dolor mi. Nulla vitae laoreet ligula. Praesent a elit mauris. Nulla blandit libero auctor
         venenatis blandit. Nam sit amet quam id dui feugiat laoreet. Maecenas ut ligula in nulla pulvinar elementum vel
         non felis. In hac habitasse platea dictumst. Vivamus ultrices, risus id pulvinar varius, turpis diam porta leo,

@@ -71,12 +71,6 @@
     margin-left: -29px;
 }
 
-b.caret {
-    border: none;
-    height: 15px;
-    width: 15px;
-    background: url("/img/icon/caret.png");
-}
 
 .navbar {
     background: transparent;
@@ -84,10 +78,7 @@ b.caret {
 
 }
 
-.navbar * .btn-ozwillo {
-    margin-top: 3px;
-    margin-left: 13px;
-}
+
 
 .btn-noborder {
     border: 0;
@@ -110,9 +101,7 @@ b.caret {
 
 }
 
-.navbar * .btn {
-    font-size: 14pt;
-}
+
 
 body {
     padding-top: 0;

@@ -27,25 +27,6 @@ public class HomeController extends PortalController {
     @Autowired
     private ContentRenderingService contentRenderingService;
 
-
-    @ModelAttribute("username")
-    public String username() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication instanceof OpenIdCAuthentication) {
-            return ((OpenIdCAuthentication) authentication).getUserInfo().getName();
-        } else return null;
-    }
-
-    @ModelAttribute("hostname")
-    public String hostname() {
-
-        try {
-            return InetAddress.getLocalHost().getCanonicalHostName();
-        } catch (UnknownHostException e) {
-            return "Unknown host";
-        }
-    }
-
     @ModelAttribute("home_content")
     public String content(HttpServletRequest request) {
         Locale locale = RequestContextUtils.getLocale(request);
