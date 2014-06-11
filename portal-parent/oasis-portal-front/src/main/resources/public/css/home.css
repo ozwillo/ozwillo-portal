@@ -119,3 +119,11 @@ body {
     font-size: 14pt;
 }
 
+.main-text {
+    color: #6e418e;
+}
+
+.main-text em {
+    font-style: normal;
+    font-weight: bold;
+}
