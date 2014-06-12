@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.core.dao.impl;
 
-import org.oasis_eu.portal.core.model.GeoEntity;
+import org.oasis_eu.portal.core.model.appstore.GeoEntity;
 
 /**
  * User: schambon

@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.services.impl;
 
 import org.oasis_eu.portal.core.dao.GenericCRUDStore;
-import org.oasis_eu.portal.core.model.GenericEntity;
+import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 import org.oasis_eu.portal.core.services.GenericCRUDService;
 
 import java.util.List;

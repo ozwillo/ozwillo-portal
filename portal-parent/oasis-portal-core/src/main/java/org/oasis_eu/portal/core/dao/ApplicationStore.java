@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.core.dao;
 
-import org.oasis_eu.portal.core.model.Application;
+import org.oasis_eu.portal.core.model.appstore.Application;
 
 /**
  * User: schambon

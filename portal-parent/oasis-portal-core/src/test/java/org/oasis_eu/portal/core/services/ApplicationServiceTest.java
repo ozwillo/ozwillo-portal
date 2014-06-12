@@ -6,7 +6,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.constants.PortalConstants;
-import org.oasis_eu.portal.core.model.*;
+import org.oasis_eu.portal.core.model.appstore.*;
 import org.oasis_eu.portal.core.services.test.InMemoryEntityStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -128,7 +128,7 @@ public class ApplicationServiceTest {
         Services are displayed first
          */
 
-        SearchControls controls = new SearchControls(PortalConstants.PORTAL_DEFAULT_LOCALE);
+        SearchControls controls = new SearchControls(PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
         controls.setAudience(Audience.CITIZENS);
 
         List<AppStoreHit> hits = applicationService.search("procédures", controls);
@@ -148,7 +148,7 @@ public class ApplicationServiceTest {
         /*
         When a search query matches a location in the geo entity database, then that query is expanded
          */
-        SearchControls controls = new SearchControls(PortalConstants.PORTAL_DEFAULT_LOCALE);
+        SearchControls controls = new SearchControls(PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
         controls.setAudience(Audience.CITIZENS);
 
         List<AppStoreHit> hits = applicationService.search("valence", controls);
@@ -169,7 +169,7 @@ public class ApplicationServiceTest {
         /*
         When part of a search query matches a location in the geo entity database, then that part of the query is expanded
          */
-        SearchControls controls = new SearchControls(PortalConstants.PORTAL_DEFAULT_LOCALE);
+        SearchControls controls = new SearchControls(PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
         controls.setAudience(Audience.CITIZENS);
 
         List<AppStoreHit> hits = applicationService.search("liste électorale 26000", controls);

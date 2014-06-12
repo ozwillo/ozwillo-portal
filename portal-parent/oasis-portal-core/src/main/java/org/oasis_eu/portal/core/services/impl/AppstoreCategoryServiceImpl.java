@@ -3,7 +3,7 @@ package org.oasis_eu.portal.core.services.impl;
 import org.oasis_eu.portal.core.constants.PortalConstants;
 import org.oasis_eu.portal.core.dao.AppstoreCategoryStore;
 import org.oasis_eu.portal.core.exception.InvalidEntityException;
-import org.oasis_eu.portal.core.model.AppstoreCategory;
+import org.oasis_eu.portal.core.model.appstore.AppstoreCategory;
 import org.oasis_eu.portal.core.services.AppstoreCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

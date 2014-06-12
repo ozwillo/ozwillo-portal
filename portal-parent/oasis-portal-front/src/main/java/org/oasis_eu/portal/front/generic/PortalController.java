@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.generic;
+package org.oasis_eu.portal.front.generic;
 
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
@@ -14,7 +14,7 @@ import java.util.Locale;
  * User: schambon
  * Date: 6/11/14
  */
-abstract public class PortalController  {
+abstract public class PortalController {
 
     @ModelAttribute("languages")
     public Languages[] languages() {

@@ -1,10 +1,9 @@
-package org.oasis_eu.portal.core.model;
+package org.oasis_eu.portal.core.model.appstore;
 
-import org.oasis_eu.portal.core.constants.OasisLocales;
-import org.oasis_eu.portal.core.constants.PortalConstants;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -19,7 +18,7 @@ public class LocalService extends GenericEntity {
     private String id;
     private Map<String, String> names = new HashMap<>();
 
-    private String url;
+    private URL url;
 
     private String applicationId;
 
@@ -27,6 +26,8 @@ public class LocalService extends GenericEntity {
      * Name that is used in case of a missing translation
      */
     private String defaultName;
+
+    private String territoryId;
 
     public String getName(Locale locale) {
         String name = names.get(locale.getLanguage());
@@ -66,11 +67,11 @@ public class LocalService extends GenericEntity {
         this.names = names;
     }
 
-    public void setUrl(String url) {
+    public void setUrl(URL url) {
         this.url = url;
     }
 
-    public String getUrl() {
+    public URL getUrl() {
         return url;
     }
 
@@ -80,5 +81,13 @@ public class LocalService extends GenericEntity {
 
     public void setApplicationId(String applicationId) {
         this.applicationId = applicationId;
+    }
+
+    public String getTerritoryId() {
+        return territoryId;
+    }
+
+    public void setTerritoryId(String territoryId) {
+        this.territoryId = territoryId;
     }
 }

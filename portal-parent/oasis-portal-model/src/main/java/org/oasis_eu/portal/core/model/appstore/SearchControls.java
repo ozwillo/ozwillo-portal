@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.core.model;
+package org.oasis_eu.portal.core.model.appstore;
 
 import java.util.Locale;
 
@@ -9,10 +9,10 @@ import java.util.Locale;
 public class SearchControls {
     private Audience[] audience;
     private AppstoreCategory[] categories;
-    private Locale locale;
+    private String language;
 
-    public SearchControls(Locale locale) {
-        this.locale = locale;
+    public SearchControls(String language) {
+        this.language = language;
     }
 
     public void setAudience(Audience... audience) {
@@ -27,7 +27,11 @@ public class SearchControls {
         return categories;
     }
 
-    public void setCategories(AppstoreCategory[] categories) {
+    public void setCategories(AppstoreCategory... categories) {
         this.categories = categories;
+    }
+
+    public String getLanguage() {
+        return language;
     }
 }

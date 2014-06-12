@@ -3,15 +3,14 @@ package org.oasis_eu.portal.core.services.impl;
 import org.oasis_eu.portal.core.dao.ApplicationStore;
 import org.oasis_eu.portal.core.dao.AppstoreCategoryStore;
 import org.oasis_eu.portal.core.dao.GeoEntityStore;
-import org.oasis_eu.portal.core.model.AppStoreHit;
-import org.oasis_eu.portal.core.model.Application;
-import org.oasis_eu.portal.core.model.AppstoreCategory;
-import org.oasis_eu.portal.core.model.SearchControls;
+import org.oasis_eu.portal.core.model.appstore.AppStoreHit;
+import org.oasis_eu.portal.core.model.appstore.Application;
+import org.oasis_eu.portal.core.model.appstore.AppstoreCategory;
+import org.oasis_eu.portal.core.model.appstore.SearchControls;
 import org.oasis_eu.portal.core.services.ApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 

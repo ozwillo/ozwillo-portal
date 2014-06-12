@@ -1,6 +1,6 @@
-package org.oasis_eu.portal.cms;
+package org.oasis_eu.portal.front.cms;
 
-import org.oasis_eu.portal.generic.PortalController;
+import org.oasis_eu.portal.front.generic.PortalController;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;

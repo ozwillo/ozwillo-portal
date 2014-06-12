@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.core.services;
 
-import org.oasis_eu.portal.core.model.LocalService;
+import org.oasis_eu.portal.core.model.appstore.LocalService;
 
 /**
  * User: schambon

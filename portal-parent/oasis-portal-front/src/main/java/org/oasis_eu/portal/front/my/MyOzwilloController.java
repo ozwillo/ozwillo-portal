@@ -1,6 +1,6 @@
-package org.oasis_eu.portal.my;
+package org.oasis_eu.portal.front.my;
 
-import org.oasis_eu.portal.generic.PortalController;
+import org.oasis_eu.portal.front.generic.PortalController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,5 +17,6 @@ public class MyOzwilloController extends PortalController {
     public String myOzwillo() {
         return "my";
     }
+
 
 }

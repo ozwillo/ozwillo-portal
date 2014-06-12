@@ -1,6 +1,8 @@
 package org.oasis_eu.portal.core.services;
 
-import org.oasis_eu.portal.core.model.*;
+import org.oasis_eu.portal.core.model.appstore.AppStoreHit;
+import org.oasis_eu.portal.core.model.appstore.Application;
+import org.oasis_eu.portal.core.model.appstore.SearchControls;
 
 import java.util.List;
 

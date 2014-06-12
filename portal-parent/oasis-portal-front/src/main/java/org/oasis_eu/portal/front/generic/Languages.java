@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.generic;
+package org.oasis_eu.portal.front.generic;
 
 import org.oasis_eu.portal.core.constants.OasisLocales;
 

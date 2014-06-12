@@ -11,7 +11,7 @@ import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.constants.PortalConstants;
 import org.oasis_eu.portal.core.exception.EntityNotFoundException;
 import org.oasis_eu.portal.core.exception.InvalidEntityException;
-import org.oasis_eu.portal.core.model.AppstoreCategory;
+import org.oasis_eu.portal.core.model.appstore.AppstoreCategory;
 import org.oasis_eu.portal.core.services.test.InMemoryEntityStore;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

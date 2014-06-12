@@ -1,8 +1,6 @@
 package org.oasis_eu.portal.core.services;
 
-import org.oasis_eu.portal.core.model.AppstoreCategory;
-
-import java.util.List;
+import org.oasis_eu.portal.core.model.appstore.AppstoreCategory;
 
 /**
  * User: schambon

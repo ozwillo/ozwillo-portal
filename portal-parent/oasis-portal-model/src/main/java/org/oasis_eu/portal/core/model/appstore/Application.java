@@ -1,4 +1,6 @@
-package org.oasis_eu.portal.core.model;
+package org.oasis_eu.portal.core.model.appstore;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import java.net.URL;
 import java.util.*;
@@ -17,9 +19,11 @@ public class Application extends GenericEntity {
     private Map<Audience, Boolean> targetAudience = new HashMap<>();
     private URL icon;
     private Locale defaultLocale;
+    private URL url;
 
-
+    @JsonIgnore
     private Set<AppstoreCategory> categories = new HashSet<>();
+
     private Set<String> categoryIds = new HashSet<>();
 
 
@@ -106,4 +110,29 @@ public class Application extends GenericEntity {
     public void setDefaultLocale(Locale defaultLocale) {
         this.defaultLocale = defaultLocale;
     }
+
+    public URL getUrl() {
+        return url;
+    }
+
+    public void setUrl(URL url) {
+        this.url = url;
+    }
+
+    public String getName(Locale locale) {
+        if (translatedNames.containsKey(locale.getLanguage())) {
+            return translatedNames.get(locale.getLanguage());
+        } else {
+            return defaultName;
+        }
+    }
+
+    public String getDescription(Locale locale) {
+        if (translatedDescriptions.containsKey(locale.getLanguage())) {
+            return translatedDescriptions.get(locale.getLanguage());
+        } else {
+            return defaultDescription;
+        }
+    }
+
 }

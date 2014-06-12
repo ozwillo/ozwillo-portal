@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.core.model;
+package org.oasis_eu.portal.core.model.appstore;
 
 import org.oasis_eu.portal.core.constants.PortalConstants;
 import org.slf4j.Logger;

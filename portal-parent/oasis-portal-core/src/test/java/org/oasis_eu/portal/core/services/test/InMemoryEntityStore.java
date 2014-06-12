@@ -3,7 +3,7 @@ package org.oasis_eu.portal.core.services.test;
 import org.oasis_eu.portal.core.dao.GenericCRUDStore;
 import org.oasis_eu.portal.core.exception.EntityNotFoundException;
 import org.oasis_eu.portal.core.exception.InvalidEntityException;
-import org.oasis_eu.portal.core.model.GenericEntity;
+import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 
 import java.util.ArrayList;
 import java.util.LinkedList;

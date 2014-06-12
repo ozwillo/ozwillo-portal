@@ -1,6 +1,4 @@
-package org.oasis_eu.portal.core.model;
-
-import java.lang.management.CompilationMXBean;
+package org.oasis_eu.portal.core.model.appstore;
 
 /**
  * User: schambon

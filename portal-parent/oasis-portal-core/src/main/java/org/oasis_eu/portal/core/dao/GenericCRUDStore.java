@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.core.dao;
 
-import org.oasis_eu.portal.core.model.AppstoreCategory;
-import org.oasis_eu.portal.core.model.GenericEntity;
+import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 
 import java.util.List;
 
