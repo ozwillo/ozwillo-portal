@@ -33,7 +33,7 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 
     @Override
     protected String getMappingBasePackage() {
-        return "org.oasis_eu.portal.core.mongo.dao.cms";
+        return "org.oasis_eu.portal.core.mongo";
     }
 
     @Override

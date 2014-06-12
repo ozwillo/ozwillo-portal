@@ -1,9 +1,14 @@
 package org.oasis_eu.portal.mockserver.repo;
 
+import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.appstore.Application;
 import org.oasis_eu.portal.core.model.appstore.Audience;
 import org.oasis_eu.portal.core.model.appstore.LocalService;
 import org.oasis_eu.portal.core.model.appstore.PaymentOption;
+import org.oasis_eu.portal.core.model.subscription.ApplicationType;
+import org.oasis_eu.portal.core.model.subscription.Subscription;
+import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
+import org.oasis_eu.portal.core.model.subscription.UserContext;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
@@ -21,8 +26,9 @@ public class TestData {
     Map<String, Application> applications = new HashMap<>();
     Map<String, LocalService> localServices = new HashMap<>();
 
-    Map<String, Set<String>> appSubscriptions = new HashMap<>();
-    Map<String, Set<String>> localServiceSubscriptions = new HashMap<>();
+
+    Map<String, List<UserContext>> userContexts = new HashMap<>();
+    Map<String, Map<String, List<Subscription>>> subscriptions = new HashMap<>();
 
 
     public Map<String, Application> getApplications() {
@@ -33,50 +39,101 @@ public class TestData {
         return localServices;
     }
 
-    public Set<String> getAppSubscriptions(String userId) {
-        return appSubscriptions.get(userId);
-    }
 
-    public Set<String> getServiceSubscriptions(String userId) {
-        return localServiceSubscriptions.get(userId);
-    }
+    public List<UserContext> getUserContexts(String userId) {
+        List<UserContext> ctxs = userContexts.get(userId);
+        if (ctxs == null) {
 
-    public void subscribeApplication(String userId, String appId) {
-        Set<String> appSubs = appSubscriptions.get(userId);
-        if (appSubs == null) {
-            appSubs = new HashSet<>();
-            appSubscriptions.put(userId, appSubs);
+            ctxs = new LinkedList<>();
+            // auto-create default user context
+            UserContext primaryUserContext = new UserContext();
+            primaryUserContext.setId(UUID.randomUUID().toString());
+            primaryUserContext.setName("Primary");
+            primaryUserContext.setPrimary(true);
+            ctxs.add(primaryUserContext);
+
+            userContexts.put(userId, ctxs);
         }
-        appSubs.add(appId);
+        return ctxs;
     }
 
+    public UserContext getPrimaryUserContext(String userId) {
 
-    public void subscribeLocalService(String userId, String serviceId) {
-        Set<String> serviceSubs = localServiceSubscriptions.get(userId);
-        if (serviceSubs == null) {
-            serviceSubs = new HashSet<>();
-            localServiceSubscriptions.put(userId, serviceSubs);
-        }
-        serviceSubs.add(serviceId);
+        return getUserContexts(userId).stream().filter(c -> c.isPrimary()).findAny().get();
     }
 
+    public UserContext createUserContext(String userId, String name) {
+        UserContext context = new UserContext();
+        context.setPrimary(false);
+        context.setName(name);
+        context.setId(UUID.randomUUID().toString());
 
-    public void unsubscribeApplication(String userId, String appId) {
-        Set<String> appSubs = appSubscriptions.get(userId);
-        if (appSubs == null) {
-            appSubs = new HashSet<>();
-            appSubscriptions.put(userId, appSubs);
-        }
-        appSubs.remove(appId);
+        getUserContexts(userId).add(context);
+        return context;
     }
 
-    public void unsubscribeLocalService(String userId, String serviceId) {
-        Set<String> serviceSubs = localServiceSubscriptions.get(userId);
-        if (serviceSubs == null) {
-            serviceSubs = new HashSet<>();
-            localServiceSubscriptions.put(userId, serviceSubs);
+    public Map<String, List<Subscription>> getSubscriptionsByContext(String userId) {
+        return subscriptions.get(userId);
+    }
+
+    public List<Subscription> getSubscriptions(String userId, String contextId) {
+        Map<String, List<Subscription>> byCtx = subscriptions.get(userId);
+
+        return byCtx != null ? byCtx.get(contextId) : null;
+    }
+
+    public boolean subscribe(Subscription subscription) {
+        Map<String, List<Subscription>> byCtx = subscriptions.get(subscription.getUserId());
+        if (byCtx == null) {
+            byCtx = new HashMap<>();
+            for (UserContext ctx : getUserContexts(subscription.getUserId())) {
+                byCtx.put(ctx.getId(), new ArrayList<>());
+            }
+            subscriptions.put(subscription.getUserId(), byCtx);
         }
-        serviceSubs.remove(serviceId);
+
+        List<Subscription> subs = byCtx.get(subscription.getUserContextId());
+        if (subs == null) {
+
+            subs = new ArrayList<>();
+            byCtx.put(subscription.getUserContextId(), subs);
+        }
+
+        if (subs.stream().anyMatch(s -> s.getApplicationId().equals(subscription.getApplicationId()) && s.getSubscriptionType().equals(subscription.getSubscriptionType()))) {
+            // there is already a subscription for that user / context / application / substype triple
+            return false;
+        } else {
+            subs.add(subscription);
+            return true;
+        }
+    }
+
+    public boolean subscribeApplication(String userId, String applicationId, SubscriptionType subscriptionType) {
+        Subscription s = new Subscription();
+        s.setId(UUID.randomUUID().toString());
+        s.setUserId(userId);
+        s.setApplicationId(applicationId);
+        s.setApplicationType(ApplicationType.APPLICATION);
+        s.setCreated(Instant.now());
+        s.setUserContextId(getPrimaryUserContext(userId).getId());
+        s.setSubscriptionType(subscriptionType);
+
+        return subscribe(s);
+
+    }
+
+    public boolean subscribeLocalService(String userId, String applicationId) {
+        Subscription s = new Subscription();
+        s.setId(UUID.randomUUID().toString());
+        s.setUserId(userId);
+        s.setApplicationId(applicationId);
+        s.setApplicationType(ApplicationType.LOCAL_SERVICE);
+        s.setCreated(Instant.now());
+        s.setUserContextId(getPrimaryUserContext(userId).getId());
+        s.setSubscriptionType(SubscriptionType.PERSONAL);
+
+        return subscribe(s);
+
     }
 
     @PostConstruct
@@ -135,6 +192,7 @@ public class TestData {
         LocalService elecRoll = new LocalService();
         elecRoll.setId("elecRollValence");
         elecRoll.setDefaultName("Inscription sur liste électorale, Valence");
+        elecRoll.setDefaultDescription("S'inscrire sur les listes électorales");
         elecRoll.setApplicationId("ckValence");
         elecRoll.setUrl(new URL("http://srv3-polenum.fingerprint-technologies.net/front/valence/electoral_roll_registration/init"));
         elecRoll.setTerritoryId("26000");
@@ -149,9 +207,12 @@ public class TestData {
         localServices.put("11107e06-d34e-4241-8d21-2bba7bf479b3", other);
 
 
+
+
+
         // some subscriptions...
-        subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "ckValence");
+        subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "ckValence", SubscriptionType.PERSONAL);
         subscribeLocalService("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "elecRollValence");
-        subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", "citizekin");
+        subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", "citizekin", SubscriptionType.EMPLOYEE);
     }
 }

@@ -17,6 +17,7 @@ public class LocalService extends GenericEntity {
 
     private String id;
     private Map<String, String> names = new HashMap<>();
+    private Map<String, String> descriptions = new HashMap<>();
 
     private URL url;
 
@@ -26,6 +27,8 @@ public class LocalService extends GenericEntity {
      * Name that is used in case of a missing translation
      */
     private String defaultName;
+    private String defaultDescription;
+
 
     private String territoryId;
 
@@ -90,4 +93,35 @@ public class LocalService extends GenericEntity {
     public void setTerritoryId(String territoryId) {
         this.territoryId = territoryId;
     }
+
+    public void setDescription(Locale locale, String desc) {
+        descriptions.put(locale.getLanguage(), desc);
+    }
+
+    public String getDescription(Locale locale) {
+        String desc = descriptions.get(locale.getLanguage());
+        if (desc == null) {
+            logger.warn("Cannot find translated description for local service \"{}\" (id: {}) in language {}", defaultName, id, locale);
+            return defaultDescription;
+        } else {
+            return desc;
+        }
+    }
+
+    public Map<String, String > getDescriptions() {
+        return descriptions;
+    }
+
+    public void setDescriptions(Map<String, String> descriptions) {
+        this.descriptions = descriptions;
+    }
+
+    public void setDefaultDescription(String defaultDescription) {
+        this.defaultDescription = defaultDescription;
+    }
+
+    public String getDefaultDescription() {
+        return defaultDescription;
+    }
+
 }
