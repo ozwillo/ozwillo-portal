@@ -41,6 +41,7 @@ public class MyOzwilloController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value="/notif")
     public String notifications(Model model, HttpServletRequest request) {
+        model.addAttribute("notifications", notificationService.getNotifications(RequestContextUtils.getLocale(request)));
         return "my-notif";
     }
 

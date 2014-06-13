@@ -50,44 +50,49 @@
             </div>
 
         </div>
-        <div class="col-md-6">
+        <div class="col-md-11">
             <h1 th:text="#{ui.notifications}">Notifications</h1>
 
-            <ul class="list-group" th:remove="all-but-first">
-                <li class="list-group-item">
-                    <span>Notification message</span>
-                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
-                </li>
-                <li class="list-group-item">
-                    <span>Notification message</span>
-                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
-                </li>
-                <li class="list-group-item">
-                    <span>Notification message</span>
-                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
-                </li>
-                <li class="list-group-item">
-                    <span>Notification message</span>
-                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
-                </li>
-                <li class="list-group-item">
-                    <span>Notification message</span>
-                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
-                </li>
-            </ul>
+            <table class="table table-striped table-bordered">
+                <thead>
+                    <tr>
+                        <th th:text="#{ui.date}">Date</th>
+                        <th th:text="#{ui.application}">Application</th>
+                        <th th:text="#{ui.text}">Text</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody th:remove="all-but-first">
+                    <tr th:each="notif : ${notifications}">
+                        <td th:text="${notif.date}">18/12/2012</td>
+                        <td th:text="${notif.appName}">Citizen Kin</td>
+                        <td th:utext="${notif.formattedText}">Hello wrold <a href="#">pouet</a></td>
+                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>18/12/2012</td>
+                        <td>Citizen Kin</td>
+                        <td>Hello wrold <a href="#">pouet</a></td>
+                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>18/12/2012</td>
+                        <td>Citizen Kin</td>
+                        <td>Hello wrold <a href="#">pouet</a></td>
+                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+                    </tr>
+                    <tr>
+                        <td>18/12/2012</td>
+                        <td>Citizen Kin</td>
+                        <td>Hello wrold <a href="#">pouet</a></td>
+                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+                    </tr>
+                </tbody>
+            </table>
+
 
         </div>
-        <div class="col-md-5">
-            <div class="panel panel-default">
-                <div class="panel-heading" th:text="#{ui.local_services}">Local services</div>
-                <div class="panel-body">
-                    <ul>
-                        <li>Service 1</li>
-                        <li>Service 2</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
+
     </div>
 </div>
 
