@@ -12,7 +12,7 @@ import java.util.Locale;
  * User: schambon
  * Date: 6/12/14
  */
-public class DashboardSubscription {
+public class DashboardEntry {
 
     Application application;
     LocalService localService;

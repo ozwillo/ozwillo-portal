@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 @RestController
 @RequestMapping("/store")
-public class AppStore {
+public class AppStoreEndpoint {
 
     @Autowired
     private TestData testData;

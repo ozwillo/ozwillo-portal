@@ -2,6 +2,7 @@ package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.ApplicationStore;
 import org.oasis_eu.portal.core.model.appstore.Application;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
@@ -9,6 +10,7 @@ import java.util.List;
  * User: schambon
  * Date: 5/30/14
  */
+@Component
 public class ApplicationStoreImpl implements ApplicationStore {
     @Override
     public Application create(Application application) {
@@ -45,13 +47,4 @@ public class ApplicationStoreImpl implements ApplicationStore {
         return null;
     }
 
-    @Override
-    public void pushToEnd(Application application) {
-
-    }
-
-    @Override
-    public void moveBefore(Application t1, Application t2) {
-
-    }
 }

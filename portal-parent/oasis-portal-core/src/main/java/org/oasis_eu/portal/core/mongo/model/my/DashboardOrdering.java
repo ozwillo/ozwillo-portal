@@ -1,17 +1,39 @@
 package org.oasis_eu.portal.core.mongo.model.my;
 
-import org.oasis_eu.portal.core.model.appstore.GenericEntity;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.CompoundIndex;
+import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.mapping.Document;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * User: schambon
  * Date: 6/12/14
  */
-public class DashboardOrdering extends GenericEntity {
+@Document
+@CompoundIndexes({
+        @CompoundIndex(name = "userId_userContextId", def = "{userId:1, userContextId:1}", unique = true)
+})
+public class DashboardOrdering  {
+
+    @Id
+    private String id;
 
     private String userId;
-    private String subscriptionId;
-    private int ordering;
+    private String userContextId;
 
+
+    private Map<String, Integer> orderings = new HashMap<>();
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getId() {
+        return id;
+    }
 
     public String getUserId() {
         return userId;
@@ -21,19 +43,19 @@ public class DashboardOrdering extends GenericEntity {
         this.userId = userId;
     }
 
-    public String getSubscriptionId() {
-        return subscriptionId;
+    public String getUserContextId() {
+        return userContextId;
     }
 
-    public void setSubscriptionId(String subscriptionId) {
-        this.subscriptionId = subscriptionId;
+    public void setUserContextId(String userContextId) {
+        this.userContextId = userContextId;
     }
 
-    public int getOrdering() {
-        return ordering;
+    public void setOrderings(Map<String, Integer> orderings) {
+        this.orderings = orderings;
     }
 
-    public void setOrdering(int ordering) {
-        this.ordering = ordering;
+    public Map<String, Integer> getOrderings() {
+        return orderings;
     }
 }

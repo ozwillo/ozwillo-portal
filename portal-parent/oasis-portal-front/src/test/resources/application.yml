@@ -38,4 +38,4 @@ kernel:
 
 persistence:
   mongohost: localhost
-  mongodatabase: portal
+  mongodatabase: portal_test

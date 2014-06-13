@@ -11,6 +11,7 @@ import java.util.List;
  */
 public interface DashboardOrderingRepository extends MongoRepository<DashboardOrdering, String> {
 
-    public List<DashboardOrdering> findByUserId(String userId);
+    public DashboardOrdering findByUserIdAndUserContextId(String userId, String userContextId);
+
 
 }
