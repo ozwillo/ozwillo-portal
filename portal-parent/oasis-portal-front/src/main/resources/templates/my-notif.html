@@ -51,22 +51,30 @@
 
         </div>
         <div class="col-md-6">
-            <h1 th:text="#{ui.my}">My Ozwillo</h1>
+            <h1 th:text="#{ui.notifications}">Notifications</h1>
 
-            <h2 th:text="#{my.contexts}">Contexts</h2>
-            <ul>
-                <li th:each="context: ${contexts}" th:text="${context.name}">Context...</li>
+            <ul class="list-group" th:remove="all-but-first">
+                <li class="list-group-item">
+                    <span>Notification message</span>
+                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
+                </li>
+                <li class="list-group-item">
+                    <span>Notification message</span>
+                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
+                </li>
+                <li class="list-group-item">
+                    <span>Notification message</span>
+                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
+                </li>
+                <li class="list-group-item">
+                    <span>Notification message</span>
+                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
+                </li>
+                <li class="list-group-item">
+                    <span>Notification message</span>
+                    <a class="pull-right" href="#"><i class="fa fa-times-circle"></i></a>
+                </li>
             </ul>
-            <a class="btn btn-default" th:text="#{my.create_context}">Create new context</a>
-
-            <h2 th:text="#{my.apps}">My applications</h2>
-            <div class="app" th:each="entry: ${entries}" th:classappend="${entry.subscription.applicationType == T(org.oasis_eu.portal.core.model.subscription.ApplicationType).LOCAL_SERVICE}? 'local-service'">
-                <a class="app-link" href="#" th:href="${entry.URL}" target="_blank"></a>
-                <p th:text="${entry.name}">Portail citoyen de Valence</p>
-                <img src="../public/img/icon/img-25.png" th:src="@{/img/icon/img-25.png}"/>
-                <span class="badge notifs" th:if="${entry.notificationsCount != 0}" th:text="${entry.notificationsCount}">25</span>
-            </div>
-
 
         </div>
         <div class="col-md-5">

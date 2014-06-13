@@ -20,9 +20,7 @@ public class DashboardEntry {
 
     private Locale displayLocale;
 
-    // List<Notification> notifications;
-
-    // int ordering -- doesn't necessarily have to live here
+    int notificationsCount = 0;
 
     public Application getApplication() {
         return application;
@@ -62,8 +60,12 @@ public class DashboardEntry {
         return localService != null ? localService.getName(locale) : application.getName(locale);
     }
 
-    public int getNotificationCount() {
-        return 0;
+    public int getNotificationsCount() {
+        return notificationsCount;
+    }
+
+    public void setNotificationsCount(int notificationsCount) {
+        this.notificationsCount = notificationsCount;
     }
 
     public String getIconId() {

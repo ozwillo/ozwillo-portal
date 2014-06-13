@@ -1,0 +1,42 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>DUMMY Ozwillo</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="../../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../../public/css/my.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+</head>
+<body>
+
+
+<div class="container">
+    <div class="row">
+        <div class="col-md-1" th:fragment="my-navigation">
+            <div class="row">
+                <a href="#"><img src="../../../public/img/my/profile.png" th:src="@{/img/my/profile.png}" alt="Profile" th:alt="#{my.profile}"/></a>
+            </div>
+            <div class="row">
+                <a href="#" th:href="@{/my}"><img src="../../../public/img/my/dash.png" th:src="@{/img/my/dash.png}" alt="Dash" th:alt="#{my.dash}"/></a>
+            </div>
+            <div class="row">
+                <a href="#" th:href="@{/my/notif}"><img src="../../../public/img/my/notification.png" th:src="@{/img/my/notification.png}" alt="Notif" th:alt="#{my.notification}"/></a>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+
+</body>
+</html>
+

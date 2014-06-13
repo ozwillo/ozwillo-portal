@@ -22,11 +22,18 @@ public class MyOzwilloController extends PortalController {
     @Autowired
     private DashboardService dashboardService;
 
+
+
     @RequestMapping(method = RequestMethod.GET, value={"/", ""})
     public String myOzwillo(Model model, HttpServletRequest request) {
         model.addAttribute("contexts", dashboardService.getUserContexts());
         model.addAttribute("entries", dashboardService.getDashboardEntries(dashboardService.getPrimaryUserContext(), RequestContextUtils.getLocale(request)));
         return "my";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value="/notif")
+    public String notifications(Model model, HttpServletRequest request) {
+        return "my-notif";
     }
 
 }

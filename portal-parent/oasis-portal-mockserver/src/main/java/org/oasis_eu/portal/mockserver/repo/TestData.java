@@ -175,7 +175,7 @@ public class TestData {
 
 
         Application ckValence = new Application();
-        ckValence.setId("ckValence");
+        ckValence.setId("0a046fde-a20f-46eb-8252-48b78d89a9a2");
         ckValence.setDefaultName("Citizen Kin Valence");
         ckValence.setDefaultDescription("Portal de relations citoyennes de la ville de Valence");
         ckValence.setPaymentOption(PaymentOption.FREE);
@@ -187,7 +187,7 @@ public class TestData {
         ckValence.setDefaultLocale(Locale.FRENCH);
         ckValence.setIcon(new URL("http://whatever.com/test.png"));
         ckValence.setUrl(new URL("http://srv3-polenum.fingerprint-technologies.net/front/valence"));
-        applications.put("ckValence", ckValence);
+        applications.put(ckValence.getId(), ckValence);
 
         LocalService elecRoll = new LocalService();
         elecRoll.setId("elecRollValence");
@@ -211,7 +211,7 @@ public class TestData {
 
 
         // some subscriptions...
-        subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "ckValence", SubscriptionType.PERSONAL);
+        subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", ckValence.getId(), SubscriptionType.PERSONAL);
         subscribeLocalService("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "elecRollValence");
         subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", "citizenkin_back", SubscriptionType.EMPLOYEE);
     }

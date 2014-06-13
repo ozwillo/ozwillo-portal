@@ -12,6 +12,7 @@ import org.oasis_eu.portal.core.model.subscription.UserContext;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardOrderingRepository;
 import org.oasis_eu.portal.core.mongo.model.my.DashboardOrdering;
 import org.oasis_eu.portal.model.DashboardEntry;
+import org.oasis_eu.spring.kernel.service.NotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,10 +48,11 @@ public class DashboardService {
     @Autowired
     private LocalServiceStore localServiceStore;
 
-
     @Autowired
     private UserInfoHelper userInfoHelper;
 
+    @Autowired
+    private PortalNotificationService notificationService;
 
     public UserContext getPrimaryUserContext() {
 
@@ -77,7 +79,7 @@ public class DashboardService {
 
         DashboardOrdering ords = getOrCreateOrdering(userContext);
 
-        List<DashboardEntry> entries = new ArrayList<>(subscriptions.size());
+        List<DashboardEntry> entries = new ArrayList<DashboardEntry>(subscriptions.size());
 
         for (Subscription s : subscriptions) {
             DashboardEntry entry = new DashboardEntry();
@@ -90,6 +92,7 @@ public class DashboardService {
                     logger.warn("Application {} not found in app store", s.getApplicationId());
                 }
                 entry.setApplication(application);
+                entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getApplicationId()));
             } else {
 
                 LocalService localService = localServiceStore.find(s.getApplicationId());
