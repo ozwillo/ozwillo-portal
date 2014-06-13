@@ -77,28 +77,28 @@ public class InMemoryEntityStore<T extends GenericEntity> implements GenericCRUD
 
         return collected;
     }
-
-    @Override
-    public void moveBefore(T t1, T t2) {
-        T subject = find(t1.getId());
-        if (subject == null) {
-            throw new EntityNotFoundException(t1.getId());
-        }
-        T object = find(t2.getId());
-        if (object == null) {
-            throw new EntityNotFoundException(t2.getId());
-        }
-
-        entities.remove(subject);
-        entities.add(entities.indexOf(object), subject);
-    }
-
-    @Override
-    public void pushToEnd(T t) {
-        if (! entities.contains(t)) {
-            throw new EntityNotFoundException(t.getId());
-        }
-        entities.remove(t);
-        entities.add(t);
-    }
+//
+//    @Override
+//    public void moveBefore(T t1, T t2) {
+//        T subject = find(t1.getId());
+//        if (subject == null) {
+//            throw new EntityNotFoundException(t1.getId());
+//        }
+//        T object = find(t2.getId());
+//        if (object == null) {
+//            throw new EntityNotFoundException(t2.getId());
+//        }
+//
+//        entities.remove(subject);
+//        entities.add(entities.indexOf(object), subject);
+//    }
+//
+//    @Override
+//    public void pushToEnd(T t) {
+//        if (! entities.contains(t)) {
+//            throw new EntityNotFoundException(t.getId());
+//        }
+//        entities.remove(t);
+//        entities.add(t);
+//    }
 }

@@ -2,14 +2,14 @@ package org.oasis_eu.portal.core.model.subscription;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;
+import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 
 /**
  * User: schambon
  * Date: 6/12/14
  */
-public class Subscription {
+public class Subscription extends GenericEntity {
 
-    private String id;
 
     @JsonProperty("user_id")
     private String userId;
@@ -40,13 +40,6 @@ public class Subscription {
 
     private Instant created;
 
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
 
     public String getUserId() {
         return userId;

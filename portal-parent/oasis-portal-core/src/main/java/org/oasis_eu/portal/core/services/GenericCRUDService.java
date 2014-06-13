@@ -21,7 +21,5 @@ public interface GenericCRUDService<T extends GenericEntity> {
 
     void delete(T t);
 
-    void moveBefore(T t1, T t2);
-
-    void pushToEnd(T t);
 }
+

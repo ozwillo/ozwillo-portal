@@ -15,9 +15,12 @@ import org.springframework.stereotype.Service;
 @Service
 public class AppstoreCategoryServiceImpl extends GenericCRUDServiceImpl<AppstoreCategory> implements AppstoreCategoryService {
 
+    private AppstoreCategoryStore store;
+
     @Autowired
     public AppstoreCategoryServiceImpl(AppstoreCategoryStore store) {
         super(store);
+        this.store = store;
     }
 
     @Override
@@ -32,4 +35,16 @@ public class AppstoreCategoryServiceImpl extends GenericCRUDServiceImpl<Appstore
 
         return super.create(appstoreCategory);
     }
+
+    @Override
+    public void moveBefore(AppstoreCategory subject, AppstoreCategory object) {
+        store.moveBefore(subject, object);
+    }
+
+    @Override
+    public void pushToEnd(AppstoreCategory subject) {
+        store.pushToEnd(subject);
+    }
+
+
 }

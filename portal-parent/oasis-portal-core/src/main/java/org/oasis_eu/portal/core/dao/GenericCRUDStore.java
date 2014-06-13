@@ -59,7 +59,4 @@ public interface GenericCRUDStore<T extends GenericEntity> {
      */
     List<T> find(int skip, int number);
 
-    void pushToEnd(T t);
-
-    void moveBefore(T t1, T t2);
 }

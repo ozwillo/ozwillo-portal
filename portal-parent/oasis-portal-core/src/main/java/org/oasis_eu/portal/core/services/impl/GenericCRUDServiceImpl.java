@@ -18,16 +18,6 @@ public class GenericCRUDServiceImpl<T extends GenericEntity> implements GenericC
     }
 
     @Override
-    public void moveBefore(T subject, T object) {
-        store.moveBefore(subject, object);
-    }
-
-    @Override
-    public void pushToEnd(T subject) {
-        store.pushToEnd(subject);
-    }
-
-    @Override
     public T create(T t) {
         return store.create(t);
     }

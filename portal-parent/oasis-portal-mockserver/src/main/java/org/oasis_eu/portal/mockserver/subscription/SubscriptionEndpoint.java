@@ -18,7 +18,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/subs")
-public class SubscriptionService {
+public class SubscriptionEndpoint {
 
     @Autowired
     private TestData testData;

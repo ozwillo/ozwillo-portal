@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.services;
 
+import org.oasis_eu.portal.core.dao.UserContextStore;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardOrderingRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,6 +14,9 @@ public class DashboardSubscriptionService {
 
     @Autowired
     private DashboardOrderingRepository orderingRepository;
+
+    @Autowired
+    private UserContextStore userContextStore;
 
 
 

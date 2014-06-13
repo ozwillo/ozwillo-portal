@@ -22,10 +22,13 @@ public class UserContextStoreImpl implements UserContextStore {
     @Autowired
     private RestTemplate kernelRestTemplate;
 
-    private String userContextEndpoint = "http://localhost:8081/ctx";
+    @Value("${kernel.portal_endpoints.usercontext}")
+    private String userContextEndpoint;
 
     @Override
     public void deleteUserContext(String userId, String userContextId) {
+
+        kernelRestTemplate.delete(userContextEndpoint + "/{user_id}/{context_id}", userId, userContextId);
 
     }
 

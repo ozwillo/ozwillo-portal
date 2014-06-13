@@ -17,19 +17,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = UserContextStoreImplTest.class, loader = AnnotationConfigContextLoader.class)
-@Configuration
-@Import(KernelConfiguration.class)
-@ComponentScan(basePackages = "org.oasis_eu.portal.core")
-@PropertySource("classpath:test-application.properties")
+@ContextConfiguration(classes = DAOTestConfiguration.class, loader = AnnotationConfigContextLoader.class)
 public class UserContextStoreImplTest {
 
     public static final String USER_ID = "bb2c6f76-362f-46aa-982c-1fc60d54b8ef";
 
-    @Bean
-    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
-        return new PropertySourcesPlaceholderConfigurer();
-    }
 
 
     @Autowired
@@ -43,13 +35,18 @@ public class UserContextStoreImplTest {
     }
 
     @Test
-    public void testCreateUserContext() {
+    public void testCreateDeleteUserContext() {
         UserContext context = new UserContext();
         context.setName("Pro");
-        store.addUserContext(USER_ID, context);
+        UserContext uc = store.addUserContext(USER_ID, context);
         List<UserContext> contexts = store.getUserContexts(USER_ID);
         assertEquals(2, contexts.size());
         assertTrue(contexts.stream().anyMatch(c -> c.getName().equals("Pro")));
+
+        store.deleteUserContext(USER_ID, uc.getId());
+
+        contexts = store.getUserContexts(USER_ID);
+        assertEquals(1, contexts.size());
 
     }
 }

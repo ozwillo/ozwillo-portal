@@ -49,13 +49,5 @@ abstract public class DatacoreBasedCRUDStoreImpl<T extends GenericEntity> implem
         return null;
     }
 
-    @Override
-    public void pushToEnd(T t) {
 
-    }
-
-    @Override
-    public void moveBefore(T t1, T t2) {
-
-    }
 }
