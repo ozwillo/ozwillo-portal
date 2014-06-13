@@ -8,7 +8,7 @@
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="../public/css/main.css" rel="stylesheet"/>
-    <link href="../public/css/home.css" rel="stylesheet"/>
+    <link href="../public/css/my.css" rel="stylesheet"/>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -50,18 +50,22 @@
             </div>
 
         </div>
-        <div class="col-md-11">
+        <div class="col-md-6">
             <h1 th:text="#{ui.my}">My Ozwillo</h1>
 
-            <p>Contexts</p>
+            <h2 th:text="#{my.contexts}">Contexts</h2>
             <ul>
-                <li th:each="context: ${contexts}" th:text="|${context.name} - primary: ${context.primary}|">Context...</li>
+                <li th:each="context: ${contexts}" th:text="${context.name}">Context...</li>
             </ul>
 
-            <p>Entries</p>
-            <ul>
-                <li th:each="entry: ${entries}" th:text="${entry.subscription.id}">Entry...</li>
-            </ul>
+            <h2 th:text="#{my.apps}">My applications</h2>
+            <div class="app" th:each="entry: ${entries}" th:classappend="${entry.subscription.applicationType == T(org.oasis_eu.portal.core.model.subscription.ApplicationType).LOCAL_SERVICE}? 'local-service'">
+                <a class="app-link" href="#" th:href="${entry.URL}" target="_blank"></a>
+                <p th:text="${entry.name}">Portail citoyen de Valence</p>
+                <img src="../public/img/icon/img-25.png" th:src="@{/img/icon/img-25.png}"/>
+            </div>
+
+
         </div>
     </div>
 </div>
@@ -73,6 +77,8 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
 </th:block>
+
+<script src="../public/js/my.js" th:src="@{/js/my.js}"></script>
 
 </body>
 </html>

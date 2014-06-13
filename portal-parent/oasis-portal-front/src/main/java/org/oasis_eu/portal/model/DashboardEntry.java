@@ -14,9 +14,11 @@ import java.util.Locale;
  */
 public class DashboardEntry {
 
-    Application application;
-    LocalService localService;
-    Subscription subscription;
+    private Application application;
+    private LocalService localService;
+    private Subscription subscription;
+
+    private Locale displayLocale;
 
     // List<Notification> notifications;
 
@@ -47,6 +49,15 @@ public class DashboardEntry {
         this.subscription = subscription;
     }
 
+    public String getName() {
+        return getName(displayLocale);
+    }
+
+    public String getDescription() {
+        return getDescription(displayLocale);
+    }
+
+
     public String getName(Locale locale) {
         return localService != null ? localService.getName(locale) : application.getName(locale);
     }
@@ -65,5 +76,9 @@ public class DashboardEntry {
 
     public String getURL() {
         return localService != null ? localService.getUrl().toExternalForm() : application.getUrl().toExternalForm();
+    }
+
+    public void setDisplayLocale(Locale displayLocale) {
+        this.displayLocale = displayLocale;
     }
 }

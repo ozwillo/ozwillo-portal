@@ -4,17 +4,22 @@ import org.oasis_eu.portal.core.dao.ApplicationStore;
 import org.oasis_eu.portal.core.dao.LocalServiceStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.dao.UserContextStore;
+import org.oasis_eu.portal.core.model.appstore.Application;
+import org.oasis_eu.portal.core.model.appstore.LocalService;
 import org.oasis_eu.portal.core.model.subscription.ApplicationType;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.UserContext;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardOrderingRepository;
 import org.oasis_eu.portal.core.mongo.model.my.DashboardOrdering;
 import org.oasis_eu.portal.model.DashboardEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -24,6 +29,8 @@ import java.util.stream.Collectors;
  */
 @Service
 public class DashboardService {
+
+    private static final Logger logger = LoggerFactory.getLogger(DashboardService.class);
 
     @Autowired
     private DashboardOrderingRepository orderingRepository;
@@ -65,7 +72,7 @@ public class DashboardService {
         return ords;
     }
 
-    public List<DashboardEntry> getDashboardEntries(UserContext userContext) {
+    public List<DashboardEntry> getDashboardEntries(UserContext userContext, Locale displayLocale) {
         List<Subscription> subscriptions = subscriptionStore.findByUserIdAndUserContextId(userInfoHelper.currentUser().getUserId(), userContext.getId());
 
         DashboardOrdering ords = getOrCreateOrdering(userContext);
@@ -74,11 +81,22 @@ public class DashboardService {
 
         for (Subscription s : subscriptions) {
             DashboardEntry entry = new DashboardEntry();
+            entry.setDisplayLocale(displayLocale);
+
             entry.setSubscription(s);
             if (s.getApplicationType().equals(ApplicationType.APPLICATION)) {
-                entry.setApplication(applicationStore.find(s.getApplicationId()));
+                Application application = applicationStore.find(s.getApplicationId());
+                if (application == null) {
+                    logger.warn("Application {} not found in app store", s.getApplicationId());
+                }
+                entry.setApplication(application);
             } else {
-                entry.setLocalService(localServiceStore.find(s.getApplicationId()));
+
+                LocalService localService = localServiceStore.find(s.getApplicationId());
+                if (localService == null) {
+                    logger.warn("Local service {} not found in app store", s.getApplicationId());
+                }
+                entry.setLocalService(localService);
             }
             entries.add(entry);
         }

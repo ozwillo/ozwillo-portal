@@ -15,6 +15,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
@@ -59,7 +60,7 @@ public class DashboardServiceTest {
         List<Subscription> subscriptions = subscriptionStore.findByUserIdAndUserContextId(USER_ID, userContextId);
         assertNotEquals(0, subscriptions.size());
         assertNull(orderingRepository.findByUserIdAndUserContextId(USER_ID, userContextId));
-        assertEquals(subscriptions.size(), dashboardService.getDashboardEntries(userContext).size());
+        assertEquals(subscriptions.size(), dashboardService.getDashboardEntries(userContext, Locale.ENGLISH).size());
     }
 
 }

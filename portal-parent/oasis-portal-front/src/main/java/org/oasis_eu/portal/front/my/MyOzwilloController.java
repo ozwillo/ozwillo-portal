@@ -7,6 +7,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: schambon
@@ -20,9 +23,9 @@ public class MyOzwilloController extends PortalController {
     private DashboardService dashboardService;
 
     @RequestMapping(method = RequestMethod.GET, value={"/", ""})
-    public String myOzwillo(Model model) {
+    public String myOzwillo(Model model, HttpServletRequest request) {
         model.addAttribute("contexts", dashboardService.getUserContexts());
-        model.addAttribute("entries", dashboardService.getDashboardEntries(dashboardService.getPrimaryUserContext()));
+        model.addAttribute("entries", dashboardService.getDashboardEntries(dashboardService.getPrimaryUserContext(), RequestContextUtils.getLocale(request)));
         return "my";
     }
 

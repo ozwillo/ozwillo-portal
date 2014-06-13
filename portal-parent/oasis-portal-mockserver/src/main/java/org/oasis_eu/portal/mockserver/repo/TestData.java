@@ -194,7 +194,7 @@ public class TestData {
         elecRoll.setDefaultName("Inscription sur liste électorale, Valence");
         elecRoll.setDefaultDescription("S'inscrire sur les listes électorales");
         elecRoll.setApplicationId("ckValence");
-        elecRoll.setUrl(new URL("http://srv3-polenum.fingerprint-technologies.net/front/valence/electoral_roll_registration/init"));
+        elecRoll.setUrl(new URL("http://srv3-polenum.fingerprint-technologies.net/front/valence/form/electoral_roll_registration/init"));
         elecRoll.setTerritoryId("26000");
 
         localServices.put("elecRollValence", elecRoll);
@@ -213,6 +213,6 @@ public class TestData {
         // some subscriptions...
         subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "ckValence", SubscriptionType.PERSONAL);
         subscribeLocalService("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "elecRollValence");
-        subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", "citizekin", SubscriptionType.EMPLOYEE);
+        subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", "citizenkin_back", SubscriptionType.EMPLOYEE);
     }
 }
