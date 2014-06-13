@@ -176,7 +176,11 @@ public class TestData {
 
         Application ckValence = new Application();
         ckValence.setId("0a046fde-a20f-46eb-8252-48b78d89a9a2");
-        ckValence.setDefaultName("Citizen Kin Valence");
+        ckValence.setDefaultName("Formulaires Valence");
+        ckValence.setTranslatedNames(new HashMap<String, String>() {{
+            put("en", "Citizen forms for Valence");
+            put("bg", "Форми на гражданите на град Валенсия");
+        }});
         ckValence.setDefaultDescription("Portal de relations citoyennes de la ville de Valence");
         ckValence.setPaymentOption(PaymentOption.FREE);
         ckValence.setTargetAudience(new HashMap<Audience, Boolean>() {{

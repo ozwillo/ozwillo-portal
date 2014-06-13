@@ -29,6 +29,7 @@
             </div>
             <div class="row">
                 <a href="#" th:href="@{/my/notif}"><img src="../../../public/img/my/notification.png" th:src="@{/img/my/notification.png}" alt="Notif" th:alt="#{my.notification}"/></a>
+                <span class="badge" th:if="${notificationsCount != 0}" th:text="${notificationsCount}">17</span>
             </div>
 
         </div>
