@@ -24,7 +24,7 @@
 
 
 body {
-  padding-top: 50px;
+  padding-top: 80px;
   font-family: "DIN", "Arial", "sans-serif";
   color: #333333;
 }
@@ -86,6 +86,23 @@ b.caret {
     background-color: white;
     color: #6e418e;
     border-color: #6e418e;
+}
+
+.btn-default {
+    border-width: 2px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    font-size: 14px;
+    color: #999999;
+    border-color: #999999;
+    padding-left: 25px;
+    padding-right: 25px;
+}
+
+.btn-default:hover {
+    color: #ffffff;
+    background-color: #999999;
+    border-color: #ffffff;
 }
 
 .btn-noborder {

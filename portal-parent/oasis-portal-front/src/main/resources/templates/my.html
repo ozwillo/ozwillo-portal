@@ -57,6 +57,7 @@
             <ul>
                 <li th:each="context: ${contexts}" th:text="${context.name}">Context...</li>
             </ul>
+            <a class="btn btn-default" th:text="#{my.create_context}">Create new context</a>
 
             <h2 th:text="#{my.apps}">My applications</h2>
             <div class="app" th:each="entry: ${entries}" th:classappend="${entry.subscription.applicationType == T(org.oasis_eu.portal.core.model.subscription.ApplicationType).LOCAL_SERVICE}? 'local-service'">
@@ -66,6 +67,17 @@
             </div>
 
 
+        </div>
+        <div class="col-md-5">
+            <div class="panel panel-default">
+                <div class="panel-heading" th:text="#{ui.local_services}">Local services</div>
+                <div class="panel-body">
+                    <ul>
+                        <li>Service 1</li>
+                        <li>Service 2</li>
+                    </ul>
+                </div>
+            </div>
         </div>
     </div>
 </div>
