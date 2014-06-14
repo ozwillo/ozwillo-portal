@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
@@ -9,6 +10,7 @@ import org.oasis_eu.portal.core.model.subscription.UserContext;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardOrderingRepository;
 import org.oasis_eu.portal.main.OasisPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.test.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -24,6 +26,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = OasisPortal.class)
+@Category(IntegrationTest.class)
 public class DashboardServiceTest {
 
     // well-known "alice" user id

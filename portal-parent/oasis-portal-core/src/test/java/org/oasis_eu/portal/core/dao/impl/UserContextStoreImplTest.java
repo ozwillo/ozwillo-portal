@@ -1,10 +1,12 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import org.junit.Test;
+import org.junit.experimental.categories.Category;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.core.dao.UserContextStore;
 import org.oasis_eu.portal.core.model.subscription.UserContext;
 import org.oasis_eu.spring.config.KernelConfiguration;
+import org.oasis_eu.spring.test.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
@@ -18,6 +20,7 @@ import static org.junit.Assert.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = DAOTestConfiguration.class, loader = AnnotationConfigContextLoader.class)
+@Category(IntegrationTest.class)
 public class UserContextStoreImplTest {
 
     public static final String USER_ID = "bb2c6f76-362f-46aa-982c-1fc60d54b8ef";
