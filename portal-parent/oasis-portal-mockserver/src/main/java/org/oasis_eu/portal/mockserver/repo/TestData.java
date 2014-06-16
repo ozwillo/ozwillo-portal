@@ -193,6 +193,31 @@ public class TestData {
         ckValence.setUrl(new URL("http://31.172.165.220/front/valence"));
         applications.put(ckValence.getId(), ckValence);
 
+
+        Application openElec = new Application();
+        openElec.setId("54456301-8c8c-40dc-b36a-da5ccf2b9148");
+        openElec.setDefaultName("Open Elec");
+        openElec.setDefaultDescription("Gestion des élections");
+        openElec.setTranslatedNames(new HashMap<String, String>() {{
+            put("en", "OpenElec");
+            put("bg", "ОпенЕлец");
+        }});
+        openElec.setTranslatedDescriptions(new HashMap<String, String>() {{
+            put("en", "Electoral Roll Management");
+            put("bg", "Управление на избирателните списъци");
+            put("ca", "Gestió de les llistes electorals");
+        }});
+        openElec.setPaymentOption(PaymentOption.PAID);
+        openElec.setTargetAudience(new HashMap<Audience, Boolean>(){{
+            put(Audience.CITIZENS, false);
+            put(Audience.PUBLIC_BODIES, true);
+            put(Audience.COMPANIES, false);
+        }});
+        openElec.setDefaultLocale(Locale.FRENCH);
+        openElec.setIcon(new URL("http://whatever.com/openelec.png"));
+        openElec.setUrl(new URL("http://demo.atreal.fr/oasis/openelec/"));
+        applications.put(openElec.getId(), openElec);
+
         LocalService elecRoll = new LocalService();
         elecRoll.setId("elecRollValence");
         elecRoll.setDefaultName("Inscription sur liste électorale, Valence");
@@ -218,5 +243,6 @@ public class TestData {
         subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", ckValence.getId(), SubscriptionType.PERSONAL);
         subscribeLocalService("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "elecRollValence");
         subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", "citizenkin_back", SubscriptionType.EMPLOYEE);
+        subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", openElec.getId(), SubscriptionType.EMPLOYEE);
     }
 }

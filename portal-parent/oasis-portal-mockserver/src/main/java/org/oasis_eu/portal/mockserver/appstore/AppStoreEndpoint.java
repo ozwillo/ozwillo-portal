@@ -29,11 +29,12 @@ public class AppStoreEndpoint {
 
     @RequestMapping(method = RequestMethod.GET, value = "/app")
     public List<Application> getApplications(@RequestParam(value = "start", defaultValue = "0") int start, @RequestParam(value = "limit", defaultValue = "25") int limit) {
-        return new ArrayList<>(testData.getApplications().values());
+        ArrayList<Application> applications = new ArrayList<>(testData.getApplications().values());
+        return applications.subList(start, Math.min(applications.size(), start + limit));
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/app/search")
-    public List<Application> findApplication(@RequestParam String query, @RequestParam(value = "controls", required = false) SearchControls searchControls) {
+    public List<Application> findApplication(@RequestParam String query, @RequestParam(value = "controls", required = false) SearchControls searchControls, @RequestParam(value="start", defaultValue = "0") int start, @RequestParam(value="limit", defaultValue = "25") int limit) {
         String queryLanguage = searchControls(searchControls).getLanguage();
 
         if (queryLanguage == null) {
