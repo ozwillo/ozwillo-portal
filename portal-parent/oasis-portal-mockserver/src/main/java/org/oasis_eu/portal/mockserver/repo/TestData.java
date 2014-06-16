@@ -148,7 +148,7 @@ public class TestData {
         citizenkin.setIcon(new URL("http://localhost:8081/app_icon/citizenkin.png"));
         citizenkin.setDefaultName("Citizen Kin");
         citizenkin.setPaymentOption(PaymentOption.PAID);
-        citizenkin.setUrl(new URL("http://srv3-polenum.fingerprint-technologies.net/back"));
+        citizenkin.setUrl(new URL("http://31.172.165.220/back"));
 
         citizenkin.setTargetAudience(new HashMap<Audience, Boolean>() {{
             put(Audience.CITIZENS, false);
@@ -190,7 +190,7 @@ public class TestData {
         }});
         ckValence.setDefaultLocale(Locale.FRENCH);
         ckValence.setIcon(new URL("http://whatever.com/test.png"));
-        ckValence.setUrl(new URL("http://srv3-polenum.fingerprint-technologies.net/front/valence"));
+        ckValence.setUrl(new URL("http://31.172.165.220/front/valence"));
         applications.put(ckValence.getId(), ckValence);
 
         LocalService elecRoll = new LocalService();
@@ -198,7 +198,7 @@ public class TestData {
         elecRoll.setDefaultName("Inscription sur liste électorale, Valence");
         elecRoll.setDefaultDescription("S'inscrire sur les listes électorales");
         elecRoll.setApplicationId("ckValence");
-        elecRoll.setUrl(new URL("http://srv3-polenum.fingerprint-technologies.net/front/valence/form/electoral_roll_registration/init"));
+        elecRoll.setUrl(new URL("http://31.172.165.220/front/valence/form/electoral_roll_registration/init"));
         elecRoll.setTerritoryId("26000");
 
         localServices.put("elecRollValence", elecRoll);
