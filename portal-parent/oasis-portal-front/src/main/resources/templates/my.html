@@ -73,8 +73,8 @@
             <div class="panel panel-default">
                 <div class="panel-heading" th:text="#{ui.local_services}">Local services</div>
                 <div class="panel-body">
-                    <ul>
-                        <li>Service 1</li>
+                    <ul th:remove="all-but-first">
+                        <li th:each="service : ${localServices}"><a href="#" th:href="${service.url}" th:text="${service.defaultName}">Service 1</a></li>
                         <li>Service 2</li>
                     </ul>
                 </div>

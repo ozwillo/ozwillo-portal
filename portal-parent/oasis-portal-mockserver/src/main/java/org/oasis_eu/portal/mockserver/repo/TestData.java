@@ -224,14 +224,14 @@ public class TestData {
         elecRoll.setDefaultDescription("S'inscrire sur les listes électorales");
         elecRoll.setApplicationId("ckValence");
         elecRoll.setUrl(new URL("http://31.172.165.220/front/valence/form/electoral_roll_registration/init"));
-        elecRoll.setTerritoryId("26000");
+        elecRoll.setTerritoryId("728dfa79-a399-495b-9265-ed949b82ea8c");
 
         localServices.put("elecRollValence", elecRoll);
 
         LocalService other = new LocalService();
         other.setId("11107e06-d34e-4241-8d21-2bba7bf479b3");
         other.setDefaultName("Bibliothèque de Lyon");
-        other.setTerritoryId("69000");
+        other.setTerritoryId("430557df-bbe5-484d-ad48-7f70117a7663");
         other.setUrl(new URL("http://lyon.fr"));
         localServices.put("11107e06-d34e-4241-8d21-2bba7bf479b3", other);
 

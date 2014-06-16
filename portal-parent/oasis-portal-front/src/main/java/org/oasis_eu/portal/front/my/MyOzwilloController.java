@@ -2,6 +2,7 @@ package org.oasis_eu.portal.front.my;
 
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.services.DashboardService;
+import org.oasis_eu.portal.services.LocalServiceService;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -25,6 +26,9 @@ public class MyOzwilloController extends PortalController {
     private DashboardService dashboardService;
 
     @Autowired
+    private LocalServiceService localServiceService;
+
+    @Autowired
     private PortalNotificationService notificationService;
 
     @ModelAttribute("notificationsCount")
@@ -36,6 +40,7 @@ public class MyOzwilloController extends PortalController {
     public String myOzwillo(Model model, HttpServletRequest request) {
         model.addAttribute("contexts", dashboardService.getUserContexts());
         model.addAttribute("entries", dashboardService.getDashboardEntries(dashboardService.getPrimaryUserContext(), RequestContextUtils.getLocale(request)));
+        model.addAttribute("localServices", localServiceService.findLocalServices());
         return "my";
     }
 

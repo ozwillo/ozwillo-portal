@@ -28,7 +28,7 @@ kernel:
   application_id: 8b0e62e5-e3af-45de-8834-0d7d8a3f6139
   client_id: 7706ded0-afe4-4826-9df1-ce03782b893d
   client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
-  scopes_to_require: openid profile email
+  scopes_to_require: openid profile email address
 
   portal_endpoints:
     usercontext: http://localhost:8081/ctx

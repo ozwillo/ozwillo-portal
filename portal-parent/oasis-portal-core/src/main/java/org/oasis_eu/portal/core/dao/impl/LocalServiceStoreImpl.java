@@ -6,6 +6,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * User: schambon
@@ -26,4 +31,15 @@ public class LocalServiceStoreImpl implements LocalServiceStore {
         return kernelRestTemplate.getForObject(endpoint + "/service/{service_id}", LocalService.class, id);
     }
 
+    @Override
+    public List<LocalService> findByTerritory(List<String> territoryIds) {
+
+        URI uri = UriComponentsBuilder.fromUriString(endpoint)
+                .path("/service")
+                .queryParam("territories", territoryIds.toArray())
+                .build()
+                .toUri();
+
+        return Arrays.asList(kernelRestTemplate.getForObject(uri, LocalService[].class));
+    }
 }
