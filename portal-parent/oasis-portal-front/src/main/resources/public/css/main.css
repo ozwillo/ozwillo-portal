@@ -116,3 +116,9 @@ b.caret {
     margin-top: 3px;
     margin-left: 13px;
 }
+
+.navbar-nav>li>a {
+    line-height: 15px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
