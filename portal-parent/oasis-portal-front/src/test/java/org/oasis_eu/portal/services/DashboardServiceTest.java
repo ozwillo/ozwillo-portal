@@ -10,12 +10,16 @@ import org.oasis_eu.portal.core.model.subscription.UserContext;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardOrderingRepository;
 import org.oasis_eu.portal.main.OasisPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.service.NotificationService;
 import org.oasis_eu.spring.test.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.sql.Ref;
 import java.util.List;
 import java.util.Locale;
 
@@ -25,9 +29,11 @@ import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = OasisPortal.class)
+@SpringApplicationConfiguration(classes = {OasisPortal.class})
 @Category(IntegrationTest.class)
 public class DashboardServiceTest {
+
+
 
     // well-known "alice" user id
     public static final String USER_ID = "bb2c6f76-362f-46aa-982c-1fc60d54b8ef";
@@ -35,6 +41,9 @@ public class DashboardServiceTest {
 
     @Autowired
     private DashboardService dashboardService;
+
+    @Autowired
+    private PortalNotificationService notificationService;
 
     @Autowired
     private DashboardOrderingRepository orderingRepository;
@@ -51,6 +60,7 @@ public class DashboardServiceTest {
         when(helper.currentUser()).thenReturn(dummy);
 
         ReflectionTestUtils.setField(dashboardService, "userInfoHelper", helper);
+        ReflectionTestUtils.setField(notificationService, "userInfoHelper", helper);
 
 
         orderingRepository.deleteAll();

@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.core.model.appstore;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.*;
 
 import java.net.URL;
 import java.util.*;
@@ -12,15 +11,24 @@ import java.util.*;
  */
 abstract public class AbstractApplication extends GenericEntity {
 
-    @JsonProperty("default_name")
+
+
+    @JsonProperty("name")
     private String defaultName;
-    @JsonProperty("translated_names")
-    private Map<String, String> translatedNames = new HashMap<>();
-    @JsonProperty("default_description")
+    @JsonProperty("description")
     private String defaultDescription;
-    @JsonProperty("translated_descriptions")
-    private Map<String, String> translatedDescriptions = new HashMap<>();
-    private URL icon;
+
+    private Map<String, String> localizedNames = new HashMap<>();
+
+    private Map<String, String> localizedDescriptions = new HashMap<>();
+
+    private Map<String, String> localizedIcons = new HashMap<>();
+
+    @JsonProperty("icon")
+    private String defaultIcon;
+
+
+
     @JsonProperty("default_locale")
     private Locale defaultLocale;
     private URL url;
@@ -38,12 +46,9 @@ abstract public class AbstractApplication extends GenericEntity {
         this.defaultName = defaultName;
     }
 
-    public Map<String, String> getTranslatedNames() {
-        return translatedNames;
-    }
-
-    public void setTranslatedNames(Map<String, String> translatedNames) {
-        this.translatedNames = translatedNames;
+    @JsonIgnore
+    public void setLocalizedNames(Map<String, String> localizedNames) {
+        this.localizedNames = localizedNames;
     }
 
     public String getDefaultDescription() {
@@ -54,20 +59,48 @@ abstract public class AbstractApplication extends GenericEntity {
         this.defaultDescription = defaultDescription;
     }
 
-    public Map<String, String> getTranslatedDescriptions() {
-        return translatedDescriptions;
+
+    @JsonIgnore
+    public void setLocalizedDescriptions(Map<String, String> localizedDescriptions) {
+        this.localizedDescriptions = localizedDescriptions;
     }
 
-    public void setTranslatedDescriptions(Map<String, String> translatedDescriptions) {
-        this.translatedDescriptions = translatedDescriptions;
+    @JsonIgnore
+    public void setLocalizedIcons(Map<String, String> localizedIcons) {
+        this.localizedIcons = localizedIcons;
     }
 
-    public URL getIcon() {
-        return icon;
+
+    @JsonAnySetter
+    public void setTranslation(String key, String value) {
+
+        if (key.startsWith("name#")) {
+            localizedNames.put(key.substring("name#".length()), value);
+        } else if (key.startsWith("description#")) {
+            localizedDescriptions.put(key.substring("description#".length()), value);
+        } else if (key.startsWith("icon#")) {
+            localizedIcons.put(key.substring("icon#".length()), value);
+        }
+
     }
 
-    public void setIcon(URL icon) {
-        this.icon = icon;
+    @JsonAnyGetter
+    public Map<String, String> getTranslations() {
+
+        Map<String, String> result = new HashMap<>();
+        localizedNames.entrySet().forEach(e -> result.put("name#" + e.getKey(), e.getValue()));
+        localizedDescriptions.entrySet().forEach(e -> result.put("description#" + e.getKey(), e.getValue()));
+        localizedIcons.entrySet().forEach(e -> result.put("icon#" + e.getKey(), e.getValue()));
+
+        return result;
+    }
+
+    public String getDefaultIcon() {
+        return defaultIcon;
+    }
+
+    public void setDefaultIcon(String defaultIcon) {
+        this.defaultIcon = defaultIcon;
     }
 
     public Set<AppstoreCategory> getCategories() {
@@ -103,18 +136,26 @@ abstract public class AbstractApplication extends GenericEntity {
     }
 
     public String getName(Locale locale) {
-        if (translatedNames.containsKey(locale.getLanguage())) {
-            return translatedNames.get(locale.getLanguage());
+        if (localizedNames.containsKey(locale.getLanguage())) {
+            return localizedNames.get(locale.getLanguage());
         } else {
             return defaultName;
         }
     }
 
     public String getDescription(Locale locale) {
-        if (translatedDescriptions.containsKey(locale.getLanguage())) {
-            return translatedDescriptions.get(locale.getLanguage());
+        if (localizedDescriptions.containsKey(locale.getLanguage())) {
+            return localizedDescriptions.get(locale.getLanguage());
         } else {
             return defaultDescription;
+        }
+    }
+
+    public String getIcon(Locale locale) {
+        if (localizedIcons.containsKey(locale.getLanguage())) {
+            return localizedIcons.get(locale.getLanguage());
+        } else {
+            return defaultIcon;
         }
     }
 }

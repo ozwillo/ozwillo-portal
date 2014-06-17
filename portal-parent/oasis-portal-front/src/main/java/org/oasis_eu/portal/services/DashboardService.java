@@ -79,7 +79,7 @@ public class DashboardService {
 
         DashboardOrdering ords = getOrCreateOrdering(userContext);
 
-        List<DashboardEntry> entries = new ArrayList<DashboardEntry>(subscriptions.size());
+        List<DashboardEntry> entries = new ArrayList<>(subscriptions.size());
 
         for (Subscription s : subscriptions) {
             DashboardEntry entry = new DashboardEntry();

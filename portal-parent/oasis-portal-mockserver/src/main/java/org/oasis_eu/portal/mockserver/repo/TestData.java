@@ -145,7 +145,7 @@ public class TestData {
         citizenkin.setDefaultDescription("Portail de relations citoyennes");
         Set<String> nocategories = Collections.emptySet();
         citizenkin.setCategoryIds(nocategories);
-        citizenkin.setIcon(new URL("http://localhost:8081/app_icon/citizenkin.png"));
+        citizenkin.setDefaultIcon("http://localhost:8081/app_icon/citizenkin.png");
         citizenkin.setDefaultName("Citizen Kin");
         citizenkin.setPaymentOption(PaymentOption.PAID);
         citizenkin.setUrl(new URL("http://31.172.165.220/back"));
@@ -156,11 +156,11 @@ public class TestData {
             put(Audience.PUBLIC_BODIES, true);
         }});
 
-        citizenkin.setTranslatedNames(new HashMap<String, String>() {{
+        citizenkin.setLocalizedNames(new HashMap<String, String>() {{
             put("bg", "Ситизен Кин");
         }});
 
-        citizenkin.setTranslatedDescriptions(new HashMap<String, String>() {{
+        citizenkin.setLocalizedDescriptions(new HashMap<String, String>() {{
             put("en", "Citizen Relationship Management");
             put("fr", "Portail de relations citoyennes");
             put("it", "Portale rapporto cittadino");
@@ -177,7 +177,7 @@ public class TestData {
         Application ckValence = new Application();
         ckValence.setId("0a046fde-a20f-46eb-8252-48b78d89a9a2");
         ckValence.setDefaultName("Formulaires Valence");
-        ckValence.setTranslatedNames(new HashMap<String, String>() {{
+        ckValence.setLocalizedNames(new HashMap<String, String>() {{
             put("en", "Citizen forms for Valence");
             put("bg", "Форми на гражданите на град Валенсия");
         }});
@@ -189,7 +189,7 @@ public class TestData {
             put(Audience.CITIZENS, true);
         }});
         ckValence.setDefaultLocale(Locale.FRENCH);
-        ckValence.setIcon(new URL("http://whatever.com/test.png"));
+        ckValence.setDefaultIcon("http://whatever.com/test.png");
         ckValence.setUrl(new URL("http://31.172.165.220/front/valence"));
         applications.put(ckValence.getId(), ckValence);
 
@@ -198,23 +198,28 @@ public class TestData {
         openElec.setId("54456301-8c8c-40dc-b36a-da5ccf2b9148");
         openElec.setDefaultName("Open Elec");
         openElec.setDefaultDescription("Gestion des élections");
-        openElec.setTranslatedNames(new HashMap<String, String>() {{
+        openElec.setLocalizedNames(new HashMap<String, String>() {{
             put("en", "OpenElec");
             put("bg", "ОпенЕлец");
         }});
-        openElec.setTranslatedDescriptions(new HashMap<String, String>() {{
+        openElec.setLocalizedDescriptions(new HashMap<String, String>() {{
             put("en", "Electoral Roll Management");
             put("bg", "Управление на избирателните списъци");
             put("ca", "Gestió de les llistes electorals");
         }});
         openElec.setPaymentOption(PaymentOption.PAID);
-        openElec.setTargetAudience(new HashMap<Audience, Boolean>(){{
+        openElec.setTargetAudience(new HashMap<Audience, Boolean>() {{
             put(Audience.CITIZENS, false);
             put(Audience.PUBLIC_BODIES, true);
             put(Audience.COMPANIES, false);
         }});
         openElec.setDefaultLocale(Locale.FRENCH);
-        openElec.setIcon(new URL("http://whatever.com/openelec.png"));
+        openElec.setDefaultIcon("http://whatever.com/openelec.png");
+        openElec.setLocalizedIcons(new HashMap<String, String>() {{
+            put("en", "http://openelections.gov.uk/icon.png");
+            put("tr", "http://turkish-elections.tr/icon.png");
+        }});
+
         openElec.setUrl(new URL("http://demo.atreal.fr/oasis/openelec/"));
         applications.put(openElec.getId(), openElec);
 
