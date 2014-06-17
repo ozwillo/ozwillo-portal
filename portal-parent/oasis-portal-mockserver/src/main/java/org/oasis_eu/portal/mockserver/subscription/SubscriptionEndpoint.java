@@ -26,13 +26,7 @@ public class SubscriptionEndpoint {
 
     @RequestMapping(method = RequestMethod.GET, value = "/{user_id}")
     public List<Subscription> getSubscriptions(@PathVariable("user_id") String userId) {
-        return testData.getSubscriptions(userId, testData.getPrimaryUserContext(userId).getId());
-    }
-
-
-    @RequestMapping(method = RequestMethod.GET, value = "/{user_id}/{context_id}")
-    public List<Subscription> getSubscriptions(@PathVariable("user_id") String userId, @PathVariable("context_id") String contextId) {
-        return testData.getSubscriptions(userId, contextId);
+        return testData.getSubscriptions(userId);
     }
 
 }

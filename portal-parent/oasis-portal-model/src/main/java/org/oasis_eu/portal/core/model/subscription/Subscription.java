@@ -32,12 +32,6 @@ public class Subscription extends GenericEntity {
     @JsonProperty("subscription_type")
     private SubscriptionType subscriptionType;
 
-    /**
-     * Identifier of the user context for this subscription
-     */
-    @JsonProperty("user_context_id")
-    private String userContextId;
-
     private Instant created;
 
 
@@ -71,14 +65,6 @@ public class Subscription extends GenericEntity {
 
     public void setSubscriptionType(SubscriptionType subscriptionType) {
         this.subscriptionType = subscriptionType;
-    }
-
-    public String getUserContextId() {
-        return userContextId;
-    }
-
-    public void setUserContextId(String userContextId) {
-        this.userContextId = userContextId;
     }
 
     public Instant getCreated() {

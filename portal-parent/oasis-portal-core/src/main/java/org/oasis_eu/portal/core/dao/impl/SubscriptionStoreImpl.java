@@ -6,9 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
@@ -26,13 +24,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     private String endpoint;
 
     @Override
-    public List<Subscription> findByUserIdAndUserContextId(String userId, String userContextId) {
-
-        return Arrays.asList(kernelRestTemplate.getForObject(endpoint + "/{user_id}/{context_id}", Subscription[].class, userId, userContextId));
-    }
-
-    @Override
-    public List<Subscription> findByUserIdForPrimaryContext(String userId) {
+    public List<Subscription> findByUserId(String userId) {
         return Arrays.asList(kernelRestTemplate.getForObject(endpoint + "/{user_id}", Subscription[].class, userId));
     }
 

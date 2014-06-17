@@ -29,7 +29,7 @@ public class SubscriptionStoreImplTest {
 
     @Test
     public void testGetSubscriptions() {
-        List<Subscription> subscriptions = store.findByUserIdForPrimaryContext(USER_ID);
+        List<Subscription> subscriptions = store.findByUserId(USER_ID);
         assertEquals(2, subscriptions.size());
 
         assertTrue(subscriptions.stream().anyMatch(s -> s.getApplicationId().equals("elecRollValence") && s.getApplicationType().equals(ApplicationType.LOCAL_SERVICE)));

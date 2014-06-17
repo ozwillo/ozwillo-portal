@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.front.my;
 
 import org.oasis_eu.portal.front.generic.PortalController;
-import org.oasis_eu.portal.services.DashboardService;
+import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.LocalServiceService;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 public class MyOzwilloController extends PortalController {
 
     @Autowired
-    private DashboardService dashboardService;
+    private PortalDashboardService portalDashboardService;
 
     @Autowired
     private LocalServiceService localServiceService;
@@ -38,8 +38,8 @@ public class MyOzwilloController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value={"/", ""})
     public String myOzwillo(Model model, HttpServletRequest request) {
-        model.addAttribute("contexts", dashboardService.getUserContexts());
-        model.addAttribute("entries", dashboardService.getDashboardEntries(dashboardService.getPrimaryUserContext(), RequestContextUtils.getLocale(request)));
+        model.addAttribute("contexts", portalDashboardService.getUserContexts());
+        model.addAttribute("entries", portalDashboardService.getDashboardEntries(portalDashboardService.getPrimaryUserContext().getId(), RequestContextUtils.getLocale(request)));
         model.addAttribute("localServices", localServiceService.findLocalServices());
         return "my";
     }

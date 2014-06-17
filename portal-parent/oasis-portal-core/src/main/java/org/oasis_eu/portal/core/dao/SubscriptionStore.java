@@ -10,8 +10,6 @@ import java.util.List;
  */
 public interface SubscriptionStore extends GenericCRUDStore<Subscription> {
 
-    public List<Subscription> findByUserIdAndUserContextId(String userId, String userContextId);
-
-    public List<Subscription> findByUserIdForPrimaryContext(String userId);
+    public List<Subscription> findByUserId(String userId);
 
 }
