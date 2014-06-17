@@ -14,24 +14,54 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <style>
+        @font-face {
+            font-family: 'Dunkin';
+            src: url('../public/fonts/Dunkin.eot?') format('eot'),
+            url('../public/fonts/Dunkin.woff') format('woff'),
+            url('../public/fonts/Dunkin.ttf')  format('truetype'),
+            url('../public/fonts/Dunkin.svg#Dunkin') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DIN';
+            src: url('../public/fonts/DIN.eot?') format('eot'),
+            url('../public/fonts/DIN.woff') format('woff'),
+            url('../public/fonts/DIN.ttf')  format('truetype'),
+            url('../public/fonts/DIN.svg#DIN') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DINAlternate-Light';
+            src: url('../public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../public/fonts/DINAlternate-Light.ttf')  format('truetype'),
+            url('../public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+        }
+    </style>
+
 </head>
 <body>
-<div class="navbar navbar-fixed-top" role="navigation" th:replace="includes/navbar(logo='white')">
+
+
+<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" >
     <div class="container">
         <div class="navbar-header">
 
-            <img id="logo" src="../public/img/ozwillo-logo-white-small.png"
-                 alt="Ozwillo"/>
+            <div class="my-oasis">
+                <img id="logo" src="../public/img/my/my-oasis.png"
+                     alt="My OASIS"/>
+                <span class="badge badge-notifications">4</span>
+            </div>
         </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" class="btn btn-ozwillo">Join us!</a></li>
-            <li><a href="#" class="btn btn-ozwillo" ><i class="fa fa-user"></i> Log in</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown">English <b class="caret"></b></a>
-                <ul class="dropdown-menu" >
-                    <li><a href="#">Blablaish</a></li>
-                </ul>
+        <ul class="nav navbar-nav">
+            <li class="active"><a href="#">
+                <img src="../public/img/my/dashboard.png" alt="Dashboard" />Dashboard</a>
+                <div class="arrow-border"></div>
+                <div class="arrow"></div>
             </li>
+            <li><a href="#"><img src="../public/img/my/profile-gray.png" alt="Profile" />Profile</a></li>
+            <li><a href="#"><img src="../public/img/my/network-gray.png" alt="Network" />Network</a></li>
         </ul>
     </div>
 </div>

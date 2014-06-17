@@ -1,5 +1,78 @@
-.navbar {
-    background-color: #6e418e;
+.my-oasis-navbar {
+    background-color: #ffffff;
+    border-bottom: 2px solid #5b5f84;
+    height: 76px;
+}
+
+div.my-oasis {
+    position:relative;
+}
+
+div.my-oasis img {
+    padding-top: 10px;
+}
+
+ul.navbar-nav {
+    margin-left: 50px;
+}
+
+.navbar-nav li {
+    position: relative;
+    width: 100px;
+    text-align: center;
+
+}
+
+.navbar-nav li a:hover {
+    background-color: transparent;
+}
+
+.navbar-nav li a {
+    color: #666666;
+}
+
+.navbar-nav li.active a {
+    color: #6e418e;
+}
+
+.navbar-nav li a:hover {
+    color: #6e418e;
+}
+
+div.arrow-border {
+    position: absolute;
+    left: 40px;
+    width: 10px;
+    border: 10px solid transparent;
+    border-top: 10px inset #5b5f84;
+}
+
+div.arrow {
+    position:absolute;
+    left: 40px;
+    bottom: -18px;
+    width: 10px;
+    border: 10px solid transparent;
+    border-top: 10px outset #ffffff;
+}
+
+ /*
+.navbar-nav li.active:after {
+    position: absolute;
+    left: 40px;
+    content: "";
+    border: 10px solid transparent;
+    border-top-color: #5b5f84;
+}      */
+
+span.badge-notifications {
+    background-color: #d9534f;
+    font-size: 20px;
+    border-radius: 15px;
+    padding: 5px 10px;
+    position: absolute;
+    top: 10px;
+    right: -15px;
 }
 
 
