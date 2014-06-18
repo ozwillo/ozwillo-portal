@@ -83,4 +83,8 @@ public class DashboardEntry {
     public void setDisplayLocale(Locale displayLocale) {
         this.displayLocale = displayLocale;
     }
+
+    public String getApplicationId() {
+        return localService != null ? localService.getId() : application.getId();
+    }
 }

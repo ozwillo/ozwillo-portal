@@ -231,8 +231,8 @@ public class TestData {
 
 
         // some subscriptions...
-        subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", ckValence.getId(), SubscriptionType.PERSONAL);
         subscribeLocalService("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", "elecRollValence");
+        subscribeApplication("bb2c6f76-362f-46aa-982c-1fc60d54b8ef", ckValence.getId(), SubscriptionType.PERSONAL);
         subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", "citizenkin_back", SubscriptionType.EMPLOYEE);
         subscribeApplication("a399684b-4ea3-49c3-800b-b8a0bf1131cb", openElec.getId(), SubscriptionType.EMPLOYEE);
     }

@@ -54,16 +54,7 @@ public class PortalDashboardService {
     }
 
     public List<UserContext> getUserContexts() {
-        List<UserContext> contexts = getDash().getContexts();
-//        if (contexts == null || contexts.isEmpty()) {
-//            UserContext primary = new UserContext();
-//            primary.setId(UUID.randomUUID().toString());
-//            primary.setName("primary - TODO i18n");
-//            primary.setPrimary(true);
-//
-//            contexts.add(primary);
-//        }
-        return contexts;
+        return getDash().getContexts();
     }
 
 
@@ -75,6 +66,19 @@ public class PortalDashboardService {
                 .stream()
                 .filter(s -> ctxs.stream().flatMap(c -> c.getSubscriptions().stream()).noneMatch(sid -> sid.equals(s.getId())))
                 .collect(Collectors.toList());
+    }
+
+    public List<String> getApplicationIds(String userContextId) {
+        if (logger.isDebugEnabled()) {
+            logger.debug("-> get application ids for context: " + userContextId);
+
+        }
+        Map<String, Subscription> subs = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().collect(Collectors.toMap(s -> s.getId(), s -> s));
+
+        return getDash().getContexts()
+                .stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().get().getSubscriptions()
+                .stream().map(sid -> subs.get(sid)).filter(s -> s != null).map(s -> s.getApplicationId()).collect(Collectors.toList());
+
     }
 
     public List<DashboardEntry> getDashboardEntries(String userContextId, Locale displayLocale) {

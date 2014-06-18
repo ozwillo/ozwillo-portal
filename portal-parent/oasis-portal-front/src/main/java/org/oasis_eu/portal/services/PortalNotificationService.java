@@ -5,6 +5,7 @@ import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.ApplicationStore;
 import org.oasis_eu.portal.core.model.appstore.Application;
 import org.oasis_eu.portal.core.services.cms.ContentRenderingService;
+import org.oasis_eu.portal.model.AppNotificationData;
 import org.oasis_eu.portal.model.UserNotification;
 import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
@@ -17,6 +18,7 @@ import org.springframework.stereotype.Service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +38,13 @@ public class PortalNotificationService {
 
     @Autowired
     private UserInfoHelper userInfoHelper;
+
+    public Map<String, Integer> getAppNotifications(List<String> applicationIds) {
+        return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
+                .stream()
+                .filter(n -> n.getApplicationId() != null && applicationIds.contains(n.getApplicationId()) && n.getStatus().equals(NotificationStatus.UNREAD))
+                .collect(Collectors.groupingBy(n -> n.getApplicationId(), Collectors.reducing(0, n -> 1, Integer::sum)));
+    }
 
     public int countNotifications() {
         return (int) notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
