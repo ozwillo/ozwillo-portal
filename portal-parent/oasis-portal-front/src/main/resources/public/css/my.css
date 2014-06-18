@@ -1,6 +1,6 @@
 .my-oasis-navbar {
     background-color: #ffffff;
-    border-bottom: 2px solid #5b5f84;
+    border-bottom: 2px solid #636681;
     height: 76px;
 }
 
@@ -65,13 +65,21 @@ ul.navbar-nav {
     color: #6e418e;
 }
 
+.navbar-nav li.logout {
+    background-color: #636681;
+}
+
+.navbar-nav li.logout a {
+    color: #ffffff;
+}
+
 div.arrow-border {
     position: absolute;
     left: 65px;
     bottom: -20px;
     width: 10px;
     border: 10px solid transparent;
-    border-top: 10px inset #5b5f84;
+    border-top: 10px inset #636681;
 }
 
 div.arrow {

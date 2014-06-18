@@ -90,6 +90,28 @@
         </li>
     </ul>
 
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a href="#" class="nav-link">
+                <img class="gray" th:src="@{/img/my/app-store-gray.png}" src="../../public/img/my/app-store-gray.png" alt="Apps Store" th:alt="#{ui.appstore}" />
+                <img class="purple" th:src="@{/img/my/app-store.png}" src="../../public/img/my/app-store.png" alt="Apps Store" th:alt="#{ui.appstore}"/>
+                <span th:text="#{ui.appstore}">Apps Store</span>
+            </a>
+        </li>
+        <li>
+            <a href="#" class="nav-link">
+                <img class="gray" th:src="@{/img/my/data-store-gray.png}" src="../../public/img/my/data-store-gray.png" alt="Data Store" th:alt="#{ui.datastore}" />
+                <img class="purple" th:src="@{/img/my/data-store.png}" src="../../public/img/my/data-store.png" alt="Data Store" th:alt="#{ui.datastore}"/>
+                <span th:text="#{ui.datastore}">Data Store</span>
+            </a>
+        </li>
+        <li class="logout">
+            <a href="#" th:href="@{/logout}">
+                <img src="../../public/img/my/logout.png" alt="Logout" th:src="@{/img/my/logout.png}" />
+                <span th:text="${user.name}">A. Williams</span>
+            </a>
+        </li>
+    </ul>
 
 </div>
 
