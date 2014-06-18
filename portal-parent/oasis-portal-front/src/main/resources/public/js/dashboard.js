@@ -4,7 +4,9 @@ $(document).ready(function () {
 
         $.get("/my/api/app-notifications/" + $("#applications").attr("data"),
             function (notifData) {
-                notifData.forEach(function(notif) {
+                for (var i = 0 ; i < notifData.length ; i++) {
+                    var notif = notifData[i];
+
                     var appLink = $("#app-" + notif.applicationId);
 
                     if (appLink.length != 0) {
@@ -21,11 +23,11 @@ $(document).ready(function () {
                         }
                     }
 
-                });
+                }
             }
         );
         setTimeout(updateAppNotifications, 2000);
-    }
+    };
 
     updateAppNotifications();
 });

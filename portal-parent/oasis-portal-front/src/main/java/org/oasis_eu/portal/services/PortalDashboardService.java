@@ -69,10 +69,10 @@ public class PortalDashboardService {
     }
 
     public List<String> getApplicationIds(String userContextId) {
-        if (logger.isDebugEnabled()) {
-            logger.debug("-> get application ids for context: " + userContextId);
-
-        }
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("-> get application ids for context: " + userContextId);
+//
+//        }
         Map<String, Subscription> subs = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().collect(Collectors.toMap(s -> s.getId(), s -> s));
 
         return getDash().getContexts()
