@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.front.my;
 
 import org.oasis_eu.portal.front.generic.PortalController;
+import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.LocalServiceService;
 import org.oasis_eu.portal.services.PortalNotificationService;
@@ -31,16 +32,20 @@ public class MyOzwilloController extends PortalController {
     @Autowired
     private PortalNotificationService notificationService;
 
+    @Autowired
+    private MyNavigationService myNavigationService;
+
     @ModelAttribute("notificationsCount")
     public Long countNotifications() {
         return notificationService.countNotifications();
     }
 
-    @RequestMapping(method = RequestMethod.GET, value={"/", ""})
+    @RequestMapping(method = RequestMethod.GET, value={"/", "", "/dashboard"})
     public String myOzwillo(Model model, HttpServletRequest request) {
         model.addAttribute("contexts", portalDashboardService.getUserContexts());
         model.addAttribute("entries", portalDashboardService.getDashboardEntries(portalDashboardService.getPrimaryUserContext().getId(), RequestContextUtils.getLocale(request)));
         model.addAttribute("localServices", localServiceService.findLocalServices());
+        model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
         return "my";
     }
 
@@ -50,4 +55,9 @@ public class MyOzwilloController extends PortalController {
         return "my-notif";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value="/profile")
+    public String profile(Model model) {
+        model.addAttribute("navigation", myNavigationService.getNavigation("profile"));
+        return "my-profile";
+    }
 }
