@@ -1,19 +1,24 @@
 package org.oasis_eu.portal.front.my;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.LocalServiceService;
 import org.oasis_eu.portal.services.PortalNotificationService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
 
 /**
  * User: schambon
@@ -22,6 +27,8 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/my")
 public class MyOzwilloController extends PortalController {
+
+    private static final Logger logger = LoggerFactory.getLogger(MyOzwilloController.class);
 
     @Autowired
     private PortalDashboardService portalDashboardService;
@@ -35,10 +42,7 @@ public class MyOzwilloController extends PortalController {
     @Autowired
     private MyNavigationService myNavigationService;
 
-    @ModelAttribute("notificationsCount")
-    public Long countNotifications() {
-        return notificationService.countNotifications();
-    }
+
 
     @RequestMapping(method = RequestMethod.GET, value={"/", "", "/dashboard"})
     public String myOzwillo(Model model, HttpServletRequest request) {
@@ -60,4 +64,28 @@ public class MyOzwilloController extends PortalController {
         model.addAttribute("navigation", myNavigationService.getNavigation("profile"));
         return "my-profile";
     }
+
+
+    @RequestMapping(method = RequestMethod.GET, value="/api/notifications")
+    @ResponseBody
+    public NotificationData getNotificationData() {
+//        if (logger.isDebugEnabled()) {
+//            logger.debug("Got notification request");
+//        }
+        return new NotificationData(notificationService.countNotifications());
+    }
+
+    private static class NotificationData {
+        int notificationsCount;
+
+        public NotificationData(int notificationsCount) {
+            this.notificationsCount = notificationsCount;
+        }
+
+        @JsonProperty("notificationsCount")
+        public int getNotificationsCount() {
+            return notificationsCount;
+        }
+    }
+
 }

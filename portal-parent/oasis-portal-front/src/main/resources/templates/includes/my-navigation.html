@@ -47,10 +47,10 @@
 <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:fragment="nav">
     <div class="navbar-header">
 
-        <div class="my-oasis">
+        <div class="my-oasis" th:data="@{/my/api/notifications}">
             <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../../public/img/my/my-oasis.png"
                  alt="My OASIS"/>
-            <span class="badge badge-notifications" th:if="${notificationsCount != 0}" th:text="${notificationsCount}">4</span>
+            <span th:remove="all" class="badge badge-notifications">4</span>
         </div>
     </div>
     <ul class="nav navbar-nav" th:remove="all-but-first">

@@ -37,8 +37,8 @@ public class PortalNotificationService {
     @Autowired
     private UserInfoHelper userInfoHelper;
 
-    public long countNotifications() {
-        return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
+    public int countNotifications() {
+        return (int) notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
                 .stream()
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
                 .count();
