@@ -48,7 +48,7 @@ public class MyOzwilloController extends PortalController {
     public String myOzwillo(Model model, HttpServletRequest request) {
         model.addAttribute("contexts", portalDashboardService.getUserContexts());
         model.addAttribute("entries", portalDashboardService.getDashboardEntries(portalDashboardService.getPrimaryUserContext().getId(), RequestContextUtils.getLocale(request)));
-        model.addAttribute("localServices", localServiceService.findLocalServices());
+//        model.addAttribute("localServices", localServiceService.findLocalServices());
         model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
         return "my";
     }

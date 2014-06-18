@@ -95,35 +95,67 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-6">
-            <h1 th:text="#{ui.my}">My Ozwillo</h1>
-
-            <h2 th:text="#{my.contexts}">Contexts</h2>
-            <ul>
-                <li th:each="context: ${contexts}" th:text="${context.name}">Context...</li>
-            </ul>
-            <a class="btn btn-default" th:text="#{my.create_context}">Create new context</a>
-
-            <h2 th:text="#{my.apps}">My applications</h2>
-            <div class="app" th:each="entry: ${entries}" th:classappend="${entry.subscription.applicationType == T(org.oasis_eu.portal.core.model.subscription.ApplicationType).LOCAL_SERVICE}? 'local-service'">
-                <a class="app-link" href="#" th:href="${entry.URL}" target="_blank"></a>
-                <p th:text="${entry.name}">Portail citoyen de Valence</p>
-                <img src="../public/img/icon/img-25.png" th:src="@{/img/icon/img-25.png}"/>
-                <span class="badge notifs" th:if="${entry.notificationsCount != 0}" th:text="${entry.notificationsCount}">25</span>
-            </div>
-
-
+        <div class="col-md-2 text-center grayedout">
+            <h3>
+            Change / create dashboard
+            </h3>
         </div>
-        <div class="col-md-5">
-            <div class="panel panel-default">
-                <div class="panel-heading" th:text="#{ui.local_services}">Local services</div>
-                <div class="panel-body">
-                    <ul th:remove="all-but-first">
-                        <li th:each="service : ${localServices}"><a href="#" th:href="${service.url}" th:text="${service.defaultName}">Service 1</a></li>
-                        <li>Service 2</li>
-                    </ul>
+
+        <div class="col-md-8">
+            <span class="text-center">
+                <h2 th:text="#{my.dashboard}">Dashboard</h2>
+            </span>
+            <div class="applications">
+
+                <div class="app" th:each="entry: ${entries}">
+                    <a class="app-link" href="#" th:href="${entry.URL}" target="_blank">
+                        <img src="../public/img/sample_app_icons/sample-connecte-15.png" th:src="@{/img/sample_app_icons/sample-connecte-15.png}"/>
+                        <span class="badge badge-notifications" th:if="${entry.notificationsCount != 0}" th:text="${entry.notificationsCount}">25</span>
+                    </a>
+                    <p th:text="${entry.name}">Portail citoyen de Valence</p>
                 </div>
+                <div class="app" th:remove="all">
+                    <a class="app-link" href="#" target="_blank">
+                        <img src="../public/img/sample_app_icons/sample-connecte-16.png" />
+                    </a>
+                    <p>Sad sad sad</p>
+                </div>
+                <div class="app" th:remove="all">
+                    <a class="app-link" href="#" target="_blank">
+                        <img src="../public/img/sample_app_icons/sample-connecte-17.png" />
+                    </a>
+                    <p>It's raining</p>
+                </div>
+
+                <div class="app" th:remove="all">
+                    <a class="app-link" href="#" target="_blank">
+                        <img src="../public/img/sample_app_icons/sample-connecte-18.png" />
+                    </a>
+                    <p>Happy</p>
+                </div>
+
+                <div class="app" th:remove="all">
+                    <a class="app-link" href="#" target="_blank">
+                        <img src="../public/img/sample_app_icons/sample-connecte-19.png" />
+                    </a>
+                    <p>Sad sad sad</p>
+                </div>
+                <div class="app" th:remove="all">
+                    <a class="app-link" href="#" target="_blank">
+                        <img src="../public/img/sample_app_icons/sample-connecte-20.png" />
+                    </a>
+                    <p>Sad sad sad</p>
+                </div>
+
+                <div class="app">
+                    <a class="app-link add-more" href="#" th:href="@{/appstore}">
+                        <img src="../public/img/icon/plus.png" th:src="@{/img/icon/plus.png}" alt="Add" th:alt="#{ui.add}"/>
+                    </a>
+                    <p th:text="#{ui.add}">Add</p>
+                </div>
+
             </div>
+
         </div>
     </div>
 </div>
