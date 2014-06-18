@@ -5,6 +5,7 @@
     background-size: cover;
     background-position: top center;
     background-repeat: no-repeat;
+    background-attachment: fixed;
 
     height: 680px;
 
@@ -79,6 +80,9 @@
 }
 
 
+.navbar * .btn > .fa {
+    font-size: 15px;
+}
 
 .btn-noborder {
     border: 0;
