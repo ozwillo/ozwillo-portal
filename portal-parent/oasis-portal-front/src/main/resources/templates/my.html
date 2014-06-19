@@ -98,9 +98,10 @@
         <div class="col-md-2 text-center dash-switcher">
             <img src="../public/img/my/switch-dash.png" th:src="@{/img/my/switch-dash.png}" alt="Change dashboard" th:alt="#{my.switch-dash}" />
             <p th:text="#{my.switch-dash}">Change dashboard</p>
-            <ul class="nav nav-pills nav-stacked text-left" th:remove="all-but-first">
+            <ul class="nav nav-pills nav-stacked text-left" id="dashboard_list">
                 <li class="active" th:each="context : ${contexts}" th:class="${context.id == contextId} ? 'active' : ''"><a class="dash-switch-link" href="#" th:href="@{'/my/dashboard/' + ${context.id}}" th:text="${context.name}" th:data="${context.id}">default</a></li>
-                <li><a href="#">pro</a></li>
+                <li th:remove="all"><a href="#">pro</a></li>
+                <li id="dashboard_template"><a href="#" class="dash-switch-link" th:href="@{/my/dashboard/}">template</a></li>
             </ul>
             <form role="form" id="create-dash" method="POST" action="#" th:action="@{/my/dashboard}">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>

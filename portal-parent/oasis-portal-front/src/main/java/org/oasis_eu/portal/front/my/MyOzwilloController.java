@@ -81,6 +81,13 @@ public class MyOzwilloController extends PortalController {
         return "redirect:/my/dashboard/" + uc.getId();
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/dashboard/fragment")
+    @ResponseBody
+    public String createDashboardFragment(@RequestParam String dashboardname) {
+        UserContext uc = portalDashboardService.createContext(dashboardname);
+        return uc.getId();
+    }
+
     @RequestMapping(method = RequestMethod.GET, value="/notif")
     public String notifications(Model model, HttpServletRequest request) {
         model.addAttribute("notifications", notificationService.getNotifications(RequestContextUtils.getLocale(request)));
