@@ -163,4 +163,12 @@ public class PortalDashboardService {
     }
 
 
+    public UserContext createContext(String name) {
+        UserContext ctx = new UserContext().setId(UUID.randomUUID().toString()).setName(name);
+        Dashboard dash = getDash();
+        dash.getContexts().add(ctx);
+        dashboardRepository.save(dash);
+
+        return ctx;
+    }
 }

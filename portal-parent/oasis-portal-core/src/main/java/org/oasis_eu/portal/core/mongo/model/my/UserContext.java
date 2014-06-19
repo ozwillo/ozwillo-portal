@@ -13,7 +13,7 @@ public class UserContext {
 
     private String id;
     private String name;
-    private boolean primary;
+    private boolean primary = false;
     private List<String> subscriptions = new ArrayList<>();
 
     public String getId() {

@@ -22,10 +22,23 @@ $(document).ready(function () {
 
                 $("div.dash-switcher * li").removeClass("active");
                 link.parent().addClass("active");
+
+                history.pushState({}, "dashboard", link.attr("href"));
             }
         );
     });
 
+
+//    $("#create-dash").submit(function(e) {
+//        e.preventDefault();
+//        var name = $("#dashboardname").val();
+//
+//        $.post($("#create-dash").attr("action") + "/fragment",
+//            {"dashboardname": name},
+//            function(result) {
+//                console.log("dashboard id = " + result.id);
+//            });
+//    });
 
     var updateNotifications = function () {
 
