@@ -99,7 +99,7 @@
             <img src="../public/img/my/switch-dash.png" th:src="@{/img/my/switch-dash.png}" alt="Change dashboard" th:alt="#{my.switch-dash}" />
             <p th:text="#{my.switch-dash}">Change dashboard</p>
             <ul class="nav nav-pills nav-stacked text-left" id="dashboard_list">
-                <li class="active" th:each="ctx : ${contexts}" th:class="${context.id == ctx.id} ? 'active' : ''"><a class="dash-switch-link" href="#" th:href="@{'/my/dashboard/' + ${ctx.id}}" th:text="${ctx.name}" th:data="${ctx.id}">default</a></li>
+                <li class="active" th:each="ctx : ${contexts}" th:class="${context.id == ctx.id} ? 'active' : 'inactive'"><a class="dash-switch-link" href="#" th:href="@{'/my/dashboard/' + ${ctx.id}}" th:text="${ctx.name}" th:data="${ctx.id}">default</a></li>
                 <li th:remove="all"><a href="#">pro</a></li>
                 <li id="dashboard_template"><a href="#" class="dash-switch-link" th:href="@{/my/dashboard/}">template</a></li>
             </ul>
@@ -121,40 +121,40 @@
                     <h2 th:text="|#{my.dashboard} ${context.name}|">Dashboard</h2>
                 </span>
 
-                <div class="app" th:each="entry: ${entries}">
+                <div class="app app-icon" th:each="entry: ${entries}">
                     <a class="app-link" href="#" th:href="${entry.URL}" target="_blank" th:id="|app-${entry.applicationId}|">
                         <img src="../public/img/sample_app_icons/sample-connecte-15.png" th:src="@{/img/sample_app_icons/sample-connecte-15.png}"/>
                         <span class="badge badge-notifications" th:if="${entry.notificationsCount != 0}" th:text="${entry.notificationsCount}">25</span>
                     </a>
                     <p th:text="${entry.name}">Portail citoyen de Valence</p>
                 </div>
-                <div class="app" th:remove="all">
+                <div class="app app-icon" th:remove="all">
                     <a class="app-link" href="#" target="_blank">
                         <img src="../public/img/sample_app_icons/sample-connecte-16.png" />
                     </a>
                     <p>Sad sad sad</p>
                 </div>
-                <div class="app" th:remove="all">
+                <div class="app app-icon" th:remove="all">
                     <a class="app-link" href="#" target="_blank">
                         <img src="../public/img/sample_app_icons/sample-connecte-17.png" />
                     </a>
                     <p>It's raining</p>
                 </div>
 
-                <div class="app" th:remove="all">
+                <div class="app app-icon" th:remove="all">
                     <a class="app-link" href="#" target="_blank">
                         <img src="../public/img/sample_app_icons/sample-connecte-18.png" />
                     </a>
                     <p>Happy</p>
                 </div>
 
-                <div class="app" th:remove="all">
+                <div class="app app-icon" th:remove="all">
                     <a class="app-link" href="#" target="_blank">
                         <img src="../public/img/sample_app_icons/sample-connecte-19.png" />
                     </a>
                     <p>Sad sad sad</p>
                 </div>
-                <div class="app" th:remove="all">
+                <div class="app app-icon" th:remove="all">
                     <a class="app-link" href="#" target="_blank">
                         <img src="../public/img/sample_app_icons/sample-connecte-20.png" />
                     </a>
@@ -183,7 +183,8 @@
 </th:block>
 
 <script src="../public/js/my.js" th:src="@{/js/my.js}"></script>
-<script src="../public/js/my.js" th:src="@{/js/dashboard.js}"></script>
+<script src="../public/js/dashboard.js" th:src="@{/js/dashboard.js}"></script>
+
 
 </body>
 </html>

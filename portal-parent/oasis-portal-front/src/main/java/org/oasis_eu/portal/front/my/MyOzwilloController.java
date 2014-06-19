@@ -80,6 +80,29 @@ public class MyOzwilloController extends PortalController {
         return "redirect:/my/dashboard/" + uc.getId();
     }
 
+    @RequestMapping(method = RequestMethod.POST, value = "/dashboard/reorder")
+    public String reorderDashboard(@RequestBody DashboardDragDrop dragDrop, Model model) {
+        if (dragDrop.isBefore()) {
+            portalDashboardService.moveBefore(dragDrop.getContextId(), dragDrop.getDraggedId(), dragDrop.getDestId());
+        } else {
+            portalDashboardService.moveAfter(dragDrop.getContextId(), dragDrop.getDraggedId(), dragDrop.getDestId());
+        }
+        model.addAttribute("context", portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(dragDrop.getContextId())).findFirst().get());
+        model.addAttribute("entries", portalDashboardService.getDashboardEntries(dragDrop.getContextId()));
+
+        return "my::dashboard";
+    }
+
+    @RequestMapping(method = RequestMethod.POST, value = "/dashboard/move_context")
+    public String moveContext(@RequestBody DashboardDragDrop dragDrop, Model model) {
+        portalDashboardService.moveAppToContext(dragDrop.getContextId(), dragDrop.getDraggedId(), dragDrop.getDestId());
+        model.addAttribute("context", portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(dragDrop.getContextId())).findFirst().get());
+        model.addAttribute("entries", portalDashboardService.getDashboardEntries(dragDrop.getContextId()));
+
+        return "my::dashboard";
+
+    }
+
     @RequestMapping(method = RequestMethod.POST, value = "/dashboard/fragment")
     @ResponseBody
     public String createDashboardFragment(@RequestParam String dashboardname) {

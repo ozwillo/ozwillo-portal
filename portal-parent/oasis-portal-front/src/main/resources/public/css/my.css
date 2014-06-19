@@ -152,6 +152,10 @@ div.app p {
     /*left: 0px;*/
 /*}*/
 
+.hovered {
+    border: 2px solid #6e418e;
+    background-color: #e4d2e5;
+}
 
 div.app a.app-link {
     position: absolute;
@@ -210,3 +214,4 @@ div.dash-switcher ul.nav .active a {
 li.dashboard_template {
     display: none;
 }
+

@@ -29,6 +29,7 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * User: schambon
@@ -125,6 +126,69 @@ public class PortalDashboardService {
         return entries;
     }
 
+
+    public UserContext createContext(String name) {
+        UserContext ctx = new UserContext().setId(UUID.randomUUID().toString()).setName(name);
+        Dashboard dash = getDash();
+        dash.getContexts().add(ctx);
+        dashboardRepository.save(dash);
+
+        return ctx;
+    }
+
+    public void moveBefore(String userContextId, String subjectId, String objectId) {
+        move(userContextId, subjectId, objectId, (p1, p2) -> Stream.of(p2, p1));
+    }
+
+    public void moveAfter(String userContextId, String subjectId, String objectId) {
+        move(userContextId, subjectId, objectId, (p1, p2) -> Stream.of(p1, p2));
+    }
+
+    public void moveAppToContext(String sourceContextId, String subjectId, String targetContextId) {
+        Dashboard dash = getDash();
+
+        UserContext sourceContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(sourceContextId)).findFirst().orElse(null);
+        UserContext targetContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(targetContextId)).findFirst().orElse(null);
+        List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
+        Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
+
+        String subscriptionId = sourceContext.getSubscriptions().stream().filter(s -> subscriptionById.get(s).getApplicationId().equals(subjectId)).findFirst().orElse(null);
+
+        if (subscriptionById != null) {
+            sourceContext.setSubscriptions(sourceContext.getSubscriptions().stream().filter(s -> !s.equals(subscriptionId)).collect(Collectors.toList()));
+            targetContext.getSubscriptions().add(subscriptionId);
+        }
+
+        dashboardRepository.save(dash);
+    }
+
+    private static interface Orderer {
+        Stream<Pair<String, String>> apply(Pair<String, String> a, Pair<String, String> b);
+    }
+
+    private void move(String userContextId, String subjectId, String objectId, Orderer orderer) {
+        Dashboard dash = getDash();
+        UserContext context = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
+        if (context != null) {
+            // get rid of app- prefix
+            String subjectId_ = subjectId.substring("app-".length());
+            String objectId_ = objectId.substring("app-".length());
+
+            List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
+            Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
+
+            List<Pair<String, String>> subsAppPairs = context.getSubscriptions().stream().map(sid -> new Pair<>(sid, subscriptionById.get(sid).getApplicationId())).collect(Collectors.toList());
+
+            Pair<String, String> object = subsAppPairs.stream().filter(p -> p.getB().equals(subjectId_)).findFirst().get();
+
+            context.setSubscriptions(subsAppPairs.stream().filter(p -> !p.getB().equals(subjectId_)).flatMap(p -> p.getB().equals(objectId_) ? orderer.apply(p, object) : Stream.of(p)).map(p -> p.getA()).collect(Collectors.toList()));
+
+            dashboardRepository.save(dash);
+        }
+
+    }
+
+
     private Dashboard getDash() {
         UserInfo user = userInfoHelper.currentUser();
         Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
@@ -162,13 +226,29 @@ public class PortalDashboardService {
         return entry;
     }
 
+    private static class Pair<A, B> {
+        A a;
+        B b;
 
-    public UserContext createContext(String name) {
-        UserContext ctx = new UserContext().setId(UUID.randomUUID().toString()).setName(name);
-        Dashboard dash = getDash();
-        dash.getContexts().add(ctx);
-        dashboardRepository.save(dash);
+        private Pair(A a, B b) {
+            this.a = a;
+            this.b = b;
+        }
 
-        return ctx;
+        public A getA() {
+            return a;
+        }
+
+        public void setA(A a) {
+            this.a = a;
+        }
+
+        public B getB() {
+            return b;
+        }
+
+        public void setB(B b) {
+            this.b = b;
+        }
     }
 }
