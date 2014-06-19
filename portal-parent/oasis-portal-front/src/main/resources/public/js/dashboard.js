@@ -26,25 +26,27 @@ $(document).ready(function () {
     var dashboard_template = $("#dashboard_template");
     dashboard_template.detach();
 
-    $("#create-dash").submit(function(e) {
+    $("#create-dash").submit(function (e) {
         e.preventDefault();
         var input = $("#dashboardname");
         var name = input.val();
+        if (name) {
 
-        $.post($("#create-dash").attr("action") + "/fragment",
-            {"dashboardname": name},
-            function(result) {
-                var dash = dashboard_template.clone(true);
-                dash.removeAttr("id");
-                var link = dash.find("a.dash-switch-link");
-                link.attr("data", result);
-                link.attr("href", link.attr("href") + result);
-                link.html(name);
-                $("#dashboard_list").append(dash);
-                link.click();
-                input.val("");
-                input.trigger("blur");
-            });
+            $.post($("#create-dash").attr("action") + "/fragment",
+                {"dashboardname": name},
+                function (result) {
+                    var dash = dashboard_template.clone(true);
+                    dash.removeAttr("id");
+                    var link = dash.find("a.dash-switch-link");
+                    link.attr("data", result);
+                    link.attr("href", link.attr("href") + result);
+                    link.html(name);
+                    $("#dashboard_list").append(dash);
+                    link.click();
+                    input.val("");
+                    input.trigger("blur");
+                });
+        }
     });
 
     var updateAppNotifications = function () {

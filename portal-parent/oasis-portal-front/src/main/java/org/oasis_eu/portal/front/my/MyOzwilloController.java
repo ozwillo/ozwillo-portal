@@ -50,7 +50,7 @@ public class MyOzwilloController extends PortalController {
         List<UserContext> contexts = portalDashboardService.getUserContexts();
         model.addAttribute("contexts", contexts);
         String contextId = contexts.stream().filter(c -> c.isPrimary()).findFirst().get().getId();
-        model.addAttribute("contextId", contextId); // current context
+        model.addAttribute("context", portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst().get());
         model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
         model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
         return "my";
@@ -60,7 +60,7 @@ public class MyOzwilloController extends PortalController {
     public String dashboard(@PathVariable String contextId, Model model) {
         List<UserContext> contexts = portalDashboardService.getUserContexts();
         model.addAttribute("contexts", contexts);
-        model.addAttribute("contextId", contextId); // current context
+        model.addAttribute("context", portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst().get());
         model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
         model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
         return "my";
@@ -68,9 +68,8 @@ public class MyOzwilloController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value={"/dashboard/{contextId}/fragment"})
     public String dashboardFragment(@PathVariable String contextId, Model model) {
-        model.addAttribute("contextId", contextId);
+        model.addAttribute("context", portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst().get());
         model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
-
         return "my::dashboard";
     }
 
