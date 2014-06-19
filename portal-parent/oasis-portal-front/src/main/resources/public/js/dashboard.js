@@ -18,7 +18,9 @@ $(document).ready(function () {
                 $("div.dash-switcher * li").removeClass("active");
                 link.parent().addClass("active");
 
-                history.pushState({}, "dashboard", link.attr("href"));
+                if (typeof history.pushState == 'function') { // avoid doing it in IE!
+                    history.pushState({}, "dashboard", link.attr("href"));
+                }
             }
         );
     });
