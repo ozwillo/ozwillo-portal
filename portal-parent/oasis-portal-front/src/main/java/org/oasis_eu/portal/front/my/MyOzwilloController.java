@@ -50,16 +50,34 @@ public class MyOzwilloController extends PortalController {
 
 
     @RequestMapping(method = RequestMethod.GET, value={"/", "", "/dashboard"})
-    public String myOzwillo(Model model, HttpServletRequest request) {
+    public String myOzwillo(Model model) {
         List<UserContext> contexts = portalDashboardService.getUserContexts();
         model.addAttribute("contexts", contexts);
         String contextId = contexts.stream().filter(c -> c.isPrimary()).findFirst().get().getId();
         model.addAttribute("contextId", contextId); // current context
-        model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId, RequestContextUtils.getLocale(request)));
+        model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
         model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
-//        model.addAttribute("localServices", localServiceService.findLocalServices());
         return "my";
     }
+
+    @RequestMapping(method = RequestMethod.GET, value={"/dashboard/{contextId}"})
+    public String dashboard(@PathVariable String contextId, Model model) {
+        List<UserContext> contexts = portalDashboardService.getUserContexts();
+        model.addAttribute("contexts", contexts);
+        model.addAttribute("contextId", contextId); // current context
+        model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
+        model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
+        return "my";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value={"/dashboard/{contextId}/fragment"})
+    public String dashboardFragment(@PathVariable String contextId, Model model) {
+        model.addAttribute("contextId", contextId);
+        model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
+
+        return "my::dashboard";
+    }
+
 
     @RequestMapping(method = RequestMethod.GET, value="/notif")
     public String notifications(Model model, HttpServletRequest request) {
@@ -72,7 +90,6 @@ public class MyOzwilloController extends PortalController {
         model.addAttribute("navigation", myNavigationService.getNavigation("profile"));
         return "my-profile";
     }
-
 
     @RequestMapping(method = RequestMethod.GET, value="/api/notifications")
     @ResponseBody

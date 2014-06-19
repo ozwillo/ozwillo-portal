@@ -4,6 +4,7 @@ import org.oasis_eu.portal.core.dao.ApplicationStore;
 import org.oasis_eu.portal.core.dao.LocalServiceStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.Application;
+import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 import org.oasis_eu.portal.core.model.appstore.LocalService;
 import org.oasis_eu.portal.core.model.subscription.ApplicationType;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
@@ -11,11 +12,18 @@ import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
 import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.model.DashboardEntry;
+import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Scope;
+import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
+import org.springframework.web.context.WebApplicationContext;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -27,9 +35,16 @@ import java.util.stream.Collectors;
  * Date: 6/12/14
  */
 @Service
+@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS) // create a new instance for each request!
 public class PortalDashboardService {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalDashboardService.class);
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private DashboardRepository dashboardRepository;
@@ -50,7 +65,7 @@ public class PortalDashboardService {
     private PortalNotificationService notificationService;
 
     public UserContext getPrimaryUserContext() {
-        return getUserContexts().stream().filter(c -> c.isPrimary()).findFirst().get();
+        return getUserContexts().stream().filter(UserContext::isPrimary).findFirst().get();
     }
 
     public List<UserContext> getUserContexts() {
@@ -73,31 +88,32 @@ public class PortalDashboardService {
 //            logger.debug("-> get application ids for context: " + userContextId);
 //
 //        }
-        Map<String, Subscription> subs = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().collect(Collectors.toMap(s -> s.getId(), s -> s));
+        Map<String, Subscription> subs = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         return getDash().getContexts()
                 .stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().get().getSubscriptions()
-                .stream().map(sid -> subs.get(sid)).filter(s -> s != null).map(s -> s.getApplicationId()).collect(Collectors.toList());
+                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getApplicationId).collect(Collectors.toList());
 
     }
 
-    public List<DashboardEntry> getDashboardEntries(String userContextId, Locale displayLocale) {
+    public List<DashboardEntry> getDashboardEntries(String userContextId) {
+        Locale displayLocale = RequestContextUtils.getLocale(request);
         Dashboard dash = getDash();
 
         UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().get();
         List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
 
-        Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(s -> s.getId(), s -> s));
+        Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         List<DashboardEntry> entries = userContext.getSubscriptions().stream()
-                .filter(sid -> subscriptionById.containsKey(sid))
-                .map(sid -> getDashboardEntry(displayLocale, subscriptionById.get(sid)))
+                .filter(subscriptionById::containsKey)
+                .map(sid -> getDashboardEntry(subscriptionById.get(sid)))
                 .collect(Collectors.toList());
 
 
         if (userContext.isPrimary()) {
             entries.addAll(orphanSubscriptions(actualSubscriptions).stream()
-                    .map(s -> getDashboardEntry(displayLocale, s))
+                    .map(s -> getDashboardEntry(s))
                     .collect(Collectors.toList()));
         }
 
@@ -110,21 +126,23 @@ public class PortalDashboardService {
     }
 
     private Dashboard getDash() {
-        Dashboard dashboard = dashboardRepository.findOne(userInfoHelper.currentUser().getUserId());
+        UserInfo user = userInfoHelper.currentUser();
+        Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
         if (dashboard != null) {
             return dashboard;
         } else {
+            logger.info("Creating dashboard for user {} ({}) using locale: {}", user.getName(), user.getUserId(), RequestContextUtils.getLocale(request));
+
             dashboard = new Dashboard();
-            dashboard.setUserId(userInfoHelper.currentUser().getUserId());
-            dashboard.getContexts().add(new UserContext().setId(UUID.randomUUID().toString()).setName("primary - todo i18n").setPrimary(true));
+            dashboard.setUserId(user.getUserId());
+            dashboard.getContexts().add(new UserContext().setId(UUID.randomUUID().toString()).setName(messageSource.getMessage("my.default-dashboard-name", new Object[]{}, RequestContextUtils.getLocale(request))).setPrimary(true));
             return dashboardRepository.save(dashboard);
-//            return dashboard;
         }
     }
 
-    private DashboardEntry getDashboardEntry(Locale displayLocale, Subscription s) {
+    private DashboardEntry getDashboardEntry(Subscription s) {
         DashboardEntry entry = new DashboardEntry();
-        entry.setDisplayLocale(displayLocale);
+        entry.setDisplayLocale(RequestContextUtils.getLocale(request));
         entry.setSubscription(s);
         if (s.getApplicationType().equals(ApplicationType.APPLICATION)) {
             Application application = applicationStore.find(s.getApplicationId());

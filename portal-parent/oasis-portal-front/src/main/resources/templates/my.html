@@ -95,17 +95,29 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-2 text-center grayedout">
-            <h3>
-            Change / create dashboard
-            </h3>
+        <div class="col-md-2 text-center dash-switcher">
+            <img src="../public/img/my/switch-dash.png" th:src="@{/img/my/switch-dash.png}" alt="Change dashboard" th:alt="#{my.switch-dash}" />
+            <p th:text="#{my.switch-dash}">Change dashboard</p>
+            <ul class="nav nav-pills nav-stacked text-left" th:remove="all-but-first">
+                <li class="active" th:each="context : ${contexts}" th:class="${context.id == contextId} ? 'active' : ''"><a class="dash-switch-link" href="#" th:href="@{'/my/dashboard/' + ${context.id}}" th:text="${context.name}" th:data="${context.id}">default</a></li>
+                <li><a href="#">pro</a></li>
+            </ul>
+            <form role="form">
+                <div class="form-group">
+                    <label for="dashboard-name" th:text="#{my.create}">+ create new</label>
+                    <input type="text" name="dashboard-name" id="dashboard-name" class="form-control"/>
+                </div>
+                <div class="text-right">
+                    <input type="image" src="../public/img/icon/plus.png" th:src="@{/img/icon/plus.png}" id="create-dashboard-plus" />
+                </div>
+            </form>
         </div>
 
         <div class="col-md-8">
-            <span class="text-center">
-                <h2 th:text="#{my.dashboard}">Dashboard</h2>
-            </span>
-            <div id="applications" th:data="${contextId}">
+            <div id="applications" th:data="${contextId}" th:fragment="dashboard">
+                <span class="text-center">
+                    <h2 th:text="#{my.dashboard}">Dashboard</h2>
+                </span>
 
                 <div class="app" th:each="entry: ${entries}">
                     <a class="app-link" href="#" th:href="${entry.URL}" target="_blank" th:id="|app-${entry.applicationId}|">

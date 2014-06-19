@@ -11,6 +11,22 @@ $(document).ready(function () {
         }
     );
 
+
+    $("a.dash-switch-link").click(function(e) {
+        e.preventDefault();
+        var link = $(this);
+        $.get(link.attr("href") + "/fragment",
+            function(fragment) {
+                $("#applications").html(fragment);
+                $("#applications").attr("data", link.attr("data"));
+
+                $("div.dash-switcher * li").removeClass("active");
+                link.parent().addClass("active");
+            }
+        );
+    });
+
+
     var updateNotifications = function () {
 
         $.get($(".my-oasis").attr("data").toString(),
@@ -31,4 +47,5 @@ $(document).ready(function () {
     }
 
     updateNotifications();
+
 });
