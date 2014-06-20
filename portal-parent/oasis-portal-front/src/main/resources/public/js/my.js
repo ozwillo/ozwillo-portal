@@ -1,7 +1,6 @@
 $(document).ready(function () {
 
 
-
     $("a.nav-link").hover(
         function () {
             var image_purple = $(this).find("img.purple");
@@ -13,19 +12,27 @@ $(document).ready(function () {
         }
     );
 
+
     var updateNotifications = function () {
 
         $.get($(".my-oasis").attr("data").toString(),
                 function (notifData) {
-                    var element = $(".my-oasis").find("span.badge.badge-notifications");
+                    var element = $(".my-oasis span.badge.badge-notifications");
                     if (notifData.notificationsCount > 0) {
-                        if (element.size() == 0) {
-                            $(".my-oasis").append($("<span class='badge badge-notifications'>" + notifData.notificationsCount + "</span>"));
-                        } else {
-                            element.html(notifData.notificationsCount);
-                        }
-                    } else if (element.size() != 0) {
-                        element.remove();
+                        element.html(notifData.notificationsCount);
+                        element.show();
+
+                        element.data("popover", null).popover({
+                                placement:"bottom",
+                                trigger:"hover",
+                                container:"body",
+                                content:notifData.notificationsMessage
+                            });
+
+                        element.attr("data-content", notifData.notificationsMessage);
+
+                    } else {
+                        element.hide();
                     }
                 }
         );

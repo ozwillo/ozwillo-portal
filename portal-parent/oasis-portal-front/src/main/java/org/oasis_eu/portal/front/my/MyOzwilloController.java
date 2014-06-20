@@ -11,6 +11,7 @@ import org.oasis_eu.portal.services.PortalNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +44,8 @@ public class MyOzwilloController extends PortalController {
     @Autowired
     private MyNavigationService myNavigationService;
 
-
+    @Autowired
+    private MessageSource messageSource;
 
     @RequestMapping(method = RequestMethod.GET, value={"/", "", "/dashboard"})
     public String myOzwillo(Model model) {
@@ -112,6 +114,7 @@ public class MyOzwilloController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value="/notif")
     public String notifications(Model model, HttpServletRequest request) {
+        model.addAttribute("navigation", myNavigationService.getNavigation("notifications"));
         model.addAttribute("notifications", notificationService.getNotifications(RequestContextUtils.getLocale(request)));
         return "my-notif";
     }
@@ -124,8 +127,9 @@ public class MyOzwilloController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value="/api/notifications")
     @ResponseBody
-    public NotificationData getNotificationData() {
-        return new NotificationData(notificationService.countNotifications());
+    public NotificationData getNotificationData(HttpServletRequest request) {
+        int count = notificationService.countNotifications();
+        return new NotificationData(count).setNotificationsMessage(messageSource.getMessage("my.n_notifications", new Object[]{Integer.valueOf(count)}, RequestContextUtils.getLocale(request)));
     }
 
     @RequestMapping(method = RequestMethod.GET, value="/api/app-notifications/{contextId}")
@@ -140,9 +144,19 @@ public class MyOzwilloController extends PortalController {
 
     private static class NotificationData {
         int notificationsCount;
+        String notificationsMessage = "";
 
         public NotificationData(int notificationsCount) {
             this.notificationsCount = notificationsCount;
+        }
+
+        public String getNotificationsMessage() {
+            return notificationsMessage;
+        }
+
+        public NotificationData setNotificationsMessage(String notificationsMessage) {
+            this.notificationsMessage = notificationsMessage;
+            return this;
         }
 
         @JsonProperty("notificationsCount")

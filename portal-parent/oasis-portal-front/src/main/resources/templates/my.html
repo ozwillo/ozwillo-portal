@@ -95,7 +95,7 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-md-2 text-center dash-switcher">
+        <div class="col-sm-2 text-center dash-switcher">
             <img src="../public/img/my/switch-dash.png" th:src="@{/img/my/switch-dash.png}" alt="Change dashboard" th:alt="#{my.switch-dash}" />
             <p th:text="#{my.switch-dash}">Change dashboard</p>
             <ul class="nav nav-pills nav-stacked text-left" id="dashboard_list">
@@ -115,7 +115,7 @@
             </form>
         </div>
 
-        <div class="col-md-8">
+        <div class="col-sm-8">
             <div id="applications" th:data="${context.id}" th:fragment="dashboard">
                 <span class="text-center">
                     <h2 th:text="|#{my.dashboard} ${context.name}|">Dashboard</h2>

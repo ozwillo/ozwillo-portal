@@ -50,7 +50,7 @@
         <div class="my-oasis" th:data="@{/my/api/notifications}">
             <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../../public/img/my/my-oasis.png"
                  alt="My OASIS"/>
-            <span th:remove="all" class="badge badge-notifications">4</span>
+            <a href="#" th:href="@{/my/notif}"><span class="badge badge-notifications">0</span></a>
         </div>
     </div>
     <ul class="nav navbar-nav" th:remove="all-but-first">

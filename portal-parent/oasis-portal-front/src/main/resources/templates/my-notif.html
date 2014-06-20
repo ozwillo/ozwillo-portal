@@ -16,84 +16,50 @@
 
 </head>
 <body>
-<div class="navbar navbar-fixed-top" role="navigation" th:replace="includes/navbar(logo='white')">
-    <div class="container">
-        <div class="navbar-header">
-
-            <img id="logo" src="../public/img/ozwillo-logo-white-small.png"
-                 alt="Ozwillo"/>
-        </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" class="btn btn-ozwillo">Join us!</a></li>
-            <li><a href="#" class="btn btn-ozwillo" ><i class="fa fa-user"></i> Log in</a></li>
-            <li class="dropdown">
-                <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown">English <b class="caret"></b></a>
-                <ul class="dropdown-menu" >
-                    <li><a href="#">Blablaish</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
+<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:replace="includes/my-navigation :: nav">
 </div>
 
 <div class="container">
-    <div class="row">
-        <div class="col-md-1" th:include="includes/my/navigation :: my-navigation">
-            <div class="row">
-                <a href="#"><img src="../public/img/my/profile.png" th:src="@{/img/my/profile.png}" alt="Profile" th:alt="#{my.profile}"/></a>
-            </div>
-            <div class="row">
-                <a href="#" th:href="@{/my}"><img src="../public/img/my/dash.png" th:src="@{/img/my/dash.png}" alt="Dash" th:alt="#{my.dash}"/></a>
-            </div>
-            <div class="row">
-                <a href="#" th:href="@{/my/notif}"><img src="../public/img/my/notification.png" th:src="@{/img/my/notification.png}" alt="Notif" th:alt="#{my.notification}"/></a>
-            </div>
+    <h1 th:text="#{ui.notifications}">Notifications</h1>
 
-        </div>
-        <div class="col-md-11">
-            <h1 th:text="#{ui.notifications}">Notifications</h1>
-
-            <table class="table table-striped table-bordered">
-                <thead>
-                    <tr>
-                        <th th:text="#{ui.date}">Date</th>
-                        <th th:text="#{ui.application}">Application</th>
-                        <th th:text="#{ui.text}">Text</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody th:remove="all-but-first">
-                    <tr th:each="notif : ${notifications}">
-                        <td th:text="${notif.date}">18/12/2012</td>
-                        <td th:text="${notif.appName}">Citizen Kin</td>
-                        <td th:utext="${notif.formattedText}">Hello wrold <a href="#">pouet</a></td>
-                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td>18/12/2012</td>
-                        <td>Citizen Kin</td>
-                        <td>Hello wrold <a href="#">pouet</a></td>
-                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td>18/12/2012</td>
-                        <td>Citizen Kin</td>
-                        <td>Hello wrold <a href="#">pouet</a></td>
-                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-                    </tr>
-                    <tr>
-                        <td>18/12/2012</td>
-                        <td>Citizen Kin</td>
-                        <td>Hello wrold <a href="#">pouet</a></td>
-                        <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-                    </tr>
-                </tbody>
-            </table>
+    <table class="table table-striped table-bordered">
+        <thead>
+        <tr>
+            <th th:text="#{ui.date}">Date</th>
+            <th th:text="#{ui.application}">Application</th>
+            <th th:text="#{ui.text}">Text</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody th:remove="all-but-first">
+        <tr th:each="notif : ${notifications}">
+            <td th:text="${notif.date}">18/12/2012</td>
+            <td th:text="${notif.appName}">Citizen Kin</td>
+            <td th:utext="${notif.formattedText}">Hello wrold <a href="#">pouet</a></td>
+            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+        </tr>
+        <tr>
+            <td>18/12/2012</td>
+            <td>Citizen Kin</td>
+            <td>Hello wrold <a href="#">pouet</a></td>
+            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+        </tr>
+        <tr>
+            <td>18/12/2012</td>
+            <td>Citizen Kin</td>
+            <td>Hello wrold <a href="#">pouet</a></td>
+            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+        </tr>
+        <tr>
+            <td>18/12/2012</td>
+            <td>Citizen Kin</td>
+            <td>Hello wrold <a href="#">pouet</a></td>
+            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
+        </tr>
+        </tbody>
+    </table>
 
 
-        </div>
-
-    </div>
 </div>
 
 

@@ -113,6 +113,7 @@ span.badge-notifications {
     position: absolute;
     top: 10px;
     right: -15px;
+    display: none;
 }
 
 
@@ -215,3 +216,20 @@ li.dashboard_template {
     display: none;
 }
 
+.popover {
+    z-index: 1040;
+    border-color: #d9534f;
+    border-width: 2px;
+}
+
+.popover.bottom>.arrow {
+    border-bottom-color: #d9534f;
+}
+
+.popover.bottom>.arrow:after {
+    top: 2px;
+}
+
+.popover-content {
+    color: #d9534f;
+}
