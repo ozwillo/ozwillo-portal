@@ -1,0 +1,62 @@
+<div class="row">
+	<div class="col-sm-2 text-center dash-switcher">
+		<ul id="dashboard_list" class="nav nav-pills nav-stacked text-left">
+			<li class="active"><a class="dash-switch-link">Page d'accueil</a></li>
+		</ul>
+	</div>
+	<div class="col-sm-8">
+		<div class="form-buttons">
+			<input id="contentId" type="hidden" th:value="${contentId}"/>
+			<input id="content" type="hidden" th:value="${content}"/>
+			<input id="save" type="button" class="form-button" th:value="#{action.save}"/>
+			Langue : français
+		</div>
+		<div id="epiceditor"></div>
+	</div>
+</div>
+
+<!-- XXX Organize code better -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="/js/epiceditor.min.js"></script>
+<script type="text/javascript">
+var editor = new EpicEditor({
+	basePath: '',
+	clientSideStorage: false,
+	focusOnLoad: true,
+	theme: {
+		base: '/css/epiceditor/base/epiceditor.css',
+		editor: '/css/epiceditor/editor/epic-light.css',
+		preview: '/css/epiceditor/preview/github.css'
+	},
+	autogrow: {
+		minHeight: 300,
+		maxHeight: false,
+		scroll: true,
+	},
+	button: {
+		bar: "show"
+	}
+}).load();
+editor.importFile('content', $('#content').val());
+
+$('#save').click(function() {
+	$this = $(this);
+	$this.addClass('pending');
+	
+	var contentId = $('#contentId').val();
+	$.ajax({url: "/contents/" + contentId,
+        type: "POST",
+        data: JSON.stringify({
+            "id": contentId,
+            "content": {
+            	"fr": editor.exportFile()	
+            }
+        }),
+        contentType: "application/json; charset=utf-8",
+        dataType: "html",
+        success: function (fragment) {
+        	location.reload();
+        }
+    });
+})
+</script>

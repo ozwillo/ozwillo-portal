@@ -6,8 +6,11 @@ spring:
   resources:
     cachePeriod: 3600
 
+server:
+  port: 8082
+
 application:
-  url: http://localhost:8080
+  url: http://localhost:8082
   security:
     fetchUserInfo: true
 

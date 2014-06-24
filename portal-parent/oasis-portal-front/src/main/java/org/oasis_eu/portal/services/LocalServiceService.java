@@ -31,7 +31,8 @@ public class LocalServiceService {
     @Autowired
     private UserInfoHelper userInfoHelper;
 
-    public List<LocalService> findLocalServices() {
+    @SuppressWarnings("unchecked")
+	public List<LocalService> findLocalServices() {
 
         Address address = userInfoHelper.currentUser().getAddress();
         if (address == null || address.getLocality() == null) {
@@ -40,9 +41,9 @@ public class LocalServiceService {
         Set<GeoEntity> entities = geoEntityService.getEntitiesByName(address.getLocality());
         entities.addAll(geoEntityService.getEntitiesByName(address.getPostalCode()));
 
-        List<String> closure = entities.stream().flatMap(e -> geoEntityService.getAllSuperEntities(e).stream().map(s -> s.getId())).collect(Collectors.toList());
+        List<?> closure = entities.stream().flatMap(e -> geoEntityService.getAllSuperEntities(e).stream().map(s -> s.getId())).collect(Collectors.toList());
 
-        return localServiceStore.findByTerritory(closure);
+        return localServiceStore.findByTerritory((List<String>) closure);
     }
 
 }
