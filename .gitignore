@@ -7,3 +7,11 @@
 # Maven
 target/
 
+# Eclipse
+.settings/
+.project
+.classpath
+
+# IDEA
+.idea/
+*.iml
