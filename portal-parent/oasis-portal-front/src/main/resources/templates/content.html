@@ -42,7 +42,7 @@
 <div class="container">
     <h1>Content page for <strong th:text="${page}">some page</strong> 3</h1>
 
-    <p th:text="${content}">Lorem ipsum...</p>
+    <p cms:content="${content}">Lorem ipsum...</p>
 </div>
 
 <th:block th:replace="includes/footer">

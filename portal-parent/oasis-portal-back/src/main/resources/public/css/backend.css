@@ -1,0 +1,273 @@
+body, h2 {
+    color: #636681;
+}
+
+
+.backend-oasis-navbar {
+    background-color: #ffffff;
+    border-bottom: 2px solid #636681;
+    height: 76px;
+}
+
+div.backend-oasis {
+    position:relative;
+}
+
+div.backend-oasis img {
+    padding-top: 10px;
+}
+
+.navbar {
+	background-color: #E0C6FF;
+}
+
+#logo {
+	padding-top: 3px;
+}
+
+#logo-legend {
+	width: 179px;
+	text-align: center;
+	display: block;
+	margin-top: -6px;	
+	font-weight: bold;
+}
+
+ul.navbar-nav {
+    margin-left: 50px;
+}
+
+.navbar-nav li {
+    position: relative;
+    width: 150px;
+    text-align: center;
+    height: 76px;
+}
+
+.navbar-nav li img {
+    position: absolute;
+    top: 10;
+    left: 55px;
+}
+
+.navbar-nav li img.gray {
+    z-index: 1;
+}
+
+.navbar-nav li img.purple {
+    display: none;
+    z-index: 2;
+}
+
+.navbar-nav li span {
+    position: relative;
+    top: 40px;
+}
+
+.navbar-nav li a:hover {
+    background-color: transparent;
+}
+
+.navbar-nav li a {
+    color: #666666;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+
+}
+
+.navbar-nav li.active a {
+    color: #6e418e;
+}
+
+.navbar-nav li a:hover {
+    color: #6e418e;
+}
+
+.navbar-nav li.logout {
+    background-color: #636681;
+}
+
+.navbar-nav li.logout a {
+    color: #ffffff;
+}
+
+div.arrow-border {
+    position: absolute;
+    left: 65px;
+    bottom: -20px;
+    width: 10px;
+    border: 10px solid transparent;
+    border-top: 10px inset #636681;
+}
+
+div.arrow {
+    position:absolute;
+    left: 65px;
+    bottom: -18px;
+    width: 10px;
+    border: 10px solid transparent;
+    border-top: 10px outset #E0C6FF;
+}
+
+ /*
+.navbar-nav li.active:after {
+    position: absolute;
+    left: 40px;
+    content: "";
+    border: 10px solid transparent;
+    border-top-color: #5b5f84;
+}      */
+
+span.badge-notifications {
+    background-color: #d9534f;
+    font-size: 20px;
+    border-radius: 15px;
+    padding: 5px 10px;
+    position: absolute;
+    top: 10px;
+    right: -15px;
+    display: none;
+}
+
+
+div.app {
+    position: relative;
+    margin: 10px;
+    display: block;
+    width: 130px;
+    height: 160px;
+    float: left;
+    border-radius: 10px;
+}
+
+/*div.app.local-service {*/
+    /*color: #6e418e;*/
+/*}*/
+
+div.app:hover {
+    background: #f7f7f7;
+}
+
+/*div.app.local-service:hover {*/
+    /*background: #f0ad4e;*/
+/*}*/
+
+div.app p {
+    position: absolute;
+    bottom: 0;
+    width: 130px;
+    height: 50px;
+    text-align: center;
+}
+
+/*div.app img {*/
+    /*position: absolute;*/
+    /*top: 0px;*/
+    /*left: 0px;*/
+/*}*/
+
+.hovered {
+    border: 2px solid #6e418e;
+    background-color: #e4d2e5;
+}
+
+div.app a.app-link {
+    position: absolute;
+    width: 64px;
+    height: 64px;
+    top: 33px;
+    left: 33px;
+
+    border-radius:10px;
+}
+
+div.app a.app-link.add-more {
+    border: 2px dashed #636681;
+}
+
+div.app a.app-link.add-more img {
+    position: absolute;
+    bottom: -16px;
+    right: -16px;
+}
+
+div.app span.badge-notifications {
+    top: -15px;
+}
+
+
+div.dash-switcher {
+    margin-top: 50px;
+    color: #6e418e;
+    font-size: 14pt;
+}
+
+div.dash-switcher ul.nav {
+    padding-bottom: 10px;
+    border-bottom: 1px solid #6e418e;
+}
+
+div.dash-switcher a {
+    color: #6e418e;
+}
+
+div.dash-switcher ul.nav .active a {
+    background-color: #6e418e;
+}
+
+.form-group label {
+    font-weight: normal;
+}
+
+.form-control:focus {
+    border-color: rgba(110, 65, 142, 0.8);
+    outline: 0;
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(110,65,142,.6);
+}
+
+li.dashboard_template {
+    display: none;
+}
+
+.popover {
+    z-index: 1040;
+    border-color: #d9534f;
+    border-width: 2px;
+}
+
+.popover.bottom>.arrow {
+    border-bottom-color: #d9534f;
+}
+
+.popover.bottom>.arrow:after {
+    top: 2px;
+}
+
+.popover-content {
+    color: #d9534f;
+}
+
+#epiceditor {
+	border-left: 2px solid #888;
+}
+
+.form-buttons {
+	margin: 10px 0;
+}
+
+.form-button {
+	background-color: #636681;
+    color: #FFF;
+	margin-right: 10px;
+	padding: 6px;
+	border: 0;
+	border-radius: 4px;
+	transition: .2s;
+}
+
+.form-button.pending {
+	background-color: #888;
+}
