@@ -18,12 +18,12 @@ div.my-oasis img {
 }
 
 ul.navbar-nav {
-    margin-left: 50px;
+    margin-left: 10px;
 }
 
 .navbar-nav li {
     position: relative;
-    width: 150px;
+    width: 100px;
     text-align: center;
     height: 76px;
 }
@@ -31,7 +31,7 @@ ul.navbar-nav {
 .navbar-nav li img {
     position: absolute;
     top: 10;
-    left: 55px;
+    left: 31px;
 }
 
 .navbar-nav li img.gray {
@@ -46,6 +46,7 @@ ul.navbar-nav {
 .navbar-nav li span {
     position: relative;
     top: 40px;
+    white-space: nowrap;
 }
 
 .navbar-nav li a:hover {
@@ -72,15 +73,26 @@ ul.navbar-nav {
 
 .navbar-nav li.logout {
     background-color: #636681;
+    margin-right: 15px;
 }
+
 
 .navbar-nav li.logout a {
     color: #ffffff;
+
+}
+
+.navbar-toggle {
+    background-color: #6e418e;
+}
+
+.icon-bar {
+    background-color: white;
 }
 
 div.arrow-border {
     position: absolute;
-    left: 65px;
+    left: 40px;
     bottom: -20px;
     width: 10px;
     border: 10px solid transparent;
@@ -89,7 +101,7 @@ div.arrow-border {
 
 div.arrow {
     position:absolute;
-    left: 65px;
+    left: 40px;
     bottom: -18px;
     width: 10px;
     border: 10px solid transparent;

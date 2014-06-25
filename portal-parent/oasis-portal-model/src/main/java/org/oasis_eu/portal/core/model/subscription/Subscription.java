@@ -15,16 +15,10 @@ public class Subscription extends GenericEntity {
     private String userId;
 
     /**
-     * Is this an application or a local service?
-     */
-    @JsonProperty("application_type")
-    private ApplicationType applicationType;
-
-    /**
      * Application or local service id
      */
-    @JsonProperty("application_id")
-    private String applicationId;
+    @JsonProperty("catalog_id")
+    private String catalogId;
 
     /**
      * Is this subscription made in a professional or personal context?
@@ -43,20 +37,12 @@ public class Subscription extends GenericEntity {
         this.userId = userId;
     }
 
-    public ApplicationType getApplicationType() {
-        return applicationType;
+    public String getCatalogId() {
+        return catalogId;
     }
 
-    public void setApplicationType(ApplicationType applicationType) {
-        this.applicationType = applicationType;
-    }
-
-    public String getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
+    public void setCatalogId(String catalogId) {
+        this.catalogId = catalogId;
     }
 
     public SubscriptionType getSubscriptionType() {

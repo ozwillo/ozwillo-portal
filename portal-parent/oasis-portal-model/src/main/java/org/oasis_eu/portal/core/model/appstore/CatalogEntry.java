@@ -9,9 +9,14 @@ import java.util.*;
  * User: schambon
  * Date: 6/16/14
  */
-abstract public class AbstractApplication extends GenericEntity {
+public class CatalogEntry  {
 
+    private String id;
 
+    private CatalogEntryType type;
+
+    @JsonProperty("parent_id")
+    private String parentId;
 
     @JsonProperty("name")
     private String defaultName;
@@ -27,16 +32,54 @@ abstract public class AbstractApplication extends GenericEntity {
     @JsonProperty("icon")
     private String defaultIcon;
 
-
-
     @JsonProperty("default_locale")
     private Locale defaultLocale;
-    private URL url;
-    @JsonIgnore
-    private Set<AppstoreCategory> categories = new HashSet<>();
-    @JsonProperty("category_ids")
-    private Set<String> categoryIds = new HashSet<>();
 
+    private String url;
+
+    @JsonProperty("notification_url")
+    private String notificationUrl;
+
+    @JsonIgnore
+    private List<AppstoreCategory> categories = new ArrayList<>();
+
+    @JsonProperty("category_ids")
+    private List<String> categoryIds = new ArrayList<>();
+
+    @JsonProperty("payment_option")
+    private PaymentOption paymentOption;
+
+    @JsonProperty("target_audience")
+    private List<Audience> targetAudience;
+
+    @JsonProperty("territory_id")
+    private String territoryId;
+
+    private boolean visible = false;
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public CatalogEntryType getType() {
+        return type;
+    }
+
+    public void setType(CatalogEntryType type) {
+        this.type = type;
+    }
+
+    public String getParentId() {
+        return parentId;
+    }
+
+    public void setParentId(String parentId) {
+        this.parentId = parentId;
+    }
 
     public String getDefaultName() {
         return defaultName;
@@ -103,19 +146,19 @@ abstract public class AbstractApplication extends GenericEntity {
         this.defaultIcon = defaultIcon;
     }
 
-    public Set<AppstoreCategory> getCategories() {
+    public List<AppstoreCategory> getCategories() {
         return categories;
     }
 
-    public void setCategories(Set<AppstoreCategory> categories) {
+    public void setCategories(List<AppstoreCategory> categories) {
         this.categories = categories;
     }
 
-    public Set<String> getCategoryIds() {
+    public List<String> getCategoryIds() {
         return categoryIds;
     }
 
-    public void setCategoryIds(Set<String> categoryIds) {
+    public void setCategoryIds(List<String> categoryIds) {
         this.categoryIds = categoryIds;
     }
 
@@ -127,12 +170,52 @@ abstract public class AbstractApplication extends GenericEntity {
         this.defaultLocale = defaultLocale;
     }
 
-    public URL getUrl() {
+    public String getUrl() {
         return url;
     }
 
-    public void setUrl(URL url) {
+    public void setUrl(String url) {
         this.url = url;
+    }
+
+    public String getNotificationUrl() {
+        return notificationUrl;
+    }
+
+    public void setNotificationUrl(String notificationUrl) {
+        this.notificationUrl = notificationUrl;
+    }
+
+    public PaymentOption getPaymentOption() {
+        return paymentOption;
+    }
+
+    public void setPaymentOption(PaymentOption paymentOption) {
+        this.paymentOption = paymentOption;
+    }
+
+    public List<Audience> getTargetAudience() {
+        return targetAudience;
+    }
+
+    public void setTargetAudience(List<Audience> targetAudience) {
+        this.targetAudience = targetAudience;
+    }
+
+    public String getTerritoryId() {
+        return territoryId;
+    }
+
+    public void setTerritoryId(String territoryId) {
+        this.territoryId = territoryId;
+    }
+
+    public boolean isVisible() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible = visible;
     }
 
     public String getName(Locale locale) {

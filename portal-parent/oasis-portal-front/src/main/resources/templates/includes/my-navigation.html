@@ -47,12 +47,21 @@
 <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:fragment="nav">
     <div class="navbar-header">
 
+        <!---->
+
+        <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+        </button>
         <div class="my-oasis" th:data="@{/my/api/notifications}">
             <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../../public/img/my/my-oasis.png"
                  alt="My OASIS"/>
             <a href="#" th:href="@{/my/notif}"><span class="badge badge-notifications">0</span></a>
         </div>
     </div>
+    <div class="collapse navbar-collapse" id="navbar-collapse">
     <ul class="nav navbar-nav" th:remove="all-but-first">
         <li class="active" th:each="item : ${navigation}" th:class="${item.active ? 'active':''}">
             <a href="#" th:href="@{'/my/' + ${item.id}}" th:class="${item.active?'':'nav-link'}">
@@ -85,7 +94,7 @@
             <a href="#"  class="nav-link">
                 <img class="gray" th:src="@{/img/my/apps-management-gray.png}" src="../../public/img/my/apps-management-gray.png" alt="Apps Management" />
                 <img class="purple" th:src="@{/img/my/apps-management.png}" src="../../public/img/my/apps-management.png" alt="Apps Management" />
-                <span>Apps Management</span>
+                <span>My Apps</span>
             </a>
         </li>
     </ul>
@@ -112,7 +121,7 @@
             </a>
         </li>
     </ul>
-
+    </div>
 </div>
 
 
