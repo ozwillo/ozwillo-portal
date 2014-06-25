@@ -12,7 +12,7 @@
 
     <style>
         @font-face {
-            font-family: 'Dunkin';      h
+            font-family: 'Dunkin';
             src: url('../public/fonts/Dunkin.eot?') format('eot'),
             url('../public/fonts/Dunkin.woff') format('woff'),
             url('../public/fonts/Dunkin.ttf')  format('truetype'),
@@ -40,23 +40,41 @@
 
             background-image: url('../public/img/home/apps_data_home_min.jpg');
         }
+
+
+        b.caret {
+            border: none;
+            height: 15px;
+            width: 15px;
+            background: url("../public/img/icon/caret.png");
+        }
+
     </style>
 </head>
 <body>
 
-<div class="navbar navbar-fixed-top" role="navigation" th:replace="includes/navbar(logo='white')">
+<div class="navbar navbar-fixed-top" role="navigation">
     <div class="container">
-        <div class="navbar-header">
-
-            <img id="logo" th:src="@{/img/ozwillo-logo-white-small.png}"
-                 src="../public/img/ozwillo-logo-white-small.png"
-                 alt="Ozwillo"/>
+        <div class="navbar-header" >
+            <a href="#" th:href="@{/}">
+                <img id="logo" th:src="@{/img/ozwillo-logo-white-small.png}"
+                     src="../public/img/ozwillo-logo-white-small.png"
+                     alt="Ozwillo"/>
+            </a>
         </div>
-        <ul class="nav navbar-nav navbar-right">
-            <li><a href="#" class="btn btn-ozwillo" th:text="#{ui.signup}">Join us!</a></li>
-            <li><a href="#" th:href="@{/my}" class="btn btn-ozwillo" ><i class="fa fa-user"></i> <th:block th:text="#{ui.login}">Log in</th:block></a></li>
+        <ul class="nav navbar-nav navbar-right" th:switch="${user}">
+
+            <th:block th:case="null">
+                <li><a href="#" class="btn btn-ozwillo" th:text="#{ui.signup}">Join us!</a></li>
+                <li><a href="#" th:href="@{/my}" class="btn btn-ozwillo" ><i class="fa fa-user"></i> <th:block th:text="#{ui.login}">Log in</th:block></a></li>
+            </th:block>
+            <th:block th:case="*">
+                <li><a href="#" class="btn btn-ozwillo" th:href="@{/my}" th:text="#{ui.my}">My Ozwillo</a></li>
+                <li><a href="#" class="btn btn-ozwillo" th:href="@{/logout}" th:text="|#{ui.logout} ${user.name}|">Sign out</a></li>
+            </th:block>
+
             <li class="dropdown">
-                <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown">English <b class="caret"></b></a>
+                <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown"><th:block th:text="${currentLanguage.name}">English</th:block> <b class="caret"></b></a>
                 <ul class="dropdown-menu" >
                     <li><a href="#" th:each="lang : ${languages}" th:href="|?lang=${lang.language}|" th:text="${lang.name}">Blablaish</a></li>
                 </ul>
@@ -64,6 +82,8 @@
         </ul>
     </div>
 </div>
+
+
 
 <div class="jumbotron">
     <div class="container">

@@ -36,9 +36,6 @@ public class MyOzwilloController extends PortalController {
     private PortalDashboardService portalDashboardService;
 
     @Autowired
-    private LocalServiceService localServiceService;
-
-    @Autowired
     private PortalNotificationService notificationService;
 
     @Autowired

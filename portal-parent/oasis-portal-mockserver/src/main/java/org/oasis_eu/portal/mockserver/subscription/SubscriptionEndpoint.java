@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.mockserver.subscription;
 
 import org.oasis_eu.portal.core.model.subscription.Subscription;
+import org.oasis_eu.portal.mockserver.main.Subscriptions;
 import org.oasis_eu.portal.mockserver.repo.TestData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -21,14 +22,17 @@ import java.util.List;
 @RequestMapping("/subs")
 public class SubscriptionEndpoint {
 
-    @Autowired
-    private TestData testData;
+//    @Autowired
+//    private TestData testData;
 
+    @Autowired
+    private Subscriptions subscriptions;
 
     @RequestMapping(method = RequestMethod.GET, value = "/{user_id}")
     public List<Subscription> getSubscriptions(@PathVariable("user_id") String userId) {
-        List<Subscription> subscriptions = testData.getSubscriptions(userId);
-        return subscriptions != null ? subscriptions : Collections.emptyList();
+//        List<Subscription> subscriptions = testData.getSubscriptions(userId);
+        List<Subscription> subs = subscriptions.findByUserId(userId);
+        return subs != null ? subs : Collections.emptyList();
     }
 
 }

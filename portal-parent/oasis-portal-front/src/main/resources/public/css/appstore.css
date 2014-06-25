@@ -1,0 +1,66 @@
+.app-store-result div.hit {
+    position: relative;
+    float: left;
+    border: 2px solid #636681;
+    border-radius: 5px;
+
+    padding-top: 10px;
+
+
+    height: 225px;
+    width: 175px;
+
+    margin-left: 10px;
+}
+
+
+div.hit p.appname {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0;
+}
+
+div.hit p.appdescription {
+    font-size: 12px;
+}
+
+div.indicator {
+    position: absolute;
+    bottom: 2px;
+    right: 2px;
+}
+
+.btn.btn-indicator {
+    padding-top: 2px;
+    padding-bottom: 2px;
+    background-color: transparent;
+    font-size: 14px;
+    border: 2px solid;
+}
+
+.btn.btn-indicator.btn-indicator-installed-icon {
+    color: #ffffff;
+    background-color: #5cb85c;
+    border-color: #5cb85c;
+}
+
+.btn.btn-indicator.btn-indicator-installed {
+    border-color: #5cb85c;
+    color: #5cb85c;
+}
+
+.btn.btn-indicator.btn-indicator-available {
+    border-color: #f0ad4e;
+    color: #f0ad4e;
+}
+
+.btn.btn-indicator.btn-indicator-available-icon {
+    border-color: #f0ad4e;
+    background-color: #f0ad4e;
+    color: #ffffff;
+}
+
+#confirmation p.appname {
+    text-align: center;
+    font-weight: bold;
+}

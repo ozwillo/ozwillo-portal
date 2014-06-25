@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.core.model.appstore;
 
-import java.util.Locale;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -10,6 +10,9 @@ public class SearchControls {
     private Audience[] audience;
     private AppstoreCategory[] categories;
     private String language;
+
+    @JsonProperty("territories")
+    private String[] territoryIds;
 
     public SearchControls(String language) {
         this.language = language;
@@ -33,5 +36,13 @@ public class SearchControls {
 
     public String getLanguage() {
         return language;
+    }
+
+    public String[] getTerritoryIds() {
+        return territoryIds;
+    }
+
+    public void setTerritoryIds(String[] territoryIds) {
+        this.territoryIds = territoryIds;
     }
 }

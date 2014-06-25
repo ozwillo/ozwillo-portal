@@ -14,6 +14,13 @@ import org.springframework.stereotype.Service;
 public class UserInfoHelper {
 
     public UserInfo currentUser() {
+
+//        UserInfo dummy = new UserInfo();
+//        dummy.setUserId("bb2c6f76-362f-46aa-982c-1fc60d54b8ef");
+//        dummy.setName("Dummy Offline");
+//
+//        return dummy;
+
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof OpenIdCAuthentication) {
             return ((OpenIdCAuthentication) authentication).getUserInfo();

@@ -1,12 +1,10 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.ApplicationStore;
-import org.oasis_eu.portal.core.dao.LocalServiceStore;
+import org.oasis_eu.portal.core.dao.CatalogStore;
+import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.GeoEntity;
-import org.oasis_eu.portal.core.model.appstore.LocalService;
 import org.oasis_eu.portal.core.services.GeoEntityService;
 import org.oasis_eu.spring.kernel.model.Address;
-import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -26,12 +24,12 @@ public class LocalServiceService {
     private GeoEntityService geoEntityService;
 
     @Autowired
-    private LocalServiceStore localServiceStore;
+    private CatalogStore localServiceStore;
 
     @Autowired
     private UserInfoHelper userInfoHelper;
 
-    public List<LocalService> findLocalServices() {
+    public List<CatalogEntry> findLocalServices() {
 
         Address address = userInfoHelper.currentUser().getAddress();
         if (address == null || address.getLocality() == null) {
@@ -42,7 +40,10 @@ public class LocalServiceService {
 
         List<String> closure = entities.stream().flatMap(e -> geoEntityService.getAllSuperEntities(e).stream().map(s -> s.getId())).collect(Collectors.toList());
 
-        return localServiceStore.findByTerritory(closure);
+        // TODO implement this - if required
+//        return localServiceStore.findByTerritory(closure);
+
+        return Collections.emptyList();
     }
 
 }
