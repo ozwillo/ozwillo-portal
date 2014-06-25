@@ -2,12 +2,9 @@ package org.oasis_eu.portal.services;
 
 import org.joda.time.Instant;
 import org.markdown4j.Markdown4jProcessor;
-import org.oasis_eu.portal.core.dao.ApplicationStore;
-import org.oasis_eu.portal.core.model.appstore.Application;
-import org.oasis_eu.portal.core.services.cms.ContentRenderingService;
-import org.oasis_eu.portal.model.AppNotificationData;
+import org.oasis_eu.portal.core.dao.CatalogStore;
+import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.model.UserNotification;
-import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.NotificationService;
 import org.slf4j.Logger;
@@ -34,7 +31,7 @@ public class PortalNotificationService {
     private NotificationService notificationService;
 
     @Autowired
-    private ApplicationStore store;
+    private CatalogStore store;
 
     @Autowired
     private UserInfoHelper userInfoHelper;
@@ -67,7 +64,7 @@ public class PortalNotificationService {
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
                 .map(n -> {
                     UserNotification notif = new UserNotification();
-                    Application application = store.find(n.getApplicationId());
+                    CatalogEntry application = store.find(n.getApplicationId());
                     notif.setAppName(application != null ? application.getName(locale) : "");
                     notif.setDate(new Instant().withMillis(n.getTime()));
                     try {

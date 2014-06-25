@@ -44,9 +44,13 @@ public class CatalogEndpoint {
         ckArchetype.setId("__citizenkin__");
         ckArchetype.setDefaultName("Citizen Kin");
         ckArchetype.setDefaultDescription("Citizen relationship management application");
+        ckArchetype.setLocalizedDescriptions(new HashMap<String, String>() {{
+            put("fr", "Application de gestion de la relation usager");
+        }});
         ckArchetype.setTargetAudience(Arrays.asList(Audience.PUBLIC_BODIES));
         ckArchetype.setPaymentOption(PaymentOption.PAID);
         ckArchetype.setVisible(true);
+        ckArchetype.setProviderId("6dccdb8d-ec46-4675-9965-806ea37b73e1");      // Open Wide
 
         catalog.save(ckArchetype);
     }
@@ -58,8 +62,8 @@ public class CatalogEndpoint {
     }
 
     @RequestMapping(method = GET, value = "")
-    public List<CatalogEntry> findAllVisible() {
-        return catalog.findByVisible(true);
+    public List<CatalogEntry> findAllVisible(@RequestParam List<Audience> targetAudience) {
+        return catalog.findByVisibleAndTargetAudienceIn(true, targetAudience);
     }
 
     @RequestMapping(method = POST, value = "/buy/{id}/{userId}")
@@ -108,12 +112,13 @@ public class CatalogEndpoint {
                     backOffice.setId(UUID.randomUUID().toString());
                     backOffice.setParentId(base.getId());
                     backOffice.setUrl("http://31.172.165.220/back/valence");
-
+                    backOffice.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");  // Valence
                     catalog.save(backOffice);
 
                     CatalogEntry frontOffice = new CatalogEntry();
                     frontOffice.setType(CatalogEntryType.SERVICE);
                     frontOffice.setVisible(true);
+                    frontOffice.setTargetAudience(Arrays.asList(Audience.CITIZENS));
                     frontOffice.setDefaultName("Valence Forms");
                     frontOffice.setDefaultDescription("Citizen forms for Valence");
                     frontOffice.setLocalizedNames(new HashMap<String, String>() {{
@@ -125,10 +130,12 @@ public class CatalogEndpoint {
                         put("bg", "Форми на гражданите на град Валенсия");
                     }});
                     frontOffice.setDefaultLocale(Locale.ENGLISH);
-                    frontOffice.setId(UUID.randomUUID().toString());
+                    frontOffice.setId("0a046fde-a20f-46eb-8252-48b78d89a9a2");
                     frontOffice.setParentId(base.getId());
                     frontOffice.setUrl("http://31.172.165.220/front/valence");
                     frontOffice.setTerritoryId("26000");
+                    frontOffice.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");  // Valence
+                    frontOffice.setPaymentOption(PaymentOption.FREE);
 
                     catalog.save(frontOffice);
 
@@ -146,7 +153,11 @@ public class CatalogEndpoint {
                     electoralRoll.setDefaultLocale(Locale.ENGLISH);
                     electoralRoll.setId(UUID.randomUUID().toString());
                     electoralRoll.setParentId(base.getId());
-                    electoralRoll.setUrl("http://31.172.165.220/front/valence/form/electoral_roll_registration");
+                    electoralRoll.setUrl("http://31.172.165.220/front/valence/form/electoral_roll_registration/init");
+                    electoralRoll.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");           // Valence
+                    electoralRoll.setPaymentOption(PaymentOption.FREE);
+                    electoralRoll.setTerritoryId("26000");
+                    electoralRoll.setTargetAudience(Arrays.asList(Audience.CITIZENS));
 
                     catalog.save(electoralRoll);
 
@@ -163,7 +174,16 @@ public class CatalogEndpoint {
                 } else if (base.getId().equals("__openelec__")) {
                     return base;
                 } else {
-                    throw new NotFoundException();
+
+                    Subscription s = new Subscription();
+                    s.setSubscriptionType(SubscriptionType.PERSONAL);
+                    s.setCatalogId(base.getId());
+                    s.setUserId(userId);
+                    s.setCreated(Instant.now());
+                    s.setId(UUID.randomUUID().toString());
+                    subscriptions.save(s);
+
+                    return base;
                 }
 
             }

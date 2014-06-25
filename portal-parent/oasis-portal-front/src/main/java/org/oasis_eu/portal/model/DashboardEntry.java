@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.model;
 
-import org.oasis_eu.portal.core.model.appstore.Application;
-import org.oasis_eu.portal.core.model.appstore.LocalService;
+import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 
 import java.util.Locale;
@@ -14,28 +13,21 @@ import java.util.Locale;
  */
 public class DashboardEntry {
 
-    private Application application;
-    private LocalService localService;
+    //    private Application application;
+//    private LocalService localService;
+    private CatalogEntry catalogEntry;
     private Subscription subscription;
 
     private Locale displayLocale;
 
     int notificationsCount = 0;
 
-    public Application getApplication() {
-        return application;
+    public CatalogEntry getCatalogEntry() {
+        return catalogEntry;
     }
 
-    public void setApplication(Application application) {
-        this.application = application;
-    }
-
-    public LocalService getLocalService() {
-        return localService;
-    }
-
-    public void setLocalService(LocalService localService) {
-        this.localService = localService;
+    public void setCatalogEntry(CatalogEntry catalogEntry) {
+        this.catalogEntry = catalogEntry;
     }
 
     public Subscription getSubscription() {
@@ -57,7 +49,7 @@ public class DashboardEntry {
 
 
     public String getName(Locale locale) {
-        return localService != null ? localService.getName(locale) : application.getName(locale);
+        return catalogEntry.getName(locale);
     }
 
     public int getNotificationsCount() {
@@ -73,11 +65,11 @@ public class DashboardEntry {
     }
 
     public String getDescription(Locale locale) {
-        return localService != null ? localService.getDescription(locale) : application.getDescription(locale);
+        return catalogEntry.getDescription(locale);
     }
 
     public String getURL() {
-        return localService != null ? localService.getUrl().toExternalForm() : application.getUrl().toExternalForm();
+        return catalogEntry.getUrl();
     }
 
     public void setDisplayLocale(Locale displayLocale) {
@@ -85,6 +77,7 @@ public class DashboardEntry {
     }
 
     public String getApplicationId() {
-        return localService != null ? localService.getId() : application.getId();
+
+        return catalogEntry.getId();
     }
 }

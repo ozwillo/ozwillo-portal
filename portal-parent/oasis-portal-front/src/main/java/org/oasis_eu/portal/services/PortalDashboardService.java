@@ -1,12 +1,9 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.ApplicationStore;
-import org.oasis_eu.portal.core.dao.LocalServiceStore;
+import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.appstore.Application;
+import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
-import org.oasis_eu.portal.core.model.appstore.LocalService;
-import org.oasis_eu.portal.core.model.subscription.ApplicationType;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
 import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
@@ -53,11 +50,14 @@ public class PortalDashboardService {
     @Autowired
     private SubscriptionStore subscriptionStore;
 
-    @Autowired
-    private ApplicationStore applicationStore;
+//    @Autowired
+//    private ApplicationStore applicationStore;
+//
+//    @Autowired
+//    private LocalServiceStore localServiceStore;
 
     @Autowired
-    private LocalServiceStore localServiceStore;
+    private CatalogStore catalogStore;
 
     @Autowired
     private UserInfoHelper userInfoHelper;
@@ -93,12 +93,11 @@ public class PortalDashboardService {
 
         return getDash().getContexts()
                 .stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().get().getSubscriptions()
-                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getApplicationId).collect(Collectors.toList());
+                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getCatalogId).collect(Collectors.toList());
 
     }
 
     public List<DashboardEntry> getDashboardEntries(String userContextId) {
-        Locale displayLocale = RequestContextUtils.getLocale(request);
         Dashboard dash = getDash();
 
         UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().get();
@@ -152,7 +151,7 @@ public class PortalDashboardService {
         List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
-        String subscriptionId = sourceContext.getSubscriptions().stream().filter(s -> subscriptionById.get(s).getApplicationId().equals(subjectId)).findFirst().orElse(null);
+        String subscriptionId = sourceContext.getSubscriptions().stream().filter(s -> subscriptionById.get(s).getCatalogId().equals(subjectId)).findFirst().orElse(null);
 
         if (subscriptionById != null) {
             sourceContext.setSubscriptions(sourceContext.getSubscriptions().stream().filter(s -> !s.equals(subscriptionId)).collect(Collectors.toList()));
@@ -177,7 +176,7 @@ public class PortalDashboardService {
             List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
             Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
-            List<Pair<String, String>> subsAppPairs = context.getSubscriptions().stream().map(sid -> new Pair<>(sid, subscriptionById.get(sid).getApplicationId())).collect(Collectors.toList());
+            List<Pair<String, String>> subsAppPairs = context.getSubscriptions().stream().map(sid -> new Pair<>(sid, subscriptionById.get(sid).getCatalogId())).collect(Collectors.toList());
 
             Pair<String, String> object = subsAppPairs.stream().filter(p -> p.getB().equals(subjectId_)).findFirst().get();
 
@@ -208,21 +207,10 @@ public class PortalDashboardService {
         DashboardEntry entry = new DashboardEntry();
         entry.setDisplayLocale(RequestContextUtils.getLocale(request));
         entry.setSubscription(s);
-        if (s.getApplicationType().equals(ApplicationType.APPLICATION)) {
-            Application application = applicationStore.find(s.getApplicationId());
-            if (application == null) {
-                logger.warn("Application {} not found in app store", s.getApplicationId());
-            }
-            entry.setApplication(application);
-            entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getApplicationId()));
-        } else {
+        CatalogEntry catalogEntry = catalogStore.find(s.getCatalogId());
+        entry.setCatalogEntry(catalogEntry);
+        entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getCatalogId()));
 
-            LocalService localService = localServiceStore.find(s.getApplicationId());
-            if (localService == null) {
-                logger.warn("Local service {} not found in app store", s.getApplicationId());
-            }
-            entry.setLocalService(localService);
-        }
         return entry;
     }
 

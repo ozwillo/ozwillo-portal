@@ -55,6 +55,9 @@ public class CatalogEntry  {
     @JsonProperty("territory_id")
     private String territoryId;
 
+    @JsonProperty("provider_organization_id")
+    private String providerId;
+
     private boolean visible = false;
 
     public String getId() {
@@ -216,6 +219,14 @@ public class CatalogEntry  {
 
     public void setVisible(boolean visible) {
         this.visible = visible;
+    }
+
+    public String getProviderId() {
+        return providerId;
+    }
+
+    public void setProviderId(String providerId) {
+        this.providerId = providerId;
     }
 
     public String getName(Locale locale) {

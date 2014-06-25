@@ -53,7 +53,7 @@
                 <span class="badge badge-notifications" th:if="${notificationsCount != 0}" th:text="${notificationsCount}">4</span>
             </div>
         </div>
-        <ul class="nav navbar-nav" th:remove="all-but-first">
+        <ul class="nav navbar-nav oasis-nav" th:remove="all-but-first">
             <li class="active" th:each="item : ${navigation}" th:class="${item.active ? 'active':''}">
                 <a href="#" th:href="@{'/my/' + ${item.id}}" th:class="${item.active?'':'nav-link'}">
                     <img th:if="${!item.active}" th:src="@{'/img/my/' + ${item.id} + '-gray.png'}" src="../public/img/my/dashboard-gray.png" alt="Dashboard" th:alt="#{'my.' + ${item.id}}" class="gray" />
@@ -85,7 +85,7 @@
                 <a href="#"  class="nav-link">
                     <img class="gray" th:src="@{/img/my/apps-management-gray.png}" src="../public/img/my/apps-management-gray.png" alt="Apps Management" />
                     <img class="purple" th:src="@{/img/my/apps-management.png}" src="../public/img/my/apps-management.png" alt="Apps Management" />
-                    <span>Apps Management</span>
+                    <span>My Apps</span>
                 </a>
             </li>
         </ul>
@@ -122,7 +122,7 @@
                 </span>
 
                 <div class="app app-icon" th:each="entry: ${entries}">
-                    <a class="app-link" href="#" th:href="${entry.URL}" target="_blank" th:id="|app-${entry.applicationId}|">
+                    <a class="app-link" href="#" th:href="${entry.URL}" target="_blank" th:id="|app-${entry.catalogEntry.id}|">
                         <img src="../public/img/sample_app_icons/sample-connecte-15.png" th:src="@{/img/sample_app_icons/sample-connecte-15.png}"/>
                         <span class="badge badge-notifications" th:if="${entry.notificationsCount != 0}" th:text="${entry.notificationsCount}">25</span>
                     </a>

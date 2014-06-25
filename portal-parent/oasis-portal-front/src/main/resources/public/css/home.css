@@ -1,4 +1,37 @@
 
+.btn.btn-ozwillo {
+    color: white;
+    border-color: white;
+    background-color: transparent;
+    border-radius: 10px;
+    border-width: 2px;
+}
+
+.btn.btn-ozwillo:hover {
+    background-color: white;
+    color: #6e418e;
+    border-color: #6e418e;
+}
+
+.btn-noborder {
+    border: 0;
+}
+
+.navbar * li {
+    margin-left: 13px;
+}
+
+.navbar * .btn {
+    font-size: 14pt;
+    height: auto;
+}
+
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+
 .jumbotron {
 
     background-image: url('/img/home/apps_data_home_min.jpg');

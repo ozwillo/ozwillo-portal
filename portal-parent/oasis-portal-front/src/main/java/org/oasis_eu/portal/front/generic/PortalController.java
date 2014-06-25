@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.front.generic;
 
+import org.oasis_eu.portal.services.UserInfoHelper;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -15,6 +17,9 @@ import java.util.Locale;
  * Date: 6/11/14
  */
 abstract public class PortalController {
+
+    @Autowired
+    private UserInfoHelper userInfoHelper;
 
     @ModelAttribute("languages")
     public Languages[] languages() {
@@ -35,12 +40,7 @@ abstract public class PortalController {
 
     @ModelAttribute("user")
     public UserInfo user() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication.isAuthenticated() && authentication instanceof OpenIdCAuthentication) {
-            return ((OpenIdCAuthentication) authentication).getUserInfo();
-        } else {
-            return null;
-        }
+        return userInfoHelper.currentUser();
     }
 
 }

@@ -21,12 +21,16 @@ public class OasisPortalSecurity extends OASISSecurityConfiguration {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint()).and()
                 .authorizeRequests()
                 .antMatchers("/my/**").authenticated()
+                .antMatchers("/appstore/**").authenticated()
                 .anyRequest().permitAll().and()
                 .addFilterBefore(openIdCAuthFilter(), AbstractPreAuthenticatedProcessingFilter.class);
 
         OASISExceptionTranslationConfigurer configurer = oasisExceptionTranslationConfigurer();
 
         http.apply(configurer);
+
+        // TEMP HACK TO WORK OFFLINE
+//        http.authorizeRequests().anyRequest().permitAll();
 
     }
 }
