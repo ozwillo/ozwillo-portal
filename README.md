@@ -70,7 +70,7 @@ The front-end is run on port 8080, the back-end on port 8082. To prevent cookie-
 
 	ProxyPreserveHost On
 	
-	ProxyPass / http://localhost:8080/
+	ProxyPass / http://localhost:8080/ retry=0
 	ProxyPassReverse / http://localhost:8080/
 
 	ErrorLog ${APACHE_LOG_DIR}/error.log
@@ -82,7 +82,7 @@ The front-end is run on port 8080, the back-end on port 8082. To prevent cookie-
 	
 	ProxyPreserveHost On
 
-	ProxyPass / http://localhost:8082/
+	ProxyPass / http://localhost:8082/ retry=0
 	ProxyPassReverse / http://localhost:8082/
 
 	ErrorLog ${APACHE_LOG_DIR}/error.log
