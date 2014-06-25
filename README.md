@@ -2,9 +2,9 @@ OASIS portal implementation
 ===========================
 
 
-## Pre-requisites
+## Prerequisites
 
-Clone and build the [Spring integration project](https://github.com/pole-numerique/oasis-spring-integration) :
+Clone and install the [Spring integration package](https://github.com/pole-numerique/oasis-spring-integration) :
 
 ```
 git clone git@github.com:pole-numerique/oasis-spring-integration.git
@@ -25,6 +25,11 @@ To be able to launch the integration tests (and then run the application), you h
 
 ```
 java -jar oasis-portal-mockserver/target/oasis-portal-mockserver-1.0-SNAPSHOT.jar
+```
+
+Then in another console:
+
+```
 mvn clean test integration-test failsafe:verify
 ```
 
@@ -35,15 +40,7 @@ The portal comes in two independent parts: the back-end (oasis-portal-back) and 
 
 `java -jar oasis-portal-mockserver/target/oasis-portal-mockserver-1.0-SNAPSHOT.jar`
 
-There are three ways to run the apps:
-
-* By embedding the WARs with your preferred method
-* By running Spring Boot from the command line
-
-```
-cd oasis-portal-front
-mvn spring-boot:run
-```
+There are the two preferred ways to run the apps:
 
 * By running the apps the old-fashioned way (callin the main() method), either from your IDE or in command-line
 
@@ -51,6 +48,14 @@ mvn spring-boot:run
 cd oasis-portal-front/target
 java -jar oasis-portal-front-1.0-SNAPSHOT.war
 ```
+
+* By running Spring Boot from the command line
+
+```
+cd oasis-portal-front
+mvn spring-boot:run
+```
+
 
 
 ## Configuring the reverse-proxy
