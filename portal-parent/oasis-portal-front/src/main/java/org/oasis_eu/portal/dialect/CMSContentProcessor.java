@@ -48,7 +48,7 @@ public class CMSContentProcessor extends AbstractChildrenModifierAttrProcessor {
         // (Adapted from AbstractTextChildModifierAttrProcessor)
         
         final String text = getText(arguments, element, attributeName);
-        final Text newNode = new Text(text, false);
+        final Text newNode = new Text(text != null ? text : "", false);
         newNode.setProcessable(false);
         return Collections.singletonList(newNode);
     }
