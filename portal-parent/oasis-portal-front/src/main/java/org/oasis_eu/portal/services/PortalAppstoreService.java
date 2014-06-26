@@ -19,9 +19,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -29,7 +27,6 @@ import java.util.stream.Collectors;
  * Date: 6/25/14
  */
 @Service
-@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class PortalAppstoreService {
 
     @Autowired
@@ -51,12 +48,11 @@ public class PortalAppstoreService {
     private MessageSource messageSource;
 
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
-        Map<String, Subscription> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream()
-                .collect(Collectors.toMap(Subscription::getId, s -> s));
+        Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().flatMap(s -> Arrays.asList(s.getCatalogId(), catalogStore.find(s.getCatalogId()).getParentId()).stream()).collect(Collectors.toSet());
 
         return catalogStore.findAllVisible(targetAudiences).stream()
                 .map(c -> new AppstoreHit(RequestContextUtils.getLocale(request), c, organizationStore.find(c.getProviderId()).getName(),
-                        subscriptions.containsKey(c.getId()) || subscriptions.containsKey(c.getParentId()) ? AcquisitionStatus.INSTALLED : AcquisitionStatus.AVAILABLE))
+                        subscriptions.contains(c.getId()) ? AcquisitionStatus.INSTALLED : AcquisitionStatus.AVAILABLE))
                 .collect(Collectors.toList());
     }
 

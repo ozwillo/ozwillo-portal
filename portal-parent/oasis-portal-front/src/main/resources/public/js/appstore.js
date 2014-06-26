@@ -26,6 +26,9 @@ $(document).ready(function() {
         });
     });
 
+    $("input[name='audience']").change(function() {
+        $("#searchForm").submit();
+    });
 
     $("#searchForm").submit(function(e){
         e.preventDefault();

@@ -34,6 +34,7 @@ kernel:
     usercontext: http://localhost:8081/ctx
     subscriptions: http://localhost:8081/subs
     appstore: http://localhost:8081/store
+    catalog: http://localhost:8081/catalog
 
 
 persistence:
