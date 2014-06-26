@@ -20,8 +20,8 @@
         <div class="form-buttons">
             <input id="currentContentId" type="hidden" th:value="${currentContentId}"/>
             <input id="content" type="hidden" th:value="${content}"/>
-            <input id="save" type="button" class="form-button" th:value="#{action.save}"/>
-            <input id="delete" type="button" class="form-button" th:value="#{action.delete}" th:if="${currentContentId != 'home'}" />
+            <input id="save" type="button" class="btn btn-primary" th:value="#{action.save}"/>
+            <input id="delete" type="button" class="btn btn-default" th:value="#{action.delete}" th:if="${currentContentId != 'home'}" />
             Langue : français
         </div>
         <div id="epiceditor"></div>
@@ -54,7 +54,7 @@ editor.importFile('content', $('#content').val());
 
 $('#save').click(function() {
     $this = $(this);
-    $this.addClass('pending');
+    $this.addClass('btn-disabled');
     
     var currentContentId = $('#currentContentId').val();
     $.ajax({url: "/contents/save",

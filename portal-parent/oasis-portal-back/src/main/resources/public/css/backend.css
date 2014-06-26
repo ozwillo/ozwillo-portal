@@ -5,7 +5,6 @@ body, h2 {
 
 .backend-oasis-navbar {
     background-color: #ffffff;
-    border-bottom: 2px solid #636681;
     height: 76px;
 }
 
@@ -18,7 +17,7 @@ div.backend-oasis img {
 }
 
 .navbar {
-	background-color: #E0C6FF;
+	background-color: #333;
 }
 
 #logo {
@@ -31,6 +30,7 @@ div.backend-oasis img {
 	display: block;
 	margin-top: -6px;	
 	font-weight: bold;
+	color: #F7F7F7;
 }
 
 ul.navbar-nav {
@@ -69,7 +69,7 @@ ul.navbar-nav {
 }
 
 .navbar-nav li a {
-    color: #666666;
+    color: #e7e8ef;
     position: absolute;
     width: 100%;
     height: 100%;
@@ -79,11 +79,11 @@ ul.navbar-nav {
 }
 
 .navbar-nav li.active a {
-    color: #6e418e;
+    color: #F7F7F7;
 }
 
 .navbar-nav li a:hover {
-    color: #6e418e;
+    color: #F7F7F7;
 }
 
 .navbar-nav li.logout {
@@ -91,7 +91,7 @@ ul.navbar-nav {
 }
 
 .navbar-nav li.logout a {
-    color: #ffffff;
+    color: #F7F7F7;
 }
 
 div.arrow-border {
@@ -100,16 +100,11 @@ div.arrow-border {
     bottom: -20px;
     width: 10px;
     border: 10px solid transparent;
-    border-top: 10px inset #636681;
+    border-top: 10px inset #444;
 }
 
 div.arrow {
-    position:absolute;
-    left: 65px;
-    bottom: -18px;
-    width: 10px;
-    border: 10px solid transparent;
-    border-top: 10px outset #E0C6FF;
+    display: none;
 }
 
  /*
@@ -251,23 +246,10 @@ li.dashboard_template {
 }
 
 #epiceditor {
-	border-left: 2px solid #888;
+	border: 1px solid #999;
+    border-radius: 4px;
 }
 
 .form-buttons {
 	margin: 10px 0;
-}
-
-.form-button {
-	background-color: #636681;
-    color: #FFF;
-	margin-right: 10px;
-	padding: 6px;
-	border: 0;
-	border-radius: 4px;
-	transition: .2s;
-}
-
-.form-button.pending {
-	background-color: #888;
 }

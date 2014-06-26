@@ -90,7 +90,7 @@ b.caret {
     border-color: #6e418e;
 }
 
-.btn-default {
+.btn {
     border-width: 2px;
     border-radius: 10px;
     text-transform: uppercase;
@@ -101,10 +101,33 @@ b.caret {
     padding-right: 25px;
 }
 
+.btn-default {
+    color: #999999;
+    border-color: #999999;
+}
+
 .btn-default:hover {
     color: #ffffff;
     background-color: #999999;
     border-color: #ffffff;
+}
+
+.btn-primary {
+    background-color: #ffffff;
+    color: #6e418e;
+    border-color: #6e418e;
+}
+
+.btn-primary:hover {
+    color: #ffffff;
+    background-color: #6e418e;
+    border-color: #999999;
+}
+
+.btn-disabled {
+    color: #999999;
+    background-color: #f7f7f7;
+    border-color: #999999;
 }
 
 .btn-noborder {
