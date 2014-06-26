@@ -3,6 +3,9 @@ package org.oasis_eu.portal.back.content;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.oasis_eu.portal.back.generic.Languages;
 import org.oasis_eu.portal.back.generic.PortalController;
 import org.oasis_eu.portal.core.mongo.dao.cms.ContentItemRepository;
 import org.oasis_eu.portal.core.mongo.model.cms.ContentItem;
@@ -33,19 +36,24 @@ public class ContentController extends PortalController {
     @Autowired
     private ContentItemRepository repository;
     
+    /**
+     * The language that will be displayed by default in the editor.
+     */
+    private Languages defaultLanguage = null;
+    
     @RequestMapping("/")
-    public String home(Model model) {
-        return showContentsEditor(null, model);
+    public String home(Model model, HttpServletRequest request) {
+        return showContentsEditor(null, model, request);
     }
     
     @RequestMapping("/contents")
-    public String edit(Model model) {
-        return showContentsEditor(null, model);
+    public String edit(Model model, HttpServletRequest request) {
+        return showContentsEditor(null, model, request);
     }
     
     @RequestMapping("/contents/edit/{contentId}")
-    public String edit(@PathVariable String contentId, Model model) {
-        return showContentsEditor(contentId, model);
+    public String edit(@PathVariable String contentId, Model model, HttpServletRequest request) {
+        return showContentsEditor(contentId, model, request);
     }
     
     @RequestMapping(value = "/contents/create", method = RequestMethod.POST)
@@ -69,20 +77,27 @@ public class ContentController extends PortalController {
         }
         return "redirect:/contents/edit/" + DEFAULT_CONTENT;
     }
+
+    @RequestMapping(value = "/contents/defaultlanguage", method = RequestMethod.POST)
+    public String save(@RequestBody String defaultLanguage, Model model) {
+        for (Languages language : Languages.values()) {
+            if (language.getName().equals(defaultLanguage)) {
+                this.defaultLanguage = language;
+                break;
+            }
+        }
+        return "redirect:/contents/edit/" + DEFAULT_CONTENT;
+    }
     
-    public String showContentsEditor(String contentId, Model model) {
+    public String showContentsEditor(String contentId, Model model, HttpServletRequest request) {
         String page = "contents";
         contentId = ((contentId != null) ? contentId : DEFAULT_CONTENT);
         
         model.addAttribute("navigation", backendNavigationService.getNavigation(page));
         model.addAttribute("page", page);
-        model.addAttribute("currentContentId", contentId);
         model.addAttribute("contentIdList", getContentIdList());
-        
-        ContentItem contentItem = repository.findOne(contentId);
-        if (contentItem != null) {
-            model.addAttribute("content", contentItem.getContent().get("fr"));
-        }
+        model.addAttribute("contentItem", repository.findOne(contentId));
+        model.addAttribute("defaultLanguage", defaultLanguage != null ? defaultLanguage : currentLanguage(request));
         
         return "backend";
     }
@@ -91,6 +106,7 @@ public class ContentController extends PortalController {
         // TODO only query IDs through projection : db.content_item.find({}, ["_id"])
         return repository.findAll().stream()
             .map(item -> item.getId())
+            .sorted()
             .collect(Collectors.toList());
     }
 

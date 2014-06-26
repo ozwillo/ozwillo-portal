@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-sm-2 text-center dash-switcher">
         <ul id="dashboard_list" class="nav nav-pills nav-stacked text-left">
-            <li th:each="contentId : ${contentIdList}" th:class="${contentId == currentContentId ? 'active' : ''}">
+            <li th:each="contentId : ${contentIdList}" th:class="${contentId == contentItem.id ? 'active' : ''}">
                 <a class="dash-switch-link" th:href="${'/contents/edit/' + contentId}" th:text="${contentId}"></a>
             </li>
         </ul>
@@ -18,11 +18,21 @@
     </div>
     <div class="col-sm-8">
         <div class="form-buttons">
-            <input id="currentContentId" type="hidden" th:value="${currentContentId}"/>
-            <input id="content" type="hidden" th:value="${content}"/>
             <input id="save" type="button" class="btn btn-primary" th:value="#{action.save}"/>
-            <input id="delete" type="button" class="btn btn-default" th:value="#{action.delete}" th:if="${currentContentId != 'home'}" />
-            Langue : français
+            <input id="delete" type="button" class="btn btn-default" th:value="#{action.delete}" th:if="${contentItem.id != 'home'}" />
+            <ul class="nav navbar-right">
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown">
+                        <span id="selectedLanguage" th:text="${currentLanguage.name}">English</span>
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" >
+                        <li th:each="lang : ${languages}">
+                            <a thref="#" th:onclick="'javascript:switchLanguage(\'' + ${lang.name} + '\')'" th:text="${lang.name}">Blablaish</a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
         </div>
         <div id="epiceditor"></div>
     </div>
@@ -31,7 +41,12 @@
 <!-- XXX Organize code better -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="/js/epiceditor.min.js"></script>
-<script type="text/javascript" th:inline="text">
+<script type="text/javascript" th:inline="javascript">
+
+var contentItem = /*[[${contentItem}]]*/ [];
+var currentLanguage = /*[[${defaultLanguage.name}]]*/ 'Français';
+
+// Markdown editor init
 var editor = new EpicEditor({
     basePath: '',
     clientSideStorage: false,
@@ -50,42 +65,69 @@ var editor = new EpicEditor({
         bar: "show"
     }
 }).load();
-editor.importFile('content', $('#content').val());
 
+// Prevent from accidentally leaving
+editor.getElement('editor').addEventListener('keydown', function() {
+    window.onbeforeunload = window.onbeforeunload || function() {
+        return "[[#{backend.leavewithoutsaving}]]";
+    }
+});
+
+// Save button behavior
 $('#save').click(function() {
     $this = $(this);
     $this.addClass('btn-disabled');
-    
-    var currentContentId = $('#currentContentId').val();
+    localSave();
+
     $.ajax({url: "/contents/save",
         type: "POST",
-        data: JSON.stringify({
-            "id": currentContentId,
-            "content": {
-                "fr": editor.exportFile()    
-            }
-        }),
+        data: JSON.stringify(contentItem),
         contentType: "application/json; charset=utf-8",
         dataType: "html",
         success: function (fragment) {
+            window.onbeforeunload = null;
             location.reload();
         }
     });
 })
 
+// Delete button behavior
 $('#delete').click(function() {
     $this = $(this);
     if (confirm("[[#{action.delete.confirm}]]")) {
         $this.addClass('pending');
         
-        var currentContentId = $('#currentContentId').val();
-        $.ajax({url: "/contents/delete/" + currentContentId,
+        $.ajax({url: "/contents/delete/" + contentItem.id,
             type: "POST",
             dataType: "html",
             success: function (fragment) {
+                window.onbeforeunload = null;
                 location.href = "/contents/edit/home";
             }
         });
     }
 })
+
+// Choose default language
+switchLanguage(currentLanguage, true);
+
+function localSave() {
+    contentItem.content[currentLanguage] = editor.exportFile();
+}
+
+function switchLanguage(lang, doNotSave) {
+    if (!doNotSave) {
+      localSave();
+
+      $.ajax({url: "/contents/defaultlanguage",
+          type: "POST",
+          data: lang,
+          contentType: "application/json; charset=utf-8",
+          dataType: "html"
+      });
+    }
+    editor.importFile('content', contentItem.content[lang]);
+    $('#selectedLanguage').html(lang);
+    currentLanguage = lang;
+}
 </script>

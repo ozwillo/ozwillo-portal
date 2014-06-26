@@ -10,7 +10,7 @@ server:
   port: 8082
 
 application:
-  url: http://localhost:8082
+  url: http://admin.ozwillo.local
   security:
     fetchUserInfo: true
 
