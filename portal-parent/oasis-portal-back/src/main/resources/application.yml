@@ -26,8 +26,10 @@ kernel:
     logout_endpoint: ${kernel.base_uri}/a/logout
     callback_uri: ${application.url}/login
   user_directory_endpoint: ${kernel.base_uri}/d
+#  user_directory_endpoint: http://localhost:8081/d
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
+#  notifications_endpoint: http://localhost:8081/n
   application_id: 8b0e62e5-e3af-45de-8834-0d7d8a3f6139
   client_id: 7706ded0-afe4-4826-9df1-ce03782b893d
   client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
@@ -37,6 +39,7 @@ kernel:
     usercontext: http://localhost:8081/ctx
     subscriptions: http://localhost:8081/subs
     appstore: http://localhost:8081/store
+    catalog: http://localhost:8081/catalog
 
 
 persistence:
