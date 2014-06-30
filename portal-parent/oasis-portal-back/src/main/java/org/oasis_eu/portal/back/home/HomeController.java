@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.back.home;
 
-import org.oasis_eu.portal.core.controller.PortalController;
+import org.oasis_eu.portal.back.generic.BackendController;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-public class HomeController extends PortalController {
+public class HomeController extends BackendController {
 
     @RequestMapping("/")
     public String home() {

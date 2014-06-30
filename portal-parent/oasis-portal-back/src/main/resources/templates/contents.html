@@ -115,10 +115,12 @@
     }).load();
 
     // Prevent from accidentally leaving
-    editor.getElement('editor').addEventListener('keydown', function() {
-        window.onbeforeunload = window.onbeforeunload || function() {
-            return "[[#{backend.leavewithoutsaving}]]";
-        }
+    editor.getElement('editor').addEventListener('keydown', function(event) {
+    	if (event.keyCode != 116 /* F5 */) {
+	        window.onbeforeunload = window.onbeforeunload || function() {
+	            return "[[#{backend.leavewithoutsaving}]]";
+	        }
+    	}
     });
 
     // Save button behavior

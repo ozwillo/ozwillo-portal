@@ -4,6 +4,17 @@ body, h2 {
     color: #636681;
 }
 
+#error-holder {
+	position: fixed;
+	top: 20px;
+	right: 20px;
+	z-index: 2000;
+}
+
+.alert {
+	font-size: 18px;
+}
+
 /* Navigation bar */
 
 .backend-oasis-navbar {

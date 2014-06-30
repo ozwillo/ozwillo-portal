@@ -5,8 +5,8 @@ import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.oasis_eu.portal.back.generic.BackendController;
 import org.oasis_eu.portal.core.controller.Languages;
-import org.oasis_eu.portal.core.controller.PortalController;
 import org.oasis_eu.portal.core.mongo.dao.cms.ContentItemRepository;
 import org.oasis_eu.portal.core.mongo.model.cms.ContentItem;
 import org.oasis_eu.portal.model.ContentItemInfo;
@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
  *
  */
 @Controller
-public class ContentController extends PortalController {
+public class ContentController extends BackendController {
     
     public static final String DEFAULT_CONTENT = "home";
 
@@ -87,18 +87,24 @@ public class ContentController extends PortalController {
     public String rename(@RequestParam("oldName") String oldName,
     		@RequestParam("newName") String newName) {
         if (!DEFAULT_CONTENT.equals(oldName)) {
-	        ContentItem item = repository.findOne(oldName);
-	        ContentItem existingItem = repository.findOne(newName);
-	        if (existingItem == null) {
-		        repository.delete(item);
-		        item.setId(newName);
-		        repository.save(item);
-		        return "redirect:/contents/edit/" + newName;
-	        }
-	        else {
-	        	// TODO Show error
-		        return "redirect:/contents/edit/" + oldName;
-	        }
+        	if (!newName.equals(oldName)) {
+    	        ContentItem item = repository.findOne(oldName);
+    	        ContentItem existingItem = repository.findOne(newName);
+    	        if (existingItem == null || newName.equals(oldName)) {
+    		        repository.delete(item);
+    		        item.setId(newName);
+    		        repository.save(item);
+    	        }
+    	        else {
+    	        	errorMessageService.addErrorMessage(
+    	        			messageSource.getMessage("backend.contents.rename.error.exists",
+    	        					new String[]{ newName },
+    	        					currentLanguage(request).getLocale()));
+    		        return "redirect:/contents/edit/" + oldName;
+    	        }
+        	}
+		    return "redirect:/contents/edit/" + newName;
+	        
         }
         else {
             return "redirect:/contents";
