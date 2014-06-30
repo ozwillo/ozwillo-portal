@@ -4,7 +4,8 @@ body, h2 {
 
 
 .backend-oasis-navbar {
-    background-color: #ffffff;
+    background-color: #666666;
+    border-bottom: 2px solid #222;
     height: 76px;
 }
 
@@ -16,30 +17,26 @@ div.backend-oasis img {
     padding-top: 10px;
 }
 
-.navbar {
-	background-color: #333;
-}
-
 #logo {
-	padding-top: 3px;
+	padding-top: 4px;
 }
 
 #logo-legend {
 	width: 179px;
 	text-align: center;
 	display: block;
-	margin-top: -6px;	
+	margin-top: -5px;	
 	font-weight: bold;
 	color: #F7F7F7;
 }
 
 ul.navbar-nav {
-    margin-left: 50px;
+    margin-left: 20px;
 }
 
 .navbar-nav li {
     position: relative;
-    width: 150px;
+    width: 100px;
     text-align: center;
     height: 76px;
 }
@@ -47,7 +44,7 @@ ul.navbar-nav {
 .navbar-nav li img {
     position: absolute;
     top: 10;
-    left: 55px;
+    left: 30px;
 }
 
 .navbar-nav li img.gray {
@@ -96,25 +93,21 @@ ul.navbar-nav {
 
 div.arrow-border {
     position: absolute;
-    left: 65px;
+    left: 40px;
     bottom: -20px;
     width: 10px;
     border: 10px solid transparent;
-    border-top: 10px inset #444;
+    border-top: 10px inset #222222;
 }
 
 div.arrow {
-    display: none;
-}
-
- /*
-.navbar-nav li.active:after {
-    position: absolute;
+    position:absolute;
     left: 40px;
-    content: "";
+    bottom: -18px;
+    width: 10px;
     border: 10px solid transparent;
-    border-top-color: #5b5f84;
-}      */
+    border-top: 10px outset #666666;
+}
 
 span.badge-notifications {
     background-color: #d9534f;
