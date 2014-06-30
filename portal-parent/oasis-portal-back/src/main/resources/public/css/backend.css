@@ -213,6 +213,10 @@ div.dash-switcher ul.nav .active a {
     background-color: #6e418e;
 }
 
+div.dash-switcher span.badge {
+    margin-top: 5px;
+}
+
 .form-group label {
     font-weight: normal;
 }

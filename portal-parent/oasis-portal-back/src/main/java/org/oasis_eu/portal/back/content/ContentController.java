@@ -13,6 +13,7 @@ import org.oasis_eu.portal.services.BackendNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -58,10 +59,13 @@ public class ContentController extends PortalController {
     
     @RequestMapping(value = "/contents/create", method = RequestMethod.POST)
     public String create(@RequestParam String contentId, Model model) {
-        ContentItem newContentItem = new ContentItem();
-        newContentItem.setId(contentId);
-        repository.save(newContentItem);
-        return "redirect:/contents/edit/" + contentId;
+        if (!StringUtils.isEmpty(contentId)) {
+            ContentItem newContentItem = new ContentItem();
+            newContentItem.setId(contentId);
+            repository.save(newContentItem);
+            return "redirect:/contents/edit/" + contentId;
+        }
+        return "redirect:/contents";
     }
     
     @RequestMapping(value = "/contents/save", method = RequestMethod.POST)
@@ -81,7 +85,7 @@ public class ContentController extends PortalController {
     @RequestMapping(value = "/contents/defaultlanguage", method = RequestMethod.POST)
     public String save(@RequestBody String defaultLanguage, Model model) {
         for (Languages language : Languages.values()) {
-            if (language.getName().equals(defaultLanguage)) {
+            if (language.getLocale().getLanguage().equals(defaultLanguage)) {
                 this.defaultLanguage = language;
                 break;
             }
@@ -92,22 +96,27 @@ public class ContentController extends PortalController {
     public String showContentsEditor(String contentId, Model model, HttpServletRequest request) {
         String page = "contents";
         contentId = ((contentId != null) ? contentId : DEFAULT_CONTENT);
+        ContentItemInfo contentItemStats = new ContentItemInfo(repository.findOne(contentId));
         
         model.addAttribute("navigation", backendNavigationService.getNavigation(page));
         model.addAttribute("page", page);
-        model.addAttribute("contentIdList", getContentIdList());
-        model.addAttribute("contentItem", repository.findOne(contentId));
+        model.addAttribute("contentList", getContentList());
+		model.addAttribute("currentContent", contentItemStats.getContentItem());
+        model.addAttribute("missingTranslations", contentItemStats.getMissingTranslations());
+        model.addAttribute("languagesCount", Languages.values().length);
         model.addAttribute("defaultLanguage", defaultLanguage != null ? defaultLanguage : currentLanguage(request));
         
         return "backend";
     }
 
-    private List<String> getContentIdList() {
-        // TODO only query IDs through projection : db.content_item.find({}, ["_id"])
-        return repository.findAll().stream()
-            .map(item -> item.getId())
-            .sorted()
-            .collect(Collectors.toList());
+    private List<ContentItemInfo> getContentList() {
+        // FIXME Bad performance
+        // Use clever mongo query, or simply store missing translations count in content item?
+        return repository.findAll()
+                .stream()
+                .sorted()
+                .map(item -> new ContentItemInfo(item))
+                .collect(Collectors.toList());
     }
-
+    
 }

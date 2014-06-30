@@ -11,7 +11,7 @@ import java.util.Map;
  * Date: 6/11/14
  */
 @Document(collection = "content_item")
-public class ContentItem {
+public class ContentItem implements Comparable<ContentItem> {
 
     @Id
     private String id;
@@ -33,4 +33,9 @@ public class ContentItem {
     public void setContent(Map<String, String> content) {
         this.content = content;
     }
+
+    public int compareTo(ContentItem o) {
+        return id.compareTo(o.getId());
+    }
+    
 }
