@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<head th:replace="includes/header(title=#{ui.backend},page='backend')">
+<head th:replace="includes/header(title=#{ui.backend})">
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -15,7 +15,6 @@
     <![endif]-->
 </head>
 <body>
-
 
 <div class="navbar navbar-fixed-top backend-oasis-navbar" role="navigation">
   <div class="navbar-header">
@@ -40,14 +39,17 @@
 </div>
 
 <div class="container">
-	<th:block th:replace="${page}">
-		Bienvenue dans l'administration !
+	<th:block th:replace="${pageTemplate} :: body">
+		Page non trouvée.
 	</th:block>
 </div>
 
 <th:block th:replace="includes/footer">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</th:block>
+
+<th:block th:include="${pageTemplate} :: footer">
 </th:block>
 
 </body>

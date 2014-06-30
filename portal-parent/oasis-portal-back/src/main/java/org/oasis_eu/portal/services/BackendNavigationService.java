@@ -18,7 +18,9 @@ public class BackendNavigationService {
     private final List<String> pages = Arrays.asList("contents");
 
     public List<BackendNavigation> getNavigation(String pagename) {
-        return pages.stream().map(id -> new BackendNavigation().setId(id).setActive(id.equals(pagename))).collect(Collectors.toList());
+        return pages.stream()
+        		.map(id -> new BackendNavigation().setId(id).setActive(id.equals(pagename)))
+        		.collect(Collectors.toList());
     }
     
     public List<String> getPages() {

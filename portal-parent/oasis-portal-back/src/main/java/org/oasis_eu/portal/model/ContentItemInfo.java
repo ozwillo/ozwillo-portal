@@ -1,10 +1,10 @@
-package org.oasis_eu.portal.back.content;
+package org.oasis_eu.portal.model;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.oasis_eu.portal.back.generic.Languages;
+import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.cms.ContentItem;
 
 /**

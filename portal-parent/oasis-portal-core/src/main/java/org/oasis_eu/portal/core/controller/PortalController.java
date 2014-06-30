@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.back.generic;
+package org.oasis_eu.portal.core.controller;
 
 import java.util.Locale;
 

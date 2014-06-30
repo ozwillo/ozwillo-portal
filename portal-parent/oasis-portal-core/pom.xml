@@ -35,6 +35,12 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+            <version>1.0.2.RELEASE</version>
+        </dependency>
+        
+        <dependency>
             <groupId>org.oasis.spring-integration</groupId>
             <artifactId>oasis-spring-integration</artifactId>
             <version>0.1-SNAPSHOT</version>
