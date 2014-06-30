@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<head th:replace="includes/header(title=#{ui.backend})">
+<head data-th-replace="includes/header(title=#{ui.backend})">
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -19,38 +19,40 @@
 <div class="navbar navbar-fixed-top backend-oasis-navbar" role="navigation">
   <div class="navbar-header">
       <div class="backend-oasis">
-          <img id="logo" th:src="@{/img/ozwillo-logo-white-small.png}" alt="OASIS"/><br />
-          <span id="logo-legend" th:text="#{ui.backend}"></span>
+          <a data-th-href="@{/}" href="/">
+	          <img id="logo" data-th-src="@{/img/ozwillo-logo-white-small.png}" alt="OASIS"/><br />
+	          <span id="logo-legend" data-th-text="#{ui.backend}"></span>
+          </a>
       </div>
   </div>
   <ul class="nav navbar-nav">
-      <li class="active" th:each="item : ${navigation}" th:class="${item.active ? 'active':''}">
-          <a href="#" th:href="@{'/' + ${item.id}}" th:class="${item.active?'':'nav-link'}">
-              <img th:if="${!item.active}" th:src="@{'/img/nav/' + ${item.id} + '-gray.png'}" th:alt="#{'backend.' + ${item.id}}" class="gray" />
-              <img th:src="@{'/img/nav/' + ${item.id} + '.png'}" th:alt="#{'backend.' + ${item.id}}" th:class="${item.active?'':'purple'}" />
-              <span th:text="#{'backend.' + ${item.id}}"></span>
+      <li class="active" data-th-each="item : ${navigation}" data-th-class="${item.active ? 'active':''}">
+          <a href="#" data-th-href="@{'/' + ${item.id}}" data-th-class="${item.active?'':'nav-link'}">
+              <img data-th-if="${!item.active}" data-th-src="@{'/img/nav/' + ${item.id} + '-gray.png'}" data-th-alt="#{'backend.' + ${item.id}}" class="gray" />
+              <img data-th-src="@{'/img/nav/' + ${item.id} + '.png'}" data-th-alt="#{'backend.' + ${item.id}}" data-th-class="${item.active?'':'purple'}" />
+              <span data-th-text="#{'backend.' + ${item.id}}"></span>
           </a>
-          <th:block th:if="${item.active}">
+          <data-th-block data-th-if="${item.active}">
               <div class="arrow-border"></div>
               <div class="arrow"></div>
-          </th:block>
+          </data-th-block>
       </li>
   </ul>
 </div>
 
 <div class="container">
-	<th:block th:replace="${pageTemplate} :: body">
+	<data-th-block data-th-replace="${pageTemplate} :: body">
 		Page non trouvée.
-	</th:block>
+	</data-th-block>
 </div>
 
-<th:block th:replace="includes/footer">
+<data-th-block data-th-replace="includes/footer">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-</th:block>
+</data-th-block>
 
-<th:block th:include="${pageTemplate} :: footer">
-</th:block>
+<data-th-block data-th-include="${pageTemplate} :: footer">
+</data-th-block>
 
 </body>
 </html>

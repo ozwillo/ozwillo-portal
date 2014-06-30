@@ -1,4 +1,4 @@
-<th:block th:fragment="body">
+<data-th-block data-th-fragment="body">
     
     <span class="text-center">
     <h2>Gestion des contenus</h2>
@@ -7,42 +7,43 @@
     <div class="row">
         <div class="col-sm-2 text-center page-switcher">
             <ul id="dashboard_list" class="nav nav-pills nav-stacked text-left">
-                <li th:each="info : ${contentList}" th:class="${currentContent.id == info.contentItem.id ? 'active' : ''}">
-                    <a th:href="${'/contents/edit/' + info.contentItem.id}">
-                        <span class="badge pull-right" th:if="${info.missingTranslations.size() != 0}"
-                            th:text="${info.missingTranslations.size()}"></span>
-                        <span th:text="${info.contentItem.id}"></span>
+                <li data-th-each="info : ${contentList}" data-th-class="${currentContent != null and currentContent.id == info.contentItem.id ? 'active' : ''}">
+                    <a data-th-href="${'/contents/edit/' + info.contentItem.id}">
+                        <span class="badge pull-right" data-th-if="${info.missingTranslations.size() != 0}"
+                            data-th-text="${info.missingTranslations.size()}"></span>
+                        <span data-th-text="${info.contentItem.id}"></span>
                     </a>
                 </li>
             </ul>
-            <form role="form" id="create-dash" method="POST" action="#" th:action="@{/contents/create}">
-                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+            <form role="form" id="create-dash" method="POST" action="#" data-th-action="@{/contents/create}">
+                <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
                 <div class="form-group">
-                    <label for="dashboardname" th:text="#{action.create}">+ create new</label>
+                    <label for="contentId" data-th-text="#{action.create}">+ create new</label>
                     <input type="text" name="contentId" id="contentId" class="form-control"/>
                 </div>
                 <div class="text-right">
-                    <input type="image" src="../public/img/icon/plus.png" th:src="@{/img/icon/plus.png}" id="create-dashboard-plus" />
+                    <input type="image" src="../public/img/icon/plus.png" data-th-src="@{/img/icon/plus.png}" id="create-dashboard-plus" />
                 </div>
             </form>
         </div>
-        <div class="col-sm-8">
+        <div class="col-sm-8" data-th-if="${currentContent}">
             <div class="form-buttons">
-                <input id="save" type="button" class="btn btn-primary" th:value="#{action.save}"/>
-    <!--             <input id="rename" type="button" class="btn btn-default" th:value="#{action.rename}"/> -->
-                <input id="delete" type="image" class="btn-image" th:src="@{/img/icon/delete.png}" th:if="${currentContent.id != 'home'}" />
+                <input id="save" type="button" class="btn btn-primary" data-th-value="#{action.save}"/>
+                <input id="rename" type="button" class="btn btn-default" data-th-value="#{action.rename}"
+                	data-th-if="${currentContent.id != 'home'}" data-toggle="modal" data-target="#rename-modal" />
+                <input id="delete" type="image" class="btn-image" data-th-src="@{/img/icon/delete.png}" data-th-if="${currentContent.id != 'home'}" />
                 <ul class="nav navbar-right">
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown">
-                            <span class="badge" th:if="${missingTranslations.size()}" th:text="${missingTranslations.size()}"></span>
-                            <span id="selectedLanguage" th:text="${currentLanguage.name}">English</span>
+                            <span class="badge" data-th-if="${missingTranslations.size()}" data-th-text="${missingTranslations.size()}"></span>
+                            <span id="selectedLanguage" data-th-text="${currentLanguage.name}">English</span>
                             <b class="caret"></b>
                         </a>
                         <ul class="dropdown-menu" >
-                            <li th:each="lang : ${languages}">
-                                <a thref="#" th:onclick="'javascript:switchLanguage(\'' + ${lang.locale} + '\',\'' + ${lang.name} + '\')'">
-                                    <span class="badge pull-right" th:if="${missingTranslations.indexOf(lang.locale.language) != -1}">!</span>
-                                    <span th:text="${lang.name}">Blablaish</span>
+                            <li data-th-each="lang : ${languages}">
+                                <a href="#" data-th-onclick="'javascript:switchLanguage(\'' + ${lang.locale} + '\',\'' + ${lang.name} + '\')'">
+                                    <span class="badge pull-right" data-th-if="${missingTranslations.indexOf(lang.locale.language) != -1}">!</span>
+                                    <span data-th-text="${lang.name}">Blablaish</span>
                                 </a>
                             </li>
                         </ul>
@@ -51,17 +52,47 @@
             </div>
             <div id="epiceditor"></div>
         </div>
+        <div class="col-sm-8" data-th-if="${currentContent == null}" data-th-text="#{backend.contents.notfound}">Not found</div>
+    </div>
+    
+    <div id="rename-modal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true" data-th-if="${currentContent}">
+	 <div class="modal-dialog">
+	   <div class="modal-content">
+	     <div class="modal-header">
+	       <button type="button" class="close" data-dismiss="modal">
+	       		<span aria-hidden="true">&times;</span>
+	       		<span class="sr-only">Close</span>
+	       </button>
+	       <h4 class="modal-title" data-th-value="#{action.rename} + '\'' + ${currentContent.id} + '\''">Rename</h4>
+	     </div>
+	     <form id="rename-form" class="form-inline" method="post" action="#" data-th-action="@{/contents/rename}">
+	     	<input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+	     	
+		     <div class="modal-body">
+		       <div class="form-group">
+                    <label for="newName" data-th-text="#{backend.contents.rename.label}">New name</label>
+                    <input type="text" name="newName" id="newName" class="form-control"/>
+                    <input type="hidden" name="oldName" id="oldName" data-th-value="${currentContent.id}" />
+                </div>
+		     </div>
+		     <div class="modal-footer">
+		       <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{action.cancel}">Cancel</button>
+		       <button type="submit" class="btn btn-primary" data-th-value="#{action.rename}">Rename</button>
+		     </div>
+	     </form>
+	   </div>
+	 </div>
     </div>
 
-</th:block>
+</data-th-block>
 
-<th:block th:fragment="footer">
-    <script src="/js/epiceditor.min.js"></script>
-    <script th:inline="javascript">
+<data-th-block data-th-fragment="footer">
+    <script data-th-src="@{/js/epiceditor.min.js}" src="/js/epiceditor.min.js"></script>
+    <script data-th-inline="javascript">
     
     var contentItem = /*[[${currentContent}]]*/ {};
-    var currentLocale = /*[[${defaultLanguage.locale.language}]]*/ 'en';
-    var currentLanguageName = /*[[${defaultLanguage.name}]]*/ 'English';
+    var currentLocale = /*[[${defaultEditorLanguage.locale.language}]]*/ 'en';
+    var currentLanguageName = /*[[${defaultEditorLanguage.name}]]*/ 'English';
 
     // Markdown editor init
     var editor = new EpicEditor({
@@ -107,7 +138,7 @@
             }
         });
     })
-
+    
     // Delete button behavior
     $('#delete').click(function() {
         $this = $(this);
@@ -152,4 +183,4 @@
     }
 
     </script>
-</th:block>
+</data-th-block>
