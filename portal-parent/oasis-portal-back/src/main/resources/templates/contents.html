@@ -63,7 +63,7 @@
 	       		<span aria-hidden="true">&times;</span>
 	       		<span class="sr-only">Close</span>
 	       </button>
-	       <h4 class="modal-title" data-th-value="#{action.rename} + '\'' + ${currentContent.id} + '\''">Rename</h4>
+	       <h4 class="modal-title" data-th-text="#{action.rename} + '\'' + ${currentContent.id} + '\''">Rename</h4>
 	     </div>
 	     <form id="rename-form" class="form-inline" method="post" action="#" data-th-action="@{/contents/rename}">
 	     	<input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>

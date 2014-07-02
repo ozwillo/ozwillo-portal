@@ -1,3 +1,5 @@
+/* Fonts */
+
 @font-face {
     font-family: 'Dunkin';
     src: url('/fonts/Dunkin.eot?') format('eot'),
@@ -22,6 +24,7 @@
     url('/fonts/DINAlternate-Light.svg#DIN') format('svg');
 }
 
+/* General */
 
 body {
   padding-top: 80px;
@@ -66,6 +69,22 @@ h6 {
     color: #222222;
 }
 
+/* Navbar */
+
+.navbar * .btn {
+    font-size: 14pt;
+}
+.navbar * .btn-ozwillo {
+    margin-top: 3px;
+    margin-left: 13px;
+}
+
+.navbar-nav>li>a {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+/* Forms */
 
 b.caret {
     border: none;
@@ -73,8 +92,6 @@ b.caret {
     width: 15px;
     background: url("/img/icon/caret.png");
 }
-
-
 
 .btn-ozwillo {
     color: white;
@@ -132,17 +149,4 @@ b.caret {
 
 .btn-noborder {
     border: 0;
-}
-
-.navbar * .btn {
-    font-size: 14pt;
-}
-.navbar * .btn-ozwillo {
-    margin-top: 3px;
-    margin-left: 13px;
-}
-
-.navbar-nav>li>a {
-    padding-top: 10px;
-    padding-bottom: 10px;
 }

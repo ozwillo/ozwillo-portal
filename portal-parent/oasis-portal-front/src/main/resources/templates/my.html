@@ -95,11 +95,17 @@
 
 <div class="container">
     <div class="row">
-        <div class="col-sm-2 text-center dash-switcher">
+        <div id="dashboard-switcher" class="col-sm-2 text-center dash-switcher" th:fragment="dashboard-switcher">
             <img src="../public/img/my/switch-dash.png" th:src="@{/img/my/switch-dash.png}" alt="Change dashboard" th:alt="#{my.switch-dash}" />
             <p th:text="#{my.switch-dash}">Change dashboard</p>
             <ul class="nav nav-pills nav-stacked text-left" id="dashboard_list">
-                <li class="active" th:each="ctx : ${contexts}" th:class="${context.id == ctx.id} ? 'active' : 'inactive'"><a class="dash-switch-link" href="#" th:href="@{'/my/dashboard/' + ${ctx.id}}" th:text="${ctx.name}" th:data="${ctx.id}">default</a></li>
+                <li class="active" th:each="ctx : ${contexts}" th:class="${context.id == ctx.id} ? 'active' : 'inactive'">
+                	<a class="dash-switch-link" href="#" th:href="@{'/my/dashboard/' + ${ctx.id}}" th:data="${ctx.id}">
+                		<span th:text="${ctx.name}">default</span>
+                		<input id="manage-dashboard-btn" type="image" src="/img/icon/edit.png" class="pull-right"
+                			th:if="${context.id == ctx.id}" />
+                	</a>
+                </li>
                 <li th:remove="all"><a href="#">pro</a></li>
                 <li id="dashboard_template"><a href="#" class="dash-switch-link" th:href="@{/my/dashboard/}">template</a></li>
             </ul>
@@ -113,6 +119,42 @@
                     <input type="image" src="../public/img/icon/plus.png" th:src="@{/img/icon/plus.png}" id="create-dashboard-plus" />
                 </div>
             </form>
+			            
+			<div id="edit-dashboard-modal" class="modal fade" data-backdrop="" tabindex="-1" role="dialog" aria-hidden="true">
+			 <div class="modal-dialog">
+			   <div class="modal-content">
+			     <div class="modal-header">
+			       <button type="button" class="close" data-dismiss="modal">
+			       		<span aria-hidden="true">&times;</span>
+			       		<span class="sr-only">Close</span>
+			       </button>
+			       <!-- L1ON -->
+			       <h4 class="modal-title" th:text="#{my.manage} + ' \'' + ${context.name} + '\''">Manage dashboard</h4>
+			     </div>
+			     <form id="manage-dash" class="form-inline" method="post" action="#" data-th-action="@{/my/dashboard/manage}">
+			     	<input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+			     	
+				     <div class="modal-body">
+				       <div class="form-group">
+		                   <label for="dashboardname" data-th-text="#{my.name}">New name</label>
+		                   <input type="text" name="dashboardname" class="form-control" data-th-value="${context.name}" />
+			               <input type="hidden" name="dashboardid" data-th-value="${context.id}" />
+			               <input type="hidden" name="delete" id="dash-delete-value" />
+			           </div>
+				       <div class="form-group" data-th-if="${context.isPrimary()}">
+				       		<p data-th-text="#{my.delete.primary}"></p>
+				       </div>
+				     </div>
+				     <div class="modal-footer">
+				       <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{ui.cancel}">Cancel</button>
+				       <button type="submit" class="btn btn-primary" data-th-value="#{ui.save}">Save</button>
+				       <button id="dash-delete-btn" type="submit" class="btn btn-primary"
+				       		data-th-if="${not context.isPrimary()}" data-th-value="#{ui.delete}">Delete</button>
+				     </div>
+			     </form>
+			   </div>
+			 </div>
+			</div>
         </div>
 
         <div class="col-sm-8">
@@ -173,7 +215,6 @@
         </div>
     </div>
 </div>
-
 
 <th:block th:replace="includes/footer">
 

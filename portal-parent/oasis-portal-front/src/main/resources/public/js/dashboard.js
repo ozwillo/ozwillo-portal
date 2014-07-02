@@ -1,8 +1,7 @@
 $(document).ready(function () {
 
-
-
-    /* init csrf prevention */
+    /* Init csrf prevention */
+	
     $(function () {
         var token = $("meta[name='_csrf']").attr("content");
         var header = $("meta[name='_csrf_header']").attr("content");
@@ -11,56 +10,97 @@ $(document).ready(function () {
         });
     });
 
-    /* switch dashboard */
-    $("a.dash-switch-link").click(function(e) {
-        e.preventDefault();
-        var link = $(this);
-        $.get(link.attr("href") + "/fragment",
-            function(fragment) {
-                $("#applications").html(fragment);
-                $("#applications").attr("data", link.attr("data"));
+    
+    /* Dashboard switcher */
 
+    
+	var updateDashboardSwitcher = function(fragment) {
+    	$('#dashboard-switcher').replaceWith(fragment);
+    	bindDashboardSwitcher();
+	}
+	
+    var bindDashboardSwitcher = function() {
+    	
+    	// Switch dashboard
+	    $("a.dash-switch-link").click(function(e) {
+	        e.preventDefault();
+	        var link = $(this);
+	
+	        $.get(link.attr("href") + "/fragment/switcher",
+	            function(fragment) {
+	        		updateDashboardSwitcher(fragment);
+		        	
+		        	$.get(link.attr("href") + "/fragment",
+	                    function(fragment) {
+	                        $("#applications").html(fragment);
+	                        $("#applications").attr("data", link.attr("data"));
+	
+	                        if (typeof history.pushState == 'function') { // avoid doing it in IE!
+	                            history.pushState({}, "dashboard", link.attr("href"));
+	                        }
+	                    }
+	                );
+		        }
+	        );
+	    });
 
-                $("div.dash-switcher * li").removeClass("active").addClass("inactive");
-                link.parent().addClass("active").removeClass("inactive")
-                init_drag();
+	    // Create new dashboard
+	    var dashboard_template = $("#dashboard_template");
+	    dashboard_template.detach();
 
-                $("div.dash-switcher * li").droppable("option", "disabled", false);
-                link.parent().droppable("option", "disabled", true);
-
-                if (typeof history.pushState == 'function') { // avoid doing it in IE!
-                    history.pushState({}, "dashboard", link.attr("href"));
+	    $("#create-dash").submit(function (e) {
+	        e.preventDefault();
+	        
+	        var input = $("#dashboardname");
+	        var name = input.val();
+	        if (name) {
+	            $.ajax({
+	            	url: $("#create-dash").attr("action"),
+	            	method: 'POST',
+	                data: {"dashboardname": name},
+	                dataType: "html",
+	                success: function(fragment) {
+	                	updateDashboardSwitcher(fragment);
+	                	refreshDashboard();
+	                }
+	            });
+	        }
+	    });
+    	
+    	// Open dashboard management
+    	$('#manage-dashboard-btn').click(function(e) {
+    		e.stopPropagation();
+    		
+    		$('#edit-dashboard-modal').modal('show');
+    		return false;
+    	});
+	    
+	    // Submit dashboard management
+    	$('#dash-delete-btn').click(function() {
+    		$('#dash-delete-value').val(true);
+    	});
+	    $("#manage-dash").submit(function (e) {
+	        e.preventDefault();
+    		
+            $.ajax({
+            	url: $(this).attr("action"),
+            	method: 'POST',
+                data: $(this).serialize(),
+                dataType: 'html',
+                success: function(fragment) {
+                	updateDashboardSwitcher(fragment);
+                	
+                	// Refresh dashboard to update title
+                	if (!$('#dash-delete-value').val()) {
+                		refreshDashboard();
+                	}
                 }
-            }
-        );
-    });
-
-    /* Create new dashboard */
-    var dashboard_template = $("#dashboard_template");
-    dashboard_template.detach();
-
-    $("#create-dash").submit(function (e) {
-        e.preventDefault();
-        var input = $("#dashboardname");
-        var name = input.val();
-        if (name) {
-
-            $.post($("#create-dash").attr("action") + "/fragment",
-                {"dashboardname": name},
-                function (result) {
-                    var dash = dashboard_template.clone(true);
-                    dash.removeAttr("id");
-                    var link = dash.find("a.dash-switch-link");
-                    link.attr("data", result);
-                    link.attr("href", link.attr("href") + result);
-                    link.html(name);
-                    $("#dashboard_list").append(dash);
-                    link.click();
-                    input.val("");
-                    input.trigger("blur");
-                });
-        }
-    });
+            });
+	    });
+	    
+	};
+	
+	bindDashboardSwitcher();
 
 
     /* Notifications */
@@ -92,16 +132,17 @@ $(document).ready(function () {
     };
 
     updateAppNotifications();
+    
+    
+    /* Dashboard */
 
-    var init_drag = function() {
+    var initDrag = function() {
         /* application drag and drop */
         $(".app-icon").draggable({
-
                 cursor:"move",
                 revert: true,
                 stack: "#applications div"
-            }
-        );
+        });
 
         $(".app-icon").droppable({
             accept: ".app-icon",
@@ -160,17 +201,29 @@ $(document).ready(function () {
                         dataType: "html",
                         success: function (fragment) {
                             $("#applications").html(fragment);
-                            init_drag();
+                            initDrag();
                         }
                     }
                 );
             }
         });
     };
-
-    init_drag();
-
-
+    
+    var refreshDashboard = function() {
+    	// Load according to the active dashboard link
+    	var $link = $(".active a.dash-switch-link");
+    	$.get($link.attr('href') + "/fragment",
+            function(fragment) {
+                $("#applications").replaceWith(fragment);
+                $("#applications").attr("data", $link.attr("data"));
+                history.pushState({}, "dashboard", $link.attr("href"));
+            }
+        );
+    	
+    	initDrag();
+    }
+    
+    initDrag();
 
 });
 

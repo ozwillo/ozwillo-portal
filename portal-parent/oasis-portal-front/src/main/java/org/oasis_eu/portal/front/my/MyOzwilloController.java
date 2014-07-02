@@ -1,12 +1,17 @@
 package org.oasis_eu.portal.front.my;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.AppNotificationData;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalDashboardService;
-import org.oasis_eu.portal.services.LocalServiceService;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +19,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.util.StringUtils;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -59,10 +67,17 @@ public class MyOzwilloController extends PortalController {
     public String dashboard(@PathVariable String contextId, Model model) {
         List<UserContext> contexts = portalDashboardService.getUserContexts();
         model.addAttribute("contexts", contexts);
-        model.addAttribute("context", portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst().get());
-        model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
-        model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
-        return "my";
+        Optional<UserContext> optUserContext = portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst();
+        if (optUserContext.isPresent()) {
+			model.addAttribute("context", optUserContext.get());
+	        model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
+	        model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
+        	return "my";
+        }
+        else {
+        	// Invalid dashboard, display default one
+        	return "redirect:/my";
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET, value={"/dashboard/{contextId}/fragment"})
@@ -72,11 +87,36 @@ public class MyOzwilloController extends PortalController {
         return "my::dashboard";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value={"/dashboard/{contextId}/fragment/switcher"})
+    public String dashboardSwitcherFragment(@PathVariable String contextId, Model model) {
+        model.addAttribute("contexts", portalDashboardService.getUserContexts());
+        model.addAttribute("context", portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst().get());
+        return "my::dashboard-switcher";
+    }
 
     @RequestMapping(method = RequestMethod.POST, value = "/dashboard")
-    public String createDashboard(@RequestParam String dashboardname) {
+    public String createDashboard(@RequestParam String dashboardname, Model model) {
         UserContext uc = portalDashboardService.createContext(dashboardname);
-        return "redirect:/my/dashboard/" + uc.getId();
+        model.addAttribute("contexts", portalDashboardService.getUserContexts());
+        model.addAttribute("context", uc);
+        return "my::dashboard-switcher";
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value = "/dashboard/manage")
+    public String manageDashboard(@RequestParam String dashboardid,
+    		@RequestParam String dashboardname,
+    		@RequestParam(required=false, defaultValue="") String delete,
+    		Model model) {
+    	UserContext uc;
+    	if (!StringUtils.isEmpty(delete)) {
+            uc = portalDashboardService.deleteContext(dashboardid);
+    	}
+    	else {
+            uc = portalDashboardService.renameContext(dashboardid, dashboardname);
+    	}
+        model.addAttribute("contexts", portalDashboardService.getUserContexts());
+		model.addAttribute("context", uc);
+        return "my::dashboard-switcher";
     }
 
     @RequestMapping(method = RequestMethod.POST, value = "/dashboard/reorder")
@@ -100,13 +140,6 @@ public class MyOzwilloController extends PortalController {
 
         return "my::dashboard";
 
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value = "/dashboard/fragment")
-    @ResponseBody
-    public String createDashboardFragment(@RequestParam String dashboardname) {
-        UserContext uc = portalDashboardService.createContext(dashboardname);
-        return uc.getId();
     }
 
     @RequestMapping(method = RequestMethod.GET, value="/notif")

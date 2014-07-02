@@ -1,5 +1,15 @@
 package org.oasis_eu.portal.services;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
@@ -19,14 +29,6 @@ import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
 import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * User: schambon
@@ -91,9 +93,15 @@ public class PortalDashboardService {
 //        }
         Map<String, Subscription> subs = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
-        return getDash().getContexts()
-                .stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().get().getSubscriptions()
-                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getCatalogId).collect(Collectors.toList());
+        Optional<UserContext> optUserContext = getDash().getContexts()
+                .stream().filter(uc -> uc.getId().equals(userContextId)).findFirst();
+        if (optUserContext.isPresent()) {
+			return optUserContext.get().getSubscriptions()
+	                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getCatalogId).collect(Collectors.toList());
+        }
+        else {
+        	return Collections.emptyList();
+        }
 
     }
 
@@ -127,14 +135,50 @@ public class PortalDashboardService {
 
 
     public UserContext createContext(String name) {
-        UserContext ctx = new UserContext().setId(UUID.randomUUID().toString()).setName(name);
         Dashboard dash = getDash();
-        dash.getContexts().add(ctx);
-        dashboardRepository.save(dash);
-
-        return ctx;
+    	List<UserContext> userContexts = dash.getContexts();
+		Optional<UserContext> existingContext = userContexts.stream().filter(ctx -> ctx.getName().equals(name)).findAny();
+		if (!existingContext.isPresent()) {
+	        UserContext ctx = new UserContext().setId(UUID.randomUUID().toString()).setName(name);
+	        dash.getContexts().add(ctx);
+	        dashboardRepository.save(dash);
+	        return ctx;
+		}
+		else {
+			return existingContext.get();
+		}
     }
 
+    public UserContext renameContext(String id, String name) {
+    	Dashboard dash = getDash();
+    	List<UserContext> userContexts = dash.getContexts();
+		UserContext userContext = userContexts.stream().filter(ctx -> ctx.getId().equals(id)).findFirst().get();
+		boolean nameTaken = userContexts.stream().filter(ctx -> ctx.getName().equals(name) && !ctx.getId().equals(id)).findAny().isPresent();
+		if (!nameTaken) {
+	    	userContext.setName(name);
+	    	dashboardRepository.save(dash);
+		}
+    	
+        return userContext;
+    }
+
+    public UserContext deleteContext(String id) {
+    	Dashboard dash = getDash();
+    	
+    	List<UserContext> userContexts = dash.getContexts();
+		UserContext userContextToDelete = userContexts.stream().filter(ctx -> ctx.getId().equals(id)).findFirst().get();
+    	if (!userContextToDelete.isPrimary()) { // Prevent from deleting the primary context
+    		List<UserContext> remainingContexts = userContexts.stream().filter(ctx -> !ctx.getId().equals(id)).collect(Collectors.toList());
+    		dash.setContexts(remainingContexts);
+	    	dashboardRepository.save(dash);
+	    	return remainingContexts.get(0);
+    	}
+    	else {
+    		return userContextToDelete;
+    	}
+    	
+    }
+    
     public void moveBefore(String userContextId, String subjectId, String objectId) {
         move(userContextId, subjectId, objectId, (p1, p2) -> Stream.of(p2, p1));
     }

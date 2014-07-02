@@ -292,6 +292,10 @@ div.dash-switcher ul.nav .active a {
     background-color: #6e418e;
 }
 
+.dash-switch-link input {
+	margin-top: 4px;
+}
+
 .form-group label {
     font-weight: normal;
 }
