@@ -90,6 +90,9 @@ $(document).ready(function () {
                 success: function(fragment) {
                 	updateDashboardSwitcher(fragment);
                 	
+                	// XXX Remove dangling Bootstrap backdrops after template reloading 
+                	$('.modal-backdrop').remove();
+                	
                 	// Refresh dashboard to update title
                 	if (!$('#dash-delete-value').val()) {
                 		refreshDashboard();
