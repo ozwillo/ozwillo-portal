@@ -77,28 +77,33 @@ $(document).ready(function () {
 	    
 	    // Submit dashboard management
     	$('#dash-delete-btn').click(function() {
-    		$('#dash-delete-value').val(true);
+    		$('#dash-delete-value').val("delete");
     	});
 	    $("#manage-dash").submit(function (e) {
 	        e.preventDefault();
+	        
+	        var deleteDashboard = $('#dash-delete-value').val() == "delete";
+    		$('#dash-delete-value').val("");
     		
-            $.ajax({
-            	url: $(this).attr("action"),
-            	method: 'POST',
-                data: $(this).serialize(),
-                dataType: 'html',
-                success: function(fragment) {
-                	updateDashboardSwitcher(fragment);
-                	
-                	// XXX Remove dangling Bootstrap backdrops after template reloading 
-                	$('.modal-backdrop').remove();
-                	
-                	// Refresh dashboard to update title
-                	if (!$('#dash-delete-value').val()) {
-                		refreshDashboard();
-                	}
-                }
-            });
+    		if (!deleteDashboard || confirm($('#dash-delete-btn').attr('data'))) {
+	            $.ajax({
+	            	url: $(this).attr("action"),
+	            	method: 'POST',
+	                data: $(this).serialize(),
+	                dataType: 'html',
+	                success: function(fragment) {
+	                	updateDashboardSwitcher(fragment);
+	                	
+	                	// XXX Remove dangling Bootstrap backdrops after template reloading 
+	                	$('.modal-backdrop').remove();
+	                	
+	                	// Refresh dashboard to update title
+	                	if (!deleteDashboard) {
+	                		refreshDashboard();
+	                	}
+	                }
+	            });
+    		}
 	    });
 	    
 	};
