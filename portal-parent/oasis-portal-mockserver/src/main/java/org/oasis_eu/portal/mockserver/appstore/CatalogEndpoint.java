@@ -7,11 +7,14 @@ import org.oasis_eu.portal.core.model.appstore.CatalogEntryType;
 import org.oasis_eu.portal.core.model.appstore.PaymentOption;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.mockserver.main.Catalog;
-import org.oasis_eu.portal.mockserver.main.Subscriptions;
+import org.oasis_eu.portal.mockserver.repo.Catalog;
+import org.oasis_eu.portal.mockserver.repo.PendingCreationRequests;
+import org.oasis_eu.portal.mockserver.repo.Subscriptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
 
 import java.util.*;
 
@@ -33,6 +36,12 @@ public class CatalogEndpoint {
     @Autowired
     private Subscriptions subscriptions;
 
+    @Autowired
+    private PendingCreationRequests pendingCreationRequests;
+
+    @Autowired
+    private RestTemplate restTemplate;
+
     @RequestMapping(method = POST, value="/testdata")
     public void resetTestData() {
 
@@ -51,6 +60,8 @@ public class CatalogEndpoint {
         ckArchetype.setPaymentOption(PaymentOption.PAID);
         ckArchetype.setVisible(true);
         ckArchetype.setProviderId("6dccdb8d-ec46-4675-9965-806ea37b73e1");      // Open Wide
+        ckArchetype.setInstantiationEndpoint("http://localhost:9090/admin/create-instance");
+        ckArchetype.setSecret("--secret citizen kin password--");
 
         catalog.save(ckArchetype);
     }
@@ -67,7 +78,7 @@ public class CatalogEndpoint {
     }
 
     @RequestMapping(method = POST, value = "/buy/{id}/{userId}")
-    public CatalogEntry subscribe(@PathVariable String userId, @PathVariable String id) {
+    public void subscribe(@PathVariable String userId, @PathVariable String id) {
 
         CatalogEntry base = catalog.findOne(id);
         if (base != null) {
@@ -82,109 +93,125 @@ public class CatalogEndpoint {
                 s.setUserId(userId);
 
                 subscriptions.save(s);
-                return base;
+                return;
 
             } else {
-                // hard case: create a new instance and afferent services
-                // this is a mock, so no worries with hardcoded stuff in there
-                if (base.getId().equals("__citizenkin__")) {
 
-                    CatalogEntry backOffice = new CatalogEntry();
-                    backOffice.setType(CatalogEntryType.SERVICE);
-                    backOffice.setVisible(false);
-                    backOffice.setDefaultName("Citizen forms");
-                    backOffice.setDefaultDescription("forms for the citizens");
-                    backOffice.setLocalizedNames(new HashMap<String, String>() {{
-                        put("fr", "Formulaires citoyens");
-                        put("bg", "Форми на гражданите");
-                    }});
-                    backOffice.setLocalizedDescriptions(new HashMap<String, String>() {{
-                        put("en", "Citizen Relationship Management");
-                        put("fr", "Portail de relations citoyennes");
-                        put("it", "Portale rapporto cittadino");
-                        put("ca", "Portal relació ciutadà");
-                        put("tr", "Vatandaş ilişki portalı");
-                        put("bg", "Портал гражданин отношения");
-                        put("es", "portal relación ciudadano");
-                    }});
-                    backOffice.setDefaultLocale(Locale.ENGLISH);
+                CreateInstanceRequest request = new CreateInstanceRequest();
+                request.setClientId("41184194-d40b-4720-87a9-284d2fa9d5ed"); // Citizen Kin
+                request.setClientSecret("41184194-d40b-4720-87a9-284d2fa9d5ed");
+                request.setInstanceId(UUID.randomUUID().toString());
+                request.setOrganizationId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");  // Valence
+                request.setUserId(userId);
 
-                    backOffice.setId(UUID.randomUUID().toString());
-                    backOffice.setParentId(base.getId());
-                    backOffice.setUrl("http://31.172.165.220/back/valence");
-                    backOffice.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");  // Valence
-                    catalog.save(backOffice);
+                pendingCreationRequests.save(request);
 
-                    CatalogEntry frontOffice = new CatalogEntry();
-                    frontOffice.setType(CatalogEntryType.SERVICE);
-                    frontOffice.setVisible(true);
-                    frontOffice.setTargetAudience(Arrays.asList(Audience.CITIZENS));
-                    frontOffice.setDefaultName("Valence Forms");
-                    frontOffice.setDefaultDescription("Citizen forms for Valence");
-                    frontOffice.setLocalizedNames(new HashMap<String, String>() {{
-                        put("fr", "Formalités à Valence");
-                        put("bg", "Форми на гражданите на град Валенсия");
-                    }});
-                    frontOffice.setLocalizedDescriptions(new HashMap<String, String>() {{
-                        put("fr", "Portail administratif de la ville de Valence");
-                        put("bg", "Форми на гражданите на град Валенсия");
-                    }});
-                    frontOffice.setDefaultLocale(Locale.ENGLISH);
-                    frontOffice.setId("0a046fde-a20f-46eb-8252-48b78d89a9a2");
-                    frontOffice.setParentId(base.getId());
-                    frontOffice.setUrl("http://31.172.165.220/front/valence");
-                    frontOffice.setTerritoryId("26000");
-                    frontOffice.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");  // Valence
-                    frontOffice.setPaymentOption(PaymentOption.FREE);
-
-                    catalog.save(frontOffice);
-
-                    CatalogEntry electoralRoll = new CatalogEntry();
-                    electoralRoll.setType(CatalogEntryType.SERVICE);
-                    electoralRoll.setVisible(true);
-                    electoralRoll.setDefaultName("Register as a voter");
-                    electoralRoll.setDefaultDescription("Preregister on the electoral rolls of the city of Valence");
-                    electoralRoll.setLocalizedNames(new HashMap<String, String>() {{
-                        put("fr", "Inscription sur liste électorale");
-                    }});
-                    electoralRoll.setLocalizedDescriptions(new HashMap<String, String>() {{
-                        put("fr", "Faire une préinscription en ligne sur les listes électorales de la ville de Valence");
-                    }});
-                    electoralRoll.setDefaultLocale(Locale.ENGLISH);
-                    electoralRoll.setId(UUID.randomUUID().toString());
-                    electoralRoll.setParentId(base.getId());
-                    electoralRoll.setUrl("http://31.172.165.220/front/valence/form/electoral_roll_registration/init");
-                    electoralRoll.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");           // Valence
-                    electoralRoll.setPaymentOption(PaymentOption.FREE);
-                    electoralRoll.setTerritoryId("26000");
-                    electoralRoll.setTargetAudience(Arrays.asList(Audience.CITIZENS));
-
-                    catalog.save(electoralRoll);
-
-                    Subscription s = new Subscription();
-                    s.setSubscriptionType(SubscriptionType.MANAGER);
-                    s.setCatalogId(backOffice.getId());
-                    s.setUserId(userId);
-                    s.setCreated(Instant.now());
-                    s.setId(UUID.randomUUID().toString());
-                    subscriptions.save(s);
-
-                    return backOffice;
-
-                } else if (base.getId().equals("__openelec__")) {
-                    return base;
-                } else {
-
-                    Subscription s = new Subscription();
-                    s.setSubscriptionType(SubscriptionType.PERSONAL);
-                    s.setCatalogId(base.getId());
-                    s.setUserId(userId);
-                    s.setCreated(Instant.now());
-                    s.setId(UUID.randomUUID().toString());
-                    subscriptions.save(s);
-
-                    return base;
+                ResponseEntity instance = restTemplate.postForEntity(base.getInstantiationEndpoint(), request, Void.class);
+                if (! instance.getStatusCode().is2xxSuccessful()) {
+                    throw new UnableToInstantiateException();
                 }
+
+
+//                // hard case: create a new instance and afferent services
+//                // this is a mock, so no worries with hardcoded stuff in there
+//                if (base.getId().equals("__citizenkin__")) {
+//
+//                    CatalogEntry backOffice = new CatalogEntry();
+//                    backOffice.setType(CatalogEntryType.SERVICE);
+//                    backOffice.setVisible(false);
+//                    backOffice.setDefaultName("Citizen forms");
+//                    backOffice.setDefaultDescription("forms for the citizens");
+//                    backOffice.setLocalizedNames(new HashMap<String, String>() {{
+//                        put("fr", "Formulaires citoyens");
+//                        put("bg", "Форми на гражданите");
+//                    }});
+//                    backOffice.setLocalizedDescriptions(new HashMap<String, String>() {{
+//                        put("en", "Citizen Relationship Management");
+//                        put("fr", "Portail de relations citoyennes");
+//                        put("it", "Portale rapporto cittadino");
+//                        put("ca", "Portal relació ciutadà");
+//                        put("tr", "Vatandaş ilişki portalı");
+//                        put("bg", "Портал гражданин отношения");
+//                        put("es", "portal relación ciudadano");
+//                    }});
+//                    backOffice.setDefaultLocale(Locale.ENGLISH);
+//
+//                    backOffice.setId(UUID.randomUUID().toString());
+//                    backOffice.setParentId(base.getId());
+//                    backOffice.setUrl("http://31.172.165.220/back/valence");
+//                    backOffice.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");  // Valence
+//                    catalog.save(backOffice);
+//
+//                    CatalogEntry frontOffice = new CatalogEntry();
+//                    frontOffice.setType(CatalogEntryType.SERVICE);
+//                    frontOffice.setVisible(true);
+//                    frontOffice.setTargetAudience(Arrays.asList(Audience.CITIZENS));
+//                    frontOffice.setDefaultName("Valence Forms");
+//                    frontOffice.setDefaultDescription("Citizen forms for Valence");
+//                    frontOffice.setLocalizedNames(new HashMap<String, String>() {{
+//                        put("fr", "Formalités à Valence");
+//                        put("bg", "Форми на гражданите на град Валенсия");
+//                    }});
+//                    frontOffice.setLocalizedDescriptions(new HashMap<String, String>() {{
+//                        put("fr", "Portail administratif de la ville de Valence");
+//                        put("bg", "Форми на гражданите на град Валенсия");
+//                    }});
+//                    frontOffice.setDefaultLocale(Locale.ENGLISH);
+//                    frontOffice.setId("0a046fde-a20f-46eb-8252-48b78d89a9a2");
+//                    frontOffice.setParentId(base.getId());
+//                    frontOffice.setUrl("http://31.172.165.220/front/valence");
+//                    frontOffice.setTerritoryId("26000");
+//                    frontOffice.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");  // Valence
+//                    frontOffice.setPaymentOption(PaymentOption.FREE);
+//
+//                    catalog.save(frontOffice);
+//
+//                    CatalogEntry electoralRoll = new CatalogEntry();
+//                    electoralRoll.setType(CatalogEntryType.SERVICE);
+//                    electoralRoll.setVisible(true);
+//                    electoralRoll.setDefaultName("Register as a voter");
+//                    electoralRoll.setDefaultDescription("Preregister on the electoral rolls of the city of Valence");
+//                    electoralRoll.setLocalizedNames(new HashMap<String, String>() {{
+//                        put("fr", "Inscription sur liste électorale");
+//                    }});
+//                    electoralRoll.setLocalizedDescriptions(new HashMap<String, String>() {{
+//                        put("fr", "Faire une préinscription en ligne sur les listes électorales de la ville de Valence");
+//                    }});
+//                    electoralRoll.setDefaultLocale(Locale.ENGLISH);
+//                    electoralRoll.setId(UUID.randomUUID().toString());
+//                    electoralRoll.setParentId(base.getId());
+//                    electoralRoll.setUrl("http://31.172.165.220/front/valence/form/electoral_roll_registration/init");
+//                    electoralRoll.setProviderId("a2342900-f9eb-4d54-bf30-1e0d763ec4af");           // Valence
+//                    electoralRoll.setPaymentOption(PaymentOption.FREE);
+//                    electoralRoll.setTerritoryId("26000");
+//                    electoralRoll.setTargetAudience(Arrays.asList(Audience.CITIZENS));
+//
+//                    catalog.save(electoralRoll);
+//
+//                    Subscription s = new Subscription();
+//                    s.setSubscriptionType(SubscriptionType.MANAGER);
+//                    s.setCatalogId(backOffice.getId());
+//                    s.setUserId(userId);
+//                    s.setCreated(Instant.now());
+//                    s.setId(UUID.randomUUID().toString());
+//                    subscriptions.save(s);
+//
+//                    return backOffice;
+//
+//                } else if (base.getId().equals("__openelec__")) {
+//                    return base;
+//                } else {
+//
+//                    Subscription s = new Subscription();
+//                    s.setSubscriptionType(SubscriptionType.PERSONAL);
+//                    s.setCatalogId(base.getId());
+//                    s.setUserId(userId);
+//                    s.setCreated(Instant.now());
+//                    s.setId(UUID.randomUUID().toString());
+//                    subscriptions.save(s);
+//
+//                    return base;
+//                }
 
             }
 
@@ -194,11 +221,19 @@ public class CatalogEndpoint {
 
     }
 
+
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     private void handleException() {}
+
+    @ExceptionHandler(UnableToInstantiateException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    private void handleUnableToInstantiate() {}
+
+    private static class UnableToInstantiateException extends RuntimeException {
+    }
+
+    private static class NotFoundException extends RuntimeException {
+    }
 }
 
-class NotFoundException extends RuntimeException {
-
-}

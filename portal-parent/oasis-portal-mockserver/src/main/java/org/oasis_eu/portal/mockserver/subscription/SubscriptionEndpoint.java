@@ -1,8 +1,7 @@
 package org.oasis_eu.portal.mockserver.subscription;
 
 import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.mockserver.main.Subscriptions;
-import org.oasis_eu.portal.mockserver.repo.TestData;
+import org.oasis_eu.portal.mockserver.repo.Subscriptions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
