@@ -29,7 +29,7 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences) {
         URI uri = UriComponentsBuilder.fromHttpUrl(endpoint)
-                .queryParam("targetAudience", targetAudiences.toArray(new Audience[targetAudiences.size()]))
+                .queryParam("targetAudience", (Object[]) targetAudiences.toArray(new Audience[targetAudiences.size()]))
                 .build()
                 .toUri();
 

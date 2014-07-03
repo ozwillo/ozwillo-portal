@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.mockserver.main;
+package org.oasis_eu.portal.mockserver.repo;
 
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.springframework.data.mongodb.repository.MongoRepository;

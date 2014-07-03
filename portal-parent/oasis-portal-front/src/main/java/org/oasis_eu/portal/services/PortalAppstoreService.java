@@ -1,25 +1,24 @@
 package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.dao.OrganizationStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.Audience;
 import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.PaymentOption;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.model.AcquisitionStatus;
 import org.oasis_eu.portal.model.AppInfo;
 import org.oasis_eu.portal.model.AppstoreHit;
+import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

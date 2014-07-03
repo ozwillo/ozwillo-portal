@@ -1,22 +1,30 @@
-package org.oasis_eu.portal.core.model.appstore;
+package org.oasis_eu.portal.mockserver.provisioning;
 
-import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.portal.core.model.appstore.Audience;
+import org.oasis_eu.portal.core.model.appstore.PaymentOption;
 
-import java.net.URL;
 import java.util.*;
 
 /**
  * User: schambon
- * Date: 6/16/14
+ * Date: 7/1/14
  */
-public class CatalogEntry  {
+public class ServiceCreated {
 
-    private String id;
+    public String getIdentifier() {
+        return identifier;
+    }
 
-    private CatalogEntryType type;
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
 
-    @JsonProperty("parent_id")
-    private String parentId;
+    private String identifier;
+
 
     @JsonProperty("name")
     private String defaultName;
@@ -40,9 +48,6 @@ public class CatalogEntry  {
     @JsonProperty("notification_url")
     private String notificationUrl;
 
-    @JsonIgnore
-    private List<AppstoreCategory> categories = new ArrayList<>();
-
     @JsonProperty("category_ids")
     private List<String> categoryIds = new ArrayList<>();
 
@@ -58,39 +63,8 @@ public class CatalogEntry  {
     @JsonProperty("provider_organization_id")
     private String providerId;
 
-    /**
-     * App store publication status
-     */
     private boolean visible = false;
 
-    private String instantiationEndpoint;
-
-    private String secret; // to use for instantiation
-
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public CatalogEntryType getType() {
-        return type;
-    }
-
-    public void setType(CatalogEntryType type) {
-        this.type = type;
-    }
-
-    public String getParentId() {
-        return parentId;
-    }
-
-    public void setParentId(String parentId) {
-        this.parentId = parentId;
-    }
 
     public String getDefaultName() {
         return defaultName;
@@ -155,14 +129,6 @@ public class CatalogEntry  {
 
     public void setDefaultIcon(String defaultIcon) {
         this.defaultIcon = defaultIcon;
-    }
-
-    public List<AppstoreCategory> getCategories() {
-        return categories;
-    }
-
-    public void setCategories(List<AppstoreCategory> categories) {
-        this.categories = categories;
     }
 
     public List<String> getCategoryIds() {
@@ -259,21 +225,5 @@ public class CatalogEntry  {
         } else {
             return defaultIcon;
         }
-    }
-
-    public String getInstantiationEndpoint() {
-        return instantiationEndpoint;
-    }
-
-    public void setInstantiationEndpoint(String instantiationEndpoint) {
-        this.instantiationEndpoint = instantiationEndpoint;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
     }
 }
