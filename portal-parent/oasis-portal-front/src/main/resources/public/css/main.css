@@ -24,7 +24,7 @@
 
 
 body {
-  padding-top: 80px;
+  padding-top: 75px;
   font-family: "DIN", "Arial", "sans-serif";
   color: #333333;
 }
@@ -138,7 +138,8 @@ ul.navbar-nav.oasis-nav {
     height: 100%;
     top: 0;
     left: 0;
-
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 .navbar-nav.oasis-nav li.active a {
