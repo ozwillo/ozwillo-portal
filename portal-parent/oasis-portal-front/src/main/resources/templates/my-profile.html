@@ -69,12 +69,12 @@
                 <button class="btn btn-edit" type="button"><span class="edit"></span>Change avatar</button>
             </div>
             <div class="col-md-10">
-                <h2 class="form-title">Account data</h2>
+                <h2 class="form-title account-data">Account data</h2>
                 <form class="form-horizontal account-data-form" role="form">
                   <div class="form-group">
                       <label for="email" class="col-sm-2 control-label">My email :</label>
-                      <div class="col-sm-10">
-                          <input type="email" class="form-control" id="email" placeholder="Email" />
+                      <div class="col-sm-9">
+                          <span class="form-value">alice@example.fr</span>
                       </div>
                   </div>
                   <div class="form-group">
@@ -106,133 +106,59 @@
 
 <div class="container">
 
-   <div class="col-sm-2 form-toggle-block">
-   	<button class="btn btn-primary btn-form-toggle" type="button">Identity</button>
-   	<button class="btn btn-edit btn-form-toggle" type="button"><span class="edit"></span>Edit</button>
+   <div class="row">
+       <div class="col-sm-2"></div>
+       <div class="col-sm-10">
+        <h2 class="form-title">Personal data</h2>
+       </div>
    </div>
-   <div class="col-sm-10 form-data-block">
-    <h2 class="form-title">Personal data</h2>
-    <form class="form-horizontal personal-data-form" role="form">
-      <div class="form-group">
-          <label for="first-name" class="col-sm-2 control-label">First name :</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="first-name" value="Alice" />
+   
+   <div class="row">
+       <div class="col-sm-2 form-toggle-block">
+       	<button class="btn btn-primary btn-form-toggle" type="button">Identity</button>
+       	<button class="btn btn-edit btn-form-toggle" type="button"><span class="edit"></span>Edit</button>
+       </div>
+       <div class="col-sm-10 form-data-block">
+        <form class="form-horizontal personal-data-form" role="form">
+          <div class="form-group">
+              <label for="first-name" class="col-sm-2 control-label">First name :</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="first-name" value="Alice" />
+              </div>
           </div>
-      </div>
-      <div class="form-group">
-          <label for="last-name" class="col-sm-2 control-label">Last name :</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="last-name" value="Dupont" />
+          <div class="form-group">
+              <label for="last-name" class="col-sm-2 control-label">Last name :</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="last-name" value="Dupont" />
+              </div>
           </div>
-      </div>
-    </form>
+        </form>
+       </div>
    </div>
-            
-   <div class="col-sm-2 form-toggle-block">
-   	<button class="btn btn-primary btn-form-toggle" type="button">Address</button>
-   	<button class="btn btn-edit btn-form-toggle" type="button"><span class="edit"></span>Edit</button>
-   </div>
-   <div class="col-sm-10 form-data-block">
-    <form class="form-horizontal personal-data-form" role="form">
-      <div class="form-group">
-          <label for="address-line-1" class="col-sm-2 control-label">Address line 1 :</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="address-line-1" value="2, Rue de la rouille" />
+     
+   <div class="row">       
+       <div class="col-sm-2 form-toggle-block">
+       	<button class="btn btn-primary btn-form-toggle" type="button">Address</button>
+       	<button class="btn btn-edit btn-form-toggle" type="button"><span class="edit"></span>Edit</button>
+       </div>
+       <div class="col-sm-10 form-data-block">
+        <form class="form-horizontal personal-data-form" role="form">
+          <div class="form-group">
+              <label for="address-line-1" class="col-sm-2 control-label">Address line 1 :</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="address-line-1" value="2, Rue de la rouille" />
+              </div>
           </div>
-      </div>
-      <div class="form-group">
-          <label for="address-line-2" class="col-sm-2 control-label">Address line 2 :</label>
-          <div class="col-sm-10">
-              <input type="text" class="form-control" id="address-line-2" value="Batiment 1, Appartement 4" />
+          <div class="form-group">
+              <label for="address-line-2" class="col-sm-2 control-label">Address line 2 :</label>
+              <div class="col-sm-10">
+                  <input type="text" class="form-control" id="address-line-2" value="Batiment 1, Appartement 4" />
+              </div>
           </div>
-      </div>
-    </form>
+        </form>
+       </div>
    </div>
 </div>
-
-<style type="text/css">
-
-h2.form-title {
-    margin-top: 0;
-    font-size: 30px;
-}
-
-.btn-edit {
-    border: 2px solid #50C9C8;
-    border-radius: 8px;
-    background-color: white;
-    border-left-width: 30px;
-    position: relative;
-}
-
-.btn-edit span.edit {
-    background-image: url('/img/icon/edit.png');
-    left: -23px;
-    top: 7px;
-    position: absolute;
-    display: block;
-    width: 18px;
-    height: 18px;
-}
-
-.btn-form-toggle {
-	width: 100%;
-	border-radius: 8px 0 0 8px;
-	border-right: 0;
-	margin-bottom: 5px;
-	text-align: left;
-}
-
-.profile-header {
-    background-color: #DFE6EF;
-    width: 100%;
-    padding: 10px 0 20px 0;
-}
-
-.profile-header h1 {
-    font-family: 'DINAlternate-Light', sans-serif;
-    color: #526686;
-}
-
-.avatar-block {
-    text-align: center;
-}
-
-img.avatar {
-    margin-bottom: 10px;
-    display: inline-block;
-}
-
-.form-toggle-block {
-	padding: 70px 0 0 0;
-}
-
-.form-data-block {
-	margin-top: 20px;
-	padding-left: 0;
-}
-
-.account-data-form {
-    background-color: white;
-    border-radius: 8px;
-    border: 2px solid #526686;
-    padding: 20px;
-    padding-bottom: 10px;
-}
-
-.personal-data-form {
-    background-color: white;
-    border-radius: 8px;
-    border: 2px solid #5644A3;
-    padding: 20px;
-    padding-bottom: 10px;
-}
-.personal-data-form.edit {
-	border-color: #50C9C8;
-}
-
-
-</style>
     
 <th:block th:replace="includes/footer">
 

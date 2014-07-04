@@ -1,0 +1,95 @@
+
+h2.form-title {
+    font-size: 30px;
+    margin-bottom: -15px;
+}
+
+h2.form-title.account-data {
+    margin-top: 0;
+    margin-bottom: 5px;
+}
+
+.form-value {
+    font-weight: bold;
+    font-size: 16px;
+    padding-top: 2px;
+    position: relative;
+    top: 5px;
+}
+
+.btn-edit {
+    border: 2px solid #50C9C8;
+    border-radius: 8px;
+    background-color: white;
+    border-left-width: 30px;
+    position: relative;
+}
+
+.btn-edit span.edit {
+    background-image: url('/img/icon/edit.png');
+    left: -23px;
+    top: 7px;
+    position: absolute;
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-form-toggle {
+	width: 100%;
+	border-radius: 8px 0 0 8px;
+	border-right: 0;
+	margin-bottom: 5px;
+	text-align: left;
+}
+
+.profile-header {
+    background-color: #DFE6EF;
+    width: 100%;
+    padding: 10px 0 20px 0;
+}
+
+.profile-header h1 {
+    font-family: 'DINAlternate-Light', sans-serif;
+    color: #526686;
+}
+
+.avatar-block {
+    text-align: center;
+}
+
+img.avatar {
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+.form-toggle-block {
+	padding: 30px 0 0 0;
+}
+
+.form-data-block {
+	margin-top: 20px;
+	padding-left: 0;
+}
+
+.account-data-form {
+    background-color: white;
+    background-image: url('/img/icons/lock.png');
+    background-repeat: no-repeat;
+    background-position: 99.5% 3%;
+    border-radius: 8px;
+    border: 2px solid #526686;
+    padding: 20px;
+    padding-bottom: 10px;
+}
+
+.personal-data-form {
+    background-color: white;
+    border-radius: 8px;
+    border: 2px solid #5644A3;
+    padding: 20px;
+    padding-bottom: 10px;
+}
+.personal-data-form.edit {
+	border-color: #50C9C8;
+}
