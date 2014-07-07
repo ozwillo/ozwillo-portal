@@ -333,6 +333,7 @@ li.dashboard_template {
     background-color: #6e418e;
     border-color: #ffffff;
     color: #ffffff;
+    border-width: 2px;
 }
 
 .btn-primary:hover {

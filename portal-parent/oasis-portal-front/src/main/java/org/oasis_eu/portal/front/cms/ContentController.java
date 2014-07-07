@@ -1,12 +1,12 @@
 package org.oasis_eu.portal.front.cms;
 
 import org.oasis_eu.portal.front.generic.PortalController;
+import org.oasis_eu.portal.services.MyNavigationService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpServletResponse;
+import org.springframework.web.bind.annotation.RequestMethod;
 
 /**
  * User: schambon
@@ -15,14 +15,13 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class ContentController extends PortalController {
 
-    @RequestMapping("/{page}/{content}.html")
-    public String contentPage(@PathVariable String page, @PathVariable String content, Model model, HttpServletResponse response) {
-        model.addAttribute("content", content);
-        model.addAttribute("page", page);
-
-        response.setHeader("Cache-Control", "public");
-
-        return "content";
+    @Autowired
+    private MyNavigationService myNavigationService;
+    
+    @RequestMapping(method = RequestMethod.GET, value="/profile")
+    public String profile(Model model) {
+        model.addAttribute("navigation", myNavigationService.getNavigation("profile"));
+        return "my-profile";
     }
 
 }

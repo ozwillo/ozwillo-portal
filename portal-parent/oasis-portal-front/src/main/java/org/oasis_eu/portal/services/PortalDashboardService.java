@@ -62,7 +62,7 @@ public class PortalDashboardService {
     private CatalogStore catalogStore;
 
     @Autowired
-    private UserInfoHelper userInfoHelper;
+    private UserInfoService userInfoHelper;
 
     @Autowired
     private PortalNotificationService notificationService;

@@ -17,8 +17,16 @@ h2.form-title.account-data {
     top: 5px;
 }
 
+.btn-view {
+    border: 2px solid #6e418e;
+    color: #6e418e;
+    border-radius: 8px;
+    background-color: white;
+}
+
 .btn-edit {
     border: 2px solid #50C9C8;
+    color: #50C9C8;
     border-radius: 8px;
     background-color: white;
     border-left-width: 30px;
@@ -35,6 +43,13 @@ h2.form-title.account-data {
     height: 18px;
 }
 
+.btn-save {
+    border: 2px solid #56C170;
+    color: #56C170;
+    border-radius: 8px;
+    background-color: white;
+}
+
 .btn-form-toggle {
 	width: 100%;
 	border-radius: 8px 0 0 8px;
@@ -42,6 +57,20 @@ h2.form-title.account-data {
 	margin-bottom: 5px;
 	text-align: left;
 }
+
+.btn-view.btn-form-toggle.active {
+    color: #ffffff;
+    border-color: #ffffff;
+    background-color: #6e418e;
+}
+
+.btn-edit.btn-form-toggle.active {
+    color: #fff;
+    border-width: 0 0 0 30px;
+    margin: 2px 0;
+    background-color: #50c9c8;
+}
+
 
 .profile-header {
     background-color: #DFE6EF;

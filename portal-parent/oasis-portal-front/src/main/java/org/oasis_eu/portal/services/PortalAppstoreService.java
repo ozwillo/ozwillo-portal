@@ -41,7 +41,7 @@ public class PortalAppstoreService {
     private SubscriptionStore subscriptionStore;
 
     @Autowired
-    private UserInfoHelper userInfoHelper;
+    private UserInfoService userInfoHelper;
 
     @Autowired
     private MessageSource messageSource;

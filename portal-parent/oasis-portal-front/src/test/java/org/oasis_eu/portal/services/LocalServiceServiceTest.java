@@ -38,7 +38,7 @@ public class LocalServiceServiceTest {
         dummy.setAddress(address);
         dummy.setUserId(USER_ID);
 
-        UserInfoHelper helper = mock(UserInfoHelper.class);
+        UserInfoService helper = mock(UserInfoService.class);
         when(helper.currentUser()).thenReturn(dummy);
 
         ReflectionTestUtils.setField(localServiceService, "userInfoHelper", helper);

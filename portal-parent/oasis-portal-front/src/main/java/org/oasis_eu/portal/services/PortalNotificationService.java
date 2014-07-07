@@ -34,7 +34,7 @@ public class PortalNotificationService {
     private CatalogStore store;
 
     @Autowired
-    private UserInfoHelper userInfoHelper;
+    private UserInfoService userInfoHelper;
 
     public Map<String, Integer> getAppNotifications(List<String> applicationIds) {
         return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())

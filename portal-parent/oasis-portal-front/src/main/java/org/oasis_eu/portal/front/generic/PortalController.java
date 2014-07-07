@@ -1,16 +1,15 @@
 package org.oasis_eu.portal.front.generic;
 
-import org.oasis_eu.portal.services.UserInfoHelper;
-import org.oasis_eu.spring.kernel.model.UserInfo;
-import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.servlet.support.RequestContextUtils;
+import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
+
+import org.oasis_eu.portal.services.UserInfoService;
+import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
 /**
  * User: schambon
@@ -19,17 +18,22 @@ import java.util.Locale;
 abstract public class PortalController {
 
     @Autowired
-    private UserInfoHelper userInfoHelper;
+    private UserInfoService userInfoService;
 
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+	private HttpServletRequest request;
+    
     @ModelAttribute("languages")
     public Languages[] languages() {
         return Languages.values();
     }
 
-
     @ModelAttribute("currentLanguage")
-    public Languages currentLanguage(HttpServletRequest request) {
-        Locale current = RequestContextUtils.getLocale(request);
+    public Languages currentLanguage() {
+		Locale current = RequestContextUtils.getLocale(request);
         for (Languages l : Languages.values()) {
             if (l.getLanguage().equals(current.getLanguage())) {
                 return l;
@@ -40,7 +44,15 @@ abstract public class PortalController {
 
     @ModelAttribute("user")
     public UserInfo user() {
-        return userInfoHelper.currentUser();
+        return userInfoService.currentUser();
+    }
+    
+    protected String getMessage(String code) {
+    	return messageSource.getMessage(code, null, currentLanguage().getLocale());
+    }
+
+    protected String getMessage(String code, Object[] params) {
+    	return messageSource.getMessage(code, params, currentLanguage().getLocale());
     }
 
 }

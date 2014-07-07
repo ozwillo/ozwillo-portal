@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<head th:replace="includes/header(title=#{ui.my},page='my')">
+<head data-th-replace="includes/header(title=#{ui.my},page='my')">
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -43,13 +43,13 @@
 </head>
 <body>
 
-<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:replace="includes/my-navigation :: nav">
+<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" data-th-replace="includes/my-navigation :: nav">
     <div class="navbar-header">
 
         <div class="my-oasis">
-            <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../public/img/my/my-oasis.png"
+            <img id="logo" data-th-src="@{/img/my/my-oasis.png}" src="../public/img/my/my-oasis.png"
                  alt="My OASIS"/>
-            <span class="badge badge-notifications" th:if="${notificationsCount != 0}" th:text="${notificationsCount}">4</span>
+            <span class="badge badge-notifications" data-th-if="${notificationsCount != 0}" data-th-text="${notificationsCount}">4</span>
         </div>
     </div>
 
@@ -60,41 +60,45 @@
     <div class="container">
         <h1>
             <img src="/img/my/profile-gray.png" />
-            My Profile
+            <span data-th-text="#{my.profile.title}">My profile</span>
         </h1>
         
         <div class="row">
             <div class="col-md-2 avatar-block">
                 <img class="avatar" src="/img/my/avatar/img-21.png" /><br />
-                <button class="btn btn-edit" type="button"><span class="edit"></span>Change avatar</button>
+                <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changeavatar}">Change avatar</span></button>
             </div>
             <div class="col-md-10">
-                <h2 class="form-title account-data">Account data</h2>
+                <h2 class="form-title account-data" data-th-text="#{my.profile.title.account}">Account data</h2>
                 <form class="form-horizontal account-data-form" role="form">
                   <div class="form-group">
-                      <label for="email" class="col-sm-2 control-label">My email :</label>
+                      <label for="email" class="col-sm-2 control-label" data-th-text="#{my.profile.account.email}">My email :</label>
                       <div class="col-sm-9">
                           <span class="form-value">alice@example.fr</span>
                       </div>
                   </div>
                   <div class="form-group">
-                      <div class="col-sm-2"></div>
-                      <div class="col-sm-10">
-                          <button class="btn btn-edit" type="button"><span class="edit"></span>Change email</button>
-                          <button class="btn btn-edit" type="button"><span class="edit"></span>Change password</button>
+                      <label for="email" class="col-sm-2 control-label" data-th-text="#{my.profile.account.language}">My language :</label>
+                      <div class="col-sm-9">
+                          <span class="form-value">Français</span>
                       </div>
+<!--                       <div class="col-sm-10"> -->
+<!--                         <button class="btn btn-default dropdown-toggle" type="button" id="languageLabel" data-toggle="dropdown"> -->
+<!--                         English -->
+<!--                         <span class="caret"></span> -->
+<!--                       </button> -->
+<!--                       <ul class="dropdown-menu" role="menu" aria-labelledby="languageLabel"> -->
+<!--                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">English</a></li> -->
+<!--                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Français</a></li> -->
+<!--                       </ul> -->
+<!--                       </div> -->
                   </div>
                   <div class="form-group">
-                      <label for="email" class="col-sm-2 control-label">My language :</label>
+                      <div class="col-sm-2"></div>
                       <div class="col-sm-10">
-                        <button class="btn btn-default dropdown-toggle" type="button" id="languageLabel" data-toggle="dropdown">
-                        English
-                        <span class="caret"></span>
-                      </button>
-                      <ul class="dropdown-menu" role="menu" aria-labelledby="languageLabel">
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">English</a></li>
-                        <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Français</a></li>
-                      </ul>
+                          <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changeemail}">Change email</span></button>
+                          <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changelanguage}">Change language</span></button>
+                          <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changepassword}">Change password</span></button>
                       </div>
                   </div>
                 </form>
@@ -109,65 +113,25 @@
    <div class="row">
        <div class="col-sm-2"></div>
        <div class="col-sm-10">
-        <h2 class="form-title">Personal data</h2>
+        <h2 class="form-title" data-th-text="#{my.profile.title.personal}">Personal data</h2>
        </div>
    </div>
    
-   <div class="row">
-       <div class="col-sm-2 form-toggle-block">
-       	<button class="btn btn-primary btn-form-toggle" type="button">Identity</button>
-       	<button class="btn btn-edit btn-form-toggle" type="button"><span class="edit"></span>Edit</button>
-       </div>
-       <div class="col-sm-10 form-data-block">
-        <form class="form-horizontal personal-data-form" role="form">
-          <div class="form-group">
-              <label for="first-name" class="col-sm-2 control-label">First name :</label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="first-name" value="Alice" />
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="last-name" class="col-sm-2 control-label">Last name :</label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="last-name" value="Dupont" />
-              </div>
-          </div>
-        </form>
-       </div>
-   </div>
-     
-   <div class="row">       
-       <div class="col-sm-2 form-toggle-block">
-       	<button class="btn btn-primary btn-form-toggle" type="button">Address</button>
-       	<button class="btn btn-edit btn-form-toggle" type="button"><span class="edit"></span>Edit</button>
-       </div>
-       <div class="col-sm-10 form-data-block">
-        <form class="form-horizontal personal-data-form" role="form">
-          <div class="form-group">
-              <label for="address-line-1" class="col-sm-2 control-label">Address line 1 :</label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="address-line-1" value="2, Rue de la rouille" />
-              </div>
-          </div>
-          <div class="form-group">
-              <label for="address-line-2" class="col-sm-2 control-label">Address line 2 :</label>
-              <div class="col-sm-10">
-                  <input type="text" class="form-control" id="address-line-2" value="Batiment 1, Appartement 4" />
-              </div>
-          </div>
-        </form>
-       </div>
+   <div data-th-each="layout : ${layouts}">
+        <div data-th-include="includes/my-profile-fragments :: layout(${layout})"></div>
    </div>
 </div>
     
-<th:block th:replace="includes/footer">
+<data-th-block data-th-replace="includes/footer">
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
-</th:block>
+</data-th-block>
 
-<script src="../public/js/my.js" th:src="@{/js/my.js}"></script>
+<script src="../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
+<script src="../public/js/my.js" data-th-src="@{/js/my.js}"></script>
+<script src="../public/js/profile.js" data-th-src="@{/js/profile.js}"></script>
 
 </body>
 </html>
