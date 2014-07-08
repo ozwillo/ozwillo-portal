@@ -90,7 +90,7 @@ $(document).ready(function () {
 		});
     	
     	// Special layout widgets
-    	$('.widget-dropdown').each(function() {
+    	$('.widget-dropdown', $el).each(function() {
     		var $widget = $(this);
     		var $valueHolder = $('input', $widget);
     		var $labelHolder = $('.value-label', $widget);
@@ -102,10 +102,10 @@ $(document).ready(function () {
     		});
     	});
     	
-    	$('.widget-date-view').each(function() {
+    	$('.widget-date-view', $el).each(function() {
     		localizeDate($(this));
     	});
-    	$('.widget-date-edit').each(function() {
+    	$('.widget-date-edit', $el).each(function() {
     		var $widget = $(this);
     		var $valueHolder = $('.value-holder', $widget);
     		var $datePicker = $('.form-control', $widget);
