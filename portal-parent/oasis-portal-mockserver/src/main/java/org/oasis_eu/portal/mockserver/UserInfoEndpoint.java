@@ -1,9 +1,7 @@
 package org.oasis_eu.portal.mockserver;
 
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map.Entry;
 
 import javax.annotation.PostConstruct;
@@ -31,40 +29,39 @@ import com.fasterxml.jackson.databind.node.TextNode;
 @RequestMapping("/a/userinfo")
 public class UserInfoEndpoint {
 
-	
-	private List<String> ADRESS_SUBFIELDS = Arrays.asList("country", "locality", "postal_code", "street_address");
-	
 	private ObjectNode userInfo;
 
-	
     @RequestMapping("")
     public String getUserInfo() throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
     	return mapper.writeValueAsString(userInfo);
     }
     
-    // TODO Handle address
     @RequestMapping(value = "", method = RequestMethod.POST)
     public void postUserInfo(@RequestBody JsonNode data) {
     	Iterator<Entry<String, JsonNode>> elements = data.fields();
-    	ObjectNode addressInfo = (ObjectNode) userInfo.get("address");
     	while (elements.hasNext()) {
     		Entry<String, JsonNode> node = elements.next();
-    		if (ADRESS_SUBFIELDS.contains(node.getKey())) {
-        		JsonNode removed = addressInfo.remove(node.getKey());
-        		if (removed != null) {
-        			addressInfo.set(node.getKey(), new TextNode(node.getValue().textValue()));
-        		}
-    		}
-    		else {
-	    		JsonNode removed = userInfo.remove(node.getKey());
-	    		if (removed != null) {
-	    			userInfo.set(node.getKey(), new TextNode(node.getValue().textValue()));
-	    		}
+    		JsonNode removed = userInfo.remove(node.getKey());
+    		if (removed != null) {
+    			userInfo.set(node.getKey(), new TextNode(node.getValue().textValue()));
     		}
     	}
     }
 
+    @RequestMapping(value = "/address", method = RequestMethod.POST)
+    public void postUserAddressInfo(@RequestBody JsonNode data) {
+    	Iterator<Entry<String, JsonNode>> elements = data.fields();
+    	ObjectNode addressInfo = (ObjectNode) userInfo.get("address");
+    	while (elements.hasNext()) {
+    		Entry<String, JsonNode> node = elements.next();
+    		JsonNode removed = addressInfo.remove(node.getKey());
+    		if (removed != null) {
+    			addressInfo.set(node.getKey(), new TextNode(node.getValue().textValue()));
+    		}
+    	}
+    }
+    
 	@PostConstruct
 	public void initialize() throws JsonParseException, IOException {
 		ObjectMapper mapper = new ObjectMapper();

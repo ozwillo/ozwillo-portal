@@ -79,18 +79,18 @@ public class MyProfileController extends PortalController {
     	return "redirect:/my/profile/fragment/layout/" + layoutId;
     }
     
-    @RequestMapping(method = RequestMethod.POST, value="/save")
-    public String saveLayout(@RequestBody MultiValueMap<String, String> data, Model model) {
+    @RequestMapping(method = RequestMethod.POST, value="/save/{layoutId}")
+    public String saveLayout(@PathVariable("layoutId") String layoutId,
+    		@RequestBody MultiValueMap<String, String> data, Model model) {
     	
-    	// remove form data that's not part of the user info
-    	userInfoService.saveUserInfo(
-    			data.entrySet().stream()
-    				.filter(entry -> !"layout-id".equals(entry.getKey()))
-    				.collect(Collectors.toMap(
-    						entry -> entry.getKey(),
-    						entry -> entry.getValue().get(0))));
+    	Map<String, Serializable> userProperies = data.entrySet().stream()
+		.collect(Collectors.toMap(
+				entry -> entry.getKey(),
+				entry -> entry.getValue().get(0)));
     	
-    	String layoutId = data.get("layout-id").get(0);
+    	userInfoService.saveUserInfo(userProperies,
+    			MyProfileState.LAYOUT_ADDRESS.equals(layoutId) ? "address" : null);
+    	
     	myProfileState.getLayout(layoutId).setMode(FormLayoutMode.VIEW);
     	myProfileState.refreshLayoutValues();
     	return "redirect:/my/profile/fragment/layout/" + layoutId;
@@ -124,7 +124,7 @@ public class MyProfileController extends PortalController {
     protected void saveSingleUserInfo(String key, Serializable value) {
     	Map<String, Serializable> userData = new HashMap<String, Serializable>();
     	userData.put(key, value);
-    	userInfoService.saveUserInfo(userData);
+    	userInfoService.saveUserInfo(userData, null);
     	myProfileState.refreshLayoutValues();
     }
     

@@ -27,9 +27,9 @@ import org.springframework.stereotype.Controller;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MyProfileState {
 
-    private static final String LAYOUT_IDENTITY = "identity";
+    public static final String LAYOUT_IDENTITY = "identity";
 
-    private static final String LAYOUT_ADDRESS = "address";
+    public static final String LAYOUT_ADDRESS = "address";
     
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(MyProfileState.class);

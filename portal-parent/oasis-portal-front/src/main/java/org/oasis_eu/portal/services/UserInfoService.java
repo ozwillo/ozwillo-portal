@@ -35,12 +35,13 @@ public class UserInfoService {
         }
     }
     
-    public void saveUserInfo(Map<String, Serializable> userProperties) {
+    public void saveUserInfo(Map<String, Serializable> userProperties, String claim) {
     	OpenIdCAuthentication authentication = getOpenIdCAuthentication();
         if (authentication != null) {
-            openIdCService.saveUserInfo(authentication.getAccessToken(), userProperties);
+            openIdCService.saveUserInfo(authentication.getAccessToken(), userProperties, claim);
             refreshCurrentUser();
         }
+    	
     }
     
     private void refreshCurrentUser() {

@@ -3,16 +3,16 @@
   <div class="row" data-th-id="${layout.id}">
     <div class="col-sm-2 form-toggle-block">
         <button data-th-data="${layout.id}" type="button"
-            data-th-class="'btn btn-form-toggle btn-view' + ${'VIEW'.equals(layout.mode.toString()) ? ' active' : ''}" 
+            data-th-class="'btn btn-form-toggle btn-view action-toggle-view' + ${'VIEW'.equals(layout.mode.toString()) ? ' active' : ''}" 
             data-th-text="#{${layout.label}}">Identity</button>
         <button data-th-data="${layout.id}" type="button"
-            data-th-class="'btn btn-form-toggle btn-edit' + ${'EDIT'.equals(layout.mode.toString()) ? ' active' : ''}">
+            data-th-class="'btn btn-form-toggle btn-edit action-toggle-edit' + ${'EDIT'.equals(layout.mode.toString()) ? ' active' : ''}">
             <span class="edit"></span><span data-th-text="#{ui.edit}">Edit</span>
         </button>
     </div>
     <div class="col-sm-10 form-data-block">
     <form data-th-class="'form-horizontal personal-data-form' + ${'EDIT'.equals(layout.mode.toString()) ? ' edit' : ''}"
-        role="form" action="/my/profile/save" data-th-data="${layout.id}">
+        role="form" data-th-action="@{'/my/profile/save/' + ${layout.id}}" data-th-data="${layout.id}">
       <div data-th-each="widget: ${layout.widgets}" class="form-group">
           <label data-th-for="${widget.id}" class="col-sm-2 control-label" data-th-text="#{${widget.label}}">First name :</label>
           <div class="col-sm-10" data-th-if="${'text'.equals(widget.type)}"
@@ -21,7 +21,6 @@
       <div class="form-group" data-th-if="${'EDIT'.equals(layout.mode.toString())}">
         <label class="col-sm-2 control-label"></label>
         <div class="col-sm-10">
-            <input type="hidden" name="layout-id" data-th-value="${layout.id}" />
             <input type="submit" class="btn btn-save" data-th-value="#{ui.save}" />
         </div>
       </div>

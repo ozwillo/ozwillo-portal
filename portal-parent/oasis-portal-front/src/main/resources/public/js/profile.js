@@ -5,16 +5,25 @@ $(document).ready(function () {
 	function initBindings($el) {
 		
 		// Data layouts
-		$('#layouts button.btn-edit', $el).click(function() {
+		$('.action-toggle-edit', $el).click(function() {
 			toggleProfileLayout($(this).attr('data'), 'EDIT');
 		});
-		$('#layouts button.btn-view', $el).click(function() {
+		$('.action-toggle-view', $el).click(function() {
 			toggleProfileLayout($(this).attr('data'), 'VIEW');
 		});
-		$('#layouts form', $el).submit(function(e) {
+		$('.personal-data-form', $el).submit(function(e) {
 			e.preventDefault();
 			$form = $(this);
-			saveLayout($form.attr('data'), $form.serialize());
+			$.ajax({
+				url: $form.attr('action'),
+				method: 'POST',
+				data: $form.serialize(),
+				success: function(data) {
+					var layoutSelector = '#' + $form.attr('data');
+					$(layoutSelector).replaceWith(data);
+					initBindings($(layoutSelector));
+				}
+			})
 		});
 		
 		// Edit avatar
@@ -63,7 +72,6 @@ $(document).ready(function () {
 
 		// Edit email
     	$('#btn-edit-email', $el).click(function(e) {
-    		console.log($('#modal-edit-email'));
     		$('#modal-edit-email').modal('show');
     		return false;
     	})
@@ -88,18 +96,6 @@ $(document).ready(function () {
 				id: id,
 				mode: mode
 			},
-			success: function(data) {
-				$('#' + id).replaceWith(data);
-				initBindings($('#' + id));
-			}
-		})
-	}
-	
-	function saveLayout(id, data) {
-		$.ajax({
-			url: '/my/profile/save',
-			method: 'POST',
-			data: data,
 			success: function(data) {
 				$('#' + id).replaceWith(data);
 				initBindings($('#' + id));
