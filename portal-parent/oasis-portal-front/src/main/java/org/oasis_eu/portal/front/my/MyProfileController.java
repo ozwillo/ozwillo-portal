@@ -101,7 +101,7 @@ public class MyProfileController extends PortalController {
     	if (Languages.getByLocale(new Locale(locale)) != null) {
     		saveSingleUserInfo("locale", locale);
     	}
-    	return "redirect:/my/profile/fragment/account-data";
+    	return "my-profile";
     }
     
     @RequestMapping(method = RequestMethod.POST, value="/save/email")
@@ -138,7 +138,7 @@ public class MyProfileController extends PortalController {
     }
 
 	private List<String> getAvailableAvatars() {
-		// TODO Handle the avatar storage topic
+		// TODO Where/how do we store avatars?
 		return Arrays.asList( 
 			"/img/my/avatar/img-19.png",
 			"/img/my/avatar/img-20.png",

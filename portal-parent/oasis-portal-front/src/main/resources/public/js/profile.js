@@ -66,7 +66,10 @@ $(document).ready(function () {
 				url: $form.attr('action'),
 				method: 'POST',
 				data: $form.serialize(),
-				success: refreshAccountData
+				success: function() {
+					// TODO (see #7) Rely on specific resolver instead of the interceptor
+					window.location = '/my/profile?lang=' + $('#selected-language').val();
+				}
 			});
 		});
 

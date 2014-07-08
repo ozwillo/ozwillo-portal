@@ -8,8 +8,6 @@ import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.services.UserInfoService;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -22,9 +20,6 @@ abstract public class PortalController {
 	private UserInfoService userInfoService;
 
 	@Autowired
-	private MessageSource messageSource;
-
-	@Autowired
 	private HttpServletRequest request;
 
 	@ModelAttribute("languages")
@@ -34,14 +29,7 @@ abstract public class PortalController {
 
 	@ModelAttribute("currentLanguage")
 	public Languages currentLanguage() {
-		Locale currentLocale = null;
-		UserInfo userInfo = user();
-		if (userInfo != null && !StringUtils.isEmpty(userInfo.getLocale())) {
-			currentLocale = new Locale(userInfo.getLocale());
-		}
-		if (currentLocale == null) {
-			currentLocale = RequestContextUtils.getLocale(request);
-		}
+		Locale currentLocale = RequestContextUtils.getLocale(request);
 		return Languages.getByLocale(currentLocale, Languages.ENGLISH);
 	}
 
