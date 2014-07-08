@@ -35,7 +35,7 @@ public class UserInfoService {
         }
     }
     
-    public void saveCurrentUser(Map<String, Serializable> userProperties) {
+    public void saveUserInfo(Map<String, Serializable> userProperties) {
     	OpenIdCAuthentication authentication = getOpenIdCAuthentication();
         if (authentication != null) {
             openIdCService.saveUserInfo(authentication.getAccessToken(), userProperties);

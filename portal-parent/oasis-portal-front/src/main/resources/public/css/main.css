@@ -329,6 +329,11 @@ li.dashboard_template {
     color: #d9534f;
 }
 
+.modal-content {
+    box-shadow: none !important;
+    border: 2px solid #636681;
+}
+
 .btn-primary {
     background-color: #6e418e;
     border-color: #ffffff;

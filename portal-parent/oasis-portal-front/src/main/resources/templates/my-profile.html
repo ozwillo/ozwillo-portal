@@ -13,50 +13,20 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-
-    <style>
-        @font-face {
-            font-family: 'Dunkin';
-            src: url('../public/fonts/Dunkin.eot?') format('eot'),
-            url('../public/fonts/Dunkin.woff') format('woff'),
-            url('../public/fonts/Dunkin.ttf')  format('truetype'),
-            url('../public/fonts/Dunkin.svg#Dunkin') format('svg');
-        }
-
-        @font-face {
-            font-family: 'DIN';
-            src: url('../public/fonts/DIN.eot?') format('eot'),
-            url('../public/fonts/DIN.woff') format('woff'),
-            url('../public/fonts/DIN.ttf')  format('truetype'),
-            url('../public/fonts/DIN.svg#DIN') format('svg');
-        }
-
-        @font-face {
-            font-family: 'DINAlternate-Light';
-            src: url('../public/fonts/DINAlternate-Light.eot?') format('eot'),
-            url('../public/fonts/DINAlternate-Light.woff') format('woff'),
-            url('../public/fonts/DINAlternate-Light.ttf')  format('truetype'),
-            url('../public/fonts/DINAlternate-Light.svg#DIN') format('svg');
-        }
-    </style>
-
 </head>
 <body>
 
 <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" data-th-replace="includes/my-navigation :: nav">
     <div class="navbar-header">
-
         <div class="my-oasis">
             <img id="logo" data-th-src="@{/img/my/my-oasis.png}" src="../public/img/my/my-oasis.png"
                  alt="My OASIS"/>
             <span class="badge badge-notifications" data-th-if="${notificationsCount != 0}" data-th-text="${notificationsCount}">4</span>
         </div>
     </div>
-
-
 </div>
 
-<div class="profile-header">
+<div id="account-data" class="profile-header" data-th-fragment="account-data">
     <div class="container">
         <h1>
             <img src="/img/my/profile-gray.png" />
@@ -65,8 +35,8 @@
         
         <div class="row">
             <div class="col-md-2 avatar-block">
-                <img class="avatar" src="/img/my/avatar/img-21.png" /><br />
-                <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changeavatar}">Change avatar</span></button>
+                <img class="avatar" data-th-src="${avatar}" src="/img/my/avatar/img-21.png" /><br />
+                <button id="btn-edit-avatar" class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changeavatar}">Change avatar</span></button>
             </div>
             <div class="col-md-10">
                 <h2 class="form-title account-data" data-th-text="#{my.profile.title.account}">Account data</h2>
@@ -74,31 +44,21 @@
                   <div class="form-group">
                       <label for="email" class="col-sm-2 control-label" data-th-text="#{my.profile.account.email}">My email :</label>
                       <div class="col-sm-9">
-                          <span class="form-value">alice@example.fr</span>
+                          <span class="form-value" data-th-text="${email}">alice@example.com</span>
                       </div>
                   </div>
                   <div class="form-group">
                       <label for="email" class="col-sm-2 control-label" data-th-text="#{my.profile.account.language}">My language :</label>
                       <div class="col-sm-9">
-                          <span class="form-value">Français</span>
+                          <span class="form-value" data-th-text="${currentLanguage.name}">Français</span>
                       </div>
-<!--                       <div class="col-sm-10"> -->
-<!--                         <button class="btn btn-default dropdown-toggle" type="button" id="languageLabel" data-toggle="dropdown"> -->
-<!--                         English -->
-<!--                         <span class="caret"></span> -->
-<!--                       </button> -->
-<!--                       <ul class="dropdown-menu" role="menu" aria-labelledby="languageLabel"> -->
-<!--                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">English</a></li> -->
-<!--                         <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Français</a></li> -->
-<!--                       </ul> -->
-<!--                       </div> -->
                   </div>
                   <div class="form-group">
                       <div class="col-sm-2"></div>
                       <div class="col-sm-10">
-                          <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changeemail}">Change email</span></button>
-                          <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changelanguage}">Change language</span></button>
-                          <button class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changepassword}">Change password</span></button>
+                          <button id="btn-edit-email" class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changeemail}">Change email</span></button>
+                          <button id="btn-edit-language" class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changelanguage}">Change language</span></button>
+                          <button id="btn-edit-password" class="btn btn-edit" type="button" disabled="disabled"><span class="edit"></span><span data-th-text="#{my.profile.account.changepassword}">Change password</span></button>
                       </div>
                   </div>
                 </form>
@@ -106,27 +66,122 @@
         </div>    
     
     </div>
+   
+   <div id="modal-edit-avatar" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+           </button>
+           <h4 class="modal-title" data-th-text="#{my.profile.account.changeavatar}">Change avatar</h4>
+         </div>
+         <form id="form-edit-avatar" class="form-inline" method="post" action="#" data-th-action="@{/my/profile/save/avatar}">
+            <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+            <input id="selected-avatar" type="hidden" name="avatar" data-th-value="${avatar}" />
+            
+             <div class="modal-body">
+                <input data-th-each="availableAvatar: ${availableAvatars}"
+                    data-th-class="'btn-avatar action-select-avatar ' + ${availableAvatar.equals(avatar) ? 'selected' : ''}"
+                    type="image" data-th-src="${availableAvatar}" />
+             </div>
+             
+             <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{ui.cancel}">Cancel</button>
+               <button type="submit" class="btn btn-primary" data-th-value="#{ui.save}">Save</button>
+             </div>
+         </form>
+       </div>
+     </div>
+   </div>
+   
+   <div id="modal-edit-email" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+           </button>
+           <h4 class="modal-title" data-th-text="#{my.profile.account.changeemail}">Change email</h4>
+         </div>
+         <form id="form-edit-email" class="form-inline" method="post" action="#" data-th-action="@{/my/profile/save/email}">
+            <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+            
+             <div class="modal-body">
+                <div class="form-group">
+                    <label for="dashboardname" class="control-label" data-th-text="#{my.profile.account.email}">My email</label>         
+                    <input name="email" class="form-control" type="text" data-th-value="${email}" />
+               </div>
+             </div>
+             
+             <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{ui.cancel}">Cancel</button>
+               <button type="submit" class="btn btn-primary" data-th-value="#{ui.save}">Save</button>
+             </div>
+         </form>
+       </div>
+     </div>
+   </div>
+   
+   <div id="modal-edit-language" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+           </button>
+           <h4 class="modal-title" data-th-text="#{my.profile.account.changelanguage}">Change language</h4>
+         </div>
+         <form id="form-edit-language" class="form-inline" method="post" action="#" data-th-action="@{/my/profile/save/language}">
+            <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+            
+             <div class="modal-body">
+                <div class="form-group">
+                    <label for="dashboardname" class="control-label" data-th-text="#{my.profile.account.language}">My language</label>         
+                    <div class="btn-group">
+                        <input id="selected-language" name="locale" type="hidden" value="${currentLanguage.locale}" />
+                        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+                            <span id="selected-language-label" data-th-text="${currentLanguage.name}">English</span>
+                            <span class="caret"></span>
+                        </button>
+                        <ul class="dropdown-menu" role="menu" aria-labelledby="language-label">
+                            <li data-th-each="lang : ${languages}">
+                                <a class="action-select-language" data-th-data="${lang.locale}" href="#" data-th-text="${lang.name}">Blablaish</a>
+                            </li>
+                       </ul>
+                   </div>
+               </div>
+             </div>
+             
+             <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{ui.cancel}">Cancel</button>
+               <button type="submit" class="btn btn-primary" data-th-value="#{ui.save}">Save</button>
+             </div>
+         </form>
+       </div>
+     </div>
+   </div>
+   
 </div>
 
-<div class="container">
-
+<div id="layouts" class="container">
    <div class="row">
        <div class="col-sm-2"></div>
        <div class="col-sm-10">
         <h2 class="form-title" data-th-text="#{my.profile.title.personal}">Personal data</h2>
        </div>
    </div>
-   
    <div data-th-each="layout : ${layouts}">
         <div data-th-include="includes/my-profile-fragments :: layout(${layout})"></div>
    </div>
 </div>
-    
-<data-th-block data-th-replace="includes/footer">
 
+<data-th-block data-th-replace="includes/footer">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-
 </data-th-block>
 
 <script src="../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>

@@ -1,12 +1,20 @@
 package org.oasis_eu.portal.front.my;
 
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormLayoutMode;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.UserInfoService;
+import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
  *
  */
 @Controller
-@RequestMapping("/my")
+@RequestMapping("/my/profile")
 public class MyProfileController extends PortalController {
 
     @SuppressWarnings("unused")
@@ -40,20 +48,26 @@ public class MyProfileController extends PortalController {
     @Autowired
     private UserInfoService userInfoService;
 
-    @RequestMapping(method = RequestMethod.GET, value="/profile")
+    @RequestMapping(method = RequestMethod.GET, value="")
     public String profile(Model model) {
     	initProfileModel(model);
         return "my-profile";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/profile/layout/{id}")
-    public String getProfileLayout(@PathVariable("id") String layoutId, Model model) {
+    @RequestMapping(method = RequestMethod.GET, value="/fragment/account-data")
+    public String profileAccountDataFragment(Model model) {
+    	initProfileModel(model);
+    	return "my-profile :: account-data";
+    }
+    
+    @RequestMapping(method = RequestMethod.GET, value="/fragment/layout/{id}")
+    public String profileLayoutFragment(@PathVariable("id") String layoutId, Model model) {
     	initProfileModel(model);
     	model.addAttribute("layout", myProfileState.getLayout(layoutId));
     	return "includes/my-profile-fragments :: layout";
     }
 
-    @RequestMapping(method = RequestMethod.POST, value="/profile/mode")
+    @RequestMapping(method = RequestMethod.POST, value="/mode")
     public String toggleProfileLayout(@RequestParam("mode") String mode, @RequestParam("id") String layoutId, Model model) {
     	FormLayout formLayout = myProfileState.getLayout(layoutId);
     	if (formLayout != null) {
@@ -62,13 +76,14 @@ public class MyProfileController extends PortalController {
     	initProfileModel(model);
     	model.addAttribute("layout", formLayout);
     	
-    	return "redirect:/my/profile/layout/" + layoutId;
+    	return "redirect:/my/profile/fragment/layout/" + layoutId;
     }
     
-    @RequestMapping(method = RequestMethod.POST, value="/profile/save")
+    @RequestMapping(method = RequestMethod.POST, value="/save")
     public String saveLayout(@RequestBody MultiValueMap<String, String> data, Model model) {
     	
-    	userInfoService.saveCurrentUser(
+    	// remove form data that's not part of the user info
+    	userInfoService.saveUserInfo(
     			data.entrySet().stream()
     				.filter(entry -> !"layout-id".equals(entry.getKey()))
     				.collect(Collectors.toMap(
@@ -78,13 +93,60 @@ public class MyProfileController extends PortalController {
     	String layoutId = data.get("layout-id").get(0);
     	myProfileState.getLayout(layoutId).setMode(FormLayoutMode.VIEW);
     	myProfileState.refreshLayoutValues();
-    	return "redirect:/my/profile/layout/" + layoutId;
+    	return "redirect:/my/profile/fragment/layout/" + layoutId;
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value="/save/language")
+    public String saveLanguage(@RequestParam("locale") String locale, Model model) {
+    	if (Languages.getByLocale(new Locale(locale)) != null) {
+    		saveSingleUserInfo("locale", locale);
+    	}
+    	return "redirect:/my/profile/fragment/account-data";
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value="/save/email")
+    public String saveEmail(@RequestParam("email") String email, Model model) {
+    	// Source: http://www.regular-expressions.info/email.html ("almost RFC 5322")
+    	if (email.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
+    		saveSingleUserInfo("email", email);
+    	}
+    	return "redirect:/my/profile/fragment/account-data";
+    }
+    
+    @RequestMapping(method = RequestMethod.POST, value="/save/avatar")
+    public String saveAvatar(@RequestParam("avatar") String avatar, Model model) {
+    	if (getAvailableAvatars().contains(avatar)) {
+    		saveSingleUserInfo("picture", avatar);
+    	}
+    	return "redirect:/my/profile/fragment/account-data";
+    }
+
+    protected void saveSingleUserInfo(String key, Serializable value) {
+    	Map<String, Serializable> userData = new HashMap<String, Serializable>();
+    	userData.put(key, value);
+    	userInfoService.saveUserInfo(userData);
+    	myProfileState.refreshLayoutValues();
     }
     
     protected void initProfileModel(Model model) {
+        UserInfo currentUser = userInfoService.currentUser();
         model.addAttribute("navigation", myNavigationService.getNavigation("profile"));
         model.addAttribute("layouts", myProfileState.getLayouts());
+		model.addAttribute("email", currentUser.getEmail());
+		model.addAttribute("availableAvatars", getAvailableAvatars());
+		model.addAttribute("avatar", currentUser.getPictureUrl());
     }
+
+	private List<String> getAvailableAvatars() {
+		// TODO Handle the avatar storage topic
+		return Arrays.asList( 
+			"/img/my/avatar/img-19.png",
+			"/img/my/avatar/img-20.png",
+			"/img/my/avatar/img-21.png",
+			"/img/my/avatar/img-22.png",
+			"/img/my/avatar/img-23.png"
+		);
+	}
 
 }
 ;

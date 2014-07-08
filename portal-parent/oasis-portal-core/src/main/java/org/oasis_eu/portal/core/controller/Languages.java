@@ -37,5 +37,18 @@ public enum Languages {
     public Locale getLocale() {
         return locale;
     }
+    
+    public static Languages getByLocale(Locale locale) {
+		return getByLocale(locale, null);
+    }
+    
+    public static Languages getByLocale(Locale locale, Languages defaultLang) {
+        for (Languages l : Languages.values()) {
+            if (l.getLanguage().equals(locale.getLanguage())) {
+                return l;
+            }
+        }
+		return defaultLang;
+    }
 
 }
