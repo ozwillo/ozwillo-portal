@@ -16,7 +16,7 @@ public class FormLayout implements Comparable<FormLayout> {
 	
 	private FormLayoutMode mode = FormLayoutMode.VIEW;
 	
-	private Map<String, FormWidgetText> widgets = new HashMap<String, FormWidgetText>();
+	private Map<String, FormWidget> widgets = new HashMap<String, FormWidget>();
 
 	private final String id;
 	
@@ -53,18 +53,18 @@ public class FormLayout implements Comparable<FormLayout> {
 		this.mode = mode;
 	}
 	
-	public void appendWidget(FormWidgetText widget) {
+	public void appendWidget(FormWidget widget) {
 		if (widget.getOrder() == FormWidget.DEFAULT_ORDER) {
 			widget.setOrder(lastWidgetOrder++);
 		}
 		widgets.put(widget.getId(), widget);
 	}
 	
-	public List<FormWidgetText> getWidgets() {
+	public List<FormWidget> getWidgets() {
 		return widgets.values().stream().sorted().collect(Collectors.toList());
 	}
 
-	public FormWidgetText getWidget(String widgetId) {
+	public FormWidget getWidget(String widgetId) {
 		return widgets.get(widgetId);
 	}
 

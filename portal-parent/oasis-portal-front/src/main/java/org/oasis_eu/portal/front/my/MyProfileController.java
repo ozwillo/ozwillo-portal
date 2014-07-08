@@ -51,6 +51,7 @@ public class MyProfileController extends PortalController {
     @RequestMapping(method = RequestMethod.GET, value="")
     public String profile(Model model) {
     	initProfileModel(model);
+//    	myProfileState.reset();
         return "my-profile";
     }
 

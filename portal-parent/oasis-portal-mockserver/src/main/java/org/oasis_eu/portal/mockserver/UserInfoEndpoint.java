@@ -83,7 +83,8 @@ public class UserInfoEndpoint {
     			"    \"sub\": \"bb2c6f76-362f-46aa-982c-1fc60d54b8ef\"," + 
     			"    \"updated_at\": 1399887616," + 
     			"    \"locale\": \"fr\", " + // TODO missing from actual API 
-    			"    \"picture\": \"/img/my/avatar/img-21.png\" " + // TODO missing from actual API
+    			"    \"picture\": \"/img/my/avatar/img-21.png\", " + // TODO missing from actual API
+    			"    \"phone_number\": \"01 23 45 67 81\" " + // TODO missing from actual API
     			"}");
 //    	"{" + 
 //    	"    \"address\": {" + 

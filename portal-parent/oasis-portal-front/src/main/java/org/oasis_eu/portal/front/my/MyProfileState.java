@@ -8,6 +8,8 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.oasis_eu.portal.model.FormLayout;
+import org.oasis_eu.portal.model.FormWidgetDate;
+import org.oasis_eu.portal.model.FormWidgetDropdown;
 import org.oasis_eu.portal.model.FormWidgetText;
 import org.oasis_eu.portal.services.UserInfoService;
 import org.oasis_eu.spring.kernel.model.UserInfo;
@@ -37,16 +39,30 @@ public class MyProfileState {
     @Autowired
     private UserInfoService userInfoHelper;
     
-	private Map<String, FormLayout> layouts = new HashMap<String, FormLayout>();
+	private Map<String, FormLayout> layouts;
     
     @PostConstruct
-    public void initialize() {
+    public void reset() {
+    	
+    	// Note: the widget IDs must match the OpenID properties.
+    	// The values are bound in the method below.
+    	
+    	layouts = new HashMap<String, FormLayout>(); 
+    	
         FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity");
         idFormLayout.setOrder(1);
         idFormLayout.appendWidget(new FormWidgetText("given_name",
         		"my.profile.personal.firstname"));
         idFormLayout.appendWidget(new FormWidgetText("family_name",
         		"my.profile.personal.lastname"));
+        idFormLayout.appendWidget(new FormWidgetDate("birthdate",
+        		"my.profile.personal.birthdate"));
+        idFormLayout.appendWidget(new FormWidgetDropdown("gender",
+        		"my.profile.personal.gender")
+    		.addOption("female", "my.profile.personal.gender.female")
+        	.addOption("male", "my.profile.personal.gender.male"));
+        idFormLayout.appendWidget(new FormWidgetText("phone_number",
+        		"my.profile.personal.phonenumber"));
         layouts.put(idFormLayout.getId(), idFormLayout);
         
         FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address");
@@ -70,6 +86,9 @@ public class MyProfileState {
     	FormLayout idFormLayout = layouts.get(LAYOUT_IDENTITY);
     	idFormLayout.getWidget("given_name").setValue(userInfo.getGivenName());
     	idFormLayout.getWidget("family_name").setValue(userInfo.getFamilyName());
+    	idFormLayout.getWidget("birthdate").setValue(userInfo.getBirthdate().toString());
+    	idFormLayout.getWidget("gender").setValue(userInfo.getGender());
+    	idFormLayout.getWidget("phone_number").setValue(userInfo.getPhoneNumber());
 
     	FormLayout adFormLayout = layouts.get(LAYOUT_ADDRESS);
     	adFormLayout.getWidget("street_address").setValue(userInfo.getStreetAddress());

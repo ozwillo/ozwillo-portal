@@ -88,7 +88,45 @@ $(document).ready(function () {
 				success: refreshAccountData
 			});
 		});
-		
+    	
+    	// Special layout widgets
+    	$('.widget-dropdown').each(function() {
+    		var $widget = $(this);
+    		var $valueHolder = $('input', $widget);
+    		var $labelHolder = $('.value-label', $widget);
+    		$('a', $widget).click(function() {
+    			$valueHolder.val($(this).attr('data'));
+    			$labelHolder.html($(this).html());
+    			$('button', $widget).dropdown('toggle');
+    			return false;
+    		});
+    	});
+    	
+    	$('.widget-date-view').each(function() {
+    		localizeDate($(this));
+    	});
+    	$('.widget-date-edit').each(function() {
+    		var $widget = $(this);
+    		var $valueHolder = $('.value-holder', $widget);
+    		var $datePicker = $('.form-control', $widget);
+    		var locale = $('#layouts').attr('data');
+
+    		localizeDate($datePicker);
+    		$datePicker.datepicker($.datepicker.regional[locale.replace('en', '')]);
+    		$datePicker.datepicker("option", "altFormat", "yy-mm-dd");
+    		$datePicker.datepicker("option", "altField", '#' + $valueHolder.attr('id'));
+		});
+	}
+	
+	function localizeDate($el) {
+		var locale = $('#layouts').attr('data');
+		var dateFormat = $.datepicker.regional[locale.replace('en', '')].dateFormat;
+    	if ($el[0].tagName == 'INPUT') {
+    		$el.val($.datepicker.formatDate(dateFormat, new Date($el.val())));
+    	}
+    	else {
+    		$el.html($.datepicker.formatDate(dateFormat, new Date($el.html())));
+    	}
 	}
 	
 	function toggleProfileLayout(id, mode) {
