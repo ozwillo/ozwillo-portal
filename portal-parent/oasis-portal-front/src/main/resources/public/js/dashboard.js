@@ -92,15 +92,15 @@ $(document).ready(function () {
 	                data: $(this).serialize(),
 	                dataType: 'html',
 	                success: function(fragment) {
-	                	updateDashboardSwitcher(fragment);
-	                	
-	                	// XXX Remove dangling Bootstrap backdrops after template reloading 
-	                	$('.modal-backdrop').remove();
-	                	
-	                	// Refresh dashboard to update title
-	                	if (!deleteDashboard) {
-	                		refreshDashboard();
-	                	}
+	            		$('.modal.in').one('hidden.bs.modal', function() {
+		                	updateDashboardSwitcher(fragment);
+		                	
+		                	// Refresh dashboard to update title
+		                	if (!deleteDashboard) {
+		                		refreshDashboard();
+		                	}
+	            		});
+	            		$('.modal.in').modal('hide');
 	                }
 	            });
     		}

@@ -108,9 +108,11 @@ $(document).ready(function () {
 	}
 	
 	function refreshAccountData(html) {
-		$('#account-data').replaceWith(html);
-		initBindings($('#account-data'));
-		$('.modal-backdrop').remove();
+		$('.modal.in').one('hidden.bs.modal', function() {
+			$('#account-data').replaceWith(html);
+			initBindings($('#account-data'));
+		});
+		$('.modal.in').modal('hide');
 	}
 
 });

@@ -71,18 +71,23 @@ h2.form-title.account-data {
     background-color: #50c9c8;
 }
 
+.btn-avatar-group {
+    text-align: center;
+}
+
 .btn-avatar {
     box-sizing: content-box;
     display: inline-block;
     border-radius: 50%;
-    width: 100px;
+    width: 110px;
+    border: 5px solid white;
+    transition: .2s;
 }
 .btn-avatar:focus {
     outline: 0; /* hide dotted focus borders */
 }
 .btn-avatar.selected {
     border: 5px solid #56C170;
-    margin: -5px;
 }
 
 .profile-header {

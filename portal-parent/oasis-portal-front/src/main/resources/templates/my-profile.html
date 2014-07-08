@@ -82,9 +82,11 @@
             <input id="selected-avatar" type="hidden" name="avatar" data-th-value="${avatar}" />
             
              <div class="modal-body">
-                <input data-th-each="availableAvatar: ${availableAvatars}"
-                    data-th-class="'btn-avatar action-select-avatar ' + ${availableAvatar.equals(avatar) ? 'selected' : ''}"
-                    type="image" data-th-src="${availableAvatar}" />
+                <div class="btn-avatar-group">
+                    <input data-th-each="availableAvatar: ${availableAvatars}"
+                        data-th-class="'btn-avatar action-select-avatar ' + ${availableAvatar.equals(avatar) ? 'selected' : ''}"
+                        type="image" data-th-src="${availableAvatar}" />
+                </div>
              </div>
              
              <div class="modal-footer">
