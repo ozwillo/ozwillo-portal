@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.mockserver.provisioning;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.List;
 
 /**
@@ -8,6 +10,7 @@ import java.util.List;
  */
 public class InstanceCreated {
 
+    @JsonProperty("instance_id")
     private String instanceId;
 
     private List<ServiceCreated> services;

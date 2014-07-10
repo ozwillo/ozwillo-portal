@@ -11,8 +11,7 @@ import org.oasis_eu.portal.mockserver.repo.Catalog;
 import org.oasis_eu.portal.mockserver.repo.PendingCreationRequests;
 import org.oasis_eu.portal.mockserver.repo.Subscriptions;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
@@ -106,7 +105,12 @@ public class CatalogEndpoint {
 
                 pendingCreationRequests.save(request);
 
-                ResponseEntity instance = restTemplate.postForEntity(base.getInstantiationEndpoint(), request, Void.class);
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("X-OASIS-Signature", "** HMAC digest of payload **");
+                HttpEntity<CreateInstanceRequest> req = new HttpEntity<>(request, headers);
+
+                ResponseEntity<Void> instance = restTemplate.exchange(base.getInstantiationEndpoint(), HttpMethod.POST, req, Void.class);
+
                 if (! instance.getStatusCode().is2xxSuccessful()) {
                     throw new UnableToInstantiateException();
                 }
