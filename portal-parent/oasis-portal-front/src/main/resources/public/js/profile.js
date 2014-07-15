@@ -67,8 +67,7 @@ $(document).ready(function () {
 				method: 'POST',
 				data: $form.serialize(),
 				success: function() {
-					// TODO (see #7) Rely on specific resolver instead of the interceptor
-					window.location = '/my/profile?lang=' + $('#selected-language').val();
+					window.location = '/my/profile';
 				}
 			});
 		});

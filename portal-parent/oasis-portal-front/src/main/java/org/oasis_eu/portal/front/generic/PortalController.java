@@ -5,8 +5,8 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.controller.Languages;
-import org.oasis_eu.portal.services.UserInfoService;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.support.RequestContextUtils;

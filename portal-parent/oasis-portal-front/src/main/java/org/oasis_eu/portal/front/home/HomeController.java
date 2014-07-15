@@ -15,5 +15,5 @@ public class HomeController extends PortalController {
     public String index() {
         return "home";
     }
-
+    
 }
