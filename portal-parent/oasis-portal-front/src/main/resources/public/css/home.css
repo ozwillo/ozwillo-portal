@@ -43,6 +43,8 @@
     height: 680px;
 
     color: #ffffff;
+    
+    padding-top: 55px;
 }
 
 .jumbotron h2 {
@@ -109,9 +111,12 @@
 .navbar {
     background: transparent;
     background-color: transparent;
-
+	padding: 10px 0;
 }
 
+.navbar #logo {
+	margin-top: -5px;
+}
 
 .navbar * .btn > .fa {
     font-size: 15px;
@@ -138,10 +143,11 @@
 
 }
 
-
-
 body {
     padding-top: 0;
+}
+
+.container {
     font-size: 14pt;
 }
 

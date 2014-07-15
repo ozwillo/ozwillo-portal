@@ -5,6 +5,7 @@ import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.GeoEntity;
 import org.oasis_eu.portal.core.services.GeoEntityService;
 import org.oasis_eu.spring.kernel.model.Address;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

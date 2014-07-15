@@ -13,8 +13,7 @@ import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormLayoutMode;
 import org.oasis_eu.portal.services.MyNavigationService;
-import org.oasis_eu.portal.services.UserInfoService;
-import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -102,6 +101,7 @@ public class MyProfileController extends PortalController {
     	if (Languages.getByLocale(new Locale(locale)) != null) {
     		saveSingleUserInfo("locale", locale);
     	}
+    	initProfileModel(model);
     	return "my-profile";
     }
     
@@ -130,12 +130,10 @@ public class MyProfileController extends PortalController {
     }
     
     protected void initProfileModel(Model model) {
-        UserInfo currentUser = userInfoService.currentUser();
         model.addAttribute("navigation", myNavigationService.getNavigation("profile"));
         model.addAttribute("layouts", myProfileState.getLayouts());
-		model.addAttribute("email", currentUser.getEmail());
 		model.addAttribute("availableAvatars", getAvailableAvatars());
-		model.addAttribute("avatar", currentUser.getPictureUrl());
+		model.addAttribute("userLanguage", Languages.getByLocale(new Locale(user().getLocale()), Languages.ENGLISH));
     }
 
 	private List<String> getAvailableAvatars() {
