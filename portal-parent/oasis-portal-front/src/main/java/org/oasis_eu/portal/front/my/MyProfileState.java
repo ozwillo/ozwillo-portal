@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.front.my;
 
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -86,7 +87,10 @@ public class MyProfileState {
     	FormLayout idFormLayout = layouts.get(LAYOUT_IDENTITY);
     	idFormLayout.getWidget("given_name").setValue(userInfo.getGivenName());
     	idFormLayout.getWidget("family_name").setValue(userInfo.getFamilyName());
-    	idFormLayout.getWidget("birthdate").setValue(userInfo.getBirthdate().toString());
+    	LocalDate birthdate = userInfo.getBirthdate();
+    	if (birthdate != null) {
+    		idFormLayout.getWidget("birthdate").setValue(birthdate.toString());
+    	}
     	idFormLayout.getWidget("gender").setValue(userInfo.getGender());
     	idFormLayout.getWidget("phone_number").setValue(userInfo.getPhoneNumber());
 

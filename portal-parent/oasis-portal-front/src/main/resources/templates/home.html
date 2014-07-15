@@ -73,7 +73,7 @@
                 <li><a href="#" class="btn btn-ozwillo" th:href="@{/logout}" th:text="|#{ui.logout} ${user.name}|">Sign out</a></li>
             </th:block>
 
-            <li class="dropdown">
+            <li class="dropdown" data-th-if="${user == null}">
                 <a href="#" class="dropdown-toggle btn btn-ozwillo btn-noborder" data-toggle="dropdown"><th:block th:text="${currentLanguage.name}">English</th:block> <b class="caret"></b></a>
                 <ul class="dropdown-menu" >
                     <li><a href="#" th:each="lang : ${languages}" th:href="|?lang=${lang.language}|" th:text="${lang.name}">Blablaish</a></li>
