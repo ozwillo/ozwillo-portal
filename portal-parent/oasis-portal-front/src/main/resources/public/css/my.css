@@ -1,12 +1,23 @@
 
-h2.form-title {
+h2 {
     font-size: 30px;
+}
+
+h2.form-title {
     margin-bottom: -15px;
 }
 
 h2.form-title.account-data {
     margin-top: 0;
     margin-bottom: 5px;
+}
+
+h2 .badge {
+    background-color: #d9534f;
+    border-radius: 15px;
+    font-size: 20px;
+    padding: 5px 10px;
+    vertical-align: top;
 }
 
 .form-value {
@@ -17,6 +28,10 @@ h2.form-title.account-data {
     top: 5px;
 }
 
+.btn-default {
+    vertical-align: middle;
+}
+
 .btn-view {
     border: 2px solid #6e418e;
     color: #6e418e;
@@ -25,6 +40,7 @@ h2.form-title.account-data {
 }
 
 .btn-edit {
+    padding: 5px 10px;
     border: 2px solid #50C9C8;
     color: #50C9C8;
     border-radius: 8px;
@@ -34,13 +50,73 @@ h2.form-title.account-data {
 }
 
 .btn-edit span.edit {
-    background-image: url('/img/icon/edit.png');
+    background-image: url('/img/icon/btn-edit.png');
+    background-repeat: no-repeat;
     left: -23px;
     top: 7px;
     position: absolute;
     display: block;
     width: 18px;
     height: 18px;
+}
+
+.btn-remove {
+    padding: 5px 10px;
+    border: 2px solid #EC5854;
+    color: #EC5854;
+    border-radius: 8px;
+    background-color: white;
+    border-left-width: 30px;
+    position: relative;
+}
+
+.btn-remove span.remove {
+    background-image: url('/img/icon/btn-remove.png');
+    background-repeat: no-repeat;
+    left: -23px;
+    top: 7px;
+    position: absolute;
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-remove span.trash {
+    background-image: url('/img/icon/btn-trash.png');
+    background-repeat: no-repeat;
+    left: -23px;
+    top: 7px;
+    position: absolute;
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-accept {
+    padding: 5px 10px;
+    border: 2px solid #56C170;
+    color: #56C170;
+    border-radius: 8px;
+    background-color: white;
+    border-left-width: 30px;
+    position: relative;
+}
+
+.btn-accept span.accept {
+    background-image: url('/img/icon/btn-checked.png');
+    background-repeat: no-repeat;
+    left: -23px;
+    top: 7px;
+    position: absolute;
+    display: block;
+    width: 18px;
+    height: 18px;
+}
+
+.btn-default img {
+    margin-right: 5px;
+    vertical-align: middle;
+    max-width: 24px;
 }
 
 .btn-save {
@@ -106,8 +182,18 @@ h2.form-title.account-data {
 }
 
 img.avatar {
+    height: 163px;
     margin-bottom: 10px;
     display: inline-block;
+}
+
+div.empty-avatar {
+   background-color: white;
+   width: 157px;
+   height: 163px;
+   border-radius: 50%;
+   margin: auto;
+   padding-top: 45%;
 }
 
 .form-toggle-block {
@@ -117,6 +203,13 @@ img.avatar {
 .form-data-block {
 	margin-top: 20px;
 	padding-left: 0;
+}
+
+.standard-form {
+    background-color: white;
+    border-radius: 8px;
+    border: 2px solid #526686;
+    padding: 10px 20px;
 }
 
 .account-data-form {
@@ -139,4 +232,26 @@ img.avatar {
 }
 .personal-data-form.edit {
 	border-color: #50C9C8;
+}
+
+.form-table-header {
+    font-weight: bold;
+    font-size: 15px;
+    padding: 5px;
+    border-bottom: 1px solid #CCC;
+}
+
+.form-table-row {
+    padding: 5px;
+    border-bottom: 1px solid #CCC;
+    line-height: 30px;
+}
+
+.form-table-row:last-child {
+    border-bottom: none;
+}
+
+.form-table-actions {
+    padding: 15px;
+    padding-bottom: 5px;
 }

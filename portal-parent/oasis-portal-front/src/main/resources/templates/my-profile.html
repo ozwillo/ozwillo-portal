@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<head data-th-replace="includes/header(title=#{ui.my},page='my')">
+<head data-th-replace="includes/header(title=#{my.profile.title},page='my')">
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -36,7 +36,9 @@
         
         <div class="row">
             <div class="col-md-2 avatar-block">
-                <img class="avatar" data-th-src="${user.pictureUrl}" src="/img/my/avatar/img-21.png" /><br />
+                <img class="avatar" data-th-if="${user.pictureUrl}" data-th-src="${user.pictureUrl}" src="/img/my/avatar/img-21.png" alt="Avatar" />
+                <div class="empty-avatar">No avatar</div>
+                <br />
                 <button id="btn-edit-avatar" class="btn btn-edit" type="button"><span class="edit"></span><span data-th-text="#{my.profile.account.changeavatar}">Change avatar</span></button>
             </div>
             <div class="col-md-10">

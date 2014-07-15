@@ -1,0 +1,172 @@
+<!doctype html>
+<html>
+<head data-th-replace="includes/header(title=#{my.network.title},page='my')">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>DUMMY Ozwillo</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="../public/css/main.css" rel="stylesheet"/>
+    <link href="../public/css/my.css" rel="stylesheet"/>
+    
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+</head>
+<body>
+
+<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" data-th-replace="includes/my-navigation :: nav">
+    <div class="navbar-header">
+        <div class="my-oasis">
+            <img id="logo" data-th-src="@{/img/my/my-oasis.png}" src="../public/img/my/my-oasis.png"
+                 alt="My OASIS"/>
+            <span class="badge badge-notifications" data-th-if="${notificationsCount != 0}" data-th-text="${notificationsCount}">4</span>
+        </div>
+    </div>
+</div>
+
+<div id="account-data" class="profile-header" data-th-fragment="account-data">
+    <div class="container">
+        <h1>
+            <img src="/img/my/network-gray.png" />
+            <span data-th-text="#{my.network.title}">My network</span> (MOCKUP)
+        </h1>
+        
+        <h2>Relationships</h2>
+        
+        <div class="standard-form">
+          <div class="row form-table-header">
+            <div class="col-sm-2">Name</div>
+            <div class="col-sm-3">Organisation</div>
+            <div class="col-sm-2">Administrator</div>
+            <div class="col-sm-5">Actions</div>
+          </div>
+          <div class="row form-table-row">
+            <div class="col-sm-2">You</div>
+            <div class="col-sm-3">Organisation #1</div>
+            <div class="col-sm-2">Yes</div>
+            <div class="col-sm-5">
+                <button class="btn btn-edit" type="button"><span class="edit"></span>Edit</button>
+            </div>
+          </div>
+          <div class="row form-table-row">
+            <form role="form" action="#">
+                <div class="col-sm-2">You</div>
+                <div class="col-sm-3">Organisation #1</div>
+                <div class="col-sm-2">
+                    <div class="btn-group" data-toggle="buttons">
+                      <label class="btn btn-default active">
+                        <input type="radio" name="options" id="option1" checked="checked" /> Yes
+                      </label>
+                      <label class="btn btn-default">
+                        <input type="radio" name="options" id="option2" /> No
+                      </label>
+                    </div>
+                </div>
+                <div class="col-sm-5">
+                    <button class="btn btn-accept" type="button"><span class="accept"></span>Save</button>
+                    <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button>
+                </div>
+             </form>
+          </div>
+          <div class="row form-table-row">
+            <div class="col-sm-2">B. Willis</div>
+            <div class="col-sm-3">Organisation #1</div>
+            <div class="col-sm-2">Yes</div>
+            <div class="col-sm-5">
+                <button class="btn btn-edit" type="button"><span class="edit"></span>Edit</button>
+            </div>
+          </div>
+          <div class="row form-table-actions">
+             <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modal-add-relationship">
+                <img src="/img/icon/plus.png" />
+                Add relationship
+             </button>
+          </div>
+        </div>
+        
+    </div>
+    
+   <div id="modal-add-relationship" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+     <div class="modal-dialog">
+       <div class="modal-content">
+         <div class="modal-header">
+           <button type="button" class="close" data-dismiss="modal">
+                <span aria-hidden="true">&times;</span>
+                <span class="sr-only">Close</span>
+           </button>
+           <h4 class="modal-title">Add relationship</h4>
+         </div>
+         <form id="form-add-relationship" method="post" action="#" data-th-action="@{/my/network/add}">
+            <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+            
+            <div class="modal-body">
+               <div class="form-group">
+                    <label for="organization-name" class="control-label">Organization</label>         
+                    <input type="text" name="organization-name" class="form-control" />
+               </div>
+               <div class="form-group">
+                    <label for="emails" class="control-label">Emails</label>         
+                    <textarea class="form-control" name="emails">
+                    </textarea>
+               </div>
+             </div>
+             
+             <div class="modal-footer">
+               <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{ui.cancel}">Cancel</button>
+               <button type="submit" class="btn btn-primary" data-th-value="#{ui.save}">Save</button>
+             </div>
+         </form>
+       </div>
+     </div>
+   </div>
+   
+</div>
+
+<div class="container">
+
+    <h2><span class="badge">2</span> Pending requests</h2>
+    
+    <form class="form-horizontal standard-form" role="form">
+      <div class="row form-table-header">
+        <div class="col-sm-2">Date</div>
+        <div class="col-sm-2">Email</div>
+        <div class="col-sm-2">Organisation</div>
+        <div class="col-sm-3">Status</div>
+        <div class="col-sm-3">Actions</div>
+      </div>
+      <div class="row form-table-row">
+        <div class="col-sm-2">02/04/2014</div>
+        <div class="col-sm-2">swonder@orga3.com</div>
+        <div class="col-sm-2">Organisation #3</div>
+        <div class="col-sm-3"><b>New request : </b> S. Wonder asks you to join Organisation #3</div>
+        <div class="col-sm-3">
+            <button class="btn btn-accept" type="button"><span class="accept"></span>Accept</button>
+            <button class="btn btn-remove" type="button"><span class="remove"></span>Decline</button>
+        </div>
+      </div>
+      <div class="row form-table-row">
+        <div class="col-sm-2">02/04/2014</div>
+        <div class="col-sm-2">m.damon@orga8.com</div>
+        <div class="col-sm-2">Organisation #8</div>
+        <div class="col-sm-3"><b>Pending : </b> M. Damon has not yet accepted your request</div>
+        <div class="col-sm-3">
+            <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button>
+        </div>
+      </div>
+    </form>
+    
+</div>
+
+<data-th-block data-th-replace="includes/footer">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</data-th-block>
+<script src="../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
+<script src="../public/js/my.js" data-th-src="@{/js/my.js}"></script>
+
+</body>
+</html>
+
