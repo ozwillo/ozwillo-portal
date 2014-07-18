@@ -27,58 +27,70 @@
     </div>
 </div>
 
-<div id="account-data" class="profile-header" data-th-fragment="account-data">
+<div class="profile-header" >
     <div class="container">
         <h1>
             <img src="/img/my/network-gray.png" />
-            <span data-th-text="#{my.network.title}">My network</span> (MOCKUP)
+            <span data-th-text="#{my.network.title}">My network</span>
         </h1>
         
         <h2>Relationships</h2>
         
-        <div class="standard-form">
+        <div id="relationships" data-th-fragment="relationships" class="standard-form">
           <div class="row form-table-header">
-            <div class="col-sm-2">Name</div>
-            <div class="col-sm-3">Organisation</div>
-            <div class="col-sm-2">Administrator</div>
-            <div class="col-sm-5">Actions</div>
+            <div class="col-sm-2" data-th-text="#{my.network.relationship.name}">Name</div>
+            <div class="col-sm-3" data-th-text="#{my.network.relationship.organization}">Organization</div>
+            <div class="col-sm-2" data-th-text="#{my.network.relationship.isadmin}">Administrator</div>
+            <div class="col-sm-5" data-th-text="#{my.network.relationship.actions}">Actions</div>
           </div>
-          <div class="row form-table-row">
-            <div class="col-sm-2">You</div>
-            <div class="col-sm-3">Organisation #1</div>
-            <div class="col-sm-2">Yes</div>
-            <div class="col-sm-5">
-                <button class="btn btn-edit" type="button"><span class="edit"></span>Edit</button>
-            </div>
-          </div>
-          <div class="row form-table-row">
-            <form role="form" action="#">
-                <div class="col-sm-2">You</div>
-                <div class="col-sm-3">Organisation #1</div>
-                <div class="col-sm-2">
-                    <div class="btn-group" data-toggle="buttons">
-                      <label class="btn btn-default active">
-                        <input type="radio" name="options" id="option1" checked="checked" /> Yes
-                      </label>
-                      <label class="btn btn-default">
-                        <input type="radio" name="options" id="option2" /> No
-                      </label>
-                    </div>
+          <div class="row form-table-row" data-th-each="agent: ${agents}" data-th-id="${agent.id}">
+            <div class="col-sm-2 data-agent-name" data-th-text="${(!#strings.isEmpty(agent.name)) ? agent.name : agent.email}">You</div>
+            <div class="col-sm-3" data-th-text="${organizationNames.get(agent.organizationId)}">Organization #1</div>
+            
+            <div class="col-sm-2 view-mode" data-th-text="${agent.organizationAdmin} ? #{ui.yes} : #{ui.no}">Yes</div>
+            <div class="col-sm-2 edit-mode" style="display: none">
+                <div class="btn-group data-is-admin" data-toggle="buttons">
+                  <label data-th-class="'btn btn-default' + (${agent.organizationAdmin} ? ' active' : '')">
+                    <input type="radio" name="is-admin" value="yes" /> Yes
+                  </label>
+                  <label data-th-class="'btn btn-default' + (${agent.organizationAdmin} ? '' : ' active')">
+                    <input type="radio" name="is-admin" value="no" /> No
+                  </label>
                 </div>
-                <div class="col-sm-5">
-                    <button class="btn btn-accept" type="button"><span class="accept"></span>Save</button>
-                    <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button>
-                </div>
-             </form>
-          </div>
-          <div class="row form-table-row">
-            <div class="col-sm-2">B. Willis</div>
-            <div class="col-sm-3">Organisation #1</div>
-            <div class="col-sm-2">Yes</div>
-            <div class="col-sm-5">
-                <button class="btn btn-edit" type="button"><span class="edit"></span>Edit</button>
             </div>
+            
+            <div class="col-sm-5 view-mode">
+                <button class="btn btn-edit" type="button">
+                     <span class="edit"></span><span data-th-text="#{ui.edit}">Edit</span>
+                </button>
+            </div>
+            <div class="col-sm-5 edit-mode" style="display: none">
+                <button class="btn btn-accept" type="button"><span class="accept"></span>Save</button>
+                <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button>
+            </div>
+            
           </div>
+          
+<!--           <div class="row form-table-row"> -->
+<!--             <form role="form" action="#"> -->
+<!--                 <div class="col-sm-2">You</div> -->
+<!--                 <div class="col-sm-3">Organization #1</div> -->
+<!--                 <div class="col-sm-2"> -->
+<!--                     <div class="btn-group" data-toggle="buttons"> -->
+<!--                       <label class="btn btn-default active"> -->
+<!--                         <input type="radio" name="options" id="option1" checked="checked" /> Yes -->
+<!--                       </label> -->
+<!--                       <label class="btn btn-default"> -->
+<!--                         <input type="radio" name="options" id="option2" /> No -->
+<!--                       </label> -->
+<!--                     </div> -->
+<!--                 </div> -->
+<!--                 <div class="col-sm-5"> -->
+<!--                     <button class="btn btn-accept" type="button"><span class="accept"></span>Save</button> -->
+<!--                     <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button> -->
+<!--                 </div> -->
+<!--              </form> -->
+<!--           </div> -->
           <div class="row form-table-actions">
              <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modal-add-relationship">
                 <img src="/img/icon/plus.png" />
@@ -97,20 +109,23 @@
                 <span aria-hidden="true">&times;</span>
                 <span class="sr-only">Close</span>
            </button>
-           <h4 class="modal-title">Add relationship</h4>
+           <h4 class="modal-title" data-th-text="#{my.network.relationship.add}">Add relationships</h4>
          </div>
-         <form id="form-add-relationship" method="post" action="#" data-th-action="@{/my/network/add}">
+         <form id="form-add-relationship" method="post" action="#" data-th-action="@{/my/network/relationships/create}">
             <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
             
             <div class="modal-body">
                <div class="form-group">
-                    <label for="organization-name" class="control-label">Organization</label>         
-                    <input type="text" name="organization-name" class="form-control" />
+                    <label for="organization-name" class="control-label"
+                         data-th-text="#{my.network.relationship.organization}">Organization</label>   
+                    <input class="form-control disabled"  type="text" name="organization-name"
+                        disabled="disabled"
+                        data-th-value="${organizationNames.get(user.organizationId)}" />
                </div>
                <div class="form-group">
-                    <label for="emails" class="control-label">Emails</label>         
-                    <textarea class="form-control" name="emails">
-                    </textarea>
+                    <label for="emails" class="control-label"
+                        data-th-text="#{my.network.relationship.add.emails}">Emails</label>         
+                    <textarea class="form-control" name="emails"></textarea>
                </div>
              </div>
              
@@ -127,21 +142,21 @@
 
 <div class="container">
 
-    <h2><span class="badge">2</span> Pending requests</h2>
+    <h2><span class="badge">2</span> Pending requests (MOCKUP)</h2>
     
     <form class="form-horizontal standard-form" role="form">
       <div class="row form-table-header">
         <div class="col-sm-2">Date</div>
         <div class="col-sm-2">Email</div>
-        <div class="col-sm-2">Organisation</div>
+        <div class="col-sm-2">Organization</div>
         <div class="col-sm-3">Status</div>
         <div class="col-sm-3">Actions</div>
       </div>
       <div class="row form-table-row">
         <div class="col-sm-2">02/04/2014</div>
         <div class="col-sm-2">swonder@orga3.com</div>
-        <div class="col-sm-2">Organisation #3</div>
-        <div class="col-sm-3"><b>New request : </b> S. Wonder asks you to join Organisation #3</div>
+        <div class="col-sm-2">Organization #3</div>
+        <div class="col-sm-3"><b>New request : </b> S. Wonder asks you to join Organization #3</div>
         <div class="col-sm-3">
             <button class="btn btn-accept" type="button"><span class="accept"></span>Accept</button>
             <button class="btn btn-remove" type="button"><span class="remove"></span>Decline</button>
@@ -150,7 +165,7 @@
       <div class="row form-table-row">
         <div class="col-sm-2">02/04/2014</div>
         <div class="col-sm-2">m.damon@orga8.com</div>
-        <div class="col-sm-2">Organisation #8</div>
+        <div class="col-sm-2">Organization #8</div>
         <div class="col-sm-3"><b>Pending : </b> M. Damon has not yet accepted your request</div>
         <div class="col-sm-3">
             <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button>
@@ -166,6 +181,7 @@
 </data-th-block>
 <script src="../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
 <script src="../public/js/my.js" data-th-src="@{/js/my.js}"></script>
+<script src="../public/js/network.js" data-th-src="@{/js/network.js}"></script>
 
 </body>
 </html>
