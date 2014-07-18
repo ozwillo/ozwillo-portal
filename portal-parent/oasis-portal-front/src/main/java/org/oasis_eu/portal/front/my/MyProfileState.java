@@ -9,9 +9,11 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.oasis_eu.portal.model.FormLayout;
+import org.oasis_eu.portal.model.FormWidget;
 import org.oasis_eu.portal.model.FormWidgetDate;
 import org.oasis_eu.portal.model.FormWidgetDropdown;
 import org.oasis_eu.portal.model.FormWidgetText;
+import org.oasis_eu.spring.kernel.model.Address;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -20,6 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StringUtils;
 
 /**
  * 
@@ -107,6 +110,17 @@ public class MyProfileState {
 	
 	public FormLayout getLayout(String layoutId) {
 		return layouts.get(layoutId);
+	}
+	
+	
+	public String getWidgetValue(String key) {
+		for (FormLayout layout : layouts.values()) {
+			FormWidget widget = layout.getWidget(key);
+			if (widget != null) {
+				return widget.getValue();
+			}
+		}
+		return null;
 	}
     
 }

@@ -100,10 +100,14 @@ public class MyNetworkController extends PortalController {
     }
     
 	private void initModel(Model model) throws ExecutionException {
-		List<AgentInfo> agents = userDirectory.getAgents(user().getOrganizationId(), 0, 25);
-		model.addAttribute("agents", agents); // TODO Pagination
-		model.addAttribute("organizationNames", fetchOrganizationNames(agents));
+		String organizationId = user().getOrganizationId();
         model.addAttribute("navigation", myNavigationService.getNavigation("network"));
+		model.addAttribute("isAgent", organizationId != null);
+		if (organizationId != null) {
+			List<AgentInfo> agents = userDirectory.getAgents(organizationId, 0, 25);
+			model.addAttribute("agents", agents); // TODO Pagination
+			model.addAttribute("organizationNames", fetchOrganizationNames(agents));
+		}
 	}
 
 

@@ -27,7 +27,16 @@
     </div>
 </div>
 
-<div class="profile-header" >
+<div class="container" data-th-if="${!isAgent}">
+        <h2>
+            <img src="/img/my/network-gray.png" />
+            <span data-th-text="#{my.network.title}">My network</span>
+        </h2>
+        <!-- XXX Temporary -->
+        <p>Networks are unavailable to citizen at the moment.</p>
+</div>
+
+<div class="profile-header" data-th-if="${isAgent}">
     <div class="container">
         <h1>
             <img src="/img/my/network-gray.png" />
@@ -140,7 +149,7 @@
    
 </div>
 
-<div class="container">
+<div class="container" data-th-if="${isAgent}">
 
     <h2><span class="badge">2</span> Pending requests (MOCKUP)</h2>
     

@@ -121,10 +121,14 @@ $(document).ready(function () {
 		var locale = $('#layouts').attr('data');
 		var dateFormat = $.datepicker.regional[locale.replace('en', '')].dateFormat;
     	if ($el[0].tagName == 'INPUT') {
-    		$el.val($.datepicker.formatDate(dateFormat, new Date($el.val())));
+    		if ($el.val() != '') {
+    			$el.val($.datepicker.formatDate(dateFormat, new Date($el.val())));
+    		}
     	}
     	else {
-    		$el.html($.datepicker.formatDate(dateFormat, new Date($el.html())));
+    		if ($el.html() != '') {
+    			$el.html($.datepicker.formatDate(dateFormat, new Date($el.html())));
+    		}
     	}
 	}
 	

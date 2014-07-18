@@ -26,33 +26,42 @@ import com.fasterxml.jackson.databind.node.TextNode;
  *
  */
 @RestController
-@RequestMapping("/a/userinfo")
-public class UserInfoEndpoint {
+@RequestMapping("/a/profile")
+public class ProfileEndpoint {
 
-	private ObjectNode userInfo;
+	private ObjectNode profileInfo;
 
     @RequestMapping("")
     public String getUserInfo() throws JsonProcessingException {
 		ObjectMapper mapper = new ObjectMapper();
-    	return mapper.writeValueAsString(userInfo);
+    	return mapper.writeValueAsString(profileInfo);
     }
     
-    @RequestMapping(value = "", method = RequestMethod.POST)
-    public void postUserInfo(@RequestBody JsonNode data) {
+    @RequestMapping(value = "", method = RequestMethod.PUT)
+    public void changeUserInfo(@RequestBody JsonNode data) {
     	Iterator<Entry<String, JsonNode>> elements = data.fields();
     	while (elements.hasNext()) {
     		Entry<String, JsonNode> node = elements.next();
-    		JsonNode removed = userInfo.remove(node.getKey());
-    		if (removed != null) {
-    			userInfo.set(node.getKey(), new TextNode(node.getValue().textValue()));
+    		if (node.getKey().equals("address")) {
+    			postUserAddressInfo(node.getValue());
+    		}
+    		else {
+	    		JsonNode removed = profileInfo.remove(node.getKey());
+	    		if (removed != null) {
+	    			profileInfo.set(node.getKey(), new TextNode(node.getValue().textValue()));
+	    		}
     		}
     	}
     }
+    
+    @RequestMapping(value = "password", method = RequestMethod.PUT)
+    public void changePassword() {
+    	// Nothing
+    }
 
-    @RequestMapping(value = "/address", method = RequestMethod.POST)
-    public void postUserAddressInfo(@RequestBody JsonNode data) {
-    	Iterator<Entry<String, JsonNode>> elements = data.fields();
-    	ObjectNode addressInfo = (ObjectNode) userInfo.get("address");
+    public void postUserAddressInfo(JsonNode addressData) {
+    	Iterator<Entry<String, JsonNode>> elements = addressData.fields();
+    	ObjectNode addressInfo = (ObjectNode) profileInfo.get("address");
     	while (elements.hasNext()) {
     		Entry<String, JsonNode> node = elements.next();
     		JsonNode removed = addressInfo.remove(node.getKey());
@@ -82,7 +91,7 @@ public class UserInfoEndpoint {
     			"    \"name\": \"Alice Legrand\"," + 
     			"    \"sub\": \"bb2c6f76-362f-46aa-982c-1fc60d54b8ef\"," + 
     			"    \"updated_at\": 1399887616," + 
-    			"    \"locale\": \"fr\", " + // TODO missing from actual API 
+    			"    \"locale\": \"fr\", " +
     			"    \"picture\": \"/img/my/avatar/img-21.png\", " + // TODO missing from actual API
     			"    \"phone_number\": \"01 23 45 67 81\" " + // TODO missing from actual API
     			"}");
@@ -103,6 +112,6 @@ public class UserInfoEndpoint {
 //    	"    \"sub\": \"a399684b-4ea3-49c3-800b-b8a0bf1131cb\"," + 
 //    	"    \"updated_at\": 1393235529" + 
 //    	"}"
-		userInfo = (ObjectNode) parser.readValueAsTree();
+		profileInfo = (ObjectNode) parser.readValueAsTree();
 	}
 }
