@@ -8,6 +8,7 @@ import org.oasis_eu.portal.core.config.PortalCoreConfiguration;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.mongo.dao.cms.ContentItemRepository;
 import org.oasis_eu.portal.core.mongo.model.cms.ContentItem;
+import org.oasis_eu.spring.config.KernelConfiguration;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.*;
@@ -24,7 +25,7 @@ import static org.junit.Assert.*;
 @ContextConfiguration(classes = ContentRenderingServiceTest.class, loader = AnnotationConfigContextLoader.class)
 @Configuration
 @PropertySource("classpath:test-application.properties")
-@Import({MongoConfiguration.class, PortalCoreConfiguration.class})
+@Import({MongoConfiguration.class, PortalCoreConfiguration.class, KernelConfiguration.class})
 public class ContentRenderingServiceTest {
 
     @Bean

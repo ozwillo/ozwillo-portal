@@ -32,7 +32,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.oasis.spring-integration</groupId>
+            <groupId>org.oasis_eu.spring-integration</groupId>
             <artifactId>oasis-spring-integration</artifactId>
             <version>0.2-SNAPSHOT</version>
         </dependency>
