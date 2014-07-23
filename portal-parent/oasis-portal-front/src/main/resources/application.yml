@@ -16,7 +16,9 @@ kernel:
     auth_endpoint: ${kernel.base_uri}/a/auth
     token_endpoint: ${kernel.base_uri}/a/token
     keys_endpoint: ${kernel.base_uri}/a/keys
+#    userinfo_endpoint: http://localhost:8081/a/userinfo
     userinfo_endpoint: ${kernel.base_uri}/a/userinfo
+    profile_endpoint: http://localhost:8081/a/profile
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.base_uri}/a/logout
     callback_uri: ${application.url}/login

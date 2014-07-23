@@ -1,0 +1,64 @@
+<div data-th-fragment="layout (layout)">
+
+  <div class="row" data-th-id="${layout.id}">
+    <div class="col-sm-2 form-toggle-block">
+        <button data-th-data="${layout.id}" type="button"
+            data-th-class="'btn btn-form-toggle btn-view action-toggle-view' + ${'VIEW'.equals(layout.mode.toString()) ? ' active' : ''}" 
+            data-th-text="#{${layout.label}}">Identity</button>
+        <button data-th-data="${layout.id}" type="button"
+            data-th-class="'btn btn-form-toggle btn-edit action-toggle-edit' + ${'EDIT'.equals(layout.mode.toString()) ? ' active' : ''}">
+            <span class="edit"></span><span data-th-text="#{ui.edit}">Edit</span>
+        </button>
+    </div>
+    <div class="col-sm-10 form-data-block">
+    <form data-th-class="'form-horizontal personal-data-form' + ${'EDIT'.equals(layout.mode.toString()) ? ' edit' : ''}"
+        role="form" data-th-action="@{'/my/profile/save/' + ${layout.id}}" data-th-data="${layout.id}">
+      <div data-th-each="widget: ${layout.widgets}" class="form-group">
+          <label data-th-for="${widget.id}" class="col-sm-2 control-label" data-th-text="#{${widget.label}}">First name :</label>
+          <div class="col-sm-10" data-th-if="${'text'.equals(widget.type)}"
+                data-th-include="includes/my-profile-fragments :: text-widget (${widget}, ${layout.mode})">?</div>
+          <div class="col-sm-10" data-th-if="${'dropdown'.equals(widget.type)}"
+                data-th-include="includes/my-profile-fragments :: dropdown-widget (${widget}, ${layout.mode})">?</div>
+          <div class="col-sm-10" data-th-if="${'date'.equals(widget.type)}"
+                data-th-include="includes/my-profile-fragments :: date-widget (${widget}, ${layout.mode})">?</div>
+      </div>
+      <div class="form-group" data-th-if="${'EDIT'.equals(layout.mode.toString())}">
+        <label class="col-sm-2 control-label"></label>
+        <div class="col-sm-10">
+            <input type="submit" class="btn btn-save" data-th-value="#{ui.save}" />
+        </div>
+      </div>
+    </form>
+    </div>
+  </div>
+
+</div>
+
+<div data-th-fragment="text-widget (widget, mode)">
+    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="${widget.value}">?</span>
+    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-name="${widget.id}" data-th-value="${widget.value}" />
+</div>
+
+<div data-th-fragment="date-widget (widget, mode)">
+    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="widget-date-view form-value" data-th-text="${widget.value}"></span>
+    <div data-th-if="${'EDIT'.equals(mode.toString())}" class="widget-date-edit">
+        <input class="value-holder" type="hidden" data-th-id="${widget.id} + '-value'" data-th-name="${widget.id}" data-th-value="${widget.value}" />
+        <input class="form-control" type="text" data-th-name="${widget.id}" data-th-value="${widget.value}" />
+    </div>
+</div>
+
+<div data-th-fragment="dropdown-widget (widget, mode)">
+    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="#{${widget.getOptionLabel(widget.value)}}">?</span>
+    <div data-th-if="${'EDIT'.equals(mode.toString())}" class="widget-dropdown">
+        <input type="hidden" data-th-name="${widget.id}" data-th-value="${widget.value}" />
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            <span class="value-label" data-th-text="#{${widget.getOptionLabel(widget.value)}}">English</span>
+            <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="language-label">
+            <li data-th-each="option : ${widget.options}">
+                <a data-th-data="${option.key}" href="#" data-th-text="#{${option.value}}">Blablaish</a>
+            </li>
+        </ul>
+    </div>
+</div>

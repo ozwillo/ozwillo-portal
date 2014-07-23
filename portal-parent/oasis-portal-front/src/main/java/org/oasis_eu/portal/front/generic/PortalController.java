@@ -1,46 +1,41 @@
 package org.oasis_eu.portal.front.generic;
 
-import org.oasis_eu.portal.services.UserInfoHelper;
+import java.util.Locale;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.spring.kernel.model.UserInfo;
-import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Locale;
-
 /**
- * User: schambon
- * Date: 6/11/14
+ * User: schambon Date: 6/11/14
  */
 abstract public class PortalController {
 
-    @Autowired
-    private UserInfoHelper userInfoHelper;
+	@Autowired
+	private UserInfoService userInfoService;
 
-    @ModelAttribute("languages")
-    public Languages[] languages() {
-        return Languages.values();
-    }
+	@Autowired
+	private HttpServletRequest request;
 
+	@ModelAttribute("languages")
+	public Languages[] languages() {
+		return Languages.values();
+	}
 
-    @ModelAttribute("currentLanguage")
-    public Languages currentLanguage(HttpServletRequest request) {
-        Locale current = RequestContextUtils.getLocale(request);
-        for (Languages l : Languages.values()) {
-            if (l.getLanguage().equals(current.getLanguage())) {
-                return l;
-            }
-        }
-        return Languages.ENGLISH;
-    }
+	@ModelAttribute("currentLanguage")
+	public Languages currentLanguage() {
+		Locale currentLocale = RequestContextUtils.getLocale(request);
+		return Languages.getByLocale(currentLocale, Languages.ENGLISH);
+	}
 
-    @ModelAttribute("user")
-    public UserInfo user() {
-        return userInfoHelper.currentUser();
-    }
+	@ModelAttribute("user")
+	public UserInfo user() {
+		return userInfoService.currentUser();
+	}
 
 }

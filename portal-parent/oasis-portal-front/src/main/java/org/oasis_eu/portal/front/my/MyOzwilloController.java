@@ -149,12 +149,6 @@ public class MyOzwilloController extends PortalController {
         return "my-notif";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/profile")
-    public String profile(Model model) {
-        model.addAttribute("navigation", myNavigationService.getNavigation("profile"));
-        return "my-profile";
-    }
-
     @RequestMapping(method = RequestMethod.GET, value="/api/notifications")
     @ResponseBody
     public NotificationData getNotificationData(HttpServletRequest request) {

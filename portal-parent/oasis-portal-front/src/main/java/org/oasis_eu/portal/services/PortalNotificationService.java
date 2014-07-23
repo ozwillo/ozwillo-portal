@@ -7,6 +7,7 @@ import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.model.UserNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.NotificationService;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +35,7 @@ public class PortalNotificationService {
     private CatalogStore store;
 
     @Autowired
-    private UserInfoHelper userInfoHelper;
+    private UserInfoService userInfoHelper;
 
     public Map<String, Integer> getAppNotifications(List<String> applicationIds) {
         return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())

@@ -1,5 +1,9 @@
 package org.oasis_eu.portal.services;
 
+import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.experimental.categories.Category;
@@ -7,15 +11,12 @@ import org.junit.runner.RunWith;
 import org.oasis_eu.portal.main.OasisPortal;
 import org.oasis_eu.spring.kernel.model.Address;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.oasis_eu.spring.test.IntegrationTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.util.ReflectionTestUtils;
-
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
 
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -38,7 +39,7 @@ public class LocalServiceServiceTest {
         dummy.setAddress(address);
         dummy.setUserId(USER_ID);
 
-        UserInfoHelper helper = mock(UserInfoHelper.class);
+        UserInfoService helper = mock(UserInfoService.class);
         when(helper.currentUser()).thenReturn(dummy);
 
         ReflectionTestUtils.setField(localServiceService, "userInfoHelper", helper);

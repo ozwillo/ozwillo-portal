@@ -20,6 +20,7 @@ import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.model.DashboardEntry;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,7 +63,7 @@ public class PortalDashboardService {
     private CatalogStore catalogStore;
 
     @Autowired
-    private UserInfoHelper userInfoHelper;
+    private UserInfoService userInfoHelper;
 
     @Autowired
     private PortalNotificationService notificationService;

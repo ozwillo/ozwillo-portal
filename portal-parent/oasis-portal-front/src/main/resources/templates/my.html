@@ -102,7 +102,7 @@
                 <li class="active" th:each="ctx : ${contexts}" th:class="${context.id == ctx.id} ? 'active' : 'inactive'">
                 	<a class="dash-switch-link" href="#" th:href="@{'/my/dashboard/' + ${ctx.id}}" th:data="${ctx.id}">
                 		<span th:text="${ctx.name}">default</span>
-                		<input id="manage-dashboard-btn" type="image" src="/img/icon/edit.png" class="pull-right"
+                		<input id="manage-dashboard-btn" type="image" src="/img/icon/btn-edit.png" class="pull-right"
                 			th:if="${context.id == ctx.id}" />
                 	</a>
                 </li>
@@ -128,7 +128,6 @@
 			       		<span aria-hidden="true">&times;</span>
 			       		<span class="sr-only">Close</span>
 			       </button>
-			       <!-- L1ON -->
 			       <h4 class="modal-title" th:text="#{my.manage} + ' \'' + ${context.name} + '\''">Manage dashboard</h4>
 			     </div>
 			     <form id="manage-dash" class="form-inline" method="post" action="#" data-th-action="@{/my/dashboard/manage}">
