@@ -5,6 +5,7 @@ package org.oasis_eu.portal.core.model.appstore;
  * Date: 6/24/14
  */
 public enum CatalogEntryType {
-    ARCHETYPE,
+    APPLICATION,
+    INSTANCE,
     SERVICE
 }

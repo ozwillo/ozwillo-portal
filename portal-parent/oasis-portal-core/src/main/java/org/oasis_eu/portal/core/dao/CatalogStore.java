@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.core.dao;
 
+import org.oasis_eu.portal.core.model.appstore.AppInstance;
 import org.oasis_eu.portal.core.model.appstore.Audience;
 import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
+import org.oasis_eu.spring.kernel.model.instance.CreateInstanceRequest;
 
 import java.util.List;
 
@@ -15,5 +17,5 @@ public interface CatalogStore {
 
     List<CatalogEntry> findAllVisible(List<Audience> targetAudience);
 
-    void subscribe(String appId, String userId);
+    void instantiate(String appId, AppInstance instancePattern);
 }

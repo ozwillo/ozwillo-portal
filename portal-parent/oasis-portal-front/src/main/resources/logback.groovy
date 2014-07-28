@@ -5,12 +5,14 @@ scan()
 
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
-        pattern = "| %-5level| %d{HH:mm:ss.SSS} | %logger{36} - %msg%n"
+        //pattern = "| %-5level| %d{HH:mm:ss.SSS} | %logger{36} - %msg%n"
+        pattern = "| %-5level| %d{HH:mm:ss.SSS} | %logger - %msg%n"
     }
 }
 
 logger("org.springframework", INFO)
 logger("org.oasis_eu", DEBUG)
 logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
-
+logger("org.oasis_eu.spring.kernel.security.OpenIdCAuthFilter", INFO)
+logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", INFO)
 root(WARN, ["CONSOLE"])

@@ -58,9 +58,8 @@ public class ProvisioningEndpoint {
             entry.setLocalizedDescriptions(s.getTranslations().entrySet().stream().filter(e -> e.getKey().startsWith("description#")).collect(Collectors.toMap(e -> e.getKey().substring("description#".length()), Map.Entry::getValue)));
             entry.setLocalizedNames(s.getTranslations().entrySet().stream().filter(e -> e.getKey().startsWith("name#")).collect(Collectors.toMap(e -> e.getKey().substring("name#".length()), Map.Entry::getValue)));
             entry.setVisible(s.isVisible());
-            entry.setDefaultLocale(Locale.ENGLISH);
             entry.setPaymentOption(s.getPaymentOption());
-            entry.setTargetAudience(s.getTargetAudience());
+//            entry.setTargetAudience(s.getTargetAudience());
 
             catalog.save(entry);
 

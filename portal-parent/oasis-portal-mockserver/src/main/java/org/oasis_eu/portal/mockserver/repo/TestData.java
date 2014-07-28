@@ -77,7 +77,7 @@ public class TestData {
 //    public void initializeTestData() throws Exception {
 //
 //        CatalogEntry ckArchetype = new CatalogEntry();
-//        ckArchetype.setType(CatalogEntryType.ARCHETYPE);
+//        ckArchetype.setType(CatalogEntryType.APPLICATION);
 //        ckArchetype.setId("__citizenkin__");
 //        ckArchetype.setDefaultName("Citizen Kin");
 //        ckArchetype.setDefaultDescription("Citizen relationship management application");

@@ -10,13 +10,16 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
+import org.oasis_eu.portal.core.model.appstore.AppInstance;
 import org.oasis_eu.portal.core.model.appstore.Audience;
 import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.PaymentOption;
 import org.oasis_eu.portal.model.AcquisitionStatus;
 import org.oasis_eu.portal.model.AppInfo;
 import org.oasis_eu.portal.model.AppstoreHit;
+import org.oasis_eu.spring.kernel.model.instance.CreateInstanceRequest;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
+import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -46,6 +49,9 @@ public class PortalAppstoreService {
     private UserInfoService userInfoHelper;
 
     @Autowired
+    private UserDirectory userDirectory;
+
+    @Autowired
     private MessageSource messageSource;
 
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
@@ -66,6 +72,11 @@ public class PortalAppstoreService {
     }
 
     public void buy(String appId) {
-        catalogStore.subscribe(appId, userInfoHelper.currentUser().getUserId());
+        AppInstance instanceRequest = new AppInstance();
+
+//        instanceRequest.setProviderId(userDirectory.getMemberships(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());
+          instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());
+
+        catalogStore.instantiate(appId, instanceRequest);
     }
 }

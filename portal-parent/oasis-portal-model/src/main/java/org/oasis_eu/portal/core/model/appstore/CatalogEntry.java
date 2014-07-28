@@ -32,12 +32,9 @@ public class CatalogEntry  {
     @JsonProperty("icon")
     private String defaultIcon;
 
-    @JsonProperty("default_locale")
-    private Locale defaultLocale;
-
     private String url;
 
-    @JsonProperty("notification_url")
+    @JsonProperty("notification_uri")
     private String notificationUrl;
 
     @JsonIgnore
@@ -50,22 +47,23 @@ public class CatalogEntry  {
     private PaymentOption paymentOption;
 
     @JsonProperty("target_audience")
-    private List<Audience> targetAudience;
+    private Audience targetAudience;
 
     @JsonProperty("territory_id")
     private String territoryId;
 
-    @JsonProperty("provider_organization_id")
+    @JsonProperty("provider_id")
     private String providerId;
 
     /**
      * App store publication status
      */
+    @JsonProperty("visible")
     private boolean visible = false;
 
-    private String instantiationEndpoint;
-
-    private String secret; // to use for instantiation
+//    private String instantiationEndpoint;
+//
+//    private String secret; // to use for instantiation
 
 
     public String getId() {
@@ -173,14 +171,6 @@ public class CatalogEntry  {
         this.categoryIds = categoryIds;
     }
 
-    public Locale getDefaultLocale() {
-        return defaultLocale;
-    }
-
-    public void setDefaultLocale(Locale defaultLocale) {
-        this.defaultLocale = defaultLocale;
-    }
-
     public String getUrl() {
         return url;
     }
@@ -205,11 +195,11 @@ public class CatalogEntry  {
         this.paymentOption = paymentOption;
     }
 
-    public List<Audience> getTargetAudience() {
+    public Audience getTargetAudience() {
         return targetAudience;
     }
 
-    public void setTargetAudience(List<Audience> targetAudience) {
+    public void setTargetAudience(Audience targetAudience) {
         this.targetAudience = targetAudience;
     }
 
@@ -261,19 +251,19 @@ public class CatalogEntry  {
         }
     }
 
-    public String getInstantiationEndpoint() {
-        return instantiationEndpoint;
-    }
-
-    public void setInstantiationEndpoint(String instantiationEndpoint) {
-        this.instantiationEndpoint = instantiationEndpoint;
-    }
-
-    public String getSecret() {
-        return secret;
-    }
-
-    public void setSecret(String secret) {
-        this.secret = secret;
-    }
+//    public String getInstantiationEndpoint() {
+//        return instantiationEndpoint;
+//    }
+//
+//    public void setInstantiationEndpoint(String instantiationEndpoint) {
+//        this.instantiationEndpoint = instantiationEndpoint;
+//    }
+//
+//    public String getSecret() {
+//        return secret;
+//    }
+//
+//    public void setSecret(String secret) {
+//        this.secret = secret;
+//    }
 }
