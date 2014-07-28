@@ -13,6 +13,5 @@ package org.oasis_eu.portal.core.model.subscription;
  */
 public enum SubscriptionType {
     PERSONAL,
-    MANAGER,
-    EMPLOYEE
+    ORGANIZATION
 }

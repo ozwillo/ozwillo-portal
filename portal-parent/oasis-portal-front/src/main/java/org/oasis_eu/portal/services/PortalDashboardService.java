@@ -98,7 +98,7 @@ public class PortalDashboardService {
                 .stream().filter(uc -> uc.getId().equals(userContextId)).findFirst();
         if (optUserContext.isPresent()) {
 			return optUserContext.get().getSubscriptions()
-	                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getCatalogId).collect(Collectors.toList());
+	                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getServiceId).collect(Collectors.toList());
         }
         else {
         	return Collections.emptyList();
@@ -196,7 +196,7 @@ public class PortalDashboardService {
         List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
-        String subscriptionId = sourceContext.getSubscriptions().stream().filter(s -> subscriptionById.get(s).getCatalogId().equals(subjectId)).findFirst().orElse(null);
+        String subscriptionId = sourceContext.getSubscriptions().stream().filter(s -> subscriptionById.get(s).getServiceId().equals(subjectId)).findFirst().orElse(null);
 
         if (subscriptionById != null) {
             sourceContext.setSubscriptions(sourceContext.getSubscriptions().stream().filter(s -> !s.equals(subscriptionId)).collect(Collectors.toList()));
@@ -221,7 +221,7 @@ public class PortalDashboardService {
             List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
             Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
-            List<Pair<String, String>> subsAppPairs = context.getSubscriptions().stream().map(sid -> new Pair<>(sid, subscriptionById.get(sid).getCatalogId())).collect(Collectors.toList());
+            List<Pair<String, String>> subsAppPairs = context.getSubscriptions().stream().map(sid -> new Pair<>(sid, subscriptionById.get(sid).getServiceId())).collect(Collectors.toList());
 
             Pair<String, String> object = subsAppPairs.stream().filter(p -> p.getB().equals(subjectId_)).findFirst().get();
 
@@ -252,9 +252,9 @@ public class PortalDashboardService {
         DashboardEntry entry = new DashboardEntry();
         entry.setDisplayLocale(RequestContextUtils.getLocale(request));
         entry.setSubscription(s);
-        CatalogEntry catalogEntry = catalogStore.find(s.getCatalogId());
+        CatalogEntry catalogEntry = catalogStore.find(s.getServiceId());
         entry.setCatalogEntry(catalogEntry);
-        entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getCatalogId()));
+        entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getServiceId()));
 
         return entry;
     }

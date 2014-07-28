@@ -8,6 +8,7 @@ import java.util.List;
  * User: schambon
  * Date: 7/1/14
  */
+@Deprecated
 public class InstanceCreated {
 
     @JsonProperty("instance_id")

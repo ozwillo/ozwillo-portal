@@ -13,6 +13,7 @@ import java.util.*;
  * User: schambon
  * Date: 7/1/14
  */
+@Deprecated
 public class ServiceCreated {
 
     public String getIdentifier() {

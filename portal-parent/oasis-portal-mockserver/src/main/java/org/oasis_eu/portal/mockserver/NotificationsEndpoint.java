@@ -13,6 +13,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/n")
+@Deprecated
 public class NotificationsEndpoint {
 
     @RequestMapping("/{userId}/messages")

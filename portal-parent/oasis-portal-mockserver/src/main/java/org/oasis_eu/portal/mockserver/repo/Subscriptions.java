@@ -9,6 +9,7 @@ import java.util.List;
  * User: schambon
  * Date: 6/24/14
  */
+@Deprecated
 public interface Subscriptions extends MongoRepository<Subscription, String> {
 
     List<Subscription> findByUserId(String userId);

@@ -33,9 +33,7 @@ kernel:
   scopes_to_require: openid profile email address
 
   portal_endpoints:
-    usercontext: http://localhost:8081/ctx
-    subscriptions: http://localhost:8081/subs
-    appstore: http://localhost:8081/store
+    subscriptions: ${kernel.base_uri}/apps/subscriptions
     catalog: ${kernel.base_uri}/m
     apps: ${kernel.base_uri}/apps
 

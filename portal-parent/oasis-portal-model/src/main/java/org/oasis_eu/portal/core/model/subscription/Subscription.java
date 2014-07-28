@@ -10,6 +10,8 @@ import org.oasis_eu.portal.core.model.appstore.GenericEntity;
  */
 public class Subscription extends GenericEntity {
 
+    @JsonProperty("id")
+    private String id;
 
     @JsonProperty("user_id")
     private String userId;
@@ -17,8 +19,8 @@ public class Subscription extends GenericEntity {
     /**
      * Application or local service id
      */
-    @JsonProperty("catalog_id")
-    private String catalogId;
+    @JsonProperty("service_id")
+    private String serviceId;
 
     /**
      * Is this subscription made in a professional or personal context?
@@ -26,7 +28,9 @@ public class Subscription extends GenericEntity {
     @JsonProperty("subscription_type")
     private SubscriptionType subscriptionType;
 
-    private Instant created;
+    @JsonProperty("creator_id")
+    private String creatorId;
+
 
 
     public String getUserId() {
@@ -37,12 +41,12 @@ public class Subscription extends GenericEntity {
         this.userId = userId;
     }
 
-    public String getCatalogId() {
-        return catalogId;
+    public String getServiceId() {
+        return serviceId;
     }
 
-    public void setCatalogId(String catalogId) {
-        this.catalogId = catalogId;
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 
     public SubscriptionType getSubscriptionType() {
@@ -53,11 +57,19 @@ public class Subscription extends GenericEntity {
         this.subscriptionType = subscriptionType;
     }
 
-    public Instant getCreated() {
-        return created;
+    public String getId() {
+        return id;
     }
 
-    public void setCreated(Instant created) {
-        this.created = created;
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getCreatorId() {
+        return creatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
     }
 }

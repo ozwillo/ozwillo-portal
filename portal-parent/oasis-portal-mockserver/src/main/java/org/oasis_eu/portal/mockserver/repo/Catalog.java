@@ -10,6 +10,7 @@ import java.util.List;
  * User: schambon
  * Date: 6/24/14
  */
+@Deprecated
 public interface Catalog extends MongoRepository<CatalogEntry, String> {
 
     List<CatalogEntry> findByVisible(boolean visible);

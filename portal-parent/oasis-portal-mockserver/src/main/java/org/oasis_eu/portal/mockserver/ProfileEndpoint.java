@@ -27,6 +27,7 @@ import com.fasterxml.jackson.databind.node.TextNode;
  */
 @RestController
 @RequestMapping("/a/profile")
+@Deprecated
 public class ProfileEndpoint {
 
 	private ObjectNode profileInfo;

@@ -17,7 +17,6 @@ import org.oasis_eu.portal.core.model.appstore.PaymentOption;
 import org.oasis_eu.portal.model.AcquisitionStatus;
 import org.oasis_eu.portal.model.AppInfo;
 import org.oasis_eu.portal.model.AppstoreHit;
-import org.oasis_eu.spring.kernel.model.instance.CreateInstanceRequest;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -55,7 +54,7 @@ public class PortalAppstoreService {
     private MessageSource messageSource;
 
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
-        Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().flatMap(s -> Arrays.asList(s.getCatalogId(), catalogStore.find(s.getCatalogId()).getParentId()).stream()).collect(Collectors.toSet());
+        Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().flatMap(s -> Arrays.asList(s.getServiceId(), catalogStore.find(s.getServiceId()).getParentId()).stream()).collect(Collectors.toSet());
 
         return catalogStore.findAllVisible(targetAudiences).stream()
                 .map(c -> new AppstoreHit(RequestContextUtils.getLocale(request), c, organizationStore.find(c.getProviderId()).getName(),

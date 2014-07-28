@@ -2,8 +2,14 @@ package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
+import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +31,12 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public List<Subscription> findByUserId(String userId) {
-        return Arrays.asList(kernelRestTemplate.getForObject(endpoint + "/{user_id}", Subscription[].class, userId));
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
+
+        ResponseEntity<Subscription[]> response = kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, new HttpEntity<>(headers), Subscription[].class, userId);
+
+        return Arrays.asList(response.getBody());
     }
 
     @Override

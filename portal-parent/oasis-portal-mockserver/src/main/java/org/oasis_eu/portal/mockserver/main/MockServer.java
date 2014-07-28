@@ -26,6 +26,7 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 @EnableAutoConfiguration
 @EnableMongoRepositories(basePackageClasses = Repo.class)
 @ComponentScan(basePackages = "org.oasis_eu.portal")
+@Deprecated
 public class MockServer {
 
     @Bean

@@ -5,6 +5,7 @@ package org.oasis_eu.portal.mockserver.repo;
  * User: schambon
  * Date: 7/2/14
  */
+@Deprecated
 final public class Repo {
     private Repo(){}
 }

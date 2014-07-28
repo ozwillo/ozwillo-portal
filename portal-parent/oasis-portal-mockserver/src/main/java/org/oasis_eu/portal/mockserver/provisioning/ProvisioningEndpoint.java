@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -26,6 +25,7 @@ import java.util.stream.Collectors;
  * Date: 7/2/14
  */
 @RestController
+@Deprecated
 public class ProvisioningEndpoint {
 
     @Autowired
@@ -65,9 +65,8 @@ public class ProvisioningEndpoint {
 
             if (!entry.isVisible()) {
                 Subscription sub = new Subscription();
-                sub.setCreated(Instant.now());
-                sub.setSubscriptionType(SubscriptionType.MANAGER);
-                sub.setCatalogId(entry.getId());
+                sub.setSubscriptionType(SubscriptionType.ORGANIZATION);
+                sub.setServiceId(entry.getId());
                 sub.setUserId(request.getUserId());
 
                 subscriptions.save(sub);

@@ -14,8 +14,10 @@ import java.util.stream.Collectors;
 /**
  * User: schambon
  * Date: 6/12/14
+ * @deprecated use the real kernel now
  */
 @RestController
+@Deprecated
 //@RequestMapping("/store")
 public class AppStoreEndpoint {
 

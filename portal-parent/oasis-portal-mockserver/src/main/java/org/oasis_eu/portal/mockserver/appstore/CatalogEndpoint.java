@@ -27,6 +27,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/catalog")
+@Deprecated
 public class CatalogEndpoint {
 
 //    @Autowired
@@ -88,7 +89,7 @@ public class CatalogEndpoint {
 //                s.setSubscriptionType(SubscriptionType.PERSONAL);
 //                s.setId(UUID.randomUUID().toString());
 //                s.setCreated(Instant.now());
-//                s.setCatalogId(id);
+//                s.setServiceId(id);
 //                s.setUserId(userId);
 //
 //                subscriptions.save(s);

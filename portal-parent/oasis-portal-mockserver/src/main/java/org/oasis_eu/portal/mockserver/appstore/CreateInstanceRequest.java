@@ -9,6 +9,7 @@ import java.util.Map;
  * User: schambon
  * Date: 7/1/14
  */
+@Deprecated
 public class CreateInstanceRequest {
 
     @Id

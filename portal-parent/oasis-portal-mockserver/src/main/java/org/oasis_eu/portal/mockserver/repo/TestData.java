@@ -2,7 +2,6 @@ package org.oasis_eu.portal.mockserver.repo;
 
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
-import org.oasis_eu.portal.core.model.subscription.ApplicationType;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.springframework.stereotype.Service;
@@ -15,6 +14,7 @@ import java.util.*;
  */
 
 @Service
+@Deprecated
 public class TestData {
 
     Map<String, CatalogEntry> entries = new HashMap<>();
@@ -38,7 +38,7 @@ public class TestData {
         }
 
 
-        if (subs.stream().anyMatch(s -> s.getCatalogId().equals(subscription.getCatalogId()) && s.getSubscriptionType().equals(subscription.getSubscriptionType()))) {
+        if (subs.stream().anyMatch(s -> s.getServiceId().equals(subscription.getServiceId()) && s.getSubscriptionType().equals(subscription.getSubscriptionType()))) {
             // there is already a subscription for that user / application / substype triple
             return false;
         } else {
@@ -51,9 +51,8 @@ public class TestData {
         Subscription s = new Subscription();
         s.setId(UUID.randomUUID().toString());
         s.setUserId(userId);
-        s.setCatalogId(applicationId);
+        s.setServiceId(applicationId);
 //        s.setApplicationType(ApplicationType.APPLICATION);
-        s.setCreated(Instant.now());
         s.setSubscriptionType(subscriptionType);
 
         return subscribe(s);
@@ -64,9 +63,8 @@ public class TestData {
         Subscription s = new Subscription();
         s.setId(UUID.randomUUID().toString());
         s.setUserId(userId);
-        s.setCatalogId(applicationId);
+        s.setServiceId(applicationId);
 //        s.setApplicationType(ApplicationType.LOCAL_SERVICE);
-        s.setCreated(Instant.now());
         s.setSubscriptionType(SubscriptionType.PERSONAL);
 
         return subscribe(s);
@@ -168,7 +166,7 @@ public class TestData {
 //        elecRoll.setId("elecRollValence");
 //        elecRoll.setDefaultName("Inscription sur liste électorale, Valence");
 //        elecRoll.setDefaultDescription("S'inscrire sur les listes électorales");
-//        elecRoll.setCatalogId("ckValence");
+//        elecRoll.setServiceId("ckValence");
 //        elecRoll.setUrl(new URL("http://31.172.165.220/front/valence/form/electoral_roll_registration/init"));
 //        elecRoll.setTerritoryId("728dfa79-a399-495b-9265-ed949b82ea8c");
 //

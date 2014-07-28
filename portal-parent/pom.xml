@@ -19,7 +19,7 @@
         <module>oasis-portal-front</module>
         <module>oasis-portal-back</module>
         <module>oasis-portal-model</module>
-        <module>oasis-portal-mockserver</module>
+        <!--<module>oasis-portal-mockserver</module>-->
     </modules>
 
     <build>

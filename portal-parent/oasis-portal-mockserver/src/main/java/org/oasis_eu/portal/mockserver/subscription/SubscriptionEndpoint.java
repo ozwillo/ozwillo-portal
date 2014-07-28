@@ -19,6 +19,7 @@ import java.util.List;
  */
 @RestController
 @RequestMapping("/subs")
+@Deprecated
 public class SubscriptionEndpoint {
 
 //    @Autowired

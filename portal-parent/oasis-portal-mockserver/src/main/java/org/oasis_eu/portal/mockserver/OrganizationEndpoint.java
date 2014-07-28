@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/d")
+@Deprecated
 public class OrganizationEndpoint {
 
     @RequestMapping("/org/{orgId}")
