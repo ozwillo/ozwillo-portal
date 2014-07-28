@@ -10,10 +10,9 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.appstore.AppInstance;
-import org.oasis_eu.portal.core.model.appstore.Audience;
-import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
-import org.oasis_eu.portal.core.model.appstore.PaymentOption;
+import org.oasis_eu.portal.core.model.appstore.*;
+import org.oasis_eu.portal.core.model.subscription.Subscription;
+import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.model.AcquisitionStatus;
 import org.oasis_eu.portal.model.AppInfo;
 import org.oasis_eu.portal.model.AppstoreHit;
@@ -70,12 +69,26 @@ public class PortalAppstoreService {
         return new AppInfo(appId, entry.getName(locale), entry.getDescription(locale), entry.getPaymentOption().equals(PaymentOption.FREE) ? messageSource.getMessage("store.it_is_free", new Object[0], locale) : messageSource.getMessage("store.it_requires_payment", new Object[0], locale));
     }
 
-    public void buy(String appId) {
-        AppInstance instanceRequest = new AppInstance();
+    public void buy(String appId, CatalogEntryType appType) {
+        if (CatalogEntryType.APPLICATION.equals(appType)) {
+
+            AppInstance instanceRequest = new AppInstance();
 
 //        instanceRequest.setProviderId(userDirectory.getMemberships(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());
-          instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());
+            instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());
 
-        catalogStore.instantiate(appId, instanceRequest);
+            catalogStore.instantiate(appId, instanceRequest);
+        } else if (CatalogEntryType.SERVICE.equals(appType)) {
+
+            Subscription subscription = new Subscription();
+            subscription.setSubscriptionType(SubscriptionType.PERSONAL);
+            subscription.setUserId(userInfoHelper.currentUser().getUserId());
+            subscription.setServiceId(appId);
+            subscription.setCreatorId(userInfoHelper.currentUser().getUserId());
+
+            subscriptionStore.create(subscription);
+        }
+
+
     }
 }

@@ -41,6 +41,12 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public Subscription create(Subscription subscription) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
+
+        kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription, headers), Void.class, subscription.getUserId());
+
+        // TODO handle errors
         return null;
     }
 
@@ -53,6 +59,8 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     public void delete(Subscription subscription) {
 
     }
+
+
 
     @Override
     public int count() {

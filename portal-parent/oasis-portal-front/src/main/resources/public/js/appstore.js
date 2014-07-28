@@ -19,8 +19,10 @@ $(document).ready(function() {
 
         $("#confirmation * .btn-buy").click(function (e) {
             var appId = $(this).attr("data-appId");
+            var appType = $(this).attr("data-appType");
 
             $("#subscribe_app").attr("value", appId);
+            $("#subscribe_apptype").attr("value", appType);
             $("#subscribe").submit();
 
         });

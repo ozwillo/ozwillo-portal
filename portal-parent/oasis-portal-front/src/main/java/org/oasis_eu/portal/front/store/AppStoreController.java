@@ -2,6 +2,7 @@ package org.oasis_eu.portal.front.store;
 
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.Audience;
+import org.oasis_eu.portal.core.model.appstore.CatalogEntryType;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
@@ -57,8 +58,8 @@ public class AppStoreController extends PortalController {
 
 
     @RequestMapping(method = RequestMethod.POST, value="/buy")
-    public String buy(@RequestParam String appId) {
-        appstoreService.buy(appId);
+    public String buy(@RequestParam String appId, @RequestParam CatalogEntryType appType) {
+        appstoreService.buy(appId, appType);
         return "redirect:/my/dashboard";
     }
 

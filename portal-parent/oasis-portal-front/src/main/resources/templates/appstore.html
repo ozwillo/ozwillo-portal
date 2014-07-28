@@ -92,7 +92,7 @@
                 <p data-th-text="${entry.providerName}" class="providername">Service provider</p>
                 <p data-th-text="${entry.description}" class="appdescription">Lorem ipsum dolor sit amet, conesectuer elipiscit</p>
                 <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.AcquisitionStatus).AVAILABLE and entry.catalogEntry.paymentOption == T(org.oasis_eu.portal.core.model.appstore.PaymentOption).FREE}">
-                    <button class="btn btn-indicator btn-indicator-available" href="#" data-th-text="#{store.free}" data-th-attr="data-appId=${entry.catalogEntry.id}" data-toggle="modal" data-target="#confirmation" data-th-href="@{/appstore/confirm/}+${entry.catalogEntry.id}" data-appId="abdc81-f128-8197-1780a">Free</button>
+                    <button class="btn btn-indicator btn-indicator-available" href="#" data-th-text="#{store.free}" data-th-attr="data-appId=${entry.catalogEntry.id},data-appType=${entry.catalogEntry.type}" data-toggle="modal" data-target="#confirmation" data-th-href="@{/appstore/confirm/}+${entry.catalogEntry.id}" data-appId="abdc81-f128-8197-1780a">Free</button>
                 </div>
 
                 <!--/*/
@@ -157,8 +157,9 @@
 </div>
 
 <form id="subscribe" method="POST" action="#" data-th-action="@{/appstore/buy}">
-    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}"/>
+    <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
     <input type="hidden" id="subscribe_app" name="appId" value=""/>
+    <input type="hidden" id="subscribe_apptype" name="appType" value=""/>
 </form>
 
 <th:block data-th-replace="includes/footer">
