@@ -19,6 +19,8 @@ import org.oasis_eu.portal.model.AppstoreHit;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,8 @@ import org.springframework.web.servlet.support.RequestContextUtils;
  */
 @Service
 public class PortalAppstoreService {
+
+    private static final Logger logger = LoggerFactory.getLogger(PortalAppstoreService.class);
 
     @Autowired
     private HttpServletRequest request;
@@ -66,10 +70,13 @@ public class PortalAppstoreService {
 
         CatalogEntry entry = catalogStore.find(appId);
 
-        return new AppInfo(appId, entry.getName(locale), entry.getDescription(locale), entry.getPaymentOption().equals(PaymentOption.FREE) ? messageSource.getMessage("store.it_is_free", new Object[0], locale) : messageSource.getMessage("store.it_requires_payment", new Object[0], locale));
+        return new AppInfo(appId, entry.getName(locale), entry.getDescription(locale), entry.getPaymentOption().equals(PaymentOption.FREE) ? messageSource.getMessage("store.it_is_free", new Object[0], locale) : messageSource.getMessage("store.it_requires_payment", new Object[0], locale), entry.getType());
     }
 
     public void buy(String appId, CatalogEntryType appType) {
+
+        logger.debug("Buying application {} of type {}", appId, appType);
+
         if (CatalogEntryType.APPLICATION.equals(appType)) {
 
             AppInstance instanceRequest = new AppInstance();

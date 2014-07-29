@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.model;
 
+import org.oasis_eu.portal.core.model.appstore.CatalogEntryType;
+
 /**
  * User: schambon
  * Date: 6/25/14
@@ -8,12 +10,15 @@ public class AppInfo {
 
     String name, description, paymentOptionDescription;
     String id;
+    CatalogEntryType type;
 
-    public AppInfo(String id, String name, String description, String paymentOptionDescription) {
+
+    public AppInfo(String id, String name, String description, String paymentOptionDescription, CatalogEntryType type) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.paymentOptionDescription = paymentOptionDescription;
+        this.type = type;
     }
 
     public String getName() {
@@ -31,4 +36,13 @@ public class AppInfo {
     public String getId() {
         return id;
     }
+
+    public CatalogEntryType getType() {
+        return type;
+    }
+
+    public void setType(CatalogEntryType type) {
+        this.type = type;
+    }
+
 }
