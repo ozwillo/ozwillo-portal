@@ -7,11 +7,11 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
  * User: schambon
  * Date: 5/19/14
  */
-public class OasisPortalWebapp extends SpringBootServletInitializer {
+public class OasisPortalBackWebapp extends SpringBootServletInitializer {
     
     @Override
     protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(OasisPortal.class);
+        return application.sources(OasisPortalBack.class);
     }
     
 }

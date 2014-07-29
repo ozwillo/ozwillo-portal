@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
  *
  */
 @Controller
-public class HomeController extends BackendController {
+public class BackOfficeRootController extends BackendController {
 
     @RequestMapping("/")
     public String home() {

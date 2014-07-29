@@ -11,7 +11,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
  *
  */
 @Configuration
-public class OasisPortalSecurity extends OasisSecurityConfiguration {
+public class OasisPortalBackSecurity extends OasisSecurityConfiguration {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {

@@ -36,10 +36,10 @@ public class CatalogStoreImpl implements CatalogStore {
     @Autowired
     private RestTemplate kernelRestTemplate;
 
-    @Value("${kernel.portal_endpoints.catalog}")
+    @Value("${kernel.portal_endpoints.catalog:''}")
     private String endpoint;
 
-    @Value("${kernel.portal_endpoints.apps}")
+    @Value("${kernel.portal_endpoints.apps:''}")
     private String appsEndpoint;
 
     @Override

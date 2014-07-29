@@ -16,7 +16,7 @@ import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
  * Date: 6/11/14
  */
 @Configuration
-public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
+public class OasisBackWebConfiguration extends WebMvcConfigurerAdapter {
 
     @Autowired
     ApplicationContext applicationContext;

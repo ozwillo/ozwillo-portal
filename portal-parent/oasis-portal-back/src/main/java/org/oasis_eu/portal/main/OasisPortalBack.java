@@ -13,9 +13,9 @@ import org.springframework.context.annotation.Configuration;
 @EnableAutoConfiguration
 @Configuration
 @ComponentScan(basePackageClasses = PortalPackage.class)
-public class OasisPortal {
+public class OasisPortalBack {
 
     public static void main(String[] args) {
-        SpringApplication.run(OasisPortal.class);
+        SpringApplication.run(OasisPortalBack.class);
     }
 }
