@@ -12,7 +12,6 @@ public class AppInfo {
     String id;
     CatalogEntryType type;
 
-
     public AppInfo(String id, String name, String description, String paymentOptionDescription, CatalogEntryType type) {
         this.id = id;
         this.name = name;

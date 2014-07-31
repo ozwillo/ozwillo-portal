@@ -1,6 +1,6 @@
 <!doctype html>
 <html>
-<head data-th-replace="includes/header(title=#{my.apps-management},page='apps-management')">
+<head data-th-replace="includes/header(title=#{my.appsmanagement},page='apps-management')">
     <meta charset="utf-8"/>
     <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -103,12 +103,13 @@
 
     <div class="container">
         <ul>
-            <li data-th-each="instance: ${instances}"><span data-th-text="${instance.applicationInstance.name}">Hello</span>
+            <li data-th-each="instance: ${instances}"><span data-th-text="${instance.application.name}">Hello</span>
                 <ul>
-                    <li data-th-each="service: ${instance.services}" data-th-text="${service.service.name}"></li>
+                    <li data-th-each="service: ${instance.services}" data-th-text="${service.name}"></li>
                 </ul>
             </li>
         </ul>
     </div>
 
 </body>
+</html>
