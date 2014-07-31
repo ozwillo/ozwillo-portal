@@ -13,7 +13,9 @@ import java.util.List;
  */
 public interface CatalogStore {
 
-    CatalogEntry find(String id);
+    CatalogEntry findApplication(String id);
+
+    CatalogEntry findService(String id);
 
     List<CatalogEntry> findServicesOfInstance(String instanceId);
 

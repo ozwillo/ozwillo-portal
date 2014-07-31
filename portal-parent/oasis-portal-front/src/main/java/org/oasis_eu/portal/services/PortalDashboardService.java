@@ -252,7 +252,7 @@ public class PortalDashboardService {
         DashboardEntry entry = new DashboardEntry();
         entry.setDisplayLocale(RequestContextUtils.getLocale(request));
         entry.setSubscription(s);
-        CatalogEntry catalogEntry = catalogStore.find(s.getServiceId());
+        CatalogEntry catalogEntry = catalogStore.findApplication(s.getServiceId());
         entry.setCatalogEntry(catalogEntry);
         entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getServiceId()));
 

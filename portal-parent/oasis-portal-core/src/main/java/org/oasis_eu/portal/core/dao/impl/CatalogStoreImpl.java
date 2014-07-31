@@ -19,6 +19,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -59,8 +60,26 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
-    public CatalogEntry find(String id) {
-        return kernelRestTemplate.getForObject(appsEndpoint + "/app/{id}", CatalogEntry.class, id);
+    public CatalogEntry findApplication(String id) {
+        return getCatalogEntry(id, appsEndpoint + "/app/{id}");
+    }
+
+
+    @Override
+    public CatalogEntry findService(String id) {
+        return getCatalogEntry(id, appsEndpoint + "/service/{id}");
+    }
+
+    private CatalogEntry getCatalogEntry(String id, String endpoint) {
+        ResponseEntity<CatalogEntry> response = kernelRestTemplate.getForEntity(endpoint, CatalogEntry.class, id);
+        if (response.getStatusCode().is2xxSuccessful()) {
+            return response.getBody();
+        } else if (response.getStatusCode().is4xxClientError()) {
+            logger.warn("Cannot find catalog entry {} through endpoint {}", id, endpoint);
+            return null;
+        } else {
+            throw new HttpClientErrorException(response.getStatusCode(), response.getStatusCode().getReasonPhrase());
+        }
     }
 
     @Override

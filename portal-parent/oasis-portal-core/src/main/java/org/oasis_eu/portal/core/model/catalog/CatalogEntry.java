@@ -61,6 +61,12 @@ public class CatalogEntry  {
     @JsonProperty("visible")
     private boolean visible = false;
 
+    @JsonProperty("redirect_uris")
+    private List<String> redirectUris;
+
+    @JsonProperty("post_logout_redirect_uris")
+    private List<String> postLogoutRedirectUris;
+
 
     public String getId() {
         return id;
@@ -242,19 +248,11 @@ public class CatalogEntry  {
         }
     }
 
-//    public String getInstantiationEndpoint() {
-//        return instantiationEndpoint;
-//    }
-//
-//    public void setInstantiationEndpoint(String instantiationEndpoint) {
-//        this.instantiationEndpoint = instantiationEndpoint;
-//    }
-//
-//    public String getSecret() {
-//        return secret;
-//    }
-//
-//    public void setSecret(String secret) {
-//        this.secret = secret;
-//    }
+    public void setRedirectUris(List<String> redirectUris) {
+        this.redirectUris = redirectUris;
+    }
+
+    public void setPostLogoutRedirectUris(List<String> postLogoutRedirectUris) {
+        this.postLogoutRedirectUris = postLogoutRedirectUris;
+    }
 }

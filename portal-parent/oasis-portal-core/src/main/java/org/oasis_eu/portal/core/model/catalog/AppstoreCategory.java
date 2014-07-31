@@ -39,10 +39,10 @@ public class AppstoreCategory extends GenericEntity {
     public String getLocalizedName(Locale locale) {
         String name = names.get(locale.getLanguage());
         if (name == null) {
-            logger.warn("Cannot find translation for category {} in language {}", id , locale.getLanguage());
+            logger.warn("Cannot findApplication translation for category {} in language {}", id , locale.getLanguage());
             name = names.get(PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
             if (name == null) {
-                logger.error("Cannot find translation for category {} in default language ({})", id, PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
+                logger.error("Cannot findApplication translation for category {} in default language ({})", id, PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
             }
         }
 

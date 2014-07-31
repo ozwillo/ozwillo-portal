@@ -65,8 +65,10 @@ public class PortalNotificationService {
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
                 .map(n -> {
                     UserNotification notif = new UserNotification();
-                    CatalogEntry application = store.find(n.getApplicationId());
-                    notif.setAppName(application != null ? application.getName(locale) : "");
+                    if (n.getApplicationId() != null) {
+                        CatalogEntry service = store.findService(n.getApplicationId());
+                        notif.setAppName(service != null ? service.getName(locale) : "");
+                    }
                     notif.setDate(new Instant().withMillis(n.getTime()));
                     try {
                         notif.setFormattedText(new Markdown4jProcessor().process(n.getMessage()));

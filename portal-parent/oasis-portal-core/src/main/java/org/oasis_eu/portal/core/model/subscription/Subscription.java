@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.core.model.subscription;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
@@ -8,6 +9,7 @@ import org.oasis_eu.portal.core.model.appstore.GenericEntity;
  * User: schambon
  * Date: 6/12/14
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class Subscription extends GenericEntity {
 
     @JsonProperty("id")
@@ -71,5 +73,16 @@ public class Subscription extends GenericEntity {
 
     public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
+    }
+
+    @Override
+    public String toString() {
+        return "Subscription{" +
+                "id='" + id + '\'' +
+                ", userId='" + userId + '\'' +
+                ", serviceId='" + serviceId + '\'' +
+                ", subscriptionType=" + subscriptionType +
+                ", creatorId='" + creatorId + '\'' +
+                '}';
     }
 }

@@ -8,7 +8,10 @@ import java.util.List;
  * User: schambon
  * Date: 6/13/14
  */
-public interface SubscriptionStore extends GenericCRUDStore<Subscription> {
+public interface SubscriptionStore {
+
+    Subscription create(String userId, Subscription object);
+
 
     public List<Subscription> findByUserId(String userId);
 

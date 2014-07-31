@@ -3,6 +3,8 @@ package org.oasis_eu.portal.core.dao.impl;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -23,6 +25,8 @@ import java.util.List;
 @Component
 public class SubscriptionStoreImpl implements SubscriptionStore {
 
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionStoreImpl.class);
+
     @Autowired
     private RestTemplate kernelRestTemplate;
 
@@ -36,49 +40,35 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
         ResponseEntity<Subscription[]> response = kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, new HttpEntity<>(headers), Subscription[].class, userId);
 
+        if (logger.isDebugEnabled()) {
+            logger.debug("--> " + response.getStatusCode());
+            for (Subscription s : response.getBody()) {
+                logger.debug("Subscribed: {}", s);
+
+            }
+        }
+
         return Arrays.asList(response.getBody());
     }
 
     @Override
-    public Subscription create(Subscription subscription) {
+    public Subscription create(String userId, Subscription subscription) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
 
-        kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription, headers), Void.class, subscription.getUserId());
+        ResponseEntity<Subscription> response = kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription, headers), Subscription.class, userId);
+
+        if (response.getStatusCode().is2xxSuccessful()) {
+            logger.debug("Created subscription: {}", response.getBody());
+
+            return response.getBody();
+        } else {
+            logger.warn("Subscription creation failed: {} {}", response.getStatusCode(), response.getStatusCode().getReasonPhrase());
+        }
 
         // TODO handle errors
         return null;
     }
 
-    @Override
-    public void update(Subscription subscription) {
 
-    }
-
-    @Override
-    public void delete(Subscription subscription) {
-
-    }
-
-
-
-    @Override
-    public int count() {
-        return 0;
-    }
-
-    @Override
-    public Subscription find(String id) {
-        return null;
-    }
-
-    @Override
-    public List<Subscription> find() {
-        return null;
-    }
-
-    @Override
-    public List<Subscription> find(int skip, int number) {
-        return null;
-    }
 }

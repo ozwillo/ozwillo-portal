@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -55,9 +54,6 @@ public class PortalAppstoreService {
     private UserInfoService userInfoHelper;
 
     @Autowired
-    private UserDirectory userDirectory;
-
-    @Autowired
     private MessageSource messageSource;
 
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
@@ -69,10 +65,18 @@ public class PortalAppstoreService {
                 .collect(Collectors.toList());
     }
 
-    public AppInfo getInfo(String appId) {
+    public AppInfo getInfo(String appId, CatalogEntryType appType) {
         Locale locale = RequestContextUtils.getLocale(request);
 
-        CatalogEntry entry = catalogStore.find(appId);
+        CatalogEntry entry;
+        if (CatalogEntryType.APPLICATION.equals(appType)) {
+            entry = catalogStore.findApplication(appId);
+        } else if (CatalogEntryType.SERVICE.equals(appType)) {
+            entry = catalogStore.findService(appId);
+        } else {
+            logger.warn("Getting information about something that isn't an application or a service: {}", appType);
+            throw new IllegalArgumentException("getInfo supports only applications and services");
+        }
 
         return new AppInfo(appId, entry.getName(locale), entry.getDescription(locale), entry.getPaymentOption().equals(PaymentOption.FREE) ? messageSource.getMessage("store.it_is_free", new Object[0], locale) : messageSource.getMessage("store.it_requires_payment", new Object[0], locale), entry.getType());
     }
@@ -95,9 +99,9 @@ public class PortalAppstoreService {
             subscription.setSubscriptionType(SubscriptionType.PERSONAL);
             subscription.setUserId(userInfoHelper.currentUser().getUserId());
             subscription.setServiceId(appId);
-            subscription.setCreatorId(userInfoHelper.currentUser().getUserId());
+//            subscription.setCreatorId(userInfoHelper.currentUser().getUserId());
 
-            subscriptionStore.create(subscription);
+            subscriptionStore.create(userInfoHelper.currentUser().getUserId(), subscription);
         }
 
 

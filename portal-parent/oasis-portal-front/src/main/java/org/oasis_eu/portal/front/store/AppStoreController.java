@@ -47,10 +47,10 @@ public class AppStoreController extends PortalController {
         return "appstore::hits";
     }
 
-    @RequestMapping(method=RequestMethod.GET, value={"/confirm/{appId}"})
-    public String confirm(Model model, @PathVariable String appId) {
+    @RequestMapping(method=RequestMethod.GET, value={"/confirm/{appId}/{appType}"})
+    public String confirm(Model model, @PathVariable String appId, @PathVariable CatalogEntryType appType) {
 
-        model.addAttribute("app", appstoreService.getInfo(appId));
+        model.addAttribute("app", appstoreService.getInfo(appId, appType));
 
         return "appstore-confirmation::content";
     }

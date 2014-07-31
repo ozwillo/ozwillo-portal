@@ -6,6 +6,5 @@ package org.oasis_eu.portal.core.model.catalog;
  */
 public enum CatalogEntryType {
     APPLICATION,
-    INSTANCE,
     SERVICE
 }
