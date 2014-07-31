@@ -157,8 +157,12 @@ public class MyProfileController extends PortalController {
 				myNavigationService.getNavigation("profile"));
 		model.addAttribute("layouts", myProfileState.getLayouts());
 		model.addAttribute("availableAvatars", getAvailableAvatars());
-		model.addAttribute("userLanguage", Languages.getByLocale(new Locale(
-				user().getLocale()), Languages.ENGLISH));
+    if (user().getLocale() != null) {
+		    model.addAttribute("userLanguage", Languages.getByLocale(new Locale(
+				    user().getLocale()), Languages.ENGLISH));
+    } else {
+        model.addAttribute("userLanguage", Languages.ENGLISH);
+    }
 	}
 
 	private List<String> getAvailableAvatars() {

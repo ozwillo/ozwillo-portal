@@ -31,7 +31,7 @@ public class OasisLocaleResolver extends CookieLocaleResolver {
 	public Locale resolveLocale(HttpServletRequest request) {
 		// Try to use profile information
 		UserInfo currentUser = userInfoService.currentUser();
-		if (currentUser != null) {
+		if (currentUser != null && currentUser.getLocale() != null) {
 			return StringUtils.parseLocaleString(currentUser.getLocale());
 		}
 		// Otherwise use cookie
