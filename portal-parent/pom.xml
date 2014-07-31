@@ -7,7 +7,7 @@
     <groupId>org.oasis_eu.portal</groupId>
     <artifactId>oasis-portal-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.2</version>
 
     <properties>
         <oasis-spring.version>0.2</oasis-spring.version>
