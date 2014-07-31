@@ -1,8 +1,7 @@
 package org.oasis_eu.portal.front.store;
 
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.model.appstore.Audience;
-import org.oasis_eu.portal.core.model.appstore.CatalogEntryType;
+import org.oasis_eu.portal.core.model.catalog.Audience;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;

@@ -11,11 +11,15 @@ import javax.servlet.http.HttpServletRequest;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.*;
+import org.oasis_eu.portal.core.model.catalog.Audience;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
+import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.model.AcquisitionStatus;
-import org.oasis_eu.portal.model.AppInfo;
-import org.oasis_eu.portal.model.AppstoreHit;
+import org.oasis_eu.portal.model.appstore.AcquisitionStatus;
+import org.oasis_eu.portal.model.appstore.AppInfo;
+import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -57,7 +61,7 @@ public class PortalAppstoreService {
     private MessageSource messageSource;
 
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
-        Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().flatMap(s -> Arrays.asList(s.getServiceId(), catalogStore.find(s.getServiceId()).getParentId()).stream()).collect(Collectors.toSet());
+        Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().map(Subscription::getServiceId).collect(Collectors.toSet());
 
         return catalogStore.findAllVisible(targetAudiences).stream()
                 .map(c -> new AppstoreHit(RequestContextUtils.getLocale(request), c, organizationStore.find(c.getProviderId()).getName(),
@@ -79,7 +83,7 @@ public class PortalAppstoreService {
 
         if (CatalogEntryType.APPLICATION.equals(appType)) {
 
-            AppInstance instanceRequest = new AppInstance();
+            ApplicationInstantiationRequest instanceRequest = new ApplicationInstantiationRequest();
 
 //        instanceRequest.setProviderId(userDirectory.getMemberships(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());
             instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());

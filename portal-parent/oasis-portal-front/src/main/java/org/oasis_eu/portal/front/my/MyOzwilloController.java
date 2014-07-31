@@ -9,7 +9,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.front.generic.PortalController;
-import org.oasis_eu.portal.model.AppNotificationData;
+import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.PortalNotificationService;

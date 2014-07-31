@@ -33,8 +33,6 @@
         <module>oasis-portal-core</module>
         <module>oasis-portal-front</module>
         <module>oasis-portal-back</module>
-        <module>oasis-portal-model</module>
-        <!--<module>oasis-portal-mockserver</module>-->
     </modules>
 
 

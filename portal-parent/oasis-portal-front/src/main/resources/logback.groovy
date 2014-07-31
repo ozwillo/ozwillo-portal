@@ -10,7 +10,7 @@ appender("CONSOLE", ConsoleAppender) {
     }
 }
 
-logger("org.springframework", INFO)
+logger("org.springframework", DEBUG)
 logger("org.oasis_eu", DEBUG)
 logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
 logger("org.oasis_eu.spring.kernel.security.OpenIdCAuthFilter", INFO)

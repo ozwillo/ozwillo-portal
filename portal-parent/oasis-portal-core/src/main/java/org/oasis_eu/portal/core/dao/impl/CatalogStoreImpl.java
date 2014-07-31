@@ -1,15 +1,18 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.model.appstore.AppInstance;
-import org.oasis_eu.portal.core.model.appstore.Audience;
-import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
+import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.core.model.catalog.Audience;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -42,6 +45,8 @@ public class CatalogStoreImpl implements CatalogStore {
     @Value("${kernel.portal_endpoints.apps:''}")
     private String appsEndpoint;
 
+
+
     @Override
     public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences) {
         URI uri = UriComponentsBuilder.fromHttpUrl(endpoint)
@@ -59,7 +64,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
-    public void instantiate(String appId, AppInstance instancePattern) {
+    public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) {
 
         MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
 
@@ -69,11 +74,29 @@ public class CatalogStoreImpl implements CatalogStore {
         }
 
 
-        HttpEntity<AppInstance> request = new HttpEntity<>(instancePattern, headers);
+        HttpEntity<ApplicationInstantiationRequest> request = new HttpEntity<>(instancePattern, headers);
 
         ResponseEntity<String> result = kernelRestTemplate.postForEntity(endpoint + "/instantiate/{appId}", request, String.class, appId);
         result.getHeaders().entrySet().stream().forEach(e -> logger.debug("{}: {}", e.getKey(), e.getValue()));
         logger.debug(result.getBody());
+
+    }
+
+    @Override
+    public List<CatalogEntry> findServicesOfInstance(String instanceId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
+
+        return Arrays.asList(kernelRestTemplate.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, new HttpEntity<Object>(headers), CatalogEntry[].class, instanceId).getBody());
+
+    }
+
+    @Override
+    public ApplicationInstance findApplicationInstance(String instanceId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
+
+        return kernelRestTemplate.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, new HttpEntity<Object>(headers), ApplicationInstance.class, instanceId).getBody();
 
     }
 }

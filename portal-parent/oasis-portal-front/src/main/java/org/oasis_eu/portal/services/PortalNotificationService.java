@@ -3,7 +3,7 @@ package org.oasis_eu.portal.services;
 import org.joda.time.Instant;
 import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.model.UserNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.NotificationService;

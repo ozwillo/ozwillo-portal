@@ -91,16 +91,16 @@
                 <p data-th-text="${entry.name}" class="appname">Portail citoyen de Valence</p>
                 <p data-th-text="${entry.providerName}" class="providername">Service provider</p>
                 <p data-th-text="${entry.description}" class="appdescription">Lorem ipsum dolor sit amet, conesectuer elipiscit</p>
-                <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.AcquisitionStatus).AVAILABLE and entry.catalogEntry.paymentOption == T(org.oasis_eu.portal.core.model.appstore.PaymentOption).FREE}">
+                <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.appstore.AcquisitionStatus).AVAILABLE and entry.catalogEntry.paymentOption == T(org.oasis_eu.portal.core.model.catalog.PaymentOption).FREE}">
                     <button class="btn btn-indicator btn-indicator-available" href="#" data-th-text="#{store.free}" data-th-attr="data-appId=${entry.catalogEntry.id},data-appType=${entry.catalogEntry.type}" data-toggle="modal" data-target="#confirmation" data-th-href="@{/appstore/confirm/}+${entry.catalogEntry.id}" data-appId="abdc81-f128-8197-1780a">Free</button>
                 </div>
 
                 <!--/*/
-                <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.AcquisitionStatus).INSTALLED}">
+                <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.appstore.AcquisitionStatus).INSTALLED}">
                     <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}">Installed</button>
                     <button class="btn btn-indicator btn-indicator-installed-icon"><i class="fa fa-check"></i></button>
                 </div>
-                <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.AcquisitionStatus).AVAILABLE and entry.catalogEntry.paymentOption == T(org.oasis_eu.portal.core.model.appstore.PaymentOption).PAID}">
+                <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.appstore.AcquisitionStatus).AVAILABLE and entry.catalogEntry.paymentOption == T(org.oasis_eu.portal.core.model.catalog.PaymentOption).PAID}">
                     <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.paid}" data-th-attr="data-appId=${entry.catalogEntry.id}" data-toggle="modal"  data-target="#confirmation" href="#" data-th-href="@{/appstore/confirm/}+${entry.catalogEntry.id}">Paid</button>
                     <button class="btn btn-indicator btn-indicator-available-icon"><i class="fa fa-eur"></i></button>
                 </div>

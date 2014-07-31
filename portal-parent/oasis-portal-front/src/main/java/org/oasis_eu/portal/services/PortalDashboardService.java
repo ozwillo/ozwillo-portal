@@ -12,13 +12,13 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
 import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
-import org.oasis_eu.portal.model.DashboardEntry;
+import org.oasis_eu.portal.model.dashboard.DashboardEntry;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;

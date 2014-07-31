@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.AppstoreCategoryStore;
-import org.oasis_eu.portal.core.model.appstore.AppstoreCategory;
+import org.oasis_eu.portal.core.model.catalog.AppstoreCategory;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;

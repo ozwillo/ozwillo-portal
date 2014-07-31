@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.model.appstore.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.GeoEntity;
 import org.oasis_eu.portal.core.services.GeoEntityService;
 import org.oasis_eu.spring.kernel.model.Address;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * User: schambon
