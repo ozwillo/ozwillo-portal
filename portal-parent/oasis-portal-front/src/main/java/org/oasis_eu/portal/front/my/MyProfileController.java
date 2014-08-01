@@ -99,7 +99,7 @@ public class MyProfileController extends PortalController {
 	@RequestMapping(method = RequestMethod.POST, value = "/save/language")
 	public String saveLanguage(@RequestParam("locale") String locale,
 			Model model) {
-		if (Languages.getByLocale(new Locale(locale)) != null) {
+		if (Languages.getByLocale(Locale.forLanguageTag(locale)) != null) {
 			saveSingleUserInfo("locale", locale);
 		}
 		initProfileModel(model);
@@ -158,7 +158,7 @@ public class MyProfileController extends PortalController {
 		model.addAttribute("layouts", myProfileState.getLayouts());
 		model.addAttribute("availableAvatars", getAvailableAvatars());
     if (user().getLocale() != null) {
-		    model.addAttribute("userLanguage", Languages.getByLocale(new Locale(
+		    model.addAttribute("userLanguage", Languages.getByLocale(Locale.forLanguageTag(
 				    user().getLocale()), Languages.ENGLISH));
     } else {
         model.addAttribute("userLanguage", Languages.ENGLISH);
