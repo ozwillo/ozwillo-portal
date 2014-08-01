@@ -33,6 +33,7 @@ public class Subscription extends GenericEntity {
     @JsonProperty("creator_id")
     private String creatorId;
 
+    private Instant modified;
 
 
     public String getUserId() {
@@ -73,6 +74,14 @@ public class Subscription extends GenericEntity {
 
     public void setCreatorId(String creatorId) {
         this.creatorId = creatorId;
+    }
+
+    public Instant getModified() {
+        return modified;
+    }
+
+    public void setModified(Instant modified) {
+        this.modified = modified;
     }
 
     @Override

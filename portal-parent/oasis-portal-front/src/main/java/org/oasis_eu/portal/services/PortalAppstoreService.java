@@ -3,6 +3,7 @@ package org.oasis_eu.portal.services;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,6 +97,8 @@ public class PortalAppstoreService {
         } else if (CatalogEntryType.SERVICE.equals(appType)) {
 
             Subscription subscription = new Subscription();
+            subscription.setId(UUID.randomUUID().toString());
+
             subscription.setSubscriptionType(SubscriptionType.PERSONAL);
             subscription.setUserId(userInfoHelper.currentUser().getUserId());
             subscription.setServiceId(appId);

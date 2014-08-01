@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface SubscriptionStore {
 
-    Subscription create(String userId, Subscription object);
+    void create(String userId, Subscription object);
 
 
     public List<Subscription> findByUserId(String userId);

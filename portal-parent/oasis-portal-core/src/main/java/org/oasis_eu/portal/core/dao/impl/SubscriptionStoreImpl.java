@@ -52,22 +52,22 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     }
 
     @Override
-    public Subscription create(String userId, Subscription subscription) {
+    public void create(String userId, Subscription subscription) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
 
-        ResponseEntity<Subscription> response = kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription, headers), Subscription.class, userId);
+        ResponseEntity<Void> response = kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription, headers), Void.class, userId);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             logger.debug("Created subscription: {}", response.getBody());
 
-            return response.getBody();
+//            return response.getBody();
         } else {
             logger.warn("Subscription creation failed: {} {}", response.getStatusCode(), response.getStatusCode().getReasonPhrase());
+            // TODO handle errors properly
         }
 
-        // TODO handle errors
-        return null;
+//        return null;
     }
 
 
