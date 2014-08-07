@@ -20,7 +20,7 @@ kernel:
     profile_endpoint: http://localhost:8081/a/profile
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.base_uri}/a/logout
-    callback_uri: ${application.url}/login
+    callback_uri: ${application.url}/callback
   user_directory_endpoint: ${kernel.base_uri}/d
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
