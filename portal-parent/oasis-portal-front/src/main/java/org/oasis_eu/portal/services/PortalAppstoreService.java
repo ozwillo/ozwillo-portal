@@ -87,11 +87,14 @@ public class PortalAppstoreService {
         logger.debug("Buying application {} of type {}", appId, appType);
 
         if (CatalogEntryType.APPLICATION.equals(appType)) {
+            CatalogEntry application = catalogStore.findApplication(appId);
 
             ApplicationInstantiationRequest instanceRequest = new ApplicationInstantiationRequest();
 
 //        instanceRequest.setProviderId(userDirectory.getMemberships(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());
             instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());
+            instanceRequest.setName(application.getName(RequestContextUtils.getLocale(request))); // TODO make this user-provided at some stage
+            instanceRequest.setDescription(application.getDescription(RequestContextUtils.getLocale(request)));
 
             catalogStore.instantiate(appId, instanceRequest);
         } else if (CatalogEntryType.SERVICE.equals(appType)) {

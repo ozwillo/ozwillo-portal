@@ -80,6 +80,7 @@ public class CatalogStoreImpl implements CatalogStore {
         } else {
             throw new HttpClientErrorException(response.getStatusCode(), response.getStatusCode().getReasonPhrase());
         }
+
     }
 
     @Override

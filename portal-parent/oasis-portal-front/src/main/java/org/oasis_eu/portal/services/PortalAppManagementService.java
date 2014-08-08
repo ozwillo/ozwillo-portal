@@ -1,17 +1,18 @@
 package org.oasis_eu.portal.services;
 
+import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.core.mongo.dao.ApplicationInstanceRepository;
-import org.oasis_eu.portal.core.mongo.model.temp.ApplicationInstanceRegistration;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
 import org.oasis_eu.portal.model.appsmanagement.SubscriptionStatus;
 import org.oasis_eu.portal.model.appstore.AppInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -28,14 +29,16 @@ import java.util.stream.Collectors;
 @Service
 public class PortalAppManagementService {
 
-    @Autowired
-    private ApplicationInstanceRepository applicationInstanceRepository;
+    private static final Logger logger = LoggerFactory.getLogger(PortalAppstoreService.class);
 
     @Autowired
     private CatalogStore catalogStore;
 
     @Autowired
     private SubscriptionStore subscriptionStore;
+
+    @Autowired
+    private ApplicationInstanceStore applicationInstanceStore;
 
     @Autowired
     private UserInfoService userInfoService;
@@ -47,7 +50,7 @@ public class PortalAppManagementService {
 
         String userId = userInfoService.currentUser().getUserId();
 
-        List<MyAppsInstance> instances = applicationInstanceRepository.findByUserId(userId)
+        List<MyAppsInstance> instances = applicationInstanceStore.findByUserId(userId)
                 .stream()
                 .map(this::fetchInstance)
                 .collect(Collectors.toList());
@@ -63,18 +66,18 @@ public class PortalAppManagementService {
 
     }
 
-    private MyAppsInstance fetchInstance(ApplicationInstanceRegistration registration) {
+    private MyAppsInstance fetchInstance(ApplicationInstance instance) {
 
-        ApplicationInstance applicationInstance = catalogStore.findApplicationInstance(registration.getInstanceId());
-        CatalogEntry entry = catalogStore.findApplication(applicationInstance.getApplicationId());
+        logger.debug("Fetching instance data for {}", instance);
+
+        CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
         AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType());
 
 
-
-        return new MyAppsInstance().setApplicationInstanceRegistration(registration)
-                .setApplicationInstance(applicationInstance)
+        return new MyAppsInstance()
+                .setApplicationInstance(instance)
                 .setApplication(appInfo)
-                .setServices(catalogStore.findServicesOfInstance(registration.getInstanceId()).stream().map(this::fetchService).collect(Collectors.toList()));
+                .setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream().map(this::fetchService).collect(Collectors.toList()));
     }
 
     private MyAppsService fetchService(CatalogEntry service) {

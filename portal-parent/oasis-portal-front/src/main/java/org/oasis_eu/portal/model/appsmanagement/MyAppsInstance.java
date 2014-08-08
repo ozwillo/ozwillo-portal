@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.model.appsmanagement;
 
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.mongo.model.temp.ApplicationInstanceRegistration;
 import org.oasis_eu.portal.model.appstore.AppInfo;
 
 import java.util.List;
@@ -12,20 +11,11 @@ import java.util.List;
  */
 public class MyAppsInstance {
 
-    ApplicationInstanceRegistration applicationInstanceRegistration;
     ApplicationInstance applicationInstance;
     AppInfo application;
 
     List<MyAppsService> myAppsServices;
 
-    public ApplicationInstanceRegistration getApplicationInstanceRegistration() {
-        return applicationInstanceRegistration;
-    }
-
-    public MyAppsInstance setApplicationInstanceRegistration(ApplicationInstanceRegistration applicationInstanceRegistration) {
-        this.applicationInstanceRegistration = applicationInstanceRegistration;
-        return  this;
-    }
 
     public List<MyAppsService> getServices() {
         return myAppsServices;

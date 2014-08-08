@@ -1,9 +1,12 @@
 package org.oasis_eu.portal.core.model.subscription;
 
+import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * User: schambon
@@ -11,6 +14,8 @@ import org.oasis_eu.portal.core.model.appstore.GenericEntity;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class Subscription extends GenericEntity {
+
+    private static final Logger logger = LoggerFactory.getLogger(Subscription.class);
 
     @JsonProperty("id")
     private String id;
@@ -30,10 +35,18 @@ public class Subscription extends GenericEntity {
     @JsonProperty("subscription_type")
     private SubscriptionType subscriptionType;
 
+    @JsonProperty("subscription_uri")
+    private String subscriptionUri;
+
     @JsonProperty("creator_id")
     private String creatorId;
 
     private Instant modified;
+
+    @JsonAnySetter
+    private void anySetter(String key, String value) {
+        logger.warn("Unknown property {} fetched from JSON: {}", key, value);
+    }
 
 
     public String getUserId() {
@@ -84,6 +97,14 @@ public class Subscription extends GenericEntity {
         this.modified = modified;
     }
 
+    public String getSubscriptionUri() {
+        return subscriptionUri;
+    }
+
+    public void setSubscriptionUri(String subscriptionUri) {
+        this.subscriptionUri = subscriptionUri;
+    }
+
     @Override
     public String toString() {
         return "Subscription{" +
@@ -91,7 +112,9 @@ public class Subscription extends GenericEntity {
                 ", userId='" + userId + '\'' +
                 ", serviceId='" + serviceId + '\'' +
                 ", subscriptionType=" + subscriptionType +
+                ", subscriptionUri='" + subscriptionUri + '\'' +
                 ", creatorId='" + creatorId + '\'' +
+                ", modified=" + modified +
                 '}';
     }
 }

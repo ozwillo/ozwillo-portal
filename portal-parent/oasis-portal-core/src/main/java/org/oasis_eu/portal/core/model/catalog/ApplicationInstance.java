@@ -121,4 +121,21 @@ public class ApplicationInstance {
     public static enum InstantiationStatus {
         PENDING, RUNNING;
     }
+
+    @Override
+    public String toString() {
+        return "ApplicationInstance{" +
+                "applicationId='" + applicationId + '\'' +
+                ", instanceId='" + instanceId + '\'' +
+                ", status=" + status +
+                ", name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", icon='" + icon + '\'' +
+                ", neededScopes=" + neededScopes +
+                ", localizedNames=" + localizedNames +
+                ", localizedDescriptions=" + localizedDescriptions +
+                ", localidedIcons=" + localidedIcons +
+                ", providerId='" + providerId + '\'' +
+                '}';
+    }
 }
