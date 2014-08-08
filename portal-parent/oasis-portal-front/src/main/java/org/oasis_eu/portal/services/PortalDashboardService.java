@@ -117,12 +117,14 @@ public class PortalDashboardService {
         List<DashboardEntry> entries = userContext.getSubscriptions().stream()
                 .filter(subscriptionById::containsKey)
                 .map(sid -> getDashboardEntry(subscriptionById.get(sid)))
+                .filter(e -> e != null)
                 .collect(Collectors.toList());
 
 
         if (userContext.isPrimary()) {
             entries.addAll(orphanSubscriptions(actualSubscriptions).stream()
-                    .map(s -> getDashboardEntry(s))
+                    .map(this::getDashboardEntry)
+                    .filter(e -> e != null)
                     .collect(Collectors.toList()));
         }
 
@@ -249,10 +251,16 @@ public class PortalDashboardService {
     }
 
     private DashboardEntry getDashboardEntry(Subscription s) {
+
         DashboardEntry entry = new DashboardEntry();
         entry.setDisplayLocale(RequestContextUtils.getLocale(request));
         entry.setSubscription(s);
-        CatalogEntry catalogEntry = catalogStore.findApplication(s.getServiceId());
+        CatalogEntry catalogEntry = catalogStore.findService(s.getServiceId());
+        if (catalogEntry == null) {
+            logger.warn("User {} - cannot find service for id {}", userInfoHelper.currentUser().getUserId(), s.getServiceId());
+
+            return null;
+        }
         entry.setCatalogEntry(catalogEntry);
         entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getServiceId()));
 
