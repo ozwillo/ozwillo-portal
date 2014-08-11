@@ -75,6 +75,12 @@ b.caret {
 }
 
 
+b.caret.inverse {
+    border: none;
+    height: 15px;
+    width: 15px;
+    background: url("/img/icon/caret-inverse.png");
+}
 
 
 body, h2 {

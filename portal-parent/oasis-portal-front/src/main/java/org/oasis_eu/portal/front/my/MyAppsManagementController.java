@@ -36,7 +36,8 @@ public class MyAppsManagementController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value ={"","/"})
     public String show(Model model) {
-        model.addAttribute("instances", appManagementService.getMyInstances());
+        model.addAttribute("authorities", appManagementService.getMyAuthorities());
+
         return "my-appsmanagement";
     }
 

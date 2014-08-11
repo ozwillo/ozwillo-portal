@@ -6,18 +6,22 @@ import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
-import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
-import org.oasis_eu.portal.model.appsmanagement.SubscriptionStatus;
+import org.oasis_eu.portal.model.appsmanagement.*;
 import org.oasis_eu.portal.model.appstore.AppInfo;
+import org.oasis_eu.spring.kernel.model.directory.UserMembership;
+import org.oasis_eu.spring.kernel.service.OrganizationStore;
+import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -38,6 +42,9 @@ public class PortalAppManagementService {
     private SubscriptionStore subscriptionStore;
 
     @Autowired
+    private UserDirectory userDirectory;
+
+    @Autowired
     private ApplicationInstanceStore applicationInstanceStore;
 
     @Autowired
@@ -46,7 +53,35 @@ public class PortalAppManagementService {
     @Autowired
     private HttpServletRequest request;
 
-    public List<MyAppsInstance> getMyInstances() {
+    @Autowired
+    private MessageSource messageSource;
+
+
+    public List<Authority> getMyAuthorities() {
+        String userId = userInfoService.currentUser().getUserId();
+
+
+        List<Authority> authorities = new ArrayList<>();
+        authorities.add(new Authority(AuthorityType.INDIVIDUAL, messageSource.getMessage("my.apps.personal", new Object[0], RequestContextUtils.getLocale(request)), userId));
+
+        authorities.addAll(userDirectory.getMemberships(userId)
+                .stream()
+                .map(this::toAuthority)
+                .collect(Collectors.toList()));
+
+        Collections.sort(authorities, (one, two) -> {
+            if (one.getType().ordinal() != two.getType().ordinal()) return one.getType().ordinal() - two.getType().ordinal();
+            else return one.getName().compareTo(two.getName());
+        });
+
+        return authorities;
+    }
+
+    private Authority toAuthority(UserMembership userMembership) {
+        return new Authority(AuthorityType.ORGANIZATION, userMembership.getOrganizationName(), userMembership.getOrganizationId());
+    }
+
+    public List<MyAppsInstance> getMyInstances(Authority authority) {
 
         String userId = userInfoService.currentUser().getUserId();
 
