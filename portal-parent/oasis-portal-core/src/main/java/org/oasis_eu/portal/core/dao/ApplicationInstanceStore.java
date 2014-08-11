@@ -12,4 +12,6 @@ public interface ApplicationInstanceStore {
 
     List<ApplicationInstance> findByUserId(String userId);
 
+    List<ApplicationInstance> findByOrganizationId(String organizationId);
+
 }

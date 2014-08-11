@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.services;
 
+import org.apache.http.auth.AUTH;
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
@@ -45,6 +46,9 @@ public class PortalAppManagementService {
     private UserDirectory userDirectory;
 
     @Autowired
+    private OrganizationStore organizationStore;
+
+    @Autowired
     private ApplicationInstanceStore applicationInstanceStore;
 
     @Autowired
@@ -62,7 +66,7 @@ public class PortalAppManagementService {
 
 
         List<Authority> authorities = new ArrayList<>();
-        authorities.add(new Authority(AuthorityType.INDIVIDUAL, messageSource.getMessage("my.apps.personal", new Object[0], RequestContextUtils.getLocale(request)), userId));
+        authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId));
 
         authorities.addAll(userDirectory.getMemberships(userId)
                 .stream()
@@ -77,27 +81,40 @@ public class PortalAppManagementService {
         return authorities;
     }
 
+    private String i18nPersonal() {
+        return messageSource.getMessage("my.apps.personal", new Object[0], RequestContextUtils.getLocale(request));
+    }
+
     private Authority toAuthority(UserMembership userMembership) {
         return new Authority(AuthorityType.ORGANIZATION, userMembership.getOrganizationName(), userMembership.getOrganizationId());
     }
 
     public List<MyAppsInstance> getMyInstances(Authority authority) {
 
-        String userId = userInfoService.currentUser().getUserId();
+        switch (authority.getType()) {
+            case INDIVIDUAL:
+                return getPersonalInstances(authority);
+            case ORGANIZATION:
+                return getOrganizationInstances(authority);
+        }
 
-        List<MyAppsInstance> instances = applicationInstanceStore.findByUserId(userId)
+        logger.error("Should never be here - authority is neither an individual or an organization: {}", authority.getType());
+        return null;
+    }
+
+
+    private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority) {
+        return applicationInstanceStore.findByUserId(personalAuthority.getId())
                 .stream()
                 .map(this::fetchInstance)
                 .collect(Collectors.toList());
+    }
 
-        Set<String> subscribedServices = subscriptionStore.findByUserId(userId).stream().map(Subscription::getServiceId).collect(Collectors.toSet());
-
-        instances.forEach(i -> i.getServices().forEach(as -> {
-            as.setSubscriptionStatus(subscribedServices.contains(as.getService().getId()) ? SubscriptionStatus.SUBSCRIBED : SubscriptionStatus.NOT_SUBSCRIBED);
-            as.setName(as.getService().getName(RequestContextUtils.getLocale(request)));
-        }));
-
-        return instances;
+    private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority) {
+        return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
+                .stream()
+                .map(this::fetchInstance)
+                .collect(Collectors.toList());
 
     }
 
@@ -116,6 +133,28 @@ public class PortalAppManagementService {
     }
 
     private MyAppsService fetchService(CatalogEntry service) {
-        return new MyAppsService().setService(service);
+        return new MyAppsService().setService(service).setName(service.getName(RequestContextUtils.getLocale(request)));
+    }
+
+    public Authority getAuthority(String authorityType, String authorityId) {
+        switch(AuthorityType.valueOf(authorityType)) {
+            case INDIVIDUAL:
+                return new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userInfoService.currentUser().getUserId()); // in this case, discard the provided argument
+
+            case ORGANIZATION:
+                // note: at the risk of being a bit slow, we're checking that the user has membership of this org
+                UserMembership um = userDirectory.getMemberships(userInfoService.currentUser().getUserId())
+                        .stream()
+                        .filter(m -> m.getOrganizationId().equals(authorityId))
+                        .findFirst()
+                        .orElse(null);
+                if (um == null) {
+                    logger.warn("User {} has attempted to find instances for organization {} without membership", userInfoService.currentUser(), authorityId);
+                    return null;
+                }
+                return new Authority(AuthorityType.ORGANIZATION, organizationStore.find(authorityId).getName(), authorityId);
+        }
+
+        return null;
     }
 }

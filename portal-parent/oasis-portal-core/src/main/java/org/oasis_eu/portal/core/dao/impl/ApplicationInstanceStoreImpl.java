@@ -39,4 +39,12 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
         return Arrays.asList(exchange.getBody());
 
     }
+
+    public List<ApplicationInstance> findByOrganizationId(String organizationId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
+
+        ResponseEntity<ApplicationInstance[]> exchange = kernelRestTemplate.exchange(appsEndpoint + "/instance/organization/{organization_id}", HttpMethod.GET, new HttpEntity<Object>(headers), ApplicationInstance[].class, organizationId);
+        return Arrays.asList(exchange.getBody());
+    }
 }

@@ -126,16 +126,17 @@
             <div class="panel-heading">
                 <h4 class="panel-title">
                     <span data-th-text="${authority.name}">Personnal</span>
-                    <a class="authority-link pull-right" href="#" data-authid="abcd"
-                       data-th-attr="data-authid=${authority.id}, data-default=${authority.type == T(org.oasis_eu.portal.model.appsmanagement.AuthorityType).INDIVIDUAL ? 'true':'false'}"
+                    <a class="authority-link pull-right" href="#" data-th-href="@{/my/appsmanagement/authority/}" data-authid="abcd"
+                       data-th-attr="data-authid=${authority.id}, data-authtype=${authority.type}"
                        data-default="true">
                         <b class="caret inverse"></b>
                     </a>
                 </h4>
             </div>
             <div id="abcd" data-th-id="${authority.id}" class="panel-collapse collapse">
-                Spinner...
-                <span data-th-text="${authority.type == T(org.oasis_eu.portal.model.appsmanagement.AuthorityType).INDIVIDUAL ? 'yes' : 'no'}">ttt</span>
+                <div class="text-center">
+                    Loading...
+                </div>
             </div>
         </div>
         <div class="panel panel-default">

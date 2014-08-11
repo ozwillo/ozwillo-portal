@@ -20,7 +20,7 @@ public class ApplicationInstance {
 
     @JsonProperty("application_id")
     String applicationId;
-    @JsonProperty("instance_id")
+    @JsonProperty("id")
     String instanceId;
     InstantiationStatus status;
     String name;

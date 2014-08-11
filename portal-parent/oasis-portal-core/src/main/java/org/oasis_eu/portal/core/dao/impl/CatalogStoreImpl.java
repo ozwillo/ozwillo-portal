@@ -25,6 +25,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -107,7 +108,13 @@ public class CatalogStoreImpl implements CatalogStore {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
 
-        return Arrays.asList(kernelRestTemplate.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, new HttpEntity<Object>(headers), CatalogEntry[].class, instanceId).getBody());
+        CatalogEntry[] body = kernelRestTemplate.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, new HttpEntity<Object>(headers), CatalogEntry[].class, instanceId).getBody();
+        if (body != null) {
+            return Arrays.asList(body);
+        } else {
+            logger.error("Empty services collection found for instance {}", instanceId);
+            return Collections.emptyList();
+        }
 
     }
 

@@ -1,0 +1,29 @@
+.panel-default>.panel-heading {
+    background-color: #6e418e;
+    color: white;
+}
+
+.panel-instance>.panel-heading {
+    background-color: #e7e8ef;
+}
+
+ul.services {
+    list-style-type: none;
+    padding: 0;
+}
+
+li.service {
+    padding: 5px;
+    border-bottom: 1px solid rgb(221,221,221);
+
+}
+
+/*ul.services {
+    background-color: white;
+    border-top: 1px solid rgb(221,221,221);
+} */
+
+span.appname {
+    font-weight: bold;
+    font-size: 16px;
+}

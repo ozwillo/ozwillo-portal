@@ -35,7 +35,8 @@ public class MyAppsService {
         return name;
     }
 
-    public void setName(String name) {
+    public MyAppsService setName(String name) {
         this.name = name;
+        return this;
     }
 }
