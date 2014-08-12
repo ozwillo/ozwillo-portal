@@ -27,3 +27,8 @@ span.appname {
     font-weight: bold;
     font-size: 16px;
 }
+
+a.authority-link {
+    background-color: #e7e8ef;
+    border-radius: 10px;
+}
