@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html>
+<head data-th-replace="includes/header(title=#{my.appsmanagement},page='apps-management')">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>DUMMY Ozwillo</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../public/css/apps-management.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        @font-face {
+            font-family: 'Dunkin';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.svg#Dunkin') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DIN';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.svg#DIN') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DINAlternate-Light';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+        }
+
+
+
+        b.caret {
+            border: none;
+            height: 15px;
+            width: 15px;
+            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret.png");
+        }
+
+        b.caret.inverse {
+            border: none;
+            height: 15px;
+            width: 15px;
+            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret-inverse.png");
+        }
+
+    </style>
+</head>
+<body>
+<!-- only fragment "main" is loaded -->
+<div data-th-fragment="main">
+    <div id="modal-window" class="modal fade">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                    <h4 class="modal-title" data-th-text="#{my.apps.settings}">Inställningar</h4>
+                    <h4 class="modal-title" data-th-text="${instance.name}">Citoyen Parent</h4>
+                </div>
+                <div class="modal-body">
+                    <h5 data-th-text="#{my.apps.settings-you-have-granted}">You have granted the following access</h5>
+                    <ul>
+                        <li>Your personal data <button class="btn btn-default">Block</button></li>
+                        <li>Your address data <button class="btn btn-default">Block</button></li>
+                    </ul>
+
+                    <h5 data-th-text="#{my.apps.settings-users}">Users</h5>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Subscription date</th>
+                                <th>Last login</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>C. Farrell</td>
+                                <td>03-05-2011</td>
+                                <td>04-07-2014</td>
+                                <td><a href="#">Admin</a> <a href="#">Available</a> <a href="#">Remove</a></td>
+                            </tr>
+                            <tr>
+                                <td>B. Willis</td>
+                                <td>03-05-2012</td>
+                                <td>04-07-2014</td>
+                                <td><a href="#">User</a> <a href="#">Available</a> <a href="#">Remove</a></td>
+                            </tr>
+                            <tr>
+                                <td>J. Lopez</td>
+                                <td>03-05-2011</td>
+                                <td>04-07-2014</td>
+                                <td><a href="#">User</a> <a href="#">Available</a> <a href="#">Remove</a></td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+
+                    <form class="form-inline text-center">
+                        <div class="form-group">
+                            <label for="user" data-th-text="#{my.apps.settings-add-a-user}">Add a user</label>
+                            <input type="text" name="user" id="user" class="typeahead form-control"/>
+                        </div>
+                        <button type="submit">+</button>
+                    </form>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-th-text="#{ui.save}">Save</button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+</div>
+
+
+
+
+
+<!-- The following isn't loaded by the browser, it's only for prototyping -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+<script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
+
+<script>
+
+    $(document).ready(function() {
+
+        $("#modal-window").modal({});
+
+
+        console.log("ho hoho");
+        var substringMatcher = function(strs) {
+            return function findMatches(q, cb) {
+                var matches, substrRegex;
+
+                // an array that will be populated with substring matches
+                matches = [];
+
+                // regex used to determine if a string contains the substring `q`
+                substrRegex = new RegExp(q, 'i');
+
+                // iterate through the pool of strings and for any string that
+                // contains the substring `q`, add it to the `matches` array
+                $.each(strs, function(i, str) {
+                    if (substrRegex.test(str)) {
+                        // the typeahead jQuery plugin expects suggestions to a
+                        // JavaScript object, refer to typeahead docs for more info
+                        matches.push({ value: str });
+                    }
+                });
+
+                cb(matches);
+            };
+        };
+
+        var users = ["Victor Hugo", "Jean Gabin", "Napoléon Bonaparte", "Jules César", "Alexandre Dumas",
+                "André Téchiné", "Charlemagne", "Guillaume le Conquérant", "Honoré de Balzac", "George Washington",
+                "Confucius", "Mao Zedong", "Hailé Sélassié"
+        ];
+
+        $("#user").typeahead({
+                    hint: true,
+                    highlight: true,
+                    minLength: 1
+                },
+                {
+                    name: "states",
+                    displayKey: "value",
+                    source: substringMatcher(users)
+                }
+        );
+
+
+    });
+</script>
+</body>
+</html>

@@ -1,9 +1,35 @@
+var setupLinks = function(element) {
+
+    var appSettings = $("#appsettings");
+    var serviceSettings = $("#servicesettings");
+
+    $("a.appsettings-link").click(function(event) {
+        event.preventDefault();
+
+        var href = $(this).attr("href");
+        console.log("Bringing up app settings for " + href);
+
+        $.get(href, function(fragment) {
+            appSettings.html(fragment);
+            appSettings.find("#modal-window").modal({});
+        });
+    });
+
+    $("a.servicesettings-link").click(function(event) {
+        event.preventDefault();
+        var href = $(this).attr("href");
+        console.log("Bringing up service settings for " + href);
+
+        $.get(href, function(fragment) {
+            serviceSettings.html(fragment);
+        });
+    });
+};
+
 var setupCollapsible = function(element) {
-    console.log("Setting up collapsible from element: " + element);
 
     element.find("a.instance-link").click(function(event) {
         event.preventDefault();
-        console.log("Clicked!!");
         var href = $(this).attr("href");
         $(href).collapse("toggle");
         var child = $(this).children("b.caret");
@@ -14,7 +40,7 @@ var setupCollapsible = function(element) {
         }
     });
 
-}
+};
 
 $(document).ready(function() {
 
@@ -36,6 +62,7 @@ $(document).ready(function() {
                 function(fragment) {
                     target.html(fragment);
                     setupCollapsible(target);
+                    setupLinks(target);
                 }
             );
 

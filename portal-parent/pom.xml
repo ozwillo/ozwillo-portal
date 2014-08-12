@@ -27,6 +27,7 @@
         <jquery-ui.version>1.10.4</jquery-ui.version>
         <respond.version>1.4.2</respond.version>
         <html5shiv.version>3.7.0</html5shiv.version>
+        <typeaheadjs.version>0.10.4</typeaheadjs.version>
     </properties>
 
     <modules>
@@ -135,6 +136,11 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>html5shiv</artifactId>
                 <version>${html5shiv.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>typeaheadjs</artifactId>
+                <version>${typeaheadjs.version}</version>
             </dependency>
 
         </dependencies>

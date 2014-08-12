@@ -57,4 +57,17 @@ public class MyAppsManagementController extends PortalController {
 
         return "my-apps-byauth::authority";
     }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/settings/{app_id}")
+    public String appSettings(Model model, @PathVariable("app_id") String instanceId) {
+        model.addAttribute("instance", appManagementService.getInstance(instanceId)); // note that we trust the Kernel's security on that one
+
+        return "appsmanagement/instance-settings::main";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/settings/{app_id}/{service_id}")
+    public String serviceSettings(Model model, @PathVariable("app_id") String instanceId, @PathVariable("service_id") String serviceId) {
+        return "appsmanagement/service-settings::main";
+    }
 }

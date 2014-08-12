@@ -43,4 +43,8 @@ public class MyAppsInstance {
         this.application = application;
         return this;
     }
+
+    public String getName() {
+        return application != null ? application.getName() : "--";
+    }
 }

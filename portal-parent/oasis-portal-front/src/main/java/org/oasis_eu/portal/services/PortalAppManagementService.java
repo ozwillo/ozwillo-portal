@@ -157,4 +157,9 @@ public class PortalAppManagementService {
 
         return null;
     }
+
+    public MyAppsInstance getInstance(String instanceId) {
+
+        return fetchInstance(applicationInstanceStore.findById(instanceId));
+    }
 }
