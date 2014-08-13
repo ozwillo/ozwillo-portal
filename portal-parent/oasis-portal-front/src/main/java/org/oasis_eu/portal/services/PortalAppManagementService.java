@@ -1,12 +1,10 @@
 package org.oasis_eu.portal.services;
 
-import org.apache.http.auth.AUTH;
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.model.appsmanagement.*;
 import org.oasis_eu.portal.model.appstore.AppInfo;
 import org.oasis_eu.spring.kernel.model.directory.UserMembership;
@@ -24,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -66,7 +63,7 @@ public class PortalAppManagementService {
 
 
         List<Authority> authorities = new ArrayList<>();
-        authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId));
+        authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
 
         authorities.addAll(userDirectory.getMemberships(userId)
                 .stream()
@@ -86,7 +83,7 @@ public class PortalAppManagementService {
     }
 
     private Authority toAuthority(UserMembership userMembership) {
-        return new Authority(AuthorityType.ORGANIZATION, userMembership.getOrganizationName(), userMembership.getOrganizationId());
+        return new Authority(AuthorityType.ORGANIZATION, userMembership.getOrganizationName(), userMembership.getOrganizationId(), userMembership.isAdmin());
     }
 
     public List<MyAppsInstance> getMyInstances(Authority authority) {
@@ -139,7 +136,7 @@ public class PortalAppManagementService {
     public Authority getAuthority(String authorityType, String authorityId) {
         switch(AuthorityType.valueOf(authorityType)) {
             case INDIVIDUAL:
-                return new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userInfoService.currentUser().getUserId()); // in this case, discard the provided argument
+                return new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userInfoService.currentUser().getUserId(), true); // in this case, discard the provided argument
 
             case ORGANIZATION:
                 // note: at the risk of being a bit slow, we're checking that the user has membership of this org
@@ -148,11 +145,7 @@ public class PortalAppManagementService {
                         .filter(m -> m.getOrganizationId().equals(authorityId))
                         .findFirst()
                         .orElse(null);
-                if (um == null) {
-                    logger.warn("User {} has attempted to find instances for organization {} without membership", userInfoService.currentUser(), authorityId);
-                    return null;
-                }
-                return new Authority(AuthorityType.ORGANIZATION, organizationStore.find(authorityId).getName(), authorityId);
+                return new Authority(AuthorityType.ORGANIZATION, organizationStore.find(authorityId).getName(), authorityId, um.isAdmin());
         }
 
         return null;

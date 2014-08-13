@@ -40,7 +40,7 @@ public class InMemoryEntityStore<T extends GenericEntity> implements GenericCRUD
     @Override
     public void update(T t) {
         if (!entities.contains(t)) {
-            throw new EntityNotFoundException(t.getId());
+            throw new EntityNotFoundException();
         }
         // nop, we work by reference
     }
@@ -48,7 +48,7 @@ public class InMemoryEntityStore<T extends GenericEntity> implements GenericCRUD
     @Override
     public void delete(T t) {
         if (!entities.contains(t)) {
-            throw new EntityNotFoundException(t.getId());
+            throw new EntityNotFoundException();
         }
         entities.removeIf(cat -> cat.getId().equals(t.getId()));
     }

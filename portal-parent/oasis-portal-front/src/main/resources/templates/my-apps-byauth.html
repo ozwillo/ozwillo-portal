@@ -81,7 +81,13 @@
                 </div>
                 <div class="panel-body collapse in" id="blablabla" data-th-id="${instance.applicationInstance.instanceId}">
                     <ul class="services" data-th-remove="all-but-first">
-                        <li class="service" data-th-each="service: ${instance.services}"><span data-th-text="${service.name}">Back Office</span><span class="pull-right"><a class="servicesettings-link" href="#" data-th-href="@{|/my/appsmanagement/service-settings/${service.service.id}|}" data-th-text="#{my.apps.settings}">Settings</a></span></li>
+                        <li class="service" data-th-each="service: ${instance.services}">
+                            <span data-th-text="${service.name}">Back Office</span>
+                            <span class="pull-right" data-th-if="${authority.admin}">
+                                <a class="servicesettings-link" href="#" data-th-href="@{|/my/appsmanagement/service-settings/${service.service.id}|}" data-th-text="#{my.apps.settings}">Settings</a>
+                                <a data-th-if="${! service.service.visible}" class="servicesettings-link" href="#" data-th-href="@{|/my/appsmanagement/subscription-settings/${service.service.id}|}" data-th-text="#{my.apps.users}">Users</a>
+                            </span>
+                        </li>
                         <li class="service">Citizen Portal of Valence city</li>
                         <li class="service">Electoral list registration</li>
                         <li class="service">Registration to school canteen</li>
@@ -110,7 +116,15 @@
 
 
 <div data-th-fragment="forbidden">
-    <b>Forbidden access</b>
+    <div class="text-center">
+        <b data-th-text="ui.forbidden">Forbidden access</b>
+    </div>
+</div>
+
+<div data-th-fragment="technical_error">
+    <div class="text-center">
+        <p data-th-text="ui.server_error">An error has occured. Our team of experts is investigating!</p>
+    </div>
 </div>
 
 </body>

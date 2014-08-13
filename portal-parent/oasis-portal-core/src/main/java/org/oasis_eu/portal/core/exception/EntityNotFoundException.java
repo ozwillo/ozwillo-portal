@@ -7,8 +7,4 @@ package org.oasis_eu.portal.core.exception;
 public class EntityNotFoundException extends RuntimeException {
 
 
-    public EntityNotFoundException(String appstoreCategoryId) {
-        super("App store category not found: " + appstoreCategoryId);
-    }
-
 }

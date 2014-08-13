@@ -1,14 +1,14 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
+import org.oasis_eu.portal.core.exception.EntityNotFoundException;
+import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -45,7 +45,18 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
         headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
 
         ResponseEntity<ApplicationInstance[]> exchange = kernelRestTemplate.exchange(appsEndpoint + "/instance/organization/{organization_id}", HttpMethod.GET, new HttpEntity<Object>(headers), ApplicationInstance[].class, organizationId);
-        return Arrays.asList(exchange.getBody());
+
+        // note: we throw exceptions corresponding to what the actual result is. The response message itself is already logged so we are not losing any information.
+        if (exchange.getStatusCode().is2xxSuccessful() ) {
+            return Arrays.asList(exchange.getBody());
+        } else if (HttpStatus.NOT_FOUND.equals(exchange.getStatusCode())) {
+            throw new EntityNotFoundException();
+        } else if (exchange.getStatusCode().is4xxClientError()) {
+            throw new WrongQueryException();
+        } else {
+            throw new TechnicalErrorException();
+        }
+
     }
 
 }
