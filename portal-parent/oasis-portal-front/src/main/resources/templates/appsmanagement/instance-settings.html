@@ -75,35 +75,36 @@
                         <li>Your address data <button class="btn btn-default">Block</button></li>
                     </ul>
 
+
                     <h5 data-th-text="#{my.apps.settings-users}">Users</h5>
                     <table class="table">
                         <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Subscription date</th>
-                                <th>Last login</th>
-                                <th>Actions</th>
-                            </tr>
+                        <tr>
+                            <th>Name</th>
+                            <th>Subscription date</th>
+                            <th>Last login</th>
+                            <th>Actions</th>
+                        </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>C. Farrell</td>
-                                <td>03-05-2011</td>
-                                <td>04-07-2014</td>
-                                <td><a href="#">Admin</a> <a href="#">Available</a> <a href="#">Remove</a></td>
-                            </tr>
-                            <tr>
-                                <td>B. Willis</td>
-                                <td>03-05-2012</td>
-                                <td>04-07-2014</td>
-                                <td><a href="#">User</a> <a href="#">Available</a> <a href="#">Remove</a></td>
-                            </tr>
-                            <tr>
-                                <td>J. Lopez</td>
-                                <td>03-05-2011</td>
-                                <td>04-07-2014</td>
-                                <td><a href="#">User</a> <a href="#">Available</a> <a href="#">Remove</a></td>
-                            </tr>
+                        <tr>
+                            <td>C. Farrell</td>
+                            <td>03-05-2011</td>
+                            <td>04-07-2014</td>
+                            <td><a href="#">Admin</a> <a href="#">Available</a> <a href="#">Remove</a></td>
+                        </tr>
+                        <tr>
+                            <td>B. Willis</td>
+                            <td>03-05-2012</td>
+                            <td>04-07-2014</td>
+                            <td><a href="#">User</a> <a href="#">Available</a> <a href="#">Remove</a></td>
+                        </tr>
+                        <tr>
+                            <td>J. Lopez</td>
+                            <td>03-05-2011</td>
+                            <td>04-07-2014</td>
+                            <td><a href="#">User</a> <a href="#">Available</a> <a href="#">Remove</a></td>
+                        </tr>
                         </tbody>
                     </table>
 
@@ -133,12 +134,10 @@
 <!-- The following isn't loaded by the browser, it's only for prototyping -->
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
 
 <script>
 
     $(document).ready(function() {
-
         $("#modal-window").modal({});
 
 
@@ -168,8 +167,8 @@
         };
 
         var users = ["Victor Hugo", "Jean Gabin", "Napoléon Bonaparte", "Jules César", "Alexandre Dumas",
-                "André Téchiné", "Charlemagne", "Guillaume le Conquérant", "Honoré de Balzac", "George Washington",
-                "Confucius", "Mao Zedong", "Hailé Sélassié"
+            "André Téchiné", "Charlemagne", "Guillaume le Conquérant", "Honoré de Balzac", "George Washington",
+            "Confucius", "Mao Zedong", "Hailé Sélassié"
         ];
 
         $("#user").typeahead({

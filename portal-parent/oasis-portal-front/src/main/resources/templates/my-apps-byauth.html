@@ -75,13 +75,13 @@
                     <img src="../public/img/sample_app_icons/sample-connecte-20.png" data-th-src="@{/img/sample_app_icons/sample-connecte-20.png}" alt="icon" data-th-alt="${instance.application.name}" height="32" width="32"/>
                     <span class="appname" data-th-text="${instance.application.name}">Citizen Kin</span>
                     <a class="instance-link pull-right" href="#blablabla" data-th-href="'#' + ${instance.applicationInstance.instanceId}">
-                        <b class="caret inverse"></b>
+                        <b class="caret"></b>
                     </a>
                     <a class="pull-right appsettings-link" href="#" data-th-href="@{|/my/appsmanagement/settings/${instance.applicationInstance.instanceId}|}" data-th-text="#{my.apps.manage}">Manage</a>
                 </div>
-                <div class="panel-body collapse" id="blablabla" data-th-id="${instance.applicationInstance.instanceId}">
+                <div class="panel-body collapse in" id="blablabla" data-th-id="${instance.applicationInstance.instanceId}">
                     <ul class="services" data-th-remove="all-but-first">
-                        <li class="service" data-th-each="service: ${instance.services}"><span data-th-text="${service.name}">Back Office</span><span class="pull-right"><a class="servicesettings-link" href="#" data-th-href="@{|/my/appsmanagement/settings/${instance.applicationInstance.instanceId}/${service.service.id}|}" data-th-text="#{my.apps.settings}">Settings</a></span></li>
+                        <li class="service" data-th-each="service: ${instance.services}"><span data-th-text="${service.name}">Back Office</span><span class="pull-right"><a class="servicesettings-link" href="#" data-th-href="@{|/my/appsmanagement/service-settings/${service.service.id}|}" data-th-text="#{my.apps.settings}">Settings</a></span></li>
                         <li class="service">Citizen Portal of Valence city</li>
                         <li class="service">Electoral list registration</li>
                         <li class="service">Registration to school canteen</li>

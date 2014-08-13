@@ -22,6 +22,13 @@ var setupLinks = function(element) {
 
         $.get(href, function(fragment) {
             serviceSettings.html(fragment);
+            serviceSettings.find("#modal-window").modal({});
+            serviceSettings.find("#saveService").click(function(event) {
+                event.preventDefault();
+
+                console.log("Saving service " + href);
+                serviceSettings.find("#service-form").submit(); // TODO replace with something more AJAXy
+            });
         });
     });
 };

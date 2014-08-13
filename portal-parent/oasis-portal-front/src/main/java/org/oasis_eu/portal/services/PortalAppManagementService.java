@@ -160,6 +160,18 @@ public class PortalAppManagementService {
 
     public MyAppsInstance getInstance(String instanceId) {
 
-        return fetchInstance(applicationInstanceStore.findById(instanceId));
+        return fetchInstance(catalogStore.findApplicationInstance(instanceId));
+    }
+
+    public CatalogEntry getService(String serviceId) {
+
+        CatalogEntry entry = catalogStore.findService(serviceId);
+        logger.debug("Found catalog entry: {}", entry);
+
+        return entry;
+    }
+
+    public void updateService(String serviceId, CatalogEntry entry) {
+        catalogStore.fetchAndUpdateService(serviceId, entry);
     }
 }

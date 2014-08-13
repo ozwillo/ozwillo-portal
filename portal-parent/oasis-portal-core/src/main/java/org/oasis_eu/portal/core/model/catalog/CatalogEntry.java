@@ -255,4 +255,29 @@ public class CatalogEntry  {
     public void setPostLogoutRedirectUris(List<String> postLogoutRedirectUris) {
         this.postLogoutRedirectUris = postLogoutRedirectUris;
     }
+
+    @Override
+    public String toString() {
+        return "CatalogEntry{" +
+                "id='" + id + '\'' +
+                ", type=" + type +
+                ", defaultName='" + defaultName + '\'' +
+                ", defaultDescription='" + defaultDescription + '\'' +
+                ", localizedNames=" + localizedNames +
+                ", localizedDescriptions=" + localizedDescriptions +
+                ", localizedIcons=" + localizedIcons +
+                ", defaultIcon='" + defaultIcon + '\'' +
+                ", url='" + url + '\'' +
+                ", notificationUrl='" + notificationUrl + '\'' +
+                ", categories=" + categories +
+                ", categoryIds=" + categoryIds +
+                ", paymentOption=" + paymentOption +
+                ", targetAudience=" + targetAudience +
+                ", territoryId='" + territoryId + '\'' +
+                ", providerId='" + providerId + '\'' +
+                ", visible=" + visible +
+                ", redirectUris=" + redirectUris +
+                ", postLogoutRedirectUris=" + postLogoutRedirectUris +
+                '}';
+    }
 }

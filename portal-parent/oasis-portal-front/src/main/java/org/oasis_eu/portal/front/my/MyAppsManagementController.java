@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.front.my;
 
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
@@ -8,10 +9,7 @@ import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -66,8 +64,19 @@ public class MyAppsManagementController extends PortalController {
         return "appsmanagement/instance-settings::main";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = "/settings/{app_id}/{service_id}")
-    public String serviceSettings(Model model, @PathVariable("app_id") String instanceId, @PathVariable("service_id") String serviceId) {
+    @RequestMapping(method = RequestMethod.GET, value = "/service-settings/{service_id}")
+    public String serviceSettings(Model model, @PathVariable("service_id") String serviceId) {
+
+        model.addAttribute("service", appManagementService.getService(serviceId));
+
         return "appsmanagement/service-settings::main";
+    }
+
+
+    @RequestMapping(method=RequestMethod.POST, value="/service-settings/{service_id}")
+    public String saveServiceSettings(Model model, @PathVariable("service_id") String serviceId, @ModelAttribute CatalogEntry service) {
+
+        appManagementService.updateService(serviceId, service);
+        return "redirect:/my/appsmanagement";
     }
 }

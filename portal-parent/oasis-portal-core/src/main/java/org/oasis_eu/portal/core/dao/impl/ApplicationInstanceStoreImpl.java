@@ -48,11 +48,4 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
         return Arrays.asList(exchange.getBody());
     }
 
-    @Override
-    public ApplicationInstance findById(String applicationInstanceId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
-
-        return kernelRestTemplate.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, new HttpEntity<Object>(headers), ApplicationInstance.class, applicationInstanceId).getBody();
-    }
 }

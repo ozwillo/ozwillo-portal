@@ -14,6 +14,5 @@ public interface ApplicationInstanceStore {
 
     List<ApplicationInstance> findByOrganizationId(String organizationId);
 
-    ApplicationInstance findById(String applicationInstanceId);
 
 }
