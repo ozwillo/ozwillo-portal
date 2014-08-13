@@ -131,8 +131,8 @@
                 <h4 class="panel-title">
                     <span data-th-text="${authority.name}">Personnal</span>
                     <a class="authority-link pull-right" href="#" data-th-href="@{/my/appsmanagement/authority/}" data-authid="abcd"
-                       data-th-attr="data-authid=${authority.id}, data-authtype=${authority.type}"
-                       data-default="true">
+                       data-th-attr="data-authid=${authority.id}, data-authtype=${authority.type}, data-default=${authority.id == defaultAuthorityId}"
+                       data-default="false">
                         <b class="caret inverse"></b>
                     </a>
                 </h4>

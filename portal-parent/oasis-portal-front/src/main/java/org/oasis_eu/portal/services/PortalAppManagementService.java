@@ -164,7 +164,7 @@ public class PortalAppManagementService {
         return entry;
     }
 
-    public void updateService(String serviceId, CatalogEntry entry) {
-        catalogStore.fetchAndUpdateService(serviceId, entry);
+    public CatalogEntry updateService(String serviceId, CatalogEntry entry) {
+        return catalogStore.fetchAndUpdateService(serviceId, entry);
     }
 }

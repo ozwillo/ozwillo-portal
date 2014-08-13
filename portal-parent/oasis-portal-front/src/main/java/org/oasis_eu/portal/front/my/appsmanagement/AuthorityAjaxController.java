@@ -57,6 +57,8 @@ public class AuthorityAjaxController {
     }
 
 
+
+
     @ExceptionHandler(WrongQueryException.class)
     public String handleWrongQuery() {
         return "my-apps-byauth::forbidden";

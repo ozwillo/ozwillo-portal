@@ -35,8 +35,9 @@ public class MyAppsManagementController extends PortalController {
 
 
     @RequestMapping(method = RequestMethod.GET, value ={"","/"})
-    public String show(Model model) {
+    public String show(Model model, @RequestParam(value = "defaultAuthorityId", required = false, defaultValue = "") String defaultAuthorityId) {
         model.addAttribute("authorities", appManagementService.getMyAuthorities());
+        model.addAttribute("defaultAuthorityId", defaultAuthorityId);
 
         return "my-appsmanagement";
     }
@@ -46,7 +47,7 @@ public class MyAppsManagementController extends PortalController {
     @RequestMapping(method=RequestMethod.POST, value="/service-settings/{service_id}")
     public String saveServiceSettings(Model model, @PathVariable("service_id") String serviceId, @ModelAttribute CatalogEntry service) {
 
-        appManagementService.updateService(serviceId, service);
-        return "redirect:/my/appsmanagement";
+        CatalogEntry entry = appManagementService.updateService(serviceId, service);
+        return "redirect:/my/appsmanagement?defaultAuthorityId=" + entry.getProviderId();
     }
 }

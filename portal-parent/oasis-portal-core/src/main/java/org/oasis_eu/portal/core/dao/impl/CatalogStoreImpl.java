@@ -133,7 +133,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
 
     @Override
-    public void fetchAndUpdateService(String serviceId, CatalogEntry service) {
+    public CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service) {
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
@@ -158,7 +158,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
         headers.add("If-Match", etag);
 
-        kernelRestTemplate.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<KernelService>(kernelService, headers), KernelService.class, serviceId);
+        return kernelRestTemplate.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<>(kernelService, headers), CatalogEntry.class, serviceId).getBody();
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

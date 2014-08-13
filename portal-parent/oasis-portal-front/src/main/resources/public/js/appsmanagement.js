@@ -80,6 +80,7 @@ $(document).ready(function() {
     });
 
 
+    $("a.authority-link[data-default='true']").click();
     $("a.authority-link[data-authtype='INDIVIDUAL']").click();
 
 
