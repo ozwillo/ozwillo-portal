@@ -7,8 +7,8 @@
     <title>DUMMY Ozwillo</title>
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
-    <link href="../public/css/main.css" rel="stylesheet"/>
-    <link href="../public/css/apps-management.css" rel="stylesheet"/>
+    <link href="../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../public/css/apps-management.css" rel="stylesheet"/>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -17,26 +17,26 @@
     <style>
         @font-face {
             font-family: 'Dunkin';
-            src: url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.eot?') format('eot'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.woff') format('woff'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.ttf') format('truetype'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.svg#Dunkin') format('svg');
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.svg#Dunkin') format('svg');
         }
 
         @font-face {
             font-family: 'DIN';
-            src: url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.eot?') format('eot'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.woff') format('woff'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.ttf') format('truetype'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.svg#DIN') format('svg');
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.svg#DIN') format('svg');
         }
 
         @font-face {
             font-family: 'DINAlternate-Light';
-            src: url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.eot?') format('eot'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.woff') format('woff'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.ttf') format('truetype'),
-            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.svg#DIN') format('svg');
         }
 
 
@@ -45,14 +45,14 @@
             border: none;
             height: 15px;
             width: 15px;
-            background: url("../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret.png");
+            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret.png");
         }
 
         b.caret.inverse {
             border: none;
             height: 15px;
             width: 15px;
-            background: url("../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret-inverse.png");
+            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret-inverse.png");
         }
 
     </style>
@@ -63,7 +63,7 @@
         <div class="navbar-header">
 
             <div class="my-oasis">
-                <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../public/img/my/my-oasis.png"
+                <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../../public/img/my/my-oasis.png"
                      alt="My OASIS"/>
                 <span class="badge badge-notifications" th:if="${notificationsCount != 0}"
                       th:text="${notificationsCount}">4</span>
@@ -73,9 +73,9 @@
             <li class="active" th:each="item : ${navigation}" th:class="${item.active ? 'active':''}">
                 <a href="#" th:href="@{'/my/' + ${item.id}}" th:class="${item.active?'':'nav-link'}">
                     <img th:if="${!item.active}" th:src="@{'/img/my/' + ${item.id} + '-gray.png'}"
-                         src="../public/img/my/dashboard-gray.png" alt="Dashboard" th:alt="#{'my.' + ${item.id}}"
+                         src="../../public/img/my/dashboard-gray.png" alt="Dashboard" th:alt="#{'my.' + ${item.id}}"
                          class="gray"/>
-                    <img th:src="@{'/img/my/' + ${item.id} + '.png'}" src="../public/img/my/dashboard.png" alt="Dashboard"
+                    <img th:src="@{'/img/my/' + ${item.id} + '.png'}" src="../../public/img/my/dashboard.png" alt="Dashboard"
                          th:alt="#{'my.' + ${item.id}}" th:class="${item.active?'':'purple'}"/>
                     <span th:text="#{'my.' + ${item.id}}">Dashboard</span>
                 </a>
@@ -86,9 +86,9 @@
             </li>
             <li>
                 <a href="#" class="nav-link">
-                    <img class="gray" th:src="@{/img/my/profile-gray.png}" src="../public/img/my/profile-gray.png"
+                    <img class="gray" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile-gray.png"
                          alt="Profile"/>
-                    <img class="purple" th:src="@{/img/my/profile-gray.png}" src="../public/img/my/profile.png"
+                    <img class="purple" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile.png"
                          alt="Profile"/>
                     <span>Profile</span>
                 </a>
@@ -98,17 +98,17 @@
             </li>
             <li>
                 <a href="#" class="nav-link">
-                    <img class="gray" th:src="@{/img/my/network-gray.png}" src="../public/img/my/network-gray.png"
+                    <img class="gray" th:src="@{/img/my/network-gray.png}" src="../../public/img/my/network-gray.png"
                          alt="Network"/>
-                    <img class="purple" th:src="@{/img/my/network.png}" src="../public/img/my/network.png" alt="Network"/>
+                    <img class="purple" th:src="@{/img/my/network.png}" src="../../public/img/my/network.png" alt="Network"/>
                     <span>Network</span>
                 </a>
             </li>
             <li>
                 <a href="#" class="nav-link">
                     <img class="gray" th:src="@{/img/my/apps-management-gray.png}"
-                         src="../public/img/my/appsmanagement-gray.png" alt="Apps Management"/>
-                    <img class="purple" th:src="@{/img/my/apps-management.png}" src="../public/img/my/appsmanagement.png"
+                         src="../../public/img/my/appsmanagement-gray.png" alt="Apps Management"/>
+                    <img class="purple" th:src="@{/img/my/apps-management.png}" src="../../public/img/my/appsmanagement.png"
                          alt="Apps Management"/>
                     <span>My Apps</span>
                 </a>
@@ -119,8 +119,7 @@
     </div>
 
 
-    <div id="appsettings"></div>
-    <div id="servicesettings"></div>
+    <div id="settings"></div>
 
     <div class="container">
         <h2 data-th-text="#{my.apps.title}">Apps management</h2>
@@ -164,8 +163,11 @@
 
     </th:block>
 
+    <script src="#" data-th-src="@{/js/csrf.js}"></script>
     <script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js" data-th-src="@{/webjars/typeaheadjs/0.10.4/typeahead.bundle.min.js}"></script>
-    <script src="../public/js/appsmanagement.js" data-th-src="@{/js/appsmanagement.js}"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.6.0/underscore-min.js" data-th-src="@{/webjars/underscorejs/1.6.0/underscore-min.js}"></script>
+
+    <script src="../../public/js/appsmanagement.js" data-th-src="@{/js/appsmanagement.js}"></script>
 
 
 </body>

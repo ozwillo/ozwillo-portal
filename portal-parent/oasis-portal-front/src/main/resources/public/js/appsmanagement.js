@@ -1,7 +1,7 @@
 var setupLinks = function(element) {
 
-    var appSettings = $("#appsettings");
-    var serviceSettings = $("#servicesettings");
+    var settings = $("#settings");
+
 
     $("a.appsettings-link").click(function(event) {
         event.preventDefault();
@@ -10,8 +10,8 @@ var setupLinks = function(element) {
         console.log("Bringing up app settings for " + href);
 
         $.get(href, function(fragment) {
-            appSettings.html(fragment);
-            appSettings.find("#modal-window").modal({});
+            settings.html(fragment);
+            settings.find("#modal-window").modal({});
         });
     });
 
@@ -21,14 +21,25 @@ var setupLinks = function(element) {
         console.log("Bringing up service settings for " + href);
 
         $.get(href, function(fragment) {
-            serviceSettings.html(fragment);
-            serviceSettings.find("#modal-window").modal({});
-            serviceSettings.find("#saveService").click(function(event) {
+            settings.html(fragment);
+            settings.find("#modal-window").modal({});
+            settings.find("#saveService").click(function(event) {
                 event.preventDefault();
 
                 console.log("Saving service " + href);
-                serviceSettings.find("#service-form").submit(); // TODO replace with something more AJAXy
+                settings.find("#service-form").submit();
             });
+        });
+    });
+
+    $("a.usersettings-link").click(function(event) {
+        event.preventDefault();
+        var href = $(this).attr("href");
+        $.get(href, function(fragment) {
+            settings.html(fragment);
+            settings.find("#modal-window").modal({});
+
+            init_users();
         });
     });
 };

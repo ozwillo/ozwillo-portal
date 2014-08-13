@@ -39,7 +39,7 @@ public class MyAppsManagementController extends PortalController {
         model.addAttribute("authorities", appManagementService.getMyAuthorities());
         model.addAttribute("defaultAuthorityId", defaultAuthorityId);
 
-        return "my-appsmanagement";
+        return "appsmanagement/appsmanagement";
     }
 
 

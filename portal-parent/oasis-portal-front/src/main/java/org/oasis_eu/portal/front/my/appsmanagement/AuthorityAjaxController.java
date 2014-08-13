@@ -47,26 +47,23 @@ public class AuthorityAjaxController {
         Authority authority = appManagementService.getAuthority(authorityType, authorityId);
 
         if (authority == null) {
-            return "my-apps-byauth::forbidden";
+            return "appsmanagement/apps-byauth::forbidden";
         }
 
         model.addAttribute("authority", authority);
         model.addAttribute("instances", appManagementService.getMyInstances(authority));
 
-        return "my-apps-byauth::authority";
+        return "appsmanagement/apps-byauth::authority";
     }
-
-
-
 
     @ExceptionHandler(WrongQueryException.class)
     public String handleWrongQuery() {
-        return "my-apps-byauth::forbidden";
+        return "appsmanagement/apps-byauth::forbidden";
     }
 
     @ExceptionHandler(TechnicalErrorException.class)
     public String handleTechnicalError() {
-        return "my-apps-byauth::technical_error";
+        return "appsmanagement/apps-byauth::technical_error";
     }
 
 }
