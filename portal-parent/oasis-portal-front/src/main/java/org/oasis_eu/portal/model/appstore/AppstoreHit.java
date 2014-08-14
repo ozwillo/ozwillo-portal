@@ -47,6 +47,22 @@ public class AppstoreHit {
     }
 
     public String getDescription() {
+        String desc = getLongDescription();
+
+        if (desc.length() < 81) {
+            return desc;
+        } else {
+            int idx = desc.substring(0, 80).lastIndexOf(' ');
+            if (idx != -1) {
+                return desc.substring(0, idx) + "…";
+            } else {
+                return desc.substring(0, 80) + "…";
+            }
+
+        }
+    }
+
+    public String getLongDescription() {
         return catalogEntry.getDescription(displayLocale);
     }
 
