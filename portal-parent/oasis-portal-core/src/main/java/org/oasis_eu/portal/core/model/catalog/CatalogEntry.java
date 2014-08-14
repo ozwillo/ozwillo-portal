@@ -32,6 +32,7 @@ public class CatalogEntry  {
     @JsonProperty("icon")
     private String defaultIcon;
 
+    @JsonProperty("service_uri")
     private String url;
 
     @JsonProperty("notification_uri")
