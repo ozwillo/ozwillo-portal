@@ -23,6 +23,9 @@ public class Subscription extends GenericEntity {
     @JsonProperty("user_id")
     private String userId;
 
+    @JsonProperty("user_name")
+    private String userName;
+
     /**
      * Application or local service id
      */
@@ -42,6 +45,9 @@ public class Subscription extends GenericEntity {
     private String creatorId;
 
     private Instant modified;
+
+    @JsonProperty("subscription_etag")
+    private String subscriptionEtag;
 
     @JsonAnySetter
     private void anySetter(String key, String value) {
@@ -105,11 +111,29 @@ public class Subscription extends GenericEntity {
         this.subscriptionUri = subscriptionUri;
     }
 
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getSubscriptionEtag() {
+        return subscriptionEtag;
+    }
+
+    public void setSubscriptionEtag(String subscriptionEtag) {
+        this.subscriptionEtag = subscriptionEtag;
+    }
+
     @Override
     public String toString() {
         return "Subscription{" +
                 "id='" + id + '\'' +
                 ", userId='" + userId + '\'' +
+                ", userName='" + userName + '\'' +
                 ", serviceId='" + serviceId + '\'' +
                 ", subscriptionType=" + subscriptionType +
                 ", subscriptionUri='" + subscriptionUri + '\'' +

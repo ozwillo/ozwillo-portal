@@ -5,8 +5,11 @@ import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.subscription.Subscription;
+import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.model.appsmanagement.*;
 import org.oasis_eu.portal.model.appstore.AppInfo;
+import org.oasis_eu.spring.kernel.model.directory.AgentInfo;
 import org.oasis_eu.spring.kernel.model.directory.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
@@ -22,6 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -65,7 +69,7 @@ public class PortalAppManagementService {
         List<Authority> authorities = new ArrayList<>();
         authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
 
-        authorities.addAll(userDirectory.getMemberships(userId)
+        authorities.addAll(userDirectory.getMembershipsOfUser(userId)
                 .stream()
                 .map(this::toAuthority)
                 .collect(Collectors.toList()));
@@ -140,7 +144,7 @@ public class PortalAppManagementService {
 
             case ORGANIZATION:
                 // note: at the risk of being a bit slow, we're checking that the user has membership of this org
-                UserMembership um = userDirectory.getMemberships(userInfoService.currentUser().getUserId())
+                UserMembership um = userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId())
                         .stream()
                         .filter(m -> m.getOrganizationId().equals(authorityId))
                         .findFirst()
@@ -166,5 +170,49 @@ public class PortalAppManagementService {
 
     public CatalogEntry updateService(String serviceId, CatalogEntry entry) {
         return catalogStore.fetchAndUpdateService(serviceId, entry);
+    }
+
+    public List<User> getSubscribedUsersOfService(String serviceId) {
+
+        return subscriptionStore.findByServiceId(serviceId)
+                .stream()
+                .map(s -> new User(s.getUserId(), s.getUserName()))
+                .collect(Collectors.toList());
+
+
+    }
+
+    public List<User> getAllUsersOfServiceOrganization(String serviceId) {
+
+        String organizationId = catalogStore.findService(serviceId).getProviderId();
+
+        // TODO use the Memberships API when it doesn't throw a 403
+
+//        return userDirectory.getMembershipsOfOrganization(organizationId)
+//                .stream()
+//                .map(m -> new User(m.getAccountId(), m.getAccountName()))
+//                .collect(Collectors.toList());
+
+        // In the meantime, use the old Agents API
+        return userDirectory.getAgents(organizationId, 0, 50).stream().map(a -> new User(a.getId(), displayNameOf(a))).collect(Collectors.toList());
+    }
+
+    public void subscribeUsers(Set<String> users, String serviceId) {
+        users.forEach(u -> {
+            Subscription s = new Subscription();
+            s.setSubscriptionType(SubscriptionType.ORGANIZATION);
+            s.setServiceId(serviceId);
+            s.setUserId(u);
+
+            subscriptionStore.create(u, s);
+        });
+    }
+
+    public void unsubscribeUsers(Set<String> users, String serviceId) {
+        users.forEach(u -> subscriptionStore.unsubscribe(u, serviceId, SubscriptionType.ORGANIZATION));
+    }
+
+    private String displayNameOf(AgentInfo agentInfo) {
+        return String.format("%s %s (%s)", agentInfo.getGivenName(), agentInfo.getFamilyName(), agentInfo.getEmail());
     }
 }

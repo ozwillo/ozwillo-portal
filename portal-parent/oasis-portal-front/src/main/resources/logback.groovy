@@ -14,4 +14,5 @@ logger("org.oasis_eu", DEBUG)
 logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
 logger("org.oasis_eu.spring.kernel.security.OpenIdCAuthFilter", INFO)
 logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", DEBUG)
+
 root(WARN, ["CONSOLE"])

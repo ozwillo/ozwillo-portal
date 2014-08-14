@@ -89,7 +89,7 @@ public class PortalAppstoreService {
 
             ApplicationInstantiationRequest instanceRequest = new ApplicationInstantiationRequest();
 
-//        instanceRequest.setProviderId(userDirectory.getMemberships(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());
+//        instanceRequest.setProviderId(userDirectory.getMembershipsOfUser(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());
             instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());
             instanceRequest.setName(application.getName(RequestContextUtils.getLocale(request))); // TODO make this user-provided at some stage
             instanceRequest.setDescription(application.getDescription(RequestContextUtils.getLocale(request)));

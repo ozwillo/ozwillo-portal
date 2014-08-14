@@ -13,19 +13,17 @@ import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.PortalNotificationService;
+import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -63,20 +61,21 @@ public class MyOzwilloController extends PortalController {
         return "my";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value={"/dashboard/{contextId}"})
+
+    @RequestMapping(method = RequestMethod.GET, value = {"/dashboard/{contextId}"})
     public String dashboard(@PathVariable String contextId, Model model) {
+
         List<UserContext> contexts = portalDashboardService.getUserContexts();
         model.addAttribute("contexts", contexts);
         Optional<UserContext> optUserContext = portalDashboardService.getUserContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst();
         if (optUserContext.isPresent()) {
-			model.addAttribute("context", optUserContext.get());
-	        model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
-	        model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
-        	return "my";
-        }
-        else {
-        	// Invalid dashboard, display default one
-        	return "redirect:/my";
+            model.addAttribute("context", optUserContext.get());
+            model.addAttribute("entries", portalDashboardService.getDashboardEntries(contextId));
+            model.addAttribute("navigation", myNavigationService.getNavigation("dashboard"));
+            return "my";
+        } else {
+            // Invalid dashboard, display default one
+            return "redirect:/my";
         }
     }
 
@@ -149,44 +148,17 @@ public class MyOzwilloController extends PortalController {
         return "my-notif";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/api/notifications")
-    @ResponseBody
-    public NotificationData getNotificationData(HttpServletRequest request) {
-        int count = notificationService.countNotifications();
-        return new NotificationData(count).setNotificationsMessage(messageSource.getMessage("my.n_notifications", new Object[]{Integer.valueOf(count)}, RequestContextUtils.getLocale(request)));
+    @ExceptionHandler(TechnicalErrorException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    public ModelAndView technicalError() {
+        ModelAndView result = new ModelAndView();
+        result.addObject("user", user());
+        result.addObject("languages", languages());
+        result.addObject("currentLanguage", currentLanguage());
+        result.addObject("navigation", myNavigationService.getNavigation("dashboard"));
+        result.setViewName("dashboard/dash-error");
+        return result;
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/api/app-notifications/{contextId}")
-    @ResponseBody
-    public List<AppNotificationData> getAppNotifications(@PathVariable String contextId) {
-        List<String> applicationIds = portalDashboardService.getApplicationIds(contextId);
-        Map<String, Integer> appNotifs = notificationService.getAppNotifications(applicationIds);
-
-        return applicationIds.stream().map(id -> new AppNotificationData(id, appNotifs.get(id) != null ? appNotifs.get(id) : 0)).collect(Collectors.toList());
-    }
-
-
-    private static class NotificationData {
-        int notificationsCount;
-        String notificationsMessage = "";
-
-        public NotificationData(int notificationsCount) {
-            this.notificationsCount = notificationsCount;
-        }
-
-        public String getNotificationsMessage() {
-            return notificationsMessage;
-        }
-
-        public NotificationData setNotificationsMessage(String notificationsMessage) {
-            this.notificationsMessage = notificationsMessage;
-            return this;
-        }
-
-        @JsonProperty("notificationsCount")
-        public int getNotificationsCount() {
-            return notificationsCount;
-        }
-    }
 
 }
