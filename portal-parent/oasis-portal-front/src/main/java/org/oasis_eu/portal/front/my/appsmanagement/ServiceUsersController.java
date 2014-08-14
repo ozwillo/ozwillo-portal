@@ -55,6 +55,22 @@ public class ServiceUsersController {
     }
 
 
+    @ResponseBody
+    @RequestMapping(method = RequestMethod.GET, value = "/users/all")
+    public List<Users> loadAllUsers(@PathVariable("service_id") String serviceId) {
+        Users u1 = new Users();
+        u1.fullname = "Leto Atreides";
+        u1.userid = "leto";
+        Users u2 = new Users();
+        u2.fullname = "Philippe le Bel";
+        u2.userid = "philippe";
+        Users u3 = new Users();
+        u3.fullname = "Louis le Grand";
+        u3.userid = "louis";
+
+        return Arrays.asList(u1, u2, u3);
+    }
+
     @ExceptionHandler(WrongQueryException.class)
     public String handleWrongQuery() {
         return "appsmanagement/apps-byauth::forbidden";

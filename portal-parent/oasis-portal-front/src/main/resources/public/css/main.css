@@ -347,6 +347,21 @@ li.dashboard_template {
     border-width: 2px;
 }
 
+.btn-primary:focus {
+    background-color: #6e418e;
+    border-color: #ffffff;
+    color: #ffffff;
+    border-width: 2px;
+}
+
+
+.btn-primary:active {
+    background-color: #6e418e;
+    border-color: #ffffff;
+    color: #ffffff;
+    border-width: 2px;
+}
+
 .btn-primary:hover {
     color: #6e418e;
     border-color: #6e418e;

@@ -77,11 +77,11 @@ a.authority-link {
     display: block;
     padding: 3px 20px;
 }
-.tt-suggestion.tt-is-under-cursor {
+.tt-suggestion.tt-cursor {
     color: #fff;
-    background-color: #428bca;
+    background-color: #6e418e;
 }
-.tt-suggestion.tt-is-under-cursor a {
+.tt-suggestion.tt-cursor a {
     color: #fff;
 }
 .tt-suggestion p {
