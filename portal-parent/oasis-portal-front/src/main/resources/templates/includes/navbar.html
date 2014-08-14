@@ -13,7 +13,6 @@
         <ul class="nav navbar-nav navbar-right" th:switch="${user}">
 
             <th:block th:case="null">
-                <li><a href="#" class="btn btn-ozwillo" th:text="#{ui.signup}">Join us!</a></li>
                 <li><a href="#" th:href="@{/my}" class="btn btn-ozwillo" ><i class="fa fa-user"></i> <th:block th:text="#{ui.login}">Log in</th:block></a></li>
             </th:block>
             <th:block th:case="*">
