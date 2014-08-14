@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.model;
 
+import com.google.common.base.Strings;
+
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
@@ -34,7 +36,8 @@ public class FormWidgetDropdown extends FormWidget {
 	}
 	
 	public String getOptionLabel(String key) {
-		return options.containsKey(key) ? options.get(key) : key;
+		if(Strings.isNullOrEmpty(key)) return "ui.default_value";
+        return options.containsKey(key) ? options.get(key) : key;
 	}
 
 }

@@ -5,6 +5,7 @@ import java.util.Locale;
 import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.controller.Languages;
+import org.oasis_eu.portal.services.NameDefaults;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -29,6 +30,9 @@ abstract public class PortalController {
 	@Autowired
 	private HttpServletRequest request;
 
+    @Autowired
+    private NameDefaults nameDefaults;
+
 	@ModelAttribute("languages")
 	public Languages[] languages() {
 		return Languages.values();
@@ -42,7 +46,10 @@ abstract public class PortalController {
 
 	@ModelAttribute("user")
 	public UserInfo user() {
-		return userInfoService.currentUser();
+        UserInfo userInfo = userInfoService.currentUser();
+        if (userInfo == null) return null;
+
+        return nameDefaults.complete(userInfo);
 	}
 
 
@@ -52,4 +59,6 @@ abstract public class PortalController {
         logger.warn("Caught exception while processing request", e);
         return "error";
     }
+
+
 }
