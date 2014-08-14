@@ -51,7 +51,7 @@ public class Subscription extends GenericEntity {
 
     @JsonAnySetter
     private void anySetter(String key, String value) {
-        logger.warn("Unknown property {} fetched from JSON: {}", key, value);
+        logger.debug("Unknown property {} fetched from JSON: {}", key, value);
     }
 
 

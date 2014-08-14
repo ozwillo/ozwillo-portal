@@ -37,10 +37,10 @@ public class PortalNotificationService {
     @Autowired
     private UserInfoService userInfoHelper;
 
-    public Map<String, Integer> getAppNotifications(List<String> applicationIds) {
+    public Map<String, Integer> getServiceNotifications(List<String> serviceIds) {
         return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
                 .stream()
-                .filter(n -> n.getApplicationId() != null && applicationIds.contains(n.getApplicationId()) && n.getStatus().equals(NotificationStatus.UNREAD))
+                .filter(n -> n.getApplicationId() != null && serviceIds.contains(n.getApplicationId()) && n.getStatus().equals(NotificationStatus.UNREAD))
                 .collect(Collectors.groupingBy(n -> n.getApplicationId(), Collectors.reducing(0, n -> 1, Integer::sum)));
     }
 

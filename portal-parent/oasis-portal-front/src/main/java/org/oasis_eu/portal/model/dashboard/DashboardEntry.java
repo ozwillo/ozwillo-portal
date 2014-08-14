@@ -80,4 +80,8 @@ public class DashboardEntry {
 
         return catalogEntry.getId();
     }
+
+    public String getNotificationUrl() {
+        return catalogEntry.getNotificationUrl();
+    }
 }

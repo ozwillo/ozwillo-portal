@@ -128,7 +128,11 @@ $(document).ready(function () {
                         if (notif.count > 0) {
                             element.html(notif.count);
                             element.show();
+
+                            appLink.attr("href", appLink.attr("data-notifurl"));
                         } else {
+
+                            appLink.attr("href", appLink.attr("data-rawurl"));
                             element.hide();
                         }
                     }

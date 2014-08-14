@@ -41,8 +41,8 @@ public class NotificationsController {
     @RequestMapping(method = RequestMethod.GET, value="/app-notifications/{contextId}")
     @ResponseBody
     public List<AppNotificationData> getAppNotifications(@PathVariable String contextId) {
-        List<String> applicationIds = portalDashboardService.getApplicationIds(contextId);
-        Map<String, Integer> appNotifs = notificationService.getAppNotifications(applicationIds);
+        List<String> applicationIds = portalDashboardService.getServicesIds(contextId);
+        Map<String, Integer> appNotifs = notificationService.getServiceNotifications(applicationIds);
 
         return applicationIds.stream().map(id -> new AppNotificationData(id, appNotifs.get(id) != null ? appNotifs.get(id) : 0)).collect(Collectors.toList());
     }

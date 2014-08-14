@@ -87,7 +87,7 @@ public class PortalDashboardService {
                 .collect(Collectors.toList());
     }
 
-    public List<String> getApplicationIds(String userContextId) {
+    public List<String> getServicesIds(String userContextId) {
 //        if (logger.isDebugEnabled()) {
 //            logger.debug("-> get application ids for context: " + userContextId);
 //
