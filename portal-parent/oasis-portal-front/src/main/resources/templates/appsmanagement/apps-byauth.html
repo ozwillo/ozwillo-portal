@@ -74,10 +74,10 @@
                 <div class="panel-heading">
                     <img src="../../public/img/sample_app_icons/sample-connecte-20.png" data-th-src="@{/img/sample_app_icons/sample-connecte-20.png}" alt="icon" data-th-alt="${instance.application.name}" height="32" width="32"/>
                     <span class="appname" data-th-text="${instance.application.name}">Citizen Kin</span>
-                    <!--/* <a class="instance-link pull-right" href="#blablabla" data-th-href="'#' + ${instance.applicationInstance.instanceId}">
+                    <a class="instance-link pull-right" href="#blablabla" data-th-href="'#' + ${instance.applicationInstance.instanceId}">
                         <b class="caret"></b>
-                    </a> */-->
-                    <a class="pull-right appsettings-link" href="#" data-th-href="@{|/my/appsmanagement/settings/${instance.applicationInstance.instanceId}|}" data-th-text="#{my.apps.manage}">Manage</a>
+                    </a>
+                    <!--/*<a class="pull-right appsettings-link" href="#" data-th-href="@{|/my/appsmanagement/settings/${instance.applicationInstance.instanceId}|}" data-th-text="#{my.apps.manage}">Manage</a>*/-->
                 </div>
                 <div class="panel-body collapse in" id="blablabla" data-th-id="${instance.applicationInstance.instanceId}">
                     <ul class="services" data-th-remove="all-but-first">
