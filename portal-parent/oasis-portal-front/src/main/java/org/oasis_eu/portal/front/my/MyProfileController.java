@@ -11,7 +11,9 @@ import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormLayoutMode;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.spring.kernel.model.Address;
+import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.service.UserAccountService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,6 +50,9 @@ public class MyProfileController extends PortalController {
 
 	@Autowired
 	private UserInfoService userInfoService;
+	
+	@Autowired
+	private UserAccountService userAccountService;
 
 	@RequestMapping(method = RequestMethod.GET, value = "")
 	public String profile(Model model) {
@@ -87,9 +92,9 @@ public class MyProfileController extends PortalController {
 	public String saveLayout(@PathVariable("layoutId") String layoutId,
 			@RequestBody MultiValueMap<String, String> data, Model model) {
 
-		UserInfo userInfo = buildUserInfo(data);
+		UserAccount userAccount = buildUserAccount(data);
 
-		userInfoService.saveUserInfo(userInfo);
+		userAccountService.saveUserAccount(userAccount);
 
 		myProfileState.getLayout(layoutId).setMode(FormLayoutMode.VIEW);
 		myProfileState.refreshLayoutValues();
@@ -125,30 +130,78 @@ public class MyProfileController extends PortalController {
 		return "redirect:/my/profile/fragment/account-data";
 	}
 
-	private UserInfo buildUserInfo(MultiValueMap<String, String> data) {
-		UserInfo userInfo = new UserInfo();
-		userInfo.setGivenName(data.getFirst("given_name"));
-		userInfo.setFamilyName(data.getFirst("family_name"));
+	private UserAccount buildUserAccount(MultiValueMap<String, String> data) {
+		
+		UserAccount userAccount = new UserAccount(userInfoService.currentUser());
+		
+		if(!StringUtils.isEmpty(data.getFirst("email"))) {
+		
+			userAccount.setEmail(data.getFirst("email"));
+			userInfoService.currentUser().setEmailVerified(false);
+		}
+		
+		if(!StringUtils.isEmpty(data.getFirst("locale"))) {
+			
+			userAccount.setLocale(data.getFirst("locale"));
+		}
+		
+		if(!StringUtils.isEmpty(data.getFirst("picture"))) {
+			
+			userAccount.setPictureUrl(data.getFirst("picture"));
+		}
+		
+		if(!StringUtils.isEmpty(data.getFirst("given_name"))) {
+			
+			userAccount.setGivenName(data.getFirst("given_name"));
+		}
+		
+		if(!StringUtils.isEmpty(data.getFirst("family_name"))) {
+			
+			userAccount.setFamilyName(data.getFirst("family_name"));
+		}
+    	
 		String birthdate = data.getFirst("birthdate");
 		if (!StringUtils.isEmpty(birthdate)) {
-			userInfo.setBirthdate(LocalDate.parse(birthdate));
+			userAccount.setBirthdate(LocalDate.parse(birthdate));
 		}
-		userInfo.setGender(data.getFirst("gender"));
-		userInfo.setPhoneNumber(data.getFirst("phone_number"));
+		
+		if(!StringUtils.isEmpty(data.getFirst("gender"))) {
+			
+			userAccount.setGender(data.getFirst("gender"));
+		}
+
+		if(!StringUtils.isEmpty(data.getFirst("phone_number"))) {
+			
+			userAccount.setPhoneNumber(data.getFirst("phone_number"));
+		}
+		
+		if(!StringUtils.isEmpty(data.getFirst("street_address"))) {
+			
+			userAccount.getAddress().setStreetAddress(data.getFirst("street_address"));
+		}
+		
+		if(!StringUtils.isEmpty(data.getFirst("locality"))) {
+			
+			userAccount.getAddress().setLocality(data.getFirst("locality"));
+		}
+		
+		if(!StringUtils.isEmpty(data.getFirst("postal_code"))) {
+			
+			userAccount.getAddress().setPostalCode(data.getFirst("postal_code"));
+		}
 	
-		Address address = new Address();
-		address.setStreetAddress(data.getFirst("street_address"));
-		address.setLocality(data.getFirst("locality"));
-		address.setPostalCode(data.getFirst("postal_code"));
-		address.setCountry(data.getFirst("country"));
-		userInfo.setAddress(address);
-		return userInfo;
+		if(!StringUtils.isEmpty(data.getFirst("country"))) {
+			
+			userAccount.getAddress().setCountry(data.getFirst("country"));
+		}
+		
+		return userAccount;
 	}
 
 	protected void saveSingleUserInfo(String key, String value) {
 		MultiValueMap<String, String> userData = new LinkedMultiValueMap<String, String>();
 		userData.put(key, Arrays.asList(value));
-		userInfoService.saveUserInfo(buildUserInfo(userData));
+		userAccountService.saveUserAccount(buildUserAccount(userData));
 		myProfileState.refreshLayoutValues();
 	}
 
