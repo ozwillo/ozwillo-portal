@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.services.NameDefaults;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.security.RefreshTokenNeedException;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,6 +57,12 @@ abstract public class PortalController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public String handleErrors(Exception e) {
+
+        if (e instanceof RefreshTokenNeedException) {
+            throw (RefreshTokenNeedException) e;
+        }
+
+
         logger.warn("Caught exception while processing request", e);
         return "error";
     }
