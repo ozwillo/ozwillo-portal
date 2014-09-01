@@ -45,7 +45,12 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
         interceptor.setParamName("lang");
         registry.addInterceptor(interceptor);
         registry.addInterceptor(new OasisLocaleInterceptor());
-        registry.addInterceptor(new TokenRefreshInterceptor());
+        registry.addInterceptor(tokenRefreshInterceptor());
+    }
+
+    @Bean
+    public TokenRefreshInterceptor tokenRefreshInterceptor() {
+        return new TokenRefreshInterceptor();
     }
 
     @Bean

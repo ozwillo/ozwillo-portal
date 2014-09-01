@@ -12,6 +12,8 @@ application:
     fetchUserInfo: true
 
 kernel:
+  token:
+    expiry: 300
   base_uri: https://oasis-demo.atolcd.com
   auth:
     issuer: ${kernel.base_uri}/

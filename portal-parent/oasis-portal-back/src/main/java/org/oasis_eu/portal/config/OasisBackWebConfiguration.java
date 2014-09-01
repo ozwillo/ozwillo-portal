@@ -26,7 +26,6 @@ public class OasisBackWebConfiguration extends WebMvcConfigurerAdapter {
         LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
         interceptor.setParamName("lang");
         registry.addInterceptor(interceptor);
-        registry.addInterceptor(new TokenRefreshInterceptor());
     }
 
     @Bean
