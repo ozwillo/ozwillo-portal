@@ -89,6 +89,7 @@ public class IconService {
         }
 
         return UriComponentsBuilder.fromHttpUrl(baseIconUrl)
+                .path("/")
                 .path(icon.getId())
                 .path("/")
                 .path(icon.getFilename())
@@ -179,15 +180,23 @@ public class IconService {
         }
     }
 
-    private byte[] getHash(byte[] array) {
+    private String getHash(byte[] array) {
         try {
             MessageDigest messageDigest = MessageDigest.getInstance("SHA-256");
-            return messageDigest.digest(array);
+            return toHex(messageDigest.digest(array));
         } catch (NoSuchAlgorithmException e) {
 
             logger.error("Cannot load SHA-256 in this JVM!?", e);
-            return new byte[0];
+            return toHex(new byte[32]);
         }
 
+    }
+
+    private String toHex(byte[] array) {
+        StringBuilder s = new StringBuilder();
+        for (byte b: array) {
+            s.append(String.format("%02x", b));
+        }
+        return s.toString();
     }
 }

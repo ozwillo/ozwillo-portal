@@ -69,7 +69,6 @@ public class IconServiceIntegrationTest {
         assertEquals(1, db.getCollection("icon").count());
         assertNotNull(iconUri);
         String uriString = iconUri.toString();
-        System.out.println(uriString);
         // test that this matches a regexp including a UUID
         assertTrue(Pattern.matches("http://localhost/icon/[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/one.png", uriString));
     }

@@ -51,17 +51,15 @@ public class IconServiceTest {
 
     @Test
     public void testGetHash() throws Exception {
-        byte[] hash = doGetHash(load("images/64.png"));
+        String hash = doGetHash(load("images/64.png"));
         assertNotNull(hash);
-        assertEquals(32, hash.length);
-        // we stringify in order to compare (because String has an equals method while byte[] doesn't)
-        String s = new String(hash, "UTF-8");
+        assertEquals(64, hash.length());
+
         // 64-bis is only different from 64 by one pixel
-        byte[] hash2 = doGetHash(load("images/64-bis.png"));
-        assertNotEquals(s, new String(hash2, "UTF-8"));
-        assertEquals(hash.length, hash2.length);
+        String hash2 = doGetHash(load("images/64-bis.png"));
+        assertNotEquals(hash, hash2);
         // 64-ter is really the same as 64
-        assertEquals(s, new String(doGetHash(load("images/64-ter.png")), "UTF-8"));
+        assertEquals(hash, doGetHash(load("images/64-ter.png")));
     }
 
 
@@ -88,11 +86,11 @@ public class IconServiceTest {
         return (IconFormat) getFormat.invoke(service, array);
     }
 
-    private byte[] doGetHash(byte[] array) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private String doGetHash(byte[] array) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         IconService service = new IconService();
         Method getHash = service.getClass().getDeclaredMethod("getHash", byte[].class);
         getHash.setAccessible(true);
-        return (byte[]) getHash.invoke(service, array);
+        return (String) getHash.invoke(service, array);
     }
 
 

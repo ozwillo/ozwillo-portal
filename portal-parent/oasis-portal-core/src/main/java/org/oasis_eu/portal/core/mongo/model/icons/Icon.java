@@ -25,8 +25,8 @@ public class Icon {
     // content of the icon
     private byte[] bytes;
 
-    // SHA-256 hash of bytes
-    private byte[] hash;
+    // SHA-256 hash of bytes, as hex
+    private String hash;
 
     public String getId() {
         return id;
@@ -60,11 +60,11 @@ public class Icon {
         this.bytes = bytes;
     }
 
-    public byte[] getHash() {
+    public String getHash() {
         return hash;
     }
 
-    public void setHash(byte[] hash) {
+    public void setHash(String hash) {
         this.hash = hash;
     }
 
