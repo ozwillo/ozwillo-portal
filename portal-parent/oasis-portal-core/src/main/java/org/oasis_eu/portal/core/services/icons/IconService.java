@@ -9,6 +9,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.tika.Tika;
+import org.oasis_eu.portal.core.mongo.dao.icons.DirectAccessIconRepo;
 import org.oasis_eu.portal.core.mongo.dao.icons.IconRepository;
 import org.oasis_eu.portal.core.mongo.model.icons.Icon;
 import org.oasis_eu.portal.core.mongo.model.icons.IconFormat;
@@ -46,6 +47,10 @@ public class IconService {
 
     @Autowired
     private IconRepository iconRepository;
+
+    @Autowired
+    private DirectAccessIconRepo directAccessIconRepo;
+
 
     @Value("${application.baseIconUrl}")
     private String baseIconUrl;
@@ -95,6 +100,14 @@ public class IconService {
                 .path(icon.getFilename())
                 .build()
                 .toUri();
+    }
+
+    public Icon getIcon(String id) {
+        return iconRepository.findOne(id);
+    }
+
+    public String getHash(String id) {
+        return directAccessIconRepo.getHashForIcon(id);
     }
 
     private URI defaultIcon() {
