@@ -7,10 +7,9 @@
     <groupId>org.oasis_eu.portal</groupId>
     <artifactId>oasis-portal-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.3-SNAPSHOT</version>
+    <version>0.4-SNAPSHOT</version>
 
     <properties>
-        <oasis-spring.version>0.3-SNAPSHOT</oasis-spring.version>
         <apache-httpcomponents.version>4.3.1</apache-httpcomponents.version>
         <jackson.version>2.3.1</jackson.version>
         <java.version>1.8</java.version>
@@ -54,7 +53,7 @@
             <dependency>
                 <groupId>org.oasis_eu.spring-integration</groupId>
                 <artifactId>oasis-spring-integration</artifactId>
-                <version>${oasis-spring.version}</version>
+                <version>0.4-SNAPSHOT</version>
             </dependency>
 
 
