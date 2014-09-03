@@ -9,9 +9,13 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.tika.Tika;
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.oasis_eu.portal.core.mongo.dao.icons.DirectAccessIconRepo;
+import org.oasis_eu.portal.core.mongo.dao.icons.IconDownloadAttemptRepository;
 import org.oasis_eu.portal.core.mongo.dao.icons.IconRepository;
 import org.oasis_eu.portal.core.mongo.model.icons.Icon;
+import org.oasis_eu.portal.core.mongo.model.icons.IconDownloadAttempt;
 import org.oasis_eu.portal.core.mongo.model.icons.IconFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,6 +55,9 @@ public class IconService {
     @Autowired
     private DirectAccessIconRepo directAccessIconRepo;
 
+    @Autowired
+    private IconDownloadAttemptRepository iconDownloadAttemptRepository;
+
 
     @Value("${application.baseIconUrl}")
     private String baseIconUrl;
@@ -60,6 +67,11 @@ public class IconService {
 
     public URI getIconForURL(String iconUrl) {
 
+        if (iconDownloadAttemptRepository.findByUrl(iconUrl) != null) {
+            logger.info("Icon URL {} is blacklisted, returning default icon", iconUrl);
+            return defaultIcon();
+        }
+
         Icon icon = iconRepository.findByUrl(iconUrl);
 
         if (icon == null) {
@@ -68,16 +80,19 @@ public class IconService {
             byte[] iconBytes = iconDownloader.download(iconUrl);
             if (iconBytes == null) {
                 logger.error("Could not load icon from URL {}, returning default", iconUrl);
+                blacklist(iconUrl);
                 return defaultIcon();
             }
 
             // 2. make sure it is a 64x64 PNG (NB this will change in the future with more intelligent format detection / conversion)
             if (!ensurePNG(iconBytes)) {
                 logger.error("Icon URL {} is not a PNG, returning default icon", iconUrl);
+                blacklist(iconUrl);
                 return defaultIcon();
             }
             if (!IconFormat.PNG_64BY64.equals(getFormat(iconBytes))) {
                 logger.error("Icon URL {} does not point to a 64×64 image, returning default icon", iconUrl);
+                blacklist(iconUrl);
                 return defaultIcon();
             }
 
@@ -212,4 +227,18 @@ public class IconService {
         }
         return s.toString();
     }
+
+    private void blacklist(String url) {
+        IconDownloadAttempt attempt = new IconDownloadAttempt();
+        attempt.setTime(DateTime.now());
+        attempt.setUrl(url);
+
+        if (iconDownloadAttemptRepository.findByUrl(url) == null) { // checking is overkill, but in case of multiple threads doing the same thing, let's keep it easy
+            logger.info("Blacklisting url {}", url);
+            iconDownloadAttemptRepository.save(attempt);
+        } else {
+            logger.warn("Cannot blacklist url {} because it is already present in the collection", url);
+        }
+    }
+
 }
