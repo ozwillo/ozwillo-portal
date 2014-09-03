@@ -9,6 +9,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
+import org.oasis_eu.portal.core.services.icons.IconService;
 import org.oasis_eu.portal.model.appstore.AcquisitionStatus;
 import org.oasis_eu.portal.model.appstore.AppInfo;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
@@ -55,11 +56,14 @@ public class PortalAppstoreService {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private IconService iconService;
+
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
         Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().map(Subscription::getServiceId).collect(Collectors.toSet());
 
         return catalogStore.findAllVisible(targetAudiences).stream()
-                .map(c -> new AppstoreHit(RequestContextUtils.getLocale(request), c, organizationStore.find(c.getProviderId()).getName(),
+                .map(c -> new AppstoreHit(RequestContextUtils.getLocale(request), c, iconService.getIconForURL(c.getIcon(RequestContextUtils.getLocale(request))).toString(), organizationStore.find(c.getProviderId()).getName(),
                         subscriptions.contains(c.getId()) ? AcquisitionStatus.INSTALLED : AcquisitionStatus.AVAILABLE))
                 .collect(Collectors.toList());
     }

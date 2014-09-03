@@ -14,14 +14,15 @@ public class AppstoreHit {
 
     public CatalogEntry catalogEntry;
 
-    public String name, description, providerName;
+    public String name, description, providerName, iconUrl;
 
     private AcquisitionStatus acquisitionStatus;
 
 
-    public AppstoreHit(Locale displayLocale, CatalogEntry catalogEntry, String providerName, AcquisitionStatus acquisitionStatus) {
+    public AppstoreHit(Locale displayLocale, CatalogEntry catalogEntry, String iconUrl, String providerName, AcquisitionStatus acquisitionStatus) {
         this.displayLocale = displayLocale;
         this.catalogEntry = catalogEntry;
+        this.iconUrl = iconUrl;
         this.providerName = providerName;
         this.acquisitionStatus = acquisitionStatus;
     }
@@ -82,5 +83,8 @@ public class AppstoreHit {
         this.acquisitionStatus = acquisitionStatus;
     }
 
+    public String getIconUrl() {
+        return iconUrl;
+    }
 
 }

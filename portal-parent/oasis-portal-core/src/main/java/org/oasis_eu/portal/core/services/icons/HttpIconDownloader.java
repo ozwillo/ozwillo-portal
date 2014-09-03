@@ -31,6 +31,10 @@ public class HttpIconDownloader implements IconDownloader {
 
     @Override
     public byte[] download(String iconUrl) {
+        if (iconUrl == null) {
+            logger.error("We are asked to download from a null URL");
+            return null;
+        }
         CloseableHttpClient client = HttpClients.createDefault();
         HttpGet get = new HttpGet(iconUrl);
         try (CloseableHttpResponse response = client.execute(get)) {
