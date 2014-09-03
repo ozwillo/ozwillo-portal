@@ -31,6 +31,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -86,6 +87,7 @@ public class IconControllerTest {
                 .andExpect(status().is2xxSuccessful())
                 .andExpect(content().contentType(MediaType.IMAGE_PNG))
                 .andExpect(content().bytes(bytes))
+                .andExpect(header().string("Cache-Control", "public, max-age=31536000"))
                 .andDo(result -> values.put("etag", result.getResponse().getHeader("ETag")));
 
         // download a second time - check that the actual icon repository is not called

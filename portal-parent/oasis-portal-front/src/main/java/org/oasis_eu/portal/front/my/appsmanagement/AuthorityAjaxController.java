@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.services.icons.IconService;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
@@ -11,6 +13,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Used for AJAX calls
@@ -25,6 +30,9 @@ public class AuthorityAjaxController {
     @Autowired
     private PortalAppManagementService appManagementService;
 
+    @Autowired
+    private IconService iconService;
+
 
     @RequestMapping(method = RequestMethod.GET, value = "/settings/{app_id}")
     public String appSettings(Model model, @PathVariable("app_id") String instanceId) {
@@ -34,9 +42,11 @@ public class AuthorityAjaxController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/service-settings/{service_id}")
-    public String serviceSettings(Model model, @PathVariable("service_id") String serviceId) {
+    public String serviceSettings(Model model, @PathVariable("service_id") String serviceId, HttpServletRequest httpRequest) {
 
-        model.addAttribute("service", appManagementService.getService(serviceId));
+        CatalogEntry service = appManagementService.getService(serviceId);
+        model.addAttribute("service", service);
+        model.addAttribute("iconUrl", iconService.getIconForURL(service.getIcon(RequestContextUtils.getLocale(httpRequest))));
 
         return "appsmanagement/service-settings::main";
     }

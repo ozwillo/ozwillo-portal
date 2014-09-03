@@ -146,11 +146,13 @@ public class CatalogStoreImpl implements CatalogStore {
         KernelService kernelService = entity.getBody();
         kernelService.name = service.getDefaultName();
         kernelService.description = service.getDefaultDescription();
+        kernelService.icon = service.getDefaultIcon();
 
         // kinda hacky, but we'll change that when the UI fully supports l10n
         for (Locale locale : OasisLocales.values()) {
             kernelService.set("name#" + locale.getLanguage(), service.getDefaultName());
             kernelService.set("description#" + locale.getLanguage(), service.getDefaultDescription());
+            kernelService.set("icon#" + locale.getLanguage(), service.getDefaultIcon());
         }
 
         kernelService.territory_id = service.getTerritoryId();
