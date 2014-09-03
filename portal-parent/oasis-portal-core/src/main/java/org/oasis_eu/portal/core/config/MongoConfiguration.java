@@ -6,6 +6,7 @@ import com.mongodb.ReadPreference;
 import com.mongodb.WriteConcern;
 import org.oasis_eu.portal.core.mongo.MongoPackage;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -36,6 +37,7 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
         return "org.oasis_eu.portal.core.mongo";
     }
 
+    @Bean
     @Override
     public Mongo mongo() throws Exception {
         MongoClient client = new MongoClient(databaseHost);
