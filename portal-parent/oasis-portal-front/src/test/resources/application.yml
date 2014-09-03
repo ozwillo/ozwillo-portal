@@ -10,6 +10,8 @@ application:
   url: http://localhost
   security:
     fetchUserInfo: true
+  baseIconUrl: ${application.url}/icon
+  defaultIconUrl: ${application.url}/img/noicon.png
 
 kernel:
   base_uri: https://oasis-demo.atolcd.com
