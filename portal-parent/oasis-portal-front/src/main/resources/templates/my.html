@@ -165,7 +165,7 @@
 
                 <div class="app app-icon" data-th-each="entry: ${entries}">
                     <a class="app-link" href="#" data-th-href="${entry.URL}" target="_blank" data-th-id="|app-${entry.catalogEntry.id}|" data-th-attr="data-rawurl=${entry.URL}, data-notifurl=${entry.notificationUrl}">
-                        <img src="../public/img/sample_app_icons/sample-connecte-15.png" data-th-src="@{/img/sample_app_icons/sample-connecte-15.png}"/>
+                        <img src="../public/img/sample_app_icons/sample-connecte-15.png" data-th-src="${entry.iconUrl}"/>
                         <span class="badge badge-notifications"  data-th-text="${entry.notificationsCount}">25</span>
                     </a>
                     <p data-th-text="${entry.name}">Portail citoyen de Valence</p>

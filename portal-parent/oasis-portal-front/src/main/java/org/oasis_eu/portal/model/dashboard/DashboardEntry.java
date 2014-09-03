@@ -22,6 +22,8 @@ public class DashboardEntry {
 
     int notificationsCount = 0;
 
+    private String iconUrl;
+
     public CatalogEntry getCatalogEntry() {
         return catalogEntry;
     }
@@ -60,8 +62,12 @@ public class DashboardEntry {
         this.notificationsCount = notificationsCount;
     }
 
-    public String getIconId() {
-        return "todo";
+    public void setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
     }
 
     public String getDescription(Locale locale) {

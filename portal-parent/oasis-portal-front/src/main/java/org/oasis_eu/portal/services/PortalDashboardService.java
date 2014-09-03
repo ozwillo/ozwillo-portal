@@ -18,6 +18,7 @@ import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
 import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
+import org.oasis_eu.portal.core.services.icons.IconService;
 import org.oasis_eu.portal.model.dashboard.DashboardEntry;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -67,6 +68,9 @@ public class PortalDashboardService {
 
     @Autowired
     private PortalNotificationService notificationService;
+
+    @Autowired
+    private IconService iconService;
 
     public UserContext getPrimaryUserContext() {
         return getUserContexts().stream().filter(UserContext::isPrimary).findFirst().get();
@@ -263,6 +267,7 @@ public class PortalDashboardService {
         }
         entry.setCatalogEntry(catalogEntry);
         entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getServiceId()));
+        entry.setIconUrl(iconService.getIconForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request))).toString());
 
         return entry;
     }
