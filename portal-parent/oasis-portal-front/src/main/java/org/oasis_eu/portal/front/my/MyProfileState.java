@@ -55,9 +55,9 @@ public class MyProfileState {
     	
         FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity");
         idFormLayout.setOrder(1);
-        idFormLayout.appendWidget(new FormWidgetText("given_name",
+        idFormLayout.appendWidget(new FormWidgetText("givenName",
         		"my.profile.personal.firstname"));
-        idFormLayout.appendWidget(new FormWidgetText("family_name",
+        idFormLayout.appendWidget(new FormWidgetText("familyName",
         		"my.profile.personal.lastname"));
         idFormLayout.appendWidget(new FormWidgetDate("birthdate",
         		"my.profile.personal.birthdate"));
@@ -65,43 +65,50 @@ public class MyProfileState {
         		"my.profile.personal.gender")
     		.addOption("female", "my.profile.personal.gender.female")
         	.addOption("male", "my.profile.personal.gender.male"));
-        idFormLayout.appendWidget(new FormWidgetText("phone_number",
+        idFormLayout.appendWidget(new FormWidgetText("phoneNumber",
         		"my.profile.personal.phonenumber"));
         layouts.put(idFormLayout.getId(), idFormLayout);
         
         FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address");
         idFormLayout.setOrder(2);
-        adFormLayout.appendWidget(new FormWidgetText("street_address",
+        adFormLayout.appendWidget(new FormWidgetText("address.streetAddress",
         		"my.profile.personal.streetaddress"));
-        adFormLayout.appendWidget(new FormWidgetText("locality",
+        adFormLayout.appendWidget(new FormWidgetText("address.locality",
         		"my.profile.personal.locality"));
-        adFormLayout.appendWidget(new FormWidgetText("postal_code",
+        adFormLayout.appendWidget(new FormWidgetText("address.postalCode",
         		"my.profile.personal.postalcode"));
-        adFormLayout.appendWidget(new FormWidgetText("country",
+        adFormLayout.appendWidget(new FormWidgetText("address.country",
         		"my.profile.personal.country"));
         layouts.put(adFormLayout.getId(), adFormLayout);
         
         refreshLayoutValues();
     }
 
+    // plus nécessaire, dans la ressource get on ajoute au modèle le currentUser,
+    // créé à partir du userInfo mis à jour (saveUserAccount appelle refreshCurrentUser,
+    // qui appelle openIdCService.getUserInfo(authentication.getAccessToken()) et authentication.setUserInfo(userInfo)
+    // après la mise à jour). Egalement pas utile pour reset (on utilise des th:field qui référencent l'objet du modèle).
+    // Cependant pour les listes select génériques, on utilisait #{${widget.getOptionLabel(widget.value)}}
+    // et on ne peut pas utiliser #{${widget.getOptionLabel(${currentUser.__${widget.id}__}}},
+    // donc on met également à jour la valeur dans le widget.
 	public void refreshLayoutValues() {
     	UserInfo userInfo = userInfoHelper.currentUser();
 		
     	FormLayout idFormLayout = layouts.get(LAYOUT_IDENTITY);
-    	idFormLayout.getWidget("given_name").setValue(userInfo.getGivenName());
-    	idFormLayout.getWidget("family_name").setValue(userInfo.getFamilyName());
+    	idFormLayout.getWidget("givenName").setValue(userInfo.getGivenName());
+    	idFormLayout.getWidget("familyName").setValue(userInfo.getFamilyName());
     	LocalDate birthdate = userInfo.getBirthdate();
     	if (birthdate != null) {
     		idFormLayout.getWidget("birthdate").setValue(birthdate.toString());
     	}
     	idFormLayout.getWidget("gender").setValue(userInfo.getGender());
-    	idFormLayout.getWidget("phone_number").setValue(userInfo.getPhoneNumber());
+    	idFormLayout.getWidget("phoneNumber").setValue(userInfo.getPhoneNumber());
 
     	FormLayout adFormLayout = layouts.get(LAYOUT_ADDRESS);
-    	adFormLayout.getWidget("street_address").setValue(userInfo.getStreetAddress());
-    	adFormLayout.getWidget("locality").setValue(userInfo.getLocality());
-    	adFormLayout.getWidget("postal_code").setValue(userInfo.getPostalCode());
-    	adFormLayout.getWidget("country").setValue(userInfo.getCountry());
+    	adFormLayout.getWidget("address.streetAddress").setValue(userInfo.getStreetAddress());
+    	adFormLayout.getWidget("address.locality").setValue(userInfo.getLocality());
+    	adFormLayout.getWidget("address.postalCode").setValue(userInfo.getPostalCode());
+    	adFormLayout.getWidget("address.country").setValue(userInfo.getCountry());
 	}
 	
 	public List<FormLayout> getLayouts() {

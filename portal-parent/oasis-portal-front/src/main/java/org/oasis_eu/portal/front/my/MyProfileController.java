@@ -1,9 +1,14 @@
 package org.oasis_eu.portal.front.my;
 
+import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import javax.validation.Valid;
 
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.front.generic.PortalController;
@@ -23,6 +28,10 @@ import org.springframework.ui.Model;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -53,11 +62,40 @@ public class MyProfileController extends PortalController {
 	
 	@Autowired
 	private UserAccountService userAccountService;
+	
+	@ModelAttribute("currentUser")
+	UserAccount getCurrentUserAccount() {
+		
+		return new UserAccount(userInfoService.currentUser());
+	}
+	
+	@InitBinder
+	protected void initBinder(WebDataBinder binder){
+		
+		binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
+			
+		    public void setAsText(String value) {
+		        try {
+		        	//DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE.withLocale(new Locale(currentLanguage().getLanguage())); // Languages.locale renvoie en pour locale en-GB
+		            //setValue(LocalDate.parse(value, dateTimeFormatter));
+		        	setValue(LocalDate.parse(value));
+		        } catch(DateTimeParseException e) {
+		        	
+		            setValue(null);
+		        }
+		    }
+
+		    public String getAsText() {
+		        return ((LocalDate) getValue()).toString();
+		    }        
+
+		});
+	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "")
-	public String profile(Model model) {
+	public String profile(@ModelAttribute("currentUser") UserAccount currentUser, Model model) {
 		initProfileModel(model);
-		// myProfileState.reset();
+		// myProfileState.reset(); // reset still called (PostConstruct annotation)
 		return "my-profile";
 	}
 
@@ -70,8 +108,10 @@ public class MyProfileController extends PortalController {
 	@RequestMapping(method = RequestMethod.GET, value = "/fragment/layout/{id}")
 	public String profileLayoutFragment(@PathVariable("id") String layoutId,
 			Model model) {
+		
 		initProfileModel(model);
 		model.addAttribute("layout", myProfileState.getLayout(layoutId));
+		
 		return "includes/my-profile-fragments :: layout";
 	}
 
@@ -90,17 +130,23 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/{layoutId}")
 	public String saveLayout(@PathVariable("layoutId") String layoutId,
-			@RequestBody MultiValueMap<String, String> data, Model model) {
+			@ModelAttribute("currentUser") @Valid UserAccount currentUser, BindingResult result, Model model) {
 
-		UserAccount userAccount = buildUserAccount(data);
-
-		userAccountService.saveUserAccount(userAccount);
+		if(result.hasErrors()) {
+			
+			//return "my-profile";
+			return "includes/my-profile-fragments :: layout";
+		}
+		userAccountService.saveUserAccount(currentUser);
 
 		myProfileState.getLayout(layoutId).setMode(FormLayoutMode.VIEW);
 		myProfileState.refreshLayoutValues();
 		return "redirect:/my/profile/fragment/layout/" + layoutId;
 	}
 
+	// we should use currentUser modelAtribute as with saveLayout to benefit from automatic mapping
+	// and validation, however it would prevent from modifying language and email until
+	// general info are submitted (validation would fail on required firstname, family name, etc. fields).
 	@RequestMapping(method = RequestMethod.POST, value = "/save/language")
 	public String saveLanguage(@RequestParam("locale") String locale,
 			Model model) {
@@ -112,12 +158,14 @@ public class MyProfileController extends PortalController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/email")
-	public String saveEmail(@RequestParam("email") String email, Model model) {
+	public String saveEmail(@RequestParam("email") String email, BindingResult result, Model model) {
 		// Source: http://www.regular-expressions.info/email.html
 		// ("almost RFC 5322")
 		if (email
 				.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
 			saveSingleUserInfo("email", email);
+		} else {
+			
 		}
 		return "redirect:/my/profile/fragment/account-data";
 	}

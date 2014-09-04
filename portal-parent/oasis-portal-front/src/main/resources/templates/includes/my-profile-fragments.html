@@ -12,7 +12,7 @@
     </div>
     <div class="col-sm-10 form-data-block">
     <form data-th-class="'form-horizontal personal-data-form' + ${'EDIT'.equals(layout.mode.toString()) ? ' edit' : ''}"
-        role="form" data-th-action="@{'/my/profile/save/' + ${layout.id}}" data-th-data="${layout.id}">
+        role="form" data-th-action="@{'/my/profile/save/' + ${layout.id}}" data-th-data="${layout.id}"  data-th-object="${currentUser}">
       <div data-th-each="widget: ${layout.widgets}" class="form-group">
           <label data-th-for="${widget.id}" class="col-sm-2 control-label" data-th-text="#{${widget.label}}">First name :</label>
           <div class="col-sm-10" data-th-if="${'text'.equals(widget.type)}"
@@ -35,15 +35,16 @@
 </div>
 
 <div data-th-fragment="text-widget (widget, mode)">
-    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="${widget.value}">?</span>
-    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-name="${widget.id}" data-th-value="${widget.value}" />
+    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="${currentUser.__${widget.id}__}">?</span>
+    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-field="*{__${widget.id}__}" data-th-errorClass="form-value"/>
+    <span data-th-if="${#fields.hasErrors('__${widget.id}__')}" data-th-errors="*{__${widget.id}__}">Incorrect value</span>
 </div>
 
 <div data-th-fragment="date-widget (widget, mode)">
-    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="widget-date-view form-value" data-th-text="${widget.value}"></span>
+    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="widget-date-view form-value" data-th-text="${currentUser.__${widget.id}__}"></span>
     <div data-th-if="${'EDIT'.equals(mode.toString())}" class="widget-date-edit">
-        <input class="value-holder" type="hidden" data-th-id="${widget.id} + '-value'" data-th-name="${widget.id}" data-th-value="${widget.value}" />
-        <input class="form-control" type="text" data-th-name="${widget.id}" data-th-value="${widget.value}" />
+        <input class="value-holder" type="hidden" data-th-id="${widget.id} + '-value'" data-th-name="${widget.id}" data-th-value="${currentUser.__${widget.id}__}" />
+        <input class="form-control" type="text" data-th-name="${widget.id}+'-localized'" data-th-value="${currentUser.__${widget.id}__}" />
     </div>
 </div>
 
