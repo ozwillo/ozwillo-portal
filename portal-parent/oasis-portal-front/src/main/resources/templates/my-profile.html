@@ -102,7 +102,7 @@
      </div>
    </div>
    
-   <div id="modal-edit-email" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+   <div id="modal-edit-email" class="modal fade" data-th-object="${currentUser}" data-th-classappend="${#fields.hasErrors('email')}? 'in'" tabindex="-1" role="dialog" aria-hidden="true">
      <div class="modal-dialog">
        <div class="modal-content">
          <div class="modal-header">
@@ -112,13 +112,14 @@
            </button>
            <h4 class="modal-title" data-th-text="#{my.profile.account.changeemail}">Change email</h4>
          </div>
-         <form id="form-edit-email" class="form-inline" method="post" action="#" data-th-action="@{/my/profile/save/email}">
+         <form id="form-edit-email" class="form-inline" method="post" action="#" data-th-action="@{/my/profile/save/email}" data-th-object="${currentUser}" >
             <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
             
              <div class="modal-body">
-                <div class="form-group">
+                <div class="form-group" data-th-classappend="${#fields.hasErrors('email')}? 'has-error'">
                     <label for="dashboardname" class="control-label" data-th-text="#{my.profile.account.email}">My email</label>         
-                    <input name="email" class="form-control" type="text" data-th-value="${user.email}" />
+                    <input name="email" class="form-control" type="text" data-th-field="*{email}"/>
+                    <span data-th-if="${#fields.hasErrors('email')}" data-th-errors="*{email}">Incorrect value</span>
                </div>
              </div>
              

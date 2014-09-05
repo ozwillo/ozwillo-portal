@@ -13,7 +13,9 @@
     <div class="col-sm-10 form-data-block">
     <form data-th-class="'form-horizontal personal-data-form' + ${'EDIT'.equals(layout.mode.toString()) ? ' edit' : ''}"
         role="form" data-th-action="@{'/my/profile/save/' + ${layout.id}}" data-th-data="${layout.id}"  data-th-object="${currentUser}">
-      <div data-th-each="widget: ${layout.widgets}" class="form-group">
+        
+        
+      <div data-th-each="widget: ${layout.widgets}" class="form-group"  data-th-classappend="${#fields.hasErrors('__${widget.id}__')}? 'has-error'">
           <label data-th-for="${widget.id}" class="col-sm-2 control-label" data-th-text="#{${widget.label}}">First name :</label>
           <div class="col-sm-10" data-th-if="${'text'.equals(widget.type)}"
                 data-th-include="includes/my-profile-fragments :: text-widget (${widget}, ${layout.mode})">?</div>
@@ -36,7 +38,7 @@
 
 <div data-th-fragment="text-widget (widget, mode)">
     <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="${currentUser.__${widget.id}__}">?</span>
-    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-field="*{__${widget.id}__}" data-th-errorClass="form-value"/>
+    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-field="*{__${widget.id}__}" /><!-- data-th-errorClass="form-control has-error" -->
     <span data-th-if="${#fields.hasErrors('__${widget.id}__')}" data-th-errors="*{__${widget.id}__}">Incorrect value</span>
 </div>
 

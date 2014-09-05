@@ -135,6 +135,8 @@ public class MyProfileController extends PortalController {
 		if(result.hasErrors()) {
 			
 			//return "my-profile";
+			initProfileModel(model);
+			model.addAttribute("layout", myProfileState.getLayout(layoutId));
 			return "includes/my-profile-fragments :: layout";
 		}
 		userAccountService.saveUserAccount(currentUser);
@@ -158,15 +160,20 @@ public class MyProfileController extends PortalController {
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/email")
-	public String saveEmail(@RequestParam("email") String email, BindingResult result, Model model) {
+	public String saveEmail(@ModelAttribute("currentUser") @Valid UserAccount currentUser, BindingResult result, Model model) {
 		// Source: http://www.regular-expressions.info/email.html
 		// ("almost RFC 5322")
-		if (email
-				.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
-			saveSingleUserInfo("email", email);
-		} else {
+		if(result.hasFieldErrors("email")) {
 			
+			initProfileModel(model);
+			return "my-profile :: account-data";
 		}
+		//if (email
+		//		.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
+			saveSingleUserInfo("email", currentUser.getEmail());
+		//} else {
+			
+		//}
 		return "redirect:/my/profile/fragment/account-data";
 	}
 
