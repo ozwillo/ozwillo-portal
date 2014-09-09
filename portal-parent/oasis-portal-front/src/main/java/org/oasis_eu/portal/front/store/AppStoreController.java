@@ -37,14 +37,14 @@ public class AppStoreController extends PortalController {
     public String main(Model model) {
         model.addAttribute("hits", appstoreService.getAll(Arrays.asList(Audience.CITIZENS)));
 
-        return "appstore";
+        return "store/appstore";
     }
 
     @RequestMapping(method = RequestMethod.POST, value="/search")
     public String search(Model model, @RequestParam String query, @RequestParam List<Audience> audience) {
         model.addAttribute("hits", appstoreService.getAll(audience));
 
-        return "appstore::hits";
+        return "store/appstore::hits";
     }
 
     @RequestMapping(method=RequestMethod.GET, value={"/confirm/{appId}/{appType}"})
@@ -52,7 +52,7 @@ public class AppStoreController extends PortalController {
 
         model.addAttribute("app", appstoreService.getInfo(appId, appType));
 
-        return "appstore-confirmation::content";
+        return "store/appstore-confirmation::content";
     }
 
 

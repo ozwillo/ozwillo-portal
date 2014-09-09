@@ -7,8 +7,8 @@
     <title>DUMMY Ozwillo</title>
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
-    <link href="../public/css/main.css" rel="stylesheet"/>
-    <link href="../public/css/appstore.css" rel="stylesheet"/>
+    <link href="../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../public/css/appstore.css" rel="stylesheet"/>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
@@ -46,7 +46,7 @@
 <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" data-th-replace="includes/my-navigation :: nav">
     <div class="navbar-header">
         <div class="my-oasis" data="null">
-            <img id="logo" src="../public/img/my/my-oasis.png"
+            <img id="logo" src="../../public/img/my/my-oasis.png"
                  alt="My OASIS"/>
             <a href="#" ><span class="badge badge-notifications">0</span></a>
         </div>
@@ -59,7 +59,7 @@
     <div class="row">
         <div class="col-sm-4">
             <div>
-                <h2><img src="../public/img/my/app-store.png" data-th-src="@{/img/my/app-store.png}" data-th-alt="#{ui.appstore}" alt="Appstore" /><span data-th-text="#{ui.appstore}">Apps Store</span></h2>
+                <h2><img src="../../public/img/my/app-store.png" data-th-src="@{/img/my/app-store.png}" data-th-alt="#{ui.appstore}" alt="Appstore" /><span data-th-text="#{ui.appstore}">Apps Store</span></h2>
             </div>
             <form id="searchForm" action="#" data-th-action="@{/appstore/search}">
                 <div class="input-group">
@@ -87,7 +87,7 @@
         </div>
         <div class="col-sm-8 app-store-result" data-th-remove="all-but-first">
             <div class="hit text-center" data-th-each="entry: ${hits}" data-th-fragment="hits">
-                <img src="../public/img/sample_app_icons/sample-connecte-15.png" data-th-src="${entry.iconUrl}"/>
+                <img src="../../public/img/sample_app_icons/sample-connecte-15.png" data-th-src="${entry.iconUrl}"/>
                 <p data-th-text="${entry.name}" class="appname">Portail citoyen de Valence</p>
                 <p data-th-text="${entry.providerName}" class="providername">Service provider</p>
                 <p data-th-text="${entry.description}" data-toggle="tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id tincidunt arcu. Donec feugiat dictum urna in pretium. Nunc a dolor sit amet odio ultrices sodales ac vel est. Integer a consectetur neque. Etiam eget sem vitae quam sagittis accumsan ut at ligula. Morbi eget diam id erat tempor pulvinar. Vivamus eu accumsan nisi. Pellentesque tincidunt quis odio id ullamcorper. Nulla vel viverra sem, a ullamcorper orci." data-th-title="${entry.longDescription}" class="appdescription">Lorem ipsum dolor sit amet, conesectuer elipiscit</p>
@@ -109,7 +109,7 @@
             </div>
             <div class="hit text-center" >
                 <a class="app-link" href="#" >
-                    <img src="../public/img/sample_app_icons/sample-connecte-15.png" />
+                    <img src="../../public/img/sample_app_icons/sample-connecte-15.png" />
                 </a>
                 <p class="appname">Appname</p>
                 <p class="providername">Service provider</p>
@@ -121,7 +121,7 @@
             </div>
             <div class="hit text-center" >
                 <a class="app-link" href="#" >
-                    <img src="../public/img/sample_app_icons/sample-connecte-15.png" />
+                    <img src="../../public/img/sample_app_icons/sample-connecte-15.png" />
                 </a>
                 <p class="appname">Appname</p>
                 <p class="providername">Service provider</p>
@@ -170,8 +170,8 @@
 </th:block>
 
 
-<script src="../public/js/my.js" data-th-src="@{/js/my.js}"></script>
-<script src="../public/js/appstore.js" data-th-src="@{/js/appstore.js}"></script>
+<script src="../../public/js/my.js" data-th-src="@{/js/my.js}"></script>
+<script src="../../public/js/appstore.js" data-th-src="@{/js/appstore.js}"></script>
 
 </body>
 </html>
