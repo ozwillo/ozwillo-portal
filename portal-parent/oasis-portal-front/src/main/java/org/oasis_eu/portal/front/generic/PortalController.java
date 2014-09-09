@@ -41,6 +41,11 @@ abstract public class PortalController {
 
 	@ModelAttribute("currentLanguage")
 	public Languages currentLanguage() {
+		
+		if(user()!=null && user().getLocale()!=null) {
+			
+			return Languages.getByLocale(Locale.forLanguageTag(user().getLocale()), Languages.ENGLISH);
+		}
 		Locale currentLocale = RequestContextUtils.getLocale(request);
 		return Languages.getByLocale(currentLocale, Languages.ENGLISH);
 	}
