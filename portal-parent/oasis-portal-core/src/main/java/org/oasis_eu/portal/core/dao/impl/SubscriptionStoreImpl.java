@@ -5,7 +5,7 @@ import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
-import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
+import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,14 +14,13 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.HttpServerErrorException;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
+
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
 /**
  * User: schambon
@@ -33,7 +32,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     private static final Logger logger = LoggerFactory.getLogger(SubscriptionStoreImpl.class);
 
     @Autowired
-    private RestTemplate kernelRestTemplate;
+    private Kernel kernel;
 
     @Value("${kernel.portal_endpoints.subscriptions}")
     private String endpoint;
@@ -41,11 +40,8 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public List<Subscription> findByUserId(String userId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
-
         try {
-            ResponseEntity<Subscription[]> response = kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, new HttpEntity<>(headers), Subscription[].class, userId);
+            ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null, Subscription[].class, user(), userId);
 
             if (logger.isDebugEnabled()) {
                 logger.debug("--> " + response.getStatusCode());
@@ -64,10 +60,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public void create(String userId, Subscription subscription) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
-
-        ResponseEntity<Void> response = kernelRestTemplate.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription, headers), Void.class, userId);
+        ResponseEntity<Void> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription), Void.class, user(), userId);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             logger.debug("Created subscription: {}", response.getStatusCode());
@@ -88,10 +81,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public List<Subscription> findByServiceId(String serviceId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
-
-        ResponseEntity<Subscription[]> response = kernelRestTemplate.exchange(endpoint + "/service/{service_id}", HttpMethod.GET, new HttpEntity<Object>(headers), Subscription[].class, serviceId);
+        ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/service/{service_id}", HttpMethod.GET, null, Subscription[].class, user(), serviceId);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             return Arrays.asList(response.getBody());
@@ -114,10 +104,9 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
         subs.stream().filter(s -> s.getServiceId().equals(serviceId) && s.getSubscriptionType().equals(subscriptionType))
                 .forEach(s -> { // forEach... but there should only be one...
                     HttpHeaders headers = new HttpHeaders();
-                    headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
                     headers.add("If-Match", s.getSubscriptionEtag());
 
-                    kernelRestTemplate.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), Void.class, s.getId());
+                    kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<>(headers), Void.class, user(), s.getId());
                 });
 
     }

@@ -11,7 +11,7 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
-import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
+import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,18 +20,15 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.none;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
 /**
  * User: schambon
@@ -43,7 +40,7 @@ public class CatalogStoreImpl implements CatalogStore {
     private static final Logger logger = LoggerFactory.getLogger(CatalogStoreImpl.class);
 
     @Autowired
-    private RestTemplate kernelRestTemplate;
+    private Kernel kernel;
 
     @Value("${kernel.portal_endpoints.catalog:''}")
     private String endpoint;
@@ -55,13 +52,12 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences) {
-        URI uri = UriComponentsBuilder.fromHttpUrl(endpoint)
+        String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
-//                .queryParam("targetAudience", (Object[]) targetAudiences.toArray(new Audience[targetAudiences.size()]))
                 .build()
-                .toUri();
+                .toUriString();
 
-        return Arrays.asList(kernelRestTemplate.getForObject(uri, CatalogEntry[].class))
+        return Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()))
                 .stream()
                 .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
                 .collect(Collectors.toList());
@@ -79,7 +75,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     private CatalogEntry getCatalogEntry(String id, String endpoint) {
-        ResponseEntity<CatalogEntry> response = kernelRestTemplate.getForEntity(endpoint, CatalogEntry.class, id);
+        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, user(), id);
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         } else if (response.getStatusCode().is4xxClientError()) {
@@ -94,17 +90,7 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) {
 
-        MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication instanceof OpenIdCAuthentication) {
-            headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) authentication).getAccessToken()));
-        }
-
-
-        HttpEntity<ApplicationInstantiationRequest> request = new HttpEntity<>(instancePattern, headers);
-
-        ResponseEntity<String> result = kernelRestTemplate.postForEntity(endpoint + "/instantiate/{appId}", request, String.class, appId);
+        ResponseEntity<String> result = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
         result.getHeaders().entrySet().stream().forEach(e -> logger.debug("{}: {}", e.getKey(), e.getValue()));
         logger.debug(result.getBody());
 
@@ -112,10 +98,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     public List<CatalogEntry> findServicesOfInstance(String instanceId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
-
-        CatalogEntry[] body = kernelRestTemplate.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, new HttpEntity<Object>(headers), CatalogEntry[].class, instanceId).getBody();
+        CatalogEntry[] body = kernel.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, null, CatalogEntry[].class, user(), instanceId).getBody();
         if (body != null) {
             return Arrays.asList(body);
         } else {
@@ -127,23 +110,16 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     public ApplicationInstance findApplicationInstance(String instanceId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
-
-        return kernelRestTemplate.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, new HttpEntity<Object>(headers), ApplicationInstance.class, instanceId).getBody();
-
+        return kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId).getBody();
     }
 
 
     @Override
     public CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service) {
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", String.format("Bearer %s", ((OpenIdCAuthentication) SecurityContextHolder.getContext().getAuthentication()).getAccessToken()));
-
         // we need to be sure to grab everything from the original
 
-        ResponseEntity<KernelService> entity = kernelRestTemplate.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.GET, new HttpEntity<Object>(headers), KernelService.class, serviceId);
+        ResponseEntity<KernelService> entity = kernel.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.GET, null, KernelService.class, user(), serviceId);
         String etag = entity.getHeaders().get("ETag").get(0);
 
         KernelService kernelService = entity.getBody();
@@ -161,9 +137,10 @@ public class CatalogStoreImpl implements CatalogStore {
         kernelService.territory_id = service.getTerritoryId();
         kernelService.visible = service.isVisible();
 
+        HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", etag);
 
-        return kernelRestTemplate.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<>(kernelService, headers), CatalogEntry.class, serviceId).getBody();
+        return kernel.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<>(kernelService, headers), CatalogEntry.class, user(), serviceId).getBody();
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
