@@ -74,7 +74,7 @@ public class TestTokenRefresh {
     public void testExpiry() throws Exception {
 
 
-        OpenIdCAuthentication auth = new OpenIdCAuthentication("-test-subject-", "-test-accesstoken-", "-test-idtoken-", Instant.now(), Instant.now().plus(3, ChronoUnit.SECONDS));
+        OpenIdCAuthentication auth = new OpenIdCAuthentication("-test-subject-", "-test-accesstoken-", "-test-idtoken-", Instant.now(), Instant.now().plus(3, ChronoUnit.SECONDS), true, false);
         SecurityContextHolder.getContext().setAuthentication(auth);
 
         MockHttpSession session = new MockHttpSession();
