@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.core.dao.impl;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.core.dao.CatalogStore;
@@ -7,12 +8,14 @@ import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.spring.config.KernelConfiguration;
+import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
@@ -42,6 +45,13 @@ public class CatalogStoreImplTest {
     @Autowired
     private CatalogStore catalogStore;
 
+    @Before
+    public void setupAuthenticationContext() {
+        OpenIdCAuthentication authentication = new OpenIdCAuthentication("test", "accesstoken", "idtoken", java.time.Instant.now(), java.time.Instant.now());
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
+    }
 
     @Test
     public void testFindAllVisible() throws Exception {
