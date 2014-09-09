@@ -86,7 +86,7 @@ public class MyNetworkController extends PortalController {
 	    	if (!StringUtils.isEmpty(email)) {
 				UserInfo newAgent = new UserInfo();
 				newAgent.setEmail(email.trim());
-		    	userDirectory.createAgent(user().getOrganizationId(), newAgent);
+//		    	userDirectory.createAgent(user().getOrganizationId(), newAgent);
 	    	}
 		}
         return "redirect:/my/network/fragment/relationships";
@@ -95,7 +95,7 @@ public class MyNetworkController extends PortalController {
     @RequestMapping(method = RequestMethod.POST, value="/relationships/delete/{agentId}")
     public String removeRelationship(@PathVariable("agentId") String agentId, Model model) throws ExecutionException {
     	initModel(model);
-    	userDirectory.deleteAgent(userDirectory.getAgent(agentId));
+//    	userDirectory.deleteAgent(userDirectory.getAgent(agentId));
         return "redirect:/my/network/fragment/relationships";
     }
     
@@ -104,9 +104,12 @@ public class MyNetworkController extends PortalController {
         model.addAttribute("navigation", myNavigationService.getNavigation("network"));
 		model.addAttribute("isAgent", organizationId != null);
 		if (organizationId != null) {
-			List<AgentInfo> agents = userDirectory.getAgents(organizationId, 0, 25);
-			model.addAttribute("agents", agents); // TODO Pagination
-			model.addAttribute("organizationNames", fetchOrganizationNames(agents));
+
+            // TODO
+
+//			List<AgentInfo> agents = userDirectory.getAgents(organizationId, 0, 25);
+//			model.addAttribute("agents", agents); // TODO Paginationf
+//			model.addAttribute("organizationNames", fetchOrganizationNames(agents));
 		}
 	}
 

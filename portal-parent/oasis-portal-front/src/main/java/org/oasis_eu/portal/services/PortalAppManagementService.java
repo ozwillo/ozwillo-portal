@@ -188,13 +188,13 @@ public class PortalAppManagementService {
 
         // TODO use the Memberships API when it doesn't throw a 403
 
-//        return userDirectory.getMembershipsOfOrganization(organizationId)
-//                .stream()
-//                .map(m -> new User(m.getAccountId(), m.getAccountName()))
-//                .collect(Collectors.toList());
+        return userDirectory.getMembershipsOfOrganization(organizationId)
+                .stream()
+                .map(m -> new User(m.getAccountId(), m.getAccountName()))
+                .collect(Collectors.toList());
 
-        // In the meantime, use the old Agents API
-        return userDirectory.getAgents(organizationId, 0, 50).stream().map(a -> new User(a.getId(), displayNameOf(a))).collect(Collectors.toList());
+//        // In the meantime, use the old Agents API
+//        return userDirectory.getAgents(organizationId, 0, 50).stream().map(a -> new User(a.getId(), displayNameOf(a))).collect(Collectors.toList());
     }
 
     public void subscribeUsers(Set<String> users, String serviceId) {
