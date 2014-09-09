@@ -61,7 +61,10 @@ public class CatalogStoreImpl implements CatalogStore {
                 .build()
                 .toUri();
 
-        return Arrays.asList(kernelRestTemplate.getForObject(uri, CatalogEntry[].class)).stream().filter(e -> targetAudiences.contains(e.getTargetAudience())).collect(Collectors.toList());
+        return Arrays.asList(kernelRestTemplate.getForObject(uri, CatalogEntry[].class))
+                .stream()
+                .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
+                .collect(Collectors.toList());
     }
 
     @Override
