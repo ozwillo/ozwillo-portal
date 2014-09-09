@@ -111,7 +111,7 @@ $(document).ready(function () {
     		var locale = $('#layouts').attr('data');
 
     		localizeDate($datePicker);
-    		$datePicker.datepicker($.datepicker.regional[locale.replace('en', '')]);
+    		$datePicker.datepicker($.datepicker.regional[locale.replace('en', 'en-GB')]);
     		$datePicker.datepicker("option", "altFormat", "yy-mm-dd");
     		$datePicker.datepicker("option", "altField", '#' + $valueHolder.attr('id'));
 		});
@@ -119,7 +119,8 @@ $(document).ready(function () {
 	
 	function localizeDate($el) {
 		var locale = $('#layouts').attr('data');
-		var dateFormat = $.datepicker.regional[locale.replace('en', '')].dateFormat;
+		var dateFormat = $.datepicker.regional[locale.replace('en', 'en-GB')].dateFormat;
+		
     	if ($el[0].tagName == 'INPUT') {
     		if ($el.val() != '') {
     			$el.val($.datepicker.formatDate(dateFormat, new Date($el.val())));
