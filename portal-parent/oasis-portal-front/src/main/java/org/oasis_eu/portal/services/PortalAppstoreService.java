@@ -14,6 +14,7 @@ import org.oasis_eu.portal.model.appstore.AcquisitionStatus;
 import org.oasis_eu.portal.model.appstore.AppInfo;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
+import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,6 +60,9 @@ public class PortalAppstoreService {
     @Autowired
     private IconService iconService;
 
+    @Autowired
+    private UserDirectory userDirectory;
+
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
         Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().map(Subscription::getServiceId).collect(Collectors.toSet());
 
@@ -93,8 +97,8 @@ public class PortalAppstoreService {
 
             ApplicationInstantiationRequest instanceRequest = new ApplicationInstantiationRequest();
 
-//        instanceRequest.setProviderId(userDirectory.getMembershipsOfUser(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());
-            instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());
+        instanceRequest.setProviderId(userDirectory.getMembershipsOfUser(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());      // TODO refine this; see issue #34
+//            instanceRequest.setProviderId(userInfoHelper.currentUser().getOrganizationId());
             instanceRequest.setName(application.getName(RequestContextUtils.getLocale(request))); // TODO make this user-provided at some stage
             instanceRequest.setDescription(application.getDescription(RequestContextUtils.getLocale(request)));
 

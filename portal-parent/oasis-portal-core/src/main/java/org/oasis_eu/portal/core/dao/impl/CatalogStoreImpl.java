@@ -90,6 +90,8 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) {
 
+        logger.info("Application instantiation request: {}", instancePattern);
+
         ResponseEntity<String> result = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
         result.getHeaders().entrySet().stream().forEach(e -> logger.debug("{}: {}", e.getKey(), e.getValue()));
         logger.debug(result.getBody());
