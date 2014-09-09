@@ -89,8 +89,10 @@
             <div class="hit text-center" data-th-each="entry: ${hits}" data-th-fragment="hits">
                 <img src="../public/img/sample_app_icons/sample-connecte-15.png" data-th-src="${entry.iconUrl}"/>
                 <p data-th-text="${entry.name}" class="appname">Portail citoyen de Valence</p>
-                <p data-th-text="${entry.providerName}" class="providername">Service provider</p>
-                <p data-th-text="${entry.description}" data-toggle="tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id tincidunt arcu. Donec feugiat dictum urna in pretium. Nunc a dolor sit amet odio ultrices sodales ac vel est. Integer a consectetur neque. Etiam eget sem vitae quam sagittis accumsan ut at ligula. Morbi eget diam id erat tempor pulvinar. Vivamus eu accumsan nisi. Pellentesque tincidunt quis odio id ullamcorper. Nulla vel viverra sem, a ullamcorper orci." data-th-title="${entry.longDescription}" class="appdescription">Lorem ipsum dolor sit amet, conesectuer elipiscit</p>
+                <div class="caption">
+                	<p data-th-text="${entry.providerName}" class="providername">Service provider</p>
+                	<p data-th-text="${entry.description}" data-toggle="tooltip" title="Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum id tincidunt arcu. Donec feugiat dictum urna in pretium. Nunc a dolor sit amet odio ultrices sodales ac vel est. Integer a consectetur neque. Etiam eget sem vitae quam sagittis accumsan ut at ligula. Morbi eget diam id erat tempor pulvinar. Vivamus eu accumsan nisi. Pellentesque tincidunt quis odio id ullamcorper. Nulla vel viverra sem, a ullamcorper orci." data-th-title="${entry.longDescription}" class="appdescription">Lorem ipsum dolor sit amet, conesectuer elipiscit</p>
+                </div>
                 <div class="btn-group indicator" data-th-if="${entry.acquisitionStatus == T(org.oasis_eu.portal.model.appstore.AcquisitionStatus).AVAILABLE and entry.catalogEntry.paymentOption == T(org.oasis_eu.portal.core.model.catalog.PaymentOption).FREE}">
                     <button class="btn btn-indicator btn-indicator-available" href="#" data-th-text="#{store.free}" data-th-attr="data-appId=${entry.catalogEntry.id},data-appType=${entry.catalogEntry.type}" data-toggle="modal" data-target="#confirmation" data-th-href="@{/appstore/confirm/}+${entry.catalogEntry.id}+'/'+${entry.catalogEntry.type}" data-appId="abdc81-f128-8197-1780a">Free</button>
                 </div>
