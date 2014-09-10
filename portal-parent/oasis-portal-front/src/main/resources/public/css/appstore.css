@@ -141,3 +141,23 @@ div.app-image {
     margin-top: 20px;
     margin-bottom: 20px;
 }
+
+div#install-app-popover {
+    display: none;
+}
+
+.popover {
+    width: 400px;
+    max-width: 400px;
+
+    border: 1px #636681 solid;
+}
+
+.popover.bottom > .arrow {
+    border-bottom-color: #636681;
+}
+
+.popover h4 {
+    font-size: 18px;
+
+}

@@ -3,7 +3,6 @@ package org.oasis_eu.portal.front.my.appsmanagement;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
-import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,7 +35,7 @@ public class MyAppsManagementController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value ={"","/"})
     public String show(Model model, @RequestParam(value = "defaultAuthorityId", required = false, defaultValue = "") String defaultAuthorityId) {
-        model.addAttribute("authorities", appManagementService.getMyAuthorities());
+        model.addAttribute("authorities", appManagementService.getMyAuthorities(true));
         model.addAttribute("defaultAuthorityId", defaultAuthorityId);
 
         return "appsmanagement/appsmanagement";

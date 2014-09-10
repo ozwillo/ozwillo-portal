@@ -62,12 +62,13 @@ public class PortalAppManagementService {
     private MessageSource messageSource;
 
 
-    public List<Authority> getMyAuthorities() {
+    public List<Authority> getMyAuthorities(boolean includePersonal) {
         String userId = userInfoService.currentUser().getUserId();
 
-
         List<Authority> authorities = new ArrayList<>();
-        authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
+        if (includePersonal) {
+            authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
+        }
 
         authorities.addAll(userDirectory.getMembershipsOfUser(userId)
                 .stream()

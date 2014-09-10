@@ -5,6 +5,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
+import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,9 @@ public class AppStoreController extends PortalController {
 
     @Autowired
     private PortalAppstoreService appstoreService;
+
+    @Autowired
+    private PortalAppManagementService appManagementService;
 
     @ModelAttribute("navigation")
     public List<MyNavigation> getNavigation() {
@@ -55,7 +59,7 @@ public class AppStoreController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}")
     public String application(@PathVariable String appId, @PathVariable String appType, Model model) {
-        model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
+        applicationModel(appId, appType, model);
 
         return "store/application";
     }
@@ -63,7 +67,12 @@ public class AppStoreController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}/inner")
     public String applicationInner(@PathVariable String appId, @PathVariable String appType, Model model) {
-        model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
+        applicationModel(appId, appType, model);
         return "store/application::content";
+    }
+
+    private void applicationModel(String appId, String appType, Model model) {
+        model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
+        model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
     }
 }
