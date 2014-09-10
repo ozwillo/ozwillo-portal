@@ -11,23 +11,6 @@ $(document).ready(function() {
 
 
 
-    $("#confirmation").on("hide.bs.modal", function(e) {
-        $(this).removeData("bs.modal");
-    });
-
-    $("#confirmation").on("shown.bs.modal", function(e) {
-
-        $("#confirmation * .btn-buy").click(function (e) {
-            var appId = $(this).attr("data-appId");
-            var appType = $(this).attr("data-appType");
-
-            $("#subscribe_app").attr("value", appId);
-            $("#subscribe_apptype").attr("value", appType);
-            $("#subscribe").submit();
-
-        });
-    });
-
     $("input[name='audience']").change(function(e) {
         if(! $(this).is(":checked")) {
             if (! $("input[name='audience']:checked").length) {
@@ -46,5 +29,39 @@ $(document).ready(function() {
         });
     });
 
+
+
+    $("button.btn-indicator").click(function() {
+        $("div#veil").show();
+
+        var href = $(this).attr("href");
+
+        if (typeof history.pushState == "function") {
+            history.pushState({}, "application", href);
+        }
+
+        var appPage = $("div#apppage");
+
+        $.get(href + "/inner", function(fragment) {
+            appPage.html(fragment);
+            appPage.show();
+        });
+
+    });
+
+    var resetAppStore = function() {
+        $("div#veil").fadeOut();
+        $("div#apppage").fadeOut();
+
+    };
+
+
+    $("div#veil").click(function() {
+        resetAppStore();
+        window.history.back();
+    });
+    $(window).on("popstate", function(event) {
+        resetAppStore(event);
+    });
 });
 

@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head data-th-replace="includes/header(title=#{ui.appstore},page='appstore')">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="_csrf" content="csrf token"/>
+    <meta name="_csrf_header" content="X-CSRF-TOKEN"/>
+
+    <title>DUMMY Ozwillo</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../public/css/appstore.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        @font-face {
+            font-family: 'Dunkin';
+            src: url('../../public/fonts/Dunkin.eot?') format('eot'),
+            url('../../public/fonts/Dunkin.woff') format('woff'),
+            url('../../public/fonts/Dunkin.ttf')  format('truetype'),
+            url('../../public/fonts/Dunkin.svg#Dunkin') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DIN';
+            src: url('../../public/fonts/DIN.eot?') format('eot'),
+            url('../../public/fonts/DIN.woff') format('woff'),
+            url('../../public/fonts/DIN.ttf')  format('truetype'),
+            url('../../public/fonts/DIN.svg#DIN') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DINAlternate-Light';
+            src: url('../../public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../../public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../../public/fonts/DINAlternate-Light.ttf')  format('truetype'),
+            url('../../public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+        }
+    </style>
+
+</head>
+<body>
+
+<div id="veil" class="in">
+    <a href="appstore.html" data-th-href="@{/appstore}">Back to store</a>
+</div>
+
+<div id="apppage" class="container in" data-th-fragment="content">
+    <h1>This is your app</h1>
+</div>
+
+
+<th:block data-th-replace="includes/footer">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+
+</th:block>
+
+<script src="../../public/js/store/application.js" data-th-src="@{/js/store/application.js}"></script>
+
+</body>
+</html>

@@ -62,4 +62,14 @@ public class AppStoreController extends PortalController {
         return "redirect:/my/dashboard";
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}")
+    public String application(@PathVariable String appId) {
+        return "store/application";
+    }
+
+
+    @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}/inner")
+    public String applicationInner(@PathVariable String appId) {
+        return "store/application::content";
+    }
 }

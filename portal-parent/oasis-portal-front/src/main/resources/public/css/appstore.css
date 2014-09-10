@@ -60,7 +60,49 @@ div.indicator {
     color: #ffffff;
 }
 
-#confirmation p.appname {
-    text-align: center;
-    font-weight: bold;
+
+div#veil {
+    height: 100%;
+    width: 100%;
+    background-color: #452959;
+    position: fixed;
+    top: 0; left: 0;
+    opacity: 0.75;
+    z-index: 1040;
+    display: none;
+}
+
+div#veil.in {
+    display: block;
+}
+
+div#veil a {
+    display: none;
+}
+
+div#apppage {
+    background-color: #ffffff;
+    opacity: 1;
+    display: none;
+    z-index: 1050;
+    position: fixed;
+    top: 20px;
+}
+
+div#apppage.in {
+    display: block;
+}
+
+@media(max-width: 1000px) {
+    div#apppage {
+        width: 100%;
+    }
+}
+
+@media(min-width: 1000px) {
+    div#apppage {
+        width: 1000px;
+        left: 50%;
+        margin-left: -500px;
+    }
 }
