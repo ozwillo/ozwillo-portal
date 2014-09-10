@@ -47,15 +47,6 @@ public class AppStoreController extends PortalController {
         return "store/appstore::hits";
     }
 
-    @RequestMapping(method=RequestMethod.GET, value={"/confirm/{appId}/{appType}"})
-    public String confirm(Model model, @PathVariable String appId, @PathVariable CatalogEntryType appType) {
-
-        model.addAttribute("app", appstoreService.getInfo(appId, appType));
-
-        return "store/appstore-confirmation::content";
-    }
-
-
     @RequestMapping(method = RequestMethod.POST, value="/buy")
     public String buy(@RequestParam String appId, @RequestParam CatalogEntryType appType) {
         appstoreService.buy(appId, appType);
@@ -63,13 +54,16 @@ public class AppStoreController extends PortalController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}")
-    public String application(@PathVariable String appId) {
+    public String application(@PathVariable String appId, @PathVariable String appType, Model model) {
+        model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
+
         return "store/application";
     }
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}/inner")
-    public String applicationInner(@PathVariable String appId) {
+    public String applicationInner(@PathVariable String appId, @PathVariable String appType, Model model) {
+        model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
         return "store/application::content";
     }
 }

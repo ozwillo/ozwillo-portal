@@ -267,7 +267,7 @@ public class PortalDashboardService {
         }
         entry.setCatalogEntry(catalogEntry);
         entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getServiceId()));
-        entry.setIconUrl(iconService.getIconForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request))).toString());
+        entry.setIconUrl(iconService.getIconForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request))));
 
         return entry;
     }

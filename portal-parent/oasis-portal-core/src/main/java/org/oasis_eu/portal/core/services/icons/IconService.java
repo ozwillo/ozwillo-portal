@@ -65,7 +65,7 @@ public class IconService {
     @Value("${application.defaultIconUrl}")
     private String defaultIconUrl;
 
-    public URI getIconForURL(String iconUrl) {
+    public String getIconForURL(String iconUrl) {
 
         if (iconDownloadAttemptRepository.findByUrl(iconUrl) != null) {
             logger.info("Icon URL {} is blacklisted, returning default icon", iconUrl);
@@ -114,7 +114,7 @@ public class IconService {
                 .path("/")
                 .path(icon.getFilename())
                 .build()
-                .toUri();
+                .toUriString();
     }
 
     public Icon getIcon(String id) {
@@ -125,13 +125,9 @@ public class IconService {
         return directAccessIconRepo.getHashForIcon(id);
     }
 
-    private URI defaultIcon() {
-        try {
-            return new URI(defaultIconUrl);
-        } catch (URISyntaxException e1) {
-            logger.error("Cannot load DEFAULT icon, this is FATAL", e1);
-            return null;
-        }
+    private String defaultIcon() {
+        return defaultIconUrl;
+
     }
 
     private String getFileName(String url) {

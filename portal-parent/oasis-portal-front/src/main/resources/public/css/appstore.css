@@ -14,13 +14,13 @@
 }
 
 
-div.hit p.appname {
+p.appname {
     font-size: 16px;
     font-weight: bold;
     margin: 0;
 }
 
-div.hit p.appdescription {
+p.appdescription {
     font-size: 12px;
 }
 
@@ -85,8 +85,10 @@ div#apppage {
     opacity: 1;
     display: none;
     z-index: 1050;
-    position: fixed;
+    position: absolute;
     top: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
 }
 
 div#apppage.in {
@@ -105,4 +107,37 @@ div#apppage.in {
         left: 50%;
         margin-left: -500px;
     }
+}
+
+div.center-container {
+    position: relative;
+    height: 64px;
+}
+
+div.vcentered {
+    position: absolute;
+    top: 50%;
+    margin-top: -14px;
+}
+
+.rating-static {
+    width: 80px;
+    height: 20px;
+    display: block;
+    background-image: url('/img/icons/rating-static.png');
+}
+
+.rating-00 { background-position: -80px 0px; }
+.rating-10 { background-position: -60px 0px; }
+.rating-20 { background-position: -40px 0px; }
+.rating-30 { background-position: -20px 0px; }
+.rating-40 { background-position: 00px 0px; }
+.rating-05 { background-position: -80px -20px; }
+.rating-15 { background-position: -60px -20px; }
+.rating-25 { background-position: -40px -20px; }
+.rating-35 { background-position: -20px -20px; }
+
+div.app-image {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }

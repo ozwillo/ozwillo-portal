@@ -41,6 +41,14 @@
             url('../../public/fonts/DINAlternate-Light.ttf')  format('truetype'),
             url('../../public/fonts/DINAlternate-Light.svg#DIN') format('svg');
         }
+
+        .rating-static {
+            width: 80px;
+            height: 20px;
+            display: block;
+            background-image: url('../../public/img/icons/rating-static.png');
+        }
+
     </style>
 
 </head>
@@ -51,7 +59,48 @@
 </div>
 
 <div id="apppage" class="container in" data-th-fragment="content">
-    <h1>This is your app</h1>
+    <div class="row">
+        <div class="col-sm-1">
+            <img src="../../public/img/sample_app_icons/sample-connecte-15.png" data-th-src="${app.iconUrl}"/>
+        </div>
+        <div class="col-sm-7">
+            <div>
+                <p class="appname" data-th-text="${app.name}">Appname</p>
+                <p data-th-text="|#{store.by} ${app.providerName}|">By ServiceProvider</p>
+            </div>
+        </div>
+        <div class="col-sm-4 center-container">
+            <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}">
+                <th:block data-th-case="INSTALLED">
+                    <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}">Installed</button>
+                    <button class="btn btn-indicator btn-indicator-installed-icon"><i class="fa fa-check"></i></button>
+                </th:block>
+                <th:block data-th-case="FREE">
+                    <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.free}">Free</button>
+                </th:block>
+                <th:block data-th-case="PAYING">
+                    <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.paid}">Free</button>
+                    <button class="btn btn-indicator btn-indicator-available-icon"><i class="fa fa-eur"></i></button>
+                </th:block>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-sm-12">
+            <span class="rating-static rating-35"></span>
+        </div>
+    </div>
+
+    <div class="app-image">
+        <img src="../../public/img/sample_app_icons/my-oasis-large.png" data-th-src="@{/img/sample_app_icons/my-oasis-large.png}"/>
+    </div>
+
+    <div class="row">
+        <div class="col-md-6" data-th-text="${app.longDescription}">
+            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu orci iaculis, lacinia arcu at, semper ligula. Vestibulum sed ex a eros feugiat imperdiet. Ut sit amet leo cursus, porttitor velit non, pulvinar velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis at lacus egestas, cursus velit id, varius nisl. Praesent sit amet massa erat. Praesent luctus ut enim at ultrices. Donec bibendum dictum mi, eget faucibus lorem efficitur eu. Curabitur in arcu vitae sapien luctus tincidunt. Pellentesque eu augue lectus.
+        </div>
+    </div>
+
 </div>
 
 

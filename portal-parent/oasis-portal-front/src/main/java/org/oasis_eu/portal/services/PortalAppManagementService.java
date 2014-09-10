@@ -124,7 +124,7 @@ public class PortalAppManagementService {
         logger.debug("Fetching instance data for {}", instance);
 
         CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
-        AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType());
+        AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), null);
 
 
         return new MyAppsInstance()

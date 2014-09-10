@@ -90,13 +90,12 @@ public class IconServiceIntegrationTest {
 
         ReflectionTestUtils.setField(iconService, "iconDownloader", downloader);
 
-        URI iconUri = iconService.getIconForURL("http://www.citizenkin.com/icon/one.png");
+        String iconUri = iconService.getIconForURL("http://www.citizenkin.com/icon/one.png");
         assertEquals(1, db.getCollection("icon").count());
         assertNotNull(iconUri);
-        String uriString = iconUri.toString();
         // test that this matches a regexp including a UUID
         Pattern pattern = Pattern.compile("http://localhost/icon/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
-        Matcher matcher = pattern.matcher(uriString);
+        Matcher matcher = pattern.matcher(iconUri);
         assertTrue(matcher.matches());
 
         String id = matcher.group(1);
@@ -119,7 +118,7 @@ public class IconServiceIntegrationTest {
         ReflectionTestUtils.setField(iconService, "iconDownloader", downloader);
 
         assertEquals(0, blacklist.count());
-        URI uri = iconService.getIconForURL("http://www.citizenkin.com/icon/fake.png");
+        String uri = iconService.getIconForURL("http://www.citizenkin.com/icon/fake.png");
         assertEquals(defaultIcon(), uri);
         assertEquals(1, blacklist.count());
 

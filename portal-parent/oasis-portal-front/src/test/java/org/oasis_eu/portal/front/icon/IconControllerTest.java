@@ -72,7 +72,7 @@ public class IconControllerTest {
 
         ReflectionTestUtils.setField(iconService, "iconDownloader", iconDownloader);
 
-        String iconUri = iconService.getIconForURL(ICON_URL).toString();
+        String iconUri = iconService.getIconForURL(ICON_URL);
 
         // verify that iconDownloader's download method has been called
         verify(iconDownloader).download(anyString());
