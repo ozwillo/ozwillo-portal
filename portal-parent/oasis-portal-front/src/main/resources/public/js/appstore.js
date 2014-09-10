@@ -28,8 +28,15 @@ $(document).ready(function() {
         });
     });
 
-    $("input[name='audience']").change(function() {
+    $("input[name='audience']").change(function(e) {
+        if(! $(this).is(":checked")) {
+            if (! $("input[name='audience']:checked").length) {
+                $(this).prop("checked", true); // recheck it
+            }
+
+        }
         $("#searchForm").submit();
+
     });
 
     $("#searchForm").submit(function(e){
@@ -38,5 +45,6 @@ $(document).ready(function() {
             $(".app-store-result").html(result);
         });
     });
+
 });
 

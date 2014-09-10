@@ -28,7 +28,7 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
     @Autowired
     private Kernel kernel;
 
-    @Value("${kernel.portal_endpoints.apps:''}")
+    @Value("${kernel.portal_endpoints.apps:}")
     private String appsEndpoint;
 
     @Override
