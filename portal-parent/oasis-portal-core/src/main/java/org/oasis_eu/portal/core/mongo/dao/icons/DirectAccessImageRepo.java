@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
  * Date: 9/2/14
  */
 @Component
-public class DirectAccessIconRepo {
+public class DirectAccessImageRepo {
     @Autowired
     private Mongo mongo;
 
@@ -23,7 +23,7 @@ public class DirectAccessIconRepo {
 
     public String getHashForIcon(String id) {
 
-        DBCollection icons = mongo.getDB(databaseName).getCollection("icon");
+        DBCollection icons = mongo.getDB(databaseName).getCollection("image");
 
         DBObject query = new BasicDBObject("_id", id);
         DBObject projection = new BasicDBObject("hash", 1);

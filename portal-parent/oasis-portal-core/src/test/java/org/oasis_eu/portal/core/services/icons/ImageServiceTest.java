@@ -2,7 +2,7 @@ package org.oasis_eu.portal.core.services.icons;
 
 import com.google.common.io.ByteStreams;
 import org.junit.Test;
-import org.oasis_eu.portal.core.mongo.model.icons.IconFormat;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +12,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class IconServiceTest {
+public class ImageServiceTest {
 
     @Test
     public void testGetFileName() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
@@ -37,16 +37,16 @@ public class IconServiceTest {
 
     @Test
     public void testGetFormat() throws Exception {
-        assertEquals(IconFormat.PNG_64BY64, doGetFormat(load("images/64.png")));
-        assertEquals(IconFormat.PNG_32BY32, doGetFormat(load("images/32.png")));
-        assertEquals(IconFormat.INVALID, doGetFormat(load("images/img-16.png")));
+        assertEquals(ImageFormat.PNG_64BY64, doGetFormat(load("images/64.png")));
+        assertEquals(ImageFormat.PNG_32BY32, doGetFormat(load("images/32.png")));
+        assertEquals(ImageFormat.INVALID, doGetFormat(load("images/img-16.png")));
 
         byte[] b = new byte[1024];
         Random random = new Random();
         random.nextBytes(b);
-        assertEquals(IconFormat.INVALID, doGetFormat(b));
+        assertEquals(ImageFormat.INVALID, doGetFormat(b));
 
-        assertEquals(IconFormat.INVALID, doGetFormat(load("images/rectangular.png")));
+        assertEquals(ImageFormat.INVALID, doGetFormat(load("images/rectangular.png")));
     }
 
     @Test
@@ -64,7 +64,7 @@ public class IconServiceTest {
 
 
     private String doGetFileName(String arg) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
-        IconService service = new IconService();
+        ImageService service = new ImageService();
         Method getFileName = service.getClass().getDeclaredMethod("getFileName", String.class);
         getFileName.setAccessible(true);
 
@@ -72,22 +72,22 @@ public class IconServiceTest {
     }
 
     private boolean doEnsurePNG(byte[] array) throws InvocationTargetException, IllegalAccessException, NoSuchMethodException {
-        IconService service = new IconService();
+        ImageService service = new ImageService();
         Method ensurePNG = service.getClass().getDeclaredMethod("ensurePNG", byte[].class);
         ensurePNG.setAccessible(true);
 
         return (boolean) ensurePNG.invoke(service, array);
     }
 
-    private IconFormat doGetFormat(byte[] array) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        IconService service = new IconService();
+    private ImageFormat doGetFormat(byte[] array) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        ImageService service = new ImageService();
         Method getFormat = service.getClass().getDeclaredMethod("getFormat", byte[].class);
         getFormat.setAccessible(true);
-        return (IconFormat) getFormat.invoke(service, array);
+        return (ImageFormat) getFormat.invoke(service, array);
     }
 
     private String doGetHash(byte[] array) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        IconService service = new IconService();
+        ImageService service = new ImageService();
         Method getHash = service.getClass().getDeclaredMethod("getHash", byte[].class);
         getHash.setAccessible(true);
         return (String) getHash.invoke(service, array);

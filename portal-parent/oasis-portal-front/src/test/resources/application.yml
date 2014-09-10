@@ -10,7 +10,7 @@ application:
   url: http://localhost
   security:
     fetchUserInfo: true
-  baseIconUrl: ${application.url}/icon
+  baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
 
 kernel:

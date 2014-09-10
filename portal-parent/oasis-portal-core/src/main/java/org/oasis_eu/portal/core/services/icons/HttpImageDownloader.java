@@ -18,7 +18,7 @@ import java.io.IOException;
  * Date: 9/2/14
  */
 @Service
-public class HttpIconDownloader implements IconDownloader {
+public class HttpImageDownloader implements ImageDownloader {
 
     // maximum icon size that we're willing to download
     // that's 128*128*3, i.e. 48 KB - the size of an uncompressed 24-bit 128×128 file (eg TIFF/BMP).
@@ -27,7 +27,7 @@ public class HttpIconDownloader implements IconDownloader {
     // Note: maybe we should set that as a live parameter
     private static final int MAX_RESOURCE_SIZE = 49152;
 
-    private static final Logger logger = LoggerFactory.getLogger(HttpIconDownloader.class);
+    private static final Logger logger = LoggerFactory.getLogger(HttpImageDownloader.class);
 
     @Override
     public byte[] download(String iconUrl) {

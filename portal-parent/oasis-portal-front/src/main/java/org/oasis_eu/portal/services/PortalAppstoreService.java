@@ -9,7 +9,8 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.core.services.icons.IconService;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
+import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
 import org.oasis_eu.spring.kernel.model.Organization;
@@ -54,7 +55,7 @@ public class PortalAppstoreService {
     private UserInfoService userInfoHelper;
 
     @Autowired
-    private IconService iconService;
+    private ImageService imageService;
 
     @Autowired
     private UserDirectory userDirectory;
@@ -65,7 +66,7 @@ public class PortalAppstoreService {
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
 
         return catalogStore.findAllVisible(targetAudiences).stream()
-                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, iconService.getIconForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request))), getOrganizationName(catalogEntry),
+                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64), getOrganizationName(catalogEntry),
                         getInstallationOption(catalogEntry)))
                 .collect(Collectors.toList());
     }
@@ -100,7 +101,7 @@ public class PortalAppstoreService {
         Organization organization = organizationStore.find(entry.getProviderId());
         String providerName = organization != null ? organization.getName() : "-";
 
-        return new AppstoreHit(locale, entry, iconService.getIconForURL(entry.getIcon(locale)), providerName, getInstallationOption(entry));
+        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64), providerName, getInstallationOption(entry));
 
     }
 

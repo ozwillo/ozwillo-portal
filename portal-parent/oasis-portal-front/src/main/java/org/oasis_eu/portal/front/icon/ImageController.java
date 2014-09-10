@@ -1,12 +1,11 @@
 package org.oasis_eu.portal.front.icon;
 
 import com.google.common.io.ByteStreams;
-import org.oasis_eu.portal.core.mongo.model.icons.Icon;
-import org.oasis_eu.portal.core.services.icons.IconService;
+import org.oasis_eu.portal.core.mongo.model.images.Image;
+import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,19 +23,19 @@ import java.util.Arrays;
  * Date: 9/2/14
  */
 @Controller
-@RequestMapping(method = RequestMethod.GET, value = "/icon")
-public class IconController {
+@RequestMapping(method = RequestMethod.GET, value = "/media")
+public class ImageController {
 
-    private static final Logger logger = LoggerFactory.getLogger(IconController.class);
+    private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
     @Autowired
-    private IconService iconService;
+    private ImageService imageService;
 
     @RequestMapping("/{id}/{name}")
     public void getIcon(@PathVariable String id, @RequestHeader(required = false, value = "If-None-Match") String hash, HttpServletResponse response) throws IOException {
         if (hash != null) {
             // we have an etag!
-            String storedHash = iconService.getHash(id);
+            String storedHash = imageService.getHash(id);
             if (storedHash != null && storedHash.equals(hash)) {
                 response.setStatus(HttpStatus.NOT_MODIFIED.value());
                 response.setHeader("Cache-Control", "public, max-age=31536000");
@@ -62,14 +61,14 @@ public class IconController {
     }
 
     private ResponseEntity<byte[]> getIconBody(String id) {
-        Icon icon = iconService.getIcon(id);
-        if (icon != null) {
+        Image image = imageService.getImage(id);
+        if (image != null) {
             HttpHeaders headers = new HttpHeaders();
-            headers.add("ETag", icon.getHash());
+            headers.add("ETag", image.getHash());
             headers.add("Content-Type", "image/png");
-            headers.add("Content-Length", Integer.toString(icon.getBytes().length));
+            headers.add("Content-Length", Integer.toString(image.getBytes().length));
             headers.put("Cache-Control", Arrays.asList("public, max-age=31536000")); // one year
-            ResponseEntity<byte[]> res = new ResponseEntity<byte[]>(icon.getBytes(), headers, HttpStatus.OK);
+            ResponseEntity<byte[]> res = new ResponseEntity<byte[]>(image.getBytes(), headers, HttpStatus.OK);
             return res;
         } else {
             throw new IconNotFound();

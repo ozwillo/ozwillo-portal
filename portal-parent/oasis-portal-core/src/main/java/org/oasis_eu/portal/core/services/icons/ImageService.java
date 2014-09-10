@@ -1,22 +1,14 @@
 package org.oasis_eu.portal.core.services.icons;
 
 import com.google.common.base.Strings;
-import org.apache.http.Header;
-import org.apache.http.HttpEntity;
-import org.apache.http.client.ClientProtocolException;
-import org.apache.http.client.methods.CloseableHttpResponse;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
-import org.joda.time.Instant;
-import org.oasis_eu.portal.core.mongo.dao.icons.DirectAccessIconRepo;
-import org.oasis_eu.portal.core.mongo.dao.icons.IconDownloadAttemptRepository;
-import org.oasis_eu.portal.core.mongo.dao.icons.IconRepository;
-import org.oasis_eu.portal.core.mongo.model.icons.Icon;
-import org.oasis_eu.portal.core.mongo.model.icons.IconDownloadAttempt;
-import org.oasis_eu.portal.core.mongo.model.icons.IconFormat;
+import org.oasis_eu.portal.core.mongo.dao.icons.DirectAccessImageRepo;
+import org.oasis_eu.portal.core.mongo.dao.icons.ImageDownloadAttemptRepository;
+import org.oasis_eu.portal.core.mongo.dao.icons.ImageRepository;
+import org.oasis_eu.portal.core.mongo.model.images.Image;
+import org.oasis_eu.portal.core.mongo.model.images.ImageDownloadAttempt;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +19,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
-import java.net.URLConnection;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.UUID;
@@ -43,88 +30,89 @@ import java.util.UUID;
  */
 
 @Service
-public class IconService {
-    private static final Logger logger = LoggerFactory.getLogger(IconService.class);
+public class ImageService {
+    private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
 
     @Autowired
-    private IconDownloader iconDownloader;
+    private ImageDownloader imageDownloader;
 
     @Autowired
-    private IconRepository iconRepository;
+    private ImageRepository imageRepository;
 
     @Autowired
-    private DirectAccessIconRepo directAccessIconRepo;
+    private DirectAccessImageRepo directAccessImageRepo;
 
     @Autowired
-    private IconDownloadAttemptRepository iconDownloadAttemptRepository;
+    private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
 
-    @Value("${application.baseIconUrl}")
-    private String baseIconUrl;
+    @Value("${application.baseImageUrl}")
+    private String baseImageUrl;
 
     @Value("${application.defaultIconUrl}")
     private String defaultIconUrl;
 
-    public String getIconForURL(String iconUrl) {
+    public String getImageForURL(String inputUrl, ImageFormat format) {
 
-        if (iconDownloadAttemptRepository.findByUrl(iconUrl) != null) {
-            logger.info("Icon URL {} is blacklisted, returning default icon", iconUrl);
+        if (imageDownloadAttemptRepository.findByUrl(inputUrl) != null) {
+            logger.info("Image input URL {} is blacklisted, returning default icon", inputUrl);
             return defaultIcon();
         }
 
-        Icon icon = iconRepository.findByUrl(iconUrl);
+        Image image = imageRepository.findByUrl(inputUrl);
 
-        if (icon == null) {
+        if (image == null) {
 
             // 1. download the icon
-            byte[] iconBytes = iconDownloader.download(iconUrl);
+            byte[] iconBytes = imageDownloader.download(inputUrl);
             if (iconBytes == null) {
-                logger.error("Could not load icon from URL {}, returning default", iconUrl);
-                blacklist(iconUrl);
+                logger.error("Could not load icon from URL {}, returning default", inputUrl);
+                blacklist(inputUrl);
                 return defaultIcon();
             }
 
             // 2. make sure it is a 64x64 PNG (NB this will change in the future with more intelligent format detection / conversion)
             if (!ensurePNG(iconBytes)) {
-                logger.error("Icon URL {} is not a PNG, returning default icon", iconUrl);
-                blacklist(iconUrl);
+                logger.error("Icon URL {} is not a PNG, returning default icon", inputUrl);
+                blacklist(inputUrl);
                 return defaultIcon();
             }
-            if (!IconFormat.PNG_64BY64.equals(getFormat(iconBytes))) {
-                logger.error("Icon URL {} does not point to a 64×64 image, returning default icon", iconUrl);
-                blacklist(iconUrl);
+            if (!format.equals(getFormat(iconBytes))) {
+                logger.error("Icon URL {} does not point to an image of correct format ({}), returning default icon", inputUrl, format);
+                blacklist(inputUrl);
                 return defaultIcon();
             }
 
             // 3. compute the hash and store the icon
-            icon = new Icon();
-            icon.setId(UUID.randomUUID().toString());
-            icon.setBytes(iconBytes);
-            icon.setUrl(iconUrl);
-            icon.setIconFormat(IconFormat.PNG_64BY64);
-            icon.setFilename(getFileName(iconUrl));
-            icon.setHash(getHash(iconBytes));
+            image = new Image();
+            image.setId(UUID.randomUUID().toString());
+            image.setBytes(iconBytes);
+            image.setUrl(inputUrl);
+            image.setImageFormat(format);
+            image.setFilename(getFileName(inputUrl));
+            image.setHash(getHash(iconBytes));
 
-            icon = iconRepository.save(icon);
+            image = imageRepository.save(image);
         }
 
-        return UriComponentsBuilder.fromHttpUrl(baseIconUrl)
+        return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
                 .path("/")
-                .path(icon.getId())
+                .path(image.getId())
                 .path("/")
-                .path(icon.getFilename())
+                .path(image.getFilename())
                 .build()
                 .toUriString();
     }
 
-    public Icon getIcon(String id) {
-        return iconRepository.findOne(id);
+    public Image getImage(String id) {
+        return imageRepository.findOne(id);
     }
 
     public String getHash(String id) {
-        return directAccessIconRepo.getHashForIcon(id);
+        return directAccessImageRepo.getHashForIcon(id);
     }
 
+    // TODO provide a default for all image formats (eg 800×450)
     private String defaultIcon() {
         return defaultIconUrl;
 
@@ -167,40 +155,40 @@ public class IconService {
         return false;
     }
 
-    private IconFormat getFormat(byte[] image) {
+    private ImageFormat getFormat(byte[] image) {
         try {
             BufferedImage bim = ImageIO.read(new ByteArrayInputStream(image));
             if (bim == null) {
                 logger.error("Cannot read image");
-                return IconFormat.INVALID;
+                return ImageFormat.INVALID;
             }
             int height = bim.getHeight();
             int width = bim.getWidth();
 
             if (height != width) {
                 logger.error("Can only handle square icons, got {}×{}",  width, height);
-                return IconFormat.INVALID;
+                return ImageFormat.INVALID;
             }
 
             switch (height) {
                 case 16:
-                    return IconFormat.PNG_16BY16;
+                    return ImageFormat.PNG_16BY16;
                 case 32:
-                    return IconFormat.PNG_32BY32;
+                    return ImageFormat.PNG_32BY32;
                 case 64:
-                    return IconFormat.PNG_64BY64;
+                    return ImageFormat.PNG_64BY64;
                 case 128:
-                    return IconFormat.PNG_128BY128;
+                    return ImageFormat.PNG_128BY128;
                 case 256:
-                    return IconFormat.PNG_256BY256;
+                    return ImageFormat.PNG_256BY256;
                 default:
                     logger.error("Image has size {}×{} - which is invalid", height, width);
-                    return IconFormat.INVALID;
+                    return ImageFormat.INVALID;
             }
 
         } catch (IOException e) {
             logger.error("Cannot read image", e);
-            return IconFormat.INVALID;
+            return ImageFormat.INVALID;
         }
     }
 
@@ -225,13 +213,13 @@ public class IconService {
     }
 
     private void blacklist(String url) {
-        IconDownloadAttempt attempt = new IconDownloadAttempt();
+        ImageDownloadAttempt attempt = new ImageDownloadAttempt();
         attempt.setTime(DateTime.now());
         attempt.setUrl(url);
 
-        if (iconDownloadAttemptRepository.findByUrl(url) == null) { // checking is overkill, but in case of multiple threads doing the same thing, let's keep it easy
+        if (imageDownloadAttemptRepository.findByUrl(url) == null) { // checking is overkill, but in case of multiple threads doing the same thing, let's keep it easy
             logger.info("Blacklisting url {}", url);
-            iconDownloadAttemptRepository.save(attempt);
+            imageDownloadAttemptRepository.save(attempt);
         } else {
             logger.warn("Cannot blacklist url {} because it is already present in the collection", url);
         }

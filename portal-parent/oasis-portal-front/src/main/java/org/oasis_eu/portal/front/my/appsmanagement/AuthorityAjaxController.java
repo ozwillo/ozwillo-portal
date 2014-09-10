@@ -1,7 +1,8 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.services.icons.IconService;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
+import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
@@ -31,7 +32,7 @@ public class AuthorityAjaxController {
     private PortalAppManagementService appManagementService;
 
     @Autowired
-    private IconService iconService;
+    private ImageService imageService;
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/settings/{app_id}")
@@ -46,7 +47,7 @@ public class AuthorityAjaxController {
 
         CatalogEntry service = appManagementService.getService(serviceId);
         model.addAttribute("service", service);
-        model.addAttribute("iconUrl", iconService.getIconForURL(service.getIcon(RequestContextUtils.getLocale(httpRequest))));
+        model.addAttribute("iconUrl", imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(httpRequest)), ImageFormat.PNG_64BY64));
 
         return "appsmanagement/service-settings::main";
     }
