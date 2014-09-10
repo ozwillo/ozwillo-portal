@@ -156,9 +156,9 @@ public class IconServiceIntegrationTest {
         return ByteStreams.toByteArray(stream);
     }
 
-    private URI defaultIcon() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+    private String defaultIcon() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
         Method method = iconService.getClass().getDeclaredMethod("defaultIcon");
         method.setAccessible(true);
-        return (URI) method.invoke(iconService);
+        return (String) method.invoke(iconService);
     }
 }

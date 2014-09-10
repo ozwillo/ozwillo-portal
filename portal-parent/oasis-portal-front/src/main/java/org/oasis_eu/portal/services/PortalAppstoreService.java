@@ -65,9 +65,23 @@ public class PortalAppstoreService {
     public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
 
         return catalogStore.findAllVisible(targetAudiences).stream()
-                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, iconService.getIconForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request))), organizationStore.find(catalogEntry.getProviderId()).getName(),
+                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, iconService.getIconForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request))), getOrganizationName(catalogEntry),
                         getInstallationOption(catalogEntry)))
                 .collect(Collectors.toList());
+    }
+
+    private String getOrganizationName(CatalogEntry catalogEntry) {
+        String providerId = catalogEntry.getProviderId();
+        if (providerId == null) {
+            logger.warn("Catalog entry {} - {} has null provider id", catalogEntry.getId(), catalogEntry.getDefaultName());
+            return "";
+        }
+        Organization organization = organizationStore.find(providerId);
+        if (organization == null) {
+            logger.warn("Catalog entry {} - {} has a provider id ({}) that does not correspond to any known organization", catalogEntry.getId(), catalogEntry.getDefaultName(), providerId);
+            return "";
+        }
+        return organization.getName();
     }
 
     public AppstoreHit getInfo(String appId, CatalogEntryType appType) {
@@ -91,7 +105,7 @@ public class PortalAppstoreService {
     }
 
 
-    public void buy(String appId, CatalogEntryType appType) {
+    public void buy(String appId, CatalogEntryType appType, String organizationId) {
 
         logger.debug("Buying application {} of type {}", appId, appType);
 
@@ -100,7 +114,7 @@ public class PortalAppstoreService {
 
             ApplicationInstantiationRequest instanceRequest = new ApplicationInstantiationRequest();
 
-            instanceRequest.setProviderId(userDirectory.getMembershipsOfUser(userInfoHelper.currentUser().getUserId()).get(0).getOrganizationId());      // TODO refine this; see issue #34
+            instanceRequest.setProviderId(organizationId);
             instanceRequest.setName(application.getName(RequestContextUtils.getLocale(request))); // TODO make this user-provided at some stage
             instanceRequest.setDescription(application.getDescription(RequestContextUtils.getLocale(request)));
 

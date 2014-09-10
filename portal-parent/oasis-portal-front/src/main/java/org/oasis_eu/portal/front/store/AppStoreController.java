@@ -52,8 +52,8 @@ public class AppStoreController extends PortalController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value="/buy")
-    public String buy(@RequestParam String appId, @RequestParam CatalogEntryType appType) {
-        appstoreService.buy(appId, appType);
+    public String buy(@RequestParam String appId, @RequestParam CatalogEntryType appType, @RequestParam(required = false) String organizationId) {
+        appstoreService.buy(appId, appType, organizationId);
         return "redirect:/my/dashboard";
     }
 

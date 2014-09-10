@@ -45,6 +45,7 @@ $(document).ready(function() {
         $.get(href + "/inner", function(fragment) {
             appPage.html(fragment);
             appPage.show();
+            setupAppPage();
         });
 
     });

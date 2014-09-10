@@ -111,10 +111,10 @@
                 <h4 data-th-text="#{store.install_this_app}">Install this application</h4>
 
                 <div class="btn-group">
-                    <button type="button" class="btn btn-default" data-th-text="#{store.for_myself}">For myself</button>
+                    <button id="ownbuy" type="button" class="btn btn-default" data-th-text="#{store.for_myself}">For myself</button>
                     <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-th-if="${! #lists.isEmpty(authorities)}"><span data-th-text="#{store.on_behalf_of}">On behalf of</span> <span class="caret"></span></button>
                     <ul class="dropdown-menu" role="menu" data-th-remove="all-but-first">
-                        <li data-th-each="auth : ${authorities}"><a href="#" data-th-text="${auth.name}">Valence</a></li>
+                        <li data-th-each="auth : ${authorities}"><a href="#" data-th-text="${auth.name}" data-th-attr="data-orgid=${auth.id}" class="orgselector">Valence</a></li>
                         <li><a href="#">Provincia di Torino</a></li>
                         <li><a href="#">Somewhere</a></li>
                     </ul>
@@ -123,7 +123,14 @@
         </div>
     </div>
 
-    <script src="../../public/js/store/application.js" data-th-src="@{/js/store/application.js}"></script>
+    <form id="buyform" method="post" action="buy" data-th-action="@{/appstore/buy}">
+        <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+        <input type="hidden" name="appId" value="appId" data-th-value="${app.catalogEntry.id}"/>
+        <input type="hidden" name="appType" value="appType" data-th-value="${#strings.toString(app.catalogEntry.type)}"/>
+        <input type="hidden" name="organizationId" value="" id="organizationId"/>
+    </form>
+
+
 
 </div>
 
@@ -132,7 +139,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </th:block>
-
+<script src="../../public/js/store/application.js" data-th-src="@{/js/store/application.js}"></script>
 <script data-th-src="@{/js/store/application-standalone.js}" src="../../public/js/store/application-standalone.js"></script>
 
 </body>
