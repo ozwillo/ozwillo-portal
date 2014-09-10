@@ -36,6 +36,11 @@ $(document).ready(function () {
 			$('.action-select-avatar').removeClass('selected');
 			$(this).addClass('selected');
     		$('#selected-avatar').val($(this).attr('src'));
+    		$('#selected-avatar-image').attr('src', $(this).attr('src'));
+    		$('#selected-avatar-image').removeClass('avatar-empty');
+    		$('#selected-avatar-image').addClass('avatar');
+    		$('#empty-avatar-label').attr('style', 'display:none');
+    		$('#modal-edit-avatar').modal('hide');
     		return false;
 		});
 		$('#form-edit-avatar', $el).submit(function(e) {

@@ -14,6 +14,7 @@ import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormLayoutMode;
+import org.oasis_eu.portal.model.FormWidgetDropdown;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.spring.kernel.model.Address;
 import org.oasis_eu.spring.kernel.model.UserAccount;
@@ -63,7 +64,7 @@ public class MyProfileController extends PortalController {
 	@Autowired
 	private UserAccountService userAccountService;
 	
-	@ModelAttribute("currentUser")
+	@ModelAttribute("modelObject")
 	UserAccount getCurrentUserAccount() {
 		
 		return new UserAccount(userInfoService.currentUser());
@@ -93,16 +94,9 @@ public class MyProfileController extends PortalController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "")
-	public String profile(@ModelAttribute("currentUser") UserAccount currentUser, Model model) {
+	public String profile(@ModelAttribute("modelObject") UserAccount currentUser, Model model) {
 		initProfileModel(model);
-		// myProfileState.reset(); // reset still called (PostConstruct annotation)
 		return "my-profile";
-	}
-
-	@RequestMapping(method = RequestMethod.GET, value = "/fragment/account-data")
-	public String profileAccountDataFragment(Model model) {
-		initProfileModel(model);
-		return "my-profile :: account-data";
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/fragment/layout/{id}")
@@ -130,7 +124,7 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/{layoutId}")
 	public String saveLayout(@PathVariable("layoutId") String layoutId,
-			@ModelAttribute("currentUser") @Valid UserAccount currentUser, BindingResult result, Model model) {
+			@ModelAttribute("modelObject") @Valid UserAccount currentUser, BindingResult result, Model model) {
 
 		if(result.hasErrors()) {
 			
@@ -142,142 +136,25 @@ public class MyProfileController extends PortalController {
 		userAccountService.saveUserAccount(currentUser);
 
 		myProfileState.getLayout(layoutId).setMode(FormLayoutMode.VIEW);
-		myProfileState.refreshLayoutValues();
 		return "redirect:/my/profile/fragment/layout/" + layoutId;
-	}
-
-	// we should use currentUser modelAtribute as with saveLayout to benefit from automatic mapping
-	// and validation, however it would prevent from modifying language and email until
-	// general info are submitted (validation would fail on required firstname, family name, etc. fields).
-	@RequestMapping(method = RequestMethod.POST, value = "/save/language")
-	public String saveLanguage(@RequestParam("locale") String locale,
-			Model model) {
-		if (Languages.getByLocale(Locale.forLanguageTag(locale)) != null) {
-			saveSingleUserInfo("locale", locale);
-		}
-		initProfileModel(model);
-		return "my-profile";
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/save/email")
-	public String saveEmail(@ModelAttribute("currentUser") @Valid UserAccount currentUser, BindingResult result, Model model) {
-		// Source: http://www.regular-expressions.info/email.html
-		// ("almost RFC 5322")
-		if(result.hasFieldErrors("email")) {
-			
-			initProfileModel(model);
-			return "my-profile :: account-data";
-		}
-		//if (email
-		//		.matches("[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?")) {
-			saveSingleUserInfo("email", currentUser.getEmail());
-		//} else {
-			
-		//}
-		return "redirect:/my/profile/fragment/account-data";
-	}
-
-	@RequestMapping(method = RequestMethod.POST, value = "/save/avatar")
-	public String saveAvatar(@RequestParam("avatar") String avatar, Model model) {
-		if (getAvailableAvatars().contains(avatar)) {
-			saveSingleUserInfo("picture", avatar);
-		}
-		return "redirect:/my/profile/fragment/account-data";
-	}
-
-	private UserAccount buildUserAccount(MultiValueMap<String, String> data) {
-		
-		UserAccount userAccount = new UserAccount(userInfoService.currentUser());
-		
-		if(!StringUtils.isEmpty(data.getFirst("email"))) {
-		
-			userAccount.setEmail(data.getFirst("email"));
-			userInfoService.currentUser().setEmailVerified(false);
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("locale"))) {
-			
-			userAccount.setLocale(data.getFirst("locale"));
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("picture"))) {
-			
-			userAccount.setPictureUrl(data.getFirst("picture"));
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("given_name"))) {
-			
-			userAccount.setGivenName(data.getFirst("given_name"));
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("family_name"))) {
-			
-			userAccount.setFamilyName(data.getFirst("family_name"));
-		}
-    	
-		String birthdate = data.getFirst("birthdate");
-		if (!StringUtils.isEmpty(birthdate)) {
-			userAccount.setBirthdate(LocalDate.parse(birthdate));
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("gender"))) {
-			
-			userAccount.setGender(data.getFirst("gender"));
-		}
-
-		if(!StringUtils.isEmpty(data.getFirst("phone_number"))) {
-			
-			userAccount.setPhoneNumber(data.getFirst("phone_number"));
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("street_address"))) {
-			
-			userAccount.getAddress().setStreetAddress(data.getFirst("street_address"));
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("locality"))) {
-			
-			userAccount.getAddress().setLocality(data.getFirst("locality"));
-		}
-		
-		if(!StringUtils.isEmpty(data.getFirst("postal_code"))) {
-			
-			userAccount.getAddress().setPostalCode(data.getFirst("postal_code"));
-		}
-	
-		if(!StringUtils.isEmpty(data.getFirst("country"))) {
-			
-			userAccount.getAddress().setCountry(data.getFirst("country"));
-		}
-		
-		return userAccount;
-	}
-
-	protected void saveSingleUserInfo(String key, String value) {
-		MultiValueMap<String, String> userData = new LinkedMultiValueMap<String, String>();
-		userData.put(key, Arrays.asList(value));
-		userAccountService.saveUserAccount(buildUserAccount(userData));
-		myProfileState.refreshLayoutValues();
 	}
 
 	protected void initProfileModel(Model model) {
 		model.addAttribute("navigation",
 				myNavigationService.getNavigation("profile"));
 		model.addAttribute("layouts", myProfileState.getLayouts());
-		model.addAttribute("availableAvatars", getAvailableAvatars());
-    if (user().getLocale() != null) {
-		    model.addAttribute("userLanguage", Languages.getByLocale(Locale.forLanguageTag(
-				    user().getLocale()), Languages.ENGLISH));
-    } else {
-        model.addAttribute("userLanguage", Languages.ENGLISH);
-    }
-	}
-
-	private List<String> getAvailableAvatars() {
-		// TODO Where/how do we store avatars?
-		return Arrays.asList("/img/my/avatar/img-19.png",
-				"/img/my/avatar/img-20.png", "/img/my/avatar/img-21.png",
-				"/img/my/avatar/img-22.png", "/img/my/avatar/img-23.png");
+		
+		FormWidgetDropdown localeDropDown = (FormWidgetDropdown) myProfileState.getLayout("account").getWidget("locale");
+		for(Languages language : languages()) {
+			localeDropDown.addOption(language.getLocale().getLanguage(), "language.name."+language.getLocale().getLanguage());
+		}
+		
+	    if (user().getLocale() != null) {
+			    model.addAttribute("userLanguage", Languages.getByLocale(Locale.forLanguageTag(
+					    user().getLocale()), Languages.ENGLISH));
+	    } else {
+	        model.addAttribute("userLanguage", Languages.ENGLISH);
+	    }
 	}
 
 };
