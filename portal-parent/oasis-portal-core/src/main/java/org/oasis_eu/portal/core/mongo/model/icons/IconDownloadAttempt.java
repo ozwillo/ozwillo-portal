@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.core.mongo.model.icons;
 
 import org.joda.time.DateTime;
-import org.joda.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -19,7 +18,7 @@ public class IconDownloadAttempt {
     @Indexed(unique = true)
     private String url;
 
-    @Indexed(expireAfterSeconds = 60)
+    @Indexed(expireAfterSeconds = 900)
     private DateTime time;
 
     public String getId() {
