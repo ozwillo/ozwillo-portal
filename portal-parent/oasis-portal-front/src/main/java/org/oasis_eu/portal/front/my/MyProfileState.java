@@ -19,6 +19,7 @@ import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
@@ -38,6 +39,10 @@ public class MyProfileState {
 
     public static final String LAYOUT_ADDRESS = "address";
     
+    public static final String LAYOUT_FORM_ACTION = "/my/profile/save";
+    
+    public static final String LAYOUT_FORM_CLASS = "personal-data-form";
+    
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(MyProfileState.class);
 
@@ -45,6 +50,9 @@ public class MyProfileState {
     private UserInfoService userInfoHelper;
     
 	private Map<String, FormLayout> layouts;
+	
+	@Value("${kernel.auth.password_change_endpoint:''}")
+    protected String passwordChangeEndpoint;
     
     @PostConstruct
     public void reset() {
@@ -54,18 +62,18 @@ public class MyProfileState {
     	
     	layouts = new HashMap<String, FormLayout>(); 
     	
-    	FormLayout accountFormLayout = new FormLayout(LAYOUT_ACCOUNT, "my.profile.title.account");
+    	FormLayout accountFormLayout = new FormLayout(LAYOUT_ACCOUNT, "my.profile.title.account", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
     	accountFormLayout.setOrder(1);
     	accountFormLayout.appendWidget(new AvatarWidget("pictureUrl", "my.profile.account.avatar", getAvailableAvatars()));
     	accountFormLayout.appendWidget(new FormWidgetText("email",
         		"my.profile.account.email"));
     	accountFormLayout.appendWidget(new FormWidgetUrlButton("password",
-        		"my.profile.account.password", "my.profile.account.changepassword", "http://localhost:8080"));
+        		"my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
     	accountFormLayout.appendWidget(new FormWidgetDropdown("locale",
         		"my.profile.account.language"));
     	layouts.put(accountFormLayout.getId(), accountFormLayout);
         
-        FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity");
+        FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
         idFormLayout.setOrder(2);
         idFormLayout.appendWidget(new FormWidgetText("givenName",
         		"my.profile.personal.firstname"));
@@ -81,7 +89,7 @@ public class MyProfileState {
         		"my.profile.personal.phonenumber"));
         layouts.put(idFormLayout.getId(), idFormLayout);
         
-        FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address");
+        FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
         idFormLayout.setOrder(3);
         adFormLayout.appendWidget(new FormWidgetText("address.streetAddress",
         		"my.profile.personal.streetaddress"));

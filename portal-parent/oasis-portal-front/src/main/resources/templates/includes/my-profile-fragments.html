@@ -11,8 +11,8 @@
         </button>
     </div>
     <div class="col-sm-10 form-data-block">
-    <form data-th-class="'form-horizontal personal-data-form' + ${'EDIT'.equals(layout.mode.toString()) ? ' edit' : ''}"
-        role="form" data-th-action="@{'/my/profile/save/' + ${layout.id}}" data-th-data="${layout.id}"  data-th-object="${modelObject}">
+    <form data-th-class="'form-horizontal ' + ${layout.formClass} + ${'EDIT'.equals(layout.mode.toString()) ? ' edit' : ''}"
+        role="form" data-th-action="@{${layout.actionUrl}+'/'+${layout.id}}" data-th-data="${layout.id}"  data-th-object="${modelObject}">
         
         
       <div data-th-each="widget: ${layout.widgets}" class="form-group" data-th-classappend="${#fields.hasErrors('__${widget.id}__')}? 'has-error'">
@@ -57,14 +57,14 @@
 <div data-th-fragment="dropdown-widget (widget, value, mode)">
     <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="#{${widget.getOptionLabel('__${value}__')}}">?</span>
     <div data-th-if="${'EDIT'.equals(mode.toString())}" class="widget-dropdown">
-        <input type="hidden" data-th-name="${widget.id}" data-th-value="${value}" />
+        <input data-th-id="selected-option-__${widget.id}__" type="hidden" data-th-name="${widget.id}" data-th-value="${value}" />
         <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-            <span class="value-label" data-th-text="#{${widget.getOptionLabel('__${value}__')}}">English</span>
+            <span class="value-label" data-th-id="selected-option-__${widget.id}__-label" data-th-text="#{${widget.getOptionLabel('__${value}__')}}">English</span>
             <span class="caret"></span>
         </button>
         <ul class="dropdown-menu" role="menu" aria-labelledby="language-label">
             <li data-th-each="option : ${widget.options}">
-                <a data-th-data="${option.key}" href="#" data-th-text="#{${option.value}}">Blablaish</a>
+                <a data-th-id="option-__${widget.id}__-__${option.key}__" class="action-select-option" data-th-data="${option.key}" href="#" data-th-text="#{${option.value}}">Blablaish</a>
             </li>
         </ul>
     </div>

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -30,6 +31,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -128,11 +130,24 @@ public class MyProfileController extends PortalController {
 
 		if(result.hasErrors()) {
 			
-			//return "my-profile";
-			initProfileModel(model);
-			model.addAttribute("layout", myProfileState.getLayout(layoutId));
-			return "includes/my-profile-fragments :: layout";
+			// check that on-errors attributes are fields from the layout
+			List<FieldError> fieldsErrors = result.getFieldErrors();
+			Iterator<FieldError> itFieldsErrors = fieldsErrors.iterator();
+			int layoutFieldsErrorsCount = 0;
+			while(itFieldsErrors.hasNext()) {
+				FieldError fieldError = itFieldsErrors.next();
+				if(myProfileState.getLayout(layoutId).getWidget(fieldError.getField())!=null) {
+					layoutFieldsErrorsCount++;
+				}
+			}
+			if(layoutFieldsErrorsCount>0) {
+			
+				initProfileModel(model);
+				model.addAttribute("layout", myProfileState.getLayout(layoutId));
+				return "includes/my-profile-fragments :: layout";
+			}
 		}
+		
 		userAccountService.saveUserAccount(currentUser);
 
 		myProfileState.getLayout(layoutId).setMode(FormLayoutMode.VIEW);
