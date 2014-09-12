@@ -78,6 +78,12 @@
             <version>${tika.version}</version>
         </dependency>
 
+        <!-- servlet -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>javax.servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
         <!-- testing dependency -->
         <dependency>

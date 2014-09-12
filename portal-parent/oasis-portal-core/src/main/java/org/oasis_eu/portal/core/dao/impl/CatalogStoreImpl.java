@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -51,6 +52,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
 
     @Override
+    @Cacheable("appstore")
     public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
@@ -64,12 +66,14 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
+    @Cacheable("applications")
     public CatalogEntry findApplication(String id) {
         return getCatalogEntry(id, appsEndpoint + "/app/{id}");
     }
 
 
     @Override
+    @Cacheable("services")
     public CatalogEntry findService(String id) {
         return getCatalogEntry(id, appsEndpoint + "/service/{id}");
     }
@@ -99,6 +103,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
+    @Cacheable("services-of-instance")
     public List<CatalogEntry> findServicesOfInstance(String instanceId) {
         CatalogEntry[] body = kernel.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, null, CatalogEntry[].class, user(), instanceId).getBody();
         if (body != null) {
@@ -111,6 +116,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
+    @Cacheable("instances")
     public ApplicationInstance findApplicationInstance(String instanceId) {
         return kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId).getBody();
     }
