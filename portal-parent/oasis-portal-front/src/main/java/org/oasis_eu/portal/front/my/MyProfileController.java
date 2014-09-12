@@ -69,7 +69,7 @@ public class MyProfileController extends PortalController {
 	@ModelAttribute("modelObject")
 	UserAccount getCurrentUserAccount() {
 		
-		return new UserAccount(userInfoService.currentUser());
+		return new UserAccount(user());
 	}
 	
 	@InitBinder
@@ -163,13 +163,6 @@ public class MyProfileController extends PortalController {
 		for(Languages language : languages()) {
 			localeDropDown.addOption(language.getLocale().getLanguage(), "language.name."+language.getLocale().getLanguage());
 		}
-		
-	    if (user().getLocale() != null) {
-			    model.addAttribute("userLanguage", Languages.getByLocale(Locale.forLanguageTag(
-					    user().getLocale()), Languages.ENGLISH));
-	    } else {
-	        model.addAttribute("userLanguage", Languages.ENGLISH);
-	    }
 	}
 
 };

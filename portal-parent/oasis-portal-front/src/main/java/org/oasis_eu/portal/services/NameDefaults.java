@@ -1,6 +1,10 @@
 package org.oasis_eu.portal.services;
 
+import java.util.Locale;
+
 import com.google.common.base.Strings;
+
+import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -46,6 +50,15 @@ public class NameDefaults {
 
             userInfo.setName(sName);
         }
+        
+        // normalizes locale (en if included country/was en-GB in database)
+        if(userInfo.getLocale()!=null) {
+			
+        	userInfo.setLocale(Locale.forLanguageTag(userInfo.getLocale()).getLanguage());
+		} else {
+			Locale currentLocale = RequestContextUtils.getLocale(request);
+			userInfo.setLocale(currentLocale.getLanguage());
+		}
 
         return userInfo;
     }
