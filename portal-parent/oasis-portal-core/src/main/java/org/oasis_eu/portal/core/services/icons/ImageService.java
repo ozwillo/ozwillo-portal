@@ -55,7 +55,7 @@ public class ImageService {
     public String getImageForURL(String inputUrl, ImageFormat format) {
 
         if (imageDownloadAttemptRepository.findByUrl(inputUrl) != null) {
-            logger.info("Image input URL {} is blacklisted, returning default icon", inputUrl);
+            logger.debug("Image input URL {} is blacklisted, returning default icon", inputUrl);
             return defaultIcon();
         }
 
