@@ -72,7 +72,7 @@
         <div class="col-sm-4 center-container">
             <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}">
                 <th:block data-th-case="INSTALLED">
-                    <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.installed}">Installed</button>
+                    <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}">Installed</button>
                     <button class="btn btn-indicator btn-indicator-installed-icon"><i class="fa fa-check"></i></button>
                 </th:block>
                 <th:block data-th-case="FREE">
