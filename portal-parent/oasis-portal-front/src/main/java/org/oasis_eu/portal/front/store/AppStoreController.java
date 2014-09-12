@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.front.store;
 
+import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.front.generic.PortalController;
@@ -11,9 +12,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * User: schambon
@@ -74,5 +78,19 @@ public class AppStoreController extends PortalController {
     private void applicationModel(String appId, String appType, Model model) {
         model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
         model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
+    }
+
+    @ExceptionHandler(ApplicationInstanceCreationException.class)
+    public ModelAndView instantiationError(ApplicationInstanceCreationException e) {
+        Map<String, Object> model = new HashMap<>();
+        model.put("appname", e.getRequested().getName());
+        model.put("appid", e.getApplicationId());
+        model.put("errortype", e.getType().toString());
+
+        model.put("navigation", myNavigationService.getNavigation(null));
+        model.put("currentLanguage", currentLanguage());
+        model.put("user", user());
+
+        return new ModelAndView("store/instantiation-error", model);
     }
 }

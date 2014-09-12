@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
+import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
@@ -23,6 +24,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
@@ -96,9 +98,16 @@ public class CatalogStoreImpl implements CatalogStore {
 
         logger.info("Application instantiation request: {}", instancePattern);
 
-        ResponseEntity<String> result = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
-        result.getHeaders().entrySet().stream().forEach(e -> logger.debug("{}: {}", e.getKey(), e.getValue()));
-        logger.debug(result.getBody());
+        try {
+            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
+            if (responseEntity.getStatusCode().is4xxClientError()) {
+                logger.error("Got a client error when creating an instance of application {} ({}): {}", appId, instancePattern.getName(), responseEntity.getStatusCode().getReasonPhrase());
+                throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
+            }
+        } catch (HttpServerErrorException _502) {
+            logger.error("Could not create an instance of application " + appId + " - " + instancePattern.getName(), _502);
+            throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
+        }
 
     }
 
