@@ -43,14 +43,14 @@ public class AppStoreController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
     public String main(Model model) {
-        model.addAttribute("hits", appstoreService.getAll(Arrays.asList(Audience.values())));
+        model.addAttribute("hits", appstoreService.getAll(Arrays.asList(Audience.values()), null));
 
         return "store/appstore";
     }
 
     @RequestMapping(method = RequestMethod.POST, value="/search")
-    public String search(Model model, @RequestParam String query, @RequestParam List<Audience> audience) {
-        model.addAttribute("hits", appstoreService.getAll(audience));
+    public String search(Model model, @RequestParam String query, @RequestParam List<Audience> audience, @RequestParam List<String> installOptions) {
+        model.addAttribute("hits", appstoreService.getAll(audience, installOptions));
 
         return "store/appstore::hits";
     }

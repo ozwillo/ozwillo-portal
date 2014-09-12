@@ -63,9 +63,9 @@ public class PortalAppstoreService {
     @Autowired
     private PortalAppManagementService appManagementService;
 
-    public List<AppstoreHit> getAll(List<Audience> targetAudiences) {
+    public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<String> installOptions) {
 
-        return catalogStore.findAllVisible(targetAudiences).stream()
+        return catalogStore.findAllVisible(targetAudiences, installOptions).stream()
                 .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64), getOrganizationName(catalogEntry),
                         getInstallationOption(catalogEntry)))
                 .collect(Collectors.toList());

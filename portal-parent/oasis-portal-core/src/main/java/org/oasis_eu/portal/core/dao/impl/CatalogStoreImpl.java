@@ -55,15 +55,22 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     @Cacheable("appstore")
-    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences) {
+    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<String> installOptions) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
                 .build()
                 .toUriString();
 
+        if(installOptions == null || installOptions.size() == PaymentOption.values().length) {
+        	return Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()))
+                .stream()
+                .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
+                .collect(Collectors.toList());
+        }
         return Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()))
                 .stream()
                 .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
+                .filter(e -> installOptions.stream().anyMatch(installOption -> PaymentOption.valueOf(installOption).equals(e.getPaymentOption())))
                 .collect(Collectors.toList());
     }
 

@@ -21,7 +21,7 @@ public interface CatalogStore {
 
     ApplicationInstance findApplicationInstance(String instanceId);
 
-    List<CatalogEntry> findAllVisible(List<Audience> targetAudience);
+    List<CatalogEntry> findAllVisible(List<Audience> targetAudience, List<String> installOptions);
 
     void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
 

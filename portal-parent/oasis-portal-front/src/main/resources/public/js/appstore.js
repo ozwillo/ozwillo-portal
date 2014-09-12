@@ -21,6 +21,16 @@ $(document).ready(function() {
         $("#searchForm").submit();
 
     });
+    
+    $("input[name='installOptions']").change(function(e) {
+        if(! $(this).is(":checked")) {
+            if (! $("input[name='installOptions']:checked").length) {
+                $(this).prop("checked", true); // recheck it
+            }
+
+        }
+        $("#searchForm").submit();
+    });
 
     $("#searchForm").submit(function(e){
         e.preventDefault();
