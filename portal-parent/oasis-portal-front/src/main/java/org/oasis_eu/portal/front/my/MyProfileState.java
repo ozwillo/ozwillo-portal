@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.front.my;
 
-import java.time.LocalDate;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -8,21 +8,21 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.oasis_eu.portal.model.AvatarWidget;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormWidget;
 import org.oasis_eu.portal.model.FormWidgetDate;
 import org.oasis_eu.portal.model.FormWidgetDropdown;
 import org.oasis_eu.portal.model.FormWidgetText;
-import org.oasis_eu.spring.kernel.model.Address;
-import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.portal.model.FormWidgetUrlButton;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Controller;
-import org.springframework.util.StringUtils;
 
 /**
  * 
@@ -33,9 +33,15 @@ import org.springframework.util.StringUtils;
 @Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MyProfileState {
 
+	public static final String LAYOUT_ACCOUNT = "account";
+	
     public static final String LAYOUT_IDENTITY = "identity";
 
     public static final String LAYOUT_ADDRESS = "address";
+    
+    public static final String LAYOUT_FORM_ACTION = "/my/profile/save";
+    
+    public static final String LAYOUT_FORM_CLASS = "personal-data-form";
     
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(MyProfileState.class);
@@ -44,6 +50,9 @@ public class MyProfileState {
     private UserInfoService userInfoHelper;
     
 	private Map<String, FormLayout> layouts;
+	
+	@Value("${kernel.auth.password_change_endpoint:''}")
+    protected String passwordChangeEndpoint;
     
     @PostConstruct
     public void reset() {
@@ -53,8 +62,19 @@ public class MyProfileState {
     	
     	layouts = new HashMap<String, FormLayout>(); 
     	
-        FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity");
-        idFormLayout.setOrder(1);
+    	FormLayout accountFormLayout = new FormLayout(LAYOUT_ACCOUNT, "my.profile.title.account", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
+    	accountFormLayout.setOrder(1);
+    	accountFormLayout.appendWidget(new AvatarWidget("pictureUrl", "my.profile.account.avatar", getAvailableAvatars()));
+    	accountFormLayout.appendWidget(new FormWidgetText("email",
+        		"my.profile.account.email"));
+    	accountFormLayout.appendWidget(new FormWidgetUrlButton("password",
+        		"my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
+    	accountFormLayout.appendWidget(new FormWidgetDropdown("locale",
+        		"my.profile.account.language"));
+    	layouts.put(accountFormLayout.getId(), accountFormLayout);
+        
+        FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
+        idFormLayout.setOrder(2);
         idFormLayout.appendWidget(new FormWidgetText("givenName",
         		"my.profile.personal.firstname"));
         idFormLayout.appendWidget(new FormWidgetText("familyName",
@@ -69,8 +89,8 @@ public class MyProfileState {
         		"my.profile.personal.phonenumber"));
         layouts.put(idFormLayout.getId(), idFormLayout);
         
-        FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address");
-        idFormLayout.setOrder(2);
+        FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
+        idFormLayout.setOrder(3);
         adFormLayout.appendWidget(new FormWidgetText("address.streetAddress",
         		"my.profile.personal.streetaddress"));
         adFormLayout.appendWidget(new FormWidgetText("address.locality",
@@ -80,36 +100,7 @@ public class MyProfileState {
         adFormLayout.appendWidget(new FormWidgetText("address.country",
         		"my.profile.personal.country"));
         layouts.put(adFormLayout.getId(), adFormLayout);
-        
-        refreshLayoutValues();
     }
-
-    // plus nécessaire, dans la ressource get on ajoute au modèle le currentUser,
-    // créé à partir du userInfo mis à jour (saveUserAccount appelle refreshCurrentUser,
-    // qui appelle openIdCService.getUserInfo(authentication.getAccessToken()) et authentication.setUserInfo(userInfo)
-    // après la mise à jour). Egalement pas utile pour reset (on utilise des th:field qui référencent l'objet du modèle).
-    // Cependant pour les listes select génériques, on utilisait #{${widget.getOptionLabel(widget.value)}}
-    // et on ne peut pas utiliser #{${widget.getOptionLabel(${currentUser.__${widget.id}__}}},
-    // donc on met également à jour la valeur dans le widget.
-	public void refreshLayoutValues() {
-    	UserInfo userInfo = userInfoHelper.currentUser();
-		
-    	FormLayout idFormLayout = layouts.get(LAYOUT_IDENTITY);
-    	idFormLayout.getWidget("givenName").setValue(userInfo.getGivenName());
-    	idFormLayout.getWidget("familyName").setValue(userInfo.getFamilyName());
-    	LocalDate birthdate = userInfo.getBirthdate();
-    	if (birthdate != null) {
-    		idFormLayout.getWidget("birthdate").setValue(birthdate.toString());
-    	}
-    	idFormLayout.getWidget("gender").setValue(userInfo.getGender());
-    	idFormLayout.getWidget("phoneNumber").setValue(userInfo.getPhoneNumber());
-
-    	FormLayout adFormLayout = layouts.get(LAYOUT_ADDRESS);
-    	adFormLayout.getWidget("address.streetAddress").setValue(userInfo.getStreetAddress());
-    	adFormLayout.getWidget("address.locality").setValue(userInfo.getLocality());
-    	adFormLayout.getWidget("address.postalCode").setValue(userInfo.getPostalCode());
-    	adFormLayout.getWidget("address.country").setValue(userInfo.getCountry());
-	}
 	
 	public List<FormLayout> getLayouts() {
 		return layouts.values().stream().sorted().collect(Collectors.toList());
@@ -128,6 +119,13 @@ public class MyProfileState {
 			}
 		}
 		return null;
+	}
+	
+	private List<String> getAvailableAvatars() {
+		// TODO Where/how do we store avatars?
+		return Arrays.asList("/img/my/avatar/img-19.png",
+				"/img/my/avatar/img-20.png", "/img/my/avatar/img-21.png",
+				"/img/my/avatar/img-22.png", "/img/my/avatar/img-23.png");
 	}
     
 }

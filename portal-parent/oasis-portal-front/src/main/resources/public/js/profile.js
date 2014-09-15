@@ -18,10 +18,40 @@ $(document).ready(function () {
 				url: $form.attr('action'),
 				method: 'POST',
 				data: $form.serialize(),
-				success: function(data) {
+				success: function(accountFragment) {
 					var layoutSelector = '#' + $form.attr('data');
-					$(layoutSelector).replaceWith(data);
+					$(layoutSelector).replaceWith(accountFragment);
 					initBindings($(layoutSelector));
+					// if switching language, the returned account layout fragment from xhr will contain
+					// the new localized labels. We however also want to update other layouts fields's labels
+					// (only if these are in view mode as to prevent reseting in-editing state forms).
+					if($form.attr('data')==='account') {
+						
+						if($('#identity').find('button').attr('class').indexOf('action-toggle-view active')>0) {
+							$.ajax({
+								url: '/my/profile/fragment/layout/identity',
+								method: 'GET',
+								data: $form.serialize(),
+								success: function(identityFragment) {
+									
+									$('#identity').replaceWith(identityFragment);
+									initBindings($('#identity'));
+								}
+							});
+						}
+						if($('#address').find('button').attr('class').indexOf('action-toggle-view active')>0) {
+							$.ajax({
+								url: '/my/profile/fragment/layout/address',
+								method: 'GET',
+								data: $form.serialize(),
+								success: function(identityFragment) {
+									
+									$('#address').replaceWith(identityFragment);
+									initBindings($('#address'));
+								}
+							});
+						}
+					}
 				}
 			})
 		});
@@ -36,57 +66,25 @@ $(document).ready(function () {
 			$('.action-select-avatar').removeClass('selected');
 			$(this).addClass('selected');
     		$('#selected-avatar').val($(this).attr('src'));
+    		$('#selected-avatar-image').attr('src', $(this).attr('src'));
+    		$('#selected-avatar-image').removeClass('avatar-empty');
+    		$('#selected-avatar-image').addClass('avatar');
+    		$('#empty-avatar-label').attr('style', 'display:none');
+    		$('#modal-edit-avatar').modal('hide');
     		return false;
-		});
-		$('#form-edit-avatar', $el).submit(function(e) {
-			e.preventDefault();
-			$form = $(this);
-			$.ajax({
-				url: $form.attr('action'),
-				method: 'POST',
-				data: $form.serialize(),
-				success: refreshAccountData
-			});
 		});
 		
-		// Edit language
-    	$('#btn-edit-language', $el).click(function(e) {
-    		$('#modal-edit-language').modal('show');
-    		return false;
-    	})
-    	$('.action-select-language', $el).click(function(e) {
+    	$('.action-select-option', $el).click(function(e) {
     		var $this = $(this);
-    		$('#selected-language').val($this.attr('data'));
-    		$('#selected-language-label').html($this.html());
+    		var optionId = e.target.id;
+    		// $(this) isn't the enclosing widget, then can't use the following code used by .widget-dropdown
+    		// var $widget = $(this);
+    		// var $valueHolder = $('input', $widget);
+    		// we could use $(this).closest('ul').parent() or $(this).closest('ul').closest('input') 
+    		var widgetId = optionId.substring(optionId.indexOf('option-')+7, optionId.lastIndexOf('-'));
+    		$('#selected-option-'+widgetId).val($this.attr('data'));
+    		$('#selected-option-'+widgetId+'-label').html($this.html());
     	});
-		$('#form-edit-language', $el).submit(function(e) {
-			e.preventDefault();
-			$form = $(this);
-			$.ajax({
-				url: $form.attr('action'),
-				method: 'POST',
-				data: $form.serialize(),
-				success: function() {
-					window.location = '/my/profile';
-				}
-			});
-		});
-
-		// Edit email
-    	$('#btn-edit-email', $el).click(function(e) {
-    		$('#modal-edit-email').modal('show');
-    		return false;
-    	})
-		$('#form-edit-email', $el).submit(function(e) {
-			e.preventDefault();
-			$form = $(this);
-			$.ajax({
-				url: $form.attr('action'),
-				method: 'POST',
-				data: $form.serialize(),
-				success: refreshAccountData
-			});
-		});
     	
     	// Special layout widgets
     	$('.widget-dropdown', $el).each(function() {
@@ -146,14 +144,6 @@ $(document).ready(function () {
 				initBindings($('#' + id));
 			}
 		})
-	}
-	
-	function refreshAccountData(html) {
-		$('.modal.in').one('hidden.bs.modal', function() {
-			$('#account-data').replaceWith(html);
-			initBindings($('#account-data'));
-		});
-		$('.modal.in').modal('hide');
 	}
 
 });
