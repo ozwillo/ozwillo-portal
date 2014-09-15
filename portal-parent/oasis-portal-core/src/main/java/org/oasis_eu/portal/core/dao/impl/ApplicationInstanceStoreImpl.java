@@ -8,6 +8,7 @@ import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,16 +29,18 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
     @Autowired
     private Kernel kernel;
 
-    @Value("${kernel.portal_endpoints.apps:''}")
+    @Value("${kernel.portal_endpoints.apps:}")
     private String appsEndpoint;
 
     @Override
+    @Cacheable("user-instances")
     public List<ApplicationInstance> findByUserId(String userId) {
 
         return Arrays.asList(kernel.exchange(appsEndpoint + "/instance/user/{user_id}", HttpMethod.GET, null, ApplicationInstance[].class, user(), userId).getBody());
 
     }
 
+    @Cacheable("org-instances")
     public List<ApplicationInstance> findByOrganizationId(String organizationId) {
 
         ResponseEntity<ApplicationInstance[]> exchange = kernel.exchange(appsEndpoint + "/instance/organization/{organization_id}", HttpMethod.GET, null, ApplicationInstance[].class, user(), organizationId);

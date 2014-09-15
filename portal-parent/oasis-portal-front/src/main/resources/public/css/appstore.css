@@ -37,20 +37,19 @@ div.hit:hover div.caption {
     top:0%;
 }
 
-
-div.hit p.appname {
+p.appname {
     font-size: 16px;
     font-weight: bold;
     margin: 0;
 }
 
-div.hit p.providername {
+p.providername {
     font-size: 14px;
     font-weight: bold;
     margin: 0;
 }
 
-div.hit p.appdescription {
+p.appdescription {
     font-size: 12px;
 }
 
@@ -90,7 +89,104 @@ div.indicator {
     color: #ffffff;
 }
 
-#confirmation p.appname {
-    text-align: center;
-    font-weight: bold;
+
+div#veil {
+    height: 100%;
+    width: 100%;
+    background-color: #452959;
+    position: fixed;
+    top: 0; left: 0;
+    opacity: 0.75;
+    z-index: 1040;
+    display: none;
+}
+
+div#veil.in {
+    display: block;
+}
+
+div#veil a {
+    display: none;
+}
+
+div#apppage {
+    background-color: #ffffff;
+    opacity: 1;
+    display: none;
+    z-index: 1050;
+    position: absolute;
+    top: 20px;
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+div#apppage.in {
+    display: block;
+}
+
+@media(max-width: 1000px) {
+    div#apppage {
+        width: 100%;
+    }
+}
+
+@media(min-width: 1000px) {
+    div#apppage {
+        width: 1000px;
+        left: 50%;
+        margin-left: -500px;
+    }
+}
+
+div.center-container {
+    position: relative;
+    height: 64px;
+}
+
+div.vcentered {
+    position: absolute;
+    top: 50%;
+    margin-top: -14px;
+}
+
+.rating-static {
+    width: 80px;
+    height: 20px;
+    display: block;
+    background-image: url('/img/icons/rating-static.png');
+}
+
+.rating-00 { background-position: -80px 0px; }
+.rating-10 { background-position: -60px 0px; }
+.rating-20 { background-position: -40px 0px; }
+.rating-30 { background-position: -20px 0px; }
+.rating-40 { background-position: 00px 0px; }
+.rating-05 { background-position: -80px -20px; }
+.rating-15 { background-position: -60px -20px; }
+.rating-25 { background-position: -40px -20px; }
+.rating-35 { background-position: -20px -20px; }
+
+div.app-image {
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+div#install-app-popover {
+    display: none;
+}
+
+.popover {
+    width: 400px;
+    max-width: 400px;
+
+    border: 1px #636681 solid;
+}
+
+.popover.bottom > .arrow {
+    border-bottom-color: #636681;
+}
+
+.popover h4 {
+    font-size: 18px;
+
 }

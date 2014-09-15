@@ -1,5 +1,3 @@
-#TODO: Maven overlay project to add in the "real" production properties
-
 spring:
   thymeleaf:
     cache: false
@@ -10,7 +8,7 @@ application:
   url: http://localhost
   security:
     fetchUserInfo: true
-  baseIconUrl: ${application.url}/icon
+  baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
 
 kernel:
@@ -39,6 +37,7 @@ kernel:
     subscriptions: http://localhost:8081/subs
     appstore: http://localhost:8081/store
     catalog: http://localhost:8081/catalog
+    apps: http://localhost:8081/apps
 
 
 persistence:

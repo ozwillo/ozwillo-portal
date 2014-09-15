@@ -41,4 +41,14 @@ public class ApplicationInstantiationRequest {
     public void setDescription(String description) {
         this.description = description;
     }
+
+
+    @Override
+    public String toString() {
+        return "ApplicationInstantiationRequest{" +
+                "name='" + name + '\'' +
+                ", description='" + description + '\'' +
+                ", providerId='" + providerId + '\'' +
+                '}';
+    }
 }

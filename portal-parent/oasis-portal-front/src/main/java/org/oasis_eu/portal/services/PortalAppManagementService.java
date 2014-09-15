@@ -62,12 +62,13 @@ public class PortalAppManagementService {
     private MessageSource messageSource;
 
 
-    public List<Authority> getMyAuthorities() {
+    public List<Authority> getMyAuthorities(boolean includePersonal) {
         String userId = userInfoService.currentUser().getUserId();
 
-
         List<Authority> authorities = new ArrayList<>();
-        authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
+        if (includePersonal) {
+            authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
+        }
 
         authorities.addAll(userDirectory.getMembershipsOfUser(userId)
                 .stream()
@@ -124,7 +125,7 @@ public class PortalAppManagementService {
         logger.debug("Fetching instance data for {}", instance);
 
         CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
-        AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType());
+        AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), null);
 
 
         return new MyAppsInstance()

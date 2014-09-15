@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
+import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
@@ -16,12 +17,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
@@ -42,34 +45,44 @@ public class CatalogStoreImpl implements CatalogStore {
     @Autowired
     private Kernel kernel;
 
-    @Value("${kernel.portal_endpoints.catalog:''}")
+    @Value("${kernel.portal_endpoints.catalog:}")
     private String endpoint;
 
-    @Value("${kernel.portal_endpoints.apps:''}")
+    @Value("${kernel.portal_endpoints.apps:}")
     private String appsEndpoint;
 
 
 
     @Override
-    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences) {
+    @Cacheable("appstore")
+    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<String> installOptions) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
                 .build()
                 .toUriString();
 
+        if(installOptions == null || installOptions.size() == PaymentOption.values().length) {
+        	return Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()))
+                .stream()
+                .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
+                .collect(Collectors.toList());
+        }
         return Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()))
                 .stream()
                 .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
+                .filter(e -> installOptions.stream().anyMatch(installOption -> PaymentOption.valueOf(installOption).equals(e.getPaymentOption())))
                 .collect(Collectors.toList());
     }
 
     @Override
+    @Cacheable("applications")
     public CatalogEntry findApplication(String id) {
         return getCatalogEntry(id, appsEndpoint + "/app/{id}");
     }
 
 
     @Override
+    @Cacheable("services")
     public CatalogEntry findService(String id) {
         return getCatalogEntry(id, appsEndpoint + "/service/{id}");
     }
@@ -90,13 +103,23 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) {
 
-        ResponseEntity<String> result = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
-        result.getHeaders().entrySet().stream().forEach(e -> logger.debug("{}: {}", e.getKey(), e.getValue()));
-        logger.debug(result.getBody());
+        logger.info("Application instantiation request: {}", instancePattern);
+
+        try {
+            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
+            if (responseEntity.getStatusCode().is4xxClientError()) {
+                logger.error("Got a client error when creating an instance of application {} ({}): {}", appId, instancePattern.getName(), responseEntity.getStatusCode().getReasonPhrase());
+                throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
+            }
+        } catch (HttpServerErrorException _502) {
+            logger.error("Could not create an instance of application " + appId + " - " + instancePattern.getName(), _502);
+            throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
+        }
 
     }
 
     @Override
+    @Cacheable("services-of-instance")
     public List<CatalogEntry> findServicesOfInstance(String instanceId) {
         CatalogEntry[] body = kernel.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, null, CatalogEntry[].class, user(), instanceId).getBody();
         if (body != null) {
@@ -109,6 +132,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
+    @Cacheable("instances")
     public ApplicationInstance findApplicationInstance(String instanceId) {
         return kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId).getBody();
     }

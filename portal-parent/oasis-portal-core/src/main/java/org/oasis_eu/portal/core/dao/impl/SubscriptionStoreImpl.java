@@ -10,6 +10,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,6 +40,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
 
     @Override
+    @Cacheable("subscriptions")
     public List<Subscription> findByUserId(String userId) {
         try {
             ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null, Subscription[].class, user(), userId);
@@ -64,8 +66,6 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
         if (response.getStatusCode().is2xxSuccessful()) {
             logger.debug("Created subscription: {}", response.getStatusCode());
-
-//            return response.getBody();
         } else {
             logger.warn("Subscription creation failed: {} {}", response.getStatusCode(), response.getStatusCode().getReasonPhrase());
             if (response.getStatusCode().is4xxClientError()) {
@@ -74,8 +74,6 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
                 throw new TechnicalErrorException();
             }
         }
-
-//        return null;
     }
 
 

@@ -1,7 +1,6 @@
-package org.oasis_eu.portal.core.mongo.model.icons;
+package org.oasis_eu.portal.core.mongo.model.images;
 
 import org.joda.time.DateTime;
-import org.joda.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -10,8 +9,8 @@ import org.springframework.data.mongodb.core.mapping.Document;
  * User: schambon
  * Date: 9/3/14
  */
-@Document(collection = "icon_download_attempt")
-public class IconDownloadAttempt {
+@Document(collection = "image_download_attempt")
+public class ImageDownloadAttempt {
 
     @Id
     private String id;
@@ -19,7 +18,7 @@ public class IconDownloadAttempt {
     @Indexed(unique = true)
     private String url;
 
-    @Indexed(expireAfterSeconds = 60)
+    @Indexed(expireAfterSeconds = 900)
     private DateTime time;
 
     public String getId() {

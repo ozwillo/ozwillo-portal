@@ -4,11 +4,11 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public class HttpIconDownloaderTest {
+public class HttpImageDownloaderTest {
 
     // Note: it's harder to check that downloads do happen...
 
-    IconDownloader downloader = new HttpIconDownloader();
+    ImageDownloader downloader = new HttpImageDownloader();
 
     @Test
     public void testNull() {

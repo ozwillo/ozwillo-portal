@@ -3,16 +3,15 @@ package org.oasis_eu.portal.core.services.icons;
 import com.google.common.io.ByteStreams;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.core.config.MongoConfiguration;
-import org.oasis_eu.portal.core.mongo.dao.icons.IconDownloadAttemptRepository;
-import org.oasis_eu.portal.core.mongo.dao.icons.IconRepository;
-import org.oasis_eu.portal.core.mongo.model.icons.Icon;
-import org.slf4j.LoggerFactory;
+import org.oasis_eu.portal.core.mongo.dao.icons.ImageDownloadAttemptRepository;
+import org.oasis_eu.portal.core.mongo.dao.icons.ImageRepository;
+import org.oasis_eu.portal.core.mongo.model.images.Image;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.*;
@@ -27,7 +26,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URI;
 import java.net.UnknownHostException;
 import java.util.UUID;
 import java.util.regex.Matcher;
@@ -38,12 +36,12 @@ import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.*;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = IconServiceIntegrationTest.class, loader = AnnotationConfigContextLoader.class)
+@ContextConfiguration(classes = ImageServiceIntegrationTest.class, loader = AnnotationConfigContextLoader.class)
 @Configuration
 @PropertySource("classpath:test-application.properties")
 @ComponentScan(basePackages = "org.oasis_eu.portal")
 @Import(MongoConfiguration.class)
-public class IconServiceIntegrationTest {
+public class ImageServiceIntegrationTest {
 
     private DBCollection blacklist;
 
@@ -57,81 +55,79 @@ public class IconServiceIntegrationTest {
     private String databaseName;
 
     @Autowired
-    private IconService iconService;
+    private ImageService imageService;
 
     private DB db;
 
     @Autowired
-    private IconRepository iconRepository;
+    private ImageRepository imageRepository;
 
     @Autowired
-    private IconDownloadAttemptRepository iconDownloadAttemptRepository;
+    private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
     @Before
     public void clean() throws UnknownHostException {
         MongoClient mongo = new MongoClient("localhost");
         db = mongo.getDB(databaseName);
-//        db.getCollection("icon").drop();
-        blacklist = db.getCollection("icon_download_attempt");
-//        blacklist.drop();
 
-        iconRepository.deleteAll();
-        iconDownloadAttemptRepository.deleteAll();
+        blacklist = db.getCollection("image_download_attempt");
+
+        imageRepository.deleteAll();
+        imageDownloadAttemptRepository.deleteAll();
 
     }
 
     @Test
     @DirtiesContext
     public void testIconService() throws IOException {
-        assertNotNull(iconService);
+        assertNotNull(imageService);
 
-        IconDownloader downloader = mock(IconDownloader.class);
+        ImageDownloader downloader = mock(ImageDownloader.class);
         when(downloader.download("http://www.citizenkin.com/icon/one.png")).thenReturn(load("images/64.png"));
 
-        ReflectionTestUtils.setField(iconService, "iconDownloader", downloader);
+        ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
 
-        URI iconUri = iconService.getIconForURL("http://www.citizenkin.com/icon/one.png");
-        assertEquals(1, db.getCollection("icon").count());
+        String iconUri = imageService.getImageForURL("http://www.citizenkin.com/icon/one.png", ImageFormat.PNG_64BY64);
+        assertEquals(1, db.getCollection("image").count());
         assertNotNull(iconUri);
-        String uriString = iconUri.toString();
         // test that this matches a regexp including a UUID
-        Pattern pattern = Pattern.compile("http://localhost/icon/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
-        Matcher matcher = pattern.matcher(uriString);
+        Pattern pattern = Pattern.compile("http://localhost/media/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
+        Matcher matcher = pattern.matcher(iconUri);
         assertTrue(matcher.matches());
 
         String id = matcher.group(1);
         assertNotNull(id);
-        String hash = iconService.getHash(id);
+        String hash = imageService.getHash(id);
         assertNotNull(hash);
         assertEquals("b357025fb8c2027cae8550b2e33df8f924d1aae35e2e5de4d4c14430636be6ab", hash);
 
-        Icon icon = iconService.getIcon(id);
-        assertEquals(hash, icon.getHash());
+        Image image = imageService.getImage(id);
+        assertEquals(hash, image.getHash());
     }
 
     @Test
     public void testBlacklisting() throws Exception {
-        IconDownloader downloader = mock(IconDownloader.class);
+        ImageDownloader downloader = mock(ImageDownloader.class);
         when(downloader.download("http://www.citizenkin.com/icon/fake.png")).thenReturn(null);
         when(downloader.download("http://www.citizenkin.com/icon/rectangular.png")).thenReturn(load("images/rectangular.png"));
         when(downloader.download("http://www.citizenkin.com/icon/icon.tiff")).thenReturn(load("images/img-test.tiff"));
 
-        ReflectionTestUtils.setField(iconService, "iconDownloader", downloader);
+        ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
 
         assertEquals(0, blacklist.count());
-        URI uri = iconService.getIconForURL("http://www.citizenkin.com/icon/fake.png");
+        String uri = imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64);
         assertEquals(defaultIcon(), uri);
         assertEquals(1, blacklist.count());
 
-        iconService.getIconForURL("http://www.citizenkin.com/icon/rectangular.png");
+        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64);
         assertEquals(2, blacklist.count());
 
-        iconService.getIconForURL("http://www.citizenkin.com/icon/icon.tiff");
+        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64);
         assertEquals(3, blacklist.count());
 
-        iconService.getIconForURL("http://www.citizenkin.com/icon/fake.png");
-        iconService.getIconForURL("http://www.citizenkin.com/icon/rectangular.png");
-        iconService.getIconForURL("http://www.citizenkin.com/icon/icon.tiff");
+        imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64);
 
         // check that we only called the downloader three times
         verify(downloader, times(3)).download(anyString());
@@ -148,8 +144,8 @@ public class IconServiceIntegrationTest {
 
     @Test
     public void testDummyData() throws Exception {
-        assertNull(iconService.getHash(UUID.randomUUID().toString()));
-        assertNull(iconService.getIcon(UUID.randomUUID().toString()));
+        assertNull(imageService.getHash(UUID.randomUUID().toString()));
+        assertNull(imageService.getImage(UUID.randomUUID().toString()));
     }
 
     private byte[] load(String name) throws IOException {
@@ -157,9 +153,9 @@ public class IconServiceIntegrationTest {
         return ByteStreams.toByteArray(stream);
     }
 
-    private URI defaultIcon() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-        Method method = iconService.getClass().getDeclaredMethod("defaultIcon");
+    private String defaultIcon() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
+        Method method = imageService.getClass().getDeclaredMethod("defaultIcon");
         method.setAccessible(true);
-        return (URI) method.invoke(iconService);
+        return (String) method.invoke(imageService);
     }
 }

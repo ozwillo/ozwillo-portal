@@ -42,12 +42,12 @@ abstract public class PortalController {
 	@ModelAttribute("currentLanguage")
 	public Languages currentLanguage() {
 		
+		// user's locale already normalized by nameDefaults.complete in user(),
+		// however user may be null if not logged (or logout filter)
 		if(user()!=null && user().getLocale()!=null) {
-			
 			return Languages.getByLocale(Locale.forLanguageTag(user().getLocale()), Languages.ENGLISH);
 		}
-		Locale currentLocale = RequestContextUtils.getLocale(request);
-		return Languages.getByLocale(currentLocale, Languages.ENGLISH);
+		return Languages.getByLocale(RequestContextUtils.getLocale(request));
 	}
 
 	@ModelAttribute("user")

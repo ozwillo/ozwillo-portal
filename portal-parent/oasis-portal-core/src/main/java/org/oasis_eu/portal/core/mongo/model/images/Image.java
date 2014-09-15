@@ -1,13 +1,15 @@
-package org.oasis_eu.portal.core.mongo.model.icons;
+package org.oasis_eu.portal.core.mongo.model.images;
 
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
+import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
  * User: schambon
  * Date: 8/21/14
  */
-public class Icon {
+@Document(collection = "image")
+public class Image {
 
     @Id
     private String id;
@@ -20,7 +22,7 @@ public class Icon {
     private String url;
 
     // format of the icon
-    private IconFormat iconFormat = IconFormat.PNG_64BY64;
+    private ImageFormat imageFormat = ImageFormat.PNG_64BY64;
 
     // content of the icon
     private byte[] bytes;
@@ -44,12 +46,12 @@ public class Icon {
         this.filename = filename;
     }
 
-    public IconFormat getIconFormat() {
-        return iconFormat;
+    public ImageFormat getImageFormat() {
+        return imageFormat;
     }
 
-    public void setIconFormat(IconFormat iconFormat) {
-        this.iconFormat = iconFormat;
+    public void setImageFormat(ImageFormat imageFormat) {
+        this.imageFormat = imageFormat;
     }
 
     public byte[] getBytes() {

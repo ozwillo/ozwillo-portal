@@ -8,7 +8,7 @@ application:
   url: http://localhost
   security:
     fetchUserInfo: true
-  baseIconUrl: ${application.url}/icon
+  baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
 
 kernel:
@@ -20,6 +20,7 @@ kernel:
     keys_endpoint: ${kernel.base_uri}/a/keys
     userinfo_endpoint: ${kernel.base_uri}/a/userinfo
     profile_endpoint: ${kernel.base_uri}/d/user
+    password_change_endpoint: ${kernel.base_uri}/a/password
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.base_uri}/a/logout
     callback_uri: ${application.url}/callback

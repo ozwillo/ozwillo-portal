@@ -16,15 +16,15 @@ public class AppstoreHit {
 
     public String name, description, providerName, iconUrl;
 
-    private AcquisitionStatus acquisitionStatus;
+    private InstallationOption installationOption;
 
 
-    public AppstoreHit(Locale displayLocale, CatalogEntry catalogEntry, String iconUrl, String providerName, AcquisitionStatus acquisitionStatus) {
+    public AppstoreHit(Locale displayLocale, CatalogEntry catalogEntry, String iconUrl, String providerName, InstallationOption installationOption) {
         this.displayLocale = displayLocale;
         this.catalogEntry = catalogEntry;
         this.iconUrl = iconUrl;
         this.providerName = providerName;
-        this.acquisitionStatus = acquisitionStatus;
+        this.installationOption = installationOption;
     }
 
     public Locale getDisplayLocale() {
@@ -75,16 +75,16 @@ public class AppstoreHit {
         this.providerName = providerName;
     }
 
-    public AcquisitionStatus getAcquisitionStatus() {
-        return acquisitionStatus;
-    }
-
-    public void setAcquisitionStatus(AcquisitionStatus acquisitionStatus) {
-        this.acquisitionStatus = acquisitionStatus;
-    }
 
     public String getIconUrl() {
         return iconUrl;
     }
 
+    public InstallationOption getInstallationOption() {
+        return installationOption;
+    }
+
+    public void setInstallationOption(InstallationOption installationOption) {
+        this.installationOption = installationOption;
+    }
 }

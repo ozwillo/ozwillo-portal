@@ -15,12 +15,15 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.support.AnnotationConfigContextLoader;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import java.util.Arrays;
 import java.util.List;
@@ -47,10 +50,16 @@ public class CatalogStoreImplTest {
 
     @Before
     public void setupAuthenticationContext() {
-        OpenIdCAuthentication authentication = new OpenIdCAuthentication("test", "accesstoken", "idtoken", java.time.Instant.now(), java.time.Instant.now());
+        OpenIdCAuthentication authentication = new OpenIdCAuthentication("test", "accesstoken", "idtoken", java.time.Instant.now(), java.time.Instant.now(), true, false);
         SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+    }
+
+    @Before
+    public void setupRequestContext() {
+        MockHttpServletRequest request = new MockHttpServletRequest();
+        RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));
     }
 
     @Test
@@ -65,16 +74,16 @@ public class CatalogStoreImplTest {
         mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
         mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
 
-        List<CatalogEntry> individuals = catalogStore.findAllVisible(Arrays.asList(Audience.CITIZENS));
+        List<CatalogEntry> individuals = catalogStore.findAllVisible(Arrays.asList(Audience.CITIZENS), null);
         assertEquals(2, individuals.size());
 
-        List<CatalogEntry> public_bodies = catalogStore.findAllVisible(Arrays.asList(Audience.PUBLIC_BODIES));
+        List<CatalogEntry> public_bodies = catalogStore.findAllVisible(Arrays.asList(Audience.PUBLIC_BODIES), null);
         assertEquals(11, public_bodies.size());
 
-        List<CatalogEntry> companies = catalogStore.findAllVisible(Arrays.asList(Audience.COMPANIES));
+        List<CatalogEntry> companies = catalogStore.findAllVisible(Arrays.asList(Audience.COMPANIES), null);
         assertEquals(0, companies.size());
 
-        List<CatalogEntry> all = catalogStore.findAllVisible(Arrays.asList(Audience.values()));
+        List<CatalogEntry> all = catalogStore.findAllVisible(Arrays.asList(Audience.values()), null);
         assertEquals(13, all.size());
 
         mock.verify();

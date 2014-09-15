@@ -20,6 +20,10 @@ public class FormLayout implements Comparable<FormLayout> {
 
 	private final String id;
 	
+	private final String actionUrl;
+
+	private final String formClass;
+	
 	private int order = 999;
 
 	private int lastWidgetOrder = 0;
@@ -27,6 +31,15 @@ public class FormLayout implements Comparable<FormLayout> {
 	public FormLayout(String id, String label) {
 		this.id = id;
 		this.label = label;
+		this.actionUrl = null;
+		this.formClass = null;
+	}
+	
+	public FormLayout(String id, String label, String actionUrl, String formClass) {
+		this.id = id;
+		this.label = label;
+		this.actionUrl = actionUrl;
+		this.formClass = formClass;
 	}
     
 	public String getId() {
@@ -51,6 +64,14 @@ public class FormLayout implements Comparable<FormLayout> {
 	
 	public void setMode(FormLayoutMode mode) {
 		this.mode = mode;
+	}
+	
+	public String getActionUrl() {
+		return actionUrl;
+	}
+
+	public String getFormClass() {
+		return formClass;
 	}
 	
 	public void appendWidget(FormWidget widget) {

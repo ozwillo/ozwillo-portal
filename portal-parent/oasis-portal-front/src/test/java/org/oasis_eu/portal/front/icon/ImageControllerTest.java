@@ -6,9 +6,10 @@ import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.core.mongo.dao.icons.IconRepository;
-import org.oasis_eu.portal.core.services.icons.IconDownloader;
-import org.oasis_eu.portal.core.services.icons.IconService;
+import org.oasis_eu.portal.core.mongo.dao.icons.ImageRepository;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
+import org.oasis_eu.portal.core.services.icons.ImageDownloader;
+import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.main.OasisPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,14 +38,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringApplicationConfiguration(classes = {OasisPortal.class})
-public class IconControllerTest {
+public class ImageControllerTest {
 
     public static final String ICON_URL = "http://www.citizenkin.com/icon/one.png";
     @Autowired
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private IconService iconService;
+    private ImageService imageService;
 
     @Value("${persistence.mongodatabase}")
     private String databaseName;
@@ -55,7 +56,7 @@ public class IconControllerTest {
     @Before
     public void setup() throws UnknownHostException {
         MongoClient mongo = new MongoClient("localhost");
-        collection = mongo.getDB(databaseName).getCollection("icon");
+        collection = mongo.getDB(databaseName).getCollection("image");
         collection.drop();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
@@ -65,17 +66,17 @@ public class IconControllerTest {
     @Test
     public void testGetImage() throws Exception {
         // First the root controller will download the icon
-        IconDownloader iconDownloader = mock(IconDownloader.class);
+        ImageDownloader imageDownloader = mock(ImageDownloader.class);
         byte[] bytes = load("images/64.png");
-        when(iconDownloader.download(ICON_URL))
+        when(imageDownloader.download(ICON_URL))
                 .thenReturn(bytes);
 
-        ReflectionTestUtils.setField(iconService, "iconDownloader", iconDownloader);
+        ReflectionTestUtils.setField(imageService, "imageDownloader", imageDownloader);
 
-        String iconUri = iconService.getIconForURL(ICON_URL).toString();
+        String iconUri = imageService.getImageForURL(ICON_URL, ImageFormat.PNG_64BY64);
 
         // verify that iconDownloader's download method has been called
-        verify(iconDownloader).download(anyString());
+        verify(imageDownloader).download(anyString());
 
         // strip out the protocol and host
         iconUri = iconUri.substring("http://localhost".length());
@@ -91,8 +92,8 @@ public class IconControllerTest {
                 .andDo(result -> values.put("etag", result.getResponse().getHeader("ETag")));
 
         // download a second time - check that the actual icon repository is not called
-        IconRepository fakeRepo = mock(IconRepository.class);
-        ReflectionTestUtils.setField(iconService, "iconRepository", fakeRepo);
+        ImageRepository fakeRepo = mock(ImageRepository.class);
+        ReflectionTestUtils.setField(imageService, "imageRepository", fakeRepo);
 
         mockMvc.perform(get(iconUri).header("If-None-Match", values.get("etag")))
                 .andExpect(status().is(304));

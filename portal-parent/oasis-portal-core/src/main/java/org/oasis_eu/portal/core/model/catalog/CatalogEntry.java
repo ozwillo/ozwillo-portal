@@ -128,7 +128,7 @@ public class CatalogEntry  {
         } else if (key.startsWith("icon#")) {
             localizedIcons.put(key.substring("icon#".length()), value);
         } else {
-            logger.info("Discarding unknown property {}", key);
+            logger.debug("Discarding unknown property {}", key);
         }
 
 

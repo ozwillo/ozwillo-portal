@@ -78,6 +78,10 @@
             <version>${tika.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache</artifactId>
+        </dependency>
 
         <!-- testing dependency -->
         <dependency>

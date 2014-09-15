@@ -11,8 +11,9 @@ public class AppInfo {
     String name, description, paymentOptionDescription;
     String id;
     CatalogEntryType type;
+    String icon;
 
-    public AppInfo(String id, String name, String description, String paymentOptionDescription, CatalogEntryType type) {
+    public AppInfo(String id, String name, String description, String paymentOptionDescription, CatalogEntryType type, String icon) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -44,4 +45,7 @@ public class AppInfo {
         this.type = type;
     }
 
+    public String getIcon() {
+        return icon;
+    }
 }
