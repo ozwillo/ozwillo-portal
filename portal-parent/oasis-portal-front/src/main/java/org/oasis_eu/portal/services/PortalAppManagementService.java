@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
+import org.oasis_eu.portal.core.dao.InstanceACLStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
@@ -61,6 +62,8 @@ public class PortalAppManagementService {
     @Autowired
     private MessageSource messageSource;
 
+    @Autowired
+    private InstanceACLStore instanceACLStore;
 
     public List<Authority> getMyAuthorities(boolean includePersonal) {
         String userId = userInfoService.currentUser().getUserId();
@@ -72,6 +75,7 @@ public class PortalAppManagementService {
 
         authorities.addAll(userDirectory.getMembershipsOfUser(userId)
                 .stream()
+                .filter(UserMembership::isAdmin)
                 .map(this::toAuthority)
                 .collect(Collectors.toList()));
 
@@ -200,15 +204,14 @@ public class PortalAppManagementService {
 
         String organizationId = catalogStore.findService(serviceId).getProviderId();
 
-        // TODO use the Memberships API when it doesn't throw a 403
+        return getUsersOfOrganization(organizationId);
+    }
 
+    public List<User> getUsersOfOrganization(String organizationId) {
         return userDirectory.getMembershipsOfOrganization(organizationId)
                 .stream()
                 .map(m -> new User(m.getAccountId(), m.getAccountName()))
                 .collect(Collectors.toList());
-
-//        // In the meantime, use the old Agents API
-//        return userDirectory.getAgents(organizationId, 0, 50).stream().map(a -> new User(a.getId(), displayNameOf(a))).collect(Collectors.toList());
     }
 
     public void subscribeUsers(Set<String> users, String serviceId) {
@@ -226,7 +229,16 @@ public class PortalAppManagementService {
         users.forEach(u -> subscriptionStore.unsubscribe(u, serviceId, SubscriptionType.ORGANIZATION));
     }
 
-    private String displayNameOf(AgentInfo agentInfo) {
-        return String.format("%s %s (%s)", agentInfo.getGivenName(), agentInfo.getFamilyName(), agentInfo.getEmail());
+    public List<User> getAppUsers(String instanceId) {
+        return instanceACLStore.getACL(instanceId)
+                .stream()
+                .map(ace -> new User(ace.getUserId(), ace.getUserName()))
+                .collect(Collectors.toList());
     }
+
+    public void saveAppUsers(String instanceId, List<String> userIds) {
+        instanceACLStore.saveACL(instanceId, userIds);
+    }
+
+
 }

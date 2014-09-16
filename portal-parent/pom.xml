@@ -70,7 +70,7 @@
             <dependency>
                 <groupId>org.oasis_eu.spring-integration</groupId>
                 <artifactId>oasis-spring-integration</artifactId>
-                <version>0.5-SNAPSHOT</version>
+                <version>0.6-SNAPSHOT</version>
             </dependency>
 
 

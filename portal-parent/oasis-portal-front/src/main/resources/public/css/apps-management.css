@@ -87,3 +87,32 @@ a.authority-link {
 .tt-suggestion p {
     margin: 0;
 }
+
+
+
+.settings-background {
+    z-index: 0;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100%;
+    height: 100%;
+    background-color: #999999;
+}
+
+.settings-container {
+    z-index: 20;
+    position: absolute;
+    width: 826px;
+    top: 76px;
+    left: 50%;
+    margin-left: -413px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    padding: 10px;
+}
+
+.show-on-hover {
+    display: none;
+}
+

@@ -3,17 +3,6 @@ var setupLinks = function(element) {
     var settings = $("#settings");
 
 
-    $("a.appsettings-link").click(function(event) {
-        event.preventDefault();
-
-        var href = $(this).attr("href");
-        console.log("Bringing up app settings for " + href);
-
-        $.get(href, function(fragment) {
-            settings.html(fragment);
-            settings.find("#modal-window").modal({});
-        });
-    });
 
     $("a.servicesettings-link").click(function(event) {
         event.preventDefault();

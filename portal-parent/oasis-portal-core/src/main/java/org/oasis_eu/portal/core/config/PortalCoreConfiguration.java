@@ -41,7 +41,7 @@ public class PortalCoreConfiguration implements CachingConfigurer {
     @Bean
     public PortalCacheManager portalCacheManager() {
         return new PortalCacheManager(
-                Arrays.asList("appstore", "subscriptions", "user-instances", "org-instances", "user-memberships", "org-memberships", "services", "services-of-instance"));
+                Arrays.asList("appstore", "subscriptions", "user-instances", "org-instances", "user-memberships", "org-memberships", "services", "services-of-instance", "instances"));
     }
 
 
