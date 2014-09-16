@@ -5,6 +5,7 @@ import java.util.TimeZone;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Strings;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +32,7 @@ public class OasisLocaleResolver extends CookieLocaleResolver {
 	public Locale resolveLocale(HttpServletRequest request) {
 		// Try to use profile information
 		UserInfo currentUser = userInfoService.currentUser();
-		if (currentUser != null && currentUser.getLocale() != null) {
+		if (currentUser != null && !Strings.isNullOrEmpty(currentUser.getLocale())) {
 			return StringUtils.parseLocaleString(currentUser.getLocale());
 		}
 		// Otherwise use cookie
