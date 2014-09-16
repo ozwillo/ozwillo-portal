@@ -155,6 +155,13 @@
         </div>
     </div>
 
+    <div class="container" data-th-if="${pending.size()>0}">
+        <h3 data-th-text="#{my.apps.pending(${pending.size()})}">2 instances pending instantiation:</h3>
+        <ul data-th-remove="all-but-first">
+            <li data-th-each="app: ${pending}" data-th-text="${app.application.name}">Pouet</li>
+            <li>Tralala</li>
+        </ul>
+    </div>
 
     <th:block data-th-replace="includes/footer">
 

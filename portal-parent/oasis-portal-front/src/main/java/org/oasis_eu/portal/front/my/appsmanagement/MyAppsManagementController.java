@@ -37,6 +37,7 @@ public class MyAppsManagementController extends PortalController {
     public String show(Model model, @RequestParam(value = "defaultAuthorityId", required = false, defaultValue = "") String defaultAuthorityId) {
         model.addAttribute("authorities", appManagementService.getMyAuthorities(true));
         model.addAttribute("defaultAuthorityId", defaultAuthorityId);
+        model.addAttribute("pending", appManagementService.getPendingInstances());
 
         return "appsmanagement/appsmanagement";
     }

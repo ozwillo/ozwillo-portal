@@ -108,6 +108,7 @@ public class PortalAppManagementService {
     private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority) {
         return applicationInstanceStore.findByUserId(personalAuthority.getId())
                 .stream()
+                .filter(instance -> ! ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
                 .map(this::fetchInstance)
                 .collect(Collectors.toList());
     }
@@ -115,9 +116,18 @@ public class PortalAppManagementService {
     private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority) {
         return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
                 .stream()
+                .filter(instance -> !ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
                 .map(this::fetchInstance)
                 .collect(Collectors.toList());
 
+    }
+
+    public List<MyAppsInstance> getPendingInstances() {
+        return applicationInstanceStore.findByUserId(userInfoService.currentUser().getUserId())
+                .stream()
+                .filter(instance -> ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
+                .map(this::fetchInstance)
+                .collect(Collectors.toList());
     }
 
     private MyAppsInstance fetchInstance(ApplicationInstance instance) {
@@ -135,6 +145,9 @@ public class PortalAppManagementService {
     }
 
     private MyAppsService fetchService(CatalogEntry service) {
+
+        logger.debug("Fetching service data for {}", service);
+
         return new MyAppsService().setService(service).setName(service.getName(RequestContextUtils.getLocale(request)));
     }
 

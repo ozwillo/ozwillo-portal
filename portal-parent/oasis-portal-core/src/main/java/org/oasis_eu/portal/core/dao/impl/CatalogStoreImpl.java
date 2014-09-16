@@ -121,6 +121,8 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     @Cacheable("services-of-instance")
     public List<CatalogEntry> findServicesOfInstance(String instanceId) {
+        logger.debug("Finding services of instance {}", instanceId);
+
         CatalogEntry[] body = kernel.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, null, CatalogEntry[].class, user(), instanceId).getBody();
         if (body != null) {
             return Arrays.asList(body);
