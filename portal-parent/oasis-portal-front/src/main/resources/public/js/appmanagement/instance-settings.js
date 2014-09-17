@@ -128,9 +128,13 @@ $(document).ready(function() {
         });
     });
 
-    $(".settings-background").click(function() {
+    var redirectToOrigin = function () {
         window.location = origin;
-    });
+    };
+
+    $(".settings-background").click(redirectToOrigin);
+    $("#close").click(redirectToOrigin);
+
 
     $(".settings-container").click(function(event) {
         event.stopPropagation();

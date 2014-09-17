@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.core.model.ace;
 
 import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +10,7 @@ import org.slf4j.LoggerFactory;
  * User: schambon
  * Date: 9/16/14
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ACE {
 
     private static final Logger logger = LoggerFactory.getLogger(ACE.class);
