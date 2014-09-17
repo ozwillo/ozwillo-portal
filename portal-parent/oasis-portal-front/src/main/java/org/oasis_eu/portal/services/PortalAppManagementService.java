@@ -202,9 +202,17 @@ public class PortalAppManagementService {
 
     public List<User> getAllUsersOfServiceOrganization(String serviceId) {
 
-        String organizationId = catalogStore.findService(serviceId).getProviderId();
-
-        return getUsersOfOrganization(organizationId);
+        CatalogEntry service = catalogStore.findService(serviceId);
+        if (service != null) {
+            String instanceId = service.getInstanceId();
+            return instanceACLStore.getACL(instanceId)
+                    .stream()
+                    .map(ace -> new User(ace.getUserId(), ace.getUserName()))
+                    .collect(Collectors.toList());
+        } else {
+            logger.error("Service {} does not exist", serviceId);
+            return Collections.emptyList();
+        }
     }
 
     public List<User> getUsersOfOrganization(String organizationId) {

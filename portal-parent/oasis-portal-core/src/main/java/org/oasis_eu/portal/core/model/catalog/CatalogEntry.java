@@ -10,6 +10,7 @@ import java.util.*;
  * User: schambon
  * Date: 6/16/14
  */
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class CatalogEntry  {
 
     private static final Logger logger = LoggerFactory.getLogger(CatalogEntry.class);
@@ -25,7 +26,7 @@ public class CatalogEntry  {
 
     private Map<String, String> localizedNames = new HashMap<>();
 
-    private Map<String, String> localizedDescriptions = new HashMap<>();
+    private Map<String, String> localizedDescriptions = new HashMap<String, String>();
 
     private Map<String, String> localizedIcons = new HashMap<>();
 
@@ -55,6 +56,9 @@ public class CatalogEntry  {
 
     @JsonProperty("provider_id")
     private String providerId;
+
+    @JsonProperty("instance_id")
+    private String instanceId;
 
     /**
      * App store publication status
@@ -255,6 +259,14 @@ public class CatalogEntry  {
 
     public void setPostLogoutRedirectUris(List<String> postLogoutRedirectUris) {
         this.postLogoutRedirectUris = postLogoutRedirectUris;
+    }
+
+    public String getInstanceId() {
+        return instanceId;
+    }
+
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
     }
 
     @Override
