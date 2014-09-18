@@ -184,7 +184,7 @@ public class CatalogStoreImpl implements CatalogStore {
         String icon;
         String provider_id;
         PaymentOption paymentOption;
-        Audience audience;
+        List<Audience> audience;
         List<String> category_ids;
         boolean visible;
         String local_id;
@@ -260,11 +260,11 @@ public class CatalogStoreImpl implements CatalogStore {
             this.paymentOption = paymentOption;
         }
 
-        public Audience getAudience() {
+        public List<Audience> getAudience() {
             return audience;
         }
 
-        public void setAudience(Audience audience) {
+        public void setAudience(List<Audience> audience) {
             this.audience = audience;
         }
 
