@@ -5,11 +5,10 @@ import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
 import net.sf.ehcache.config.CacheConfiguration;
 import org.oasis_eu.portal.core.PortalCorePackage;
-import org.oasis_eu.portal.core.internal.PortalCacheManager;
+import org.oasis_eu.spring.util.RequestBoundCacheManager;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleKeyGenerator;
@@ -39,8 +38,8 @@ public class PortalCoreConfiguration implements CachingConfigurer {
     }
 
     @Bean
-    public PortalCacheManager portalCacheManager() {
-        return new PortalCacheManager(
+    public RequestBoundCacheManager portalCacheManager() {
+        return new RequestBoundCacheManager(
                 Arrays.asList("appstore", "subscriptions", "user-instances", "org-instances", "user-memberships", "org-memberships", "services", "services-of-instance", "instances"));
     }
 
