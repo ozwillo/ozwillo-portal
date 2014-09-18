@@ -38,7 +38,6 @@
     <modules>
         <module>oasis-portal-core</module>
         <module>oasis-portal-front</module>
-        <module>oasis-portal-back</module>
     </modules>
 
 
@@ -70,7 +69,7 @@
             <dependency>
                 <groupId>org.oasis_eu.spring-integration</groupId>
                 <artifactId>oasis-spring-integration</artifactId>
-                <version>0.7-SNAPSHOT</version>
+                <version>0.8-SNAPSHOT</version>
             </dependency>
 
 

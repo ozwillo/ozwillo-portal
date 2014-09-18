@@ -1,16 +1,10 @@
 package org.oasis_eu.portal.front.my;
 
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
-
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.spring.kernel.model.UserInfo;
-import org.oasis_eu.spring.kernel.model.directory.AgentInfo;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -27,8 +21,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.google.common.cache.Cache;
-import com.google.common.cache.CacheBuilder;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 
@@ -114,15 +109,15 @@ public class MyNetworkController extends PortalController {
 	}
 
 
-    private Map<String, String> fetchOrganizationNames(List<AgentInfo> agents) throws ExecutionException {
-    	 return agents.stream()
-			.map(agent -> agent.getOrganizationId())
-			.distinct()
-			.collect(Collectors.toMap(
-					orgId -> orgId,
-					orgId -> fetchOrganizationName(orgId)
-				));
-    }
+//    private Map<String, String> fetchOrganizationNames(List<AgentInfo> agents) throws ExecutionException {
+//    	 return agents.stream()
+//			.map(agent -> agent.getOrganizationId())
+//			.distinct()
+//			.collect(Collectors.toMap(
+//					orgId -> orgId,
+//					orgId -> fetchOrganizationName(orgId)
+//				));
+//    }
     
     private String fetchOrganizationName(String orgId) {
     	try {

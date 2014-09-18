@@ -10,7 +10,6 @@ import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.model.appsmanagement.*;
 import org.oasis_eu.portal.model.appstore.AppInfo;
-import org.oasis_eu.spring.kernel.model.directory.AgentInfo;
 import org.oasis_eu.spring.kernel.model.directory.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
