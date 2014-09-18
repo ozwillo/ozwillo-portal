@@ -69,7 +69,7 @@
                 <p data-th-text="|#{store.by} ${app.providerName}|">By ServiceProvider</p>
             </div>
         </div>
-        <div class="col-sm-4 center-container">
+        <div class="col-sm-4 center-container install-application">
             <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}">
                 <th:block data-th-case="INSTALLED">
                     <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}">Installed</button>

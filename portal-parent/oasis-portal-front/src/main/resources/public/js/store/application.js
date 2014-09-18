@@ -1,14 +1,14 @@
 function setupAppPage() {
 
 
-    $(".btn-indicator-available").popover({
+    $(".install-application * .btn-indicator").popover({
         content: $("div#install-app-popover").html(),
         html:true,
         placement:'bottom',
         trigger:'click'
     });
 
-    $(".btn-indicator-available").on("shown.bs.popover", function() {
+    $(".install-application * .btn-indicator").on("shown.bs.popover", function() {
         $("a.orgselector").click(function(event) {
             event.preventDefault();
 

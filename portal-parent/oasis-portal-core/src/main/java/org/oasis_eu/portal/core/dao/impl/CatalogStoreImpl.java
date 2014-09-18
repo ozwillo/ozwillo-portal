@@ -1,9 +1,6 @@
 package org.oasis_eu.portal.core.dao.impl;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.*;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
@@ -184,7 +181,8 @@ public class CatalogStoreImpl implements CatalogStore {
         String icon;
         String provider_id;
         PaymentOption paymentOption;
-        Audience audience;
+        @JsonProperty("target_audience")
+        List<Audience> audience;
         List<String> category_ids;
         boolean visible;
         String local_id;
@@ -260,11 +258,11 @@ public class CatalogStoreImpl implements CatalogStore {
             this.paymentOption = paymentOption;
         }
 
-        public Audience getAudience() {
+        public List<Audience> getAudience() {
             return audience;
         }
 
-        public void setAudience(Audience audience) {
+        public void setAudience(List<Audience> audience) {
             this.audience = audience;
         }
 
