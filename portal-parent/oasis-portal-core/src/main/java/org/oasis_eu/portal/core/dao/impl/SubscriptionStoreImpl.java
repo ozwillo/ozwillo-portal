@@ -47,9 +47,10 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
             if (logger.isDebugEnabled()) {
                 logger.debug("--> " + response.getStatusCode());
-                for (Subscription s : response.getBody()) {
-                    logger.debug("Subscribed: {}", s);
-
+                if (response.getBody() != null) {
+                    for (Subscription s : response.getBody()) {
+                        logger.debug("Subscribed: {}", s);
+                    }
                 }
             }
 
