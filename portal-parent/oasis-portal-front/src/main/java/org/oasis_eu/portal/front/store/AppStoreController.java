@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.front.store;
 
+import org.oasis_eu.portal.config.AppStoreNavigationStatus;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
@@ -9,6 +10,7 @@ import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,6 +19,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -60,6 +63,20 @@ public class AppStoreController extends PortalController {
 
         return "store/appstore";
     }
+
+    @RequestMapping(method = RequestMethod.GET, value="/login")
+    public String login(HttpSession session, RedirectAttributes redirectAttributes, @RequestParam(required = false) String appId, @RequestParam(required = false) String appType) {
+        AppStoreNavigationStatus status = new AppStoreNavigationStatus();
+        if (appId != null && appType != null) {
+            status.setAppId(appId);
+            status.setAppType(appType);
+        }
+
+        session.setAttribute("APP_STORE", status);
+
+        return "redirect:/login";
+    }
+
 
     @RequestMapping(method = RequestMethod.POST, value="/search")
     public String search(Model model, @RequestParam(required = false) String query, @RequestParam List<Audience> audience, @RequestParam List<String> installOptions) {

@@ -55,7 +55,7 @@
             </a>
         </div>
         <ul class="nav navbar-nav navbar-right ">
-            <li><a href="#" data-th-href="@{/my}" class="btn btn-primary-inverse" ><i class="fa fa-user"></i> <span data-th-text="#{ui.login}">Log in</span></a></li>
+            <li><a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login|}" class="btn btn-primary-inverse" ><i class="fa fa-user"></i> <span data-th-text="#{ui.login}">Log in</span></a></li>
 
             <li class="dropdown">
                 <a href="#" class="dropdown-toggle btn btn-primary-inverse" data-toggle="dropdown"><span data-th-text="${currentLanguage.name}">English</span> <b class="caret"></b></a>
