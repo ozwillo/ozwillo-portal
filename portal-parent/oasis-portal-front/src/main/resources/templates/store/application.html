@@ -70,7 +70,7 @@
             </div>
         </div>
         <div class="col-sm-4 center-container install-application">
-            <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}" data-th-if="${user != null}">
+            <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}" data-th-if="${user != null and ! app.isOnlyCitizens()}">
                 <th:block data-th-case="INSTALLED">
                     <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}">Installed</button>
                     <button class="btn btn-indicator btn-indicator-installed-icon"><i class="fa fa-check"></i></button>
@@ -86,6 +86,10 @@
             <div class="btn-group vcentered" data-th-if="${user == null}">
                 <a class="btn btn-primary" data-th-text="#{store.install}" href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login?appId=${app.id}&amp;appType=${app.type}|}">Install</a>
             </div>
+            <div class="btn-group vcentered" data-th-if="${app.isOnlyCitizens()}">
+                <button class="btn btn-primary" id="forceInstall" data-th-text="#{store.install}">Install</button>
+            </div>
+
         </div>
     </div>
     <div class="row">

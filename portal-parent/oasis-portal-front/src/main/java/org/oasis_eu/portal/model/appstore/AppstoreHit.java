@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.model.appstore;
 
+import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -94,5 +96,10 @@ public class AppstoreHit {
 
     public String getType() {
         return catalogEntry.getType().toString();
+    }
+
+    public boolean isOnlyCitizens() {
+        List<Audience> audience = getCatalogEntry().getTargetAudience();
+        return audience.size() == 1 && audience.get(0).equals(Audience.CITIZENS);
     }
 }

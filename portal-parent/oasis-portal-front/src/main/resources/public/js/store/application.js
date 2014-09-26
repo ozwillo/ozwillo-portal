@@ -29,5 +29,9 @@ function setupAppPage() {
         });
     });
 
-
+    $("#forceInstall").click(function(event) {
+        event.preventDefault();
+        var form = $("#buyform");
+        form.submit();
+    });
 }

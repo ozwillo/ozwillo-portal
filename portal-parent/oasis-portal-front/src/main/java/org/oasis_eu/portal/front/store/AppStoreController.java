@@ -104,12 +104,14 @@ public class AppStoreController extends PortalController {
             model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
         }
 
-        if (fromAuth && onlyCitizens(info)) {
+        if (fromAuth && info.isOnlyCitizens()) {
             return buy(appId, CatalogEntryType.valueOf(appType), null);
         }
 
         if (fromAuth) {
             model.addAttribute("openPopover", true);
+        } else {
+            model.addAttribute("openPopover", false);
         }
 
         return "store/application";
@@ -122,6 +124,7 @@ public class AppStoreController extends PortalController {
         if (userInfoHelper.isAuthenticated()) {
             model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
         }
+        model.addAttribute("openPopover", false);
         return "store/application::content";
     }
 
@@ -140,9 +143,6 @@ public class AppStoreController extends PortalController {
         return new ModelAndView("store/instantiation-error", model);
     }
 
-    private boolean onlyCitizens(AppstoreHit info) {
-        List<Audience> audience = info.getCatalogEntry().getTargetAudience();
-        return audience.size() == 1 && audience.get(0).equals(Audience.CITIZENS);
-    }
+
 }
 
