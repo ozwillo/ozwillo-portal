@@ -32,7 +32,7 @@ public class OasisPortalAuthenticationSuccessHandler implements AuthenticationSu
             AppStoreNavigationStatus status = (AppStoreNavigationStatus) appStoreStatus;
             String redirect;
             if (status.hasApp()) {
-                redirect = "/" + getLocale(auth.getUserInfo(), request) + "/store/application/" + status.getAppId() + "/" + status.getAppType();
+                redirect = "/" + getLocale(auth.getUserInfo(), request) + "/store/application/" + status.getAppId() + "/" + status.getAppType() + "?fromAuth=true";
             } else {
                 redirect = "/" + getLocale(auth.getUserInfo(), request) + "/store";
             }

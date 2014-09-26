@@ -59,9 +59,9 @@ public class PortalAppstoreService {
     @Autowired
     private PortalAppManagementService appManagementService;
 
-    public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<String> installOptions) {
+    public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
 
-        return catalogStore.findAllVisible(targetAudiences, installOptions).stream()
+        return catalogStore.findAllVisible(targetAudiences, paymentOptions).stream()
                 .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64), getOrganizationName(catalogEntry),
                         getInstallationOption(catalogEntry)))
                 .collect(Collectors.toList());
@@ -97,8 +97,7 @@ public class PortalAppstoreService {
             throw new IllegalArgumentException("getInfo supports only applications and services");
         }
 
-        Organization organization = organizationStore.find(entry.getProviderId());
-        String providerName = organization != null ? organization.getName() : "-";
+        String providerName = getOrganizationName(entry);
 
         return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64), providerName, getInstallationOption(entry));
 

@@ -4,14 +4,15 @@ import org.oasis_eu.portal.config.AppStoreNavigationStatus;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
+import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
+import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -63,7 +64,7 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store";
         }
 
-        model.addAttribute("hits", appstoreService.getAll(Arrays.asList(Audience.values()), null));
+        model.addAttribute("hits", appstoreService.getAll(Arrays.asList(Audience.values()), Arrays.asList(PaymentOption.values())));
 
         return "store/appstore";
     }
@@ -83,8 +84,8 @@ public class AppStoreController extends PortalController {
 
 
     @RequestMapping(method = RequestMethod.POST, value="/search")
-    public String search(Model model, @RequestParam(required = false) String query, @RequestParam List<Audience> audience, @RequestParam List<String> installOptions) {
-        model.addAttribute("hits", appstoreService.getAll(audience, installOptions));
+    public String search(Model model, @RequestParam(required = false) String query, @RequestParam List<Audience> audience, @RequestParam List<PaymentOption> paymentOptions) {
+        model.addAttribute("hits", appstoreService.getAll(audience, paymentOptions));
 
         return "store/appstore::hits";
     }
@@ -96,8 +97,20 @@ public class AppStoreController extends PortalController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}")
-    public String application(@PathVariable String appId, @PathVariable String appType, Model model) {
-        applicationModel(appId, appType, model);
+    public String application(@PathVariable String appId, @PathVariable String appType, @RequestParam(required = false) boolean fromAuth, Model model) {
+        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType));
+        model.addAttribute("app", info);
+        if (userInfoHelper.isAuthenticated()) {
+            model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
+        }
+
+        if (fromAuth && onlyCitizens(info)) {
+            return buy(appId, CatalogEntryType.valueOf(appType), null);
+        }
+
+        if (fromAuth) {
+            model.addAttribute("openPopover", true);
+        }
 
         return "store/application";
     }
@@ -105,16 +118,13 @@ public class AppStoreController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}/inner")
     public String applicationInner(@PathVariable String appId, @PathVariable String appType, Model model) {
-        applicationModel(appId, appType, model);
-        return "store/application::content";
-    }
-
-    private void applicationModel(String appId, String appType, Model model) {
         model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
         if (userInfoHelper.isAuthenticated()) {
             model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
         }
+        return "store/application::content";
     }
+
 
     @ExceptionHandler(ApplicationInstanceCreationException.class)
     public ModelAndView instantiationError(ApplicationInstanceCreationException e) {
@@ -129,4 +139,10 @@ public class AppStoreController extends PortalController {
 
         return new ModelAndView("store/instantiation-error", model);
     }
+
+    private boolean onlyCitizens(AppstoreHit info) {
+        List<Audience> audience = info.getCatalogEntry().getTargetAudience();
+        return audience.size() == 1 && audience.get(0).equals(Audience.CITIZENS);
+    }
 }
+

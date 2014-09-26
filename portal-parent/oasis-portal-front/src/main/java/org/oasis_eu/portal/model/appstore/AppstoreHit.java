@@ -87,4 +87,12 @@ public class AppstoreHit {
     public void setInstallationOption(InstallationOption installationOption) {
         this.installationOption = installationOption;
     }
+
+    public String getId() {
+        return catalogEntry.getId();
+    }
+
+    public String getType() {
+        return catalogEntry.getType().toString();
+    }
 }

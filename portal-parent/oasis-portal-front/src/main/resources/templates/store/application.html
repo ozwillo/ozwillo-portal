@@ -70,18 +70,21 @@
             </div>
         </div>
         <div class="col-sm-4 center-container install-application">
-            <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}">
+            <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}" data-th-if="${user != null}">
                 <th:block data-th-case="INSTALLED">
                     <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}">Installed</button>
                     <button class="btn btn-indicator btn-indicator-installed-icon"><i class="fa fa-check"></i></button>
                 </th:block>
                 <th:block data-th-case="FREE">
-                    <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.free}" data-toggle="popover">Install for Free</button>
+                    <button class="btn btn-indicator btn-indicator-available" data-th-text="|#{store.install} - #{store.free}|" data-toggle="popover" data-th-attr="data-open-popover=${openPopover ? 'true' : 'false'}">Install for Free</button>
                 </th:block>
                 <th:block data-th-case="PAID">
-                    <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.paid}" data-toggle="popover">Install</button>
+                    <button class="btn btn-indicator btn-indicator-available" data-th-text="|#{store.install} - #{store.paid}|" data-toggle="popover" data-th-attr="data-open-popover=${openPopover ? 'true' : 'false'}">Install</button>
                     <button class="btn btn-indicator btn-indicator-available-icon"><i class="fa fa-eur"></i></button>
                 </th:block>
+            </div>
+            <div class="btn-group vcentered" data-th-if="${user == null}">
+                <a class="btn btn-primary" data-th-text="#{store.install}" href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login?appId=${app.id}&amp;appType=${app.type}|}">Install</a>
             </div>
         </div>
     </div>

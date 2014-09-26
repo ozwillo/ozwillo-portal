@@ -52,7 +52,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     @Cacheable("appstore")
-    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<String> paymentOptions) {
+    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
                 .build()
@@ -65,16 +65,10 @@ public class CatalogStoreImpl implements CatalogStore {
             catalogEntries.forEach(e -> logger.debug(e.toString()));
         }
 
-        if(paymentOptions == null || paymentOptions.size() == PaymentOption.values().length) {
-        	return catalogEntries
-                .stream()
-                .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
-                .collect(Collectors.toList());
-        }
         return catalogEntries
                 .stream()
                 .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
-                .filter(e -> paymentOptions.stream().anyMatch(installOption -> PaymentOption.valueOf(installOption).equals(e.getPaymentOption())))
+                .filter(e -> paymentOptions.stream().anyMatch(option -> option.equals(e.getPaymentOption())))
                 .collect(Collectors.toList());
     }
 

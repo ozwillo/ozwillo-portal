@@ -8,6 +8,10 @@ function setupAppPage() {
         trigger:'click'
     });
 
+    if ($(".install-application * .btn-indicator").attr("data-open-popover") == "true") {
+        $(".install-application * .btn-indicator:first").popover("show");
+    }
+
     $(".install-application * .btn-indicator").on("shown.bs.popover", function() {
         $("a.orgselector").click(function(event) {
             event.preventDefault();

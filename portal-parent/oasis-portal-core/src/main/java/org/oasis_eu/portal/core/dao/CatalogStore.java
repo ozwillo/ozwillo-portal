@@ -4,6 +4,7 @@ import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 
 import java.util.List;
 
@@ -21,7 +22,7 @@ public interface CatalogStore {
 
     ApplicationInstance findApplicationInstance(String instanceId);
 
-    List<CatalogEntry> findAllVisible(List<Audience> targetAudience, List<String> installOptions);
+    List<CatalogEntry> findAllVisible(List<Audience> targetAudience, List<PaymentOption> paymentOptions);
 
     void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
 
