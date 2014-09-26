@@ -13,7 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +50,12 @@ public class AppStoreController extends PortalController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
-    public String main(Model model) {
+    public String main(@PathVariable String lang, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+        String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
+        if (! lang.equals(requestLanguage)) {
+            return "redirect:/" + requestLanguage + "/store";
+        }
+
         model.addAttribute("hits", appstoreService.getAll(Arrays.asList(Audience.values()), null));
 
         return "store/appstore";
