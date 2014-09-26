@@ -9,6 +9,7 @@ import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.savedrequest.HttpSessionRequestCache;
 import org.springframework.stereotype.Controller;
@@ -46,6 +47,9 @@ public class AppStoreController extends PortalController {
     public List<MyNavigation> getNavigation() {
         return myNavigationService.getNavigation(null);
     }
+
+    @Autowired
+    private UserInfoService userInfoHelper;
 
     @Override
     public boolean isAppstore() {
@@ -107,7 +111,9 @@ public class AppStoreController extends PortalController {
 
     private void applicationModel(String appId, String appType, Model model) {
         model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
-        model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
+        if (userInfoHelper.isAuthenticated()) {
+            model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
+        }
     }
 
     @ExceptionHandler(ApplicationInstanceCreationException.class)
