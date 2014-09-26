@@ -72,5 +72,9 @@ abstract public class PortalController {
         return "error";
     }
 
+    @ModelAttribute("isAppstore")
+    public boolean isAppstore() {
+        return false;
+    }
 
 }

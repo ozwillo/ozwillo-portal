@@ -24,7 +24,7 @@ import java.util.Map;
  * Date: 6/24/14
  */
 @Controller
-@RequestMapping("/appstore")
+@RequestMapping("/{lang}/appstore")
 public class AppStoreController extends PortalController {
 
     @Autowired
@@ -38,7 +38,12 @@ public class AppStoreController extends PortalController {
 
     @ModelAttribute("navigation")
     public List<MyNavigation> getNavigation() {
-        return myNavigationService.getNavigation(null); // TODO point nav towards the appstore
+        return myNavigationService.getNavigation(null);
+    }
+
+    @Override
+    public boolean isAppstore() {
+        return true;
     }
 
     @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
