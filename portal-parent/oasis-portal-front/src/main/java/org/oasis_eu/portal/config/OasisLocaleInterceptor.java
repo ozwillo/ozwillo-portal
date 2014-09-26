@@ -44,9 +44,12 @@ public class OasisLocaleInterceptor extends HandlerInterceptorAdapter {
         } else {
             String path = request.getServletPath();
             if (path.contains("/")) {
-                Languages foundLanguage = Languages.getByLanguageTag(path.split("/")[1]);
-                if (foundLanguage != null) {
-                    RequestContextUtils.getLocaleResolver(request).setLocale(request, response, foundLanguage.getLocale());
+                String[] split = path.split("/");
+                if (split.length > 0) {
+                    Languages foundLanguage = Languages.getByLanguageTag(split[1]);
+                    if (foundLanguage != null) {
+                        RequestContextUtils.getLocaleResolver(request).setLocale(request, response, foundLanguage.getLocale());
+                    }
                 }
             }
         }
