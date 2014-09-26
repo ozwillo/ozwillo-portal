@@ -101,7 +101,7 @@
 
     <ul class="nav navbar-nav oasis-nav navbar-right">
         <li data-th-class="${isAppstore ? 'active':''}">
-            <a href="#" class="nav-link" data-th-class="${isAppstore?'':'nav-link'}" data-th-href="@{|/${currentLanguage.locale.language}/appstore|}">
+            <a href="#" class="nav-link" data-th-class="${isAppstore?'':'nav-link'}" data-th-href="@{|/${currentLanguage.locale.language}/store|}">
                 <img data-th-if="${!isAppstore}" class="gray" data-th-src="@{/img/my/app-store-gray.png}" src="../../public/img/my/app-store-gray.png" alt="Apps Store" data-th-alt="#{ui.appstore}" />
                 <img data-th-class="${isAppstore?'':'purple'}" class="purple" data-th-src="@{/img/my/app-store.png}" src="../../public/img/my/app-store.png" alt="Apps Store" data-th-alt="#{ui.appstore}"/>
                 <span data-th-text="#{ui.appstore}">Apps Store</span>

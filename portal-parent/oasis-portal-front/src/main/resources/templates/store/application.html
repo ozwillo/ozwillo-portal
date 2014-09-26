@@ -55,7 +55,7 @@
 <body>
 
 <div id="veil" class="in">
-    <a href="appstore.html" data-th-href="@{/appstore}">Back to store</a>
+    <a href="appstore.html" data-th-href="@{|/${currentLanguage.locale.language}/store|}">Back to store</a>
 </div>
 
 <div id="apppage" class="container in" data-th-fragment="content">
@@ -123,7 +123,7 @@
         </div>
     </div>
 
-    <form id="buyform" method="post" action="buy" data-th-action="@{/appstore/buy}">
+    <form id="buyform" method="post" action="buy" data-th-action="@{|/${currentLanguage.locale.language}/store/buy|}">
         <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
         <input type="hidden" name="appId" value="appId" data-th-value="${app.catalogEntry.id}"/>
         <input type="hidden" name="appType" value="appType" data-th-value="${#strings.toString(app.catalogEntry.type)}"/>

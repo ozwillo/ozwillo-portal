@@ -24,7 +24,7 @@ import java.util.Map;
  * Date: 6/24/14
  */
 @Controller
-@RequestMapping("/{lang}/appstore")
+@RequestMapping("/{lang}/store")
 public class AppStoreController extends PortalController {
 
     @Autowired
@@ -54,7 +54,7 @@ public class AppStoreController extends PortalController {
     }
 
     @RequestMapping(method = RequestMethod.POST, value="/search")
-    public String search(Model model, @RequestParam String query, @RequestParam List<Audience> audience, @RequestParam List<String> installOptions) {
+    public String search(Model model, @RequestParam(required = false) String query, @RequestParam List<Audience> audience, @RequestParam List<String> installOptions) {
         model.addAttribute("hits", appstoreService.getAll(audience, installOptions));
 
         return "store/appstore::hits";

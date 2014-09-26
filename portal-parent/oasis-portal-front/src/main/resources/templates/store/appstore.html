@@ -64,7 +64,7 @@
             <div>
                 <h2><img src="../../public/img/my/app-store.png" data-th-src="@{/img/my/app-store.png}" data-th-alt="#{ui.appstore}" alt="Appstore" /><span data-th-text="#{ui.appstore}">Apps Store</span></h2>
             </div>
-            <form id="searchForm" action="#" data-th-action="@{/appstore/search}">
+            <form id="searchForm" action="#" data-th-action="@{|/${currentLanguage.locale.language}/store/search|}">
                 <!--/*<div class="input-group">
                     <input type="search" name="query" class="form-control" placeholder="Search"/>
                     <span class="input-group-btn">
@@ -114,14 +114,14 @@
                             data-th-case="FREE"
                             data-th-text="#{store.free}"
                             data-th-attr="data-appId=${entry.catalogEntry.id},data-appType=${entry.catalogEntry.type}"
-                            data-th-href="@{/appstore/application/}+${entry.catalogEntry.id}+'/'+${entry.catalogEntry.type}"
+                            data-th-href="@{|/${currentLanguage.locale.language}/store/application/|}+${entry.catalogEntry.id}+'/'+${entry.catalogEntry.type}"
                             data-appId="abdc81-f128-8197-1780a">Free</button>
                     <th:block data-th-case="INSTALLED">
-                        <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}" data-th-href="@{/appstore/application/} + ${entry.catalogEntry.id} + '/' + ${entry.catalogEntry.type}">Installed</button>
+                        <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}" data-th-href="@{|/${currentLanguage.locale.language}/store/application/|} + ${entry.catalogEntry.id} + '/' + ${entry.catalogEntry.type}">Installed</button>
                         <button class="btn btn-indicator btn-indicator-installed-icon"><i class="fa fa-check"></i></button>
                     </th:block>
                     <th:block data-th-case="PAYING">
-                        <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.paid}" data-th-attr="data-appId=${entry.catalogEntry.id}" href="#" data-th-href="@{/appstore/application/}+${entry.catalogEntry.id}+'/'+${entry.catalogEntry.type}">Paid</button>
+                        <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.paid}" data-th-attr="data-appId=${entry.catalogEntry.id}" href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/application/|}+${entry.catalogEntry.id}+'/'+${entry.catalogEntry.type}">Paid</button>
                         <button class="btn btn-indicator btn-indicator-available-icon"><i class="fa fa-eur"></i></button>
                     </th:block>
 
@@ -162,7 +162,7 @@
 
 </div>
 
-<form id="subscribe" method="POST" action="#" data-th-action="@{/appstore/buy}">
+<form id="subscribe" method="POST" action="#" data-th-action="@{|/${currentLanguage.locale.language}/store/buy|}">
     <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
     <input type="hidden" id="subscribe_app" name="appId" value=""/>
     <input type="hidden" id="subscribe_apptype" name="appType" value=""/>

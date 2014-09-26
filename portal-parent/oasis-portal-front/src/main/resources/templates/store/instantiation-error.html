@@ -74,7 +74,7 @@
         <h1 data-th-text="#{store.sorry}">Sorry!</h1>
         <h2 data-th-text="#{store.error(${appname})}">There has been an error while creating an instance of Blabla.</h2>
 
-        <p class="error-back"><a class="btn btn-default" href="#" data-th-href="@{|/appstore/application/${appid}/APPLICATION|}" data-th-text="#{store.back}">Return to app store</a></p>
+        <p class="error-back"><a class="btn btn-default" href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/application/${appid}/APPLICATION|}" data-th-text="#{store.back}">Return to app store</a></p>
         <p class="error-message" data-th-switch="${errortype}">
             <em data-th-case="TECHNICAL_ERROR"
                 data-th-text="#{store.error.technical}">There was a technical error</em>
