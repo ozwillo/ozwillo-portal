@@ -52,22 +52,29 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     @Cacheable("appstore")
-    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<String> installOptions) {
+    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<String> paymentOptions) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
                 .build()
                 .toUriString();
 
-        if(installOptions == null || installOptions.size() == PaymentOption.values().length) {
-        	return Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()))
+        List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()));
+
+        if (logger.isDebugEnabled()) {
+            logger.debug("Found catalog entries:");
+            catalogEntries.forEach(e -> logger.debug(e.toString()));
+        }
+
+        if(paymentOptions == null || paymentOptions.size() == PaymentOption.values().length) {
+        	return catalogEntries
                 .stream()
                 .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
                 .collect(Collectors.toList());
         }
-        return Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()))
+        return catalogEntries
                 .stream()
                 .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
-                .filter(e -> installOptions.stream().anyMatch(installOption -> PaymentOption.valueOf(installOption).equals(e.getPaymentOption())))
+                .filter(e -> paymentOptions.stream().anyMatch(installOption -> PaymentOption.valueOf(installOption).equals(e.getPaymentOption())))
                 .collect(Collectors.toList());
     }
 

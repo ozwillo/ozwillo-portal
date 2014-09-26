@@ -49,7 +49,7 @@ public class CatalogEntry  {
     private PaymentOption paymentOption;
 
     @JsonProperty("target_audience")
-    private List<Audience> targetAudience;
+    private List<Audience> targetAudience = new ArrayList<>();
 
     @JsonProperty("territory_id")
     private String territoryId;
