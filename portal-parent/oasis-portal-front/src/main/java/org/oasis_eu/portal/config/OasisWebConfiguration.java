@@ -41,9 +41,9 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-        interceptor.setParamName("lang");
-        registry.addInterceptor(interceptor);
+//        LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
+//        interceptor.setParamName("lang");
+//        registry.addInterceptor(interceptor);
         registry.addInterceptor(new OasisLocaleInterceptor());
         registry.addInterceptor(tokenRefreshInterceptor());
     }

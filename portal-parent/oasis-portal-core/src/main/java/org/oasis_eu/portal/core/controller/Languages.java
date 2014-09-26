@@ -43,7 +43,7 @@ public enum Languages {
     }
     
     public static Languages getByLocale(Locale locale, Languages defaultLang) {
-        for (Languages l : Languages.values()) {
+        for (Languages l : values()) {
             if (l.getLanguage().equals(locale.getLanguage())) {
                 return l;
             }
@@ -51,4 +51,12 @@ public enum Languages {
 		return defaultLang;
     }
 
+    public static Languages getByLanguageTag(String languageTag) {
+        for (Languages l : values()) {
+            if (l.getLanguage().equals(languageTag)) {
+                return l;
+            }
+        }
+        return null;
+    }
 }

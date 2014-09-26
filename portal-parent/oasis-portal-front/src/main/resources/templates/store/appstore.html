@@ -46,7 +46,7 @@
 </head>
 <body>
 
-<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" data-th-replace="includes/my-navigation :: nav">
+<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" data-th-replace="|includes/${user == null ? 'navbar' : 'my-navigation'}::nav|">
     <div class="navbar-header">
         <div class="my-oasis" data="null">
             <img id="logo" src="../../public/img/my/my-oasis.png"
@@ -120,7 +120,7 @@
                         <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}" data-th-href="@{|/${currentLanguage.locale.language}/store/application/|} + ${entry.catalogEntry.id} + '/' + ${entry.catalogEntry.type}">Installed</button>
                         <button class="btn btn-indicator btn-indicator-installed-icon"><i class="fa fa-check"></i></button>
                     </th:block>
-                    <th:block data-th-case="PAYING">
+                    <th:block data-th-case="PAID">
                         <button class="btn btn-indicator btn-indicator-available" data-th-text="#{store.paid}" data-th-attr="data-appId=${entry.catalogEntry.id}" href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/application/|}+${entry.catalogEntry.id}+'/'+${entry.catalogEntry.type}">Paid</button>
                         <button class="btn btn-indicator btn-indicator-available-icon"><i class="fa fa-eur"></i></button>
                     </th:block>
@@ -177,7 +177,7 @@
 
 
 <!--/*/
-<script src="../../public/js/my.js" data-th-src="@{/js/my.js}"></script>
+<script src="../../public/js/my.js" data-th-src="@{/js/my.js}" data-th-if="${user != null}"></script>
 /*/-->
 
 <script src="../../public/js/application.js" data-th-src="@{/js/store/application.js}"></script>

@@ -15,7 +15,6 @@ import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
-import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -58,9 +57,6 @@ public class PortalAppstoreService {
     private ImageService imageService;
 
     @Autowired
-    private UserDirectory userDirectory;
-
-    @Autowired
     private PortalAppManagementService appManagementService;
 
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<String> installOptions) {
@@ -72,17 +68,20 @@ public class PortalAppstoreService {
     }
 
     private String getOrganizationName(CatalogEntry catalogEntry) {
-        String providerId = catalogEntry.getProviderId();
-        if (providerId == null) {
-            logger.warn("Catalog entry {} - {} has null provider id", catalogEntry.getId(), catalogEntry.getDefaultName());
-            return "";
-        }
-        Organization organization = organizationStore.find(providerId);
-        if (organization == null) {
-            logger.warn("Catalog entry {} - {} has a provider id ({}) that does not correspond to any known organization", catalogEntry.getId(), catalogEntry.getDefaultName(), providerId);
-            return "";
-        }
-        return organization.getName();
+        if (userInfoHelper.isAuthenticated()) {
+
+            String providerId = catalogEntry.getProviderId();
+            if (providerId == null) {
+                logger.warn("Catalog entry {} - {} has null provider id", catalogEntry.getId(), catalogEntry.getDefaultName());
+                return "";
+            }
+            Organization organization = organizationStore.find(providerId);
+            if (organization == null) {
+                logger.warn("Catalog entry {} - {} has a provider id ({}) that does not correspond to any known organization", catalogEntry.getId(), catalogEntry.getDefaultName(), providerId);
+                return "";
+            }
+            return organization.getName();
+        } else return "-"; // TODO when the Kernel supports unauthenticated org access, remove this
     }
 
     public AppstoreHit getInfo(String appId, CatalogEntryType appType) {
@@ -136,16 +135,21 @@ public class PortalAppstoreService {
     }
 
     private InstallationOption getInstallationOption(CatalogEntry entry) {
+        if (! userInfoHelper.isAuthenticated()) {
+            return InstallationOption.valueOf(entry.getPaymentOption().toString()); // urgh. clean this up sometime!
+        }
+
+
         if (CatalogEntryType.SERVICE.equals(entry.getType())) {
             Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().map(Subscription::getServiceId).collect(Collectors.toSet());
             return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
-                    PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAYING;
+                    PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         } else {
             return appManagementService.getMyAuthorities(true).stream()
                     .flatMap(authority -> appManagementService.getMyInstances(authority).stream())
                     .anyMatch(instance -> instance.getApplication().getId().equals(entry.getId()))
                     ? InstallationOption.INSTALLED :
-                        PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAYING;
+                        PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
 
         }
     }

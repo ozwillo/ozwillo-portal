@@ -368,3 +368,28 @@ li.dashboard_template {
     background-color: #ffffff;
 }
 
+
+
+.btn.btn-primary-inverse {
+    color: #6e418e;
+    border-color: #6e418e;
+    background-color: transparent;
+    border-radius: 10px;
+    border-width: 2px;
+    border-color: #6e418e;
+    font-size: 14pt;
+}
+
+.btn.btn-primary-inverse:hover {
+    background-color: #6e418e;
+    color: #ffffff;
+    border-color: #ffffff;
+}
+
+.navbar-noauth * li {
+    margin-left: 13px;
+}
+
+.btn-noborder {
+    border: 0;
+}

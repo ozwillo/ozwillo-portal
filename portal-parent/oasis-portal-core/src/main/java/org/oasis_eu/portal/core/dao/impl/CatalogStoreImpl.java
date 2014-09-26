@@ -92,7 +92,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     private CatalogEntry getCatalogEntry(String id, String endpoint) {
-        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, user(), id);
+        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, none(), id);
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         } else if (response.getStatusCode().is4xxClientError()) {

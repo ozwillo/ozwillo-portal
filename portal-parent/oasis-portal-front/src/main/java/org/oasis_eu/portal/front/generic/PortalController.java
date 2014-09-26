@@ -12,6 +12,7 @@ import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -33,6 +34,14 @@ abstract public class PortalController {
 
     @Autowired
     private NameDefaults nameDefaults;
+
+    @Value("${web.home}")
+    private String webHome;
+
+    @ModelAttribute("webHome")
+    public String getWebHome() {
+        return webHome;
+    }
 
 	@ModelAttribute("languages")
 	public Languages[] languages() {

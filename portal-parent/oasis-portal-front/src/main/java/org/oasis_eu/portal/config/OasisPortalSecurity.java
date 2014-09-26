@@ -21,12 +21,9 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint()).and()
                 .authorizeRequests()
                 .antMatchers("/my/**").authenticated()
-                .antMatchers("/appstore/**").authenticated()
                 .anyRequest().permitAll().and()
                 .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class)
                 .addFilterAfter(oasisExceptionTranslationFilter(authenticationEntryPoint()), ExceptionTranslationFilter.class);
-
-
 
     }
 }

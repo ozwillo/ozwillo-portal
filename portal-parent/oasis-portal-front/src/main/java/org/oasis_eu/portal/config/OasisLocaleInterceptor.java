@@ -4,6 +4,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.security.core.Authentication;
@@ -40,6 +41,14 @@ public class OasisLocaleInterceptor extends HandlerInterceptorAdapter {
 				}
 			}
 
+        } else {
+            String path = request.getServletPath();
+            if (path.contains("/")) {
+                Languages foundLanguage = Languages.getByLanguageTag(path.split("/")[1]);
+                if (foundLanguage != null) {
+                    RequestContextUtils.getLocaleResolver(request).setLocale(request, response, foundLanguage.getLocale());
+                }
+            }
         }
 		return true;
 	}
