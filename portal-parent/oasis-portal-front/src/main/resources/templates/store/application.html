@@ -70,6 +70,12 @@
             </div>
         </div>
         <div class="col-sm-4 center-container install-application">
+            <!--/* Logged-out users */-->
+            <div class="btn-group vcentered" data-th-if="${user == null}">
+                <a class="btn btn-primary" data-th-text="#{store.install}" href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login?appId=${app.id}&amp;appType=${app.type}|}">Install</a>
+            </div>
+            <!--/* Logged-in users */-->
+            <!--/* General app: not just for citizens */-->
             <div class="btn-group vcentered" data-th-switch="${#strings.toString(app.installationOption)}" data-th-if="${user != null and ! app.isOnlyCitizens()}">
                 <th:block data-th-case="INSTALLED">
                     <button class="btn btn-indicator btn-indicator-installed" data-th-text="#{store.installed}">Installed</button>
@@ -83,9 +89,7 @@
                     <button class="btn btn-indicator btn-indicator-available-icon"><i class="fa fa-eur"></i></button>
                 </th:block>
             </div>
-            <div class="btn-group vcentered" data-th-if="${user == null}">
-                <a class="btn btn-primary" data-th-text="#{store.install}" href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login?appId=${app.id}&amp;appType=${app.type}|}">Install</a>
-            </div>
+            <!--/* This app is allowed only for citizens, so we have a slightly shorter pathway */-->
             <div class="btn-group vcentered" data-th-if="${app.isOnlyCitizens()}">
                 <button class="btn btn-primary" id="forceInstall" data-th-text="#{store.install}">Install</button>
             </div>
@@ -117,15 +121,13 @@
             <div class="col-sm-10">
                 <h4 data-th-text="#{store.install_this_app}">Install this application</h4>
 
-                <div class="btn-group">
-                    <button id="ownbuy" type="button" class="btn btn-default" data-th-text="#{store.for_myself}">For myself</button>
-                    <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-th-if="${! #lists.isEmpty(authorities)}"><span data-th-text="#{store.on_behalf_of}">On behalf of</span> <span class="caret"></span></button>
-                    <ul class="dropdown-menu" role="menu" data-th-remove="all-but-first">
-                        <li data-th-each="auth : ${authorities}"><a href="#" data-th-text="${auth.name}" data-th-attr="data-orgid=${auth.id}" class="orgselector">Valence</a></li>
-                        <li><a href="#">Provincia di Torino</a></li>
-                        <li><a href="#">Somewhere</a></li>
-                    </ul>
-                </div>
+                <button id="ownbuy" type="button" class="btn btn-default" data-th-if="${app.hasCitizens()}" data-th-text="#{store.for_myself}">For myself</button>
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-th-if="${! #lists.isEmpty(authorities)}"><span data-th-text="#{store.on_behalf_of}">On behalf of</span> <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu" data-th-remove="all-but-first">
+                    <li data-th-each="auth : ${authorities}"><a href="#" data-th-text="${auth.name}" data-th-attr="data-orgid=${auth.id}" class="orgselector">Valence</a></li>
+                    <li><a href="#">Provincia di Torino</a></li>
+                    <li><a href="#">Somewhere</a></li>
+                </ul>
             </div>
         </div>
     </div>

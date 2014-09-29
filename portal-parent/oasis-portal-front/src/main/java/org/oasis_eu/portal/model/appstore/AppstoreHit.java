@@ -102,4 +102,11 @@ public class AppstoreHit {
         List<Audience> audience = getCatalogEntry().getTargetAudience();
         return audience.size() == 1 && audience.get(0).equals(Audience.CITIZENS);
     }
+
+    public boolean hasCitizens() {
+        List<Audience> audience = getCatalogEntry().getTargetAudience();
+        if (audience != null) {
+            return audience.contains(Audience.CITIZENS);
+        } else return false;
+    }
 }
