@@ -393,3 +393,29 @@ li.dashboard_template {
 .btn-noborder {
     border: 0;
 }
+
+
+a.lnk-remove {
+    color: #EC5854;
+}
+
+a.lnk-edit {
+    color: #50C9C8;
+}
+
+a.lnk-accept {
+    color: #56C170;
+}
+
+
+div.error-message {
+    position: absolute;
+    width: 80%;
+    height: 30px;
+    top: 50%;
+    left: 10%;
+    margin-top: -15px;
+    background-color: #ff9999;
+    border: #996666;
+    text-align: center;
+}

@@ -10,7 +10,6 @@ import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.model.appsmanagement.*;
 import org.oasis_eu.portal.model.appstore.AppInfo;
-import org.oasis_eu.spring.kernel.model.directory.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -22,7 +21,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -63,36 +61,6 @@ public class PortalAppManagementService {
 
     @Autowired
     private InstanceACLStore instanceACLStore;
-
-    public List<Authority> getMyAuthorities(boolean includePersonal) {
-        String userId = userInfoService.currentUser().getUserId();
-
-        List<Authority> authorities = new ArrayList<>();
-        if (includePersonal) {
-            authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
-        }
-
-        authorities.addAll(userDirectory.getMembershipsOfUser(userId)
-                .stream()
-                .filter(UserMembership::isAdmin)
-                .map(this::toAuthority)
-                .collect(Collectors.toList()));
-
-        Collections.sort(authorities, (one, two) -> {
-            if (one.getType().ordinal() != two.getType().ordinal()) return one.getType().ordinal() - two.getType().ordinal();
-            else return one.getName().compareTo(two.getName());
-        });
-
-        return authorities;
-    }
-
-    private String i18nPersonal() {
-        return messageSource.getMessage("my.apps.personal", new Object[0], RequestContextUtils.getLocale(request));
-    }
-
-    private Authority toAuthority(UserMembership userMembership) {
-        return new Authority(AuthorityType.ORGANIZATION, userMembership.getOrganizationName(), userMembership.getOrganizationId(), userMembership.isAdmin());
-    }
 
     public List<MyAppsInstance> getMyInstances(Authority authority) {
 
@@ -154,24 +122,6 @@ public class PortalAppManagementService {
         return new MyAppsService().setService(service).setName(service.getName(RequestContextUtils.getLocale(request)));
     }
 
-    public Authority getAuthority(String authorityType, String authorityId) {
-        switch(AuthorityType.valueOf(authorityType)) {
-            case INDIVIDUAL:
-                return new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userInfoService.currentUser().getUserId(), true); // in this case, discard the provided argument
-
-            case ORGANIZATION:
-                // note: at the risk of being a bit slow, we're checking that the user has membership of this org
-                UserMembership um = userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId())
-                        .stream()
-                        .filter(m -> m.getOrganizationId().equals(authorityId))
-                        .findFirst()
-                        .orElse(null);
-                return new Authority(AuthorityType.ORGANIZATION, organizationStore.find(authorityId).getName(), authorityId, um.isAdmin());
-        }
-
-        return null;
-    }
-
     public MyAppsInstance getInstance(String instanceId) {
 
         return fetchInstance(catalogStore.findApplicationInstance(instanceId));
@@ -193,7 +143,7 @@ public class PortalAppManagementService {
 
         return subscriptionStore.findByServiceId(serviceId)
                 .stream()
-                .map(s -> new User(s.getUserId(), s.getUserName()))
+                .map(s -> new User(s.getUserId(), s.getUserName(), false))
                 .collect(Collectors.toList());
 
 
@@ -206,7 +156,7 @@ public class PortalAppManagementService {
             String instanceId = service.getInstanceId();
             return instanceACLStore.getACL(instanceId)
                     .stream()
-                    .map(ace -> new User(ace.getUserId(), ace.getUserName()))
+                    .map(ace -> new User(ace.getUserId(), ace.getUserName(),false ))
                     .collect(Collectors.toList());
         } else {
             logger.error("Service {} does not exist", serviceId);
@@ -214,12 +164,7 @@ public class PortalAppManagementService {
         }
     }
 
-    public List<User> getUsersOfOrganization(String organizationId) {
-        return userDirectory.getMembershipsOfOrganization(organizationId)
-                .stream()
-                .map(m -> new User(m.getAccountId(), m.getAccountName()))
-                .collect(Collectors.toList());
-    }
+
 
     public void subscribeUsers(Set<String> users, String serviceId) {
         users.forEach(u -> {
@@ -239,7 +184,7 @@ public class PortalAppManagementService {
     public List<User> getAppUsers(String instanceId) {
         return instanceACLStore.getACL(instanceId)
                 .stream()
-                .map(ace -> new User(ace.getUserId(), ace.getUserName()))
+                .map(ace -> new User(ace.getUserId(), ace.getUserName(), false))
                 .collect(Collectors.toList());
     }
 

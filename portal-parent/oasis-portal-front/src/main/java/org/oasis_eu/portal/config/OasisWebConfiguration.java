@@ -1,10 +1,7 @@
 package org.oasis_eu.portal.config;
 
 import java.util.EnumSet;
-import java.util.HashSet;
-import java.util.Set;
 
-import org.oasis_eu.portal.dialect.CMSDialect;
 import org.oasis_eu.spring.kernel.security.TokenRefreshInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
@@ -15,8 +12,6 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.springframework.web.servlet.i18n.LocaleChangeInterceptor;
-import org.thymeleaf.dialect.IDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.templateresolver.ITemplateResolver;
 
@@ -33,11 +28,11 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     ApplicationContext applicationContext;
 
-    @Autowired
-    ITemplateResolver defaultTemplateResolver;
+//    @Autowired
+//    ITemplateResolver defaultTemplateResolver;
 
-    @Autowired
-    CMSDialect cmsDialect;
+//    @Autowired
+//    CMSDialect cmsDialect;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -58,15 +53,15 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
         return new OasisLocaleResolver();
     }
 
-    @Bean
-    public SpringTemplateEngine templateEngine() {
-        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
-        springTemplateEngine.setTemplateResolver(defaultTemplateResolver);
-        Set<IDialect> additionalDialects = new HashSet<IDialect>();
-        additionalDialects.add(cmsDialect);
-        springTemplateEngine.setAdditionalDialects(additionalDialects);
-        return springTemplateEngine;
-    }
+//    @Bean
+//    public SpringTemplateEngine templateEngine() {
+//        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
+//        springTemplateEngine.setTemplateResolver(defaultTemplateResolver);
+////        Set<IDialect> additionalDialects = new HashSet<IDialect>();
+////        additionalDialects.add(cmsDialect);
+////        springTemplateEngine.setAdditionalDialects(additionalDialects);
+//        return springTemplateEngine;
+//    }
 
 
     @Bean

@@ -4,6 +4,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
+import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
@@ -34,6 +35,8 @@ public class AuthorityController {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private NetworkService networkService;
 
 
 
@@ -50,7 +53,7 @@ public class AuthorityController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/authority/{authority_type}/{authority_id}")
     public String getAuthority(Model model, @PathVariable("authority_type") String authorityType, @PathVariable("authority_id") String authorityId) {
-        Authority authority = appManagementService.getAuthority(authorityType, authorityId);
+        Authority authority = networkService.getAuthority(authorityType, authorityId);
 
         if (authority == null) {
             return "appsmanagement/apps-byauth::forbidden";

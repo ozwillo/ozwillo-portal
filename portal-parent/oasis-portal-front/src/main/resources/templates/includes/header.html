@@ -2,18 +2,19 @@
     <meta charset="utf-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="_csrf" th:content="${_csrf.token}" content="csrf token"/>
-    <meta name="_csrf_header" th:content="${_csrf.headerName}" content="X-CSRF-TOKEN"/>
+    <meta name="_csrf" data-th-content="${_csrf.token}" content="csrf token"/>
+    <meta name="_csrf_header" data-th-content="${_csrf.headerName}" content="X-CSRF-TOKEN"/>
 
-    <title th:text="${title}">Page Title</title>
-    <link th:href="@{/webjars/bootstrap/3.1.1/css/bootstrap.min.css}" rel="stylesheet" />
-    <link th:href="@{/webjars/font-awesome/4.0.3/css/font-awesome.min.css}" rel="stylesheet" />
-    <link th:href="@{/webjars/jquery-ui/1.10.4/themes/base/jquery-ui.css}" rel="stylesheet" />
-    <link th:href="@{/css/main.css}" rel="stylesheet" />
-    <link th:if="${page} != null" th:href="@{'/css/' + ${page} + '.css'}" rel="stylesheet"/>
+    <title data-th-text="${title}">Page Title</title>
+    <link data-th-href="@{/webjars/bootstrap/3.1.1/css/bootstrap.min.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/font-awesome/4.2.0/css/font-awesome.min.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/jquery-ui/1.10.4/themes/base/jquery-ui.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/bootstrap-switch/3.0.2/css/bootstrap3/bootstrap-switch.css}" rel="stylesheet" />
+    <link data-th-href="@{/css/main.css}" rel="stylesheet" />
+    <link data-th-if="${page} != null" data-th-href="@{'/css/' + ${page} + '.css'}" rel="stylesheet"/>
     <!--[if lt IE 9]>
-    <script th:src="@{/webjars/html5shiv/3.7.0/html5shiv.min.js}" src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script th:src="@{/webjars/respond/1.4.2/dest/respond.min.js}" src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script data-th-src="@{/webjars/html5shiv/3.7.0/html5shiv.min.js}" src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script data-th-src="@{/webjars/respond/1.4.2/dest/respond.min.js}" src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
 </head>

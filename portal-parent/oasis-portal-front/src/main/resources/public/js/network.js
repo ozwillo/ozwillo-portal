@@ -1,34 +1,58 @@
 $(document).ready(function () {
-	
+
 	initBindings();
 
 	function initBindings($el) {
 		showViewMode();
+
+        $("input[type='checkbox']").bootstrapSwitch();
 		
-		$('.btn', $el).button();
+//		$('.btn', $el).button();
 		
 		// Show relationship form
-		$('.btn-edit', $el).click(function() {
+		$('.lnk-edit', $el).click(function() {
 			$form = $(this).parents('.form-table-row');
 			showViewMode();
 			showEditMode($form);
 		});
 		
 		// Save relationship changes
-		$('.btn-accept', $el).click(function() {
+		$('.lnk-accept', $el).click(function() {
 			$form = $(this).parents('.form-table-row');
-			var isAdmin = $('label.active input', $form).val() == 'yes';
+            var isAdmin = $("input[name='admin']", $form).bootstrapSwitch('state');
+            console.log("isAdmin > " + isAdmin);
 
-			//  TODO
-			$.ajax({
-				url: '/my/network/fragment/relationships',
-				method: 'GET',
-				success: refreshRelationshipsTable
-			})
+            var request = {
+                agentid: $form.attr("data-agentid"),
+                orgid: $form.attr("data-orgid"),
+                admin: isAdmin
+            };
+
+            $.ajax({
+                url: '/my/network/api/agent',
+                method: 'POST',
+                data: JSON.stringify(request),
+                contentType: "application/json",
+                success: function(data) {
+                    $.ajax({
+                        url: '/my/network/fragment/organizations',
+                        method: 'GET',
+                        success: refreshRelationshipsTable
+                    });
+                },
+                error: function(jqXHR) {
+                    // TODO check jqXHR
+                    var error = $("<div class='error-message'>Error</div>");
+                    $("body").append(error);
+                    error.show().delay(1000).fadeOut();
+                    showViewMode($form);
+                }
+            });
+
 		});
 		
 		// Remove relationship
-		$('.btn-remove', $el).click(function() {
+		$('.lnk-remove', $el).click(function() {
 			$form = $(this).parents('.form-table-row');
 			var agentName = $('.data-agent-name', $form).html();
 			if (confirm('Remove agent ' + agentName + '?')) {
@@ -66,8 +90,8 @@ $(document).ready(function () {
 	}
 	
 	function refreshRelationshipsTable(data) {
-		$('#relationships').replaceWith(data);
-		initBindings($('#relationships'));
+		$('#organizations').replaceWith(data);
+		initBindings($('#organizations'));
 	}
 
 });

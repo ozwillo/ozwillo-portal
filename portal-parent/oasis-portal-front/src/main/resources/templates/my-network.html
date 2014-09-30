@@ -6,14 +6,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>DUMMY Ozwillo</title>
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="../public/css/main.css" rel="stylesheet"/>
     <link href="../public/css/my.css" rel="stylesheet"/>
-    
+
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
+
+    <style>
+        @font-face {
+            font-family: 'Dunkin';
+            src: url('../public/fonts/Dunkin.eot?') format('eot'),
+            url('../public/fonts/Dunkin.woff') format('woff'),
+            url('../public/fonts/Dunkin.ttf')  format('truetype'),
+            url('../public/fonts/Dunkin.svg#Dunkin') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DIN';
+            src: url('../public/fonts/DIN.eot?') format('eot'),
+            url('../public/fonts/DIN.woff') format('woff'),
+            url('../public/fonts/DIN.ttf')  format('truetype'),
+            url('../public/fonts/DIN.svg#DIN') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DINAlternate-Light';
+            src: url('../public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../public/fonts/DINAlternate-Light.ttf')  format('truetype'),
+            url('../public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+        }
+
+    </style>
 </head>
 <body>
 
@@ -27,162 +54,51 @@
     </div>
 </div>
 
-<div class="container" data-th-if="${!isAgent}">
-        <h2>
-            <img src="/img/my/network-gray.png" />
-            <span data-th-text="#{my.network.title}">My network</span>
-        </h2>
-        <!-- XXX Temporary -->
-        <p>Networks are unavailable to citizen at the moment.</p>
-</div>
-
-<div class="profile-header" data-th-if="${isAgent}">
+<div class="profile-header" >
     <div class="container">
         <h1>
-            <img src="/img/my/network-gray.png" />
+            <img data-th-src="@{/img/my/network-gray.png}" src="../public/img/my/network-gray.png" />
             <span data-th-text="#{my.network.title}">My network</span>
         </h1>
         
-        <h2>Relationships</h2>
-        
-        <div id="relationships" data-th-fragment="relationships" class="standard-form">
-          <div class="row form-table-header">
-            <div class="col-sm-2" data-th-text="#{my.network.relationship.name}">Name</div>
-            <div class="col-sm-3" data-th-text="#{my.network.relationship.organization}">Organization</div>
-            <div class="col-sm-2" data-th-text="#{my.network.relationship.isadmin}">Administrator</div>
-            <div class="col-sm-5" data-th-text="#{my.network.relationship.actions}">Actions</div>
-          </div>
-          <div class="row form-table-row" data-th-each="agent: ${agents}" data-th-id="${agent.id}">
-            <div class="col-sm-2 data-agent-name" data-th-text="${(!#strings.isEmpty(agent.name)) ? agent.name : agent.email}">You</div>
-            <div class="col-sm-3" data-th-text="${organizationNames.get(agent.organizationId)}">Organization #1</div>
-            
-            <div class="col-sm-2 view-mode" data-th-text="${agent.organizationAdmin} ? #{ui.yes} : #{ui.no}">Yes</div>
-            <div class="col-sm-2 edit-mode" style="display: none">
-                <div class="btn-group data-is-admin" data-toggle="buttons">
-                  <label data-th-class="'btn btn-default' + (${agent.organizationAdmin} ? ' active' : '')">
-                    <input type="radio" name="is-admin" value="yes" /> Yes
-                  </label>
-                  <label data-th-class="'btn btn-default' + (${agent.organizationAdmin} ? '' : ' active')">
-                    <input type="radio" name="is-admin" value="no" /> No
-                  </label>
+        <h2><span data-th-text="#{my.network.find-or-create-organization}">Find or create organization</span> <a class="btn btn-success" href="#" data-th-text="#{ui.go}">Go</a></h2>
+
+        <!--/* Existing organizations */-->
+        <div id="organizations" data-th-fragment="organizations">
+            <div class="standard-form" data-th-each="authority: ${authorities}">
+                <div class="row form-table-header">
+                    <div class="col-sm-8" data-th-text="${authority.name}">Com com de Valence</div>
+                    <div class="col-sm-4"><a class="btn btn-primary" data-th-if="${authority.admin}" data-th-text="#{my.network.invite}">Invite</a> <a class="btn btn-primary" data-th-text="#{my.network.information}">Information</a></div>
                 </div>
+                <div class="row form-table-header">
+                    <div class="col-sm-3" data-th-text="#{my.network.who}">Who</div>
+                    <div class="col-sm-3" data-th-text="#{my.network.role}">Role</div>
+                    <div class="col-sm-4 col-sm-offset-2"></div>
+                </div>
+                <div class="row form-table-row" data-th-each="agent: ${agents[authority.id]}" data-th-attr="data-agentid=${agent.userid}, data-orgid=${authority.id}">
+                    <div class="col-sm-3" data-th-text="${agent.userid == user.userId} ? #{my.network.you} : ${agent.fullname}">You</div>
+                    <div class="col-sm-3 view-mode" data-th-text="${agent.admin} ? #{my.network.admin}:#{my.network.user}">Admin</div>
+                    <div class="col-sm-3 edit-mode"><span data-th-text="#{my.network.admin}">Admin</span> <input type="checkbox" name="admin" data-th-checked="${agent.admin}"/></div>
+                    <div class="col-sm-4 col-sm-offset-2 view-mode" data-th-if="${authority.admin and agent.userid != user.userId}">
+                        <a class="lnk-edit" href="#"><i class="fa fa-pencil"></i> <span data-th-text="#{ui.edit}">edit</span></a>
+                        <a class="lnk-remove" href="#" ><i class="fa fa-trash"></i> <span data-th-text="#{ui.remove}">remove</span></a>
+                    </div>
+                    <div class="col-sm-4 col-sm-offset-2 edit-mode">
+                        <a class="lnk-accept" href="#" data-th-if="${authority.admin}"><i class="fa fa-check"></i> <span data-th-text="#{ui.save}">save changes</span></a>
+                    </div>
+                </div>
+
             </div>
-            
-            <div class="col-sm-5 view-mode">
-                <button class="btn btn-edit" type="button">
-                     <span class="edit"></span><span data-th-text="#{ui.edit}">Edit</span>
-                </button>
-            </div>
-            <div class="col-sm-5 edit-mode" style="display: none">
-                <button class="btn btn-accept" type="button"><span class="accept"></span>Save</button>
-                <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button>
-            </div>
-            
-          </div>
-          
-<!--           <div class="row form-table-row"> -->
-<!--             <form role="form" action="#"> -->
-<!--                 <div class="col-sm-2">You</div> -->
-<!--                 <div class="col-sm-3">Organization #1</div> -->
-<!--                 <div class="col-sm-2"> -->
-<!--                     <div class="btn-group" data-toggle="buttons"> -->
-<!--                       <label class="btn btn-default active"> -->
-<!--                         <input type="radio" name="options" id="option1" checked="checked" /> Yes -->
-<!--                       </label> -->
-<!--                       <label class="btn btn-default"> -->
-<!--                         <input type="radio" name="options" id="option2" /> No -->
-<!--                       </label> -->
-<!--                     </div> -->
-<!--                 </div> -->
-<!--                 <div class="col-sm-5"> -->
-<!--                     <button class="btn btn-accept" type="button"><span class="accept"></span>Save</button> -->
-<!--                     <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button> -->
-<!--                 </div> -->
-<!--              </form> -->
-<!--           </div> -->
-          <div class="row form-table-actions">
-             <button class="btn btn-default" type="button" data-toggle="modal" data-target="#modal-add-relationship">
-                <img src="/img/icon/plus.png" />
-                Add relationship
-             </button>
-          </div>
         </div>
-        
+
+
     </div>
-    
-   <div id="modal-add-relationship" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
-     <div class="modal-dialog">
-       <div class="modal-content">
-         <div class="modal-header">
-           <button type="button" class="close" data-dismiss="modal">
-                <span aria-hidden="true">&times;</span>
-                <span class="sr-only">Close</span>
-           </button>
-           <h4 class="modal-title" data-th-text="#{my.network.relationship.add}">Add relationships</h4>
-         </div>
-         <form id="form-add-relationship" method="post" action="#" data-th-action="@{/my/network/relationships/create}">
-            <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
-            
-            <div class="modal-body">
-               <div class="form-group">
-                    <label for="organization-name" class="control-label"
-                         data-th-text="#{my.network.relationship.organization}">Organization</label>   
-                    <input class="form-control disabled"  type="text" name="organization-name"
-                        disabled="disabled"
-                        data-th-value="${organizationNames.get(user.organizationId)}" />
-               </div>
-               <div class="form-group">
-                    <label for="emails" class="control-label"
-                        data-th-text="#{my.network.relationship.add.emails}">Emails</label>         
-                    <textarea class="form-control" name="emails"></textarea>
-               </div>
-             </div>
-             
-             <div class="modal-footer">
-               <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{ui.cancel}">Cancel</button>
-               <button type="submit" class="btn btn-primary" data-th-value="#{ui.save}">Save</button>
-             </div>
-         </form>
-       </div>
-     </div>
-   </div>
+
+
    
 </div>
 
-<div class="container" data-th-if="${isAgent}">
 
-    <h2><span class="badge">2</span> Pending requests (MOCKUP)</h2>
-    
-    <form class="form-horizontal standard-form" role="form">
-      <div class="row form-table-header">
-        <div class="col-sm-2">Date</div>
-        <div class="col-sm-2">Email</div>
-        <div class="col-sm-2">Organization</div>
-        <div class="col-sm-3">Status</div>
-        <div class="col-sm-3">Actions</div>
-      </div>
-      <div class="row form-table-row">
-        <div class="col-sm-2">02/04/2014</div>
-        <div class="col-sm-2">swonder@orga3.com</div>
-        <div class="col-sm-2">Organization #3</div>
-        <div class="col-sm-3"><b>New request : </b> S. Wonder asks you to join Organization #3</div>
-        <div class="col-sm-3">
-            <button class="btn btn-accept" type="button"><span class="accept"></span>Accept</button>
-            <button class="btn btn-remove" type="button"><span class="remove"></span>Decline</button>
-        </div>
-      </div>
-      <div class="row form-table-row">
-        <div class="col-sm-2">02/04/2014</div>
-        <div class="col-sm-2">m.damon@orga8.com</div>
-        <div class="col-sm-2">Organization #8</div>
-        <div class="col-sm-3"><b>Pending : </b> M. Damon has not yet accepted your request</div>
-        <div class="col-sm-3">
-            <button class="btn btn-remove" type="button"><span class="trash"></span>Remove</button>
-        </div>
-      </div>
-    </form>
-    
-</div>
 
 <data-th-block data-th-replace="includes/footer">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

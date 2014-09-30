@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.services.NameDefaults;
+import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.RefreshTokenNeedException;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -67,6 +68,11 @@ abstract public class PortalController {
         return nameDefaults.complete(userInfo);
 	}
 
+    @ExceptionHandler(value = ForbiddenException.class)
+    @ResponseStatus(HttpStatus.FORBIDDEN)
+    public void handleForbidden() {
+
+    }
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)

@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
 import org.oasis_eu.portal.model.appsmanagement.User;
+import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,9 @@ public class InstanceUsersController {
     @Autowired
     private PortalAppManagementService appManagementService;
 
+    @Autowired
+    private NetworkService networkService;
+
     @RequestMapping(method = RequestMethod.GET, value = "/{org_id}/{app_id}")
     public String appSettings(Model model, @PathVariable("org_id") String organizationId, @PathVariable("app_id") String instanceId) {
         model.addAttribute("instance", appManagementService.getInstance(instanceId)); // note that we trust the Kernel's security on that one
@@ -41,7 +45,7 @@ public class InstanceUsersController {
     @RequestMapping("/{org_id}/{app_id}/org_users")
     @ResponseBody
     public List<User> getOrganizationUsers(@PathVariable("org_id") String organizationId) {
-        return appManagementService.getUsersOfOrganization(organizationId);
+        return networkService.getUsersOfOrganization(organizationId);
     }
 
     @RequestMapping("/{org_id}/{app_id}/save")

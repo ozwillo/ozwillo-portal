@@ -59,6 +59,9 @@ public class PortalAppstoreService {
     @Autowired
     private PortalAppManagementService appManagementService;
 
+    @Autowired
+    private NetworkService networkService;
+
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
 
         return catalogStore.findAllVisible(targetAudiences, paymentOptions).stream()
@@ -144,7 +147,7 @@ public class PortalAppstoreService {
             return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
                     PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         } else {
-            return appManagementService.getMyAuthorities(true).stream()
+            return networkService.getMyAuthorities(true).stream()
                     .flatMap(authority -> appManagementService.getMyInstances(authority).stream())
                     .anyMatch(instance -> instance.getApplication().getId().equals(entry.getId()))
                     ? InstallationOption.INSTALLED :

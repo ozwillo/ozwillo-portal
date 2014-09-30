@@ -4,6 +4,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
+import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -27,6 +28,9 @@ public class MyAppsManagementController extends PortalController {
     @Autowired
     private PortalAppManagementService appManagementService;
 
+    @Autowired
+    private NetworkService networkService;
+
     @ModelAttribute("navigation")
     public List<MyNavigation> getNavigation() {
         return navigationService.getNavigation("appsmanagement");
@@ -35,7 +39,7 @@ public class MyAppsManagementController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value ={"","/"})
     public String show(Model model, @RequestParam(value = "defaultAuthorityId", required = false, defaultValue = "") String defaultAuthorityId) {
-        model.addAttribute("authorities", appManagementService.getMyAuthorities(true));
+        model.addAttribute("authorities", networkService.getMyAuthorities(true));
         model.addAttribute("defaultAuthorityId", defaultAuthorityId);
         model.addAttribute("pending", appManagementService.getPendingInstances());
 

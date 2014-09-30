@@ -9,6 +9,7 @@ import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.services.MyNavigationService;
+import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -43,6 +44,9 @@ public class AppStoreController extends PortalController {
 
     @Autowired
     private PortalAppManagementService appManagementService;
+
+    @Autowired
+    private NetworkService networkService;
 
     @ModelAttribute("navigation")
     public List<MyNavigation> getNavigation() {
@@ -101,7 +105,7 @@ public class AppStoreController extends PortalController {
         AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType));
         model.addAttribute("app", info);
         if (userInfoHelper.isAuthenticated()) {
-            model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
+            model.addAttribute("authorities", networkService.getMyAuthorities(false));
         }
 
         if (fromAuth && info.isOnlyCitizens()) {
@@ -122,7 +126,7 @@ public class AppStoreController extends PortalController {
     public String applicationInner(@PathVariable String appId, @PathVariable String appType, Model model) {
         model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
         if (userInfoHelper.isAuthenticated()) {
-            model.addAttribute("authorities", appManagementService.getMyAuthorities(false));
+            model.addAttribute("authorities", networkService.getMyAuthorities(false));
         }
         model.addAttribute("openPopover", false);
         return "store/application::content";
