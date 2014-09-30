@@ -2,8 +2,16 @@ $(document).ready(function () {
 
 	initBindings();
 
-	function initBindings($el) {
-		showViewMode();
+    function reloadOrganizations() {
+        $.ajax({
+            url: '/my/network/fragment/organizations',
+            method: 'GET',
+            success: refreshRelationshipsTable
+        });
+    }
+
+    function initBindings($el) {
+        showViewMode();
 
         $("input[type='checkbox']").bootstrapSwitch();
 		
@@ -65,11 +73,7 @@ $(document).ready(function () {
                     url: "/my/network/api/agent/" + agentid + "/" + orgid,
                     method: 'DELETE',
                     success: function() {
-                        $.ajax({
-                            url: '/my/network/fragment/organizations',
-                            method: 'GET',
-                            success: refreshRelationshipsTable
-                        });
+                        reloadOrganizations();
                         modal.modal("hide");
 
                     },
@@ -79,21 +83,38 @@ $(document).ready(function () {
             });
         });
 
-		// Add relationship
-		$('#form-add-relationship', $el).submit(function(e) {
-			e.preventDefault();
-			$form = $(this);
-			$.ajax({
-				url: $form.attr('action'),
-				method: 'POST',
-				data: $form.serialize(),
-				success: refreshRelationshipsTable
-			});
-			$('#modal-add-relationship').modal('hide');
-			return false;
-		});
+
 	}
-	
+
+    $(".invite-button").click(function(e) {
+        $("#organization").val($(this).data("orgid"));
+    });
+
+    $("#invite-form").submit(function(e) {
+        e.preventDefault();
+        var request = {
+            orgid: $("#organization").val(),
+            email: $("#inviteEmail").val()
+        };
+        $.ajax({
+            url: "/my/network/api/invite",
+            method: "POST",
+            contentType:"application/json",
+            data: JSON.stringify(request),
+            success: function(e) {
+                reloadOrganizations();
+                $("#invite").modal('hide');
+                $("#organization").val('');
+                $("#inviteEmail").val('');
+            },
+            error: showError
+        });
+    });
+
+    $("#inviteSubmit").click(function() {
+        $("#invite-form").submit();
+    });
+
 	function showViewMode($form) {
 		$('.edit-mode', $form).hide();
 		$('.view-mode', $form).show();

@@ -172,4 +172,12 @@ public class NetworkService {
     }
 
 
+    public void invite(String email, String organizationId) {
+        if (! userIsAdmin(organizationId)) {
+            logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
+            throw new ForbiddenException();
+        }
+
+        userDirectory.createMembership(email, organizationId);
+    }
 }

@@ -68,7 +68,7 @@
             <div class="standard-form" data-th-each="authority: ${authorities}">
                 <div class="row form-table-header">
                     <div class="col-sm-8" data-th-text="${authority.name}">Com com de Valence</div>
-                    <div class="col-sm-4"><a class="btn btn-primary" data-th-if="${authority.admin}" data-th-text="#{my.network.invite}">Invite</a> <a class="btn btn-primary" data-th-text="#{my.network.information}">Information</a></div>
+                    <div class="col-sm-4"><a class="btn btn-primary invite-button" data-th-attr="data-orgid=${authority.id}" data-th-if="${authority.admin}" data-th-text="#{my.network.invite}" data-toggle="modal" data-target="#invite">Invite</a> <a class="btn btn-primary" data-th-text="#{my.network.information}">Information</a></div>
                 </div>
                 <div class="row form-table-header">
                     <div class="col-sm-3" data-th-text="#{my.network.who}">Who</div>
@@ -111,6 +111,29 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal" data-th-text="#{ui.cancel}">Cancel</button>
                 <a href="#" class="btn btn-danger danger" data-th-text="#{ui.delete}">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="invite" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" data-th-text="#{my.network.invite}">
+                Invite
+            </div>
+            <div class="modal-body">
+                <form id="invite-form">
+                    <input type="hidden" id="organization"/>
+                    <div class="form-group">
+                        <label for="inviteEmail" data-th-text="#{my.network.email}">Email</label>
+                        <input type="email" class="form-control" id="inviteEmail" placeholder="somebody@example.com" data-th-attr="placeholder=#{my.network.email.placeholder}" />
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-th-text="#{ui.cancel}">Cancel</button>
+                <a href="#" class="btn btn-primary" data-th-text="#{my.network.invite}" id="#inviteSubmit">Invite</a>
             </div>
         </div>
     </div>

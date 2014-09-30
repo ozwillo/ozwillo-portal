@@ -66,36 +66,6 @@ public class MyNetworkController extends PortalController {
         networkService.removeAgentFromOrganization(agentId, organizationId);
     }
 
-//
-//
-//    @RequestMapping(method = RequestMethod.POST, value="/relationships/save/{agentId}")
-//    public String saveRelationship(@PathVariable("agentId") String agentId, Model model) throws ExecutionException {
-//    	initModel(model);
-//    	// TODO Ability to change administrator status
-//        return "redirect:/my/network/fragment/relationships";
-//    }
-//
-//    @RequestMapping(method = RequestMethod.POST, value="/relationships/create")
-//    public String addRelationship(@RequestParam("emails") String emails, Model model) throws ExecutionException {
-//    	initModel(model);
-//    	// TODO Field validation
-//		for (String email : emails.split(",")) {
-//	    	if (!StringUtils.isEmpty(email)) {
-//				UserInfo newAgent = new UserInfo();
-//				newAgent.setEmail(email.trim());
-////		    	userDirectory.createAgent(user().getOrganizationId(), newAgent);
-//	    	}
-//		}
-//        return "redirect:/my/network/fragment/relationships";
-//    }
-//
-//    @RequestMapping(method = RequestMethod.POST, value="/relationships/delete/{agentId}")
-//    public String removeRelationship(@PathVariable("agentId") String agentId, Model model) throws ExecutionException {
-//    	initModel(model);
-////    	userDirectory.deleteAgent(userDirectory.getAgent(agentId));
-//        return "redirect:/my/network/fragment/relationships";
-//    }
-//
 	private void initModel(Model model) throws ExecutionException {
 
         List<Authority> authorities = networkService.getMyAuthorities(false);
@@ -113,11 +83,22 @@ public class MyNetworkController extends PortalController {
     }
 
 
+    @RequestMapping(value = "/api/invite")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void invite(@RequestBody InvitationRequest request) {
+        networkService.invite(request.email, request.organizationId);
+    }
+
 
     public static class AgentStatusRequest {
         @JsonProperty("agentid") String agentId;
         @JsonProperty("orgid") String organizationId;
         @JsonProperty("admin") boolean admin;
+    }
+
+    public static class InvitationRequest {
+        @JsonProperty("orgid") String organizationId;
+        @JsonProperty("email") String email;
     }
 
 }
