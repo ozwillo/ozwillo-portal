@@ -107,7 +107,11 @@ $(document).ready(function () {
                 $("#organization").val('');
                 $("#inviteEmail").val('');
             },
-            error: showError
+            error: function() {
+                showError();
+                $("#invite").modal("hide");
+                setTimeout(reloadOrganizations, 1000);
+            }
         });
     });
 
@@ -132,10 +136,9 @@ $(document).ready(function () {
 
 
     function showError(jqXHR) {
-        // TODO check jqXHR
         var error = $("<div class='error-message'>Error</div>");
         $("body").append(error);
         error.show().delay(1000).fadeOut();
-        showViewMode($form);
+
     }
 });

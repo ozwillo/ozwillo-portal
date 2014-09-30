@@ -103,8 +103,27 @@ public class NetworkService {
     public List<User> getUsersOfOrganization(String organizationId) {
         return userDirectory.getMembershipsOfOrganization(organizationId)
                 .stream()
-                .map(m -> new User(m.getAccountId(), m.getAccountName(), m.isAdmin()))
+                .map(m -> new User(m.getAccountId(), getUserName(m.getAccountId(), m.getAccountName()), m.isAdmin()))
+                .sorted((u1, u2) -> {
+                    if (u1.getUserid().equals(userInfoService.currentUser().getUserId())) return -1;
+                    if (u2.getUserid().equals(userInfoService.currentUser().getUserId())) return 1;
+                    if (u1.isAdmin()) return -1;
+                    if (u2.isAdmin()) return 1;
+                    return u1.getFullname() != null ? u1.getFullname().compareTo(u2.getFullname()) : 1;
+                })
                 .collect(Collectors.toList());
+    }
+
+    private String getUserName(String accountId, String accountName) {
+        if (accountName != null) {
+            return accountName;
+        } else {
+            UserAccount userAccount = userDirectory.findUserAccount(accountId);
+            if (userAccount.getName() != null) return userAccount.getName();
+            if (userAccount.getGivenName() != null && userAccount.getFamilyName() != null)
+                return String.format("%s %s", userAccount.getGivenName(), userAccount.getFamilyName());
+            return userAccount.getEmail();
+        }
     }
 
     public Map<String, List<User>> getAgents(List<Authority> authorities) {
