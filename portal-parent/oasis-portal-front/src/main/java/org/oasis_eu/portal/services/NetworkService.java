@@ -5,6 +5,8 @@ import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
 import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
+import org.oasis_eu.spring.kernel.model.Organization;
+import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.model.directory.OrgMembership;
 import org.oasis_eu.spring.kernel.model.directory.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
@@ -119,8 +121,7 @@ public class NetworkService {
         }
 
         // check that user is admin of the organization...
-        if (!userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
-                .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin())) {
+        if (!userIsAdmin(organizationId)) {
             logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
             throw new ForbiddenException();
         }
@@ -133,4 +134,42 @@ public class NetworkService {
             logger.error("Cannot find membership for user: {} and organization: {}", agentId, organizationId);
         }
     }
+
+    private boolean userIsAdmin(String organizationId) {
+        return userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
+                .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin());
+    }
+
+    public void removeAgentFromOrganization(String agentId, String organizationId) {
+        // we do not allow users to remove themselves
+        if (userInfoService.currentUser().getUserId().equals(agentId)) {
+            logger.error("Self-modification is forbidden");
+            throw new ForbiddenException();
+        }
+        if (!userIsAdmin(organizationId)) {
+            logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
+        }
+
+        OrgMembership orgMembership = userDirectory.getMembershipsOfOrganization(organizationId).stream().filter(membership -> membership.getAccountId().equals(agentId)).findAny().orElse(null);
+        if (orgMembership != null) {
+            userDirectory.removeMembership(orgMembership);
+        } else {
+            logger.error("Cannot find membership for user: {} and organization: {}", agentId, organizationId);
+
+        }
+    }
+
+
+    public String getRemoveMessage(String agentId, String organizationId) {
+        UserAccount userAccount = userDirectory.findUserAccount(agentId);
+        Organization organization = organizationStore.find(organizationId);
+
+        if (userAccount != null && organization != null) {
+            return messageSource.getMessage("my.network.confirm-delete.body", new Object[]{userAccount.getName(), organization.getName()}, RequestContextUtils.getLocale(request));
+        } else {
+            throw new WrongQueryException();
+        }
+    }
+
+
 }

@@ -81,7 +81,7 @@
                     <div class="col-sm-3 edit-mode"><span data-th-text="#{my.network.admin}">Admin</span> <input type="checkbox" name="admin" data-th-checked="${agent.admin}"/></div>
                     <div class="col-sm-4 col-sm-offset-2 view-mode" data-th-if="${authority.admin and agent.userid != user.userId}">
                         <a class="lnk-edit" href="#"><i class="fa fa-pencil"></i> <span data-th-text="#{ui.edit}">edit</span></a>
-                        <a class="lnk-remove" href="#" ><i class="fa fa-trash"></i> <span data-th-text="#{ui.remove}">remove</span></a>
+                        <a class="lnk-remove" href="#" data-toggle="modal" data-target="#confirm-delete"><i class="fa fa-trash"></i> <span data-th-text="#{ui.remove}">remove</span></a>
                     </div>
                     <div class="col-sm-4 col-sm-offset-2 edit-mode">
                         <a class="lnk-accept" href="#" data-th-if="${authority.admin}"><i class="fa fa-check"></i> <span data-th-text="#{ui.save}">save changes</span></a>
@@ -98,6 +98,23 @@
    
 </div>
 
+<div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header" data-th-text="#{my.network.confirm-delete.title}">
+
+                ...
+            </div>
+            <div class="modal-body">
+                ...
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" data-th-text="#{ui.cancel}">Cancel</button>
+                <a href="#" class="btn btn-danger danger" data-th-text="#{ui.delete}">Delete</a>
+            </div>
+        </div>
+    </div>
+</div>
 
 
 <data-th-block data-th-replace="includes/footer">

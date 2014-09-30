@@ -10,6 +10,7 @@ import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
@@ -59,6 +60,12 @@ public class MyNetworkController extends PortalController {
         return "redirect:/my/network/fragment/organizations";
     }
 
+    @RequestMapping(method = RequestMethod.DELETE, value="/api/agent/{agentId}/{organizationId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeAgent(@PathVariable String agentId, @PathVariable String organizationId) {
+        networkService.removeAgentFromOrganization(agentId, organizationId);
+    }
+
 //
 //
 //    @RequestMapping(method = RequestMethod.POST, value="/relationships/save/{agentId}")
@@ -96,6 +103,14 @@ public class MyNetworkController extends PortalController {
         model.addAttribute("agents", networkService.getAgents(authorities));
     }
 
+
+
+
+    @RequestMapping(value = "/api/remove-message/{agentId}/{organizationId}", method = RequestMethod.GET)
+    @ResponseBody
+    public String getRemoveMessage(@PathVariable String agentId, @PathVariable String organizationId) {
+        return networkService.getRemoveMessage(agentId, organizationId);
+    }
 
 
 

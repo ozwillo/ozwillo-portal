@@ -40,30 +40,45 @@ $(document).ready(function () {
                         success: refreshRelationshipsTable
                     });
                 },
-                error: function(jqXHR) {
-                    // TODO check jqXHR
-                    var error = $("<div class='error-message'>Error</div>");
-                    $("body").append(error);
-                    error.show().delay(1000).fadeOut();
-                    showViewMode($form);
-                }
+                error: showError
             });
 
 		});
-		
-		// Remove relationship
-		$('.lnk-remove', $el).click(function() {
-			$form = $(this).parents('.form-table-row');
-			var agentName = $('.data-agent-name', $form).html();
-			if (confirm('Remove agent ' + agentName + '?')) {
-				$.ajax({
-					url: '/my/network/relationships/delete/' + $form.attr('id'),
-					method: 'POST',
-					success: refreshRelationshipsTable
-				})
-			}
-		});
-		
+
+        $("#confirm-delete").on("show.bs.modal", function(e) {
+            $form = $(e.relatedTarget).parents('.form-table-row');
+            var agentid = $form.attr("data-agentid");
+            var orgid = $form.attr("data-orgid");
+            var modal = $(this);
+            $.ajax({
+                url: '/my/network/api/remove-message/' + agentid + "/" + orgid,
+                method: 'GET',
+                success: function(data) {
+                    modal.find(".modal-body").html(data);
+                },
+                error: showError
+            });
+
+//            $(this).find(".danger").attr("href", deleteUrl);
+            $(this).find(".danger").click(function(event) {
+                $.ajax({
+                    url: "/my/network/api/agent/" + agentid + "/" + orgid,
+                    method: 'DELETE',
+                    success: function() {
+                        $.ajax({
+                            url: '/my/network/fragment/organizations',
+                            method: 'GET',
+                            success: refreshRelationshipsTable
+                        });
+                        modal.modal("hide");
+
+                    },
+                    error: showError
+                });
+
+            });
+        });
+
 		// Add relationship
 		$('#form-add-relationship', $el).submit(function(e) {
 			e.preventDefault();
@@ -94,4 +109,12 @@ $(document).ready(function () {
 		initBindings($('#organizations'));
 	}
 
+
+    function showError(jqXHR) {
+        // TODO check jqXHR
+        var error = $("<div class='error-message'>Error</div>");
+        $("body").append(error);
+        error.show().delay(1000).fadeOut();
+        showViewMode($form);
+    }
 });
