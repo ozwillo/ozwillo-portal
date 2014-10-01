@@ -9,6 +9,7 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
+import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +30,7 @@ import java.util.stream.Collectors;
 
 import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.none;
 import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.userIfExists;
 
 /**
  * User: schambon
@@ -86,7 +88,9 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     private CatalogEntry getCatalogEntry(String id, String endpoint) {
-        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, none(), id);
+
+        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, userIfExists(), id);
+
         if (response.getStatusCode().is2xxSuccessful()) {
             return response.getBody();
         } else if (response.getStatusCode().is4xxClientError()) {
