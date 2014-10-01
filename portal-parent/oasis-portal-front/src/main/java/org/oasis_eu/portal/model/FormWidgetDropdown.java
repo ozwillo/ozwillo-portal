@@ -1,6 +1,8 @@
 package org.oasis_eu.portal.model;
 
 import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,6 +13,8 @@ import java.util.stream.Collectors;
 
 
 public class FormWidgetDropdown extends FormWidget {
+
+    private static final Logger logger = LoggerFactory.getLogger(FormWidgetDropdown.class);
 
 	private Map<String, String> options = new HashMap<String, String>();
 	
@@ -36,7 +40,7 @@ public class FormWidgetDropdown extends FormWidget {
 	}
 	
 	public String getOptionLabel(String key) {
-		if(Strings.isNullOrEmpty(key)) return "ui.default_value";
+		if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
         return options.containsKey(key) ? options.get(key) : key;
 	}
 
