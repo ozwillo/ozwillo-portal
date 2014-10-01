@@ -61,7 +61,7 @@
             <span data-th-text="#{my.network.title}">My network</span>
         </h1>
         
-        <h2><span data-th-text="#{my.network.find-or-create-organization}">Find or create organization</span> <a class="btn btn-success" href="#" data-th-text="#{ui.go}">Go</a></h2>
+        <h2><span data-th-text="#{my.network.find-or-create-organization}">Find or create organization</span> <a data-toggle="modal" data-target="#create-org" class="btn btn-success" href="#" data-th-text="#{ui.go}">Go</a></h2>
 
         <!--/* Existing organizations */-->
         <div id="organizations" data-th-fragment="organizations">
@@ -93,9 +93,6 @@
 
 
     </div>
-
-
-   
 </div>
 
 <div class="modal fade" id="confirm-delete" tabindex="-1" role="dialog" aria-hidden="true">
@@ -139,6 +136,7 @@
     </div>
 </div>
 
+<div data-th-replace="network/create-org::create-org"></div>
 
 <data-th-block data-th-replace="includes/footer">
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html>
+<head data-th-replace="includes/header(title=#{my.appsmanagement},page='network')">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>DUMMY Ozwillo</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../public/css/apps-management.css" rel="stylesheet"/>
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <style>
+        @font-face {
+            font-family: 'Dunkin';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.svg#Dunkin') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DIN';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.svg#DIN') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DINAlternate-Light';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+        }
+
+
+
+        b.caret {
+            border: none;
+            height: 15px;
+            width: 15px;
+            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret.png");
+        }
+
+        b.caret.inverse {
+            border: none;
+            height: 15px;
+            width: 15px;
+            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret-inverse.png");
+        }
+
+    </style>
+</head>
+<body>
+
+<div data-th-fragment="create-org">
+
+
+    <div class="modal fade" id="create-org" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" data-th-text="#{my.network.create-org}">
+                    Create organization
+                </div>
+                <div class="modal-body">
+                    <form id="create-org-form" action="#" data-th-action="@{/my/network/create-org}" method="post">
+                        <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+                        <div class="form-group">
+                            <label for="organization-name" data-th-text="#{my.network.organization-name}">Organization name</label>
+                            <input type="text" name="name" class="form-control" id="organization-name" placeholder="ACME Inc." data-th-attr="placeholder=#{my.network.organization-name-placeholder}" />
+                        </div>
+                        <div class="form-group">
+                            <label for="organization-type" data-th-text="#{my.network.organization-type}">Type</label>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="type" value="PUBLIC_BODY" /><th:block data-th-text="#{my.network.organization-type.public-body}">Public body</th:block>
+                                </label>
+                            </div>
+                            <div class="radio">
+                                <label>
+                                    <input type="radio" name="type" value="COMPANY" /><th:block data-th-text="#{my.network.organization-type.company}">Company</th:block>
+                                </label>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal" data-th-text="#{ui.cancel}">Cancel</button>
+                    <a href="#" class="btn btn-primary" data-th-text="#{my.network.create}" id="create-org-submit">Create</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

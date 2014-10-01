@@ -15,6 +15,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 import java.util.concurrent.ExecutionException;
@@ -90,6 +91,12 @@ public class MyNetworkController extends PortalController {
     }
 
 
+    @RequestMapping(method = RequestMethod.POST, value = "/create-org")
+    public String createOrganization(@ModelAttribute CreateOrganizationRequest request, RedirectAttributes attr) {
+        networkService.createOrganization(request.getName(), request.getType());
+        return "redirect:/my/network";
+    }
+
     public static class AgentStatusRequest {
         @JsonProperty("agentid") String agentId;
         @JsonProperty("orgid") String organizationId;
@@ -101,4 +108,25 @@ public class MyNetworkController extends PortalController {
         @JsonProperty("email") String email;
     }
 
+
+    public static class CreateOrganizationRequest {
+        String name;
+        String type;
+
+        public String getName() {
+            return name;
+        }
+
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+    }
 }

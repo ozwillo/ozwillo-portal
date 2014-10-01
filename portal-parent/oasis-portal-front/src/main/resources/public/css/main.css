@@ -419,3 +419,22 @@ div.error-message {
     border: #996666;
     text-align: center;
 }
+
+div#veil {
+    height: 100%;
+    width: 100%;
+    background-color: #452959;
+    position: fixed;
+    top: 0; left: 0;
+    opacity: 0.75;
+    z-index: 1040;
+    display: none;
+}
+
+div#veil.in {
+    display: block;
+}
+
+div#veil a {
+    display: none;
+}

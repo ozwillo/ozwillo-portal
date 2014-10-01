@@ -141,4 +141,9 @@ $(document).ready(function () {
         error.show().delay(1000).fadeOut();
 
     }
+
+    $("#create-org-submit").click(function(e) {
+        $("#create-org-form").submit();
+    });
+
 });
