@@ -11,6 +11,9 @@ application:
   baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
 
+web:
+  home: http://www.ozwillo-dev.eu
+
 kernel:
   token:
     expiry: 300

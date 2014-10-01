@@ -74,16 +74,16 @@ public class CatalogStoreImplTest {
         mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
         mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
 
-        List<CatalogEntry> individuals = catalogStore.findAllVisible(Arrays.asList(Audience.CITIZENS), null);
+        List<CatalogEntry> individuals = catalogStore.findAllVisible(Arrays.asList(Audience.CITIZENS), Arrays.asList(PaymentOption.FREE, PaymentOption.PAID));
         assertEquals(2, individuals.size());
 
-        List<CatalogEntry> public_bodies = catalogStore.findAllVisible(Arrays.asList(Audience.PUBLIC_BODIES), null);
+        List<CatalogEntry> public_bodies = catalogStore.findAllVisible(Arrays.asList(Audience.PUBLIC_BODIES), Arrays.asList(PaymentOption.FREE, PaymentOption.PAID));
         assertEquals(11, public_bodies.size());
 
-        List<CatalogEntry> companies = catalogStore.findAllVisible(Arrays.asList(Audience.COMPANIES), null);
+        List<CatalogEntry> companies = catalogStore.findAllVisible(Arrays.asList(Audience.COMPANIES), Arrays.asList(PaymentOption.FREE, PaymentOption.PAID));
         assertEquals(0, companies.size());
 
-        List<CatalogEntry> all = catalogStore.findAllVisible(Arrays.asList(Audience.values()), null);
+        List<CatalogEntry> all = catalogStore.findAllVisible(Arrays.asList(Audience.values()), Arrays.asList(PaymentOption.FREE, PaymentOption.PAID));
         assertEquals(13, all.size());
 
         mock.verify();
