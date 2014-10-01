@@ -1,11 +1,15 @@
 package org.oasis_eu.portal.front.generic;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.services.NameDefaults;
+import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.RefreshTokenNeedException;
@@ -67,6 +71,16 @@ abstract public class PortalController {
 
         return nameDefaults.complete(userInfo);
 	}
+
+    @ExceptionHandler(AuthenticationRequiredException.class)
+    public void handleAuthRequired(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        HttpSession session = request.getSession(false);
+        if (session != null) {
+            session.invalidate();
+        }
+        response.sendRedirect("/my");
+
+    }
 
     @ExceptionHandler(value = ForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
