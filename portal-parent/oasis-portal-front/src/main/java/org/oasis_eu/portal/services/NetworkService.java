@@ -109,7 +109,7 @@ public class NetworkService {
                     if (u2.getUserid().equals(userInfoService.currentUser().getUserId())) return 1;
                     if (u1.isAdmin()) return -1;
                     if (u2.isAdmin()) return 1;
-                    return u1.getFullname() != null ? u1.getFullname().compareTo(u2.getFullname()) : 1;
+                    return u1.getFullname() != null && u2.getFullname() != null ? u1.getFullname().compareTo(u2.getFullname()) : 1;
                 })
                 .collect(Collectors.toList());
     }
