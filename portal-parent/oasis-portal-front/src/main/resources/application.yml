@@ -5,6 +5,7 @@ spring:
     cachePeriod: 3600
 
 application:
+  ha: true
   url: http://localhost
   security:
     fetchUserInfo: true
@@ -15,24 +16,24 @@ web:
   home: http://www.ozwillo-dev.eu
 
 kernel:
-  base_uri: https://oasis-demo.atolcd.com
+  base_uri: http://kernel.ozwillo-dev.eu
+  alt_uri: http://accounts.ozwillo-dev.eu
   auth:
     issuer: ${kernel.base_uri}/
-    auth_endpoint: ${kernel.base_uri}/a/auth
+    auth_endpoint: ${kernel.alt_uri}/a/auth
     token_endpoint: ${kernel.base_uri}/a/token
     keys_endpoint: ${kernel.base_uri}/a/keys
     userinfo_endpoint: ${kernel.base_uri}/a/userinfo
     profile_endpoint: ${kernel.base_uri}/d/user
     password_change_endpoint: ${kernel.base_uri}/a/password
     revoke_endpoint: ${kernel.base_uri}/a/revoke
-    logout_endpoint: ${kernel.base_uri}/a/logout
+    logout_endpoint: ${kernel.alt_uri}/a/logout
     callback_uri: ${application.url}/callback
   user_directory_endpoint: ${kernel.base_uri}/d
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
-  application_id: 8b0e62e5-e3af-45de-8834-0d7d8a3f6139
-  client_id: 7706ded0-afe4-4826-9df1-ce03782b893d
-  client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
+  client_id: portal
+  client_secret: 8eAhg4X6HXpSlS/HPsdj6HmcjcwjRYn3gwwv6Z7SaP4
   scopes_to_require: openid profile email address
 
   portal_endpoints:
@@ -42,5 +43,8 @@ kernel:
 
 
 persistence:
-  mongohost: localhost
   mongodatabase: portal
+  mongohosts:
+    - localhost
+  login: portal
+  password: portal

@@ -3,7 +3,11 @@ package org.oasis_eu.portal.config;
 import java.util.EnumSet;
 
 import org.oasis_eu.spring.kernel.security.TokenRefreshInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -25,20 +29,15 @@ import javax.servlet.ServletContext;
 @Configuration
 public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
 
+    private static final Logger logger = LoggerFactory.getLogger(OasisWebConfiguration.class);
+
     @Autowired
     ApplicationContext applicationContext;
 
-//    @Autowired
-//    ITemplateResolver defaultTemplateResolver;
-
-//    @Autowired
-//    CMSDialect cmsDialect;
+    @Value("${application.ha}") private boolean highAvailability; // are we in HA mode?
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-//        LocaleChangeInterceptor interceptor = new LocaleChangeInterceptor();
-//        interceptor.setParamName("lang");
-//        registry.addInterceptor(interceptor);
         registry.addInterceptor(new OasisLocaleInterceptor());
         registry.addInterceptor(tokenRefreshInterceptor());
     }
@@ -53,17 +52,6 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
         return new OasisLocaleResolver();
     }
 
-//    @Bean
-//    public SpringTemplateEngine templateEngine() {
-//        SpringTemplateEngine springTemplateEngine = new SpringTemplateEngine();
-//        springTemplateEngine.setTemplateResolver(defaultTemplateResolver);
-////        Set<IDialect> additionalDialects = new HashSet<IDialect>();
-////        additionalDialects.add(cmsDialect);
-////        springTemplateEngine.setAdditionalDialects(additionalDialects);
-//        return springTemplateEngine;
-//    }
-
-
     @Bean
     public ServletContextInitializer servletContextInitializer() {
         return (ServletContext servletContext) -> {
@@ -73,4 +61,19 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
             servletContext.addFilter("characterEncodingFilter", characterEncodingFilter).addMappingForUrlPatterns(EnumSet.of(DispatcherType.REQUEST), false, "/*");
         };
     }
+
+
+    @Bean
+    public EmbeddedServletContainerCustomizer containerCustomizer() {
+        if (highAvailability) {
+            logger.info("Setting up high availability configuration");
+            return factory -> {
+                logger.info("Customizing Tomcat container");
+            };
+        } else {
+            logger.info("Skipping HA configuration");
+            return factory -> {};
+        }
+    }
+
 }

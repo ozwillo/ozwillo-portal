@@ -73,19 +73,27 @@
             <version>${project.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>javax.validation</groupId>
+            <artifactId>validation-api</artifactId>
+            <version>${validation-api.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>de.javakaffee.msm</groupId>
+            <artifactId>memcached-session-manager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>de.javakaffee.msm</groupId>
+            <artifactId>memcached-session-manager-tc8</artifactId>
+        </dependency>
+
         <!-- test dependency -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-        
-        <dependency>
-    		<groupId>javax.validation</groupId>
-    		<artifactId>validation-api</artifactId>
-    		<version>${validation-api.version}</version>
-		</dependency>
-
     </dependencies>
 
     <build>
