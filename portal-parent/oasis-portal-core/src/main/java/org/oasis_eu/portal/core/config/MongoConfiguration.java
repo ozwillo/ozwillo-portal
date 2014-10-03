@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.core.config;
 
+import com.google.common.base.Strings;
 import com.mongodb.*;
 import org.oasis_eu.portal.core.mongo.MongoPackage;
 import org.slf4j.Logger;
@@ -111,7 +112,7 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 
 
         if (serverAddresses.size() > 1) {
-            if (!"".equals(persistenceProperties.login)) {
+            if (!Strings.isNullOrEmpty(persistenceProperties.login)) {
 
                 client = new MongoClient(serverAddresses, Arrays.asList(MongoCredential.createMongoCRCredential(persistenceProperties.login, persistenceProperties.databaseName, persistenceProperties.password.toCharArray())));
             } else {
@@ -122,7 +123,7 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
             client.setWriteConcern(WriteConcern.MAJORITY);
             client.setReadPreference(ReadPreference.primaryPreferred());
         } else {
-            if (!"".equals(persistenceProperties.login)) {
+            if (!Strings.isNullOrEmpty(persistenceProperties.login)) {
                 client = new MongoClient(serverAddresses.get(0), Arrays.asList(MongoCredential.createMongoCRCredential(persistenceProperties.login, persistenceProperties.databaseName, persistenceProperties.password.toCharArray())));
             } else {
                 client = new MongoClient(serverAddresses.get(0));

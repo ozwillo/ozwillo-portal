@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.config;
 
+import java.util.Arrays;
 import java.util.EnumSet;
 
+import de.javakaffee.web.msm.MemcachedBackupSessionManager;
 import org.oasis_eu.spring.kernel.security.TokenRefreshInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +37,9 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
     @Autowired
     ApplicationContext applicationContext;
 
-    @Value("${application.ha}") private boolean highAvailability; // are we in HA mode?
+    @Value("${ha.enabled:false}") private boolean highAvailability; // are we in HA mode?
+    @Value("${ha.nodes:}")   private String  nodes;            // memcached nodes eg n1:oasis-portal-1:11211,n2:oasis-portal-2:11211
+    @Value("${ha.failover:}") private String  failover;         // failover node, should be the node corresponding to localhost
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -69,6 +74,16 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
             logger.info("Setting up high availability configuration");
             return factory -> {
                 logger.info("Customizing Tomcat container");
+
+                TomcatEmbeddedServletContainerFactory containerFactory = (TomcatEmbeddedServletContainerFactory) factory;
+                containerFactory.setTomcatContextCustomizers(Arrays.asList(context -> {
+                    context.setSessionTimeout(30);
+                    context.setManager(new MemcachedBackupSessionManager() {{
+                        setMemcachedNodes(nodes);
+                        setFailoverNodes(failover);
+                        setRequestUriIgnorePattern(".*\\.(ico|png|gif|jpg|css|js)$");
+                    }});
+                }));
             };
         } else {
             logger.info("Skipping HA configuration");

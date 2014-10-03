@@ -4,6 +4,11 @@ spring:
   resources:
     cachePeriod: 3600
 
+ha:
+  enabled: false
+  nodes:
+  failover:
+
 application:
   url: http://localhost
   security:
@@ -44,5 +49,6 @@ kernel:
 
 
 persistence:
-  mongohost: localhost
+  mongohosts:
+   - localhost
   mongodatabase: portal_test
