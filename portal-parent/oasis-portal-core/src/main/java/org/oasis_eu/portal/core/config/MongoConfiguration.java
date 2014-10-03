@@ -40,6 +40,8 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
         List<String> databaseHosts;
         String login;
         String password;
+        int acceptableLatencyDifference = 150;
+        int connectTimeout = 300;
 
         public void setMongodatabase(String databaseName) {
             this.databaseName = databaseName;
@@ -59,6 +61,14 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 
         public void setPassword(String password) {
             this.password = password;
+        }
+
+        public void setAcceptableLatencyDifference(int acceptableLatencyDifference) {
+            this.acceptableLatencyDifference = acceptableLatencyDifference;
+        }
+
+        public void setConnectTimeout(int connectTimeout) {
+            this.connectTimeout = connectTimeout;
         }
     }
 
@@ -110,13 +120,26 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 
         MongoClient client;
 
+        MongoClientOptions.Builder builder = MongoClientOptions.builder();
+        builder.acceptableLatencyDifference(persistenceProperties.acceptableLatencyDifference);
+        builder.connectTimeout(persistenceProperties.connectTimeout);
+
+        if (serverAddresses.size() > 1) {
+            builder.writeConcern(WriteConcern.MAJORITY);
+        } else {
+            builder.writeConcern(WriteConcern.JOURNALED);
+        }
+
+        MongoClientOptions options = builder.build();
 
         if (serverAddresses.size() > 1) {
             if (!Strings.isNullOrEmpty(persistenceProperties.login)) {
 
-                client = new MongoClient(serverAddresses, Arrays.asList(MongoCredential.createMongoCRCredential(persistenceProperties.login, persistenceProperties.databaseName, persistenceProperties.password.toCharArray())));
+                client = new MongoClient(serverAddresses,
+                        Arrays.asList(MongoCredential.createMongoCRCredential(persistenceProperties.login, persistenceProperties.databaseName, persistenceProperties.password.toCharArray())),
+                        options);
             } else {
-                client = new MongoClient(serverAddresses);
+                client = new MongoClient(serverAddresses, options);
             }
 
 
@@ -124,9 +147,11 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
             client.setReadPreference(ReadPreference.primaryPreferred());
         } else {
             if (!Strings.isNullOrEmpty(persistenceProperties.login)) {
-                client = new MongoClient(serverAddresses.get(0), Arrays.asList(MongoCredential.createMongoCRCredential(persistenceProperties.login, persistenceProperties.databaseName, persistenceProperties.password.toCharArray())));
+                client = new MongoClient(serverAddresses.get(0),
+                        Arrays.asList(MongoCredential.createMongoCRCredential(persistenceProperties.login, persistenceProperties.databaseName, persistenceProperties.password.toCharArray())),
+                        options);
             } else {
-                client = new MongoClient(serverAddresses.get(0));
+                client = new MongoClient(serverAddresses.get(0), options);
             }
 
             client.setWriteConcern(WriteConcern.JOURNALED);
