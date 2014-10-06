@@ -215,6 +215,7 @@ div.empty-avatar {
     border-radius: 8px;
     border: 2px solid #526686;
     padding: 10px 20px;
+    margin-bottom: 10px;
 }
 
 .account-data-form {

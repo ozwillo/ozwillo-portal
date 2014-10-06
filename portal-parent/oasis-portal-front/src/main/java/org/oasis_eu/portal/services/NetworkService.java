@@ -6,6 +6,7 @@ import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
+import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.model.directory.OrgMembership;
 import org.oasis_eu.spring.kernel.model.directory.UserMembership;
@@ -122,7 +123,7 @@ public class NetworkService {
             if (userAccount.getName() != null) return userAccount.getName();
             if (userAccount.getGivenName() != null && userAccount.getFamilyName() != null)
                 return String.format("%s %s", userAccount.getGivenName(), userAccount.getFamilyName());
-            return userAccount.getEmail();
+            return userAccount.getEmail() != null ? userAccount.getEmail() : accountId;
         }
     }
 
@@ -180,11 +181,20 @@ public class NetworkService {
 
 
     public String getRemoveMessage(String agentId, String organizationId) {
-        UserAccount userAccount = userDirectory.findUserAccount(agentId);
+
+        String accountName = userDirectory.getMembershipsOfOrganization(organizationId)
+                .stream()
+                .filter(om -> om.getAccountId().equals(agentId))
+                .findFirst()
+                .map(OrgMembership::getAccountName)
+                .orElse(null);
+
+
         Organization organization = organizationStore.find(organizationId);
 
-        if (userAccount != null && organization != null) {
-            return messageSource.getMessage("my.network.confirm-delete.body", new Object[]{userAccount.getName(), organization.getName()}, RequestContextUtils.getLocale(request));
+        if (organization != null) {
+            String name = getUserName(agentId, accountName);
+            return messageSource.getMessage("my.network.confirm-delete.body", new Object[]{name, organization.getName()}, RequestContextUtils.getLocale(request));
         } else {
             throw new WrongQueryException();
         }
@@ -203,6 +213,10 @@ public class NetworkService {
     public void createOrganization(String name, String type) {
         logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type, userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
 
-        // TODO implement that when the Kernel supports creating an org and adding oneself as admin.
+        Organization org = new Organization();
+        org.setName(name);
+        org.setType(OrganizationType.valueOf(type));  // throws an IllegalArgumentException if the type isn't provided
+
+        organizationStore.create(org);
     }
 }

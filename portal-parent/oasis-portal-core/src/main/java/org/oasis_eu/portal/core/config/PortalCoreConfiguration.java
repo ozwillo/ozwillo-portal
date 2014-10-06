@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.core.config;
 
+import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
@@ -34,6 +35,8 @@ public class PortalCoreConfiguration implements CachingConfigurer {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
         mapper.registerModule(new JSR310Module());
+
+        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
         return mapper;
     }
 
