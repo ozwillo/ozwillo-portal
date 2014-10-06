@@ -1,19 +1,20 @@
 package org.oasis_eu.portal.front.my;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.front.generic.PortalController;
+import org.oasis_eu.portal.front.store.AppStoreController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.NetworkService;
-import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.model.Organization;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
@@ -37,6 +38,8 @@ public class MyNetworkController extends PortalController {
     @Autowired
     private NetworkService networkService;
 
+    @Autowired
+    private AppStoreController appStoreController;
 
     @ModelAttribute("navigation")
     private List<MyNavigation> getNavigation() {
@@ -93,8 +96,13 @@ public class MyNetworkController extends PortalController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/create-org")
     public String createOrganization(@ModelAttribute CreateOrganizationRequest request, RedirectAttributes attr) {
-        networkService.createOrganization(request.getName(), request.getType());
-        return "redirect:/my/network";
+        Organization org = networkService.createOrganization(request.getName(), request.getType());
+
+        if (request.getApplicationId() == null) {
+            return "redirect:/my/network";
+        } else {
+            return appStoreController.buy(request.getApplicationId(), request.getApplicationType(), org.getId());
+        }
     }
 
     public static class AgentStatusRequest {
@@ -112,6 +120,8 @@ public class MyNetworkController extends PortalController {
     public static class CreateOrganizationRequest {
         String name;
         String type;
+        String applicationId;
+        CatalogEntryType applicationType;
 
         public String getName() {
             return name;
@@ -127,6 +137,22 @@ public class MyNetworkController extends PortalController {
 
         public void setType(String type) {
             this.type = type;
+        }
+
+        public String getApplicationId() {
+            return applicationId;
+        }
+
+        public void setApplicationId(String applicationId) {
+            this.applicationId = applicationId;
+        }
+
+        public CatalogEntryType getApplicationType() {
+            return applicationType;
+        }
+
+        public void setApplicationType(CatalogEntryType applicationType) {
+            this.applicationType = applicationType;
         }
     }
 }

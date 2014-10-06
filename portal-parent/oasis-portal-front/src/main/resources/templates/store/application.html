@@ -124,11 +124,10 @@
                 <h4 data-th-text="#{store.install_this_app}">Install this application</h4>
 
                 <button id="ownbuy" type="button" class="btn btn-default" data-th-if="${app.hasCitizens()}" data-th-text="#{store.for_myself}">For myself</button>
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" data-th-if="${! #lists.isEmpty(authorities)}"><span data-th-text="#{store.on_behalf_of}">On behalf of</span> <span class="caret"></span></button>
-                <ul class="dropdown-menu" role="menu" data-th-remove="all-but-first">
+                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown"><span data-th-text="#{store.on_behalf_of}">On behalf of</span> <span class="caret"></span></button>
+                <ul class="dropdown-menu" role="menu">
                     <li data-th-each="auth : ${authorities}"><a href="#" data-th-text="${auth.name}" data-th-attr="data-orgid=${auth.id}" class="orgselector">Valence</a></li>
-                    <li><a href="#">Provincia di Torino</a></li>
-                    <li><a href="#">Somewhere</a></li>
+                    <li><a href="#" data-toggle="modal" data-target="#create-org" id="create-org-button" data-th-attr="data-appid=${app.catalogEntry.id}, data-apptype=${app.catalogEntry.type}" data-th-text="#{store.create-new-org}">Create new…</a></li>
                 </ul>
             </div>
         </div>
@@ -141,6 +140,8 @@
         <input type="hidden" name="organizationId" value="" id="organizationId"/>
     </form>
 
+
+    <div data-th-replace="network/create-org::create-org"></div>
 
 
 </div>

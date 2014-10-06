@@ -71,6 +71,8 @@
                 <div class="modal-body">
                     <form id="create-org-form" action="#" data-th-action="@{/my/network/create-org}" method="post">
                         <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
+                        <input type="hidden" name="applicationId" id="create-org-application-id" value=""/>
+                        <input type="hidden" name="applicationType" id="create-org-application-type" value=""/>
                         <div class="form-group">
                             <label for="organization-name" data-th-text="#{my.network.organization-name}">Organization name</label>
                             <input type="text" name="name" class="form-control" id="organization-name" placeholder="ACME Inc." data-th-attr="placeholder=#{my.network.organization-name-placeholder}" />
@@ -84,7 +86,7 @@
                             </div>
                             <div class="radio">
                                 <label>
-                                    <input type="radio" name="type" value="COMPANY" /><th:block data-th-text="#{my.network.organization-type.company}">Company</th:block>
+                                    <input type="radio" name="type" value="COMPANY" checked="checked" /><th:block data-th-text="#{my.network.organization-type.company}">Company</th:block>
                                 </label>
                             </div>
                         </div>

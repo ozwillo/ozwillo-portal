@@ -34,4 +34,11 @@ function setupAppPage() {
         var form = $("#buyform");
         form.submit();
     });
+
+    $("#create-org-application-id").val($("#create-org-button").data("appid"));
+    $("#create-org-application-type").val($("#create-org-button").data("apptype"));
+
+    $("#create-org-submit").click(function(e) {
+        $("#create-org-form").submit();
+    });
 }
