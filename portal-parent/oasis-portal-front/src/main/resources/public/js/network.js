@@ -53,42 +53,43 @@ $(document).ready(function () {
 
 		});
 
-        $("#confirm-delete").on("show.bs.modal", function(e) {
-            $form = $(e.relatedTarget).parents('.form-table-row');
-            var agentid = $form.attr("data-agentid");
-            var orgid = $form.attr("data-orgid");
-            var modal = $(this);
+
+        $(".invite-button").click(function(e) {
+            $("#organization").val($(this).data("orgid"));
+        });
+	}
+
+    $("#confirm-delete").on("show.bs.modal", function(e) {
+        $form = $(e.relatedTarget).parents('.form-table-row');
+
+        var agentid = $form.attr("data-agentid");
+        var orgid = $form.attr("data-orgid");
+        var modal = $(this);
+        $.ajax({
+            url: '/my/network/api/remove-message/' + agentid + "/" + orgid,
+            method: 'GET',
+            success: function(data) {
+                modal.find(".modal-body").html(data);
+            },
+            error: showError
+        });
+
+//            $(this).find(".danger").attr("href", deleteUrl);
+        $(this).find(".danger").click(function(event) {
             $.ajax({
-                url: '/my/network/api/remove-message/' + agentid + "/" + orgid,
-                method: 'GET',
-                success: function(data) {
-                    modal.find(".modal-body").html(data);
+                url: "/my/network/api/agent/" + agentid + "/" + orgid,
+                method: 'DELETE',
+                success: function() {
+                    reloadOrganizations();
+                    modal.modal("hide");
+
                 },
                 error: showError
             });
 
-//            $(this).find(".danger").attr("href", deleteUrl);
-            $(this).find(".danger").click(function(event) {
-                $.ajax({
-                    url: "/my/network/api/agent/" + agentid + "/" + orgid,
-                    method: 'DELETE',
-                    success: function() {
-                        reloadOrganizations();
-                        modal.modal("hide");
-
-                    },
-                    error: showError
-                });
-
-            });
         });
-
-
-	}
-
-    $(".invite-button").click(function(e) {
-        $("#organization").val($(this).data("orgid"));
     });
+
 
     $("#invite-form").submit(function(e) {
         e.preventDefault();
@@ -130,7 +131,7 @@ $(document).ready(function () {
 	}
 	
 	function refreshRelationshipsTable(data) {
-		$('#organizations').replaceWith(data);
+		$('#organizations').html(data);
 		initBindings($('#organizations'));
 	}
 
