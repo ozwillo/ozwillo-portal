@@ -219,4 +219,8 @@ public class NetworkService {
 
         return organizationStore.create(org);
     }
+
+    public void deleteOrganization(String organizationId) {
+        organizationStore.delete(organizationId);
+    }
 }

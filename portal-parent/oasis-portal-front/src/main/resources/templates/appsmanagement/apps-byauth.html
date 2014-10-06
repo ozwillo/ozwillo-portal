@@ -78,6 +78,7 @@
                         <b class="caret"></b>
                     </a>
                     <a class="pull-right appsettings-link" href="#" data-th-href="@{|/my/appsmanagement/settings/${authority.id}/${instance.applicationInstance.instanceId}|}" data-th-text="#{my.apps.manage_users}">Manage Users</a>
+                    <a class="pull-right btn btn-danger" href="#" data-th-href="@{|/my/appsmanagement/delete-instance/${instance.applicationInstance.instanceId}|}" data-th-if="${devmode}">Delete instance</a>
                 </div>
                 <div class="panel-body collapse in" id="blablabla" data-th-id="${instance.applicationInstance.instanceId}">
                     <ul class="services" data-th-remove="all-but-first">

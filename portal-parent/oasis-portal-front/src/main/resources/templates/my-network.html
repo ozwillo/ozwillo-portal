@@ -68,7 +68,12 @@
             <div class="standard-form" data-th-each="authority: ${authorities}">
                 <div class="row form-table-header">
                     <div class="col-sm-8" data-th-text="${authority.name}">Com com de Valence</div>
-                    <div class="col-sm-4"><a class="btn btn-primary invite-button" data-th-attr="data-orgid=${authority.id}" data-th-if="${authority.admin}" data-th-text="#{my.network.invite}" data-toggle="modal" data-target="#invite">Invite</a> <a class="btn btn-primary" data-th-text="#{my.network.information}">Information</a></div>
+                    <div class="col-sm-4">
+                        <a class="btn btn-primary invite-button" data-th-attr="data-orgid=${authority.id}" data-th-if="${authority.admin}" data-th-text="#{my.network.invite}" data-toggle="modal" data-target="#invite">Invite</a>
+                        <a class="btn btn-primary" data-th-text="#{my.network.information}">Information</a>
+                        <a class="btn btn-danger" href="#" data-th-href="@{|/my/network/delete/${authority.id}|}" data-th-if="${devmode}">Delete</a>
+                    </div>
+
                 </div>
                 <div class="row form-table-header">
                     <div class="col-sm-3" data-th-text="#{my.network.who}">Who</div>

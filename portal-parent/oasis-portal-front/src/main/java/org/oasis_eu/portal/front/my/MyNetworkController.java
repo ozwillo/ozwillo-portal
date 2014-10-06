@@ -105,6 +105,14 @@ public class MyNetworkController extends PortalController {
         }
     }
 
+    @RequestMapping(method = RequestMethod.GET, value = "/delete/{organizationId}")
+    public String deleteOrganization(@PathVariable String organizationId) {
+        if (getDevMode()) {
+            networkService.deleteOrganization(organizationId);
+        }
+        return "redirect:/my/network";
+    }
+
     public static class AgentStatusRequest {
         @JsonProperty("agentid") String agentId;
         @JsonProperty("orgid") String organizationId;

@@ -3,12 +3,14 @@ package org.oasis_eu.portal.front.my.appsmanagement;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -27,7 +29,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @Controller
 @RequestMapping("/my/appsmanagement")
-public class AuthorityController {
+public class AuthorityController extends PortalController {
 
     @Autowired
     private PortalAppManagementService appManagementService;
@@ -37,7 +39,6 @@ public class AuthorityController {
 
     @Autowired
     private NetworkService networkService;
-
 
 
     @RequestMapping(method = RequestMethod.GET, value = "/service-settings/{service_id}")
@@ -63,6 +64,14 @@ public class AuthorityController {
         model.addAttribute("instances", appManagementService.getMyInstances(authority));
 
         return "appsmanagement/apps-byauth::authority";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value="/delete-instance/{instanceId}")
+    public String deleteInstance(@PathVariable String instanceId) {
+        if (getDevMode()) {
+            appManagementService.deleteInstance(instanceId);
+        }
+        return "redirect:/my/appsmanagement";
     }
 
     @ExceptionHandler(WrongQueryException.class)

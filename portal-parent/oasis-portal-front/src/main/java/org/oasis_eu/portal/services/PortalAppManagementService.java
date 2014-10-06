@@ -193,4 +193,7 @@ public class PortalAppManagementService {
     }
 
 
+    public void deleteInstance(String instanceId) {
+        catalogStore.deleteInstance(instanceId);
+    }
 }

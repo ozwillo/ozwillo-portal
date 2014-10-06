@@ -171,6 +171,11 @@ public class CatalogStoreImpl implements CatalogStore {
         return kernel.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<>(kernelService, headers), CatalogEntry.class, user(), serviceId).getBody();
     }
 
+    @Override
+    public void deleteInstance(String instanceId) {
+        kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.DELETE, null, ApplicationInstance.class, user(), instanceId).getBody();
+    }
+
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class KernelService {
 

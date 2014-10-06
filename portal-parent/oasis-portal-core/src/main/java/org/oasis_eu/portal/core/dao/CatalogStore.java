@@ -27,4 +27,6 @@ public interface CatalogStore {
     void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
 
     CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service);
+
+    void deleteInstance(String instanceId);
 }

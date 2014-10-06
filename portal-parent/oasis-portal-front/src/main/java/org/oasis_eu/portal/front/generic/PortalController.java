@@ -43,9 +43,17 @@ abstract public class PortalController {
     @Value("${web.home}")
     private String webHome;
 
+    @Value("${application.devmode:false}")
+    private boolean devmode;
+
     @ModelAttribute("webHome")
     public String getWebHome() {
         return webHome;
+    }
+
+    @ModelAttribute("devmode")
+    public boolean getDevMode() {
+        return devmode;
     }
 
 	@ModelAttribute("languages")
