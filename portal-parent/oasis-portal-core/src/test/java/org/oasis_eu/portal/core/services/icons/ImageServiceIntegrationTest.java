@@ -3,6 +3,7 @@ package org.oasis_eu.portal.core.services.icons;
 import com.google.common.io.ByteStreams;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
+import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +58,9 @@ public class ImageServiceIntegrationTest {
     @Autowired
     private ImageService imageService;
 
+    @Autowired
+    private Mongo mongo;
+
     private DB db;
 
     @Autowired
@@ -67,7 +71,6 @@ public class ImageServiceIntegrationTest {
 
     @Before
     public void clean() throws UnknownHostException {
-        MongoClient mongo = new MongoClient("localhost");
         db = mongo.getDB(databaseName);
 
         blacklist = db.getCollection("image_download_attempt");

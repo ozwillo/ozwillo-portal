@@ -2,6 +2,7 @@ package org.oasis_eu.portal.front.icon;
 
 import com.google.common.io.ByteStreams;
 import com.mongodb.DBCollection;
+import com.mongodb.Mongo;
 import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -50,12 +51,14 @@ public class ImageControllerTest {
     @Value("${persistence.mongodatabase}")
     private String databaseName;
 
+    @Autowired
+    private Mongo mongo;
+
     private MockMvc mockMvc;
     private DBCollection collection;
 
     @Before
     public void setup() throws UnknownHostException {
-        MongoClient mongo = new MongoClient("localhost");
         collection = mongo.getDB(databaseName).getCollection("image");
         collection.drop();
 

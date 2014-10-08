@@ -52,3 +52,5 @@ persistence:
   mongohosts:
    - localhost
   mongodatabase: portal_test
+  login: portal
+  password: portal
