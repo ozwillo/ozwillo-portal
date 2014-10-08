@@ -205,6 +205,7 @@ public class CatalogStoreImpl implements CatalogStore {
         String subscription_id;
         String subscription_secret;
         @JsonProperty("contacts") List<String> contacts;
+        @JsonProperty("screenshot_uris") List<String> screenshotUris;
 
         @JsonIgnore
         private Map<String, String> otherProperties = new HashMap<>();
@@ -371,6 +372,14 @@ public class CatalogStoreImpl implements CatalogStore {
 
         public void setContacts(List<String> contacts) {
             this.contacts = contacts;
+        }
+
+        public List<String> getScreenshotUris() {
+            return screenshotUris;
+        }
+
+        public void setScreenshotUris(List<String> screenshotUris) {
+            this.screenshotUris = screenshotUris;
         }
     }
 }

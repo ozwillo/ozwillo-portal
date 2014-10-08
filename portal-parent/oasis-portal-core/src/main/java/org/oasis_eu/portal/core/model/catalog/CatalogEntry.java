@@ -75,6 +75,17 @@ public class CatalogEntry  {
     @JsonProperty("contacts")
     private List<String> contacts;
 
+    @JsonProperty("screenshot_uris")
+    private List<String> screenshotUris;
+
+    @JsonProperty("tos_uri")
+    private String tosUri;
+
+    @JsonProperty("privacy_uri")
+    private String privacyUri;
+
+
+
 
 
     public String getId() {
@@ -281,30 +292,36 @@ public class CatalogEntry  {
         this.contacts = contacts;
     }
 
+    public List<String> getScreenshotUris() {
+        return screenshotUris;
+    }
+
+    public void setScreenshotUris(List<String> screenshotUris) {
+        this.screenshotUris = screenshotUris;
+    }
+
+    public String getPrivacyUri() {
+        return privacyUri;
+    }
+
+    public void setPrivacyUri(String privacyUri) {
+        this.privacyUri = privacyUri;
+    }
+
+    public String getTosUri() {
+        return tosUri;
+    }
+
+    public void setTosUri(String tosUri) {
+        this.tosUri = tosUri;
+    }
+
     @Override
     public String toString() {
         return "CatalogEntry{" +
                 "id='" + id + '\'' +
                 ", type=" + type +
-                ", defaultName='" + defaultName + '\'' +
-                ", defaultDescription='" + defaultDescription + '\'' +
-                ", localizedNames=" + localizedNames +
-                ", localizedDescriptions=" + localizedDescriptions +
-                ", localizedIcons=" + localizedIcons +
-                ", defaultIcon='" + defaultIcon + '\'' +
-                ", url='" + url + '\'' +
-                ", notificationUrl='" + notificationUrl + '\'' +
-                ", categories=" + categories +
-                ", categoryIds=" + categoryIds +
-                ", paymentOption=" + paymentOption +
-                ", targetAudience=" + targetAudience +
-                ", territoryId='" + territoryId + '\'' +
-                ", providerId='" + providerId + '\'' +
-                ", instanceId='" + instanceId + '\'' +
-                ", visible=" + visible +
-                ", redirectUris=" + redirectUris +
-                ", postLogoutRedirectUris=" + postLogoutRedirectUris +
-                ", contacts=" + contacts +
+                ", defaultName='" + defaultName +
                 '}';
     }
 }
