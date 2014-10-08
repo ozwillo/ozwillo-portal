@@ -139,6 +139,7 @@ public class AppStoreController extends PortalController {
         model.put("appname", e.getRequested().getName());
         model.put("appid", e.getApplicationId());
         model.put("errortype", e.getType().toString());
+        model.put("isAppstore", Boolean.TRUE);
 
         model.put("navigation", myNavigationService.getNavigation(null));
         model.put("currentLanguage", currentLanguage());
