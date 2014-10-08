@@ -71,20 +71,18 @@ public class PortalAppstoreService {
     }
 
     private String getOrganizationName(CatalogEntry catalogEntry) {
-        if (userInfoHelper.isAuthenticated()) {
 
-            String providerId = catalogEntry.getProviderId();
-            if (providerId == null) {
-                logger.warn("Catalog entry {} - {} has null provider id", catalogEntry.getId(), catalogEntry.getDefaultName());
-                return "";
-            }
-            Organization organization = organizationStore.find(providerId);
-            if (organization == null) {
-                logger.warn("Catalog entry {} - {} has a provider id ({}) that does not correspond to any known organization", catalogEntry.getId(), catalogEntry.getDefaultName(), providerId);
-                return "";
-            }
-            return organization.getName();
-        } else return "-"; // TODO when the Kernel supports unauthenticated org access, remove this
+        String providerId = catalogEntry.getProviderId();
+        if (providerId == null) {
+            logger.warn("Catalog entry {} - {} has null provider id", catalogEntry.getId(), catalogEntry.getDefaultName());
+            return "";
+        }
+        Organization organization = organizationStore.find(providerId);
+        if (organization == null) {
+            logger.warn("Catalog entry {} - {} has a provider id ({}) that does not correspond to any known organization", catalogEntry.getId(), catalogEntry.getDefaultName(), providerId);
+            return "";
+        }
+        return organization.getName();
     }
 
     public AppstoreHit getInfo(String appId, CatalogEntryType appType) {

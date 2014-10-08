@@ -75,19 +75,6 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
     @Autowired
     private PersistenceProperties persistenceProperties;
 
-
-//    @Value("${persistence.mongodatabase}")
-//    private String databaseName;
-//
-//    @Value("${persistence.mongohost}")
-//    private Collection<String> databaseHosts;
-//
-//    @Value("${persistence.login:}")
-//    private String login;
-//
-//    @Value("${persistence.password:}")
-//    private String password;
-
     @Override
     protected String getDatabaseName() {
         return persistenceProperties.databaseName;
