@@ -72,6 +72,10 @@ public class CatalogEntry  {
     @JsonProperty("post_logout_redirect_uris")
     private List<String> postLogoutRedirectUris;
 
+    @JsonProperty("contacts")
+    private List<String> contacts;
+
+
 
     public String getId() {
         return id;
@@ -269,6 +273,14 @@ public class CatalogEntry  {
         this.instanceId = instanceId;
     }
 
+    public List<String> getContacts() {
+        return contacts;
+    }
+
+    public void setContacts(List<String> contacts) {
+        this.contacts = contacts;
+    }
+
     @Override
     public String toString() {
         return "CatalogEntry{" +
@@ -288,9 +300,11 @@ public class CatalogEntry  {
                 ", targetAudience=" + targetAudience +
                 ", territoryId='" + territoryId + '\'' +
                 ", providerId='" + providerId + '\'' +
+                ", instanceId='" + instanceId + '\'' +
                 ", visible=" + visible +
                 ", redirectUris=" + redirectUris +
                 ", postLogoutRedirectUris=" + postLogoutRedirectUris +
+                ", contacts=" + contacts +
                 '}';
     }
 }

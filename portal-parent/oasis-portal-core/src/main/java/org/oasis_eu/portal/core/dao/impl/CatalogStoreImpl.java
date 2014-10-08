@@ -204,6 +204,7 @@ public class CatalogStoreImpl implements CatalogStore {
         String territory_id;
         String subscription_id;
         String subscription_secret;
+        @JsonProperty("contacts") List<String> contacts;
 
         @JsonIgnore
         private Map<String, String> otherProperties = new HashMap<>();
@@ -362,6 +363,14 @@ public class CatalogStoreImpl implements CatalogStore {
 
         public void setSubscription_secret(String subscription_secret) {
             this.subscription_secret = subscription_secret;
+        }
+
+        public List<String> getContacts() {
+            return contacts;
+        }
+
+        public void setContacts(List<String> contacts) {
+            this.contacts = contacts;
         }
     }
 }
