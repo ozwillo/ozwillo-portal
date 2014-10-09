@@ -14,50 +14,41 @@
     <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
+    <style>
+        @font-face {
+            font-family: 'Dunkin';
+            src: url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.eot?') format('eot'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.woff') format('woff'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.ttf')  format('truetype'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.svg#Dunkin') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DIN';
+            src: url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.eot?') format('eot'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.woff') format('woff'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.ttf')  format('truetype'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.svg#DIN') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DINAlternate-Light';
+            src: url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.ttf')  format('truetype'),
+            url('../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+        }
+    </style>
+
 </head>
 <body>
 <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:replace="includes/my-navigation :: nav">
 </div>
 
 <div class="container">
-    <h1 th:text="#{ui.notifications}">Notifications</h1>
+    <h2 th:text="#{ui.notifications}">Notifications</h2>
 
-    <table class="table table-striped table-bordered">
-        <thead>
-        <tr>
-            <th th:text="#{ui.date}">Date</th>
-            <th th:text="#{ui.application}">Application</th>
-            <th th:text="#{ui.text}">Text</th>
-            <th></th>
-        </tr>
-        </thead>
-        <tbody th:remove="all-but-first">
-        <tr th:each="notif : ${notifications}">
-            <td th:text="${notif.date}">18/12/2012</td>
-            <td th:text="${notif.appName}">Citizen Kin</td>
-            <td th:utext="${notif.formattedText}">Hello wrold <a href="#">pouet</a></td>
-            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-        </tr>
-        <tr>
-            <td>18/12/2012</td>
-            <td>Citizen Kin</td>
-            <td>Hello wrold <a href="#">pouet</a></td>
-            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-        </tr>
-        <tr>
-            <td>18/12/2012</td>
-            <td>Citizen Kin</td>
-            <td>Hello wrold <a href="#">pouet</a></td>
-            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-        </tr>
-        <tr>
-            <td>18/12/2012</td>
-            <td>Citizen Kin</td>
-            <td>Hello wrold <a href="#">pouet</a></td>
-            <td><a href="#"><i class="fa fa-times-circle"></i></a></td>
-        </tr>
-        </tbody>
-    </table>
+    <div id="notifications"></div>
 
 
 </div>
@@ -70,7 +61,26 @@
 
 </th:block>
 
+<script data-th-inline="javascript">
+    /*<![CDATA[*/
+    _i18n = {};
+    _i18n['date'] = /*[[#{notif.date}]]*/ 'Date';
+    _i18n['app'] = /*[[#{notif.app}]]*/ 'App';
+    _i18n['message'] = /*[[#{notif.message}]]*/ 'Message';
+    _i18n['archive'] = /*[[#{notif.archive}]]*/ 'Archive';
+    _i18n['manage'] = /*[[#{notif.manage}]]*/ 'Manage';
+    _i18n['no-notification'] = /*[[#{notif.no-notification}]]*/ 'No notifications';
+
+    notificationService = /*[[@{/my/api/notif}]]*/ '../_proto/notif.json';
+    /*]]>*/
+</script>
+
 <script src="../public/js/my.js" th:src="@{/js/my.js}"></script>
+<script src="../public/js/my.js" th:src="@{/js/csrf.js}"></script>
+<script src="http://fb.me/react-0.11.2.js" data-th-src="@{/webjars/react/0.11.2/react.min.js}"></script>
+<script src="http://fb.me/JSXTransformer-0.11.2.js" data-th-src="@{/webjars/react/0.11.2/JSXTransformer.js}"></script>
+<script type="text/jsx" src="../public/js/notifications.js" data-th-src="@{/js/notifications.js}"></script>
+
 
 </body>
 </html>

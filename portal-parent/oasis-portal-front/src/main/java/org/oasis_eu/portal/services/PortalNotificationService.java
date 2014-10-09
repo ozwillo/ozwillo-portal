@@ -1,10 +1,12 @@
 package org.oasis_eu.portal.services;
 
+import com.google.common.base.Strings;
 import org.joda.time.Instant;
 import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.model.UserNotification;
+import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.NotificationService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -12,11 +14,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.text.DateFormat;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -36,6 +39,9 @@ public class PortalNotificationService {
 
     @Autowired
     private UserInfoService userInfoHelper;
+
+    @Autowired
+    private HttpServletRequest request;
 
     public Map<String, Integer> getServiceNotifications(List<String> serviceIds) {
         return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
@@ -65,21 +71,50 @@ public class PortalNotificationService {
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
                 .map(n -> {
                     UserNotification notif = new UserNotification();
+                    CatalogEntry service = null;
                     if (n.getApplicationId() != null) {
-                        CatalogEntry service = store.findService(n.getApplicationId());
+
+                        service = store.findService(n.getApplicationId());
                         notif.setAppName(service != null ? service.getName(locale) : "");
                     }
                     notif.setDate(new Instant().withMillis(n.getTime()));
-                    try {
-                        notif.setFormattedText(new Markdown4jProcessor().process(n.getMessage()));
-                    } catch (IOException e) {
-                        logger.error("Cannot render content", e);
-                        notif.setFormattedText(n.getMessage());
+                    notif.setDateText(DateFormat.getDateInstance(DateFormat.SHORT, locale).format(new Date(n.getTime())));
+
+                    String formattedText = getFormattedText(n);
+
+                    notif.setFormattedText(formattedText);
+                    notif.setId(n.getId());
+
+                    if (Strings.isNullOrEmpty(n.getData())) {
+                        if (service != null) {
+                            notif.setUrl(service.getNotificationUrl());
+                        }
+                    } else {
+                        notif.setUrl(n.getData());
                     }
                     return notif;
                 })
                 .sorted((n1, n2) -> n1.getDate().isBefore(n2.getDate()) ? -1 : 1)
                 .collect(Collectors.toList());
+    }
 
+    private String getFormattedText(InboundNotification n) {
+        String formattedText;
+        String message = n.getMessage().replaceAll("[<>]", "");
+
+        try {
+            formattedText = new Markdown4jProcessor().process(message);
+        } catch (IOException e) {
+            formattedText = message;
+        }
+        return formattedText;
+    }
+
+    public List<UserNotification> getNotifications() {
+        return getNotifications(RequestContextUtils.getLocale(request));
+    }
+
+    public void archive(String notificationId) {
+        notificationService.setMessageStatus(userInfoHelper.currentUser().getUserId(), Arrays.asList(notificationId), NotificationStatus.READ);
     }
 }

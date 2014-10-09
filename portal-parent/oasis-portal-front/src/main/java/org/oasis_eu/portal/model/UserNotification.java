@@ -10,6 +10,9 @@ public class UserNotification {
     String appName;
     String formattedText;
     Instant date;
+    String dateText;
+    String id;
+    String url;
 
     public String getAppName() {
         return appName;
@@ -33,5 +36,29 @@ public class UserNotification {
 
     public void setDate(Instant date) {
         this.date = date;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getUrl() {
+        return url;
+    }
+
+    public void setUrl(String url) {
+        this.url = url;
+    }
+
+    public String getDateText() {
+        return dateText;
+    }
+
+    public void setDateText(String dateText) {
+        this.dateText = dateText;
     }
 }
