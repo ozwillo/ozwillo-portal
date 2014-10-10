@@ -78,8 +78,9 @@
 <script src="../public/js/my.js" th:src="@{/js/my.js}"></script>
 <script src="../public/js/my.js" th:src="@{/js/csrf.js}"></script>
 <script src="http://fb.me/react-0.11.2.js" data-th-src="@{/webjars/react/0.11.2/react.min.js}"></script>
-<script src="http://fb.me/JSXTransformer-0.11.2.js" data-th-src="@{/webjars/react/0.11.2/JSXTransformer.js}"></script>
-<script type="text/jsx" src="../public/js/notifications.js" data-th-src="@{/js/notifications.js}"></script>
+<script src="http://fb.me/JSXTransformer-0.11.2.js" data-th-src="@{/webjars/react/0.11.2/JSXTransformer.js}" data-th-if="${devmode}"></script>
+<script type="text/jsx" src="../public/js/notifications.js" data-th-src="@{/js/notifications.jsx.js}" data-th-if="${devmode}"></script>
+<script type="text/javascript" src="../public/js/notifications.js" data-th-src="@{/js/notifications.js}" data-th-if="${!devmode}"></script>
 
 
 </body>
