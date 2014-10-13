@@ -143,6 +143,21 @@ $(document).ready(function () {
 
     }
 
+
+    $("#organization-name").change(function(e) {
+        var valid = false;
+        if ($(this).val().length > 0) {
+            valid = true;
+        }
+
+        if (valid) {
+            $("#create-org-submit").removeAttr("disabled");
+        } else {
+            $("#create-org-submit").attr("disabled", "disabled");
+        }
+    });
+
+
     $("#create-org-submit").click(function(e) {
         $("#create-org-form").submit();
     });

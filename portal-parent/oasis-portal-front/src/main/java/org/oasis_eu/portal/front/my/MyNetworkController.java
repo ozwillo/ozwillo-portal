@@ -96,6 +96,9 @@ public class MyNetworkController extends PortalController {
 
     @RequestMapping(method = RequestMethod.POST, value = "/create-org")
     public String createOrganization(@ModelAttribute CreateOrganizationRequest request, RedirectAttributes attr) {
+        if (request.getName() == null || request.getType() == null) {
+            return "redirect:/my/network";
+        }
         Organization org = networkService.createOrganization(request.getName(), request.getType());
 
         if (request.getApplicationId() == null) {
