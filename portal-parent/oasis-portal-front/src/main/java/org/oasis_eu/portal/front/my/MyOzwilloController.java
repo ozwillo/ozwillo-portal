@@ -152,6 +152,7 @@ public class MyOzwilloController extends PortalController {
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public ModelAndView technicalError() {
         ModelAndView result = new ModelAndView();
+        result.addObject("isAppstore", false);
         result.addObject("user", user());
         result.addObject("languages", languages());
         result.addObject("currentLanguage", currentLanguage());
