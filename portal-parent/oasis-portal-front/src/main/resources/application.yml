@@ -16,6 +16,7 @@ application:
   baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
   devmode: false
+  production: false
 
 web:
   home: http://www.ozwillo-dev.eu

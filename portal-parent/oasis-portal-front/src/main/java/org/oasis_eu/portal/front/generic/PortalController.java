@@ -46,6 +46,10 @@ abstract public class PortalController {
     @Value("${application.devmode:false}")
     private boolean devmode;
 
+    @Value("${application.production:false}")
+    private boolean production;
+
+
     @ModelAttribute("webHome")
     public String getWebHome() {
         return webHome;
@@ -54,6 +58,11 @@ abstract public class PortalController {
     @ModelAttribute("devmode")
     public boolean getDevMode() {
         return devmode;
+    }
+
+    @ModelAttribute("production")
+    public boolean getProduction() {
+        return production;
     }
 
 	@ModelAttribute("languages")

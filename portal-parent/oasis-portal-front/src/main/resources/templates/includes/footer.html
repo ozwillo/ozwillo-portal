@@ -71,3 +71,40 @@
 <script data-th-src="@{/webjars/jquery-ui/1.10.4/ui/minified/jquery-ui.min.js}" src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
 <script data-th-src="@{/webjars/bootstrap/3.1.1/js/bootstrap.min.js}" src="/webjars/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 <script data-th-src="@{/webjars/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js}" src="/webjars/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js"></script>
+
+<th:block data-th-if="${production}">
+    <!-- pingdom -->
+    <script>
+        var _prum = [['id', '53f5ac5cabe53d4f619d2936'],
+            ['mark', 'firstbyte', (new Date()).getTime()]];
+        (function() {
+            var s = document.getElementsByTagName('script')[0]
+                    , p = document.createElement('script');
+            p.async = 'async';
+            p.src = '//rum-static.pingdom.net/prum.min.js';
+            s.parentNode.insertBefore(p, s);
+        })();
+    </script>
+    <!-- pingdom -->
+
+    <!-- Piwik -->
+    <script type="text/javascript">
+        var _paq = _paq || [];
+        _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+        _paq.push(["setCookieDomain", "*.portal.oasis-eu.org"]);
+        _paq.push(["setDomains", ["*.portal.oasis-eu.org"]]);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u=(("https:" == document.location.protocol) ? "https" : "http") + "://oasis.piwikpro.com/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', 40]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
+            g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <noscript><p><img src="http://oasis.piwikpro.com/piwik.php?idsite=40" style="border:0;" alt="" /></p></noscript>
+    <!-- End Piwik Code -->
+
+
+</th:block>
