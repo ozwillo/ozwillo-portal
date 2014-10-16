@@ -13,11 +13,12 @@ appender("CONSOLE", ConsoleAppender) {
 logger("org.oasis_eu.portal.main", INFO)
 logger("org.oasis_eu", INFO)
 //logger("org.oasis_eu.portal.services", DEBUG)
-//logger("org.oasis_eu.portal.core.dao", DEBUG)
+logger("org.oasis_eu.portal.core.dao", DEBUG)
 logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
 logger("org.oasis_eu.spring.kernel.security.OpenIdCAuthFilter", INFO)
 //logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", DEBUG)
 // logger("kernelLogging.logFullErrorResponses", DEBUG)
 //logger("kernelLogging.logRequestTimings", DEBUG)
+
 
 root(WARN, ["CONSOLE"])

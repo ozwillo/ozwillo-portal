@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import com.fasterxml.jackson.annotation.*;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
@@ -16,15 +17,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +50,8 @@ public class CatalogStoreImpl implements CatalogStore {
     private String appsEndpoint;
 
 
+    @Autowired
+    private ObjectMapper objectMapper;
 
     @Override
     @Cacheable("appstore")
@@ -89,10 +90,19 @@ public class CatalogStoreImpl implements CatalogStore {
 
     private CatalogEntry getCatalogEntry(String id, String endpoint) {
 
-        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, userIfExists(), id);
+        ResponseEntity<String> response = kernel.getForEntity(endpoint, String.class, userIfExists(), id);
 
         if (response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
+
+            String body = response.getBody();
+            logger.debug("Found catalog entry: {}", body);
+
+
+            try {
+                return objectMapper.readValue(body, CatalogEntry.class);
+            } catch (IOException e) {
+                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Impossible to load JSON");
+            }
         } else if (response.getStatusCode().is4xxClientError()) {
             logger.warn("Cannot find catalog entry {} through endpoint {}", id, endpoint);
             return null;
