@@ -82,7 +82,7 @@ public class CatalogEntry  {
     private String tosUri;
 
     @JsonProperty("policy_uri")
-    private String privacyUri;
+    private String policyUri;
 
 
 
@@ -300,12 +300,12 @@ public class CatalogEntry  {
         this.screenshotUris = screenshotUris;
     }
 
-    public String getPrivacyUri() {
-        return privacyUri;
+    public String getPolicyUri() {
+        return policyUri;
     }
 
-    public void setPrivacyUri(String privacyUri) {
-        this.privacyUri = privacyUri;
+    public void setPolicyUri(String policyUri) {
+        this.policyUri = policyUri;
     }
 
     public String getTosUri() {
