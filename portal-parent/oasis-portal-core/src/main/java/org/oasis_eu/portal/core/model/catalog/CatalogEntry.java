@@ -81,7 +81,7 @@ public class CatalogEntry  {
     @JsonProperty("tos_uri")
     private String tosUri;
 
-    @JsonProperty("privacy_uri")
+    @JsonProperty("policy_uri")
     private String privacyUri;
 
 

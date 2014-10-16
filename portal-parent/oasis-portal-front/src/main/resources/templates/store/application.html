@@ -112,6 +112,11 @@
         <div class="col-md-6" data-th-text="${app.longDescription}">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent eu orci iaculis, lacinia arcu at, semper ligula. Vestibulum sed ex a eros feugiat imperdiet. Ut sit amet leo cursus, porttitor velit non, pulvinar velit. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia Curae; Duis at lacus egestas, cursus velit id, varius nisl. Praesent sit amet massa erat. Praesent luctus ut enim at ultrices. Donec bibendum dictum mi, eget faucibus lorem efficitur eu. Curabitur in arcu vitae sapien luctus tincidunt. Pellentesque eu augue lectus.
         </div>
+        <div class="col-md-6">
+            <p><a data-th-text="#{store.tos}" data-th-href="${app.catalogEntry.tosUri}">Terms of service</a></p>
+            <p><a data-th-text="#{store.privacy}" data-th-href="${app.catalogEntry.privacyUri}">Privacy policy</a></p>
+            <p data-th-text="#{store.agree-to-tos}">By clicking blah blah blah</p>
+        </div>
     </div>
 
 
