@@ -10,7 +10,7 @@ ha:
   failover: n1
 
 application:
-  url: http://localhost
+  url: http://localhost:8080
   security:
     fetchUserInfo: true
   baseImageUrl: ${application.url}/media
@@ -52,5 +52,5 @@ persistence:
   mongodatabase: portal
   mongohosts:
     - localhost
-  login: portal
-  password: portal
+#  login: portal
+#  password: portal
