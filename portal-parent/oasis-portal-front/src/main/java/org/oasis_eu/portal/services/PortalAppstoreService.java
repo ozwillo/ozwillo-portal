@@ -65,7 +65,7 @@ public class PortalAppstoreService {
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
 
         return catalogStore.findAllVisible(targetAudiences, paymentOptions).stream()
-                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64), getOrganizationName(catalogEntry),
+                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false), getOrganizationName(catalogEntry),
                         getInstallationOption(catalogEntry)))
                 .collect(Collectors.toList());
     }
@@ -100,7 +100,7 @@ public class PortalAppstoreService {
 
         String providerName = getOrganizationName(entry);
 
-        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64), providerName, getInstallationOption(entry));
+        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64, false), providerName, getInstallationOption(entry));
 
     }
 

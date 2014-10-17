@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.core.mongo.model.images;
 
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -29,6 +31,16 @@ public class Image {
 
     // SHA-256 hash of bytes, as hex
     private String hash;
+
+    private DateTime downloadedTime = new DateTime(0);
+
+    public DateTime getDownloadedTime() {
+        return downloadedTime;
+    }
+
+    public void setDownloadedTime(DateTime downloadedTime) {
+        this.downloadedTime = downloadedTime;
+    }
 
     public String getId() {
         return id;

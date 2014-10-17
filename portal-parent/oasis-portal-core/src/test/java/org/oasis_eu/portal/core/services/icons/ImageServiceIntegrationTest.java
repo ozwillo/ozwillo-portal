@@ -4,7 +4,6 @@ import com.google.common.io.ByteStreams;
 import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,7 +89,7 @@ public class ImageServiceIntegrationTest {
 
         ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
 
-        String iconUri = imageService.getImageForURL("http://www.citizenkin.com/icon/one.png", ImageFormat.PNG_64BY64);
+        String iconUri = imageService.getImageForURL("http://www.citizenkin.com/icon/one.png", ImageFormat.PNG_64BY64, false);
         assertEquals(1, db.getCollection("image").count());
         assertNotNull(iconUri);
         // test that this matches a regexp including a UUID
@@ -118,19 +117,19 @@ public class ImageServiceIntegrationTest {
         ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
 
         assertEquals(0, blacklist.count());
-        String uri = imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64);
+        String uri = imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64, false);
         assertEquals(defaultIcon(), uri);
         assertEquals(1, blacklist.count());
 
-        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
         assertEquals(2, blacklist.count());
 
-        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64, false);
         assertEquals(3, blacklist.count());
 
-        imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64);
-        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64);
-        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64, false);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64, false);
 
         // check that we only called the downloader three times
         verify(downloader, times(3)).download(anyString());

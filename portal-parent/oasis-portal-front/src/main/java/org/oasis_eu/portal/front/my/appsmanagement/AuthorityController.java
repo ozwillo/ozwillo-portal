@@ -10,7 +10,6 @@ import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -46,7 +45,7 @@ public class AuthorityController extends PortalController {
 
         CatalogEntry service = appManagementService.getService(serviceId);
         model.addAttribute("service", service);
-        model.addAttribute("iconUrl", imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(httpRequest)), ImageFormat.PNG_64BY64));
+        model.addAttribute("iconUrl", imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(httpRequest)), ImageFormat.PNG_64BY64, false));
 
         return "appsmanagement/service-settings::main";
     }

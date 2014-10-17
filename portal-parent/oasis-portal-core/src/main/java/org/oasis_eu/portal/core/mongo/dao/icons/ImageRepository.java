@@ -1,7 +1,11 @@
 package org.oasis_eu.portal.core.mongo.dao.icons;
 
+import org.joda.time.DateTime;
 import org.oasis_eu.portal.core.mongo.model.images.Image;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.mongodb.repository.MongoRepository;
+
+import java.util.List;
 
 /**
  * User: schambon
@@ -10,4 +14,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 public interface ImageRepository extends MongoRepository<Image, String> {
 
     public Image findByUrl(String url);
+
+    public List<Image> findByDownloadedTimeBefore(DateTime before, Pageable page);
 }

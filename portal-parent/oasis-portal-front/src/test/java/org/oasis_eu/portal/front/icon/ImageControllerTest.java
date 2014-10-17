@@ -3,7 +3,6 @@ package org.oasis_eu.portal.front.icon;
 import com.google.common.io.ByteStreams;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
-import com.mongodb.MongoClient;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -76,7 +75,7 @@ public class ImageControllerTest {
 
         ReflectionTestUtils.setField(imageService, "imageDownloader", imageDownloader);
 
-        String iconUri = imageService.getImageForURL(ICON_URL, ImageFormat.PNG_64BY64);
+        String iconUri = imageService.getImageForURL(ICON_URL, ImageFormat.PNG_64BY64, false);
 
         // verify that iconDownloader's download method has been called
         verify(imageDownloader).download(anyString());

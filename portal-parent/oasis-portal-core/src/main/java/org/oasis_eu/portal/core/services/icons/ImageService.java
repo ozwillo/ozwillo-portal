@@ -3,6 +3,7 @@ package org.oasis_eu.portal.core.services.icons;
 import com.google.common.base.Strings;
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.oasis_eu.portal.core.mongo.dao.icons.DirectAccessImageRepo;
 import org.oasis_eu.portal.core.mongo.dao.icons.ImageDownloadAttemptRepository;
 import org.oasis_eu.portal.core.mongo.dao.icons.ImageRepository;
@@ -13,6 +14,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -22,6 +26,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -52,7 +57,7 @@ public class ImageService {
     @Value("${application.defaultIconUrl}")
     private String defaultIconUrl;
 
-    public String getImageForURL(String inputUrl, ImageFormat format) {
+    public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
 
         if (imageDownloadAttemptRepository.findByUrl(inputUrl) != null) {
             logger.debug("Image input URL {} is blacklisted, returning default icon", inputUrl);
@@ -61,7 +66,7 @@ public class ImageService {
 
         Image image = imageRepository.findByUrl(inputUrl);
 
-        if (image == null) {
+        if (image == null || force) {
 
             // 1. download the icon
             byte[] iconBytes = imageDownloader.download(inputUrl);
@@ -84,13 +89,16 @@ public class ImageService {
             }
 
             // 3. compute the hash and store the icon
-            image = new Image();
-            image.setId(UUID.randomUUID().toString());
+            if (image == null) {
+                image = new Image();
+                image.setId(UUID.randomUUID().toString());
+                image.setUrl(inputUrl);
+                image.setImageFormat(format);
+                image.setFilename(getFileName(inputUrl));
+            }
             image.setBytes(iconBytes);
-            image.setUrl(inputUrl);
-            image.setImageFormat(format);
-            image.setFilename(getFileName(inputUrl));
             image.setHash(getHash(iconBytes));
+            image.setDownloadedTime(DateTime.now());
 
             image = imageRepository.save(image);
         }
@@ -110,6 +118,19 @@ public class ImageService {
 
     public String getHash(String id) {
         return directAccessImageRepo.getHashForIcon(id);
+    }
+
+    @Scheduled(fixedRate = 60000)
+    public void refreshOldImages() {
+        logger.debug("Refreshing images");
+
+        // every 10 minutes, try to download the 10 oldest images not already downloaded in the last 60 minutes (phew)
+        List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), new PageRequest(0, 10, Sort.Direction.ASC, "downloadedTime"));
+
+        logger.debug("Found {} image(s) to refresh", images.size());
+
+        images.forEach(i -> getImageForURL(i.getUrl(), i.getImageFormat(), true));
+
     }
 
     // TODO provide a default for all image formats (eg 800×450)

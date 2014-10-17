@@ -1,5 +1,6 @@
 import ch.qos.logback.classic.encoder.PatternLayoutEncoder
 import ch.qos.logback.core.ConsoleAppender
+import jdk.nashorn.internal.runtime.Debug
 
 scan()
 
@@ -21,5 +22,6 @@ logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
 //logger("kernelLogging.logRequestTimings", DEBUG)
 //logger("org.apache.http.wire", DEBUG)
 
+logger("org.oasis_eu.portal.core.services.icons", DEBUG)
 
 root(WARN, ["CONSOLE"])
