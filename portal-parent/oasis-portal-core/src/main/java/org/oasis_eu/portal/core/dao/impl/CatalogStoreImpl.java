@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import com.fasterxml.jackson.annotation.*;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
@@ -10,26 +9,25 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
-import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.*;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.io.IOException;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.none;
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.userIfExists;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.*;
 
 /**
  * User: schambon
@@ -48,10 +46,6 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Value("${kernel.portal_endpoints.apps:}")
     private String appsEndpoint;
-
-
-    @Autowired
-    private ObjectMapper objectMapper;
 
     @Override
     @Cacheable("appstore")
@@ -90,19 +84,10 @@ public class CatalogStoreImpl implements CatalogStore {
 
     private CatalogEntry getCatalogEntry(String id, String endpoint) {
 
-        ResponseEntity<String> response = kernel.getForEntity(endpoint, String.class, userIfExists(), id);
+        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, userIfExists(), id);
 
         if (response.getStatusCode().is2xxSuccessful()) {
-
-            String body = response.getBody();
-            logger.debug("Found catalog entry: {}", body);
-
-
-            try {
-                return objectMapper.readValue(body, CatalogEntry.class);
-            } catch (IOException e) {
-                throw new HttpClientErrorException(HttpStatus.BAD_REQUEST, "Impossible to load JSON");
-            }
+            return response.getBody();
         } else if (response.getStatusCode().is4xxClientError()) {
             logger.warn("Cannot find catalog entry {} through endpoint {}", id, endpoint);
             return null;
