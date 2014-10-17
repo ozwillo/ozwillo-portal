@@ -2,10 +2,16 @@ package org.oasis_eu.portal.config;
 
 import org.oasis_eu.spring.config.OasisSecurityConfiguration;
 import org.oasis_eu.spring.kernel.security.OasisAuthenticationFilter;
+import org.oasis_eu.spring.kernel.security.OpenIdCConfiguration;
+import org.oasis_eu.spring.kernel.security.StaticOpenIdCConfiguration;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
+
+import java.util.Arrays;
 
 /**
  * User: schambon
@@ -13,6 +19,15 @@ import org.springframework.security.web.authentication.preauth.AbstractPreAuthen
  */
 @Configuration
 public class OasisPortalSecurity extends OasisSecurityConfiguration {
+
+    @Bean
+    @Primary
+    public OpenIdCConfiguration openIdCConfiguration() {
+        StaticOpenIdCConfiguration configuration = new StaticOpenIdCConfiguration();
+        configuration.addSkippedPaths(Arrays.asList("/img/", "/js/", "/css/", "/status"));
+        return configuration;
+    }
+
 
     @Override
     public OasisAuthenticationFilter oasisAuthenticationFilter() throws Exception {
