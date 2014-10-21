@@ -456,3 +456,7 @@ html, body {
 footer, .push {
     height: 257px;
 }
+
+div.container.main-content {
+    margin-top: 20px;
+}
