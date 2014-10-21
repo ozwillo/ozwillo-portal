@@ -120,7 +120,7 @@ public class ImageService {
         return directAccessImageRepo.getHashForIcon(id);
     }
 
-    @Scheduled(fixedRate = 60000)
+    @Scheduled(fixedRate = 600000)
     public void refreshOldImages() {
         logger.debug("Refreshing images");
 
