@@ -438,3 +438,21 @@ div#veil.in {
 div#veil a {
     display: none;
 }
+
+* {
+    margin: 0;
+
+}
+html, body {
+    height: 100%;
+
+}
+
+.wrapper {
+    min-height: 100%;
+    margin: 0 auto -257px;
+}
+
+footer, .push {
+    height: 257px;
+}
