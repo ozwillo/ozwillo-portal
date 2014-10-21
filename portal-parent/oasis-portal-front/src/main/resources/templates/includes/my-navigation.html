@@ -100,6 +100,13 @@
     </ul>
 
     <ul class="nav navbar-nav oasis-nav navbar-right">
+        <li>
+            <a href="#" class="nav-link">
+                <img class="gray" data-th-src="@{/img/my/data-store-gray.png}" src="../../public/img/my/data-store-gray.png" alt="Data Store" data-th-alt="#{ui.datastore}" />
+                <img class="purple" data-th-src="@{/img/my/data-store.png}" src="../../public/img/my/data-store.png" alt="Data Store" data-th-alt="#{ui.datastore}"/>
+                <span data-th-text="#{ui.datastore}">Data Store</span>
+            </a>
+        </li>
         <li data-th-class="${isAppstore ? 'active':''}">
             <a href="#" class="nav-link" data-th-class="${isAppstore?'':'nav-link'}" data-th-href="@{|/${currentLanguage.locale.language}/store|}">
                 <img data-th-if="${!isAppstore}" class="gray" data-th-src="@{/img/my/app-store-gray.png}" src="../../public/img/my/app-store-gray.png" alt="Apps Store" data-th-alt="#{ui.appstore}" />
@@ -111,13 +118,7 @@
                 <div class="arrow"></div>
             </th:block>
         </li>
-        <li>
-            <a href="#" class="nav-link">
-                <img class="gray" data-th-src="@{/img/my/data-store-gray.png}" src="../../public/img/my/data-store-gray.png" alt="Data Store" data-th-alt="#{ui.datastore}" />
-                <img class="purple" data-th-src="@{/img/my/data-store.png}" src="../../public/img/my/data-store.png" alt="Data Store" data-th-alt="#{ui.datastore}"/>
-                <span data-th-text="#{ui.datastore}">Data Store</span>
-            </a>
-        </li>
+
         <li class="logout">
             <a href="#" data-th-href="@{/logout}">
                 <img src="../../public/img/my/logout.png" alt="Logout" data-th-src="@{/img/my/logout.png}" />
