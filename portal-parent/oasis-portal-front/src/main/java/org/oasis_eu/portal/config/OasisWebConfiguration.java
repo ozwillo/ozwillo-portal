@@ -9,7 +9,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
+import org.springframework.boot.context.embedded.MimeMappings;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.ApplicationContext;
@@ -84,11 +86,21 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
                         setRequestUriIgnorePattern(".*\\.(ico|png|gif|jpg|css|js)$");
                     }});
                 }));
+
+                setMimeMappings(factory);
             };
         } else {
             logger.info("Skipping HA configuration");
-            return factory -> {};
+            return factory -> {
+                setMimeMappings(factory);
+            };
         }
+    }
+
+    private void setMimeMappings(ConfigurableEmbeddedServletContainer factory) {
+        MimeMappings mm = new MimeMappings();
+        mm.add("woff", "application/font-woff");
+        factory.setMimeMappings(mm);
     }
 
 }
