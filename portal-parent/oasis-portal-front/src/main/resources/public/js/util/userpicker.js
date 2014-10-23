@@ -10,7 +10,7 @@
  *  - selected: list of selected users
  */
 
-var UserPicker = React.createClass({
+var UserPicker = React.createClass({displayName: 'UserPicker',
   getInitialState: function() {
     return {users:[]};
   },
@@ -46,42 +46,42 @@ var UserPicker = React.createClass({
   render: function() {
     var removeUser = this.removeUser;
     var usersList = this.state.users.map(function(user) {
-      return <User key={user.userid} user={user} remove={removeUser} />;
+      return User({key: user.userid, user: user, remove: removeUser});
     });
 
     return (
-      <div>
-        <table className="table">
-          <thead>
-            <tr>
-              <th>{t('name')}</th>
-              <th>{t('actions')}</th>
-            </tr>
-          </thead>
-          <tbody>
-            {usersList}
-          </tbody>
-        </table>
-        <div className="row">
-            <div className="col-sm-10 col-sm-offset-1">
-                <Typeahead onSelect={this.addUser} source={this.props.source} placeholder={t('settings-add-a-user')}/>
-            </div>
-        </div>
-      </div>
+      React.DOM.div(null, 
+        React.DOM.table({className: "table"}, 
+          React.DOM.thead(null, 
+            React.DOM.tr(null, 
+              React.DOM.th(null, t('name')), 
+              React.DOM.th(null, t('actions'))
+            )
+          ), 
+          React.DOM.tbody(null, 
+            usersList
+          )
+        ), 
+        React.DOM.div({className: "row"}, 
+            React.DOM.div({className: "col-sm-10 col-sm-offset-1"}, 
+                Typeahead({onSelect: this.addUser, source: this.props.source, placeholder: t('settings-add-a-user')})
+            )
+        )
+      )
     );
   }
 });
 
-var User = React.createClass({
+var User = React.createClass({displayName: 'User',
   remove: function(event) {
     this.props.remove(this.props.user.userid);
   },
   render: function() {
     return (
-      <tr>
-        <td>{this.props.user.fullname}</td>
-        <td><button className="btn btn-default" onClick={this.remove}><i className="fa fa-minus-circle"></i></button></td>
-      </tr>
+      React.DOM.tr(null, 
+        React.DOM.td(null, this.props.user.fullname), 
+        React.DOM.td(null, React.DOM.button({className: "btn btn-default", onClick: this.remove}, React.DOM.i({className: "fa fa-minus-circle"})))
+      )
     );
   }
 });

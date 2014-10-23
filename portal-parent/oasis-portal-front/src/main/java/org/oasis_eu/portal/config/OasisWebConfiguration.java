@@ -99,6 +99,8 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
 
     private void setMimeMappings(ConfigurableEmbeddedServletContainer factory) {
         MimeMappings mm = new MimeMappings();
+        MimeMappings.DEFAULT.getAll().forEach(mapping -> mm.add(mapping.getExtension(), mapping.getMimeType()));
+
         mm.add("woff", "application/font-woff");
         factory.setMimeMappings(mm);
     }
