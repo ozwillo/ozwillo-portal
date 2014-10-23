@@ -239,25 +239,3 @@ div.empty-avatar {
 .personal-data-form.edit {
 	border-color: #50C9C8;
 }
-
-.form-table-header {
-    font-weight: bold;
-    font-size: 15px;
-    padding: 5px;
-    border-bottom: 1px solid #CCC;
-}
-
-.form-table-row {
-    padding: 5px;
-    border-bottom: 1px solid #CCC;
-    line-height: 30px;
-}
-
-.form-table-row:last-child {
-    border-bottom: none;
-}
-
-.form-table-actions {
-    padding: 15px;
-    padding-bottom: 5px;
-}

@@ -24,7 +24,7 @@ var MyApps = React.createClass({
     },
     render: function () {
         if (this.state.loading) {
-            return <p>{t('loading')}</p>;
+            return <p className="text-center"><i className="fa fa-spinner fa-spin"></i> {t('loading')}</p>;
         }
         var auths = this.state.authorities.map(function (auth) {
             return (
@@ -61,7 +61,7 @@ var Authority = React.createClass({
                 <div className="panel-heading">
                     <h4 className="panel-title">
                         <span>{this.props.name}</span>
-                        <OpenAuthority callback={this.toggle} />
+                        <OpenAuthority callback={this.toggle} open={this.state.open} />
                     </h4>
                 </div>
                 <div ref="content">
@@ -77,9 +77,10 @@ var OpenAuthority = React.createClass({
         this.props.callback();
     },
     render: function () {
+        var className = this.props.open ? 'caret' : 'caret inverse';
         return (
             <a className="authority-link pull-right" onClick={this.click}>
-                <b className="caret inverse"></b>
+                <b className={className}></b>
             </a>
             );
     }
@@ -112,7 +113,7 @@ var InstanceList = React.createClass({
     },
     render: function () {
         if (this.state.loading) {
-            return <p>{t('loading')}</p>;
+            return <p className="text-center"><i className="fa fa-spinner fa-spin"></i> {t('loading')}</p>;
         }
 
         var instances = this.state.instances;
@@ -172,6 +173,9 @@ var Instance = React.createClass({
             }.bind(this)
         });
     },
+    componentDidMount: function() {
+        $("a.tip", this.getDOMNode()).tooltip();
+    },
     render: function () {
         var instance = this.props.key;
         var services = this.props.instance.services.map(function (service) {
@@ -187,12 +191,15 @@ var Instance = React.createClass({
                 <div className="panel-heading">
                     <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
                     <span className="appname">{this.props.instance.name}</span>
-                    <a className="pull-right" href="#" onClick={this.manageUsers}>{t('manage_users')}</a>
+                    <a className="tip btn btn-default pull-right" href="#" onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}><li className="fa fa-user"></li></a>
                 </div>
                 <div className="panel-body">
-                    <ul className="services">
-                    {services}
-                    </ul>
+                    <div className="standard-form">
+                        <div className="row form-table-header">
+                            <div class="col-sm-10">{t('services')}</div>
+                        </div>
+                        {services}
+                    </div>
                 </div>
             </div>
             );

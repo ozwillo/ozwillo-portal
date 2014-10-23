@@ -104,25 +104,26 @@ var Service = React.createClass({
             }.bind(this)
         })
     },
+    componentDidMount: function() {
+        $("a.tip", this.getDOMNode()).tooltip();
+    },
     render: function () {
         var links = [
-            <a onClick={this.settings} href="#">{t('settings')}</a>
+            <a onClick={this.settings} href="#" className="btn btn-default tip" data-toggle="tooltip" data-placement="top" title={t('settings')}><i className="fa fa-cog"></i></a>
         ];
         if (! this.state.saved_service.service.visible) {
-            links.push(<a onClick={this.pushToDash} href="#">{t('users')}</a>);
+            links.push(<a onClick={this.pushToDash} href="#" className="btn btn-default tip" data-toggle="tooltip" data-placement="top" title={t('users')}><i className="fa fa-tachometer"></i></a>);
         }
 
         return (
-            <li className="service">
-                {this.state.saved_service.service.name}
-                <span className="pull-right">
-                {links}
-                </span>
+            <div className="row form-table-row">
+                <div className="col-sm-10">{this.state.saved_service.service.name}</div>
+                <div className="col-sm-2">{links}</div>
                 <ServiceSettings ref="settings" service={this.state.service} errors={this.state.field_errors} update={this.updateServiceLocally} save={this.saveService}/>
                 <Modal title={t('users')} ref="pushToDash" successHandler={this.savePushToDash}>
                     <UserPicker ref="users" users={this.loadUsers} source={this.queryUsers} />
                 </Modal>
-            </li>
+            </div>
             );
     }
 });

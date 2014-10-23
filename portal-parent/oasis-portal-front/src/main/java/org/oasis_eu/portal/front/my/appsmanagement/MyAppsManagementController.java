@@ -32,7 +32,7 @@ public class MyAppsManagementController extends PortalController {
 
     private static List<String> i18keys = Arrays.asList(
             "loading", "none", "manage_users", "users", "settings", "name", "actions",
-            "settings-add-a-user", "description", "icon", "published");
+            "settings-add-a-user", "description", "icon", "published", "services");
 
     @Autowired
     private MyNavigationService navigationService;

@@ -63,8 +63,10 @@ var UserPicker = React.createClass({
             {usersList}
           </tbody>
         </table>
-        <div className="text-center">
-            <Typeahead onSelect={this.addUser} source={this.props.source} placeholder={t('settings-add-a-user')}/>
+        <div className="row">
+            <div className="col-sm-10 col-sm-offset-1">
+                <Typeahead onSelect={this.addUser} source={this.props.source} placeholder={t('settings-add-a-user')}/>
+            </div>
         </div>
       </div>
     );
