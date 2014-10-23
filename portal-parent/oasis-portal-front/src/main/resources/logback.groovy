@@ -23,5 +23,6 @@ logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
 //logger("org.apache.http.wire", DEBUG)
 
 logger("org.oasis_eu.portal.core.services.icons", DEBUG)
+logger("org.oasis_eu.portal.front.my", DEBUG)
 
 root(WARN, ["CONSOLE"])

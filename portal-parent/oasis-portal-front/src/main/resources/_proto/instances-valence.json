@@ -1,0 +1,9 @@
+[
+  {"id": "citizenkin", "name": "Citizen Kin", "icon":"/portal-parent/oasis-portal-front/src/main/resources/_proto/application_icon.png",
+    "services": [
+      {"id":"citizenkin_back", "name": "Citizen Kin back office"},
+      {"id":"citizenkin_front", "name": "Citizen Kin front office"}
+    ]
+  },
+  {"id": "citizenkan", "name": "Citizen Kan", "icon":"/portal-parent/oasis-portal-front/src/main/resources/_proto/application_icon.png", "services": []}
+]

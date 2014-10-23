@@ -38,12 +38,15 @@ a.authority-link {
 }
 
 
+.twitter-typeahead {
+    width: 100%;
+}
 
 .twitter-typeahead .tt-query,
 .twitter-typeahead .tt-hint {
-    margin-bottom: 0;
+    margin-bottom: 0px;
 }
-.tt-hint {
+.tt-hint, .tt-input {
     display: block;
     width: 100%;
     height: 38px;
@@ -118,4 +121,8 @@ a.authority-link {
 
 .exit-buttons {
     margin-top: 10px;
+}
+
+.error {
+    color: red;
 }

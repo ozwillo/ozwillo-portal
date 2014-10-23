@@ -15,6 +15,7 @@ public class MyAppsInstance {
     AppInfo application;
 
     List<MyAppsService> myAppsServices;
+    String icon;
 
 
     public List<MyAppsService> getServices() {
@@ -46,5 +47,17 @@ public class MyAppsInstance {
 
     public String getName() {
         return application != null ? application.getName() : "--";
+    }
+
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
+
+    public String getIcon() {
+        return icon;
+    }
+
+    public String getId() {
+        return applicationInstance.getInstanceId();
     }
 }
