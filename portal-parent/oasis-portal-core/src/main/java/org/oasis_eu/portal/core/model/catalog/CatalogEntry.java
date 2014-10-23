@@ -256,7 +256,7 @@ public class CatalogEntry  {
         if (localizedDescriptions.containsKey(locale.getLanguage())) {
             return localizedDescriptions.get(locale.getLanguage());
         } else {
-            return defaultDescription;
+            return defaultDescription != null ? defaultDescription : "";
         }
     }
 
