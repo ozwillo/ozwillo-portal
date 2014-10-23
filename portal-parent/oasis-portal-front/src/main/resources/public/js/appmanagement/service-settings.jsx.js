@@ -112,7 +112,7 @@ var Service = React.createClass({
             <a onClick={this.settings} href="#" className="btn btn-default tip" data-toggle="tooltip" data-placement="top" title={t('settings')}><i className="fa fa-cog"></i></a>
         ];
         if (! this.state.saved_service.service.visible) {
-            links.push(<a onClick={this.pushToDash} href="#" className="btn btn-default tip" data-toggle="tooltip" data-placement="top" title={t('users')}><i className="fa fa-tachometer"></i></a>);
+            links.push(<a onClick={this.pushToDash} href="#" className="btn btn-default tip" data-toggle="tooltip" data-placement="top" title={t('users')}><i className="fa fa-home"></i></a>);
         }
 
         return (

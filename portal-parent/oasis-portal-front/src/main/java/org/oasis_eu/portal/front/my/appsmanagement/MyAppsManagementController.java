@@ -38,12 +38,6 @@ public class MyAppsManagementController extends PortalController {
     private MyNavigationService navigationService;
 
     @Autowired
-    private PortalAppManagementService appManagementService;
-
-    @Autowired
-    private NetworkService networkService;
-
-    @Autowired
     private MessageSource messageSource;
 
 
@@ -64,21 +58,4 @@ public class MyAppsManagementController extends PortalController {
         return "appmanagement/myapps";
     }
 
-//    @RequestMapping(method = RequestMethod.GET, value ={"","/"})
-//    public String show(Model model, @RequestParam(value = "defaultAuthorityId", required = false, defaultValue = "") String defaultAuthorityId) {
-//        model.addAttribute("authorities", networkService.getMyAuthorities(true));
-//        model.addAttribute("defaultAuthorityId", defaultAuthorityId);
-//        model.addAttribute("pending", appManagementService.getPendingInstances());
-//
-//        return "appsmanagement/appsmanagement";
-//    }
-//
-//
-//
-//    @RequestMapping(method=RequestMethod.POST, value="/service-settings/{service_id}")
-//    public String saveServiceSettings(Model model, @PathVariable("service_id") String serviceId, @ModelAttribute CatalogEntry service) {
-//
-//        CatalogEntry entry = appManagementService.updateService(serviceId, service);
-//        return "redirect:/my/appsmanagement?defaultAuthorityId=" + entry.getProviderId();
-//    }
 }

@@ -59,7 +59,7 @@ var Authority = React.createClass({displayName: 'Authority',
         return (
             React.DOM.div({className: "panel panel-default"}, 
                 React.DOM.div({className: "panel-heading"}, 
-                    React.DOM.h4({className: "panel-title"}, 
+                    React.DOM.h4({className: "panel-title", onClick: this.toggle}, 
                         React.DOM.span(null, this.props.name), 
                         OpenAuthority({callback: this.toggle, open: this.state.open})
                     )

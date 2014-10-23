@@ -155,7 +155,7 @@ public class NetworkService {
         }
     }
 
-    private boolean userIsAdmin(String organizationId) {
+    public boolean userIsAdmin(String organizationId) {
         return userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
                 .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin());
     }

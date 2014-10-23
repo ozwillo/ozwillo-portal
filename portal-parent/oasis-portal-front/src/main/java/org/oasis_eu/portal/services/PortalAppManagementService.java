@@ -19,7 +19,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -57,6 +61,9 @@ public class PortalAppManagementService {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private NetworkService networkService;
 
     public List<MyAppsInstance> getMyInstances(Authority authority) {
 
@@ -130,6 +137,9 @@ public class PortalAppManagementService {
     }
 
     public CatalogEntry updateService(String serviceId, CatalogEntry entry) {
+        if (!networkService.userIsAdmin(catalogStore.findService(serviceId).getProviderId())) {
+            throw new AccessDeniedException("Unauthorized");
+        }
         return catalogStore.fetchAndUpdateService(serviceId, entry);
     }
 
@@ -160,6 +170,11 @@ public class PortalAppManagementService {
 
 
     public void updateSubscriptions(String serviceId, Set<String> usersToSubscribe) {
+        if (!networkService.userIsAdmin(catalogStore.findService(serviceId).getProviderId())) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
+
         Set<String> existing = getSubscribedUsersOfService(serviceId).stream().map(User::getUserid).collect(Collectors.toSet());
 
         // which ones must we add?
@@ -191,6 +206,10 @@ public class PortalAppManagementService {
     }
 
     public void saveAppUsers(String instanceId, List<String> userIds) {
+        if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(instanceId).getProviderId())) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
+
         instanceACLStore.saveACL(instanceId, userIds);
     }
 
@@ -198,4 +217,5 @@ public class PortalAppManagementService {
     public void deleteInstance(String instanceId) {
         catalogStore.deleteInstance(instanceId);
     }
+
 }
