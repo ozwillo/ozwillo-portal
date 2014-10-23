@@ -13,6 +13,8 @@ public class MyAppsService {
 
     private String name;
 
+    private String iconUrl;
+
     public CatalogEntry getService() {
         return service;
     }
@@ -37,6 +39,15 @@ public class MyAppsService {
 
     public MyAppsService setName(String name) {
         this.name = name;
+        return this;
+    }
+
+    public String getIconUrl() {
+        return iconUrl;
+    }
+
+    public MyAppsService setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
         return this;
     }
 }

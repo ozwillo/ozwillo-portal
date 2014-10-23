@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  * User: schambon
  * Date: 8/13/14
  */
+@Deprecated
 @Controller
 @RequestMapping("/my/appsmanagement/subscription-settings")
 public class ServiceUsersController {
@@ -33,7 +34,7 @@ public class ServiceUsersController {
     @RequestMapping(method = RequestMethod.GET, value ="/{service_id}")
     public String get(Model model, @PathVariable("service_id") String serviceId) {
 
-        model.addAttribute("service", appManagementService.getService(serviceId));
+//        model.addAttribute("service", appManagementService.getService(serviceId));
 
         return "appsmanagement/assign-service::main";
     }

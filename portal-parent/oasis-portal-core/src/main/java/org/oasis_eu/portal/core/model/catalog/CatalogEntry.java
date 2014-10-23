@@ -1,9 +1,11 @@
 package org.oasis_eu.portal.core.model.catalog;
 
 import com.fasterxml.jackson.annotation.*;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.util.*;
 
 /**
@@ -20,8 +22,12 @@ public class CatalogEntry  {
     private CatalogEntryType type;
 
     @JsonProperty("name")
+    @NotNull
+    @NotEmpty
     private String defaultName;
     @JsonProperty("description")
+    @NotNull
+    @NotEmpty
     private String defaultDescription;
 
     private Map<String, String> localizedNames = new HashMap<>();
@@ -31,6 +37,8 @@ public class CatalogEntry  {
     private Map<String, String> localizedIcons = new HashMap<>();
 
     @JsonProperty("icon")
+    @NotNull
+    @NotEmpty
     private String defaultIcon;
 
     @JsonProperty("service_uri")

@@ -8,6 +8,8 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
+import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appsmanagement.*;
 import org.oasis_eu.portal.model.appstore.AppInfo;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
@@ -42,12 +44,6 @@ public class PortalAppManagementService {
     private SubscriptionStore subscriptionStore;
 
     @Autowired
-    private UserDirectory userDirectory;
-
-    @Autowired
-    private OrganizationStore organizationStore;
-
-    @Autowired
     private ApplicationInstanceStore applicationInstanceStore;
 
     @Autowired
@@ -57,10 +53,10 @@ public class PortalAppManagementService {
     private HttpServletRequest request;
 
     @Autowired
-    private MessageSource messageSource;
+    private InstanceACLStore instanceACLStore;
 
     @Autowired
-    private InstanceACLStore instanceACLStore;
+    private ImageService imageService;
 
     public List<MyAppsInstance> getMyInstances(Authority authority) {
 
@@ -106,7 +102,7 @@ public class PortalAppManagementService {
         logger.debug("Fetching instance data for {}", instance);
 
         CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
-        AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), null);
+        AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), entry.getIcon(RequestContextUtils.getLocale(request)));
 
 
         return new MyAppsInstance()
@@ -119,7 +115,7 @@ public class PortalAppManagementService {
 
         logger.debug("Fetching service data for {}", service);
 
-        return new MyAppsService().setService(service).setName(service.getName(RequestContextUtils.getLocale(request)));
+        return new MyAppsService().setService(service).setName(service.getName(RequestContextUtils.getLocale(request))).setIconUrl(imageService.getImageForURL(service.getDefaultIcon(), ImageFormat.PNG_64BY64, false));
     }
 
     public MyAppsInstance getInstance(String instanceId) {
@@ -127,12 +123,10 @@ public class PortalAppManagementService {
         return fetchInstance(catalogStore.findApplicationInstance(instanceId));
     }
 
-    public CatalogEntry getService(String serviceId) {
+    public MyAppsService getService(String serviceId) {
 
-        CatalogEntry entry = catalogStore.findService(serviceId);
-        logger.debug("Found catalog entry: {}", entry);
+        return fetchService(catalogStore.findService(serviceId));
 
-        return entry;
     }
 
     public CatalogEntry updateService(String serviceId, CatalogEntry entry) {
@@ -165,6 +159,14 @@ public class PortalAppManagementService {
     }
 
 
+    public void updateSubscriptions(String serviceId, Set<String> usersToSubscribe) {
+        Set<String> existing = getSubscribedUsersOfService(serviceId).stream().map(User::getUserid).collect(Collectors.toSet());
+
+        // which ones must we add?
+        subscribeUsers(usersToSubscribe.stream().filter(s -> ! existing.contains(s)).collect(Collectors.toSet()), serviceId);
+        // which ones must we remove?
+        unsubscribeUsers(existing.stream().filter(s -> ! usersToSubscribe.contains(s)).collect(Collectors.toSet()), serviceId);
+    }
 
     public void subscribeUsers(Set<String> users, String serviceId) {
         users.forEach(u -> {

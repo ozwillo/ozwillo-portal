@@ -1,0 +1,4 @@
+[
+{"name":"Personal","id":"personal", "openByDefault":true},
+{"name":"Valence", "id":"valence", "openByDefault":false}
+]

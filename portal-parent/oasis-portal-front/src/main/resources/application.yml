@@ -10,12 +10,12 @@ ha:
   failover: n1
 
 application:
-  url: http://localhost:8080
+  url: http://localhost
   security:
     fetchUserInfo: true
   baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
-  devmode: false
+  devmode: true
   production: false
 
 web:

@@ -26,6 +26,7 @@ import javax.servlet.http.HttpServletRequest;
  * User: schambon
  * Date: 8/13/14
  */
+@Deprecated
 @Controller
 @RequestMapping("/my/appsmanagement")
 public class AuthorityController extends PortalController {
@@ -43,9 +44,9 @@ public class AuthorityController extends PortalController {
     @RequestMapping(method = RequestMethod.GET, value = "/service-settings/{service_id}")
     public String serviceSettings(Model model, @PathVariable("service_id") String serviceId, HttpServletRequest httpRequest) {
 
-        CatalogEntry service = appManagementService.getService(serviceId);
-        model.addAttribute("service", service);
-        model.addAttribute("iconUrl", imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(httpRequest)), ImageFormat.PNG_64BY64, false));
+//        CatalogEntry service = appManagementService.getService(serviceId);
+//        model.addAttribute("service", service);
+//        model.addAttribute("iconUrl", imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(httpRequest)), ImageFormat.PNG_64BY64, false));
 
         return "appsmanagement/service-settings::main";
     }
