@@ -65,8 +65,10 @@ public class PortalAppstoreService {
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
 
         return catalogStore.findAllVisible(targetAudiences, paymentOptions).stream()
+                .filter(catalogEntry -> catalogEntry != null)
                 .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false), getOrganizationName(catalogEntry),
                         getInstallationOption(catalogEntry)))
+
                 .collect(Collectors.toList());
     }
 
