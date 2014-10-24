@@ -59,6 +59,10 @@ $(document).ready(function () {
         });
 	}
 
+    $("#invite").on("shown.bs.modal", function(e){
+        $("#inviteEmail").focus();
+    });
+
     $("#confirm-delete").on("show.bs.modal", function(e) {
         $form = $(e.relatedTarget).parents('.form-table-row');
 
