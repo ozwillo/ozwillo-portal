@@ -5,6 +5,8 @@
  * Expected props:
  *  - title - String (will be shown as title)
  *  - successHandler - callback that is called on validation
+ *  - buttonLabels (optional) - a map of strings with keys "ok", "cancel". By default will map to t('ui.save'), t('ui.cancel')
+ *  - large (optional) - if true, will use the modal-lg class on the dialog
  * Children as content.
  * Open explicitly by calling the open() method. The close() method is also
  * available.
@@ -22,11 +24,18 @@ var Modal = React.createClass({
     },
     open: function () {
         $(this.getDOMNode()).modal('show');
-        // if (this.props.onOpen != undefined) {
-        //   this.props.onOpen();
-        // }
     },
     render: function () {
+
+        var cancelLabel, saveLabel;
+        if (this.props.buttonLabels) {
+            cancelLabel = this.props.buttonLabels["cancel"];
+            saveLabel = this.props.buttonLabels["save"];
+        } else {
+            cancelLabel = t('ui.cancel');
+            saveLabel = t('ui.save');
+        }
+
         return (
             <div className="modal fade">
                 <div className={'modal-dialog' + (this.props.large ? ' modal-lg' : '')}>
@@ -39,11 +48,11 @@ var Modal = React.createClass({
                             <h3>{this.props.title}</h3>
                         </div>
                         <div className="modal-body">
-          {this.props.children}
+                            {this.props.children}
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-default" onClick={this.close}>Dismiss</button>
-                            <button className="btn btn-primary" onClick={this.props.successHandler}>Save</button>
+                            <button className="btn btn-default" onClick={this.close}>{cancelLabel}</button>
+                            <button className="btn btn-primary" onClick={this.props.successHandler}>{saveLabel}</button>
                         </div>
                     </div>
                 </div>

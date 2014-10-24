@@ -15,10 +15,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -33,6 +30,8 @@ public class MyAppsManagementController extends PortalController {
     private static List<String> i18keys = Arrays.asList(
             "loading", "none", "manage_users", "users", "settings", "name", "actions",
             "settings-add-a-user", "description", "icon", "published", "services");
+
+    private static List<String> generickeys = Arrays.asList("save", "cancel");
 
     @Autowired
     private MyNavigationService navigationService;
@@ -50,7 +49,10 @@ public class MyAppsManagementController extends PortalController {
     public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
         Locale locale = RequestContextUtils.getLocale(request);
 
-        return i18keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[]{}, locale)));
+        Map<String, String> i18n = new HashMap<>();
+        i18n.putAll(i18keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[]{}, locale))));
+        i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
+        return i18n;
     }
 
     @RequestMapping(method = RequestMethod.GET)
