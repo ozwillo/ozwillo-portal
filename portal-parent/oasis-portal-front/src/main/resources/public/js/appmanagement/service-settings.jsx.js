@@ -189,9 +189,12 @@ var ServiceSettings = React.createClass({
                         </div>
                     </div>
 
-                    <FormField name="published">
-                        <input type="checkbox" id="published" checked={this.props.service.service.visible} onChange={this.handleChange('visible', true)} />
-                    </FormField>
+                    <div className="form-group">
+                        <div className="col-sm-10 col-sm-offset-2">
+                            <input className="switch" type="checkbox" id="published" checked={this.props.service.service.visible} onChange={this.handleChange('visible', true)} />
+                            <label htmlFor="published">{this.props.service.service.visible ? t('published') : t('notpublished')}</label>
+                        </div>
+                    </div>
                 </form>
             </Modal>
             );
