@@ -1,0 +1,23 @@
+[
+    {
+        "id": "aaaa" ,"name": "Toto software inc.", "type":"COMPANY", "admin":true,
+        "members": [
+            {"id": "00000", "name":"You", "admin":true, "self":true},
+            {"id": "11111","name": "Jill", "admin":true, "self":false},
+            {"id": "22222","name": "John", "admin":false, "self":false}
+        ]
+    },
+    {
+        "id": "bbbb", "name": "Tata City Hall", "type":"PUBLIC_BODY", "admin":false,
+        "members": []
+    },
+    {
+        "id": "cccc", "name": "Tutu regional council", "type":"PUBLIC_BODY", "admin":true,
+        "members": [
+            {"id": "00000", "name":"You", "admin":true, "self":true},
+            {"id": "33333","name": "Adora", "admin":true, "self":false},
+            {"id": "44444","name": "Belle", "admin":false, "self":false},
+            {"id": "55555","name": "Connie", "admin":false, "self":false}
+        ]
+    }
+]

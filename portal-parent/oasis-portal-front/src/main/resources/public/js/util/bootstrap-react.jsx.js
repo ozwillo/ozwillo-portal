@@ -5,8 +5,10 @@
  * Expected props:
  *  - title - String (will be shown as title)
  *  - successHandler - callback that is called on validation
- *  - buttonLabels (optional) - a map of strings with keys "ok", "cancel". By default will map to t('ui.save'), t('ui.cancel')
+ *  - buttonLabels (optional) - a map of strings with keys "save", "cancel". By default will map to t('ui.save'), t('ui.cancel')
  *  - large (optional) - if true, will use the modal-lg class on the dialog
+ *  - infobox (optional) - if true, will display only a single inverted OK button (label key = 'ok') rather than save / cancel
+ *                         also, successHandler has no meaning in that context.
  * Children as content.
  * Open explicitly by calling the open() method. The close() method is also
  * available.
@@ -27,14 +29,36 @@ var Modal = React.createClass({
     },
     render: function () {
 
-        var cancelLabel, saveLabel;
-        if (this.props.buttonLabels) {
-            cancelLabel = this.props.buttonLabels["cancel"];
-            saveLabel = this.props.buttonLabels["save"];
+        var buttons;
+
+        if (this.props.infobox) {
+            var label;
+            if (this.props.buttonLabels) {
+                label = this.props.buttonLabels["ok"];
+            } else {
+                label = t('ui.ok');
+            }
+            buttons = [
+                <button key="close" className="btn btn-primary-inverse" onClick={this.close}>{label}</button>
+            ];
         } else {
-            cancelLabel = t('ui.cancel');
-            saveLabel = t('ui.save');
+            var cancelLabel, saveLabel;
+            if (this.props.buttonLabels) {
+                cancelLabel = this.props.buttonLabels["cancel"];
+                saveLabel = this.props.buttonLabels["save"];
+            } else {
+                cancelLabel = t('ui.cancel');
+                saveLabel = t('ui.save');
+            }
+
+            buttons = [
+                <button key="cancel" className="btn btn-default" onClick={this.close}>{cancelLabel}</button>,
+                <button key="success" className="btn btn-primary" onClick={this.props.successHandler}>{saveLabel}</button>
+            ];
         }
+
+
+
 
         return (
             <div className="modal fade">
@@ -51,8 +75,7 @@ var Modal = React.createClass({
                             {this.props.children}
                         </div>
                         <div className="modal-footer">
-                            <button className="btn btn-default" onClick={this.close}>{cancelLabel}</button>
-                            <button className="btn btn-primary" onClick={this.props.successHandler}>{saveLabel}</button>
+                            {buttons}
                         </div>
                     </div>
                 </div>

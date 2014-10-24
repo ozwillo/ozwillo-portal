@@ -340,6 +340,12 @@ li.dashboard_template {
     border: 2px solid #636681;
 }
 
+.btn {
+    margin-left: 2px;
+    margin-right: 2px;
+    border-radius: 10px;
+}
+
 .btn-primary {
     background-color: #6e418e;
     border-color: #ffffff;
@@ -372,18 +378,69 @@ li.dashboard_template {
 
 .btn.btn-primary-inverse {
     color: #6e418e;
-    border-color: #6e418e;
     background-color: transparent;
     border-radius: 10px;
-    border-width: 2px;
-    border-color: #6e418e;
-    font-size: 14pt;
+    border: 2px #6e418e solid;
+    font-size: 14px;
 }
 
 .btn.btn-primary-inverse:hover {
     background-color: #6e418e;
     color: #ffffff;
-    border-color: #ffffff;
+}
+
+.btn.btn-success {
+    color: #ffffff;
+    background-color: #5cb85c;
+    border-radius: 10px;
+    font-size: 14px;
+    border: 2px #5cb85c solid;
+}
+
+.btn.btn-success:hover {
+    color: #5cb85c;
+    background-color: transparent;
+}
+
+
+.btn.btn-success-inverse {
+    color: #5cb85c;
+    background-color: transparent;
+    border-radius: 10px;
+    border: 2px #5cb85c solid;
+    font-size: 14px;
+}
+
+.btn.btn-success-inverse:hover {
+    color: #ffffff;
+    background-color: #5cb85c;
+}
+
+.btn.btn-warning-inverse {
+    color: #f0ad4e;
+    background-color: transparent;
+    border-radius: 10px;
+    border: 2px #f0ad4e solid;
+    font-size: 14px;
+}
+
+.btn.btn-warning-inverse:hover {
+    color: #ffffff;
+    background-color: #f0ad4e;
+}
+
+
+.btn.btn-danger-inverse {
+    color: #d9534f;
+    background-color: transparent;
+    border-radius: 10px;
+    border: 2px #d9534f solid;
+    font-size: 14px;
+}
+
+.btn.btn-danger-inverse:hover {
+    color: #ffffff;
+    background-color: #d9534f;
 }
 
 .navbar-noauth * li {
@@ -395,16 +452,24 @@ li.dashboard_template {
 }
 
 
-a.lnk-remove {
+a.lnk {
+    margin-right: 5px;
+}
+
+a.lnk.remove {
     color: #EC5854;
 }
 
-a.lnk-edit {
+a.lnk.edit {
     color: #50C9C8;
 }
 
-a.lnk-accept {
+a.lnk.accept {
     color: #56C170;
+}
+
+a.lnk.cancel {
+    color: #333333;
 }
 
 
@@ -482,3 +547,9 @@ div.container.main-content {
     padding: 15px;
     padding-bottom: 5px;
 }
+
+
+.error {
+    color: #d9534f;
+}
+
