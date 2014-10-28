@@ -27,7 +27,7 @@ var NotificationTable = React.createClass({
                 var s = this.state;
                 var recentlyRemoved = s.recentlyRemoved;
                 var notifs = data.filter(function(notif) {
-                    return $.inArray(recentlyRemoved, notif.id) == -1;
+                    return $.inArray(notif.id, recentlyRemoved) == -1;
                 });
 
                 this.setState({n:notifs, recentlyRemoved:recentlyRemoved});
