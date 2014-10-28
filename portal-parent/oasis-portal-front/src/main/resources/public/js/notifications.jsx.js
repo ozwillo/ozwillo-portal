@@ -12,12 +12,25 @@ function t(key) {
 
 
 var NotificationTable = React.createClass({
+
+    getInitialState: function() {
+        return {
+            n: [],
+            recentlyRemoved: []
+        };
+    },
     loadNotifications: function() {
         $.ajax({
             url: this.props.url,
             datatype: 'json',
             success: function(data) {
-                this.setState({n:data});
+                var s = this.state;
+                var recentlyRemoved = s.recentlyRemoved;
+                var notifs = data.filter(function(notif) {
+                    return $.inArray(recentlyRemoved, notif.id) == -1;
+                });
+
+                this.setState({n:notifs});
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -25,9 +38,6 @@ var NotificationTable = React.createClass({
         });
 
 
-    },
-    getInitialState: function() {
-        return {n: []};
     },
     componentDidMount: function() {
         this.loadNotifications();
@@ -39,11 +49,16 @@ var NotificationTable = React.createClass({
             var n = component.state.n.sort(function (a, b) {
                 return a[criterion].localeCompare(b[criterion]);
             });
-            component.setState({n: n});
+            component.setState({n: n, recentlyRemoved: this.state.recentlyRemoved});
         };
     },
     removeNotif: function(id) {
-        this.setState({n:this.state.n.filter(function(n) {return n.id != id;})});
+        var notifs = this.state.n.filter(function(n) {return n.id != id;});
+        var recentlyRemoved = this.state.recentlyRemoved;
+        recentlyRemoved.push(id);
+
+
+        this.setState({n:notifs, recentlyRemoved: recentlyRemoved});
 
         $.ajax({
             url: this.props.url + "/" + id,
