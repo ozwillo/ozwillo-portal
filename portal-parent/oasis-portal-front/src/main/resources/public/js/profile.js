@@ -142,7 +142,10 @@ $(document).ready(function () {
 			success: function(data) {
 				$('#' + id).replaceWith(data);
 				initBindings($('#' + id));
-			}
+            },
+            error: function (xhr, status, err) {
+                console.error(status, err.toString());
+            }
 		})
 	}
 

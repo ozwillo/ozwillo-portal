@@ -28,7 +28,7 @@
         <bootstrap.version>3.1.1</bootstrap.version>
         <font-awesome.version>4.2.0</font-awesome.version>
         <jquery.version>1.11.0</jquery.version>
-        <jquery-ui.version>1.11.1</jquery-ui.version>
+        <jquery-ui.version>1.10.4</jquery-ui.version>
         <respond.version>1.4.2</respond.version>
         <html5shiv.version>3.7.0</html5shiv.version>
         <typeaheadjs.version>0.10.4</typeaheadjs.version>
