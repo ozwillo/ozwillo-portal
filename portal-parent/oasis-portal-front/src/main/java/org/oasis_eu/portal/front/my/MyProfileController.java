@@ -103,8 +103,9 @@ public class MyProfileController extends PortalController {
 		initProfileModel(model);
 		model.addAttribute("layout", formLayout);
 
-		return "redirect:/my/profile/fragment/layout/" + layoutId;
-	}
+//		return "redirect:/my/profile/fragment/layout/" + layoutId;
+        return "includes/my-profile-fragments::layout";
+    }
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/{layoutId}")
 	public String saveLayout(@PathVariable("layoutId") String layoutId,
@@ -133,9 +134,14 @@ public class MyProfileController extends PortalController {
 
 		userAccountService.saveUserAccount(currentUser);
 
-		myProfileState.getLayout(layoutId).setMode(FormLayoutMode.VIEW);
-		return "redirect:/my/profile/fragment/layout/" + layoutId;
-	}
+        FormLayout layout = myProfileState.getLayout(layoutId);
+        layout.setMode(FormLayoutMode.VIEW);
+        initProfileModel(model);
+        model.addAttribute("layout", layout);
+
+//		return "redirect:/my/profile/fragment/layout/" + layoutId;
+        return "includes/my-profile-fragments::layout";
+    }
 
 	protected void initProfileModel(Model model) {
 		model.addAttribute("navigation",
