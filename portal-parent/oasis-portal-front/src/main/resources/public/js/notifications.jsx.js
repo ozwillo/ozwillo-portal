@@ -30,7 +30,7 @@ var NotificationTable = React.createClass({
                     return $.inArray(recentlyRemoved, notif.id) == -1;
                 });
 
-                this.setState({n:notifs});
+                this.setState({n:notifs, recentlyRemoved:recentlyRemoved});
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
