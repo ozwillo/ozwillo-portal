@@ -173,7 +173,10 @@ var Organization = React.createClass({
         });
     },
     removeMember: function(member) {
-        return function() {
+        return function (event) {
+            if (event) {
+                event.preventDefault();
+            }
             var org = this.props.org;
             org.members = org.members.filter(function(m) {return m.id != member.id;});
             this.props.updateOrganization(org);
@@ -267,16 +270,20 @@ var Member = React.createClass({
     getInitialState: function() {
         return {edit:false, member: this.props.member};
     },
-    toggleEdit: function() {
+    toggleEdit: function (event) {
+        if (event != null) {
+            event.preventDefault();
+        }
         if (this.state.edit) {
             this.setState({edit:false, member: JSON.parse(JSON.stringify(this.props.member))});
         } else {
             this.setState({edit:true, member: JSON.parse(JSON.stringify(this.props.member))});
         }
     },
-    save: function() {
+    save: function (event) {
+        event.preventDefault();
         this.props.updateMember(this.state.member);
-        this.toggleEdit();
+        this.toggleEdit(null);
     },
     renderAdmin: function() {
         var admin = this.state.member.admin;
