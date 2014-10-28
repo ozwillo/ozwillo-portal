@@ -24,7 +24,8 @@ var MyApps = React.createClass({
     },
     render: function () {
         if (this.state.loading) {
-            return <p className="text-center"><i className="fa fa-spinner fa-spin"></i> {t('loading')}</p>;
+            return <p className="text-center">
+                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>;
         }
         var auths = this.state.authorities.map(function (auth) {
             return (
@@ -77,7 +78,7 @@ var OpenAuthority = React.createClass({
         this.props.callback();
     },
     render: function () {
-        var className = this.props.open ? 'caret' : 'caret inverse';
+        var className = this.props.open ? 'caret' : 'caret inverse';
         return (
             <a className="authority-link pull-right" onClick={this.click}>
                 <b className={className}></b>
@@ -113,14 +114,16 @@ var InstanceList = React.createClass({
     },
     render: function () {
         if (this.state.loading) {
-            return <p className="text-center"><i className="fa fa-spinner fa-spin"></i> {t('loading')}</p>;
+            return <p className="text-center">
+                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>;
         }
 
         var instances = this.state.instances;
         var authority = this.props.authority;
         var result = instances.length != 0 ? instances.map(function (instance) {
             return <Instance key={instance.id} instance={instance} authority={authority}/>;
-        }) : <div className="text-center">{t('none')} <b>{this.props.name}</b>
+        }) : <div className="text-center">{t('none')}
+            <b>{this.props.name}</b>
         </div>
 
         return <div className="panel collapse">
@@ -173,7 +176,7 @@ var Instance = React.createClass({
             }.bind(this)
         });
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         $("a.tip", this.getDOMNode()).tooltip();
     },
     render: function () {
@@ -191,7 +194,9 @@ var Instance = React.createClass({
                 <div className="panel-heading">
                     <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
                     <span className="appname">{this.props.instance.name}</span>
-                    <a className="tip btn btn-default pull-right" href="#" onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}><li className="fa fa-user"></li></a>
+                    <a className="tip btn btn-default pull-right" href="#" onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
+                        <li className="fa fa-user"></li>
+                    </a>
                 </div>
                 <div className="panel-body">
                     <div className="standard-form">

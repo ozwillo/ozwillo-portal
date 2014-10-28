@@ -7,11 +7,13 @@ var CreateOrganization = React.createClass({
         });
     },
     getInitialState: function(){
-        return { organization: {name:'', type:''}, errors:[] };
+        return { organization: {name: '', type: ''}, errors: [], saving: false };
     },
     saveOrganization: function() {
+        if (this.state.saving) {
+            return; // do nothing if we're already saving...
+        }
         var org = this.state.organization;
-        console.log("Saving organization", org.name, org.type );
         var errors = [];
         if (org.name.trim() == '') {
             errors.push("name");
@@ -21,21 +23,24 @@ var CreateOrganization = React.createClass({
         }
 
         if (errors.length == 0) {
+            this.state.saving = true;
+            this.setState(this.state);
             $.ajax({
                 url: network_service + "/create-organization",
                 type: 'post',
                 contentType: 'application/json',
-                data: this.state.organization,
+                data: JSON.stringify(this.state.organization),
                 success: function() {
-                    this.refs.modal.close();
                     if (this.props.successHandler) {
                         this.props.successHandler();
                     }
+                    this.refs.modal.close();
                 }.bind(this),
                 error: function(xhr, status, err) {
                     console.error(status, err.toString());
                     var state = this.state;
                     state.errors = ["general"];
+                    state.saving = false;
                     this.setState(state);
                 }.bind(this)
             });
@@ -48,16 +53,17 @@ var CreateOrganization = React.createClass({
         return function(event) {
             var org = this.state.organization;
             org[fieldname] = event.target.value;
-            this.setState({organization: org, errors: []});
+            this.setState({organization: org, errors: [], saving: false});
         }.bind(this);
 
     },
     toggleType: function(event) {
         var org = this.state.organization;
         org.type = event.target.value;
-        this.setState({organization: org, errors: []});
+        this.setState({organization: org, errors: [], saving: false});
     },
     show: function() {
+        this.setState(this.getInitialState());
         this.refs.modal.open();
     },
     render: function() {

@@ -5,13 +5,13 @@ var MyNetwork = React.createClass({
         this.refs.createOrgDialog.show();
     },
     reload: function() {
-        this.refs.loadOrganizations();
+        this.refs.orgs.loadOrganizations();
     },
     render: function() {
         return (
                 <div>
-                    <CreateOrganization ref="createOrgDialog"/>
-                    <SearchOrCreateHeader showDialog={this.openCreateOrgDialog} successHandler={this.reload} />
+                    <CreateOrganization ref="createOrgDialog"  successHandler={this.reload} />
+                    <SearchOrCreateHeader showDialog={this.openCreateOrgDialog}/>
                     <OrganizationsList ref='orgs'/>
                 </div>
             );
@@ -43,9 +43,7 @@ var OrganizationsList = React.createClass({
         });
     },
     updateOrganization: function(organization) {
-
-        // TODO ajax...
-
+        // first update locally
         var orgs = this.state.organizations;
         var idx;
         for (var i in orgs) {
@@ -57,6 +55,22 @@ var OrganizationsList = React.createClass({
 
         orgs[idx] = organization;
         this.setState({loading: false, organizations: orgs});
+
+        // then remotely
+        $.ajax({
+            url: network_service + "/organization/" + organization.id,
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify(organization),
+            success: function () {
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(status, err.toString());
+                // if there's an error, reload everything
+                this.loadOrganizations();
+            }.bind(this)
+        });
+
     },
     componentDidMount: function() {
         this.loadOrganizations();
@@ -65,7 +79,8 @@ var OrganizationsList = React.createClass({
         if (this.state.generalError) {
             return <p className="alert alert-danger">{t('ui.general-error')}</p>
         } else if (this.state.loading) {
-            return <p className="text-center"><i className="fa fa-spinner fa-spin"></i> {t('loading')}</p>
+            return <p className="text-center">
+                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>
         } else {
             var reload = this.loadOrganizations;
             var updateOrg = this.updateOrganization;
@@ -90,8 +105,6 @@ var Organization = React.createClass({
         this.setState(state);
     },
     invite: function() {
-        console.log("Inviting", this.state.invite.email, "to", this.props.org.id);
-
         var state = this.state;
         if (this.state.invite.email.trim() == '' || this.state.invite.email.indexOf('@') == -1) {
             state.invite.errors = ["email"];
@@ -99,20 +112,17 @@ var Organization = React.createClass({
         }
         else {
             $.ajax({
-                url: network_service + "/invite",
+                url: network_service + "/invite/" + this.props.org.id,
                 type: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify({email: state.invite.email}),
                 success: function(data) {
                     var state = this.state;
-                    if (data.success) {
-                        this.refs.inviteDialog.close();
-                        state.invite = {email:"", errors:[]};
-                    } else {
-                        state.invite.errors = data.errors;
-                    }
-                    this.setState(state);
+                    state.invite = {email: "", errors: []};
+                    this.refs.inviteDialog.close();
                     this.props.reload();
+                    this.setState(state);
+
                 }.bind(this),
                 error: function(xhr, status, err) {
                     console.error(status, err.toString());
@@ -150,11 +160,20 @@ var Organization = React.createClass({
     showInformation: function() {
         this.refs.infoDialog.open();
     },
-
+    deleteOrganization: function () {
+        $.ajax({
+            url: network_service + "/organization/" + this.props.org.id,
+            type: 'delete',
+            success: function () {
+                this.props.reload();
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(status, err.toString());
+            }.bind(this)
+        });
+    },
     removeMember: function(member) {
         return function() {
-            console.log("Removing user", member.id);
-
             var org = this.props.org;
             org.members = org.members.filter(function(m) {return m.id != member.id;});
             this.props.updateOrganization(org);
@@ -162,11 +181,22 @@ var Organization = React.createClass({
 
         }.bind(this);
     },
+    updateMember: function (member) {
+        var org = this.props.org;
 
+        for (var i in org.members) {
+            if (org.members[i].id == member.id) {
+                org.members[i].admin = member.admin;
+                break;
+            }
+        }
+        this.props.updateOrganization(org);
+    },
     renderMembers: function() {
         var remove = this.removeMember;
+        var updateMember = this.updateMember;
         var members = this.props.org.members.map(function(member) {
-            return <Member key={member.id} member={member} remove={remove} />
+            return <Member key={member.id} member={member} remove={remove} updateMember={updateMember}/>
         });
 
         return members;
@@ -174,34 +204,56 @@ var Organization = React.createClass({
     render: function() {
 
         var buttons = [
-                <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>,
-                <a key="info" className="btn btn-primary-inverse" onClick={this.showInformation}>{t('information')}</a>
-            ];
+            <a key="info" className="btn btn-primary-inverse" onClick={this.showInformation}>{t('information')}</a>
+        ];
+        var dialogs = [
+            <LeaveDialog ref="leaveDialog" onSubmit={this.leave}/>,
+            <InformationDialog ref="infoDialog" org={this.props.org} />
+        ];
+
         var membersList = null;
 
         if (this.props.org.admin) {
+            if (this.props.org.members.filter(function (m) {
+                return m.admin;
+            }).length != 1) {
+                buttons.push(
+                    <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
+                );
+            }
+
             buttons.push(
                 <a key="invite" className="btn btn-success-inverse" onClick={this.openInvitation}>{t('invite')}</a>
             );
+            if (devmode) {
+                buttons.push(
+                    <a key="delete" className="btn btn-danger" onClick={this.deleteOrganization}>{t('delete')}</a>
+                );
+            }
+
+            dialogs.push(
+                <InviteDialog ref="inviteDialog"
+                admin={this.props.org.admin}
+                onSubmit={this.invite}
+                onChange={this.updateInvitation}
+                email={this.state.invite.email}
+                errors={this.state.invite.errors}/>
+            );
 
             membersList = this.renderMembers();
+        } else {
+            // non-admins can leave at any time
+            buttons.push(
+                <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
+            );
         }
-
 
         return (
             <div className="standard-form">
-
-                <InviteDialog ref="inviteDialog"
-                    admin={this.props.org.admin}
-                    onSubmit={this.invite}
-                    onChange={this.updateInvitation}
-                    email={this.state.invite.email}
-                    errors={this.state.invite.errors}/>
-                <LeaveDialog ref="leaveDialog" onSubmit={this.leave}/>
-                <InformationDialog ref="infoDialog" org={this.props.org} />
+                {dialogs}
                 <div className="row form-table-header">
-                    <div className="col-sm-8">{this.props.org.name}</div>
-                    <div className="col-sm-4">
+                    <div className="col-sm-6">{this.props.org.name}</div>
+                    <div className="col-sm-6">
                     {buttons}
                     </div>
                 </div>
@@ -216,7 +268,6 @@ var Member = React.createClass({
         return {edit:false, member: this.props.member};
     },
     toggleEdit: function() {
-        console.log("Toggle edit");
         if (this.state.edit) {
             this.setState({edit:false, member: JSON.parse(JSON.stringify(this.props.member))});
         } else {
@@ -224,7 +275,8 @@ var Member = React.createClass({
         }
     },
     save: function() {
-
+        this.props.updateMember(this.state.member);
+        this.toggleEdit();
     },
     renderAdmin: function() {
         var admin = this.state.member.admin;
@@ -235,11 +287,12 @@ var Member = React.createClass({
         } else {
             return (
                 <div>
-                    <input type="checkbox" checked={admin} onClick={function() {
+                    <input className="switch" type="checkbox" checked={admin} onChange={function () {
                         var state = this.state;
                         state.member.admin = !admin;
                         this.setState(state);
                     }.bind(this)}></input>
+                    <label>{admin ? t('admin') : t('user')}</label>
                 </div>
                 );
         }
@@ -248,6 +301,7 @@ var Member = React.createClass({
         var member = this.state.member;
         var remove = this.props.remove;
         var toggleEdit = this.toggleEdit;
+        var save = this.save;
 
         var actions = null;
         if (! member.self) {
@@ -261,7 +315,8 @@ var Member = React.createClass({
             } else {
                 actions = (
                     <div className="col-sm-4 col-sm-offset-2">
-                        <a className="lnk accept" href="#"><i className="fa fa-check"></i>{t('ui.save')}</a>
+                        <a className="lnk accept" href="#" onClick={save}>
+                            <i className="fa fa-check"></i>{t('ui.save')}</a>
                         <a className="lnk cancel" href="#" onClick={toggleEdit}><i className="fa fa-times"></i>{t('ui.cancel')}</a>
                     </div>
                     );

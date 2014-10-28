@@ -3,8 +3,9 @@ package org.oasis_eu.portal.services;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
 import org.oasis_eu.portal.model.appsmanagement.User;
+import org.oasis_eu.portal.model.network.UIOrganization;
+import org.oasis_eu.portal.model.network.UIOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
-import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.model.UserAccount;
@@ -24,7 +25,6 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -50,6 +50,91 @@ public class NetworkService {
 
     @Autowired
     private OrganizationStore organizationStore;
+
+    public List<UIOrganization> getMyOrganizations() {
+        String userId = userInfoService.currentUser().getUserId();
+
+        return userDirectory.getMembershipsOfUser(userId)
+                .stream()
+                .map(this::toUIOrganization)
+                .filter(o -> o != null)
+                .collect(Collectors.toList());
+    }
+
+    private UIOrganization toUIOrganization(UserMembership userMembership) {
+        UIOrganization org = new UIOrganization();
+        String organizationId = userMembership.getOrganizationId();
+        if (organizationId == null) {
+            return null;
+        }
+        org.setId(organizationId);
+        String organizationName = userMembership.getOrganizationName();
+        if (organizationName == null) {
+            return null;
+        }
+        org.setName(organizationName);
+        org.setAdmin(userMembership.isAdmin());
+
+        Organization organization = organizationStore.find(organizationId);
+        if (organization != null) {
+            org.setType(organization.getType());
+        } else {
+            return null;
+        }
+
+        if (userMembership.isAdmin()) {
+            org.setMembers(userDirectory.getMembershipsOfOrganization(organizationId).stream()
+                    .map(this::toUIOrganizationMember)
+                    .sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1 : member1.getName().compareToIgnoreCase(member2.getName())))
+                    .collect(Collectors.toList()));
+        }
+
+        return org;
+    }
+
+    private UIOrganizationMember toUIOrganizationMember(OrgMembership orgMembership) {
+        UIOrganizationMember member = new UIOrganizationMember();
+        member.setId(orgMembership.getAccountId());
+        member.setName(orgMembership.getAccountName());
+        member.setAdmin(orgMembership.isAdmin());
+        member.setSelf(orgMembership.getAccountId().equals(userInfoService.currentUser().getUserId()));
+        return member;
+    }
+
+
+    public void updateOrganization(UIOrganization uiOrganization) {
+        Organization org = organizationStore.find(uiOrganization.getId());
+
+        if (shouldUpdateOrg(uiOrganization, org)) {
+            org.setName(uiOrganization.getName());
+            org.setType(uiOrganization.getType());
+
+            organizationStore.update(org);
+        }
+
+        List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(uiOrganization.getId());
+
+        // note: there can be no added users (we invite them by email directly)
+
+        // find the members to remove
+        memberships.stream().filter(om ->
+                        uiOrganization.getMembers().stream().noneMatch(member -> om.getAccountId().equals(member.getId()))
+        ).forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
+
+        // then the members to change (note: we only change the "admin" flag for now)
+        memberships.stream().filter(om ->
+                        uiOrganization.getMembers().stream().anyMatch(member -> om.getAccountId().equals(member.getId()) && (member.isAdmin() != om.isAdmin()))
+        ).forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
+
+
+    }
+
+    private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) {
+        boolean nameHasChanged = !uiOrganization.getName().equals(organization.getName());
+        boolean typeHasChanged = !(uiOrganization.getType() == null ? organization.getType() == null : uiOrganization.getType().equals(organization.getType()));
+
+        return nameHasChanged || typeHasChanged;
+    }
 
 
     public List<Authority> getMyAuthorities(boolean includePersonal) {
@@ -127,77 +212,9 @@ public class NetworkService {
         }
     }
 
-    public Map<String, List<User>> getAgents(List<Authority> authorities) {
-
-        return authorities.stream()
-                .collect(Collectors.toMap(Authority::getId, a -> getUsersOfOrganization(a.getId())));
-    }
-
-    public void updateAgentStatus(String agentId, String organizationId, boolean admin) {
-        // we do NOT allow users to demote themselves
-        if (userInfoService.currentUser().getUserId().equals(agentId)) {
-            logger.error("Self-modification is forbidden");
-            throw new ForbiddenException();
-        }
-
-        // check that user is admin of the organization...
-        if (!userIsAdmin(organizationId)) {
-            logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
-            throw new ForbiddenException();
-        }
-
-
-        OrgMembership orgMembership = userDirectory.getMembershipsOfOrganization(organizationId).stream().filter(membership -> membership.getAccountId().equals(agentId)).findAny().orElse(null);
-        if (orgMembership != null) {
-            userDirectory.updateMembership(orgMembership, admin);
-        } else {
-            logger.error("Cannot find membership for user: {} and organization: {}", agentId, organizationId);
-        }
-    }
-
     public boolean userIsAdmin(String organizationId) {
         return userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
                 .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin());
-    }
-
-    public void removeAgentFromOrganization(String agentId, String organizationId) {
-        // we do not allow users to remove themselves
-        if (userInfoService.currentUser().getUserId().equals(agentId)) {
-            logger.error("Self-modification is forbidden");
-            throw new ForbiddenException();
-        }
-        if (!userIsAdmin(organizationId)) {
-            logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
-        }
-
-        OrgMembership orgMembership = userDirectory.getMembershipsOfOrganization(organizationId).stream().filter(membership -> membership.getAccountId().equals(agentId)).findAny().orElse(null);
-        if (orgMembership != null) {
-            userDirectory.removeMembership(orgMembership);
-        } else {
-            logger.error("Cannot find membership for user: {} and organization: {}", agentId, organizationId);
-
-        }
-    }
-
-
-    public String getRemoveMessage(String agentId, String organizationId) {
-
-        String accountName = userDirectory.getMembershipsOfOrganization(organizationId)
-                .stream()
-                .filter(om -> om.getAccountId().equals(agentId))
-                .findFirst()
-                .map(OrgMembership::getAccountName)
-                .orElse(null);
-
-
-        Organization organization = organizationStore.find(organizationId);
-
-        if (organization != null) {
-            String name = getUserName(agentId, accountName);
-            return messageSource.getMessage("my.network.confirm-delete.body", new Object[]{name, organization.getName()}, RequestContextUtils.getLocale(request));
-        } else {
-            throw new WrongQueryException();
-        }
     }
 
 
@@ -208,6 +225,20 @@ public class NetworkService {
         }
 
         userDirectory.createMembership(email, organizationId);
+    }
+
+
+    public void leave(String organizationId) {
+        // prevent the last admin from deleting themselves
+        if (userIsAdmin(organizationId)) {
+            if (userDirectory.getMembershipsOfOrganization(organizationId).stream().filter(OrgMembership::isAdmin).count() == 1) {
+                throw new ForbiddenException();
+            }
+        }
+
+        userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
+                .filter(membership -> membership.getOrganizationId().equals(organizationId))
+                .forEach(userMembership -> userDirectory.removeMembership(userMembership, userInfoService.currentUser().getUserId()));
     }
 
     public Organization createOrganization(String name, String type) {
@@ -221,6 +252,9 @@ public class NetworkService {
     }
 
     public void deleteOrganization(String organizationId) {
+        if (!userIsAdmin(organizationId)) {
+            throw new ForbiddenException();
+        }
         organizationStore.delete(organizationId);
     }
 }

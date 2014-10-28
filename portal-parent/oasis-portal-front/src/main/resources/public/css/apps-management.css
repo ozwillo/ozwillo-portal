@@ -1,9 +1,9 @@
-.panel-default>.panel-heading {
+.panel-default > .panel-heading {
     background-color: #6e418e;
     color: white;
 }
 
-.panel-instance>.panel-heading {
+.panel-instance > .panel-heading {
     background-color: #e7e8ef;
 }
 
@@ -14,7 +14,7 @@ ul.services {
 
 li.service {
     padding: 5px;
-    border-bottom: 1px solid rgb(221,221,221);
+    border-bottom: 1px solid rgb(221, 221, 221);
 
 }
 
@@ -37,7 +37,6 @@ a.authority-link {
     border-bottom: none;
 }
 
-
 .twitter-typeahead {
     width: 100%;
 }
@@ -46,6 +45,7 @@ a.authority-link {
 .twitter-typeahead .tt-hint {
     margin-bottom: 0px;
 }
+
 .tt-hint, .tt-input {
     display: block;
     width: 100%;
@@ -63,6 +63,7 @@ a.authority-link {
     -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
     transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
 }
+
 .tt-dropdown-menu {
     min-width: 160px;
     margin-top: 2px;
@@ -76,22 +77,24 @@ a.authority-link {
     background-clip: padding-box;
 
 }
+
 .tt-suggestion {
     display: block;
     padding: 3px 20px;
 }
+
 .tt-suggestion.tt-cursor {
     color: #fff;
     background-color: #6e418e;
 }
+
 .tt-suggestion.tt-cursor a {
     color: #fff;
 }
+
 .tt-suggestion p {
     margin: 0;
 }
-
-
 
 .settings-background {
     z-index: 0;
@@ -123,3 +126,13 @@ a.authority-link {
     margin-top: 10px;
 }
 
+input[type='checkbox'].switch + label {
+    padding: 0 18px 0 18px;
+    background-color: #d9534f;
+    border-radius: 5px;
+    color: #222222;
+}
+
+input[type='checkbox'].switch:checked + label {
+    background-color: #5cb85c;
+}
