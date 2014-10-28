@@ -17,6 +17,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.validation.Valid;
 import java.beans.PropertyEditorSupport;
@@ -84,9 +85,9 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/fragment/layout/{id}")
 	public String profileLayoutFragment(@PathVariable("id") String layoutId,
-			Model model) {
-		
-		initProfileModel(model);
+                                        Model model, RedirectAttributes redirectAttributes) {
+
+        initProfileModel(model);
 		model.addAttribute("layout", myProfileState.getLayout(layoutId));
 		
 		return "includes/my-profile-fragments :: layout";
@@ -94,8 +95,8 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/mode")
 	public String toggleProfileLayout(@RequestParam("mode") String mode,
-			@RequestParam("id") String layoutId, Model model) {
-		FormLayout formLayout = myProfileState.getLayout(layoutId);
+                                      @RequestParam("id") String layoutId, Model model, RedirectAttributes redirectAttributes) {
+        FormLayout formLayout = myProfileState.getLayout(layoutId);
 		if (formLayout != null) {
 			formLayout.setMode(FormLayoutMode.valueOf(mode));
 		}
@@ -107,7 +108,8 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/{layoutId}")
 	public String saveLayout(@PathVariable("layoutId") String layoutId,
-			@ModelAttribute("modelObject") @Valid UserAccount currentUser, BindingResult result, Model model) {
+                             @ModelAttribute("modelObject") @Valid UserAccount currentUser, BindingResult result, Model model,
+                             RedirectAttributes redirectAttributes) {
 
 		if(result.hasErrors()) {
 			
