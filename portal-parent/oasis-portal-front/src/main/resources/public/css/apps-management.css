@@ -131,6 +131,7 @@ input[type='checkbox'].switch + label {
     background-color: #d9534f;
     border-radius: 5px;
     color: #222222;
+    border-width: 0px;
 }
 
 input[type='checkbox'].switch:checked + label {

@@ -8,7 +8,6 @@ import org.oasis_eu.portal.model.FormWidgetDropdown;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.service.UserAccountService;
-import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -78,8 +77,8 @@ public class MyProfileController extends PortalController {
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "")
-	public String profile(@ModelAttribute("modelObject") UserAccount currentUser, Model model) {
-		initProfileModel(model);
+    public String profile(Model model) {
+        initProfileModel(model);
 		return "my-profile";
 	}
 
