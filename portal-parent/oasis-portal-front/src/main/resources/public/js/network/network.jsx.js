@@ -359,14 +359,16 @@ var InviteDialog = React.createClass({
     render: function() {
         if (this.props.admin) {
             var inviteButtonLabels = {"save": t('invite'), "cancel": t('ui.cancel')};
-            var labelClassName = ($.inArray("email", this.props.errors) == -1 ? '' : 'error');
+            var labelClassName = ($.inArray("email", this.props.errors) == -1 ? 'col-sm-4' : 'col-sm-4 error');
             var generalError = ($.inArray("general", this.props.errors) != -1 ? <p className="alert alert-danger" role="alert">{t('ui.general-error')}</p> : null)
             return (
                 <Modal ref="modal" title={t('invite')} successHandler={this.props.onSubmit} buttonLabels={inviteButtonLabels}>
-                    <form className="form-inline" onSubmit={this.props.onSubmit}>
+                    <form className="form-horizontal" onSubmit={this.props.onSubmit}>
                         <div className="form-group">
                             <label htmlFor="email" className={labelClassName}>{t('email')}</label>
-                            <input className="form-control" id="email" type="text" value={this.props.email} onChange={this.props.onChange} placeholder="name@domain.eu"/>
+                            <div className="col-sm-8">
+                                <input className="form-control" id="email" type="text" value={this.props.email} onChange={this.props.onChange} placeholder="name@domain.eu"/>
+                            </div>
                         </div>
                         {generalError}
                     </form>

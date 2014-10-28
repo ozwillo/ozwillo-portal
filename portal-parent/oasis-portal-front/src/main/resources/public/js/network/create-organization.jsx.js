@@ -70,9 +70,10 @@ var CreateOrganization = React.createClass({
         var nameClassName = ($.inArray('name', this.state.errors) != -1 ? 'error' : '');
         var typeClassName = ($.inArray('type', this.state.errors) != -1 ? 'error' : '');
         var errorMessage = ($.inArray('general', this.state.errors) != -1) ? <p className="alert alert-danger" role="alert">{t('ui.general-error')}</p> : null;
+        var buttonLabels = {"cancel": t('ui.cancel'), "save": t('create')};
         return (
             <div>
-                <Modal ref="modal" title={t('find-or-create-organization')} successHandler={this.saveOrganization}>
+                <Modal ref="modal" title={t('find-or-create-organization')} successHandler={this.saveOrganization} buttonLabels={buttonLabels}>
                     <form onSubmit={this.saveOrganization}>
                         <div className="form-group">
                             <label htmlFor="organization-name" className={nameClassName}>{t('organization-name')}</label>
