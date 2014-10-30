@@ -3,22 +3,23 @@ package org.oasis_eu.portal.core.config;
 import com.google.common.base.Strings;
 import com.mongodb.*;
 import org.oasis_eu.portal.core.mongo.MongoPackage;
+import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.convert.converter.Converter;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.WriteResultChecking;
+import org.springframework.data.mongodb.core.convert.CustomConversions;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.UnknownHostException;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -151,5 +152,20 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
         MongoTemplate mongoTemplate = super.mongoTemplate();
         mongoTemplate.setWriteResultChecking(WriteResultChecking.EXCEPTION);
         return mongoTemplate;
+    }
+
+    @Override
+    public CustomConversions customConversions() {
+
+        Converter<String, UserSubscription> converter = new Converter<String, UserSubscription>() {
+            @Override
+            public UserSubscription convert(String source) {
+                UserSubscription us = new UserSubscription();
+                us.setId(source);
+                return us;
+            }
+        };
+
+        return new CustomConversions(Arrays.asList(converter));
     }
 }

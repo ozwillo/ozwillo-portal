@@ -17,6 +17,7 @@ application:
   defaultIconUrl: ${application.url}/img/noicon.png
   devmode: true
   production: false
+  notificationsEnabled: false
 
 web:
   home: http://www.ozwillo-dev.eu

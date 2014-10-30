@@ -5,11 +5,13 @@ import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -31,6 +33,9 @@ public class NotificationsController {
     @Autowired
     private PortalDashboardService portalDashboardService;
 
+    @Value("${application.notificationsEnabled:true}")
+    private boolean notificationsEnabled;
+
     @RequestMapping(method = RequestMethod.GET, value="/notifications")
     @ResponseBody
     public NotificationData getNotificationData(HttpServletRequest request) {
@@ -41,6 +46,9 @@ public class NotificationsController {
     @RequestMapping(method = RequestMethod.GET, value="/app-notifications/{contextId}")
     @ResponseBody
     public List<AppNotificationData> getAppNotifications(@PathVariable String contextId) {
+        if (!notificationsEnabled) {
+            return Collections.emptyList();
+        }
         List<String> applicationIds = portalDashboardService.getServicesIds(contextId);
         Map<String, Integer> appNotifs = notificationService.getServiceNotifications(applicationIds);
 
