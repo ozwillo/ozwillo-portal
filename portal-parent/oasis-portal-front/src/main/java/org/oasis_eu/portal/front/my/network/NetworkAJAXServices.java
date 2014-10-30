@@ -71,10 +71,11 @@ public class NetworkAJAXServices {
     }
 
     @RequestMapping(value = "/create-organization", method = POST)
-    public void createOrganization(@RequestBody CreateOrganizationRequest createOrganizationRequest) {
+    public UIOrganization createOrganization(@RequestBody CreateOrganizationRequest createOrganizationRequest) {
         logger.debug("Creating organization {} of type {}", createOrganizationRequest.name, createOrganizationRequest.type);
 
-        networkService.createOrganization(createOrganizationRequest.name, createOrganizationRequest.type);
+        return networkService.createOrganization(createOrganizationRequest.name, createOrganizationRequest.type);
+
     }
 
     @RequestMapping(value = "/organization/{organizationId}", method = DELETE)

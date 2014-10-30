@@ -1,20 +1,21 @@
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <meta name="_csrf" data-th-content="${_csrf.token}" content="csrf token"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}" content="X-CSRF-TOKEN"/>
 
     <title data-th-text="${title}">Page Title</title>
-    <link data-th-href="@{/webjars/bootstrap/3.1.1/css/bootstrap.min.css}" rel="stylesheet" />
-    <link data-th-href="@{/webjars/font-awesome/4.2.0/css/font-awesome.min.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/bootstrap/3.1.1/css/bootstrap.min.css}" rel="stylesheet"/>
+    <link data-th-href="@{/webjars/font-awesome/4.2.0/css/font-awesome.min.css}" rel="stylesheet"/>
     <link data-th-href="@{/webjars/jquery-ui/1.10.4/themes/base/minified/jquery-ui.min.css}" rel="stylesheet"/>
-    <link data-th-href="@{/webjars/bootstrap-switch/3.0.2/css/bootstrap3/bootstrap-switch.css}" rel="stylesheet" />
-    <link data-th-href="@{/css/main.css}" rel="stylesheet" />
+    <link data-th-href="@{/css/main.css}" rel="stylesheet"/>
     <link data-th-if="${page} != null" data-th-href="@{'/css/' + ${page} + '.css'}" rel="stylesheet"/>
     <!--[if lt IE 9]>
-    <script data-th-src="@{/webjars/html5shiv/3.7.0/html5shiv.min.js}" src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script data-th-src="@{/webjars/respond/1.4.2/dest/respond.min.js}" src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script data-th-src="@{/webjars/html5shiv/3.7.0/html5shiv.min.js}"
+            src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script data-th-src="@{/webjars/respond/1.4.2/dest/respond.min.js}"
+            src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
 
 </head>

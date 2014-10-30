@@ -2,18 +2,11 @@ package org.oasis_eu.portal.front.store;
 
 import org.oasis_eu.portal.config.AppStoreNavigationStatus;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
-import org.oasis_eu.portal.core.model.catalog.Audience;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
-import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
-import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.services.MyNavigationService;
-import org.oasis_eu.portal.services.NetworkService;
-import org.oasis_eu.portal.services.PortalAppManagementService;
-import org.oasis_eu.portal.services.PortalAppstoreService;
-import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,10 +16,8 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -40,40 +31,80 @@ public class AppStoreController extends PortalController {
     private MyNavigationService myNavigationService;
 
     @Autowired
-    private PortalAppstoreService appstoreService;
-
-    @Autowired
-    private PortalAppManagementService appManagementService;
-
-    @Autowired
-    private NetworkService networkService;
+    private MessageSource messageSource;
 
     @ModelAttribute("navigation")
     public List<MyNavigation> getNavigation() {
         return myNavigationService.getNavigation(null);
     }
 
-    @Autowired
-    private UserInfoService userInfoHelper;
-
     @Override
     public boolean isAppstore() {
         return true;
     }
 
+
+    private static final List<String> i18nkeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid", "installed", "tos", "privacy", "by", "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", "for_myself", "on_behalf_of", "create-new-org", "buying");
+    private static final List<String> generickeys = Arrays.asList("save", "cancel", "ok", "appstore", "close", "loading");
+    private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "create");
+
+    @ModelAttribute("i18n")
+    public Map<String, String> i18n(HttpServletRequest request) {
+        Locale locale = RequestContextUtils.getLocale(request);
+        Map<String, String> result = new HashMap<String, String>();
+        result.putAll(networkkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.network." + k, new Object[0], locale))));
+        result.putAll(i18nkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store." + k, new Object[0], locale))));
+        result.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[0], locale))));
+        return result;
+    }
+
+
     @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
     public String main(@PathVariable String lang, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
-        if (! lang.equals(requestLanguage)) {
+        if (!lang.equals(requestLanguage)) {
             return "redirect:/" + requestLanguage + "/store";
         }
 
-        model.addAttribute("hits", appstoreService.getAll(Arrays.asList(Audience.values()), Arrays.asList(PaymentOption.values())));
+        model.addAttribute("defaultApp", null);
 
-        return "store/appstore";
+        return "store/store";
     }
 
-    @RequestMapping(method = RequestMethod.GET, value="/login")
+
+    @RequestMapping(value = {"/service/{serviceId}", "/service/{serviceId}/*"}, method = RequestMethod.GET)
+    public String service(@PathVariable String lang, @PathVariable String serviceId, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+        String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
+        if (!lang.equals(requestLanguage)) {
+            return "redirect:/" + requestLanguage + "/store/service/" + serviceId;
+        }
+
+        Map<String, String> defaultApp = new HashMap<>();
+        defaultApp.put("type", "service");
+        defaultApp.put("id", serviceId);
+
+        model.addAttribute("defaultApp", defaultApp);
+
+        return "store/store";
+    }
+
+    @RequestMapping(value = {"/application/{applicationId}", "/application/{applicationId}/*"}, method = RequestMethod.GET)
+    public String application(@PathVariable String lang, @PathVariable String applicationId, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+        String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
+        if (!lang.equals(requestLanguage)) {
+            return "redirect:/" + requestLanguage + "/store/application/" + applicationId;
+        }
+
+        Map<String, String> defaultApp = new HashMap<>();
+        defaultApp.put("type", "application");
+        defaultApp.put("id", applicationId);
+
+        model.addAttribute("defaultApp", defaultApp);
+
+        return "store/store";
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/login")
     public String login(HttpSession session, RedirectAttributes redirectAttributes, @RequestParam(required = false) String appId, @RequestParam(required = false) String appType) {
         AppStoreNavigationStatus status = new AppStoreNavigationStatus();
         if (appId != null && appType != null) {
@@ -87,55 +118,55 @@ public class AppStoreController extends PortalController {
     }
 
 
-    @RequestMapping(method = RequestMethod.POST, value="/search")
-    public String search(Model model, @RequestParam(required = false) String query, @RequestParam List<Audience> audience, @RequestParam List<PaymentOption> paymentOptions) {
-        model.addAttribute("hits", appstoreService.getAll(audience, paymentOptions));
-
-        return "store/appstore::hits";
-    }
-
-    @RequestMapping(method = RequestMethod.POST, value="/buy")
-    public String buy(@RequestParam String appId, @RequestParam CatalogEntryType appType, @RequestParam(required = false) String organizationId) {
-        appstoreService.buy(appId, appType, organizationId);
-        return "redirect:/my/dashboard";
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}")
-    public String application(@PathVariable String appId, @PathVariable String appType, @RequestParam(required = false) boolean fromAuth, Model model) {
-        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType));
-        model.addAttribute("app", info);
-        if (userInfoHelper.isAuthenticated()) {
-            model.addAttribute("authorities", networkService.getMyAuthorities(false));
-        }
-
-        if (fromAuth && info.isOnlyCitizens()) {
-            return buy(appId, CatalogEntryType.valueOf(appType), null);
-        }
-
-        if (fromAuth) {
-            model.addAttribute("openPopover", true);
-        } else {
-            model.addAttribute("openPopover", false);
-        }
-
-        return "store/application";
-    }
-
-
-    @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}/inner")
-    public String applicationInner(@PathVariable String appId, @PathVariable String appType, Model model) {
-        model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
-        if (userInfoHelper.isAuthenticated()) {
-            model.addAttribute("authorities", networkService.getMyAuthorities(false));
-        }
-        model.addAttribute("openPopover", false);
-        return "store/application::content";
-    }
+//    @RequestMapping(method = RequestMethod.POST, value="/search")
+//    public String search(Model model, @RequestParam(required = false) String query, @RequestParam List<Audience> audience, @RequestParam List<PaymentOption> paymentOptions) {
+//        model.addAttribute("hits", appstoreService.getAll(audience, paymentOptions));
+//
+//        return "store/appstore::hits";
+//    }
+//
+//    @RequestMapping(method = RequestMethod.POST, value="/buy")
+//    public String buy(@RequestParam String appId, @RequestParam CatalogEntryType appType, @RequestParam(required = false) String organizationId) {
+//        appstoreService.buy(appId, appType, organizationId);
+//        return "redirect:/my/dashboard";
+//    }
+//
+//    @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}")
+//    public String application(@PathVariable String appId, @PathVariable String appType, @RequestParam(required = false) boolean fromAuth, Model model) {
+//        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType));
+//        model.addAttribute("app", info);
+//        if (userInfoHelper.isAuthenticated()) {
+//            model.addAttribute("authorities", networkService.getMyAuthorities(false));
+//        }
+//
+//        if (fromAuth && info.isOnlyCitizens()) {
+//            return buy(appId, CatalogEntryType.valueOf(appType), null);
+//        }
+//
+//        if (fromAuth) {
+//            model.addAttribute("openPopover", true);
+//        } else {
+//            model.addAttribute("openPopover", false);
+//        }
+//
+//        return "store/application";
+//    }
+//
+//
+//    @RequestMapping(method = RequestMethod.GET, value = "/application/{appId}/{appType}/inner")
+//    public String applicationInner(@PathVariable String appId, @PathVariable String appType, Model model) {
+//        model.addAttribute("app", appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType)));
+//        if (userInfoHelper.isAuthenticated()) {
+//            model.addAttribute("authorities", networkService.getMyAuthorities(false));
+//        }
+//        model.addAttribute("openPopover", false);
+//        return "store/application::content";
+//    }
 
 
     @ExceptionHandler(ApplicationInstanceCreationException.class)
     public ModelAndView instantiationError(ApplicationInstanceCreationException e) {
-        Map<String, Object> model = new HashMap<>();
+        Map<String, Object> model = new HashMap<String, Object>();
         model.put("appname", e.getRequested().getName());
         model.put("appid", e.getApplicationId());
         model.put("errortype", e.getType().toString());
@@ -147,7 +178,6 @@ public class AppStoreController extends PortalController {
 
         return new ModelAndView("store/instantiation-error", model);
     }
-
 
 }
 

@@ -13,6 +13,9 @@ var CreateOrganization = React.createClass({
     },
     close: function () {
         this.refs.modal.close();
+        if (this.props.successHandler) {
+            this.props.successHandler();
+        }
     },
     saveOrganization: function () {
         this.refs.form.saveOrganization();
@@ -22,7 +25,7 @@ var CreateOrganization = React.createClass({
         return (
             <div>
                 <Modal ref="modal" title={t('find-or-create-organization')} successHandler={this.saveOrganization} buttonLabels={buttonLabels}>
-                    <CreateOrganizationForm ref="form" onSuccess={this.close}/>
+                    <CreateOrganizationForm ref="form" successHandler={this.close}/>
                 </Modal>
             </div>
             );
@@ -36,7 +39,10 @@ var CreateOrganizationForm = React.createClass({
     getInitialState: function () {
         return { organization: {name: '', type: ''}, errors: [], saving: false };
     },
-    saveOrganization: function () {
+    saveOrganization: function (event) {
+        if (event) {
+            event.preventDefault();
+        }
         if (this.state.saving) {
             return; // do nothing if we're already saving...
         }
@@ -57,11 +63,10 @@ var CreateOrganizationForm = React.createClass({
                 type: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify(this.state.organization),
-                success: function () {
+                success: function (data) {
                     if (this.props.successHandler) {
-                        this.props.successHandler();
+                        this.props.successHandler(data);
                     }
-                    this.props.onSuccess();
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(status, err.toString());

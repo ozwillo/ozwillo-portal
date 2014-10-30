@@ -1,40 +1,40 @@
 .app-store-result div.hit {
     position: relative;
-    overflow:hidden;
+    overflow: hidden;
     float: left;
     border: 2px solid #636681;
     border-radius: 5px;
 
     padding-top: 10px;
 
-
     height: 175px;
     width: 175px;
 
     margin-left: 10px;
     margin-bottom: 10px;
-    
+
 }
 
 div.hit div.caption {
-    position:absolute;
-    top:-100%;
-    right:0;
-    background:rgba(200, 200, 200, 1.0);
-    width:100%;
-    height:82%;
-    padding:2%;
-    text-align:center;
-    
-    z-index:2;
+    position: absolute;
+    top: -100%;
+    right: 0;
+    background: rgba(200, 200, 200, 1.0);
+    width: 100%;
+    height: 82%;
+    padding: 2%;
+    text-align: center;
+
+    z-index: 2;
     -webkit-transition: all 0.5s ease-in-out;
     -moz-transition: all 0.5s ease-in-out;
     -o-transition: all 0.5s ease-in-out;
     -ms-transition: all 0.5s ease-in-out;
     transition: all 0.5s ease-in-out;
 }
+
 div.hit:hover div.caption {
-    top:0%;
+    top: 0%;
 }
 
 p.appname {
@@ -89,8 +89,6 @@ div.indicator {
     color: #ffffff;
 }
 
-
-
 div#apppage {
     background-color: #ffffff;
     opacity: 1;
@@ -106,13 +104,13 @@ div#apppage.in {
     display: block;
 }
 
-@media(max-width: 1000px) {
+@media (max-width: 1000px) {
     div#apppage {
         width: 100%;
     }
 }
 
-@media(min-width: 1000px) {
+@media (min-width: 1000px) {
     div#apppage {
         width: 1000px;
         left: 50%;
@@ -138,15 +136,41 @@ div.vcentered {
     background-image: url('/img/icons/rating-static.png');
 }
 
-.rating-00 { background-position: -80px 0px; }
-.rating-10 { background-position: -60px 0px; }
-.rating-20 { background-position: -40px 0px; }
-.rating-30 { background-position: -20px 0px; }
-.rating-40 { background-position: 00px 0px; }
-.rating-05 { background-position: -80px -20px; }
-.rating-15 { background-position: -60px -20px; }
-.rating-25 { background-position: -40px -20px; }
-.rating-35 { background-position: -20px -20px; }
+.rating-00 {
+    background-position: -80px 0px;
+}
+
+.rating-10 {
+    background-position: -60px 0px;
+}
+
+.rating-20 {
+    background-position: -40px 0px;
+}
+
+.rating-30 {
+    background-position: -20px 0px;
+}
+
+.rating-40 {
+    background-position: 00px 0px;
+}
+
+.rating-05 {
+    background-position: -60px -20px;
+}
+
+.rating-15 {
+    background-position: -40px -20px;
+}
+
+.rating-25 {
+    background-position: -20px -20px;
+}
+
+.rating-35 {
+    background-position: -00px -20px;
+}
 
 div.app-image {
     margin-top: 20px;
@@ -171,4 +195,98 @@ div#install-app-popover {
 .popover h4 {
     font-size: 18px;
 
+}
+
+.btn.btn-indicator {
+    margin-right: 0;
+}
+
+div.public-service-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 40px;
+    width: 40px;
+}
+
+div.public-service-indicator > div.triangle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 40px solid #5b5f84;
+    border-right: 40px solid transparent;
+}
+
+div.public-service-indicator > div.label {
+    position: absolute;
+    top: 5px;
+    left: 0;
+}
+
+div.carousel {
+    position: relative;
+    left: 43px;
+    width: 800px;
+    height: 450px;
+    border: 1px #5b5f84 solid;
+}
+
+div.carousel > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding: 0;
+    z-index: 1030;
+}
+
+div.carousel a.back {
+    opacity: 0.25;
+    transition: opacity 0.5s;
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    top: 200px;
+    left: 0px;
+    background-color: #999999;
+    color: #F7F7F7;
+    z-index: 1031;
+}
+
+div.carousel a.back:hover {
+    opacity: 1;
+}
+
+div.carousel a.forward {
+    opacity: 0.25;
+    transition: opacity 0.5s;
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    top: 200px;
+    left: 750px;
+    background-color: #999999;
+    color: #F7F7F7;
+    z-index: 1031;
+}
+
+div.carousel a.forward:hover {
+    opacity: 1;
+}
+
+div.carousel a.forward i.fa {
+    position: absolute;
+    line-height: 20px;
+    top: 15px;
+    right: 5px;
+}
+
+div.carousel a.back i.fa {
+    position: absolute;
+    line-height: 20px;
+    top: 15px;
+    left: 5px;
 }

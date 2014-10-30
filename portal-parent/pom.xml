@@ -33,7 +33,6 @@
         <html5shiv.version>3.7.0</html5shiv.version>
         <typeaheadjs.version>0.10.4</typeaheadjs.version>
         <underscore.version>1.6.0-3</underscore.version>
-        <bootstrap-switch.version>3.0.2</bootstrap-switch.version>
         <react.version>0.11.2</react.version>
 
         <!-- Hosting -->
@@ -181,11 +180,6 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>underscorejs</artifactId>
                 <version>${underscore.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>bootstrap-switch</artifactId>
-                <version>${bootstrap-switch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.webjars</groupId>
