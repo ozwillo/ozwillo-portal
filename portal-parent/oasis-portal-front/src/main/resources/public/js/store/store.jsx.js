@@ -334,7 +334,7 @@ var AppModal = React.createClass({
         this.setState(state);
     },
     renderAppDescription: function () {
-        var carousel = this.state.app.screenshots ? (
+        var carousel = (this.state.app.screenshots && this.state.app.screenshots.length > 0) ? (
             <div className="row">
                 <Carousel images={this.state.app.screenshots} />
             </div>

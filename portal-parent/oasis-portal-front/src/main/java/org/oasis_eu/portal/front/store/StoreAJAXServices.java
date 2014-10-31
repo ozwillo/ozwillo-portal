@@ -6,6 +6,8 @@ import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationExcept
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
+import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
+import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
 import org.oasis_eu.portal.services.PortalAppstoreService;
@@ -38,6 +40,9 @@ public class StoreAJAXServices {
 
     @Autowired
     private OrganizationStore organizationStore;
+
+    @Autowired
+    private ImageService imageService;
 
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
     public List<StoreApplication> applications(@RequestParam boolean target_citizens,
@@ -130,7 +135,10 @@ public class StoreAJAXServices {
         applicationDetails.policy = hit.getCatalogEntry().getPolicyUri();
         applicationDetails.tos = hit.getCatalogEntry().getTosUri();
         applicationDetails.rating = 0;
-        applicationDetails.screenshots = hit.getCatalogEntry().getScreenshotUris();
+        List<String> screenshotUris = hit.getCatalogEntry().getScreenshotUris();
+        if (screenshotUris != null) {
+            applicationDetails.screenshots = screenshotUris.stream().map(uri -> imageService.getImageForURL(uri, ImageFormat.PNG_800BY450, false)).filter(uri -> !imageService.isDefaultIcon(uri)).collect(Collectors.toList());
+        }
 
         return applicationDetails;
     }

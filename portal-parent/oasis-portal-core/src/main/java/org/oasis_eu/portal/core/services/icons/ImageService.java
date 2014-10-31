@@ -3,7 +3,6 @@ package org.oasis_eu.portal.core.services.icons;
 import com.google.common.base.Strings;
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
-import org.joda.time.Instant;
 import org.oasis_eu.portal.core.mongo.dao.icons.DirectAccessImageRepo;
 import org.oasis_eu.portal.core.mongo.dao.icons.ImageDownloadAttemptRepository;
 import org.oasis_eu.portal.core.mongo.dao.icons.ImageRepository;
@@ -139,6 +138,10 @@ public class ImageService {
 
     }
 
+    public boolean isDefaultIcon(String icon) {
+        return defaultIconUrl.equals(icon);
+    }
+
     private String getFileName(String url) {
 
         if (Strings.isNullOrEmpty(url)) {
@@ -186,24 +189,23 @@ public class ImageService {
             int height = bim.getHeight();
             int width = bim.getWidth();
 
-            if (height != width) {
-                logger.error("Can only handle square icons, got {}×{}",  width, height);
-                return ImageFormat.INVALID;
-            }
+            String formatString = String.format("%sx%s", width, height);
 
-            switch (height) {
-                case 16:
+            switch (formatString) {
+                case "16x16":
                     return ImageFormat.PNG_16BY16;
-                case 32:
+                case "32x32":
                     return ImageFormat.PNG_32BY32;
-                case 64:
+                case "64x64":
                     return ImageFormat.PNG_64BY64;
-                case 128:
+                case "128x128":
                     return ImageFormat.PNG_128BY128;
-                case 256:
+                case "256x256":
                     return ImageFormat.PNG_256BY256;
+                case "800x450":
+                    return ImageFormat.PNG_800BY450;
                 default:
-                    logger.error("Image has size {}×{} - which is invalid", height, width);
+                    logger.error("Cannot handle image format: {}", formatString);
                     return ImageFormat.INVALID;
             }
 
