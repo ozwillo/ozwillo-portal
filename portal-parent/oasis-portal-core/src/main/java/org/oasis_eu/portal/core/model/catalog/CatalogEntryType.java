@@ -6,5 +6,10 @@ package org.oasis_eu.portal.core.model.catalog;
  */
 public enum CatalogEntryType {
     APPLICATION,
-    SERVICE
+    SERVICE;
+
+    public static CatalogEntryType of(String input) {
+        return valueOf(input.toUpperCase());
+    }
+
 }

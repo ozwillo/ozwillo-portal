@@ -10,7 +10,9 @@ import java.util.List;
  */
 public class ApplicationDetails {
     @JsonProperty
-    int rating;
+    double rating;
+    @JsonProperty
+    boolean rateable = true;
     @JsonProperty
     String policy;
     @JsonProperty

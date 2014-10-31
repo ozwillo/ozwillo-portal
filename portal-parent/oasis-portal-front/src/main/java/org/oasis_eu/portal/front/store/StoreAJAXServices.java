@@ -11,6 +11,7 @@ import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
 import org.oasis_eu.portal.services.PortalAppstoreService;
+import org.oasis_eu.portal.services.RatingService;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
@@ -18,6 +19,7 @@ import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
@@ -44,6 +46,9 @@ public class StoreAJAXServices {
 
     @Autowired
     private ImageService imageService;
+
+    @Autowired
+    private RatingService ratingService;
 
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
     public List<StoreApplication> applications(@RequestParam boolean target_citizens,
@@ -86,6 +91,17 @@ public class StoreAJAXServices {
             response.success = false;
         }
         return response;
+    }
+
+    @RequestMapping(value = "/rate/{appType}/{appId}", method = RequestMethod.POST)
+    public void rate(@PathVariable String appType, @PathVariable String appId, @RequestBody RateRequest rateRequest) {
+        ratingService.rate(appType, appId, rateRequest.rate);
+    }
+
+    @ExceptionHandler(IllegalArgumentException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void handleException() {
+
     }
 
     private StoreApplication toStoreApplication(AppstoreHit hit) {
@@ -135,7 +151,8 @@ public class StoreAJAXServices {
 
         applicationDetails.policy = hit.getCatalogEntry().getPolicyUri();
         applicationDetails.tos = hit.getCatalogEntry().getTosUri();
-        applicationDetails.rating = 0;
+        applicationDetails.rating = ratingService.getRating(hit.getType(), hit.getId());
+        applicationDetails.rateable = ratingService.isRateable(hit.getCatalogEntry().getType(), hit.getId());
         List<String> screenshotUris = hit.getCatalogEntry().getScreenshotUris();
         if (screenshotUris != null) {
             applicationDetails.screenshots = screenshotUris.stream().map(uri -> imageService.getImageForURL(uri, ImageFormat.PNG_800BY450, false)).filter(uri -> !imageService.isDefaultIcon(uri)).collect(Collectors.toList());
@@ -158,4 +175,9 @@ public class StoreAJAXServices {
         boolean success;
     }
 
+
+    private static class RateRequest {
+        @JsonProperty
+        double rate;
+    }
 }

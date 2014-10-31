@@ -208,6 +208,7 @@ var AppModal = React.createClass({
         return {
             app: {
                 rating: 0,
+                rateable: true,
                 tos: '',
                 policy: '',
                 longdescription: '',
@@ -333,6 +334,24 @@ var AppModal = React.createClass({
         state.createOrg = false;
         this.setState(state);
     },
+    rateApp: function (rate) {
+        $.ajax({
+            url: store_service + "/rate/" + this.props.app.type + "/" + this.props.app.id,
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify({rate: rate}),
+            success: function () {
+                var state = this.state;
+                state.app.rateable = false;
+                state.app.rating = rate;
+                this.setState(state);
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(status, err.toString());
+            }.bind(this)
+        });
+    },
+
     renderAppDescription: function () {
         var carousel = (this.state.app.screenshots && this.state.app.screenshots.length > 0) ? (
             <div className="row">
@@ -349,6 +368,13 @@ var AppModal = React.createClass({
                 <strong>{t('sorry')}</strong> {t('could-not-install-app')}
             </div>
             ) : null;
+
+        var rateInfo;
+        if (logged_in) {
+            rateInfo = this.state.app.rateable ? null : (<p>{t('already-rated')}</p>);
+        } else {
+            rateInfo = null;
+        }
 
         return (
             <div>
@@ -367,7 +393,8 @@ var AppModal = React.createClass({
                     </div>
                 </div>
                 <div className="row">
-                    <Ratings rating={this.state.app.rating} />
+                    <Rating rating={this.state.app.rating} rateable={this.state.app.rateable} rate={this.rateApp} />
+                    {rateInfo}
                 </div>
                 {error}
                 {carousel}
@@ -501,18 +528,6 @@ var InstallButton = React.createClass({
 });
 
 
-var Ratings = React.createClass({
-    render: function () {
-
-        var className = this.props.rating == 0 ? "rating-static rating-00" : "rating-static rating-" + (10 * this.props.rating);
-        return (
-            <div className="col-sm-12">
-                <span className={className}></span>
-            </div>
-            );
-    }
-});
-
 var Carousel = React.createClass({
     getInitialState: function () {
         return {index: 0};
@@ -552,6 +567,56 @@ var Carousel = React.createClass({
             {back}
                 <img src={this.props.images[this.state.index]} alt={this.state.index}/>
             {forward}
+            </div>
+            );
+    }
+});
+
+
+var Rating = React.createClass({
+    getInitialState: function () {
+        return {};
+    },
+    startEditing: function () {
+        if (this.props.rateable) {
+            this.setState({editing: true, rating: 0});
+        }
+    },
+    stopEditing: function () {
+        this.setState({editing: false, rating: 0});
+    },
+    rate: function () {
+        if (this.props.rateable) {
+            this.props.rate(this.state.rating);
+        }
+    },
+    mouseMove: function (event) {
+        if (this.state.editing) {
+            var rect = this.getDOMNode().getBoundingClientRect();
+            var x = Math.floor(8 * (event.clientX - rect.left) / (rect.width)) / 2;
+            if (rect.right - event.clientX < 5) {
+                // the last 5 pixels are a cheat for the max grade
+                x = 4;
+            }
+            this.setState({editing: true, rating: x});
+        }
+    },
+    render: function () {
+        var className;
+        var rating;
+        if (this.state.editing) {
+            rating = this.state.rating;
+        } else {
+            rating = this.props.rating;
+        }
+        var rt = rating < 1 ? "0" + (rating * 10) : (rating * 10);
+        className = "rating-static rating-" + rt;
+        return (
+            <div className={className}
+            onMouseEnter={this.startEditing}
+            onMouseLeave={this.stopEditing}
+            onMouseMove={this.mouseMove}
+            onClick={this.rate}>
             </div>
             );
     }

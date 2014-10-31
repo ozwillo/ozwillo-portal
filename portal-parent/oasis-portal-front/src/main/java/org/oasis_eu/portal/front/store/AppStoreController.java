@@ -44,7 +44,7 @@ public class AppStoreController extends PortalController {
     }
 
 
-    private static final List<String> i18nkeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid", "installed", "tos", "privacy", "by", "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app");
+    private static final List<String> i18nkeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid", "installed", "tos", "privacy", "by", "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app", "already-rated");
     private static final List<String> generickeys = Arrays.asList("save", "cancel", "ok", "appstore", "close", "loading");
     private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "create");
 
