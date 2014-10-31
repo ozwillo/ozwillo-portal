@@ -215,7 +215,8 @@ var AppModal = React.createClass({
             },
             orgs: [],
             createOrg: false,
-            buying: false
+            buying: false,
+            error: false
         };
     },
     componentDidMount: function () {
@@ -293,6 +294,7 @@ var AppModal = React.createClass({
                 } else {
                     var state = this.state;
                     state.buying = false;
+                    state.error = true;
                     this.setState(state);
                 }
 
@@ -338,6 +340,16 @@ var AppModal = React.createClass({
             </div>
             ) : null;
 
+        var error = this.state.error ? (
+            <div className="alert alert-danger alert-dismissible" role="alert">
+                <button type="button" className="close" data-dismiss="alert">
+                    <span aria-hidden="true">&times;</span>
+                    <span className="sr-only">{t('ui.close')}</span>
+                </button>
+                <strong>{t('sorry')}</strong> {t('could-not-install-app')}
+            </div>
+            ) : null;
+
         return (
             <div>
                 <div className="row">
@@ -357,6 +369,7 @@ var AppModal = React.createClass({
                 <div className="row">
                     <Ratings rating={this.state.app.rating} />
                 </div>
+                {error}
                 {carousel}
                 <div className="row">
                     <div className="col-md-6" dangerouslySetInnerHTML={{__html: this.state.app.longdescription}}>
