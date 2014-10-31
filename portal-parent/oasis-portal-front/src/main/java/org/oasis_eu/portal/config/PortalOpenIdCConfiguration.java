@@ -9,6 +9,6 @@ import org.oasis_eu.spring.kernel.security.StaticOpenIdCConfiguration;
 public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
     @Override
     public boolean requireAuthenticationForPath(String path) {
-        return path.contains("/api/");
+        return path.contains("/my/api/");
     }
 }

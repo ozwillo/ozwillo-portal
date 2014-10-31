@@ -36,7 +36,7 @@ var Modal = React.createClass({
             if (this.props.buttonLabels) {
                 label = this.props.buttonLabels["ok"];
             } else {
-                label = t('ui.ok');
+                label = t('ui.close');
             }
             buttons = [
                 <button key="close" className="btn btn-primary-inverse" onClick={this.close}>{label}</button>
@@ -56,8 +56,6 @@ var Modal = React.createClass({
                 <button key="success" className="btn btn-primary" onClick={this.props.successHandler}>{saveLabel}</button>
             ];
         }
-
-
 
 
         return (
@@ -110,6 +108,77 @@ var Typeahead = React.createClass({
     render: function () {
         return (
             <input className="form-control" type="text" placeholder={this.props.placeholder}></input>
+            );
+    }
+});
+
+/**
+ * Not a Bootstrap popover button (can't deal with the magic...)
+ * Usage:
+ *  <MyPop className="btn btn-primary" label="Click me!">
+ *      (content which can include React components, yeah)
+ *  </MyPop>
+ */
+var MyPop = React.createClass({
+    getInitialState: function () {
+        return {open: false, offset: 0};
+    },
+    toggle: function (event) {
+        this.setState({open: !this.state.open, offset: $(event.target).outerWidth()});
+    },
+    renderChildren: function () {
+        if (this.state.open) {
+            var margin = (600 - this.state.offset) / 2;
+            return (
+                <div className="popup" style={{"margin-left": "-" + margin + "px"}}>
+                    <div className="arrow"></div>
+                    <div className="popup-content">
+          {this.props.children}
+                    </div>
+                </div>
+                );
+        } else return null;
+    },
+    render: function () {
+        var children = this.renderChildren();
+        return (
+            <div>
+                <a className={this.props.className} onClick={this.toggle}>{this.props.label}</a>
+        {children}
+            </div>
+            );
+    }
+});
+
+
+/**
+ * Bootstrap popover button
+ * Usage:
+ *    <PopoverButton className="btn btn-primary" label="Click me" title="optional">
+ *      <p>This is my popover content...</p>
+ *      <ReactComponent name="and it can also contain React components but it doesn't work nice" />
+ *    </Popover>
+ */
+var PopoverButton = React.createClass({
+    componentDidMount: function () {
+        var html = $(this.getDOMNode()).children("div").html();
+        $(this.getDOMNode()).children("div").hide();
+        $(this.getDOMNode()).children("button").popover({
+            title: this.props.title,
+            content: html,
+            html: true,
+            placement: "bottom",
+            trigger: "click"
+        });
+    },
+    render: function () {
+        return (
+            <div>
+                <button className={this.props.className}>{this.props.label}</button>
+                <div className="popover-content">
+        {this.props.children}
+                </div>
+            </div>
             );
     }
 });

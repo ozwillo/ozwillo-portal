@@ -52,6 +52,7 @@ public class CatalogStoreImpl implements CatalogStore {
     public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
+                .queryParam("limit", 200) // we'll see later about this
                 .build()
                 .toUriString();
 
@@ -199,15 +200,17 @@ public class CatalogStoreImpl implements CatalogStore {
         String territory_id;
         String subscription_id;
         String subscription_secret;
-        @JsonProperty("contacts") List<String> contacts;
-        @JsonProperty("screenshot_uris") List<String> screenshotUris;
+        @JsonProperty("contacts")
+        List<String> contacts;
+        @JsonProperty("screenshot_uris")
+        List<String> screenshotUris;
 
         @JsonIgnore
         private Map<String, String> otherProperties = new HashMap<>();
 
         @JsonAnySetter
         public void set(String key, String value) {
-            if (! BLACKLISTED.contains(key)) {
+            if (!BLACKLISTED.contains(key)) {
                 otherProperties.put(key, value);
             }
         }

@@ -1,9 +1,7 @@
 package org.oasis_eu.portal.core.mongo.model.my;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * User: schambon
@@ -14,7 +12,7 @@ public class UserContext {
     private String id;
     private String name;
     private boolean primary = false;
-    private List<String> subscriptions = new ArrayList<>();
+    private List<UserSubscription> subscriptions = new ArrayList<>();
 
     public String getId() {
         return id;
@@ -25,11 +23,11 @@ public class UserContext {
         return this;
     }
 
-    public List<String> getSubscriptions() {
+    public List<UserSubscription> getSubscriptions() {
         return subscriptions;
     }
 
-    public UserContext setSubscriptions(List<String> subscriptions) {
+    public UserContext setSubscriptions(List<UserSubscription> subscriptions) {
         this.subscriptions = subscriptions;
         return this;
     }

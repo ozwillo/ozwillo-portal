@@ -18,7 +18,7 @@ logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
 //logger("org.oasis_eu.spring.kernel.security", DEBUG)
 //logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", DEBUG)
 //logger("kernelLogging.logFullErrorResponses", DEBUG)
-//logger("kernelLogging.logRequestTimings", DEBUG)
+logger("kernelLogging.logRequestTimings", DEBUG)
 
 //logger("org.oasis_eu.portal.core.services.icons", DEBUG)
 //logger("org.oasis_eu.portal.front.my", DEBUG)

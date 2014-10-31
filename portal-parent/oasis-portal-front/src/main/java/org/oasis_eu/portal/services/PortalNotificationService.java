@@ -13,6 +13,7 @@ import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -43,7 +44,13 @@ public class PortalNotificationService {
     @Autowired
     private HttpServletRequest request;
 
+    @Value("${application.notificationsEnabled:true}")
+    private boolean notificationsEnabled;
+
     public Map<String, Integer> getServiceNotifications(List<String> serviceIds) {
+        if (!notificationsEnabled) {
+            return Collections.emptyMap();
+        }
         return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
                 .stream()
                 .filter(n -> n.getApplicationId() != null && serviceIds.contains(n.getApplicationId()) && n.getStatus().equals(NotificationStatus.UNREAD))
@@ -51,6 +58,9 @@ public class PortalNotificationService {
     }
 
     public int countNotifications() {
+        if (!notificationsEnabled) {
+            return 0;
+        }
         return (int) notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
                 .stream()
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
@@ -58,6 +68,9 @@ public class PortalNotificationService {
     }
 
     public long countAppNotifications(String appId) {
+        if (!notificationsEnabled) {
+            return 0;
+        }
         return notificationService.getAppNotifications(userInfoHelper.currentUser().getUserId(), appId)
                 .stream()
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
@@ -66,6 +79,9 @@ public class PortalNotificationService {
     }
 
     public List<UserNotification> getNotifications(Locale locale) {
+        if (!notificationsEnabled) {
+            return Collections.emptyList();
+        }
         return notificationService.getNotifications(userInfoHelper.currentUser().getUserId())
                 .stream()
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
@@ -115,6 +131,9 @@ public class PortalNotificationService {
     }
 
     public void archive(String notificationId) {
+        if (!notificationsEnabled) {
+            return;
+        }
         notificationService.setMessageStatus(userInfoHelper.currentUser().getUserId(), Arrays.asList(notificationId), NotificationStatus.READ);
     }
 }

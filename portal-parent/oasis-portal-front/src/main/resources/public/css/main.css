@@ -169,7 +169,7 @@ ul.navbar-nav.oasis-nav {
     background-color: white;
 }
 
-div.arrow-border {
+.navbar * div.arrow-border {
     position: absolute;
     left: 40px;
     bottom: -20px;
@@ -178,7 +178,7 @@ div.arrow-border {
     border-top: 10px inset #636681;
 }
 
-div.arrow {
+.navbar * div.arrow {
     position: absolute;
     left: 40px;
     bottom: -18px;
@@ -559,3 +559,43 @@ input[type='checkbox'].switch:checked + label {
     background-color: #5cb85c;
 }
 
+.popup > .arrow {
+    position: absolute;
+    display: block;
+    width: 10px;
+    height: 10px;
+    left: 50%;
+    margin-left: -10px;
+    top: -11px;
+    bottom: 0;
+    border-left: 10px transparent solid;
+    border-right: 10px transparent solid;
+    border-bottom: 10px rgba(0, 0, 0, 0.2) solid;
+}
+
+.popup > .arrow:after {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    content: " ";
+    top: 1px;
+    margin-left: -10px;
+    border-left: 10px transparent solid;
+    border-right: 10px transparent solid;
+    border-bottom: 10px white solid;
+}
+
+div.popup {
+    position: absolute;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 30px;
+    margin-top: 10px;
+    width: 600px;
+    border: 1px rgba(0, 0, 0, 0.2) solid;
+    border-radius: 5px;
+    background: white;
+    box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px 0px;
+    background-color: #fff;
+    z-index: 1040;
+}
