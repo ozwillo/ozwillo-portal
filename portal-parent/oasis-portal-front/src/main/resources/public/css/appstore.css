@@ -65,6 +65,7 @@ div.indicator {
     background-color: transparent;
     font-size: 14px;
     border: 2px solid;
+    margin-right: 0px;
 }
 
 .btn.btn-indicator.btn-indicator-installed-icon {
@@ -195,10 +196,6 @@ div#install-app-popover {
 .popover h4 {
     font-size: 18px;
 
-}
-
-.btn.btn-indicator {
-    margin-right: 0;
 }
 
 div.public-service-indicator {

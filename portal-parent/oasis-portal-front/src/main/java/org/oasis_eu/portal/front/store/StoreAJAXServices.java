@@ -7,6 +7,7 @@ import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
+import org.oasis_eu.portal.model.appstore.InstallationOption;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
@@ -94,6 +95,7 @@ public class StoreAJAXServices {
         application.paid = hit.getCatalogEntry().getPaymentOption().equals(PaymentOption.PAID);
         application.providerName = hit.getProviderName();
         String providerId = hit.getCatalogEntry().getProviderId();
+        application.installed = hit.getInstallationOption().equals(InstallationOption.INSTALLED);
 
         // let's be paranoid about nulls here
         if (providerId != null) {

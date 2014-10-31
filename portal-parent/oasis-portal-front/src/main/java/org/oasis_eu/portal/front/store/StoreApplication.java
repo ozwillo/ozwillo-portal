@@ -31,6 +31,9 @@ public class StoreApplication {
     @JsonProperty("target_companies")
     boolean audienceCompanies;
 
+    @JsonProperty
+    boolean installed;
+
 
     public static enum Type {
         service,
