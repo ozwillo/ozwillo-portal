@@ -23,6 +23,6 @@ logger("kernelLogging.logRequestTimings", DEBUG)
 //logger("org.oasis_eu.portal.core.services.icons", DEBUG)
 //logger("org.oasis_eu.portal.front.my", DEBUG)
 
-//logger("org.apache.http.wire", DEBUG)
+logger("org.apache.http.wire", DEBUG)
 
 root(WARN, ["CONSOLE"])

@@ -169,7 +169,12 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     public void deleteInstance(String instanceId) {
-        kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.DELETE, null, ApplicationInstance.class, user(), instanceId).getBody();
+        String eTag = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId).getHeaders().getETag();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("If-Match", eTag);
+
+        kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), ApplicationInstance.class, user(), instanceId).getBody();
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

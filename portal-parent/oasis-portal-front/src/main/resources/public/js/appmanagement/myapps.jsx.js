@@ -95,6 +95,11 @@ var InstanceList = React.createClass({
         };
     },
     componentDidMount: function () {
+        this.reloadInstances();
+    },
+    reloadInstances: function () {
+        this.setState(this.getInitialState());
+
         $.ajax({
             url: apps_service + "/instances/" + this.props.id,
             dataType: "json",
@@ -120,15 +125,20 @@ var InstanceList = React.createClass({
 
         var instances = this.state.instances;
         var authority = this.props.authority;
+        var reload = this.reloadInstances;
         var result = instances.length != 0 ? instances.map(function (instance) {
-            return <Instance key={instance.id} instance={instance} authority={authority}/>;
-        }) : <div className="text-center">{t('none')}
-            <b>{this.props.name}</b>
-        </div>
+            return <Instance key={instance.id} instance={instance} authority={authority} reload={reload}/>;
+        }) : (
+            <div className="text-center">{t('none')}
+                <b>{this.props.name}</b>
+            </div>
+            )
 
-        return <div className="panel collapse">
-      {result}
-        </div>;
+        return (
+            <div className="panel collapse">
+                {result}
+            </div>
+            );
     }
 });
 
@@ -179,11 +189,30 @@ var Instance = React.createClass({
     componentDidMount: function () {
         $("a.tip", this.getDOMNode()).tooltip();
     },
+    deprovision: function () {
+        $.ajax({
+            url: apps_service + "/deprovision/" + this.props.key,
+            type: 'post',
+            success: function () {
+                this.props.reload();
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(status, err.toString());
+            }.bind(this)
+        });
+    },
     render: function () {
         var instance = this.props.key;
         var services = this.props.instance.services.map(function (service) {
             return <Service key={service.service.id} service={service} instance={instance}/>;
         });
+
+        var deprovision = null;
+        if (devmode) {
+            deprovision = (
+                <a className="btn btn-danger pull-right" href="#" onClick={this.deprovision}>{t('ui.delete')}</a>
+                );
+        }
 
         return (
             <div className="panel panel-instance">
@@ -197,6 +226,7 @@ var Instance = React.createClass({
                     <a className="tip btn btn-default pull-right" href="#" onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
                         <li className="fa fa-user"></li>
                     </a>
+                    {deprovision}
                 </div>
                 <div className="panel-body">
                     <div className="standard-form">

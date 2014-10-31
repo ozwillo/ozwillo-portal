@@ -29,7 +29,7 @@ public class MyAppsManagementController extends PortalController {
             "none", "manage_users", "users", "settings", "name", "actions",
             "settings-add-a-user", "description", "icon", "published", "notpublished", "services");
 
-    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading");
+    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete");
 
     @Autowired
     private MyNavigationService navigationService;
