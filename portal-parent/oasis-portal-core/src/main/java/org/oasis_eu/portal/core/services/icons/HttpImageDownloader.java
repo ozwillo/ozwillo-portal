@@ -2,6 +2,7 @@ package org.oasis_eu.portal.core.services.icons;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -37,7 +38,11 @@ public class HttpImageDownloader implements ImageDownloader {
             return null;
         }
 
-        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpClients.custom()
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setConnectTimeout(1000)
+                        .setSocketTimeout(1000).build())
+                .build();
         try {
             HttpGet get = new HttpGet(iconUrl);
             try (CloseableHttpResponse response = client.execute(get)) {
