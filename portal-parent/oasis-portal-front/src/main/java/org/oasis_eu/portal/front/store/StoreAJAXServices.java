@@ -11,6 +11,7 @@ import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
 import org.oasis_eu.portal.services.PortalAppstoreService;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
@@ -81,7 +82,7 @@ public class StoreAJAXServices {
         try {
             appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
             response.success = true;
-        } catch (ApplicationInstanceCreationException e) {
+        } catch (ApplicationInstanceCreationException | WrongQueryException e) {
             response.success = false;
         }
         return response;
