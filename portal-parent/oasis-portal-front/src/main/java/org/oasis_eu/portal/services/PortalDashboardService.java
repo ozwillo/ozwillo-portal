@@ -75,11 +75,18 @@ public class PortalDashboardService {
     private List<Subscription> orphanSubscriptions(List<Subscription> allSubscriptions) {
         List<UserContext> ctxs = getDash().getContexts();
 
-        // note: this is supposed to be correct, not fast. We should rewrite it faster at some point!
+        Set<String> configured = ctxs
+                .stream()
+                .flatMap(c -> c.getSubscriptions().stream())
+                .map(us -> us.getId())
+                .collect(Collectors.toSet());
+
         return allSubscriptions
                 .stream()
-                .filter(s -> ctxs.stream().flatMap(c -> c.getSubscriptions().stream()).noneMatch(sid -> sid.equals(s.getId())))
+                .filter(s -> s.getId() != null)
+                .filter(s -> ! configured.contains(s.getId()))
                 .collect(Collectors.toList());
+
     }
 
     public List<String> getServicesIds(String userContextId) {
