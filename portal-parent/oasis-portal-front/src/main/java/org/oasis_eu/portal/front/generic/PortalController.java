@@ -113,8 +113,8 @@ abstract public class PortalController {
             throw (RefreshTokenNeedException) e;
         }
 
+        logger.error("Cannot process request: {}", new Object[]{e.getMessage(), e});
 
-        logger.warn("Caught exception while processing request", e);
         return "error";
     }
 
