@@ -6,6 +6,7 @@ import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.model.UserNotification;
+import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.NotificationService;
@@ -20,7 +21,10 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
 import java.util.stream.Collectors;
 
 /**
@@ -49,19 +53,6 @@ public class PortalNotificationService {
 
     @Autowired
     private MessageSource messageSource;
-
-    public Map<String, Integer> getServiceNotifications(List<String> serviceIds) {
-        if (!notificationsEnabled) {
-            return Collections.emptyMap();
-        }
-
-        return serviceIds.stream()
-                .map(s -> catalogStore.findService(s).getInstanceId())
-                .distinct()
-                .flatMap(instanceId -> notificationService.getInstanceNotifications(userInfoHelper.currentUser().getUserId(), instanceId, NotificationStatus.UNREAD).stream())
-                .collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)));
-
-    }
 
     public int countNotifications() {
         if (!notificationsEnabled) {
@@ -118,9 +109,27 @@ public class PortalNotificationService {
                         notif.setActionText(n.getActionLabel());
                     }
 
+                    notif.setServiceId(n.getServiceId());
+
                     return notif;
                 })
-                .sorted((n1, n2) -> n1.getDate().isBefore(n2.getDate()) ? -1 : 1)
+                .sorted((n1, n2) -> n1.getDate().isAfter(n2.getDate()) ? -1 : 1)
+                .collect(Collectors.toList());
+    }
+
+    public List<AppNotificationData> getAppNotificationCounts(List<String> serviceIds) {
+        List<UserNotification> userNotifications = getNotifications();
+
+        /*
+        Equivalent SQL:
+        SELECT serviceId, count(*) FROM userNotifications WHERE serviceId IN serviceIds GROUP BY serviceId
+        (then bump into a List<AppNotificationData>)
+         */
+        return userNotifications.stream()
+                .filter(un -> serviceIds.contains(un.getServiceId()))
+                .collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)))
+                .entrySet().stream()
+                .map(entry -> new AppNotificationData(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
     }
 
@@ -146,4 +155,6 @@ public class PortalNotificationService {
         }
         notificationService.setMessageStatus(userInfoHelper.currentUser().getUserId(), Arrays.asList(notificationId), NotificationStatus.READ);
     }
+
+
 }

@@ -143,7 +143,7 @@ $(document).ready(function () {
         setTimeout(updateAppNotifications, 2000);
     };
 
-    //updateAppNotifications();
+    updateAppNotifications();
     
     
     /* Dashboard */
