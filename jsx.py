@@ -13,4 +13,4 @@ f = os.popen('find . -wholename "*/src/*.jsx.js"')
 for line in f:
   l = line.strip()
   print("Compiling: " + l)
-  os.system("jsx " + l + " | uglifyjs - > " + re.sub("\.jsx",".min",l))
+  os.system("jsx " + l + " | uglifyjs -c drop_console - > " + re.sub("\.jsx",".min",l))

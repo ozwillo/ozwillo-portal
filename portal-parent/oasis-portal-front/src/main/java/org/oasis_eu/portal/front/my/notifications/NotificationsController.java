@@ -13,8 +13,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -49,10 +47,9 @@ public class NotificationsController {
         if (!notificationsEnabled) {
             return Collections.emptyList();
         }
-        List<String> applicationIds = portalDashboardService.getServicesIds(contextId);
-        Map<String, Integer> appNotifs = notificationService.getServiceNotifications(applicationIds);
 
-        return applicationIds.stream().map(id -> new AppNotificationData(id, appNotifs.get(id) != null ? appNotifs.get(id) : 0)).collect(Collectors.toList());
+        List<String> serviceIds = portalDashboardService.getServicesIds(contextId);
+        return notificationService.getAppNotificationCounts(serviceIds);
     }
 
 

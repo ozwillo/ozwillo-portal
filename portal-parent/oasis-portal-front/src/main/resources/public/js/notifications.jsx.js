@@ -102,17 +102,21 @@ var NotificationTable = React.createClass({
 
 var Notification = React.createClass({
     displayName: "Notification",
-    removeNotif: function(e) {
+    removeNotif: function () {
         this.props.onRemoveNotif(this.props.notif.id);
     },
     render: function() {
+        var action = null;
+        if (this.props.notif.url) {
+            action = <a href={this.props.notif.url} target="_new" className="btn btn-primary" >{this.props.notif.actionText}</a>;
+        }
         return (
             <div className="row form-table-row">
                 <div className="col-sm-2">{this.props.notif.dateText}</div>
                 <div className="col-sm-2">{this.props.notif.appName}</div>
                 <div className="col-sm-6" dangerouslySetInnerHTML={{__html: this.props.notif.formattedText}}></div>
                 <div className="col-sm-2">
-                    <a href={this.props.notif.url} target="_new" className="btn btn-primary" >{t('manage')}</a>
+                    {action}
                     <a href="#" className="btn btn-primary" onClick={this.removeNotif}>{t('archive')}</a>
                 </div>
             </div>
