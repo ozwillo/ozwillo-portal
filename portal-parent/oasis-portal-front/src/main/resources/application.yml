@@ -15,9 +15,16 @@ application:
     fetchUserInfo: true
   baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
-  devmode: true
+
+# some switches:
+# devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
+# production = include piwik js
+# notificationsEnabled = enable notifications
+# at some point we should use these as default values & instead look for the values in the database
+# (to allow live switching of feature flags)
+  devmode: false
   production: false
-  notificationsEnabled: false
+  notificationsEnabled: true
 
 web:
   home: http://www.ozwillo-dev.eu

@@ -13,6 +13,7 @@ public class UserNotification {
     String dateText;
     String id;
     String url;
+    String actionText;
 
     public String getAppName() {
         return appName;
@@ -60,5 +61,13 @@ public class UserNotification {
 
     public void setDateText(String dateText) {
         this.dateText = dateText;
+    }
+
+    public String getActionText() {
+        return actionText;
+    }
+
+    public void setActionText(String actionText) {
+        this.actionText = actionText;
     }
 }
