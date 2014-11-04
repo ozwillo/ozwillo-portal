@@ -109,7 +109,7 @@ public class PortalDashboardService {
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         List<DashboardEntry> entries = userContext.getSubscriptions().stream()
-                .filter(subscriptionById::containsKey)
+                .filter(userSub -> subscriptionById.containsKey(userSub.getId()))
                 .map(sid -> getDashboardEntry(subscriptionById.get(sid)))
                 .filter(e -> e != null)
                 .collect(Collectors.toList());
