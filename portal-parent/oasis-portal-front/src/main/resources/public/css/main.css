@@ -500,17 +500,10 @@ html, body {
 
 }
 
-.wrapper {
-    min-height: 100%;
-    margin: 0 auto -257px;
-}
 
-footer, .push {
-    height: 257px;
-}
 
 div.container.main-content {
-    margin-top: 20px;
+    padding-top: 20px;
 }
 
 .form-table-header {
@@ -598,4 +591,62 @@ div.popup {
     box-shadow: rgba(0, 0, 0, 0.2) 0px 5px 10px 0px;
     background-color: #fff;
     z-index: 1040;
+}
+
+/**
+* Footer section
+**/
+
+/* wrapper and push are used to make the footer stick at the bottom of the screen */
+.wrapper {
+    min-height: 100%;
+    margin: 0 auto -216px;
+}
+
+footer, .push {
+    height: 216px;
+}
+
+.sitemap {
+    width: 100%;
+    background-color: #DECEE6;
+    padding: 10px 10%;
+}
+
+.sitemap ul {
+    margin-top: 20px;
+}
+
+.sitemap li {
+    list-style-type: none;
+    font-size: 15px;
+}
+
+.sitemap h1 {
+    font-size: 60px;
+}
+
+.sitemap a {
+    color: #526686;
+}
+
+.footer {
+    width: 100%;
+    background-color: #5744A2;
+    padding: 10px 30%;
+    color: white;
+}
+
+.footer img {
+    margin-right: 10px;
+}
+
+@media (min-width: 755px) {
+    .sitemap {
+        height: 146px;
+    }
+
+    .footer {
+        height: 70px;
+    }
 }
