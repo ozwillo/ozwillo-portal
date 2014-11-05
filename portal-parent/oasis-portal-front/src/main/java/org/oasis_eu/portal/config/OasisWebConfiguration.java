@@ -1,8 +1,6 @@
 package org.oasis_eu.portal.config;
 
-import java.util.Arrays;
-import java.util.EnumSet;
-
+import ch.qos.logback.access.tomcat.LogbackValve;
 import de.javakaffee.web.msm.MemcachedBackupSessionManager;
 import org.oasis_eu.spring.kernel.security.TokenRefreshInterceptor;
 import org.slf4j.Logger;
@@ -21,11 +19,12 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.thymeleaf.spring4.SpringTemplateEngine;
-import org.thymeleaf.templateresolver.ITemplateResolver;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
+import java.io.File;
+import java.util.Arrays;
+import java.util.EnumSet;
 
 /**
  * User: schambon
@@ -87,11 +86,22 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
                     }});
                 }));
 
+                if (new File("./config/logback-access.xml").exists()) {
+                    LogbackValve accessLogValve = new LogbackValve();
+                    accessLogValve.setFilename("./config/logback-access.xml");
+                    containerFactory.addContextValves(accessLogValve);
+                }
                 setMimeMappings(factory);
             };
         } else {
             logger.info("Skipping HA configuration");
             return factory -> {
+                if (new File("./config/logback-access.xml").exists()) {
+                    LogbackValve accessLogValve = new LogbackValve();
+                    accessLogValve.setFilename("./config/logback-access.xml");
+                    ((TomcatEmbeddedServletContainerFactory) factory).addContextValves(accessLogValve);
+                }
+
                 setMimeMappings(factory);
             };
         }

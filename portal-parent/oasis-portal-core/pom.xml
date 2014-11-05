@@ -13,7 +13,6 @@
     </parent>
 
 
-
     <dependencies>
 
 
@@ -34,7 +33,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
-        
+
         <dependency>
             <groupId>org.oasis_eu.spring-integration</groupId>
             <artifactId>oasis-spring-integration</artifactId>
@@ -43,7 +42,6 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
-            <version>1.0.13</version>
         </dependency>
         <dependency>
             <groupId>org.codehaus.groovy</groupId>
