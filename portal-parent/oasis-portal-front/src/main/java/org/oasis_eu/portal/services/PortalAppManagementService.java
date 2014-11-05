@@ -10,24 +10,20 @@ import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.model.appsmanagement.*;
+import org.oasis_eu.portal.model.appsmanagement.Authority;
+import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
+import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
+import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.portal.model.appstore.AppInfo;
-import org.oasis_eu.spring.kernel.service.OrganizationStore;
-import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -137,7 +133,7 @@ public class PortalAppManagementService {
     }
 
     public CatalogEntry updateService(String serviceId, CatalogEntry entry) {
-        if (!networkService.userIsAdmin(catalogStore.findService(serviceId).getProviderId())) {
+        if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(catalogStore.findService(serviceId).getInstanceId()).getProviderId())) {
             throw new AccessDeniedException("Unauthorized");
         }
         return catalogStore.fetchAndUpdateService(serviceId, entry);
@@ -153,24 +149,9 @@ public class PortalAppManagementService {
 
     }
 
-    public List<User> getAllUsersOfServiceOrganization(String serviceId) {
-
-        CatalogEntry service = catalogStore.findService(serviceId);
-        if (service != null) {
-            String instanceId = service.getInstanceId();
-            return instanceACLStore.getACL(instanceId)
-                    .stream()
-                    .map(ace -> new User(ace.getUserId(), ace.getUserName(),false ))
-                    .collect(Collectors.toList());
-        } else {
-            logger.error("Service {} does not exist", serviceId);
-            return Collections.emptyList();
-        }
-    }
-
 
     public void updateSubscriptions(String serviceId, Set<String> usersToSubscribe) {
-        if (!networkService.userIsAdmin(catalogStore.findService(serviceId).getProviderId())) {
+        if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(catalogStore.findService(serviceId).getInstanceId()).getProviderId())) {
             throw new AccessDeniedException("Unauthorized access");
         }
 
