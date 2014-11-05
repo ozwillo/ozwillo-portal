@@ -3,24 +3,31 @@ package org.oasis_eu.portal.core.config;
 import com.google.common.base.Strings;
 import com.mongodb.*;
 import org.oasis_eu.portal.core.mongo.MongoPackage;
+import org.oasis_eu.portal.core.mongo.model.images.ImageDownloadAttempt;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
+import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.config.AbstractMongoConfiguration;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.WriteResultChecking;
 import org.springframework.data.mongodb.core.convert.CustomConversions;
+import org.springframework.data.mongodb.core.index.Index;
+import org.springframework.data.mongodb.core.index.IndexInfo;
 import org.springframework.data.mongodb.repository.config.EnableMongoRepositories;
 
 import java.net.UnknownHostException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
@@ -75,6 +82,11 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 
     @Autowired
     private PersistenceProperties persistenceProperties;
+
+    @Value("${application.imageBlacklistTtl:900}")
+    private int imageBlacklistTtl;
+    @Value("${application.installedStatusTtl:86400}")
+    private int installedStatusTtl;
 
     @Override
     protected String getDatabaseName() {
@@ -151,6 +163,21 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
     public MongoTemplate mongoTemplate() throws Exception {
         MongoTemplate mongoTemplate = super.mongoTemplate();
         mongoTemplate.setWriteResultChecking(WriteResultChecking.EXCEPTION);
+
+        IndexInfo imageBlacklistIndex = mongoTemplate.indexOps(ImageDownloadAttempt.class).getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().equals("time")).findFirst().orElse(null);
+        if (imageBlacklistIndex == null) {
+            mongoTemplate.indexOps(ImageDownloadAttempt.class).ensureIndex(new Index().on("time", Sort.Direction.ASC).named("time").expire(imageBlacklistTtl, TimeUnit.SECONDS));
+        } else {
+            logger.info("Index on image_download_attempt.time already exists");
+        }
+        IndexInfo installedStatusIndex = mongoTemplate.indexOps(InstalledStatus.class).getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().equals("computed")).findFirst().orElse(null);
+        if (installedStatusIndex == null) {
+            mongoTemplate.indexOps(InstalledStatus.class).ensureIndex(new Index().on("computed", Sort.Direction.ASC).named("computed").expire(installedStatusTtl, TimeUnit.SECONDS));
+        } else {
+            logger.info("Index on appstore_install_status.computed already exists");
+        }
+
+
         return mongoTemplate;
     }
 
