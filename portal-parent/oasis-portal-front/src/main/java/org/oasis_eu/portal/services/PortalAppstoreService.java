@@ -148,7 +148,7 @@ public class PortalAppstoreService {
                     PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         } else {
             return networkService.getMyAuthorities(true).stream()
-                    .flatMap(authority -> appManagementService.getMyInstances(authority).stream())
+                    .flatMap(authority -> appManagementService.getMyInstances(authority, false).stream())
                     .anyMatch(instance -> instance.getApplication().getId().equals(entry.getId()))
                     ? InstallationOption.INSTALLED :
                         PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;

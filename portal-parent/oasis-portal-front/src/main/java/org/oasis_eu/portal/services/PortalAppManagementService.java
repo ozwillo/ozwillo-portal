@@ -61,13 +61,13 @@ public class PortalAppManagementService {
     @Autowired
     private NetworkService networkService;
 
-    public List<MyAppsInstance> getMyInstances(Authority authority) {
+    public List<MyAppsInstance> getMyInstances(Authority authority, boolean fetchServices) {
 
         switch (authority.getType()) {
             case INDIVIDUAL:
-                return getPersonalInstances(authority);
+                return getPersonalInstances(authority, fetchServices);
             case ORGANIZATION:
-                return getOrganizationInstances(authority);
+                return getOrganizationInstances(authority, fetchServices);
         }
 
         logger.error("Should never be here - authority is neither an individual or an organization: {}", authority.getType());
@@ -75,32 +75,24 @@ public class PortalAppManagementService {
     }
 
 
-    private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority) {
+    private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority, boolean fetchServices) {
         return applicationInstanceStore.findByUserId(personalAuthority.getId())
                 .stream()
                 .filter(instance -> ! ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
-                .map(this::fetchInstance)
+                .map(i -> fetchInstance(i, fetchServices))
                 .collect(Collectors.toList());
     }
 
-    private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority) {
+    private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority, boolean fetchServices) {
         return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
                 .stream()
                 .filter(instance -> !ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
-                .map(this::fetchInstance)
+                .map(i -> fetchInstance(i, fetchServices))
                 .collect(Collectors.toList());
 
     }
 
-    public List<MyAppsInstance> getPendingInstances() {
-        return applicationInstanceStore.findByUserId(userInfoService.currentUser().getUserId())
-                .stream()
-                .filter(instance -> ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
-                .map(this::fetchInstance)
-                .collect(Collectors.toList());
-    }
-
-    private MyAppsInstance fetchInstance(ApplicationInstance instance) {
+    private MyAppsInstance fetchInstance(ApplicationInstance instance, boolean fetchServices) {
 
         logger.debug("Fetching instance data for {}", instance);
 
@@ -108,10 +100,14 @@ public class PortalAppManagementService {
         AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), entry.getIcon(RequestContextUtils.getLocale(request)));
 
 
-        return new MyAppsInstance()
+        MyAppsInstance result = new MyAppsInstance()
                 .setApplicationInstance(instance)
-                .setApplication(appInfo)
-                .setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream().map(this::fetchService).collect(Collectors.toList()));
+                .setApplication(appInfo);
+
+        if (fetchServices)
+            result = result.setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream().map(this::fetchService).collect(Collectors.toList()));
+
+        return result;
     }
 
     private MyAppsService fetchService(CatalogEntry service) {
@@ -119,11 +115,6 @@ public class PortalAppManagementService {
         logger.debug("Fetching service data for {}", service);
 
         return new MyAppsService().setService(service).setName(service.getName(RequestContextUtils.getLocale(request))).setIconUrl(imageService.getImageForURL(service.getDefaultIcon(), ImageFormat.PNG_64BY64, false));
-    }
-
-    public MyAppsInstance getInstance(String instanceId) {
-
-        return fetchInstance(catalogStore.findApplicationInstance(instanceId));
     }
 
     public MyAppsService getService(String serviceId) {

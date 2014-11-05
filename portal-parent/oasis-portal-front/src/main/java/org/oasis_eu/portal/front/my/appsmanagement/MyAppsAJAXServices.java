@@ -59,7 +59,7 @@ public class MyAppsAJAXServices {
     public List<MyAppsInstance> getInstances(@PathVariable String authorityId) {
         String[] strings = authorityId.split("::");
 
-        List<MyAppsInstance> myInstances = appManagementService.getMyInstances(networkService.getAuthority(strings[0], strings[1]));
+        List<MyAppsInstance> myInstances = appManagementService.getMyInstances(networkService.getAuthority(strings[0], strings[1]), true);
         for (MyAppsInstance instance : myInstances) {
             instance.setIcon(imageService.getImageForURL(instance.getApplication().getIcon(), ImageFormat.PNG_64BY64, false));
         }
