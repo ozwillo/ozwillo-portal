@@ -138,9 +138,10 @@ $(document).ready(function () {
                     }
 
                 }
+                setTimeout(updateAppNotifications, 2000);
             }
         );
-        setTimeout(updateAppNotifications, 2000);
+
     };
 
     updateAppNotifications();
