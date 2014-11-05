@@ -1,8 +1,11 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
+import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
+import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
@@ -38,6 +41,8 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     @Value("${kernel.portal_endpoints.subscriptions}")
     private String endpoint;
 
+    @Autowired
+    private InstalledStatusRepository installedStatusRepository;
 
     @Override
     @Cacheable("subscriptions")
@@ -63,6 +68,13 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public void create(String userId, Subscription subscription) {
+        logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
+
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.SERVICE, subscription.getServiceId(), userId);
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
+
         ResponseEntity<Void> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription), Void.class, user(), userId);
 
         if (response.getStatusCode().is2xxSuccessful()) {
@@ -96,6 +108,14 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType) {
+
+        logger.debug("Unsubscribing user {} from service {}", userId, serviceId);
+
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.SERVICE, serviceId, userId);
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
+
 
         List<Subscription> subs = findByUserId(userId);
 

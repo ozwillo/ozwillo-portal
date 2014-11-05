@@ -9,7 +9,9 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
+import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
+import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
@@ -61,6 +63,9 @@ public class PortalAppstoreService {
 
     @Autowired
     private NetworkService networkService;
+
+    @Autowired
+    private InstalledStatusRepository installedStatusRepository;
 
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
 
@@ -137,11 +142,29 @@ public class PortalAppstoreService {
     }
 
     private InstallationOption getInstallationOption(CatalogEntry entry) {
+        InstallationOption paymentOption = InstallationOption.valueOf(entry.getPaymentOption().toString());
         if (! userInfoHelper.isAuthenticated()) {
-            return InstallationOption.valueOf(entry.getPaymentOption().toString()); // urgh. clean this up sometime!
+            return paymentOption; // urgh. clean this up sometime!
         }
 
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(entry.getType(), entry.getId(), userInfoHelper.currentUser().getUserId());
+        if (status != null) {
+            return status.isInstalled() ? InstallationOption.INSTALLED : paymentOption;
+        }
 
+        InstallationOption option = computeInstallationOption(entry);
+
+        status = new InstalledStatus();
+        status.setCatalogEntryType(entry.getType());
+        status.setCatalogEntryId(entry.getId());
+        status.setUserId(userInfoHelper.currentUser().getUserId());
+        status.setInstalled(option.equals(InstallationOption.INSTALLED) ? true : false);
+        installedStatusRepository.save(status);
+
+        return option;
+    }
+
+    private InstallationOption computeInstallationOption(CatalogEntry entry) {
         if (CatalogEntryType.SERVICE.equals(entry.getType())) {
             Set<String> subscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().map(Subscription::getServiceId).collect(Collectors.toSet());
             return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
