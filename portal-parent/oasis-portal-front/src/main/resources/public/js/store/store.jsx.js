@@ -1,12 +1,5 @@
 /** @jsx React.DOM */
 
-var __apps = [
-    {"id": "ck", "name": "Citizen Kin", "type": "service", "icon": image_root + "noicon.png", "public_service": true, "description": "Lorem ipsum dolor sit amet", "provider": "OpenWide", "paid": false, "installed": true, "target_citizens": true, "target_publicbodies": false, "target_companies": false},
-    {"id": "dl", "name": "Ditizen Lin", "type": "application", "icon": image_root + "noicon.png", "public_service": false, "description": "Lorem ipsum dolor sit amet", "provider": "OpenWide", "paid": true, "installed": true, "target_citizens": false, "target_publicbodies": true, "target_companies": true},
-    {"id": "em", "name": "Eitizen Min", "type": "service", "icon": image_root + "noicon.png", "public_service": true, "description": "Lorem ipsum dolor sit amet", "provider": "OpenWide", "paid": true, "installed": false, "target_citizens": true, "target_publicbodies": false, "target_companies": false},
-    {"id": "fn", "name": "Fitizen Nin", "type": "service", "icon": image_root + "noicon.png", "public_service": false, "description": "Lorem ipsum dolor sit amet", "provider": "OpenWide", "paid": false, "installed": false, "target_citizens": false, "target_publicbodies": true, "target_companies": false}
-];
-
 var AppStore = React.createClass({
     componentDidMount: function () {
         this.updateApps(true, true, true, true, true);
@@ -496,6 +489,12 @@ var InstallButton = React.createClass({
                         <a href="#" onClick={this.installAppForOrganization(org.id)}>{org.name}</a>
                     </li>;
                 }.bind(this));
+
+                var installForSelf = null;
+                if (this.hasCitizens()) {
+                    installForSelf = <button type="button" className="btn btn-default" onClick={this.installApp}>{t('for_myself')}</button>;
+                }
+
                 return (
                     <MyPop className="btn btn-primary" label={t('install')} >
                         <div className="row">
@@ -506,7 +505,7 @@ var InstallButton = React.createClass({
                                 <h4>{t('install_this_app')}</h4>
                                 <p>{t('confirm-install-this-app')}</p>
                                 {this.props.app.paid ? <p>{t('confirm-install-this-app-paid')}</p> : null}
-                                <button type="button" className="btn btn-default" onClick={this.installApp}>{t('for_myself')}</button>
+                                {installForSelf}
                                 <button type="button" className="btn btn-default" data-toggle="dropdown">{t('on_behalf_of')}
                                     <span className="caret"></span>
                                 </button>
