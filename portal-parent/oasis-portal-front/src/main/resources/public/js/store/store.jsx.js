@@ -5,7 +5,7 @@ var AppStore = React.createClass({
         this.updateApps(true, true, true, true, true);
     },
     getInitialState: function () {
-        return {apps: []};
+        return {apps: [], loading: true};
     },
     updateApps: function (target_citizens, target_publicbodies, target_companies, paid, free) {
         $.ajax({
@@ -14,15 +14,16 @@ var AppStore = React.createClass({
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                this.setState({apps: data});
+                this.setState({apps: data, loading: false});
             }.bind(this),
             error: function (xhr, status, err) {
+                this.setState({apps: [], loading: false});
                 console.error(status, err.toString());
             }.bind(this)
         });
     },
     render: function () {
-        if (this.state.apps.length == 0) {
+        if (this.state.loading) {
             // loading...
             return <div className="row text-center">
                 <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</div>
@@ -55,6 +56,7 @@ var SideBar = React.createClass({
     },
     change: function (category, item) {
         return function () {
+            console.log("Change...");
             // check that we can indeed change the box
             var canChange = false;
             for (var i in this.state[category]) {
