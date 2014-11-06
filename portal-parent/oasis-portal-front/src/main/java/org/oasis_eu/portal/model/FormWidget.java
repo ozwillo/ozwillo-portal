@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.model;
 
 
+import java.io.Serializable;
 
 public abstract class FormWidget implements Comparable<FormWidget> {
 

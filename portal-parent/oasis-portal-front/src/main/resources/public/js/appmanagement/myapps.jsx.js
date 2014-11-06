@@ -129,7 +129,8 @@ var InstanceList = React.createClass({
         var result = instances.length != 0 ? instances.map(function (instance) {
             return <Instance key={instance.id} instance={instance} authority={authority} reload={reload}/>;
         }) : (
-            <div className="text-center">{t('none')}
+            <div className="text-center">
+                <span>{t('none')} </span>
                 <b>{this.props.name}</b>
             </div>
             )

@@ -1,28 +1,17 @@
 package org.oasis_eu.portal.front.my;
 
+import org.oasis_eu.portal.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.stereotype.Controller;
+
+import javax.annotation.PostConstruct;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import javax.annotation.PostConstruct;
-
-import org.oasis_eu.portal.model.AvatarWidget;
-import org.oasis_eu.portal.model.FormLayout;
-import org.oasis_eu.portal.model.FormWidget;
-import org.oasis_eu.portal.model.FormWidgetDate;
-import org.oasis_eu.portal.model.FormWidgetDropdown;
-import org.oasis_eu.portal.model.FormWidgetText;
-import org.oasis_eu.portal.model.FormWidgetUrlButton;
-import org.oasis_eu.spring.kernel.service.UserInfoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
-import org.springframework.stereotype.Controller;
 
 /**
  * 
@@ -30,8 +19,9 @@ import org.springframework.stereotype.Controller;
  *
  */
 @Controller
-@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
+//@Scope(value = "session", proxyMode = ScopedProxyMode.TARGET_CLASS)
 public class MyProfileState {
+
 
 	public static final String LAYOUT_ACCOUNT = "account";
 	
@@ -46,9 +36,6 @@ public class MyProfileState {
 	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(MyProfileState.class);
 
-    @Autowired
-    private UserInfoService userInfoHelper;
-    
 	private Map<String, FormLayout> layouts;
 	
 	@Value("${kernel.auth.password_change_endpoint:''}")
