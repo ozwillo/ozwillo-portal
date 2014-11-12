@@ -187,14 +187,6 @@ ul.navbar-nav.oasis-nav {
     border-top: 10px outset #ffffff;
 }
 
-/*
-.navbar-nav li.active:after {
-   position: absolute;
-   left: 40px;
-   content: "";
-   border: 10px solid transparent;
-   border-top-color: #5b5f84;
-}      */
 
 span.badge-notifications {
     background-color: #d9534f;
@@ -207,89 +199,14 @@ span.badge-notifications {
     display: none;
 }
 
-div.app {
-    position: relative;
-    margin: 10px;
-    display: block;
-    width: 130px;
-    height: 160px;
-    float: left;
-    border-radius: 10px;
-}
 
-/*div.app.local-service {*/
-/*color: #6e418e;*/
-/*}*/
 
-div.app:hover {
-    background: #f7f7f7;
-}
-
-/*div.app.local-service:hover {*/
-/*background: #f0ad4e;*/
-/*}*/
-
-div.app p {
-    position: absolute;
-    bottom: 0;
-    width: 130px;
-    height: 50px;
-    text-align: center;
-}
-
-/*div.app img {*/
-/*position: absolute;*/
-/*top: 0px;*/
-/*left: 0px;*/
-/*}*/
-
-.hovered {
-    border: 2px solid #6e418e;
-    background-color: #e4d2e5;
-}
-
-div.app a.app-link {
-    position: absolute;
-    width: 64px;
-    height: 64px;
-    top: 33px;
-    left: 33px;
-
-    border-radius: 10px;
-}
-
-div.app a.app-link.add-more {
-    border: 2px dashed #636681;
-}
-
-div.app a.app-link.add-more img {
-    position: absolute;
-    bottom: -16px;
-    right: -16px;
-}
 
 div.app span.badge-notifications {
     top: -15px;
 }
 
-div.dash-switcher {
-    margin-top: 50px;
-    color: #6e418e;
-    font-size: 14pt;
-}
 
-div.dash-switcher ul.nav {
-    padding-bottom: 10px;
-    border-bottom: 1px solid #6e418e;
-}
-
-div.dash-switcher a {
-    color: #6e418e;
-}
-
-div.dash-switcher ul.nav .active a {
-    background-color: #6e418e;
-}
 
 .dash-switch-link input {
     margin-top: 4px;

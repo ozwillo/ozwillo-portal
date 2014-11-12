@@ -1,0 +1,125 @@
+<!doctype html>
+<html>
+<head data-th-replace="includes/header(title=#{ui.my},page='dashboard')">
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <title>DUMMY Ozwillo</title>
+    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link href="../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../public/css/dashboard.css" rel="stylesheet"/>
+
+    <!--[if lt IE 9]>
+    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.3/es5-shim.min.js"></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/es5-shim/4.0.3/es5-sham.min.js"></script>
+    <script>
+        (function (con) {
+            'use strict';
+            var prop, method;
+            var empty = {};
+            var dummy = function () {
+            };
+            var properties = 'memory'.split(',');
+            var methods = ('assert,clear,count,debug,dir,dirxml,error,exception,group,' +
+            'groupCollapsed,groupEnd,info,log,markTimeline,profile,profiles,profileEnd,' +
+            'show,table,time,timeEnd,timeline,timelineEnd,timeStamp,trace,warn').split(',');
+            while (prop = properties.pop()) con[prop] = con[prop] || empty;
+            while (method = methods.pop()) con[method] = con[method] || dummy;
+        })(this.console = this.console || {}); // Using `this` for web workers.
+
+    </script>
+    <![endif]-->
+
+    <style>
+        @font-face {
+            font-family: 'Dunkin';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/Dunkin.svg#Dunkin') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DIN';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DIN.svg#DIN') format('svg');
+        }
+
+        @font-face {
+            font-family: 'DINAlternate-Light';
+            src: url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.eot?') format('eot'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.woff') format('woff'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.ttf') format('truetype'),
+            url('../../../../../../oasis-portal-core/src/main/resources/public/fonts/DINAlternate-Light.svg#DIN') format('svg');
+        }
+
+        div.appzone div.dropzone.dragover {
+            width: 50px;
+            background: url("/portal-parent/oasis-portal-front/src/main/resources/public/img/my/dropzone-bg.png");
+        }
+
+        div.dash-switcher a.dragging.over {
+            background: url("/portal-parent/oasis-portal-front/src/main/resources/public/img/my/dropzone-bg.png");
+        }
+
+    </style>
+
+
+</head>
+<body>
+
+<div class="wrapper">
+    <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation"
+         data-th-replace="|includes/${user == null ? 'navbar' : 'my-navigation'}::nav|">
+        <div class="navbar-header">
+            <div class="my-oasis" data="null">
+                <img id="logo" src="../../public/img/my/my-oasis.png"
+                     alt="My OASIS"/>
+                <a href="#"><span class="badge badge-notifications">0</span></a>
+            </div>
+        </div>
+
+        Header
+    </div>
+
+    <div class="container main-content" id="dashboard">
+        <div class="text-center"><i class="fa fa-spinner fa-spin"></i><span data-th-text="#{ui.loading}"></span></div>
+    </div>
+
+    <div class="push"></div>
+</div>
+<th-block data-th-replace="includes/footer">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+</th-block>
+<script src="../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
+<script src="http://fb.me/react-0.11.2.js" data-th-src="@{/webjars/react/0.11.2/react.js}"></script>
+<script src="http://fb.me/JSXTransformer-0.11.2.js" data-th-src="@{/webjars/react/0.11.2/JSXTransformer.js}"
+        data-th-if="${devmode}"></script>
+
+<script data-th-inline="javascript" type="text/javascript">
+    var messages = /*[[${i18n}]]*/ {};
+    var devmode = /*[[${devmode}]]*/ {};
+    var store_root = /*[[@{|/${currentLanguage.locale.language}/store|}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/templates/store';
+    var image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
+</script>
+
+<script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
+<script type="text/jsx" src="../../public/js/util/bootstrap-react.jsx.js"
+        data-th-src="@{/js/util/bootstrap-react.jsx.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/util/bootstrap-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
+
+<script type="text/jsx" src="../../public/js/dashboard/dashboard.jsx.js" data-th-src="@{/js/dashboard/dashboard.jsx.js}"
+        data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/dashboard/dashboard.min.js}" data-th-if="${!devmode}"></script>/*/-->
+
+
+<script type="text/javascript" data-th-src="@{/js/my.js}" src="../../public/js/my.js"></script>
+
+</body>
+</html>
