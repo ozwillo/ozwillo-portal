@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
@@ -14,17 +13,13 @@ import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.Errors;
-import org.springframework.validation.FieldError;
-import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -49,6 +44,9 @@ public class MyAppsAJAXServices {
     @Autowired
     private ImageService imageService;
 
+    @Value("${application.devmode:false}")
+    private boolean devmode;
+
     @RequestMapping("/authorities")
     public List<Authority> getAuthorities() {
         return networkService.getMyAuthorities(true).stream()
@@ -61,7 +59,7 @@ public class MyAppsAJAXServices {
     public List<MyAppsInstance> getInstances(@PathVariable String authorityId) {
         String[] strings = authorityId.split("::");
 
-        List<MyAppsInstance> myInstances = appManagementService.getMyInstances(networkService.getAuthority(strings[0], strings[1]));
+        List<MyAppsInstance> myInstances = appManagementService.getMyInstances(networkService.getAuthority(strings[0], strings[1]), true);
         for (MyAppsInstance instance : myInstances) {
             instance.setIcon(imageService.getImageForURL(instance.getApplication().getIcon(), ImageFormat.PNG_64BY64, false));
         }
@@ -135,6 +133,15 @@ public class MyAppsAJAXServices {
         }
 
         return response;
+    }
+
+    @RequestMapping(value = "/deprovision/{instanceId}", method = RequestMethod.POST)
+    public void deprovision(@PathVariable String instanceId) {
+        if (devmode) {
+            appManagementService.deleteInstance(instanceId);
+
+        }
+
     }
 
     public static class SaveServiceResponse {

@@ -34,9 +34,10 @@ $(document).ready(function () {
                     } else {
                         element.hide();
                     }
+                    setTimeout(updateNotifications, 2000);
                 }
         );
-        setTimeout(updateNotifications, 2000);
+
     }
 
     updateNotifications();

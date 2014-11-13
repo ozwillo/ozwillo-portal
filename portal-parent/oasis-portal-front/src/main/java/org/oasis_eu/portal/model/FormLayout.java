@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.model;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -10,8 +11,9 @@ import java.util.stream.Collectors;
  * @author mkalamalami
  *
  */
-public class FormLayout implements Comparable<FormLayout> {
+public class FormLayout implements Comparable<FormLayout>, Serializable {
 
+	private static final long serialVersionUID = 2282236324466594448L;
 	private String label;
 	
 	private FormLayoutMode mode = FormLayoutMode.VIEW;

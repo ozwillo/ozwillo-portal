@@ -1,7 +1,10 @@
 package org.oasis_eu.portal.model;
 
-public class FormWidgetUrlButton extends FormWidget {
+import java.io.Serializable;
 
+public class FormWidgetUrlButton extends FormWidget implements Serializable {
+
+	private static final long serialVersionUID = 8476482644454253858L;
 	private String buttonLabel;
 
 	private String url;

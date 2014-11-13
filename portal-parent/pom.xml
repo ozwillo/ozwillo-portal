@@ -7,7 +7,7 @@
     <groupId>org.oasis_eu.portal</groupId>
     <artifactId>oasis-portal-parent</artifactId>
     <packaging>pom</packaging>
-    <version>0.12-SNAPSHOT</version>
+    <version>1.1-SNAPSHOT</version>
 
     <properties>
         <apache-httpcomponents.version>4.3.1</apache-httpcomponents.version>
@@ -23,7 +23,6 @@
         <validation-api.version>1.1.0.Final</validation-api.version>
         <ehcache.version>2.8.3</ehcache.version>
 
-
         <!-- webjars -->
         <bootstrap.version>3.1.1</bootstrap.version>
         <font-awesome.version>4.2.0</font-awesome.version>
@@ -33,13 +32,13 @@
         <html5shiv.version>3.7.0</html5shiv.version>
         <typeaheadjs.version>0.10.4</typeaheadjs.version>
         <underscore.version>1.6.0-3</underscore.version>
-        <bootstrap-switch.version>3.0.2</bootstrap-switch.version>
         <react.version>0.11.2</react.version>
 
         <!-- Hosting -->
         <tomcat.version>8.0.8</tomcat.version>
         <memcached-session-manager.version>1.8.2</memcached-session-manager.version>
 
+        <logback.version>1.1.2</logback.version>
     </properties>
 
     <modules>
@@ -76,7 +75,7 @@
             <dependency>
                 <groupId>org.oasis_eu.spring-integration</groupId>
                 <artifactId>oasis-spring-integration</artifactId>
-                <version>0.12-SNAPSHOT</version>
+                <version>0.12</version>
             </dependency>
 
 
@@ -119,6 +118,16 @@
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
                 <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-access</artifactId>
+                <version>${logback.version}</version>
             </dependency>
 
             <!-- Thymeleaf -->
@@ -181,11 +190,6 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>underscorejs</artifactId>
                 <version>${underscore.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>bootstrap-switch</artifactId>
-                <version>${bootstrap-switch.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.webjars</groupId>

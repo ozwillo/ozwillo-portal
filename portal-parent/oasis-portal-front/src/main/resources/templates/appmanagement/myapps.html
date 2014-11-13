@@ -59,71 +59,77 @@
 </head>
 
 <body>
-<div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:replace="includes/my-navigation :: nav">
-    <div class="navbar-header">
+<div class="wrapper">
+    <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:replace="includes/my-navigation :: nav">
+        <div class="navbar-header">
 
-        <div class="my-oasis">
-            <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../../public/img/my/my-oasis.png"
-                 alt="My OASIS"/>
-                <span class="badge badge-notifications" th:if="${notificationsCount != 0}"
-                      th:text="${notificationsCount}">4</span>
+            <div class="my-oasis">
+                <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../../public/img/my/my-oasis.png"
+                     alt="My OASIS"/>
+                    <span class="badge badge-notifications" th:if="${notificationsCount != 0}"
+                          th:text="${notificationsCount}">4</span>
+            </div>
         </div>
-    </div>
-    <ul class="nav navbar-nav oasis-nav" th:remove="all-but-first">
-        <li class="active" th:each="item : ${navigation}" th:class="${item.active ? 'active':''}">
-            <a href="#" th:href="@{'/my/' + ${item.id}}" th:class="${item.active?'':'nav-link'}">
-                <img th:if="${!item.active}" th:src="@{'/img/my/' + ${item.id} + '-gray.png'}"
-                     src="../../public/img/my/dashboard-gray.png" alt="Dashboard" th:alt="#{'my.' + ${item.id}}"
-                     class="gray"/>
-                <img th:src="@{'/img/my/' + ${item.id} + '.png'}" src="../../public/img/my/dashboard.png" alt="Dashboard"
-                     th:alt="#{'my.' + ${item.id}}" th:class="${item.active?'':'purple'}"/>
-                <span th:text="#{'my.' + ${item.id}}">Dashboard</span>
-            </a>
-            <th:block th:if="${item.active}">
+        <ul class="nav navbar-nav oasis-nav" th:remove="all-but-first">
+            <li class="active" th:each="item : ${navigation}" th:class="${item.active ? 'active':''}">
+                <a href="#" th:href="@{'/my/' + ${item.id}}" th:class="${item.active?'':'nav-link'}">
+                    <img th:if="${!item.active}" th:src="@{'/img/my/' + ${item.id} + '-gray.png'}"
+                         src="../../public/img/my/dashboard-gray.png" alt="Dashboard" th:alt="#{'my.' + ${item.id}}"
+                         class="gray"/>
+                    <img th:src="@{'/img/my/' + ${item.id} + '.png'}" src="../../public/img/my/dashboard.png"
+                         alt="Dashboard"
+                         th:alt="#{'my.' + ${item.id}}" th:class="${item.active?'':'purple'}"/>
+                    <span th:text="#{'my.' + ${item.id}}">Dashboard</span>
+                </a>
+                <th:block th:if="${item.active}">
+                    <div class="arrow-border"></div>
+                    <div class="arrow"></div>
+                </th:block>
+            </li>
+            <li>
+                <a href="#" class="nav-link">
+                    <img class="gray" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile-gray.png"
+                         alt="Profile"/>
+                    <img class="purple" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile.png"
+                         alt="Profile"/>
+                    <span>Profile</span>
+                </a>
+
                 <div class="arrow-border"></div>
                 <div class="arrow"></div>
-            </th:block>
-        </li>
-        <li>
-            <a href="#" class="nav-link">
-                <img class="gray" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile-gray.png"
-                     alt="Profile"/>
-                <img class="purple" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile.png"
-                     alt="Profile"/>
-                <span>Profile</span>
-            </a>
-
-            <div class="arrow-border"></div>
-            <div class="arrow"></div>
-        </li>
-        <li>
-            <a href="#" class="nav-link">
-                <img class="gray" th:src="@{/img/my/network-gray.png}" src="../../public/img/my/network-gray.png"
-                     alt="Network"/>
-                <img class="purple" th:src="@{/img/my/network.png}" src="../../public/img/my/network.png" alt="Network"/>
-                <span>Network</span>
-            </a>
-        </li>
-        <li>
-            <a href="#" class="nav-link">
-                <img class="gray" th:src="@{/img/my/apps-management-gray.png}"
-                     src="../../public/img/my/appsmanagement-gray.png" alt="Apps Management"/>
-                <img class="purple" th:src="@{/img/my/apps-management.png}" src="../../public/img/my/appsmanagement.png"
-                     alt="Apps Management"/>
-                <span>My Apps</span>
-            </a>
-        </li>
-    </ul>
+            </li>
+            <li>
+                <a href="#" class="nav-link">
+                    <img class="gray" th:src="@{/img/my/network-gray.png}" src="../../public/img/my/network-gray.png"
+                         alt="Network"/>
+                    <img class="purple" th:src="@{/img/my/network.png}" src="../../public/img/my/network.png"
+                         alt="Network"/>
+                    <span>Network</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link">
+                    <img class="gray" th:src="@{/img/my/apps-management-gray.png}"
+                         src="../../public/img/my/appsmanagement-gray.png" alt="Apps Management"/>
+                    <img class="purple" th:src="@{/img/my/apps-management.png}"
+                         src="../../public/img/my/appsmanagement.png"
+                         alt="Apps Management"/>
+                    <span>My Apps</span>
+                </a>
+            </li>
+        </ul>
 
 
+    </div>
+
+    <div class="container">
+        <h2 data-th-text="#{my.apps.title}">Apps management</h2>
+    </div>
+
+    <div id="myapps"></div>
+
+    <div class="push"></div>
 </div>
-
-<div class="container">
-  <h2 data-th-text="#{my.apps.title}">Apps management</h2>
-</div>
-
-<div id="myapps" ></div>
-
 <th:block data-th-replace="includes/footer">
 
     <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
@@ -140,6 +146,7 @@
 <script data-th-inline="javascript" type="text/javascript">
     var apps_service = /*[[@{/my/api/myapps}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
     var messages = /*[[${i18n}]]*/ {};
+    var devmode = /*[[${devmode}]]*/ false;
 </script>
 
 <script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
@@ -153,6 +160,7 @@
 <!--/*/<script type="text/javascript" data-th-src="@{/js/appmanagement/myapps.min.js}" data-th-if="${!devmode}"></script>/*/-->
 
 
+<script type="text/javascript" data-th-src="@{/js/my.js}" src="../../public/js/my.js"></script>
 
 </body>
 </html>

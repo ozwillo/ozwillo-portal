@@ -13,6 +13,8 @@ public class UserNotification {
     String dateText;
     String id;
     String url;
+    String actionText;
+    String serviceId;
 
     public String getAppName() {
         return appName;
@@ -60,5 +62,21 @@ public class UserNotification {
 
     public void setDateText(String dateText) {
         this.dateText = dateText;
+    }
+
+    public String getActionText() {
+        return actionText;
+    }
+
+    public void setActionText(String actionText) {
+        this.actionText = actionText;
+    }
+
+    public String getServiceId() {
+        return serviceId;
+    }
+
+    public void setServiceId(String serviceId) {
+        this.serviceId = serviceId;
     }
 }

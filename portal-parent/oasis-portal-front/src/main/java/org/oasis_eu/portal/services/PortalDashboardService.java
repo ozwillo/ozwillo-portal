@@ -1,24 +1,15 @@
 package org.oasis_eu.portal.services;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
+import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.dashboard.DashboardEntry;
 import org.oasis_eu.spring.kernel.model.UserInfo;
@@ -27,18 +18,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.context.annotation.Scope;
-import org.springframework.context.annotation.ScopedProxyMode;
 import org.springframework.stereotype.Service;
-import org.springframework.web.context.WebApplicationContext;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * User: schambon
  * Date: 6/12/14
  */
 @Service
-@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS) // create a new instance for each request!
+//@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS) // create a new instance for each request!
 public class PortalDashboardService {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalDashboardService.class);
@@ -54,12 +47,6 @@ public class PortalDashboardService {
 
     @Autowired
     private SubscriptionStore subscriptionStore;
-
-//    @Autowired
-//    private ApplicationStore applicationStore;
-//
-//    @Autowired
-//    private LocalServiceStore localServiceStore;
 
     @Autowired
     private CatalogStore catalogStore;
@@ -85,28 +72,27 @@ public class PortalDashboardService {
     private List<Subscription> orphanSubscriptions(List<Subscription> allSubscriptions) {
         List<UserContext> ctxs = getDash().getContexts();
 
-        // note: this is supposed to be correct, not fast. We should rewrite it faster at some point!
+        Set<String> configured = ctxs
+                .stream()
+                .flatMap(c -> c.getSubscriptions().stream())
+                .map(us -> us.getId())
+                .collect(Collectors.toSet());
+
         return allSubscriptions
                 .stream()
-                .filter(s -> ctxs.stream().flatMap(c -> c.getSubscriptions().stream()).noneMatch(sid -> sid.equals(s.getId())))
+                .filter(s -> s.getId() != null)
+                .filter(s -> ! configured.contains(s.getId()))
                 .collect(Collectors.toList());
+
     }
 
     public List<String> getServicesIds(String userContextId) {
-//        if (logger.isDebugEnabled()) {
-//            logger.debug("-> get application ids for context: " + userContextId);
-//
-//        }
-        Map<String, Subscription> subs = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId()).stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
-        Optional<UserContext> optUserContext = getDash().getContexts()
-                .stream().filter(uc -> uc.getId().equals(userContextId)).findFirst();
-        if (optUserContext.isPresent()) {
-			return optUserContext.get().getSubscriptions()
-	                .stream().map(subs::get).filter(s -> s != null).map(Subscription::getServiceId).collect(Collectors.toList());
-        }
-        else {
-        	return Collections.emptyList();
+        UserContext context = getDash().getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
+        if (context == null) {
+            return Collections.emptyList();
+        } else {
+            return context.getSubscriptions().stream().map(us -> us.getServiceId()).collect(Collectors.toList());
         }
 
     }
@@ -120,8 +106,8 @@ public class PortalDashboardService {
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         List<DashboardEntry> entries = userContext.getSubscriptions().stream()
-                .filter(subscriptionById::containsKey)
-                .map(sid -> getDashboardEntry(subscriptionById.get(sid)))
+                .filter(userSub -> subscriptionById.containsKey(userSub.getId()))
+                .map(s -> getDashboardEntry(subscriptionById.get(s.getId())))
                 .filter(e -> e != null)
                 .collect(Collectors.toList());
 
@@ -133,12 +119,20 @@ public class PortalDashboardService {
                     .collect(Collectors.toList()));
         }
 
-        userContext.setSubscriptions(entries.stream().map(e -> e.getSubscription().getId()).collect(Collectors.toList()));
+        userContext.setSubscriptions(entries.stream().map(this::toUserSubscription).collect(Collectors.toList()));
 
         // Right now we save all the time -- just in case we have made any modifications -- but this should be optimized someday
         dashboardRepository.save(dash);
 
         return entries;
+    }
+
+    private UserSubscription toUserSubscription(DashboardEntry entry) {
+        Subscription subscription = entry.getSubscription();
+        UserSubscription result = new UserSubscription();
+        result.setId(subscription.getId());
+        result.setServiceId(subscription.getServiceId());
+        return result;
     }
 
 
@@ -200,21 +194,18 @@ public class PortalDashboardService {
 
         UserContext sourceContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(sourceContextId)).findFirst().orElse(null);
         UserContext targetContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(targetContextId)).findFirst().orElse(null);
-        List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
-        Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
-        String subscriptionId = sourceContext.getSubscriptions().stream().filter(s -> subscriptionById.get(s).getServiceId().equals(subjectId)).findFirst().orElse(null);
-
-        if (subscriptionById != null) {
-            sourceContext.setSubscriptions(sourceContext.getSubscriptions().stream().filter(s -> !s.equals(subscriptionId)).collect(Collectors.toList()));
-            targetContext.getSubscriptions().add(subscriptionId);
+        UserSubscription userSubscription = sourceContext.getSubscriptions().stream().filter(us -> us.getServiceId().equals(subjectId)).findFirst().orElse(null);
+        if (userSubscription != null) {
+            sourceContext.setSubscriptions(sourceContext.getSubscriptions().stream().filter(s -> !s.getId().equals(userSubscription.getId())).collect(Collectors.toList()));
+            targetContext.getSubscriptions().add(userSubscription);
         }
 
         dashboardRepository.save(dash);
     }
 
     private static interface Orderer {
-        Stream<Pair<String, String>> apply(Pair<String, String> a, Pair<String, String> b);
+        Stream<UserSubscription> apply(UserSubscription a, UserSubscription b);
     }
 
     private void move(String userContextId, String subjectId, String objectId, Orderer orderer) {
@@ -225,16 +216,20 @@ public class PortalDashboardService {
             String subjectId_ = subjectId.substring("app-".length());
             String objectId_ = objectId.substring("app-".length());
 
-            List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
-            Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
+            UserSubscription toMove = context.getSubscriptions().stream().filter(us -> us.getServiceId().equals(subjectId_)).findFirst().orElse(null);
 
-            List<Pair<String, String>> subsAppPairs = context.getSubscriptions().stream().map(sid -> new Pair<>(sid, subscriptionById.get(sid).getServiceId())).collect(Collectors.toList());
+            if (toMove != null) {
+                context.setSubscriptions(
+                        context.getSubscriptions()
+                                .stream()
+                                .filter(us -> !us.getServiceId().equals(subjectId_))
+                                .flatMap(us -> us.getServiceId().equals(objectId_) ? orderer.apply(toMove, us) : Stream.of(us))
+                                .collect(Collectors.toList())
+                );
 
-            Pair<String, String> object = subsAppPairs.stream().filter(p -> p.getB().equals(subjectId_)).findFirst().get();
 
-            context.setSubscriptions(subsAppPairs.stream().filter(p -> !p.getB().equals(subjectId_)).flatMap(p -> p.getB().equals(objectId_) ? orderer.apply(p, object) : Stream.of(p)).map(p -> p.getA()).collect(Collectors.toList()));
-
-            dashboardRepository.save(dash);
+                dashboardRepository.save(dash);
+            }
         }
 
     }
@@ -244,6 +239,18 @@ public class PortalDashboardService {
         UserInfo user = userInfoHelper.currentUser();
         Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
         if (dashboard != null) {
+
+            // at one point we didn't store the service id in the subscription object. Now that we do, maybe some
+            boolean needsMigrate = dashboard.getContexts().stream().flatMap(uc -> uc.getSubscriptions().stream()).anyMatch(us -> us.getServiceId() == null);
+            if (needsMigrate) {
+
+                Map<String, String> serviceBySubId = subscriptionStore.findByUserId(user.getUserId()).stream().collect(Collectors.toMap(sub -> sub.getId(), sub -> sub.getServiceId()));
+                for (UserContext cx : dashboard.getContexts()) {
+                    cx.getSubscriptions().forEach(us -> us.setServiceId(serviceBySubId.get(us.getId())));
+                }
+                dashboardRepository.save(dashboard);
+            }
+
             return dashboard;
         } else {
             logger.info("Creating dashboard for user {} ({}) using locale: {}", user.getName(), user.getUserId(), RequestContextUtils.getLocale(request));

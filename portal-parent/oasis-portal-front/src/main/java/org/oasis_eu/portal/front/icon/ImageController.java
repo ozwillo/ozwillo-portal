@@ -83,5 +83,6 @@ public class ImageController {
 
     static class IconNotFound extends RuntimeException {
 
+        private static final long serialVersionUID = 9096153080333575467L;
     }
 }

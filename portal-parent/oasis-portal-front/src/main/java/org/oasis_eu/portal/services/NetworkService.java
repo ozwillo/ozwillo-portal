@@ -241,14 +241,23 @@ public class NetworkService {
                 .forEach(userMembership -> userDirectory.removeMembership(userMembership, userInfoService.currentUser().getUserId()));
     }
 
-    public Organization createOrganization(String name, String type) {
+    public UIOrganization createOrganization(String name, String type) {
         logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type, userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
 
         Organization org = new Organization();
         org.setName(name);
         org.setType(OrganizationType.valueOf(type));  // throws an IllegalArgumentException if the type isn't provided
 
-        return organizationStore.create(org);
+        org = organizationStore.create(org);
+
+        UIOrganization result = new UIOrganization();
+        result.setId(org.getId());
+        result.setType(org.getType());
+        result.setName(org.getName());
+        result.setAdmin(true);
+        result.setMembers(Collections.emptyList());
+
+        return result;
     }
 
     public void deleteOrganization(String organizationId) {

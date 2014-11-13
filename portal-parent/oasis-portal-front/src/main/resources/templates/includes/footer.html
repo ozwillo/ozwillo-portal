@@ -3,6 +3,7 @@
         <div class="row">
             <div class="col-sm-6 text-center">
                 <h1>Oasis</h1>
+
                 <p data-th-text="#{footer.tagline}">A platform interactive services for a data common good</p>
             </div>
             <div class="col-sm-2">
@@ -11,7 +12,7 @@
                     <li data-th-text="#{footer.help}"></li>
                     <li data-th-text="#{footer.contact}"></li>
                     <li data-th-text="#{footer.termsprivacy}"></li>
-               </ul>
+                </ul>
             </div>
             <div class="col-sm-2">
                 <ul>
@@ -19,72 +20,40 @@
                     <li data-th-text="#{footer.meetups}"></li>
                     <li data-th-text="#{footer.testimonials}"></li>
                     <li data-th-text="#{footer.brand}"></li>
-               </ul>
+                </ul>
             </div>
             <div class="col-sm-2">
                 <ul>
                     <li data-th-text="#{footer.teams}"></li>
                     <li data-th-text="#{footer.api}"></li>
-               </ul>
+                </ul>
             </div>
         </div>
     </div>
     <div class="footer">
-        <img src="/img/icons/eu.png" class="pull-left" />
+        <img src="/img/icons/eu.png" class="pull-left"/>
+
         <p data-th-text="#{footer.eu}">OASIS is a project cofunded by
-        the EU under the Program for Competitiveness and
-        Innovation CIP ICT PSP- N°297210</p>
+            the EU under the Program for Competitiveness and
+            Innovation CIP ICT PSP- N°297210</p>
     </div>
 </footer>
 
-<style type="text/css">
-.sitemap {
-    width: 100%;
-    background-color: #DECEE6;
-    padding: 10px 10%;
-}
-
-.sitemap ul {
-    margin-top: 20px;
-}
-
-.sitemap li {
-    list-style-type: none;
-    font-size: 15px;
-}
-
-.sitemap h1 {
-    font-size: 60px;
-}
-
-.sitemap a {
-    color: #526686;
-}
-
-.footer {
-    width: 100%;
-    background-color: #5744A2;
-    padding: 10px 30%;
-    color: white;
-}
-
-.footer img {
-    margin-right: 10px;
-}
-</style>
 
 <script data-th-src="@{/webjars/jquery/1.11.0/jquery.min.js}" src="/webjars/jquery/1.11.0/jquery.min.js"></script>
 <script data-th-src="@{/webjars/jquery-ui/1.10.4/ui/minified/jquery-ui.min.js}"
         src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-<script data-th-src="@{/webjars/bootstrap/3.1.1/js/bootstrap.min.js}" src="/webjars/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script data-th-src="@{/webjars/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js}" src="/webjars/bootstrap-switch/3.0.2/js/bootstrap-switch.min.js"></script>
+<script data-th-src="@{/webjars/bootstrap/3.1.1/js/bootstrap.min.js}"
+        src="/webjars/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
 <th:block data-th-if="${production}">
     <!-- pingdom -->
     <script>
-        var _prum = [['id', '53f5ac5cabe53d4f619d2936'],
-            ['mark', 'firstbyte', (new Date()).getTime()]];
-        (function() {
+        var _prum = [
+            ['id', '53f5ac5cabe53d4f619d2936'],
+            ['mark', 'firstbyte', (new Date()).getTime()]
+        ];
+        (function () {
             var s = document.getElementsByTagName('script')[0]
                     , p = document.createElement('script');
             p.async = 'async';
@@ -102,15 +71,19 @@
         _paq.push(["setDomains", ["*.portal.oasis-eu.org"]]);
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
-        (function() {
-            var u=(("https:" == document.location.protocol) ? "https" : "http") + "://oasis.piwikpro.com/";
-            _paq.push(['setTrackerUrl', u+'piwik.php']);
+        (function () {
+            var u = (("https:" == document.location.protocol) ? "https" : "http") + "://oasis.piwikpro.com/";
+            _paq.push(['setTrackerUrl', u + 'piwik.php']);
             _paq.push(['setSiteId', 40]);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0]; g.type='text/javascript';
-            g.defer=true; g.async=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
+            g.type = 'text/javascript';
+            g.defer = true;
+            g.async = true;
+            g.src = u + 'piwik.js';
+            s.parentNode.insertBefore(g, s);
         })();
     </script>
-    <noscript><p><img src="https://oasis.piwikpro.com/piwik.php?idsite=40" style="border:0;" alt="" /></p></noscript>
+    <noscript><p><img src="https://oasis.piwikpro.com/piwik.php?idsite=40" style="border:0;" alt=""/></p></noscript>
     <!-- End Piwik Code -->
 
 

@@ -114,7 +114,7 @@ $(document).ready(function () {
     /* Notifications */
 
     var updateAppNotifications = function () {
-
+        console.log("Getting app notifications");
         $.get("/my/api/app-notifications/" + $("#applications").attr("data"),
             function (notifData) {
                 for (var i = 0 ; i < notifData.length ; i++) {
@@ -138,9 +138,10 @@ $(document).ready(function () {
                     }
 
                 }
+                setTimeout(updateAppNotifications, 2000);
             }
         );
-        setTimeout(updateAppNotifications, 2000);
+
     };
 
     updateAppNotifications();

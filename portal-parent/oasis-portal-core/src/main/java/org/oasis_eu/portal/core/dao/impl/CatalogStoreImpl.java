@@ -5,11 +5,11 @@ import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.model.catalog.Audience;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.PaymentOption;
+import org.oasis_eu.portal.core.model.catalog.*;
+import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
+import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.service.Kernel;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,11 +47,18 @@ public class CatalogStoreImpl implements CatalogStore {
     @Value("${kernel.portal_endpoints.apps:}")
     private String appsEndpoint;
 
+    @Autowired
+    private InstalledStatusRepository installedStatusRepository;
+
+    @Autowired
+    private UserInfoService userInfoHelper;
+
     @Override
     @Cacheable("appstore")
     public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
+                .queryParam("limit", 200) // we'll see later about this
                 .build()
                 .toUriString();
 
@@ -101,6 +108,11 @@ public class CatalogStoreImpl implements CatalogStore {
     public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) {
 
         logger.info("Application instantiation request: {}", instancePattern);
+
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, appId, userInfoHelper.currentUser().getUserId());
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
 
         try {
             ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
@@ -168,7 +180,20 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     public void deleteInstance(String instanceId) {
-        kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.DELETE, null, ApplicationInstance.class, user(), instanceId).getBody();
+        logger.warn("Deleting instance {}", instanceId);
+
+        ResponseEntity<ApplicationInstance> entity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
+        String eTag = entity.getHeaders().getETag();
+
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, entity.getBody().getApplicationId(), userInfoHelper.currentUser().getUserId());
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("If-Match", eTag);
+
+        kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), ApplicationInstance.class, user(), instanceId).getBody();
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -199,15 +224,17 @@ public class CatalogStoreImpl implements CatalogStore {
         String territory_id;
         String subscription_id;
         String subscription_secret;
-        @JsonProperty("contacts") List<String> contacts;
-        @JsonProperty("screenshot_uris") List<String> screenshotUris;
+        @JsonProperty("contacts")
+        List<String> contacts;
+        @JsonProperty("screenshot_uris")
+        List<String> screenshotUris;
 
         @JsonIgnore
         private Map<String, String> otherProperties = new HashMap<>();
 
         @JsonAnySetter
         public void set(String key, String value) {
-            if (! BLACKLISTED.contains(key)) {
+            if (!BLACKLISTED.contains(key)) {
                 otherProperties.put(key, value);
             }
         }

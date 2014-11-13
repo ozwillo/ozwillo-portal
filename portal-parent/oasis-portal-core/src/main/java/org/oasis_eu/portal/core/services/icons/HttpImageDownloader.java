@@ -2,6 +2,7 @@ package org.oasis_eu.portal.core.services.icons;
 
 import org.apache.http.Header;
 import org.apache.http.HttpEntity;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
@@ -11,8 +12,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.net.URISyntaxException;
 
 /**
  * User: schambon
@@ -21,12 +20,8 @@ import java.net.URISyntaxException;
 @Service
 public class HttpImageDownloader implements ImageDownloader {
 
-    // maximum icon size that we're willing to download
-    // that's 128*128*3, i.e. 48 KB - the size of an uncompressed 24-bit 128×128 file (eg TIFF/BMP).
-    // we expect 64×64 PNGs so at most 1/4 of that size. So we are not unduly restrictive (quite the
-    // opposite).
-    // Note: maybe we should set that as a live parameter
-    private static final int MAX_RESOURCE_SIZE = 49152;
+    // maximum image size that we're willing to download (1MB - which is already HUGE)
+    private static final int MAX_RESOURCE_SIZE = 1048576;
 
     private static final Logger logger = LoggerFactory.getLogger(HttpImageDownloader.class);
 
@@ -37,7 +32,11 @@ public class HttpImageDownloader implements ImageDownloader {
             return null;
         }
 
-        CloseableHttpClient client = HttpClients.createDefault();
+        CloseableHttpClient client = HttpClients.custom()
+                .setDefaultRequestConfig(RequestConfig.custom()
+                        .setConnectTimeout(1000)
+                        .setSocketTimeout(1000).build())
+                .build();
         try {
             HttpGet get = new HttpGet(iconUrl);
             try (CloseableHttpResponse response = client.execute(get)) {

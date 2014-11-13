@@ -69,10 +69,10 @@ public class CatalogStoreImplTest {
         MockRestServiceServer mock = MockRestServiceServer.createServer(kernelRestTemplate);
 
         // we'll call the service 4 times
-        mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
-        mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
-        mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
-        mock.expect(requestTo("http://localhost:8081/catalog/search")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+        mock.expect(requestTo("http://localhost:8081/catalog/search?limit=200")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+        mock.expect(requestTo("http://localhost:8081/catalog/search?limit=200")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+        mock.expect(requestTo("http://localhost:8081/catalog/search?limit=200")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
+        mock.expect(requestTo("http://localhost:8081/catalog/search?limit=200")).andRespond(withSuccess(response, MediaType.APPLICATION_JSON));
 
         List<CatalogEntry> individuals = catalogStore.findAllVisible(Arrays.asList(Audience.CITIZENS), Arrays.asList(PaymentOption.FREE, PaymentOption.PAID));
         assertEquals(2, individuals.size());
