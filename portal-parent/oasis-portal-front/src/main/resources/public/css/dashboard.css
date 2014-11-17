@@ -122,3 +122,7 @@ div.delete-app.over {
     background: #d9534f;
 
 }
+
+div.modal-body p {
+    color: #636681;
+}

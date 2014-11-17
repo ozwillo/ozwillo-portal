@@ -152,7 +152,19 @@ var Dashboard = React.createClass({
             this.setState(this.state);
         }.bind(this);
     },
+    removeDash: function (dash) {
+        return function () {
+            console.log("Removing", dash);
+        }.bind(this);
+    },
+    addDash: function (dashname) {
+        var state = this.state;
+        var dashId = "d" + Math.floor((Math.random() * 10000));
+        var dash = {id: dashId, name: dashname, main: false, apps: []};
 
+        state.dashboards.push(dash);
+        this.setState(state);
+    },
     render: function () {
         return (
             <div className="row">
@@ -165,6 +177,8 @@ var Dashboard = React.createClass({
                     deleteApp={this.deleteApp}
                     createDash={this.createDash}
                     renameDash={this.renameDash}
+                    removeDash={this.removeDash}
+                    addDash={this.addDash}
                 />
                 <Desktop apps={this.state.apps}
                     startDrag={this.startDrag}
@@ -190,6 +204,7 @@ var SideBar = React.createClass({
                     switchCallback={this.props.switchToDashboard(dash)}
                     moveToDash={this.props.moveToDash(dash)}
                     rename={this.props.renameDash(dash)}
+                    remove={this.props.removeDash(dash)}
                 />
             );
         }.bind(this));
@@ -234,7 +249,7 @@ var DashItem = React.createClass({
         this.props.moveToDash(app);
         var state = this.state;
         state.over = false;
-        this.setState(false);
+        this.setState(state);
     },
     edit: function () {
         this.state.editing = true;
@@ -249,12 +264,13 @@ var DashItem = React.createClass({
             if (this.state.editing) {
                 return <EditingDash name={this.props.dash.name} rename={this.props.rename} cancel={this.cancelEditing}/>;
             } else {
+
                 return (
                     <li className="active">
                         <a onClick={function (e) {
                             e.preventDefault();
                         }}>{this.props.dash.name}
-                            <i className="fa fa-pencil pull-right" onClick={this.edit}></i>
+                            <DashActions remove={this.props.remove} edit={this.edit} primary={this.props.dash.main}/>
                         </a>
                     </li>
                 );
@@ -277,6 +293,43 @@ var DashItem = React.createClass({
             );
         }
     }
+});
+
+var DashActions = React.createClass({
+
+    remove: function () {
+        this.props.remove();
+        this.refs.modal.close();
+    },
+    showRemove: function () {
+        this.refs.modal.open();
+    },
+    render: function () {
+
+        if (this.props.primary) {
+            return (
+                <div className="pull-right">
+                    <i className="fa fa-pencil" onClick={this.props.edit}></i>
+                </div>
+            );
+
+        } else {
+            var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
+            return (
+                <div className="pull-right">
+                    <Modal title={t('confirm-delete-dash')} successHandler={this.remove} buttonLabels={buttonLabels} ref="modal">
+                        <p>{t('confirm-delete-dash-long')}</p>
+                    </Modal>
+
+                    <i className="fa fa-pencil" onClick={this.props.edit}></i>
+                    <i className="fa fa-trash" onClick={this.showRemove}></i>
+                </div>
+            );
+
+        }
+
+    }
+
 });
 
 var EditingDash = React.createClass({
@@ -315,14 +368,35 @@ var EditingDash = React.createClass({
 });
 
 var CreateDashboard = React.createClass({
+    getInitialState: function () {
+        return {val: ""};
+    },
+    change: function (event) {
+        this.setState({val: event.target.value});
+    },
+    submit: function (event) {
+        event.preventDefault();
+        this.props.addDash(this.state.val);
+        this.setState(this.getInitialState());
+    },
     render: function () {
-        return null;
+        return (
+            <form role="form" id="create-dash" onSubmit={this.submit}>
+                <div className="form-group">
+                    <label htmlFor="dashboardname">{t('create')}</label>
+                    <input type="text" name="dashboardname" id="dashboardname" className="form-control" value={this.state.val} onChange={this.change}/>
+                </div>
+                <div className="text-right">
+                    <input type="image" src={image_root + "/icon/plus.png"} alt={t('ui.ok')} onClick={this.submit} />
+                </div>
+            </form>
+        );
     }
 });
 
 var DeleteApp = React.createClass({
     getInitialState: function () {
-        return {over: false};
+        return {over: false, app: null};
     },
     over: function (isOver) {
         return function (event) {
@@ -334,12 +408,29 @@ var DeleteApp = React.createClass({
     },
     drop: function (event) {
         var app = JSON.parse(event.dataTransfer.getData("application/json")).app;
+
+        this.setState({over: true, app: app});
+        this.refs.modal.open();
+
+        //this.props.delete(app);
+        //this.setState({over: false});
+    },
+    removeApp: function () {
+        var app = this.state.app;
         this.props.delete(app);
-        this.setState({over: false});
+        this.refs.modal.close();
+        this.setState(this.getInitialState());
+
+
+    },
+    cancel: function () {
+        console.log("humm....");
+        this.setState(this.getInitialState());
     },
     render: function () {
-        if (this.props.dragging) {
+        if (this.props.dragging || this.state.app) {
             var className = "delete-app" + (this.state.over ? " over" : "");
+            var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
             return (
                 <div
                     className={className}
@@ -347,6 +438,11 @@ var DeleteApp = React.createClass({
                     onDragLeave={this.over(false)}
                     onDrop={this.drop}
                 >
+                    <Modal title={t('confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel} buttonLabels={buttonLabels} ref="modal">
+                        <p>
+                        {t('confirm-remove-app-long')}
+                        </p>
+                    </Modal>
                     <span>
                         <i className="fa fa-trash"></i>
                     </span>

@@ -5,6 +5,7 @@
  * Expected props:
  *  - title - String (will be shown as title)
  *  - successHandler - callback that is called on validation
+ *  - cancelHandler - callback that is called on cancel
  *  - buttonLabels (optional) - a map of strings with keys "save", "cancel". By default will map to t('ui.save'), t('ui.cancel')
  *  - large (optional) - if true, will use the modal-lg class on the dialog
  *  - infobox (optional) - if true, will display only a single inverted OK button (label key = 'ok') rather than save / cancel
@@ -16,6 +17,12 @@
 var Modal = React.createClass({
     componentDidMount: function () {
         $(this.getDOMNode()).modal({show: false});
+        if (this.props.cancelHandler) {
+            var handler = this.props.cancelHandler;
+            $(this.getDOMNode()).on("hide.bs.modal", function () {
+                handler();
+            });
+        }
     },
     componentWillUnmount: function () {
         $(this.getDOMNode()).off('hidden');
