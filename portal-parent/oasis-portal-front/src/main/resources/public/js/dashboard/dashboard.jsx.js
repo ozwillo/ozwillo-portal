@@ -240,14 +240,20 @@ var DashItem = React.createClass({
         this.state.editing = true;
         this.setState(this.state);
     },
+    cancelEditing: function () {
+        this.state.editing = false;
+        this.setState(this.state);
+    },
     render: function () {
         if (this.props.active) {
             if (this.state.editing) {
-                return <EditingDash name={this.props.dash.name} rename={this.props.rename} />;
+                return <EditingDash name={this.props.dash.name} rename={this.props.rename} cancel={this.cancelEditing}/>;
             } else {
                 return (
                     <li className="active">
-                        <a>{this.props.dash.name}>
+                        <a onClick={function (e) {
+                            e.preventDefault();
+                        }}>{this.props.dash.name}
                             <i className="fa fa-pencil pull-right" onClick={this.edit}></i>
                         </a>
                     </li>
@@ -277,15 +283,32 @@ var EditingDash = React.createClass({
     getInitialState: function () {
         return {val: this.props.name};
     },
+    componentDidMount: function () {
+        var input = $(this.getDOMNode()).find("input");
+        input.focus();
+        input.select();
+    },
     change: function (event) {
         var state = this.state;
         state.val = event.target.value;
         this.setState(state);
     },
+    click: function (event) {
+        event.preventDefault();
+        event.stopPropagation();
+    },
+    submit: function (event) {
+        event.preventDefault();
+        this.props.rename(this.state.val);
+        this.props.cancel();
+    },
     render: function () {
         return (
             <li className="active">
-                <input type="text" value={this.state.val} onChange={this.change} />
+                <form onSubmit={this.submit}>
+                    <input type="text" className="form-control" value={this.state.val} onChange={this.change} onClick={this.click}/>
+                </form>
+                <div className="dash-veil" onClick={this.props.cancel}></div>
             </li>
         );
     }
@@ -383,9 +406,10 @@ var AddNew = React.createClass({
             <div className="appzone">
                 <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback("last")}/>
                 <div className="app text-center">
-                    <a href={store_root}  className="app-link add-more" draggable="false">
+                    <a href={store_root}  className="add-more" draggable="false">
                         <img src={image_root + "icon/plus.png"}/>
                     </a>
+                    <p>{t('add')}</p>
                 </div>
             </div>
         );

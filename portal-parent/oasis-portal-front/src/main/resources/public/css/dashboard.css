@@ -50,8 +50,8 @@ a.app-link {
 
 }
 
-a.app-link.add-more {
-    position: absolute;
+a.add-more {
+    position: relative;
     border: 2px dashed #636681;
     border-radius: 10px;
     display: block;
@@ -60,7 +60,7 @@ a.app-link.add-more {
     margin-left: 28px;
 }
 
-div.app a.app-link.add-more img {
+div.app a.add-more img {
     position: absolute;
     bottom: -16px;
     right: -16px;
@@ -94,6 +94,20 @@ div.dash-switcher a.dragging {
 
 div.dash-switcher a.dragging.over {
     background: url("/img/my/dropzone-bg.png");
+}
+
+div.dash-switcher ul.nav li.active div.dash-veil {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 100%;
+    z-index: 2000;
+}
+
+div.dash-switcher ul.nav li.active input.form-control {
+    position: relative;
+    z-index: 2010;
 }
 
 div.delete-app {
