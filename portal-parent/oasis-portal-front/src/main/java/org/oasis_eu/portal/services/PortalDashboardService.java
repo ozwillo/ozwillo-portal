@@ -11,7 +11,7 @@ import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.model.dashboard.DashboardEntry;
+import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -24,7 +24,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 /**
  * User: schambon
@@ -97,42 +96,76 @@ public class PortalDashboardService {
 
     }
 
-    public List<DashboardEntry> getDashboardEntries(String userContextId) {
-        Dashboard dash = getDash();
-
-        UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().get();
-        List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
-
-        Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
-
-        List<DashboardEntry> entries = userContext.getSubscriptions().stream()
-                .filter(userSub -> subscriptionById.containsKey(userSub.getId()))
-                .map(s -> getDashboardEntry(subscriptionById.get(s.getId())))
-                .filter(e -> e != null)
-                .collect(Collectors.toList());
-
-
-        if (userContext.isPrimary()) {
-            entries.addAll(orphanSubscriptions(actualSubscriptions).stream()
-                    .map(this::getDashboardEntry)
-                    .filter(e -> e != null)
-                    .collect(Collectors.toList()));
-        }
-
-        userContext.setSubscriptions(entries.stream().map(this::toUserSubscription).collect(Collectors.toList()));
-
-        // Right now we save all the time -- just in case we have made any modifications -- but this should be optimized someday
-        dashboardRepository.save(dash);
-
-        return entries;
+    public List<DashboardApp> getMainDashboardApps() {
+        return getDashboardApps(getPrimaryUserContext().getId());
     }
 
-    private UserSubscription toUserSubscription(DashboardEntry entry) {
-        Subscription subscription = entry.getSubscription();
+    public List<DashboardApp> getDashboardApps(String userContextId) {
+        Dashboard dash = getDash();
+
+        UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
+        if (userContext == null) {
+            logger.info("Cannot get apps for non-existant dashboard {}, user={}", userContextId, userInfoHelper.currentUser().getUserId());
+            return Collections.emptyList();
+        }
+
+        List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
+        Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
+
+        List<DashboardApp> apps = userContext.getSubscriptions()
+                .stream()
+                .filter(us -> subscriptionById.containsKey(us.getId()))
+                .map(us -> toDashboardApp(subscriptionById.get(us.getId())))
+                .filter(app -> app != null)
+                .collect(Collectors.toList());
+
+        apps.addAll(orphanSubscriptions(actualSubscriptions)
+                        .stream()
+                        .map(this::toDashboardApp)
+                        .filter(app -> app != null)
+                        .collect(Collectors.toList())
+        );
+
+        // update the dashboard
+        userContext.setSubscriptions(apps.stream().map(this::toUserSubscription).collect(Collectors.toList()));
+        dashboardRepository.save(dash);
+
+        return apps;
+    }
+
+    private DashboardApp toDashboardApp(Subscription sub) {
+        CatalogEntry service = catalogStore.findService(sub.getServiceId());
+        if (service == null) {
+            return null;
+        }
+
+        DashboardApp app = new DashboardApp();
+        app.setId(sub.getId());
+        app.setServiceId(sub.getServiceId());
+        app.setName(service.getName(RequestContextUtils.getLocale(request)));
+        app.setIcon(imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
+        return app;
+    }
+
+    private UserSubscription toUserSubscription(DashboardApp app) {
         UserSubscription result = new UserSubscription();
-        result.setId(subscription.getId());
-        result.setServiceId(subscription.getServiceId());
+        result.setId(app.getId());
+        result.setServiceId(app.getServiceId());
         return result;
+    }
+
+    public void setAppsInContext(String contextId, List<DashboardApp> apps) {
+        logger.debug("Updating apps in context {} with list {}", contextId, apps);
+
+        Dashboard dash = getDash();
+
+        UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(contextId)).findFirst().orElse(null);
+        if (userContext != null) {
+            userContext.setSubscriptions(apps.stream().map(this::toUserSubscription).collect(Collectors.toList()));
+            dashboardRepository.save(dash);
+        } else {
+            logger.error("Usercontext {} does not exist for userid {}", contextId, userInfoHelper.currentUser().getUserId());
+        }
     }
 
 
@@ -180,62 +213,33 @@ public class PortalDashboardService {
     	}
     	
     }
-    
-    public void moveBefore(String userContextId, String subjectId, String objectId) {
-        move(userContextId, subjectId, objectId, (p1, p2) -> Stream.of(p2, p1));
-    }
 
-    public void moveAfter(String userContextId, String subjectId, String objectId) {
-        move(userContextId, subjectId, objectId, (p1, p2) -> Stream.of(p1, p2));
-    }
 
-    public void moveAppToContext(String sourceContextId, String subjectId, String targetContextId) {
+    public void moveAppTo(String subjectId, String targetContextId) {
         Dashboard dash = getDash();
 
-        UserContext sourceContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(sourceContextId)).findFirst().orElse(null);
-        UserContext targetContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(targetContextId)).findFirst().orElse(null);
+        logger.debug("Moving app {} to {}", subjectId, targetContextId);
 
-        UserSubscription userSubscription = sourceContext.getSubscriptions().stream().filter(us -> us.getServiceId().equals(subjectId)).findFirst().orElse(null);
-        if (userSubscription != null) {
-            sourceContext.setSubscriptions(sourceContext.getSubscriptions().stream().filter(s -> !s.getId().equals(userSubscription.getId())).collect(Collectors.toList()));
+        UserContext targetContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(targetContextId)).findFirst().get();
+        UserContext sourceContext = dash.getContexts().stream()
+                .filter(context -> context.getSubscriptions().stream().anyMatch(sub -> sub.getId().equals(subjectId)))
+                .findFirst().orElse(null);
+
+        if (sourceContext != null) {
+
+            UserSubscription userSubscription = sourceContext.getSubscriptions().stream().filter(s -> s.getId().equals(subjectId)).findFirst().get();
+
+            sourceContext.setSubscriptions(sourceContext.getSubscriptions().stream().filter(s -> !s.getId().equals(subjectId)).collect(Collectors.toList()));
             targetContext.getSubscriptions().add(userSubscription);
-        }
 
-        dashboardRepository.save(dash);
-    }
-
-    private static interface Orderer {
-        Stream<UserSubscription> apply(UserSubscription a, UserSubscription b);
-    }
-
-    private void move(String userContextId, String subjectId, String objectId, Orderer orderer) {
-        Dashboard dash = getDash();
-        UserContext context = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
-        if (context != null) {
-            // get rid of app- prefix
-            String subjectId_ = subjectId.substring("app-".length());
-            String objectId_ = objectId.substring("app-".length());
-
-            UserSubscription toMove = context.getSubscriptions().stream().filter(us -> us.getServiceId().equals(subjectId_)).findFirst().orElse(null);
-
-            if (toMove != null) {
-                context.setSubscriptions(
-                        context.getSubscriptions()
-                                .stream()
-                                .filter(us -> !us.getServiceId().equals(subjectId_))
-                                .flatMap(us -> us.getServiceId().equals(objectId_) ? orderer.apply(toMove, us) : Stream.of(us))
-                                .collect(Collectors.toList())
-                );
-
-
-                dashboardRepository.save(dash);
-            }
+            dashboardRepository.save(dash);
         }
 
     }
 
 
-    private Dashboard getDash() {
+    public Dashboard getDash() {
+
         UserInfo user = userInfoHelper.currentUser();
         Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
         if (dashboard != null) {
@@ -262,47 +266,5 @@ public class PortalDashboardService {
         }
     }
 
-    private DashboardEntry getDashboardEntry(Subscription s) {
 
-        DashboardEntry entry = new DashboardEntry();
-        entry.setDisplayLocale(RequestContextUtils.getLocale(request));
-        entry.setSubscription(s);
-        CatalogEntry catalogEntry = catalogStore.findService(s.getServiceId());
-        if (catalogEntry == null) {
-            logger.warn("User {} - cannot find service for id {}", userInfoHelper.currentUser().getUserId(), s.getServiceId());
-
-            return null;
-        }
-        entry.setCatalogEntry(catalogEntry);
-        entry.setNotificationsCount((int) notificationService.countAppNotifications(s.getServiceId()));
-        entry.setIconUrl(imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
-
-        return entry;
-    }
-
-    private static class Pair<A, B> {
-        A a;
-        B b;
-
-        private Pair(A a, B b) {
-            this.a = a;
-            this.b = b;
-        }
-
-        public A getA() {
-            return a;
-        }
-
-        public void setA(A a) {
-            this.a = a;
-        }
-
-        public B getB() {
-            return b;
-        }
-
-        public void setB(B b) {
-            this.b = b;
-        }
-    }
 }

@@ -24,4 +24,12 @@ public class UserSubscription {
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
+
+    @Override
+    public String toString() {
+        return "UserSubscription{" +
+                "id='" + id + '\'' +
+                ", serviceId='" + serviceId + '\'' +
+                '}';
+    }
 }

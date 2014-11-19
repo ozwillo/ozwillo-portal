@@ -1,5 +1,8 @@
 package org.oasis_eu.portal.core.mongo.model.my;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -11,7 +14,11 @@ public class UserContext {
 
     private String id;
     private String name;
+
+    @JsonProperty("main")
     private boolean primary = false;
+
+    @JsonIgnore
     private List<UserSubscription> subscriptions = new ArrayList<>();
 
     public String getId() {

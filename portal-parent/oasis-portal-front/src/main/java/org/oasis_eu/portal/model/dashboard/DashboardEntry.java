@@ -11,6 +11,7 @@ import java.util.Locale;
  * User: schambon
  * Date: 6/12/14
  */
+@Deprecated
 public class DashboardEntry {
 
     //    private Application application;

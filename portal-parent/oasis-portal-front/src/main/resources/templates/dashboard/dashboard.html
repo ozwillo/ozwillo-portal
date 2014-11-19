@@ -87,6 +87,8 @@
         Header
     </div>
 
+    <span data-th-if="${devmode}" data-th-text="${user.userId}">userid</span>
+
     <div class="container main-content" id="dashboard">
         <div class="text-center"><i class="fa fa-spinner fa-spin"></i><span data-th-text="#{ui.loading}"></span></div>
     </div>
@@ -107,6 +109,7 @@
     var devmode = /*[[${devmode}]]*/ {};
     var store_root = /*[[@{|/${currentLanguage.locale.language}/store|}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/templates/store';
     var image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
+    var dash_service = /*[[@{/my/api/dashboard/}]]*/ '';
 </script>
 
 <script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>

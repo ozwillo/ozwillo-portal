@@ -1,553 +1,654 @@
 /** @jsx React.DOM */
 
-var __dashboards = [
-    {
-        id: "d1", name: "Principal", main: true, apps: [
-        {
-            id: "1",
-            name: "Voter à St Genis",
-            url: "#",
-            icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-15.png"
-        },
-        {
-            id: "2",
-            name: "Pouet pouet",
-            url: "http://google.com",
-            icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-16.png"
-        },
-        {
-            id: "3",
-            name: "Lorem",
-            url: "http://google.com",
-            icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-        },
-        {
-            id: "4",
-            name: "ipsum",
-            url: "http://google.com",
-            icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-        },
-        {
-            id: "5",
-            name: "dolor",
-            url: "http://google.com",
-            icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-        },
-        {
-            id: "6",
-            name: "sit",
-            url: "http://google.com",
-            icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-        },
-        {
-            id: "7",
-            name: "amet",
-            url: "http://google.com",
-            icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-        }
-    ]
-    },
-    {id: "d2", name: "Annexe", main: false, apps: []}
-];
 
+(function () {
 
-var Dashboard = React.createClass({
-    getInitialState: function () {
-        return {
-            dashboards: __dashboards,
-            dash: __dashboards[0],
-            apps: __dashboards[0].apps,
-            dragging: false
-        };
-    },
-    findById: function (array, obj) {
-        for (var i in array) {
-            if (array[i].id == obj.id) {
-                return i;
+    var __dashboards = [
+        {
+            id: "d1", name: "Principal", main: true, apps: [
+            {
+                id: "1",
+                name: "Voter à St Genis",
+                url: "#",
+                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-15.png"
+            },
+            {
+                id: "2",
+                name: "Pouet pouet",
+                url: "http://google.com",
+                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-16.png"
+            },
+            {
+                id: "3",
+                name: "Lorem",
+                url: "http://google.com",
+                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
+            },
+            {
+                id: "4",
+                name: "ipsum",
+                url: "http://google.com",
+                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
+            },
+            {
+                id: "5",
+                name: "dolor",
+                url: "http://google.com",
+                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
+            },
+            {
+                id: "6",
+                name: "sit",
+                url: "http://google.com",
+                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
+            },
+            {
+                id: "7",
+                name: "amet",
+                url: "http://google.com",
+                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
             }
-        }
-    },
-    startDrag: function (app) {
-        return function (event) {
-            event.dataTransfer.setData("application/json", JSON.stringify({app: app}));
-            var state = this.state;
-            state.dragging = true;
-            this.setState(state);
-        }.bind(this);
-    },
-    endDrag: function () {
-        var state = this.state;
-        state.dragging = false;
-        this.setState(state);
-    },
-    reorderApps: function (before) {
-        return function (app) {
+        ]
+        },
+        {id: "d2", name: "Annexe", main: false, apps: []}
+    ];
 
-            var state = this.state;
-            state.dragging = false;
 
-            var fr = this.findById(this.state.apps, app);
-            if (before != "last") {
-                var to = this.findById(this.state.apps, before);
-                if (to != fr) {
-                    // remove
-                    var removed = state.apps.splice(fr, 1);
-                    var to = this.findById(this.state.apps, before);
-                    state.apps.splice(to, 0, removed[0]);
+    var Dashboard = React.createClass({
+        componentDidMount: function () {
+            $.ajax({
+                url: dash_service + "/dashboards",
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    this.state.dashboards = data;
+                    this.state.dash = data[0];
+                    this.state.loadingDashboards = false;
+                    this.setState(this.state);
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.log("Error", status, err);
+                }.bind(this)
+            });
+
+            $.ajax({
+                url: dash_service + "/apps",
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    this.state.apps = data;
+                    this.state.loadingApps = false;
+                    this.setState(this.state);
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.log("Error", status, err);
+                }.bind(this)
+            });
+        },
+        getInitialState: function () {
+            return {
+                dashboards: null,
+                dash: null,
+                apps: null,
+                dragging: false,
+                loadingDashboards: true,
+                loadingApps: true
+            };
+        },
+        findById: function (array, obj) {
+            for (var i in array) {
+                if (array[i].id == obj.id) {
+                    return i;
                 }
-            } else {
-                var removed = state.apps.splice(fr, 1);
-                state.apps.splice(state.apps.length, 0, removed[0]);
             }
-            this.setState(state);
-
-        }.bind(this);
-    },
-
-    switchToDashboard: function (dash) {
-        return function () {
+        },
+        startDrag: function (app) {
+            return function (event) {
+                event.dataTransfer.setData("application/json", JSON.stringify({app: app}));
+                var state = this.state;
+                state.dragging = true;
+                this.setState(state);
+            }.bind(this);
+        },
+        endDrag: function () {
             var state = this.state;
-            state.dash = dash;
-            state.apps = dash.apps;
+            state.dragging = false;
             this.setState(state);
-        }.bind(this);
-    },
+        },
+        reorderApps: function (before) {
+            return function (app) {
 
-    moveToDash: function (dash) {
-        return function (app) {
+                var state = this.state;
+                state.dragging = false;
 
+                var fr = this.findById(this.state.apps, app);
+                if (before != "last") {
+                    var to = this.findById(this.state.apps, before);
+                    if (to != fr) {
+                        // remove
+                        var removed = state.apps.splice(fr, 1);
+                        var to = this.findById(this.state.apps, before);
+                        state.apps.splice(to, 0, removed[0]);
+                    }
+                } else {
+                    var removed = state.apps.splice(fr, 1);
+                    state.apps.splice(state.apps.length, 0, removed[0]);
+                }
+
+                $.ajax({
+                    url: dash_service + "/apps/" + state.dash.id,
+                    type: 'put',
+                    contentType: 'application/json',
+                    data: JSON.stringify(state.apps),
+                    success: function () {
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.log("Error", status, err);
+                        // reload everything
+                        this.setState(this.getInitialState());
+                        this.componentDidMount();
+                    }.bind(this)
+                });
+
+                this.setState(state);
+
+            }.bind(this);
+        },
+
+        switchToDashboard: function (dash) {
+            return function () {
+                var state = this.state;
+                state.dash = dash;
+                state.loadingApps = true;
+                this.setState(state);
+
+                $.ajax({
+                    url: dash_service + "/apps/" + dash.id,
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (data) {
+                        state.apps = data;
+                        state.loadingApps = false;
+                        this.setState(state);
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.log("Error", status, err);
+                    }.bind(this)
+                });
+            }.bind(this);
+        },
+
+        moveToDash: function (dash) {
+            return function (app) {
+
+                $.ajax({
+                    url: dash_service + "/apps/move/" + app.id + "/to/" + dash.id,
+                    type: 'post',
+                    success: function () {
+                    },
+                    error: function (xhr, status, err) {
+                        console.log("Error", status, err);
+                        this.setState(this.getInitialState());
+                        this.componentDidMount();
+                    }.bind(this)
+                });
+
+                var state = this.state;
+                var index = this.findById(state.apps, app);
+                var dashIdx = this.findById(state.dashboards, dash);
+
+                var removed = state.apps.splice(index, 1);
+                state.dashboards[dashIdx].apps.push(app);
+
+                state.dragging = false;
+
+                this.setState(state);
+
+            }.bind(this);
+        },
+
+        deleteApp: function (app) {
             var state = this.state;
-            var index = this.findById(state.apps, app);
-            var dashIdx = this.findById(state.dashboards, dash);
-
-            var removed = state.apps.splice(index, 1);
-            state.dashboards[dashIdx].apps.push(app);
-
+            state.apps.splice(this.findById(state.apps, app), 1);
             state.dragging = false;
 
             this.setState(state);
-        }.bind(this);
-    },
+        },
 
-    deleteApp: function (app) {
-        var state = this.state;
-        state.apps.splice(this.findById(state.apps, app), 1);
-        state.dragging = false;
-
-        this.setState(state);
-    },
-
-    createDash: function (name) {
-        var state = this.state;
-        var dash = {id: "...", name: name, apps: [], main: false};
-        state.dashboards.push(dash);
-        state.dash = dash;
-        this.setState(state);
-    },
-
-    renameDash: function (dash) {
-        return function (name) {
-            var idx = this.findById(this.state.dashboards, dash);
-            this.state.dashboards[idx].name = name;
-            this.setState(this.state);
-        }.bind(this);
-    },
-    removeDash: function (dash) {
-        return function () {
-            console.log("Removing", dash);
-        }.bind(this);
-    },
-    addDash: function (dashname) {
-        var state = this.state;
-        var dashId = "d" + Math.floor((Math.random() * 10000));
-        var dash = {id: dashId, name: dashname, main: false, apps: []};
-
-        state.dashboards.push(dash);
-        this.setState(state);
-    },
-    render: function () {
-        return (
-            <div className="row">
-                <SideBar
-                    dashboards={this.state.dashboards}
-                    currentDash={this.state.dash}
-                    dragging={this.state.dragging}
-                    switchToDashboard={this.switchToDashboard}
-                    moveToDash={this.moveToDash}
-                    deleteApp={this.deleteApp}
-                    createDash={this.createDash}
-                    renameDash={this.renameDash}
-                    removeDash={this.removeDash}
-                    addDash={this.addDash}
-                />
-                <Desktop apps={this.state.apps}
-                    startDrag={this.startDrag}
-                    endDrag={this.endDrag}
-                    dragging={this.state.dragging}
-                    dropCallback={this.reorderApps}
-                />
-            </div>
-        );
-    }
-});
-
-
-var SideBar = React.createClass({
-    render: function () {
-        var dashboards = this.props.dashboards.map(function (dash) {
-            return (
-                <DashItem
-                    key={dash.id}
-                    dash={dash}
-                    active={dash == this.props.currentDash}
-                    dragging={this.props.dragging}
-                    switchCallback={this.props.switchToDashboard(dash)}
-                    moveToDash={this.props.moveToDash(dash)}
-                    rename={this.props.renameDash(dash)}
-                    remove={this.props.removeDash(dash)}
-                />
-            );
-        }.bind(this));
-
-        return (
-            <div className="col-sm-2 text-center dash-switcher">
-                <img src={image_root + "my/switch-dash.png"} />
-                <p>{t('switch-dash')}</p>
-                <ul className="nav nav-pills nav-stacked text-left">
-                {dashboards}
-                </ul>
-                <CreateDashboard addDash={this.props.addDash} />
-                <DeleteApp
-                    dragging={this.props.dragging}
-                    delete={this.props.deleteApp}
-                />
-            </div>
-        );
-    }
-});
-
-var DashItem = React.createClass({
-    getInitialState: function () {
-        return {over: false, editing: false};
-    },
-    select: function (event) {
-        event.preventDefault();
-        if (this.props.switchCallback) {
-            this.props.switchCallback();
-        }
-    },
-    over: function (isOver) {
-        return function (event) {
-            event.preventDefault();
+        createDash: function (name) {
             var state = this.state;
-            state.over = isOver;
+            var dash = {id: "...", name: name, apps: [], main: false};
+            state.dashboards.push(dash);
+            state.dash = dash;
             this.setState(state);
-        }.bind(this);
-    },
-    drop: function (event) {
-        var app = JSON.parse(event.dataTransfer.getData("application/json")).app;
-        this.props.moveToDash(app);
-        var state = this.state;
-        state.over = false;
-        this.setState(state);
-    },
-    edit: function () {
-        this.state.editing = true;
-        this.setState(this.state);
-    },
-    cancelEditing: function () {
-        this.state.editing = false;
-        this.setState(this.state);
-    },
-    render: function () {
-        if (this.props.active) {
-            if (this.state.editing) {
-                return <EditingDash name={this.props.dash.name} rename={this.props.rename} cancel={this.cancelEditing}/>;
+        },
+
+        renameDash: function (dash) {
+            return function (name) {
+                var idx = this.findById(this.state.dashboards, dash);
+                this.state.dashboards[idx].name = name;
+                this.setState(this.state);
+            }.bind(this);
+        },
+        removeDash: function (dash) {
+            return function () {
+                console.log("Removing", dash);
+            }.bind(this);
+        },
+        addDash: function (dashname) {
+            var state = this.state;
+            var dashId = "d" + Math.floor((Math.random() * 10000));
+            var dash = {id: dashId, name: dashname, main: false, apps: []};
+
+            state.dashboards.push(dash);
+            this.setState(state);
+        },
+        render: function () {
+            return (
+                <div className="row">
+                    <SideBar
+                        loading={this.state.loadingDashboards}
+                        dashboards={this.state.dashboards}
+                        currentDash={this.state.dash}
+                        dragging={this.state.dragging}
+                        switchToDashboard={this.switchToDashboard}
+                        moveToDash={this.moveToDash}
+                        deleteApp={this.deleteApp}
+                        createDash={this.createDash}
+                        renameDash={this.renameDash}
+                        removeDash={this.removeDash}
+                        addDash={this.addDash}
+                    />
+                    <Desktop
+                        loading={this.state.loadingApps}
+                        apps={this.state.apps}
+                        startDrag={this.startDrag}
+                        endDrag={this.endDrag}
+                        dragging={this.state.dragging}
+                        dropCallback={this.reorderApps}
+                    />
+                </div>
+            );
+        }
+    });
+
+
+    var SideBar = React.createClass({
+        render: function () {
+            if (this.props.loading) {
+                return (
+                    <div className="col-sm-2 text-center dash-switcher">
+                        <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
+                    </div>
+                );
             } else {
+
+                var dashboards = this.props.dashboards.map(function (dash) {
+                    return (
+                        <DashItem
+                            key={dash.id}
+                            dash={dash}
+                            active={dash == this.props.currentDash}
+                            dragging={this.props.dragging}
+                            switchCallback={this.props.switchToDashboard(dash)}
+                            moveToDash={this.props.moveToDash(dash)}
+                            rename={this.props.renameDash(dash)}
+                            remove={this.props.removeDash(dash)}
+                        />
+                    );
+                }.bind(this));
 
                 return (
-                    <li className="active">
-                        <a onClick={function (e) {
-                            e.preventDefault();
-                        }}>{this.props.dash.name}
-                            <DashActions remove={this.props.remove} edit={this.edit} primary={this.props.dash.main}/>
+                    <div className="col-sm-2 text-center dash-switcher">
+                        <img src={image_root + "my/switch-dash.png"} />
+                        <p>{t('switch-dash')}</p>
+                        <ul className="nav nav-pills nav-stacked text-left">
+                {dashboards}
+                        </ul>
+                        <CreateDashboard addDash={this.props.addDash} />
+                        <DeleteApp
+                            dragging={this.props.dragging}
+                            delete={this.props.deleteApp}
+                        />
+                    </div>
+                );
+            }
+        }
+    });
+
+    var DashItem = React.createClass({
+        getInitialState: function () {
+            return {over: false, editing: false};
+        },
+        select: function (event) {
+            event.preventDefault();
+            if (this.props.switchCallback) {
+                this.props.switchCallback();
+            }
+        },
+        over: function (isOver) {
+            return function (event) {
+                event.preventDefault();
+                var state = this.state;
+                state.over = isOver;
+                this.setState(state);
+            }.bind(this);
+        },
+        drop: function (event) {
+            var app = JSON.parse(event.dataTransfer.getData("application/json")).app;
+            this.props.moveToDash(app);
+            var state = this.state;
+            state.over = false;
+            this.setState(state);
+        },
+        edit: function () {
+            this.state.editing = true;
+            this.setState(this.state);
+        },
+        cancelEditing: function () {
+            this.state.editing = false;
+            this.setState(this.state);
+        },
+        render: function () {
+            if (this.props.active) {
+                if (this.state.editing) {
+                    return <EditingDash name={this.props.dash.name} rename={this.props.rename} cancel={this.cancelEditing}/>;
+                } else {
+
+                    return (
+                        <li className="active">
+                            <a onClick={function (e) {
+                                e.preventDefault();
+                            }}>{this.props.dash.name}
+                                <DashActions remove={this.props.remove} edit={this.edit} primary={this.props.dash.main}/>
+                            </a>
+                        </li>
+                    );
+                }
+            } else {
+                var className = this.props.dragging ? (this.state.over ? 'dragging over' : 'dragging') : '';
+
+                return (
+                    <li>
+                        <a href="#"
+                            className={className}
+                            onDragOver={this.over(true)}
+                            onDragLeave={this.over(false)}
+                            onClick={this.select}
+                            onDrop={this.drop}
+                        >
+                    {this.props.dash.name}
                         </a>
                     </li>
                 );
             }
-        } else {
-            var className = this.props.dragging ? (this.state.over ? 'dragging over' : 'dragging') : '';
+        }
+    });
 
+    var DashActions = React.createClass({
+
+        remove: function () {
+            this.props.remove();
+            this.refs.modal.close();
+        },
+        showRemove: function () {
+            this.refs.modal.open();
+        },
+        render: function () {
+
+            if (this.props.primary) {
+                return (
+                    <div className="pull-right">
+                        <i className="fa fa-pencil" onClick={this.props.edit}></i>
+                    </div>
+                );
+
+            } else {
+                var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
+                return (
+                    <div className="pull-right">
+                        <Modal title={t('confirm-delete-dash')} successHandler={this.remove} buttonLabels={buttonLabels} ref="modal">
+                            <p>{t('confirm-delete-dash-long')}</p>
+                        </Modal>
+
+                        <i className="fa fa-pencil" onClick={this.props.edit}></i>
+                        <i className="fa fa-trash" onClick={this.showRemove}></i>
+                    </div>
+                );
+
+            }
+
+        }
+
+    });
+
+    var EditingDash = React.createClass({
+        getInitialState: function () {
+            return {val: this.props.name};
+        },
+        componentDidMount: function () {
+            var input = $(this.getDOMNode()).find("input");
+            input.focus();
+            input.select();
+        },
+        change: function (event) {
+            var state = this.state;
+            state.val = event.target.value;
+            this.setState(state);
+        },
+        click: function (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        },
+        submit: function (event) {
+            event.preventDefault();
+            this.props.rename(this.state.val);
+            this.props.cancel();
+        },
+        render: function () {
             return (
-                <li>
-                    <a href="#"
-                        className={className}
-                        onDragOver={this.over(true)}
-                        onDragLeave={this.over(false)}
-                        onClick={this.select}
-                        onDrop={this.drop}
-                    >
-                    {this.props.dash.name}
-                    </a>
+                <li className="active">
+                    <form onSubmit={this.submit}>
+                        <input type="text" className="form-control" value={this.state.val} onChange={this.change} onClick={this.click}/>
+                    </form>
+                    <div className="dash-veil" onClick={this.props.cancel}></div>
                 </li>
             );
         }
-    }
-});
+    });
 
-var DashActions = React.createClass({
-
-    remove: function () {
-        this.props.remove();
-        this.refs.modal.close();
-    },
-    showRemove: function () {
-        this.refs.modal.open();
-    },
-    render: function () {
-
-        if (this.props.primary) {
+    var CreateDashboard = React.createClass({
+        getInitialState: function () {
+            return {val: ""};
+        },
+        change: function (event) {
+            this.setState({val: event.target.value});
+        },
+        submit: function (event) {
+            event.preventDefault();
+            this.props.addDash(this.state.val);
+            this.setState(this.getInitialState());
+        },
+        render: function () {
             return (
-                <div className="pull-right">
-                    <i className="fa fa-pencil" onClick={this.props.edit}></i>
-                </div>
+                <form role="form" id="create-dash" onSubmit={this.submit}>
+                    <div className="form-group">
+                        <label htmlFor="dashboardname">{t('create')}</label>
+                        <input type="text" name="dashboardname" id="dashboardname" className="form-control" value={this.state.val} onChange={this.change}/>
+                    </div>
+                    <div className="text-right">
+                        <input type="image" src={image_root + "/icon/plus.png"} alt={t('ui.ok')} onClick={this.submit} />
+                    </div>
+                </form>
             );
+        }
+    });
 
-        } else {
-            var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
-            return (
-                <div className="pull-right">
-                    <Modal title={t('confirm-delete-dash')} successHandler={this.remove} buttonLabels={buttonLabels} ref="modal">
-                        <p>{t('confirm-delete-dash-long')}</p>
-                    </Modal>
+    var DeleteApp = React.createClass({
+        getInitialState: function () {
+            return {over: false, app: null};
+        },
+        over: function (isOver) {
+            return function (event) {
+                if (isOver) {
+                    event.preventDefault();
+                }
+                this.setState({over: isOver});
+            }.bind(this);
+        },
+        drop: function (event) {
+            var app = JSON.parse(event.dataTransfer.getData("application/json")).app;
 
-                    <i className="fa fa-pencil" onClick={this.props.edit}></i>
-                    <i className="fa fa-trash" onClick={this.showRemove}></i>
-                </div>
-            );
+            this.setState({over: true, app: app});
+            this.refs.modal.open();
 
+            //this.props.delete(app);
+            //this.setState({over: false});
+        },
+        removeApp: function () {
+            var app = this.state.app;
+            this.props.delete(app);
+            this.refs.modal.close();
+            this.setState(this.getInitialState());
+
+
+        },
+        cancel: function () {
+            this.setState(this.getInitialState());
+        },
+        render: function () {
+            if (this.props.dragging || this.state.app) {
+                var className = "delete-app" + (this.state.over ? " over" : "");
+                var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
+                return (
+                    <div
+                        className={className}
+                        onDragOver={this.over(true)}
+                        onDragLeave={this.over(false)}
+                        onDrop={this.drop}
+                    >
+                        <Modal title={t('confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel} buttonLabels={buttonLabels} ref="modal">
+                            <p>
+                        {t('confirm-remove-app-long')}
+                            </p>
+                        </Modal>
+                        <span>
+                            <i className="fa fa-trash"></i>
+                        </span>
+                    </div>
+                );
+            } else return null;
         }
 
-    }
+    });
 
-});
+    var Desktop = React.createClass({
+        getInitialState: function () {
+            return {dragging: false};
+        },
+        render: function () {
 
-var EditingDash = React.createClass({
-    getInitialState: function () {
-        return {val: this.props.name};
-    },
-    componentDidMount: function () {
-        var input = $(this.getDOMNode()).find("input");
-        input.focus();
-        input.select();
-    },
-    change: function (event) {
-        var state = this.state;
-        state.val = event.target.value;
-        this.setState(state);
-    },
-    click: function (event) {
-        event.preventDefault();
-        event.stopPropagation();
-    },
-    submit: function (event) {
-        event.preventDefault();
-        this.props.rename(this.state.val);
-        this.props.cancel();
-    },
-    render: function () {
-        return (
-            <li className="active">
-                <form onSubmit={this.submit}>
-                    <input type="text" className="form-control" value={this.state.val} onChange={this.change} onClick={this.click}/>
-                </form>
-                <div className="dash-veil" onClick={this.props.cancel}></div>
-            </li>
-        );
-    }
-});
+            if (this.props.loading) {
+                return (
+                    <div className="col-sm-10 desktop">
+                        <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
+                    </div>
+                );
+            } else {
 
-var CreateDashboard = React.createClass({
-    getInitialState: function () {
-        return {val: ""};
-    },
-    change: function (event) {
-        this.setState({val: event.target.value});
-    },
-    submit: function (event) {
-        event.preventDefault();
-        this.props.addDash(this.state.val);
-        this.setState(this.getInitialState());
-    },
-    render: function () {
-        return (
-            <form role="form" id="create-dash" onSubmit={this.submit}>
-                <div className="form-group">
-                    <label htmlFor="dashboardname">{t('create')}</label>
-                    <input type="text" name="dashboardname" id="dashboardname" className="form-control" value={this.state.val} onChange={this.change}/>
-                </div>
-                <div className="text-right">
-                    <input type="image" src={image_root + "/icon/plus.png"} alt={t('ui.ok')} onClick={this.submit} />
-                </div>
-            </form>
-        );
-    }
-});
+                var icons = this.props.apps.map(function (app) {
+                    return <AppZone
+                        key={app.id}
+                        app={app}
+                        startDrag={this.props.startDrag}
+                        endDrag={this.props.endDrag}
+                        dragging={this.props.dragging}
+                        dropCallback={this.props.dropCallback}
+                    />;
+                }.bind(this));
 
-var DeleteApp = React.createClass({
-    getInitialState: function () {
-        return {over: false, app: null};
-    },
-    over: function (isOver) {
-        return function (event) {
-            if (isOver) {
-                event.preventDefault();
+                icons.push(
+                    <AddNew
+                        key="last"
+                        dragging={this.props.dragging}
+                        dropCallback={this.props.dropCallback}
+                    />
+                );
+
+                return (
+                    <div className="col-sm-10 desktop">
+            {icons}
+                    </div>
+                );
             }
-            this.setState({over: isOver});
-        }.bind(this);
-    },
-    drop: function (event) {
-        var app = JSON.parse(event.dataTransfer.getData("application/json")).app;
+        }
+    });
 
-        this.setState({over: true, app: app});
-        this.refs.modal.open();
-
-        //this.props.delete(app);
-        //this.setState({over: false});
-    },
-    removeApp: function () {
-        var app = this.state.app;
-        this.props.delete(app);
-        this.refs.modal.close();
-        this.setState(this.getInitialState());
-
-
-    },
-    cancel: function () {
-        console.log("humm....");
-        this.setState(this.getInitialState());
-    },
-    render: function () {
-        if (this.props.dragging || this.state.app) {
-            var className = "delete-app" + (this.state.over ? " over" : "");
-            var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
+    var AppZone = React.createClass({
+        render: function () {
             return (
-                <div
-                    className={className}
-                    onDragOver={this.over(true)}
-                    onDragLeave={this.over(false)}
-                    onDrop={this.drop}
-                >
-                    <Modal title={t('confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel} buttonLabels={buttonLabels} ref="modal">
-                        <p>
-                        {t('confirm-remove-app-long')}
-                        </p>
-                    </Modal>
-                    <span>
-                        <i className="fa fa-trash"></i>
-                    </span>
+                <div className="appzone">
+                    <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback(this.props.app)}/>
+                    <AppIcon app={this.props.app} startDrag={this.props.startDrag} endDrag={this.props.endDrag}/>
                 </div>
             );
-        } else return null;
-    }
+        }
+    });
 
-});
-
-var Desktop = React.createClass({
-    getInitialState: function () {
-        return {dragging: false};
-    },
-    render: function () {
-        var icons = this.props.apps.map(function (app) {
-            return <AppZone
-                key={app.id}
-                app={app}
-                startDrag={this.props.startDrag}
-                endDrag={this.props.endDrag}
-                dragging={this.props.dragging}
-                dropCallback={this.props.dropCallback}
-            />;
-        }.bind(this));
-
-        icons.push(
-            <AddNew
-                key="last"
-                dragging={this.props.dragging}
-                dropCallback={this.props.dropCallback}
-            />
-        );
-
-        return (
-            <div className="col-sm-10 desktop">
-            {icons}
-            </div>
-        );
-    }
-});
-
-var AppZone = React.createClass({
-    render: function () {
-        return (
-            <div className="appzone">
-                <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback(this.props.app)}/>
-                <AppIcon app={this.props.app} startDrag={this.props.startDrag} endDrag={this.props.endDrag}/>
-            </div>
-        );
-    }
-});
-
-var AddNew = React.createClass({
-    render: function () {
-        return (
-            <div className="appzone">
-                <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback("last")}/>
-                <div className="app text-center">
-                    <a href={store_root}  className="add-more" draggable="false">
-                        <img src={image_root + "icon/plus.png"}/>
-                    </a>
-                    <p>{t('add')}</p>
+    var AddNew = React.createClass({
+        render: function () {
+            return (
+                <div className="appzone">
+                    <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback("last")}/>
+                    <div className="app text-center">
+                        <a href={store_root}  className="add-more" draggable="false">
+                            <img src={image_root + "icon/plus.png"}/>
+                        </a>
+                        <p>{t('ui.add')}</p>
+                    </div>
                 </div>
-            </div>
-        );
-    }
-});
+            );
+        }
+    });
 
-var DropZone = React.createClass({
-    getInitialState: function () {
-        return {over: false};
-    },
-    dragOver: function (event) {
-        event.preventDefault();         // allow dropping here!
-        this.setState({over: true});
-    },
-    dragLeave: function () {
-        this.setState({over: false});
-    },
-    drop: function (event) {
-        var data = JSON.parse(event.dataTransfer.getData("application/json"));
-        this.props.dropCallback(data.app);
-        this.setState({over: false});
-    },
-    render: function () {
-        var className = "dropzone" + (this.state.over ? " dragover" : "") + (this.props.dragging ? " dragging" : "");
+    var DropZone = React.createClass({
+        getInitialState: function () {
+            return {over: false};
+        },
+        dragOver: function (event) {
+            event.preventDefault();         // allow dropping here!
+            this.setState({over: true});
+        },
+        dragLeave: function () {
+            this.setState({over: false});
+        },
+        drop: function (event) {
+            var data = JSON.parse(event.dataTransfer.getData("application/json"));
+            this.props.dropCallback(data.app);
+            this.setState({over: false});
+        },
+        render: function () {
+            var className = "dropzone" + (this.state.over ? " dragover" : "") + (this.props.dragging ? " dragging" : "");
 
-        return <div className={className} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.drop}/>;
-    }
-});
+            return <div className={className} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.drop}/>;
+        }
+    });
 
-var AppIcon = React.createClass({
-    render: function () {
-        return (
-            <div className="app text-center" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
-                <img src={this.props.app.icon} alt={this.props.app.name} />
-                <a href={this.props.app.url} className="app-link" draggable="false"/>
-                <p>{this.props.app.name}</p>
-            </div>
-        );
-    }
-});
+    var AppIcon = React.createClass({
+        render: function () {
+            return (
+                <div className="app text-center" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
+                    <img src={this.props.app.icon} alt={this.props.app.name} />
+                    <a href={this.props.app.url} className="app-link" draggable="false"/>
+                    <p>{this.props.app.name}</p>
+                </div>
+            );
+        }
+    });
 
-React.renderComponent(
-    <Dashboard />,
-    document.getElementById("dashboard")
-);
+    React.renderComponent(
+        <Dashboard />,
+        document.getElementById("dashboard")
+    );
+
+}());
