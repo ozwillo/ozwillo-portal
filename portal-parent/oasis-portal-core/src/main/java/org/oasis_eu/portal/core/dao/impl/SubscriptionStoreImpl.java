@@ -129,4 +129,13 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
                 });
 
     }
+
+
+    public void unsubscribe(String subscriptionId) {
+        HttpEntity<Subscription> entity = kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.GET, null, Subscription.class, user(), subscriptionId);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("If-Match", entity.getHeaders().getETag());
+        kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), Subscription.class, user(), subscriptionId);
+    }
 }

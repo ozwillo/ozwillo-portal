@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.front.my.dashboard;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.portal.services.PortalDashboardService;
@@ -49,4 +50,17 @@ public class DashboardAJAXServices {
         portalDashboardService.moveAppTo(appId, contextId);
     }
 
+    @RequestMapping(value = "/apps/remove/{appId}", method = DELETE)
+    public void removeApp(@PathVariable String appId) {
+        portalDashboardService.unsubscribeApp(appId);
+    }
+
+    @RequestMapping(value = "/dashboards", method = POST)
+    public UserContext createDashboard(@RequestBody CreateDashRequest request) {
+        return portalDashboardService.createContext(request.name);
+    }
+
+    public static class CreateDashRequest {
+        @JsonProperty String name;
+    }
 }

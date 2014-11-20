@@ -20,4 +20,5 @@ public interface SubscriptionStore {
 
     public void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType);
 
+    public void unsubscribe(String subscriptionId);
 }

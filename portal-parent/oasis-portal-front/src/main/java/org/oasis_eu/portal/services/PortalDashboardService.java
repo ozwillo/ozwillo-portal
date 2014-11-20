@@ -237,6 +237,26 @@ public class PortalDashboardService {
 
     }
 
+    public void unsubscribeApp(String subscriptionId) {
+        Dashboard dash = getDash();
+
+        UserContext userContext = dash.getContexts().stream().filter(context -> context.getSubscriptions().stream().anyMatch(sub -> sub.getId().equals(subscriptionId))).findFirst().orElse(null);
+        if (userContext == null) {
+            logger.error("Subscription {} does not exist for user {}", subscriptionId, userInfoHelper.currentUser().getUserId());
+        } else {
+            // try to delete...
+            subscriptionStore.unsubscribe(subscriptionId);
+
+            // if that works, then save the dash
+            userContext.setSubscriptions(userContext.getSubscriptions().stream()
+                            .filter(sub -> !sub.getId().equals(subscriptionId))
+                            .collect(Collectors.toList())
+            );
+
+            dashboardRepository.save(dash);
+        }
+    }
+
 
     public Dashboard getDash() {
 
@@ -265,6 +285,4 @@ public class PortalDashboardService {
             return dashboardRepository.save(dashboard);
         }
     }
-
-
 }

@@ -3,57 +3,6 @@
 
 (function () {
 
-    var __dashboards = [
-        {
-            id: "d1", name: "Principal", main: true, apps: [
-            {
-                id: "1",
-                name: "Voter à St Genis",
-                url: "#",
-                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-15.png"
-            },
-            {
-                id: "2",
-                name: "Pouet pouet",
-                url: "http://google.com",
-                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-16.png"
-            },
-            {
-                id: "3",
-                name: "Lorem",
-                url: "http://google.com",
-                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-            },
-            {
-                id: "4",
-                name: "ipsum",
-                url: "http://google.com",
-                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-            },
-            {
-                id: "5",
-                name: "dolor",
-                url: "http://google.com",
-                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-            },
-            {
-                id: "6",
-                name: "sit",
-                url: "http://google.com",
-                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-            },
-            {
-                id: "7",
-                name: "amet",
-                url: "http://google.com",
-                icon: "/portal-parent/oasis-portal-front/src/main/resources/public/img/sample_app_icons/sample-connecte-17.png"
-            }
-        ]
-        },
-        {id: "d2", name: "Annexe", main: false, apps: []}
-    ];
-
-
     var Dashboard = React.createClass({
         componentDidMount: function () {
             $.ajax({
@@ -213,14 +162,41 @@
             state.dragging = false;
 
             this.setState(state);
+
+
+            $.ajax({
+                url: dash_service + "/apps/remove/" + app.id,
+                type: 'delete',
+                success: function() {}.bind(this),
+                error: function(xhr, status, err) {
+                    console.log("Error", status, err);
+                    this.setState(this.getInitialState());
+                    this.componentDidMount();
+                }.bind(this)
+            });
         },
 
         createDash: function (name) {
             var state = this.state;
-            var dash = {id: "...", name: name, apps: [], main: false};
-            state.dashboards.push(dash);
-            state.dash = dash;
-            this.setState(state);
+
+            $.ajax({
+                url: dash_service + "/dashboards",
+                type: 'post',
+                dataType: 'json',
+                data: JSON.stringify({name:name}),
+                success: function(userContext) {
+                    state.dashboards.push(userContext);
+                    this.setState(state);
+                    this.switchToDashboard(userContext);
+                }.bind(this),
+                error: function(xhr, status, err) {
+                    console.log("Error", status, err);
+                    this.setState(this.getInitialState());
+                    this.componentDidMount();
+                }.bind(this)
+
+            });
+
         },
 
         renameDash: function (dash) {
@@ -234,14 +210,6 @@
             return function () {
                 console.log("Removing", dash);
             }.bind(this);
-        },
-        addDash: function (dashname) {
-            var state = this.state;
-            var dashId = "d" + Math.floor((Math.random() * 10000));
-            var dash = {id: dashId, name: dashname, main: false, apps: []};
-
-            state.dashboards.push(dash);
-            this.setState(state);
         },
         render: function () {
             return (
@@ -257,7 +225,6 @@
                         createDash={this.createDash}
                         renameDash={this.renameDash}
                         removeDash={this.removeDash}
-                        addDash={this.addDash}
                     />
                     <Desktop
                         loading={this.state.loadingApps}
@@ -305,7 +272,7 @@
                         <ul className="nav nav-pills nav-stacked text-left">
                 {dashboards}
                         </ul>
-                        <CreateDashboard addDash={this.props.addDash} />
+                        <CreateDashboard addDash={this.props.createDash} />
                         <DeleteApp
                             dragging={this.props.dragging}
                             delete={this.props.deleteApp}
@@ -411,8 +378,7 @@
                             <p>{t('confirm-delete-dash-long')}</p>
                         </Modal>
 
-                        <i className="fa fa-pencil" onClick={this.props.edit}></i>
-                        <i className="fa fa-trash" onClick={this.showRemove}></i>
+                        <i className="fa fa-pencil" onClick={this.props.edit}></i> <i className="fa fa-trash" onClick={this.showRemove}></i>
                     </div>
                 );
 
