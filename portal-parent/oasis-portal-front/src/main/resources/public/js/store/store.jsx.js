@@ -1,5 +1,8 @@
 /** @jsx React.DOM */
 
+
+var converter = new Showdown.converter({extensions: ['table']});
+
 var AppStore = React.createClass({
     componentDidMount: function () {
         this.updateApps(true, true, true, true, true);
@@ -347,6 +350,11 @@ var AppModal = React.createClass({
         });
     },
 
+    componentDidUpdate: function () {
+        var desc = $(this.getDOMNode()).find(".app-description table");
+        desc.addClass("table table-bordered table-condensed table-striped");
+    },
+
     renderAppDescription: function () {
         var carousel = (this.state.app.screenshots && this.state.app.screenshots.length > 0) ? (
             <div className="row">
@@ -371,6 +379,8 @@ var AppModal = React.createClass({
             rateInfo = null;
         }
 
+        var description = converter.makeHtml(this.state.app.longdescription);
+
         return (
             <div>
                 <div className="row">
@@ -394,7 +404,7 @@ var AppModal = React.createClass({
                 {error}
                 {carousel}
                 <div className="row">
-                    <div className="col-md-6" dangerouslySetInnerHTML={{__html: this.state.app.longdescription}}>
+                    <div className="col-md-6 app-description" dangerouslySetInnerHTML={{__html: description}}>
 
                     </div>
                     <div className="col-md-6">

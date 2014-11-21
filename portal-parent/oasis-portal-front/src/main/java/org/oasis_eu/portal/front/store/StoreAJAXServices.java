@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.front.store;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
@@ -22,7 +21,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -142,12 +140,12 @@ public class StoreAJAXServices {
     private ApplicationDetails toApplicationDetails(AppstoreHit hit) {
         ApplicationDetails applicationDetails = new ApplicationDetails();
 
-        try {
-            applicationDetails.longdescription = new Markdown4jProcessor().process(hit.getLongDescription().replaceAll("[<>]", ""));
-        } catch (IOException e) {
-            logger.error("Cannot perform Markdown conversion", e);
+//        try {
+//            applicationDetails.longdescription = new Markdown4jProcessor().process(hit.getLongDescription().replaceAll("[<>]", ""));
+//        } catch (IOException e) {
+//            logger.error("Cannot perform Markdown conversion", e);
             applicationDetails.longdescription = hit.getLongDescription();
-        }
+//        }
 
         applicationDetails.policy = hit.getCatalogEntry().getPolicyUri();
         applicationDetails.tos = hit.getCatalogEntry().getTosUri();

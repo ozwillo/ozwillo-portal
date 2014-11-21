@@ -33,6 +33,7 @@
         <typeaheadjs.version>0.10.4</typeaheadjs.version>
         <underscore.version>1.6.0-3</underscore.version>
         <react.version>0.11.2</react.version>
+        <showdown.version>0.3.1</showdown.version>
 
         <!-- Hosting -->
         <tomcat.version>8.0.8</tomcat.version>
@@ -195,6 +196,11 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>react</artifactId>
                 <version>${react.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>showdown</artifactId>
+                <version>${showdown.version}</version>
             </dependency>
 
             <!-- Force the use of Tomcat 8 to support Servlet 3.1 -->
