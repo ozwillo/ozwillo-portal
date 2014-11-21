@@ -4,8 +4,45 @@
 (function () {
 
     var Dashboard = React.createClass({
+        notificationsChecked: false,
+        checkNotifications: function () {
+            if (this.state.apps) {
+                $.ajax({
+                    url: dash_service + "/notifications",
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (appNotifs) {
 
+                        var state = this.state;
+                        for (var i = 0; i < state.apps.length; i++) {
+                            var app = state.apps[i];
+
+                            if (appNotifs[app.serviceId]) {
+                                app.notificationCount = appNotifs[app.serviceId];
+                            } else {
+                                app.notificationCount = 0;
+                            }
+                        }
+                        this.setState(state);
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.log("Cannot check notifications", status, err);
+                    }.bind(this)
+                });
+            }
+            window.setTimeout(this.checkNotifications, 2000);
+        },
+        initNotificationsCheck: function () {
+            if (this.notificationsChecked) {
+                console.log("Already checking notifications");
+            } else {
+                this.notificationsChecked = true;
+                this.checkNotifications();
+            }
+        },
         componentDidMount: function () {
+            this.initNotificationsCheck();
+
             $.ajax({
                 url: dash_service + "/dashboards",
                 type: 'get',
@@ -17,7 +54,7 @@
                     this.setState(this.state);
                 }.bind(this),
                 error: function (xhr, status, err) {
-                    console.log("Error", status, err);
+                    console.error("Error", status, err);
                 }.bind(this)
             });
 
@@ -31,7 +68,7 @@
                     this.setState(this.state);
                 }.bind(this),
                 error: function (xhr, status, err) {
-                    console.log("Error", status, err);
+                    console.error("Error", status, err);
                 }.bind(this)
             });
         },
@@ -93,7 +130,7 @@
                     success: function () {
                     }.bind(this),
                     error: function (xhr, status, err) {
-                        console.log("Error", status, err);
+                        console.error("Error", status, err);
                         // reload everything
                         this.setState(this.getInitialState());
                         this.componentDidMount();
@@ -122,7 +159,7 @@
                         this.setState(state);
                     }.bind(this),
                     error: function (xhr, status, err) {
-                        console.log("Error", status, err);
+                        console.error("Error", status, err);
                     }.bind(this)
                 });
             }.bind(this);
@@ -137,7 +174,7 @@
                     success: function () {
                     },
                     error: function (xhr, status, err) {
-                        console.log("Error", status, err);
+                        console.error("Error", status, err);
                         this.setState(this.getInitialState());
                         this.componentDidMount();
                     }.bind(this)
@@ -145,11 +182,7 @@
 
                 var state = this.state;
                 var index = this.findById(state.apps, app);
-                var dashIdx = this.findById(state.dashboards, dash);
-
-                var removed = state.apps.splice(index, 1);
-                state.dashboards[dashIdx].apps.push(app);
-
+                state.apps.splice(index, 1);
                 state.dragging = false;
 
                 this.setState(state);
@@ -170,7 +203,7 @@
                 type: 'delete',
                 success: function() {}.bind(this),
                 error: function(xhr, status, err) {
-                    console.log("Error", status, err);
+                    console.error("Error", status, err);
                     this.setState(this.getInitialState());
                     this.componentDidMount();
                 }.bind(this)
@@ -192,7 +225,7 @@
                     this.switchToDashboard(userContext);
                 }.bind(this),
                 error: function(xhr, status, err) {
-                    console.log("Error", status, err);
+                    console.error("Error", status, err);
                     this.setState(this.getInitialState());
                     this.componentDidMount();
                 }.bind(this)
@@ -213,7 +246,7 @@
                     contentType: 'application/json',
                     data: JSON.stringify(this.state.dashboards[idx]),
                     error: function (xhr, status, err) {
-                        console.log("Error", status, err);
+                        console.error("Error", status, err);
                         this.setState(this.getInitialState());
                         this.componentDidMount();
                     }.bind(this)
@@ -223,7 +256,6 @@
         },
         removeDash: function (dash) {
             return function () {
-                console.log("Removing", dash);
                 var state = this.state;
                 state.loadingDashboards = true;
                 this.setState(state);
@@ -236,7 +268,7 @@
                         this.componentDidMount();
                     }.bind(this),
                     error: function (xhr, status, err) {
-                        console.log("Error", status, err);
+                        console.error("Error", status, err);
                         this.setState(this.getInitialState());
                         this.componentDidMount();
                     }.bind(this)
@@ -634,10 +666,19 @@
 
     var AppIcon = React.createClass({
         render: function () {
+            var notif = null;
+            var url = this.props.app.url;
+            if (this.props.app.notificationCount != 0) {
+                notif = (
+                    <span className="badge badge-notifications">{this.props.app.notificationCount}</span>
+                );
+                url = this.props.app.notificationUrl;
+            }
             return (
                 <div className="app text-center" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
                     <img src={this.props.app.icon} alt={this.props.app.name} />
-                    <a href={this.props.app.url} className="app-link" draggable="false"/>
+                    <a href={url} className="app-link" draggable="false" />
+                    {notif}
                     <p>{this.props.app.name}</p>
                 </div>
             );

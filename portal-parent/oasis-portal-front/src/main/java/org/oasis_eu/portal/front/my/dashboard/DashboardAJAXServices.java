@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.portal.services.PortalDashboardService;
+import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+import java.util.Map;
 
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
@@ -24,6 +26,9 @@ public class DashboardAJAXServices {
 
     @Autowired
     private PortalDashboardService portalDashboardService;
+
+    @Autowired
+    private PortalNotificationService portalNotificationService;
 
     @RequestMapping(value = "/dashboards", method = GET)
     public List<UserContext> getContexts() {
@@ -72,5 +77,11 @@ public class DashboardAJAXServices {
     @RequestMapping(value = "/dashboard/{contextId}", method = DELETE)
     public void deleteContext(@PathVariable String contextId) {
         portalDashboardService.deleteContext(contextId);
+    }
+
+
+    @RequestMapping(value = "/notifications", method = GET)
+    public Map<String, Integer> getAppNotificationCounts() {
+        return portalNotificationService.getAppNotificationCounts();
     }
 }

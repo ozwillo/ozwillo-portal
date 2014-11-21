@@ -11,6 +11,7 @@ import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -110,18 +111,21 @@ public class PortalDashboardService {
         }
 
         List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
+        List<AppNotificationData> appNotificationData = notificationService.getAppNotificationCounts(
+                actualSubscriptions.stream().map(sub -> sub.getServiceId()).collect(Collectors.toList())
+        );
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         List<DashboardApp> apps = userContext.getSubscriptions()
                 .stream()
                 .filter(us -> subscriptionById.containsKey(us.getId()))
-                .map(us -> toDashboardApp(subscriptionById.get(us.getId())))
+                .map(us -> toDashboardApp(subscriptionById.get(us.getId()), appNotificationData))
                 .filter(app -> app != null)
                 .collect(Collectors.toList());
 
         apps.addAll(orphanSubscriptions(actualSubscriptions)
                         .stream()
-                        .map(this::toDashboardApp)
+                        .map(sub -> toDashboardApp(sub, appNotificationData))
                         .filter(app -> app != null)
                         .collect(Collectors.toList())
         );
@@ -133,7 +137,7 @@ public class PortalDashboardService {
         return apps;
     }
 
-    private DashboardApp toDashboardApp(Subscription sub) {
+    private DashboardApp toDashboardApp(Subscription sub, List<AppNotificationData> appNotificationCounts) {
         CatalogEntry service = catalogStore.findService(sub.getServiceId());
         if (service == null) {
             return null;
@@ -144,6 +148,19 @@ public class PortalDashboardService {
         app.setServiceId(sub.getServiceId());
         app.setName(service.getName(RequestContextUtils.getLocale(request)));
         app.setIcon(imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
+        app.setUrl(service.getUrl());
+
+        if (service.getNotificationUrl() != null) {
+            app.setNotificationUrl(service.getNotificationUrl());
+        }
+
+        AppNotificationData appNotificationData = appNotificationCounts.stream().filter(appnotif -> appnotif.getApplicationId().equals(app.getServiceId())).findFirst().orElse(null);
+        if (appNotificationData != null) {
+            app.setNotificationCount(appNotificationData.getCount());
+        }
+
+
+
         return app;
     }
 

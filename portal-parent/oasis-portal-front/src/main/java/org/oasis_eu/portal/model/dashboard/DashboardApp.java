@@ -11,6 +11,9 @@ public class DashboardApp {
     private String url;
     private String icon;
     private String serviceId;
+    private String notificationUrl;
+    private int notificationCount;
+
 
     public String getId() {
         return id;
@@ -50,6 +53,22 @@ public class DashboardApp {
 
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
+    }
+
+    public String getNotificationUrl() {
+        return notificationUrl;
+    }
+
+    public void setNotificationUrl(String notificationUrl) {
+        this.notificationUrl = notificationUrl;
+    }
+
+    public int getNotificationCount() {
+        return notificationCount;
+    }
+
+    public void setNotificationCount(int notificationCount) {
+        this.notificationCount = notificationCount;
     }
 
     @Override

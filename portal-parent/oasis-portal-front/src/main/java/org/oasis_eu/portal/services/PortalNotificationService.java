@@ -21,10 +21,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -62,17 +59,6 @@ public class PortalNotificationService {
                 .stream()
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
                 .count();
-    }
-
-    public long countAppNotifications(String appId) {
-        if (!notificationsEnabled) {
-            return 0;
-        }
-        return notificationService.getInstanceNotifications(userInfoHelper.currentUser().getUserId(), appId, NotificationStatus.UNREAD)
-                .stream()
-                .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
-                .count();
-
     }
 
     public List<UserNotification> getNotifications(Locale locale) {
@@ -131,6 +117,13 @@ public class PortalNotificationService {
                 .entrySet().stream()
                 .map(entry -> new AppNotificationData(entry.getKey(), entry.getValue()))
                 .collect(Collectors.toList());
+    }
+
+    public Map<String, Integer> getAppNotificationCounts() {
+
+        return getNotifications().stream()
+                .collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)));
+
     }
 
     private String getFormattedText(InboundNotification n) {

@@ -199,14 +199,11 @@ span.badge-notifications {
     display: none;
 }
 
-
-
-
 div.app span.badge-notifications {
-    top: -15px;
+    display: block;
+    top: 0;
+    right: 15px;
 }
-
-
 
 .dash-switch-link input {
     margin-top: 4px;
