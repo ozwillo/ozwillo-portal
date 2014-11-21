@@ -2,6 +2,7 @@ package org.oasis_eu.portal.core.config;
 
 import com.google.common.base.Strings;
 import com.mongodb.*;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.MongoPackage;
 import org.oasis_eu.portal.core.mongo.model.images.ImageDownloadAttempt;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
@@ -88,6 +89,9 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
     @Value("${application.installedStatusTtl:86400}")
     private int installedStatusTtl;
 
+    @Value("${application.catalogCacheTtl:600}")
+    private int catalogCacheTtl;
+
     @Override
     protected String getDatabaseName() {
         return persistenceProperties.databaseName;
@@ -164,21 +168,22 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
         MongoTemplate mongoTemplate = super.mongoTemplate();
         mongoTemplate.setWriteResultChecking(WriteResultChecking.EXCEPTION);
 
-        IndexInfo imageBlacklistIndex = mongoTemplate.indexOps(ImageDownloadAttempt.class).getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().equals("time")).findFirst().orElse(null);
-        if (imageBlacklistIndex == null) {
-            mongoTemplate.indexOps(ImageDownloadAttempt.class).ensureIndex(new Index().on("time", Sort.Direction.ASC).named("time").expire(imageBlacklistTtl, TimeUnit.SECONDS));
-        } else {
-            logger.info("Index on image_download_attempt.time already exists");
-        }
-        IndexInfo installedStatusIndex = mongoTemplate.indexOps(InstalledStatus.class).getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().equals("computed")).findFirst().orElse(null);
-        if (installedStatusIndex == null) {
-            mongoTemplate.indexOps(InstalledStatus.class).ensureIndex(new Index().on("computed", Sort.Direction.ASC).named("computed").expire(installedStatusTtl, TimeUnit.SECONDS));
-        } else {
-            logger.info("Index on appstore_install_status.computed already exists");
-        }
+        ensureTtlIndex(mongoTemplate, ImageDownloadAttempt.class, "time", imageBlacklistTtl);
+        ensureTtlIndex(mongoTemplate, InstalledStatus.class, "computed", installedStatusTtl);
+        ensureTtlIndex(mongoTemplate, CatalogEntry.class, "fetchedFromKernel", catalogCacheTtl);
 
 
         return mongoTemplate;
+    }
+
+
+    private void ensureTtlIndex(MongoTemplate mongoTemplate, Class<?> objectClass, String ttlFieldName, int ttlSeconds) {
+        IndexInfo index = mongoTemplate.indexOps(objectClass).getIndexInfo().stream().filter(indexInfo -> indexInfo.getName().equals(ttlFieldName)).findFirst().orElse(null);
+        if (index == null) {
+            mongoTemplate.indexOps(objectClass).ensureIndex(new Index().on(ttlFieldName, Sort.Direction.ASC).named(ttlFieldName).expire(ttlSeconds, TimeUnit.SECONDS));
+        } else {
+            logger.info("Index on {}.{} already exists", objectClass.getName(), ttlFieldName);
+        }
     }
 
     @Override

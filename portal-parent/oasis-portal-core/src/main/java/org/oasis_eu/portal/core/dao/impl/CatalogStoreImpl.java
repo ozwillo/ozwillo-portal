@@ -1,11 +1,13 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import com.fasterxml.jackson.annotation.*;
+import org.joda.time.DateTime;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.core.model.catalog.*;
+import org.oasis_eu.portal.core.mongo.dao.catalog.ServiceCacheRepository;
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.service.Kernel;
@@ -47,11 +49,16 @@ public class CatalogStoreImpl implements CatalogStore {
     @Value("${kernel.portal_endpoints.apps:}")
     private String appsEndpoint;
 
+    // a couple of MongoDB-backed caches
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
 
     @Autowired
+    private ServiceCacheRepository serviceCacheRepository;
+
+    @Autowired
     private UserInfoService userInfoHelper;
+
 
     @Override
     @Cacheable("appstore")
@@ -84,8 +91,20 @@ public class CatalogStoreImpl implements CatalogStore {
 
 
     @Override
-    @Cacheable("services")
     public CatalogEntry findService(String id) {
+        CatalogEntry entry = serviceCacheRepository.findOne(id);
+        if (entry != null) {
+            return entry;
+        } else {
+            entry = findServiceFromKernel(id);
+            entry.setFetchedFromKernel(DateTime.now());
+            serviceCacheRepository.save(entry);
+            return entry;
+        }
+    }
+
+    @Cacheable("services")
+    public CatalogEntry findServiceFromKernel(String id) {
         return getCatalogEntry(id, appsEndpoint + "/service/{id}");
     }
 
@@ -115,7 +134,7 @@ public class CatalogStoreImpl implements CatalogStore {
         }
 
         try {
-            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<>(instancePattern), String.class, user(), appId);
+            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<ApplicationInstantiationRequest>(instancePattern), String.class, user(), appId);
             if (responseEntity.getStatusCode().is4xxClientError()) {
                 logger.error("Got a client error when creating an instance of application {} ({}): {}", appId, instancePattern.getName(), responseEntity.getStatusCode().getReasonPhrase());
                 throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
@@ -151,6 +170,9 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     public CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service) {
+
+        serviceCacheRepository.delete(serviceId);
+
 
         // we need to be sure to grab everything from the original
 

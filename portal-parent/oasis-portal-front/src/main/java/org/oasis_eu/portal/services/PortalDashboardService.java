@@ -111,21 +111,21 @@ public class PortalDashboardService {
         }
 
         List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
-        List<AppNotificationData> appNotificationData = notificationService.getAppNotificationCounts(
-                actualSubscriptions.stream().map(sub -> sub.getServiceId()).collect(Collectors.toList())
-        );
+//        List<AppNotificationData> appNotificationData = notificationService.getAppNotificationCounts(
+//                actualSubscriptions.stream().map(sub -> sub.getServiceId()).collect(Collectors.toList())
+//        );
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         List<DashboardApp> apps = userContext.getSubscriptions()
                 .stream()
                 .filter(us -> subscriptionById.containsKey(us.getId()))
-                .map(us -> toDashboardApp(subscriptionById.get(us.getId()), appNotificationData))
+                .map(us -> toDashboardApp(subscriptionById.get(us.getId()), null))
                 .filter(app -> app != null)
                 .collect(Collectors.toList());
 
         apps.addAll(orphanSubscriptions(actualSubscriptions)
                         .stream()
-                        .map(sub -> toDashboardApp(sub, appNotificationData))
+                        .map(sub -> toDashboardApp(sub, null))
                         .filter(app -> app != null)
                         .collect(Collectors.toList())
         );
@@ -154,10 +154,10 @@ public class PortalDashboardService {
             app.setNotificationUrl(service.getNotificationUrl());
         }
 
-        AppNotificationData appNotificationData = appNotificationCounts.stream().filter(appnotif -> appnotif.getApplicationId().equals(app.getServiceId())).findFirst().orElse(null);
-        if (appNotificationData != null) {
-            app.setNotificationCount(appNotificationData.getCount());
-        }
+//        AppNotificationData appNotificationData = appNotificationCounts.stream().filter(appnotif -> appnotif.getApplicationId().equals(app.getServiceId())).findFirst().orElse(null);
+//        if (appNotificationData != null) {
+//            app.setNotificationCount(appNotificationData.getCount());
+//        }
 
 
 
