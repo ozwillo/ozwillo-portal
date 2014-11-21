@@ -63,4 +63,14 @@ public class DashboardAJAXServices {
     public static class CreateDashRequest {
         @JsonProperty String name;
     }
+
+    @RequestMapping(value = "/dashboard/{contextId}", method = PUT)
+    public void renameContext(@PathVariable String contextId, @RequestBody UserContext userContext) {
+        portalDashboardService.renameContext(contextId, userContext.getName());
+    }
+
+    @RequestMapping(value = "/dashboard/{contextId}", method = DELETE)
+    public void deleteContext(@PathVariable String contextId) {
+        portalDashboardService.deleteContext(contextId);
+    }
 }

@@ -4,6 +4,7 @@
 (function () {
 
     var Dashboard = React.createClass({
+
         componentDidMount: function () {
             $.ajax({
                 url: dash_service + "/dashboards",
@@ -184,6 +185,7 @@
                 type: 'post',
                 dataType: 'json',
                 data: JSON.stringify({name:name}),
+                contentType: 'application/json',
                 success: function(userContext) {
                     state.dashboards.push(userContext);
                     this.setState(state);
@@ -204,11 +206,41 @@
                 var idx = this.findById(this.state.dashboards, dash);
                 this.state.dashboards[idx].name = name;
                 this.setState(this.state);
+
+                $.ajax({
+                    url: dash_service + "/dashboard/" + dash.id,
+                    type: 'put',
+                    contentType: 'application/json',
+                    data: JSON.stringify(this.state.dashboards[idx]),
+                    error: function (xhr, status, err) {
+                        console.log("Error", status, err);
+                        this.setState(this.getInitialState());
+                        this.componentDidMount();
+                    }.bind(this)
+                });
+
             }.bind(this);
         },
         removeDash: function (dash) {
             return function () {
                 console.log("Removing", dash);
+                var state = this.state;
+                state.loadingDashboards = true;
+                this.setState(state);
+
+                $.ajax({
+                    url: dash_service + "/dashboard/" + dash.id,
+                    type: 'delete',
+                    success: function () {
+                        this.setState(this.getInitialState());
+                        this.componentDidMount();
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.log("Error", status, err);
+                        this.setState(this.getInitialState());
+                        this.componentDidMount();
+                    }.bind(this)
+                });
             }.bind(this);
         },
         render: function () {
