@@ -564,3 +564,8 @@ footer, .push {
         height: 70px;
     }
 }
+
+div.legalese {
+    margin-top: 40px;
+    font-weight: bold;
+}
