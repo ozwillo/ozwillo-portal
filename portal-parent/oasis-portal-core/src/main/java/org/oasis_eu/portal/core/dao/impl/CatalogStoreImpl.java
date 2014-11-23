@@ -84,7 +84,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
-    @Cacheable("applications")
+//    @Cacheable("applications")
     public CatalogEntry findApplication(String id) {
         return getCatalogEntry(id, appsEndpoint + "/app/{id}");
     }

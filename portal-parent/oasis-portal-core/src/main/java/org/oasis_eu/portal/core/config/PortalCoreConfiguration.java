@@ -61,14 +61,18 @@ public class PortalCoreConfiguration implements CachingConfigurer {
 
     @Bean(destroyMethod = "shutdown")
     public net.sf.ehcache.CacheManager ehCacheManager() {
-        // TODO configure the various elements (TTL, max entries...) possibly, also configure a different cache by entity
         CacheConfiguration defaultCache = new CacheConfiguration();
         defaultCache.setMemoryStoreEvictionPolicy("LRU");
         defaultCache.setMaxEntriesLocalHeap(1000);
         defaultCache.setTimeToLiveSeconds(600);
+        defaultCache.setEternal(false);
 
         CacheConfiguration organizationsCache = new CacheConfiguration("organizations", 1000);
+        organizationsCache.setTimeToLiveSeconds(600);
+        organizationsCache.setEternal(false);
         CacheConfiguration applicationsCache = new CacheConfiguration("applications", 1000);
+        applicationsCache.setTimeToLiveSeconds(600);
+        applicationsCache.setEternal(false);
 
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
         config.addDefaultCache(defaultCache);
