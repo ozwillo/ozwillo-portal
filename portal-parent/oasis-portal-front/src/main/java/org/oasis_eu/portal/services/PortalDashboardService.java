@@ -20,6 +20,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -111,9 +112,7 @@ public class PortalDashboardService {
         }
 
         List<Subscription> actualSubscriptions = subscriptionStore.findByUserId(userInfoHelper.currentUser().getUserId());
-//        List<AppNotificationData> appNotificationData = notificationService.getAppNotificationCounts(
-//                actualSubscriptions.stream().map(sub -> sub.getServiceId()).collect(Collectors.toList())
-//        );
+
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         List<DashboardApp> apps = userContext.getSubscriptions()
@@ -138,30 +137,28 @@ public class PortalDashboardService {
     }
 
     private DashboardApp toDashboardApp(Subscription sub, List<AppNotificationData> appNotificationCounts) {
-        CatalogEntry service = catalogStore.findService(sub.getServiceId());
-        if (service == null) {
+        try {
+            CatalogEntry service = catalogStore.findService(sub.getServiceId());
+            if (service == null) {
+                return null;
+            }
+
+            DashboardApp app = new DashboardApp();
+            app.setId(sub.getId());
+            app.setServiceId(sub.getServiceId());
+            app.setName(service.getName(RequestContextUtils.getLocale(request)));
+            app.setIcon(imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
+            app.setUrl(service.getUrl());
+
+            if (service.getNotificationUrl() != null) {
+                app.setNotificationUrl(service.getNotificationUrl());
+            }
+
+            return app;
+        } catch (HttpServerErrorException kernelException) {
+            logger.error("Cannot load service from the Kernel for subscription {}, skipping.", sub);
             return null;
         }
-
-        DashboardApp app = new DashboardApp();
-        app.setId(sub.getId());
-        app.setServiceId(sub.getServiceId());
-        app.setName(service.getName(RequestContextUtils.getLocale(request)));
-        app.setIcon(imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
-        app.setUrl(service.getUrl());
-
-        if (service.getNotificationUrl() != null) {
-            app.setNotificationUrl(service.getNotificationUrl());
-        }
-
-//        AppNotificationData appNotificationData = appNotificationCounts.stream().filter(appnotif -> appnotif.getApplicationId().equals(app.getServiceId())).findFirst().orElse(null);
-//        if (appNotificationData != null) {
-//            app.setNotificationCount(appNotificationData.getCount());
-//        }
-
-
-
-        return app;
     }
 
     private UserSubscription toUserSubscription(DashboardApp app) {
