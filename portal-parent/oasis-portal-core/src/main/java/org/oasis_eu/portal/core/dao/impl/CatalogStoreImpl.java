@@ -97,8 +97,10 @@ public class CatalogStoreImpl implements CatalogStore {
             return entry;
         } else {
             entry = findServiceFromKernel(id);
-            entry.setFetchedFromKernel(DateTime.now());
-            serviceCacheRepository.save(entry);
+            if (entry != null) {
+                entry.setFetchedFromKernel(DateTime.now());
+                serviceCacheRepository.save(entry);
+            }
             return entry;
         }
     }
