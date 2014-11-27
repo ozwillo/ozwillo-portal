@@ -22,6 +22,7 @@
         <springdata-mongodb.version>1.5.4.RELEASE</springdata-mongodb.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
         <ehcache.version>2.8.3</ehcache.version>
+        <groovy.version>2.1.3</groovy.version>
 
         <!-- webjars -->
         <bootstrap.version>3.1.1</bootstrap.version>
@@ -40,10 +41,10 @@
         <memcached-session-manager.version>1.8.2</memcached-session-manager.version>
 
         <logback.version>1.1.2</logback.version>
+        <markdown4j.version>2.2-cj-1.0</markdown4j.version>
     </properties>
 
     <modules>
-        <module>oasis-portal-core</module>
         <module>oasis-portal-front</module>
     </modules>
 
@@ -130,6 +131,11 @@
                 <artifactId>logback-access</artifactId>
                 <version>${logback.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
 
             <!-- Thymeleaf -->
             <dependency>
@@ -143,12 +149,24 @@
                 <version>${thymeleaf.version}</version>
             </dependency>
 
+            <!-- Tika -->
+            <dependency>
+                <groupId>org.apache.tika</groupId>
+                <artifactId>tika-core</artifactId>
+                <version>${tika.version}</version>
+            </dependency>
 
             <!-- EhCache -->
             <dependency>
                 <groupId>net.sf.ehcache</groupId>
                 <artifactId>ehcache</artifactId>
                 <version>${ehcache.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>javax.validation</groupId>
+                <artifactId>validation-api</artifactId>
+                <version>${validation-api.version}</version>
             </dependency>
 
             <!-- Webjars -->
