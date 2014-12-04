@@ -58,7 +58,9 @@ public class NetworkController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value = "")
     public String network() throws ExecutionException {
-
+        if (requiresLogout()) {
+            return "redirect:/logout";
+        }
         return "network/my-network";
     }
 

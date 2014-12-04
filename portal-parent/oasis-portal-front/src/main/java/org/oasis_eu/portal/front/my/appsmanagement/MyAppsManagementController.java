@@ -55,6 +55,10 @@ public class MyAppsManagementController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET)
     public String show() {
+
+        if (requiresLogout()) {
+            return "redirect:/logout";
+        }
         return "appmanagement/myapps";
     }
 

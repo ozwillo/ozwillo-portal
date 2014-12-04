@@ -64,6 +64,9 @@ public class MyOzwilloController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value = {"/", "", "/dashboard"})
     public String show(Model model) {
+        if (requiresLogout()) {
+            return "redirect:/logout";
+        }
         return "dashboard/dashboard";
     }
 

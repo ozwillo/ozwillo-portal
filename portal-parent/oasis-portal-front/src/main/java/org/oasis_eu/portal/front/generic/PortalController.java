@@ -1,17 +1,12 @@
 package org.oasis_eu.portal.front.generic;
 
-import java.io.IOException;
-import java.util.Locale;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.services.NameDefaults;
 import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
+import org.oasis_eu.spring.kernel.security.OpenIdCService;
 import org.oasis_eu.spring.kernel.security.RefreshTokenNeedException;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -19,10 +14,18 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.util.Locale;
 
 /**
  * User: schambon Date: 6/11/14
@@ -33,6 +36,9 @@ abstract public class PortalController {
 
 	@Autowired
 	private UserInfoService userInfoService;
+
+    @Autowired
+    private OpenIdCService openIdCService;
 
 	@Autowired
 	private HttpServletRequest request;
@@ -120,6 +126,17 @@ abstract public class PortalController {
 
     @ModelAttribute("isAppstore")
     public boolean isAppstore() {
+        return false;
+    }
+
+
+    protected boolean requiresLogout() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication != null && authentication instanceof OpenIdCAuthentication) {
+            if (openIdCService.getUserInfo(((OpenIdCAuthentication) authentication).getAccessToken()) == null) {
+                return true;
+            }
+        }
         return false;
     }
 

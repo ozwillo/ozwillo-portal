@@ -79,7 +79,12 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "")
     public String profile(Model model) {
-        initProfileModel(model);
+		if (requiresLogout()) {
+			return "redirect:/logout";
+		}
+
+
+		initProfileModel(model);
 		return "my-profile";
 	}
 
