@@ -34,7 +34,6 @@ public class StoreApplication {
     @JsonProperty
     boolean installed;
 
-
     public static enum Type {
         service,
         application

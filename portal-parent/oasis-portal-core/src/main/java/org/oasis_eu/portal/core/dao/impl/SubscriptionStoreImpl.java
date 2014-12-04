@@ -132,7 +132,15 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
 
     public void unsubscribe(String subscriptionId) {
+
+
         HttpEntity<Subscription> entity = kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.GET, null, Subscription.class, user(), subscriptionId);
+
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.SERVICE, entity.getBody().getServiceId(), entity.getBody().getUserId());
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
+
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", entity.getHeaders().getETag());

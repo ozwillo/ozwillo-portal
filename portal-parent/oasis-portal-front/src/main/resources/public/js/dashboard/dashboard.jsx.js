@@ -677,7 +677,7 @@
             return (
                 <div className="app text-center" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
                     <img src={this.props.app.icon} alt={this.props.app.name} />
-                    <a href={url} className="app-link" draggable="false" />
+                    <a href={url} target="_new" className="app-link" draggable="false" />
                     {notif}
                     <p>{this.props.app.name}</p>
                 </div>

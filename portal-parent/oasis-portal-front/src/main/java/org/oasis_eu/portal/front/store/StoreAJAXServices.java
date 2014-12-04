@@ -156,6 +156,8 @@ public class StoreAJAXServices {
             applicationDetails.screenshots = screenshotUris.stream().map(uri -> imageService.getImageForURL(uri, ImageFormat.PNG_800BY450, false)).filter(uri -> !imageService.isDefaultIcon(uri)).collect(Collectors.toList());
         }
 
+        applicationDetails.serviceUrl = hit.getCatalogEntry().getUrl();
+
         return applicationDetails;
     }
 
