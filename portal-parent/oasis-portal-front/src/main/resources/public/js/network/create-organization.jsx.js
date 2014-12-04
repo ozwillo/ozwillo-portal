@@ -37,7 +37,15 @@ var CreateOrganizationForm = React.createClass({
         this.setState(this.getInitialState());
     },
     getInitialState: function () {
-        return { organization: {name: '', type: ''}, errors: [], saving: false };
+        var type = '';
+        if (this.props.typeRestriction) {
+            if (!this.props.typeRestriction.company) {
+                type = "PUBLIC_BODY";
+            } else if (!this.props.typeRestriction.public_body) {
+                type = "COMPANY";
+            }
+        }
+        return {organization: {name: '', type: type}, errors: [], saving: false};
     },
     saveOrganization: function (event) {
         if (event) {
@@ -94,9 +102,46 @@ var CreateOrganizationForm = React.createClass({
         org.type = event.target.value;
         this.setState({organization: org, errors: [], saving: false});
     },
+
+    renderType: function () {
+        var r = this.props.typeRestriction ? this.props.typeRestriction : {company: true, public_body: true};
+
+        var public_body = null;
+        if (r.public_body) {
+            public_body = (
+                <div className="radio">
+                    <label>
+                        <input type="radio" value="PUBLIC_BODY" checked={this.state.organization.type == 'PUBLIC_BODY'} onChange={this.toggleType}>{t('organization-type.PUBLIC_BODY')}</input>
+                    </label>
+                </div>
+            );
+        }
+
+        var company = null;
+        if (r.company) {
+            company = (
+                <div className="radio">
+                    <label>
+                        <input type="radio" value="COMPANY" checked={this.state.organization.type == 'COMPANY'} onChange={this.toggleType}>{t('organization-type.COMPANY')}</input>
+                    </label>
+                </div>
+            );
+        }
+
+        var typeClassName = ($.inArray('type', this.state.errors) != -1 ? 'error' : '');
+
+        return (
+            <div className="form-group">
+                <label htmlFor="organization-type" className={typeClassName}>{t('organization-type')}</label>
+                {public_body}
+                {company}
+            </div>
+        );
+
+    },
+
     render: function () {
         var nameClassName = ($.inArray('name', this.state.errors) != -1 ? 'error' : '');
-        var typeClassName = ($.inArray('type', this.state.errors) != -1 ? 'error' : '');
         var errorMessage = ($.inArray('general', this.state.errors) != -1) ? <p className="alert alert-danger" role="alert">{t('ui.general-error')}</p> : null;
 
         return (
@@ -105,20 +150,8 @@ var CreateOrganizationForm = React.createClass({
                     <label htmlFor="organization-name" className={nameClassName}>{t('organization-name')}</label>
                     <input type="text" className="form-control" value={this.state.organization.name} onChange={this.changeInput('name')} placeholder={t('organization-name')}/>
                 </div>
-                <div className="form-group">
-                    <label htmlFor="organization-type" className={typeClassName}>{t('organization-type')}</label>
-                    <div className="radio">
-                        <label>
-                            <input type="radio" value="PUBLIC_BODY" checked={this.state.organization.type == 'PUBLIC_BODY'} onChange={this.toggleType}>{t('organization-type.PUBLIC_BODY')}</input>
-                        </label>
-                    </div>
-                    <div className="radio">
-                        <label>
-                            <input type="radio" value="COMPANY" checked={this.state.organization.type == 'COMPANY'} onChange={this.toggleType}>{t('organization-type.COMPANY')}</input>
-                        </label>
-                    </div>
-                </div>
-                        {errorMessage}
+                {this.renderType()}
+                {errorMessage}
             </form>
             );
     }

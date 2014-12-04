@@ -241,7 +241,7 @@ var AppModal = React.createClass({
     },
     loadOrgs: function () {
         $.ajax({
-            url: network_service + "/organizations",
+            url: store_service + "/organizations/" + this.props.app.id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -426,11 +426,19 @@ var AppModal = React.createClass({
             );
     },
 
+    orgTypeRestriction: function () {
+
+        return {
+            company: this.props.app.target_companies,
+            public_body: this.props.app.target_publicbodies
+        };
+    },
+
     renderCreateNew: function () {
         return (
             <div>
                 <h3>{t('create-new-org')}</h3>
-                <CreateOrganizationForm ref="createOrgForm" successHandler={this.orgCreated} />
+                <CreateOrganizationForm ref="createOrgForm" successHandler={this.orgCreated} typeRestriction={this.orgTypeRestriction()} />
                 <div className="row">
                     <div className="col-sm-4 col-sm-offset-8">
                         <a className="btn btn-default" onClick={this.cancelCreateOrg}>{t('ui.cancel')}</a>

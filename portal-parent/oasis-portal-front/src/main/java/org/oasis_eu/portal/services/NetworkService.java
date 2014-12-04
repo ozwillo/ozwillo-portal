@@ -104,10 +104,9 @@ public class NetworkService {
 
     public void updateOrganization(UIOrganization uiOrganization) {
         Organization org = organizationStore.find(uiOrganization.getId());
-
         if (shouldUpdateOrg(uiOrganization, org)) {
             org.setName(uiOrganization.getName());
-            org.setType(uiOrganization.getType());
+            org.setType(uiOrganization.getType() != null ? uiOrganization.getType() : OrganizationType.PUBLIC_BODY);
 
             organizationStore.update(org);
         }
@@ -131,7 +130,7 @@ public class NetworkService {
 
     private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) {
         boolean nameHasChanged = !uiOrganization.getName().equals(organization.getName());
-        boolean typeHasChanged = !(uiOrganization.getType() == null ? organization.getType() == null : uiOrganization.getType().equals(organization.getType()));
+        boolean typeHasChanged = uiOrganization.getType() == null || organization.getType() == null || !(uiOrganization.getType().equals(organization.getType()));
 
         return nameHasChanged || typeHasChanged;
     }
