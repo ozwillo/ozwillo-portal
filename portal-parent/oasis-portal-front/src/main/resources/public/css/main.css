@@ -514,11 +514,13 @@ div.popup {
 /* wrapper and push are used to make the footer stick at the bottom of the screen */
 .wrapper {
     min-height: 100%;
-    margin: 0 auto -216px;
+    /*margin: 0 auto -216px;*/
+    margin: 0 auto -70px;
 }
 
 footer, .push {
-    height: 216px;
+    /*height: 216px;*/
+    height: 70px;
 }
 
 .sitemap {
