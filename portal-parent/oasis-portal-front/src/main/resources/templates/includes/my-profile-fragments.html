@@ -110,7 +110,9 @@
 <div data-th-fragment="urlButton-widget (widget, mode)">
 
   	<div class="col-md-2 avatar-block">
-      	<a data-th-href="@{${widget.url}}" target="_blank"><button id="btn-edit-password" class="btn btn-edit" type="button" data-th-attr="disabled=${'VIEW'.equals(mode.toString())}">
+        <a data-th-href="@{${widget.url}}">
+            <button id="btn-edit-password" class="btn btn-edit" type="button"
+                    data-th-attr="disabled=${'VIEW'.equals(mode.toString())}">
       		<span class="edit"></span><span data-th-text="#{${widget.buttonLabel}}">Change password</span>
       	</button></a>
   	</div>
