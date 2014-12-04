@@ -241,7 +241,7 @@ var AppModal = React.createClass({
     },
     loadOrgs: function () {
         $.ajax({
-            url: network_service + "/organizations",
+            url: store_service + "/organizations/" + this.props.app.id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -394,7 +394,12 @@ var AppModal = React.createClass({
                         </div>
                     </div>
                     <div className="col-sm-4 center-container install-application">
-                        <InstallButton app={this.props.app} orgs={this.state.orgs} installApp={this.installApp} createNewOrg={this.createNewOrg}/>
+                        <InstallButton
+                            app={this.props.app}
+                            orgs={this.state.orgs}
+                            url={this.state.app.serviceUrl}
+                            installApp={this.installApp}
+                            createNewOrg={this.createNewOrg}/>
                     </div>
                 </div>
                 <div className="row">
@@ -421,11 +426,19 @@ var AppModal = React.createClass({
             );
     },
 
+    orgTypeRestriction: function () {
+
+        return {
+            company: this.props.app.target_companies,
+            public_body: this.props.app.target_publicbodies
+        };
+    },
+
     renderCreateNew: function () {
         return (
             <div>
                 <h3>{t('create-new-org')}</h3>
-                <CreateOrganizationForm ref="createOrgForm" successHandler={this.orgCreated} />
+                <CreateOrganizationForm ref="createOrgForm" successHandler={this.orgCreated} typeRestriction={this.orgTypeRestriction()} />
                 <div className="row">
                     <div className="col-sm-4 col-sm-offset-8">
                         <a className="btn btn-default" onClick={this.cancelCreateOrg}>{t('ui.cancel')}</a>
@@ -492,9 +505,19 @@ var InstallButton = React.createClass({
     },
     render: function () {
         if (logged_in) {
-            if (this.onlyForCitizens()) {
-                // install app straight on if it's a citizen-only application
-                return <a className="btn btn-primary" href="#" onClick={this.installApp}>{t('install')}</a>;
+            if (this.props.app.type == "service") {
+                if (this.props.app.installed) {
+                    if (this.props.url) {
+                        return <a className="btn btn-primary" href={this.props.url} target="_new">{t('launch')}</a>;
+                    } else {
+                        return <a className="btn btn-primary">
+                            <i className="fa fa-spinner fa-spin"></i>
+                        </a>;
+                    }
+                } else {
+                    // install app straight on if it's a citizen-only application
+                    return <a className="btn btn-primary" href="#" onClick={this.installApp}>{t('install')}</a>;
+                }
             } else {
                 var organizations = this.props.orgs.map(function (org) {
                     return <li key={org.id}>

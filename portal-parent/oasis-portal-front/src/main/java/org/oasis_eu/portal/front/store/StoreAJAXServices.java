@@ -9,6 +9,8 @@ import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
+import org.oasis_eu.portal.model.network.UIOrganization;
+import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.portal.services.RatingService;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
@@ -24,6 +26,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
 /**
  * User: schambon
@@ -41,6 +45,9 @@ public class StoreAJAXServices {
 
     @Autowired
     private OrganizationStore organizationStore;
+
+    @Autowired
+    private NetworkService networkService;
 
     @Autowired
     private ImageService imageService;
@@ -95,6 +102,20 @@ public class StoreAJAXServices {
     public void rate(@PathVariable String appType, @PathVariable String appId, @RequestBody RateRequest rateRequest) {
         ratingService.rate(appType, appId, rateRequest.rate);
     }
+
+    @RequestMapping(value = "/organizations/{appId}", method = GET)
+    public List<UIOrganization> organizations(@PathVariable String appId) {
+
+        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.APPLICATION);
+        List<UIOrganization> organizations = networkService.getMyOrganizations();
+
+
+        return organizations.stream()
+                .filter(o -> o.isAdmin())
+                .filter(o -> info.getCatalogEntry().getTargetAudience().stream().anyMatch(audience -> audience.isCompatibleWith(o.getType())))
+                .collect(Collectors.toList());
+    }
+
 
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
@@ -155,6 +176,8 @@ public class StoreAJAXServices {
         if (screenshotUris != null) {
             applicationDetails.screenshots = screenshotUris.stream().map(uri -> imageService.getImageForURL(uri, ImageFormat.PNG_800BY450, false)).filter(uri -> !imageService.isDefaultIcon(uri)).collect(Collectors.toList());
         }
+
+        applicationDetails.serviceUrl = hit.getCatalogEntry().getUrl();
 
         return applicationDetails;
     }

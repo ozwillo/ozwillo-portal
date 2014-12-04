@@ -344,8 +344,39 @@ li.dashboard_template {
     background-color: #d9534f;
 }
 
-.navbar-noauth * li {
-    margin-left: 13px;
+.navbar-noauth {
+    background: #ffffff;
+}
+
+.navbar-noauth * a {
+    font-size: 18px;
+    color: #636884;
+}
+
+.navbar-noauth * a.logo {
+    padding: 3px 15px 4px;
+    background-color: rgb(238, 238, 238);
+}
+
+.navbar-noauth * img {
+    vertical-align: middle;
+}
+
+.navbar-noauth * .dropdown-menu * a {
+    font-size: 16px;
+}
+
+.navbar-nav > li > a.btn-nav-noauth {
+    padding-bottom: 6px;
+    padding-top: 6px;
+
+    margin-top: 7px;
+    margin-bottom: 7px;
+}
+
+.btn-nav-noauth {
+    border-color: #636884;
+    border-radius: 4px;
 }
 
 .btn-noborder {
@@ -514,11 +545,13 @@ div.popup {
 /* wrapper and push are used to make the footer stick at the bottom of the screen */
 .wrapper {
     min-height: 100%;
-    margin: 0 auto -216px;
+    /*margin: 0 auto -216px;*/
+    margin: 0 auto -70px;
 }
 
 footer, .push {
-    height: 216px;
+    /*height: 216px;*/
+    height: 70px;
 }
 
 .sitemap {

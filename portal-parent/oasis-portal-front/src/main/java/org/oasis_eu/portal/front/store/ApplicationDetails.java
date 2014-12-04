@@ -22,4 +22,7 @@ public class ApplicationDetails {
     @JsonProperty
     List<String> screenshots;
 
+    @JsonProperty
+    String serviceUrl;
+
 }
