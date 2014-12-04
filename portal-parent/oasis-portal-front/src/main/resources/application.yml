@@ -43,6 +43,7 @@ kernel:
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.alt_uri}/a/logout
     callback_uri: ${application.url}/callback
+    home_uri: ${application.url}/my
   user_directory_endpoint: ${kernel.base_uri}/d
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
