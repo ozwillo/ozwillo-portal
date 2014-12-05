@@ -100,6 +100,9 @@ public class CatalogEntry {
     @JsonProperty("policy_uri")
     private String policyUri;
 
+    @JsonProperty("restricted")
+    private Boolean restricted = false;
+
 
     public String getId() {
         return id;
@@ -344,5 +347,13 @@ public class CatalogEntry {
 
     public void setFetchedFromKernel(DateTime fetchedFromKernel) {
         this.fetchedFromKernel = fetchedFromKernel;
+    }
+
+    public Boolean getRestricted() {
+        return restricted;
+    }
+
+    public void setRestricted(Boolean restricted) {
+        this.restricted = restricted;
     }
 }
