@@ -169,6 +169,27 @@ var ServiceSettings = React.createClass({
         if ($.inArray("icon", this.props.errors) != -1) {
             iconClassName = iconClassName + " error";
         }
+
+        var visibility = null;
+        if (!this.props.service.service.restricted) {
+            visibility = (
+                <div className="form-group">
+                    <div className="col-sm-10 col-sm-offset-2">
+                        <input className="switch" type="checkbox" id="published" checked={this.props.service.service.visible} onChange={this.handleChange('visible', true)} />
+                        <label htmlFor="published">{this.props.service.service.visible ? t('published') : t('notpublished')}</label>
+                    </div>
+                </div>
+            );
+        } else {
+            visibility = (
+                <div className="form-group">
+                    <div className="col-sm-10 col-sm-offset-2">
+                        <p>{t('restricted-service')}</p>
+                    </div>
+                </div>
+            );
+        }
+
         return (
             <Modal title={this.props.service.name} ref="modal" successHandler={this.props.save} large={true}>
                 <form className="form-horizontal"  role="form">
@@ -189,12 +210,7 @@ var ServiceSettings = React.createClass({
                         </div>
                     </div>
 
-                    <div className="form-group">
-                        <div className="col-sm-10 col-sm-offset-2">
-                            <input className="switch" type="checkbox" id="published" checked={this.props.service.service.visible} onChange={this.handleChange('visible', true)} />
-                            <label htmlFor="published">{this.props.service.service.visible ? t('published') : t('notpublished')}</label>
-                        </div>
-                    </div>
+                    {visibility}
                 </form>
             </Modal>
             );
