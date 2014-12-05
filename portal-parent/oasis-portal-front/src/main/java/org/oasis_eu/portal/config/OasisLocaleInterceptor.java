@@ -1,18 +1,15 @@
 package org.oasis_eu.portal.config;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.oasis_eu.portal.core.controller.Languages;
-import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Updates the cookie locale to match the user profile.
@@ -28,21 +25,12 @@ public class OasisLocaleInterceptor extends HandlerInterceptorAdapter {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof OpenIdCAuthentication) {
-        	
-			UserInfo currentUser = ((OpenIdCAuthentication) authentication).getUserInfo();
-			if (currentUser != null && !StringUtils.isEmpty(currentUser.getLocale())) {
-				String userLocale = currentUser.getLocale();
-				LocaleResolver localeResolver = RequestContextUtils.getLocaleResolver(request);
-				if (localeResolver instanceof OasisLocaleResolver) {
-					OasisLocaleResolver olr = (OasisLocaleResolver) localeResolver;
-					if (!userLocale.equals(olr.getCookieLocale(request).toString())) {
-						localeResolver.setLocale(request, response, StringUtils.parseLocaleString(userLocale));
-					}
-				}
-			}
+
+			// nop - now we should have a correct locale in the session
 
         } else {
-            String path = request.getServletPath();
+			// a bit hacky, basically if we're not logged in we look for the first path element to tell us the locale
+			String path = request.getServletPath();
             if (path.contains("/")) {
                 String[] split = path.split("/");
                 if (split.length > 0) {

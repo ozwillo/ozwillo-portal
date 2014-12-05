@@ -1,31 +1,32 @@
 package org.oasis_eu.portal.config;
 
-import java.util.Locale;
-import java.util.TimeZone;
-
-import javax.servlet.http.HttpServletRequest;
-
 import com.google.common.base.Strings;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.StringUtils;
-import org.springframework.web.servlet.i18n.CookieLocaleResolver;
+import org.springframework.web.servlet.i18n.SessionLocaleResolver;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Locale;
 
 /**
  * 
  * @author mkalam-alami
  *
  */
-public class OasisLocaleResolver extends CookieLocaleResolver {
+public class OasisLocaleResolver extends SessionLocaleResolver {
+	private static final Logger logger = LoggerFactory.getLogger(OasisLocaleResolver.class);
 
-    public static final String LOCALE_COOKIE_NAME = "OASIS_LOCALE";
-    
+//    public static final String LOCALE_COOKIE_NAME = "OASIS_LOCALE";
+
 	@Autowired
     private UserInfoService userInfoService;
     
     public OasisLocaleResolver() {
-        this.setCookieName(LOCALE_COOKIE_NAME);
+
 	}
 
 	@Override
@@ -35,26 +36,22 @@ public class OasisLocaleResolver extends CookieLocaleResolver {
 		if (currentUser != null && !Strings.isNullOrEmpty(currentUser.getLocale())) {
 			return StringUtils.parseLocaleString(currentUser.getLocale());
 		}
-		// Otherwise use cookie
+		// Otherwise use parameter
 		else {
+			if (request.getParameter("ui_locales") != null) {
+				try {
+					Locale l = Locale.forLanguageTag(request.getParameter("ui_locales"));
+					if (l != null) {
+						return l;
+					}
+				} catch (Exception e) {
+					logger.error("Cannot interpret locale from ui_locales parameter: {}", request.getParameter("ui_locales"));
+					logger.info("Exception:", e);
+				}
+			}
 			return super.resolveLocale(request);
 		}
 	}
-	
-	public Locale getCookieLocale(HttpServletRequest request) {
-		return super.resolveLocale(request);
-	}
-	
-	@Override
-	public void setDefaultLocale(Locale defaultLocale) {
-		// Do not set a default locale - this will fall back to using the request's Accept header
-		throw new UnsupportedOperationException();
-	}
-	
-	@Override
-	public void setDefaultTimeZone(TimeZone defaultTimeZone) {
-		// Do not set a default locale - this will fall back to using the request's Accept header
-		throw new UnsupportedOperationException();
-	}
-	
+
+
 }

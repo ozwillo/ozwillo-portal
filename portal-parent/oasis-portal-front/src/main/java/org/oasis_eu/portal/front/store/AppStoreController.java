@@ -109,7 +109,7 @@ public class AppStoreController extends PortalController {
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/login")
-    public String login(HttpSession session, RedirectAttributes redirectAttributes, @RequestParam(required = false) String appId, @RequestParam(required = false) String appType) {
+    public String login(HttpServletRequest request, HttpSession session, RedirectAttributes redirectAttributes, @RequestParam(required = false) String appId, @RequestParam(required = false) String appType) {
         AppStoreNavigationStatus status = new AppStoreNavigationStatus();
         if (appId != null && appType != null) {
             status.setAppId(appId);
@@ -118,7 +118,7 @@ public class AppStoreController extends PortalController {
 
         session.setAttribute("APP_STORE", status);
 
-        return "redirect:/login";
+        return "redirect:/login?ui_locales=" + RequestContextUtils.getLocale(request);
     }
 
 
