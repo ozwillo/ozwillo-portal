@@ -204,6 +204,7 @@ public class NetworkService {
             return accountName;
         } else {
             UserAccount userAccount = userDirectory.findUserAccount(accountId);
+            if (userAccount.getNickname() != null) return userAccount.getNickname();
             if (userAccount.getName() != null) return userAccount.getName();
             if (userAccount.getGivenName() != null && userAccount.getFamilyName() != null)
                 return String.format("%s %s", userAccount.getGivenName(), userAccount.getFamilyName());

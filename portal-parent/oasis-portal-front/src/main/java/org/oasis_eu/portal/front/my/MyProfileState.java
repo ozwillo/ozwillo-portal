@@ -51,8 +51,9 @@ public class MyProfileState {
     	
     	FormLayout accountFormLayout = new FormLayout(LAYOUT_ACCOUNT, "my.profile.title.account", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
     	accountFormLayout.setOrder(1);
-    	accountFormLayout.appendWidget(new AvatarWidget("pictureUrl", "my.profile.account.avatar", getAvailableAvatars()));
-    	accountFormLayout.appendWidget(new FormWidgetText("email",
+		accountFormLayout.appendWidget(new FormWidgetText("nickname", "my.profile.personal.nickname"));
+		accountFormLayout.appendWidget(new AvatarWidget("pictureUrl", "my.profile.account.avatar", getAvailableAvatars()));
+		accountFormLayout.appendWidget(new FormWidgetText("email",
         		"my.profile.account.email"));
     	accountFormLayout.appendWidget(new FormWidgetUrlButton("password",
         		"my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
@@ -62,7 +63,8 @@ public class MyProfileState {
         
         FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
         idFormLayout.setOrder(2);
-        idFormLayout.appendWidget(new FormWidgetText("givenName",
+
+		idFormLayout.appendWidget(new FormWidgetText("givenName",
         		"my.profile.personal.firstname"));
         idFormLayout.appendWidget(new FormWidgetText("familyName",
         		"my.profile.personal.lastname"));
