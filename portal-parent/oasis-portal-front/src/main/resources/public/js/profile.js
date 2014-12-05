@@ -11,50 +11,50 @@ $(document).ready(function () {
 		$('.action-toggle-view', $el).click(function() {
 			toggleProfileLayout($(this).attr('data'), 'VIEW');
 		});
-		$('.personal-data-form', $el).submit(function(e) {
-			e.preventDefault();
-			$form = $(this);
-			$.ajax({
-				url: $form.attr('action'),
-				method: 'POST',
-				data: $form.serialize(),
-				success: function(accountFragment) {
-					var layoutSelector = '#' + $form.attr('data');
-					$(layoutSelector).replaceWith(accountFragment);
-					initBindings($(layoutSelector));
-					// if switching language, the returned account layout fragment from xhr will contain
-					// the new localized labels. We however also want to update other layouts fields's labels
-					// (only if these are in view mode as to prevent reseting in-editing state forms).
-					if($form.attr('data')==='account') {
-						
-						if($('#identity').find('button').attr('class').indexOf('action-toggle-view active')>0) {
-							$.ajax({
-								url: '/my/profile/fragment/layout/identity',
-								method: 'GET',
-								data: $form.serialize(),
-								success: function(identityFragment) {
-									
-									$('#identity').replaceWith(identityFragment);
-									initBindings($('#identity'));
-								}
-							});
-						}
-						if($('#address').find('button').attr('class').indexOf('action-toggle-view active')>0) {
-							$.ajax({
-								url: '/my/profile/fragment/layout/address',
-								method: 'GET',
-								data: $form.serialize(),
-								success: function(identityFragment) {
-									
-									$('#address').replaceWith(identityFragment);
-									initBindings($('#address'));
-								}
-							});
-						}
-					}
-				}
-			})
-		});
+		//$('.personal-data-form', $el).submit(function(e) {
+		//	e.preventDefault();
+		//	$form = $(this);
+		//	$.ajax({
+		//		url: $form.attr('action'),
+		//		method: 'POST',
+		//		data: $form.serialize(),
+		//		success: function(accountFragment) {
+		//			var layoutSelector = '#' + $form.attr('data');
+		//			$(layoutSelector).replaceWith(accountFragment);
+		//			initBindings($(layoutSelector));
+		//			// if switching language, the returned account layout fragment from xhr will contain
+		//			// the new localized labels. We however also want to update other layouts fields's labels
+		//			// (only if these are in view mode as to prevent reseting in-editing state forms).
+		//			if($form.attr('data')==='account') {
+		//
+		//				if($('#identity').find('button').attr('class').indexOf('action-toggle-view active')>0) {
+		//					$.ajax({
+		//						url: '/my/profile/fragment/layout/identity',
+		//						method: 'GET',
+		//						data: $form.serialize(),
+		//						success: function(identityFragment) {
+		//
+		//							$('#identity').replaceWith(identityFragment);
+		//							initBindings($('#identity'));
+		//						}
+		//					});
+		//				}
+		//				if($('#address').find('button').attr('class').indexOf('action-toggle-view active')>0) {
+		//					$.ajax({
+		//						url: '/my/profile/fragment/layout/address',
+		//						method: 'GET',
+		//						data: $form.serialize(),
+		//						success: function(identityFragment) {
+		//
+		//							$('#address').replaceWith(identityFragment);
+		//							initBindings($('#address'));
+		//						}
+		//					});
+		//				}
+		//			}
+		//		}
+		//	})
+		//});
 		
 		// Edit avatar
     	$('#btn-edit-avatar', $el).click(function(e) {

@@ -133,10 +133,12 @@ public class MyProfileController extends PortalController {
 			
 				initProfileModel(model);
 				model.addAttribute("layout", myProfileState.getLayout(layoutId));
-				return "includes/my-profile-fragments :: layout";
+//				return "includes/my-profile-fragments :: layout";
+				return "my-profile";
 			}
 		}
 
+		currentUser.setName(currentUser.getNickname()); // force name = nickname
 		userAccountService.saveUserAccount(currentUser);
 
         FormLayout layout = myProfileState.getLayout(layoutId);
@@ -145,8 +147,9 @@ public class MyProfileController extends PortalController {
         model.addAttribute("layout", layout);
 
 //		return "redirect:/my/profile/fragment/layout/" + layoutId;
-        return "includes/my-profile-fragments::layout";
-    }
+//        return "includes/my-profile-fragments::layout";
+		return "redirect:/my/profile";
+	}
 
 	protected void initProfileModel(Model model) {
 		model.addAttribute("navigation",

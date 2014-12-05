@@ -12,8 +12,10 @@
     </div>
     <div class="col-sm-10 form-data-block">
     <form data-th-class="'form-horizontal ' + ${layout.formClass} + ${'EDIT'.equals(layout.mode.toString()) ? ' edit' : ''}"
-        role="form" data-th-action="@{${layout.actionUrl}+'/'+${layout.id}}" data-th-data="${layout.id}"  data-th-object="${modelObject}">
-        
+          role="form" data-th-action="@{${layout.actionUrl}+'/'+${layout.id}}" data-th-data="${layout.id}"
+          data-th-object="${modelObject}"
+          method="post">
+        <input type="hidden" data-th-name="${_csrf.parameterName}" data-th-value="${_csrf.token}"/>
         
       <div data-th-each="widget: ${layout.widgets}" class="form-group" data-th-classappend="${#fields.hasErrors('__${widget.id}__')}? 'has-error'">
           <label data-th-for="${widget.id}" class="col-sm-2 control-label" data-th-text="#{${widget.label}}">First name :</label>
