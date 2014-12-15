@@ -100,14 +100,8 @@
     </ul>
 
     <ul class="nav navbar-nav oasis-nav navbar-right">
-        <li>
-            <a href="#" class="nav-link">
-                <img class="gray" data-th-src="@{/img/my/data-store-gray.png}" src="../../public/img/my/data-store-gray.png" alt="Data Store" data-th-alt="#{ui.datastore}" />
-                <img class="purple" data-th-src="@{/img/my/data-store.png}" src="../../public/img/my/data-store.png" alt="Data Store" data-th-alt="#{ui.datastore}"/>
-                <span data-th-text="#{ui.datastore}">Data Store</span>
-            </a>
-        </li>
-        <li data-th-class="${isAppstore ? 'active':''}">
+
+    <li data-th-class="${isAppstore ? 'active':''}">
             <a href="#" class="nav-link" data-th-class="${isAppstore?'':'nav-link'}" data-th-href="@{|/${currentLanguage.locale.language}/store|}">
                 <img data-th-if="${!isAppstore}" class="gray" data-th-src="@{/img/my/app-store-gray.png}" src="../../public/img/my/app-store-gray.png" alt="Apps Store" data-th-alt="#{ui.appstore}" />
                 <img data-th-class="${isAppstore?'':'purple'}" class="purple" data-th-src="@{/img/my/app-store.png}" src="../../public/img/my/app-store.png" alt="Apps Store" data-th-alt="#{ui.appstore}"/>
