@@ -519,15 +519,34 @@ var InstallButton = React.createClass({
                     return <a className="btn btn-primary" href="#" onClick={this.installApp}>{t('install')}</a>;
                 }
             } else {
-                var organizations = this.props.orgs.map(function (org) {
-                    return <li key={org.id}>
-                        <a href="#" onClick={this.installAppForOrganization(org.id)}>{org.name}</a>
-                    </li>;
-                }.bind(this));
 
                 var installForSelf = null;
                 if (this.hasCitizens()) {
                     installForSelf = <button type="button" className="btn btn-default" onClick={this.installApp}>{t('for_myself')}</button>;
+                }
+
+                var installOnBehalf = null;
+                if (!this.onlyForCitizens()) {
+
+                    var organizations = this.props.orgs.map(function (org) {
+                        return <li key={org.id}>
+                            <a href="#" onClick={this.installAppForOrganization(org.id)}>{org.name}</a>
+                        </li>;
+                    }.bind(this));
+
+                    installOnBehalf = [
+
+                        <button key="behalfButton" type="button" className="btn btn-default" data-toggle="dropdown">{t('on_behalf_of')}
+                            <span className="caret"></span>
+                        </button>,
+
+                        <ul key="behalfMenu" className="dropdown-menu" role="menu">
+                        {organizations}
+                            <li>
+                                <a href="#" onClick={this.props.createNewOrg}>{t('create-new-org')}</a>
+                            </li>
+                        </ul>
+                    ];
                 }
 
                 return (
@@ -541,15 +560,7 @@ var InstallButton = React.createClass({
                                 <p>{t('confirm-install-this-app')}</p>
                                 {this.props.app.paid ? <p>{t('confirm-install-this-app-paid')}</p> : null}
                                 {installForSelf}
-                                <button type="button" className="btn btn-default" data-toggle="dropdown">{t('on_behalf_of')}
-                                    <span className="caret"></span>
-                                </button>
-                                <ul className="dropdown-menu" role="menu">
-                                    {organizations}
-                                    <li>
-                                        <a href="#" onClick={this.props.createNewOrg}>{t('create-new-org')}</a>
-                                    </li>
-                                </ul>
+                                {installOnBehalf}
                             </div>
                         </div>
                     </MyPop>
