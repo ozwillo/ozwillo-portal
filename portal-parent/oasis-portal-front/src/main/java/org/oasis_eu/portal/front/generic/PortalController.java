@@ -1,6 +1,8 @@
 package org.oasis_eu.portal.front.generic;
 
 import org.oasis_eu.portal.core.controller.Languages;
+import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
+import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.NameDefaults;
 import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
@@ -25,6 +27,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Locale;
 
 /**
@@ -45,6 +50,10 @@ abstract public class PortalController {
 
     @Autowired
     private NameDefaults nameDefaults;
+
+    @Autowired
+    private MyNavigationService navigationService;
+
 
     @Value("${web.home}")
     private String webHome;
@@ -94,6 +103,33 @@ abstract public class PortalController {
 
         return nameDefaults.complete(userInfo);
 	}
+
+    @ModelAttribute("sitemap")
+    public List<List<SiteMapEntry>> siteMap() {
+        List<SiteMapEntry> siteMap = navigationService.getSiteMap();
+
+        if (siteMap == null || siteMap.isEmpty()) {
+            return Collections.emptyList();
+        }
+
+        int colLength = 4;
+        List<List<SiteMapEntry>> result = new ArrayList<>();
+        List<SiteMapEntry> current = new ArrayList<>(colLength);
+        for (SiteMapEntry entry : siteMap) {
+            current.add(entry);
+
+            if (current.size() == colLength) {
+                result.add(current);
+                current = new ArrayList<>(colLength);
+            }
+        }
+        if (current.size() != 0) {
+            result.add(current);
+        }
+
+
+        return result;
+    }
 
     @ExceptionHandler(AuthenticationRequiredException.class)
     public void handleAuthRequired(HttpServletRequest request, HttpServletResponse response) throws IOException {

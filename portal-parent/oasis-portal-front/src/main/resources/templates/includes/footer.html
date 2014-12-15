@@ -1,5 +1,19 @@
 <footer>
+    <div class="sitemap">
+        <div class="row">
+            <div class="col-sm-6 text-center">
+                <h1>Oasis</h1>
 
+                <p data-th-text="#{footer.tagline}">A platform interactive services for a data common good</p>
+            </div>
+            <div class="col-sm-2" data-th-each="col: ${sitemap}">
+                <ul>
+                    <li data-th-each="entry: ${col}"><a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
     <div class="footer">
         <img src="/img/icons/eu.png" class="pull-left"/>
 

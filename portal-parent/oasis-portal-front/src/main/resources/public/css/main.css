@@ -545,18 +545,18 @@ div.popup {
 /* wrapper and push are used to make the footer stick at the bottom of the screen */
 .wrapper {
     min-height: 100%;
-    /*margin: 0 auto -216px;*/
-    margin: 0 auto -70px;
+    margin: 0 auto -216px;
+    /*margin: 0 auto -70px;*/
 }
 
 footer, .push {
-    /*height: 216px;*/
-    height: 70px;
+    height: 216px;
+    /*height: 70px;*/
 }
 
 .sitemap {
     width: 100%;
-    background-color: #DECEE6;
+    background-color: #dfcae2;
     padding: 10px 10%;
 }
 
@@ -566,7 +566,14 @@ footer, .push {
 
 .sitemap li {
     list-style-type: none;
-    font-size: 15px;
+    font-size: 16px;
+    height: 28.375px;
+    line-height: 22px;
+    box-sizing: border-box;
+}
+
+.sitemap li:hover {
+    background-color: #ffffff;
 }
 
 .sitemap h1 {
@@ -574,12 +581,17 @@ footer, .push {
 }
 
 .sitemap a {
-    color: #526686;
+    color: #555555;
+    padding: 0.2em;
+}
+
+.sitemap a:hover {
+    text-decoration: none;
 }
 
 .footer {
     width: 100%;
-    background-color: #5744A2;
+    background-color: #6e4a9c;
     padding: 10px 30%;
     color: white;
 }

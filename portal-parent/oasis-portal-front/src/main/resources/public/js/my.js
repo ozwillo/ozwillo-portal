@@ -40,6 +40,8 @@ $(document).ready(function () {
 
     }
 
-    updateNotifications();
+    if ($(".my-oasis").attr("data")) {
+        updateNotifications();
+    }
 
 });

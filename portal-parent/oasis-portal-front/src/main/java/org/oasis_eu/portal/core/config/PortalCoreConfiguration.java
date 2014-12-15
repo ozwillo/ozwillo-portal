@@ -73,11 +73,15 @@ public class PortalCoreConfiguration implements CachingConfigurer {
         CacheConfiguration applicationsCache = new CacheConfiguration("applications", 1000);
         applicationsCache.setTimeToLiveSeconds(600);
         applicationsCache.setEternal(false);
+        CacheConfiguration sitemapCache = new CacheConfiguration("sitemap", 10);
+        sitemapCache.setTimeToLiveSeconds(3600);
+        sitemapCache.setEternal(false);
 
         net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
         config.addDefaultCache(defaultCache);
         config.addCache(organizationsCache);
         config.addCache(applicationsCache);
+        config.addCache(sitemapCache);
 
         return net.sf.ehcache.CacheManager.newInstance(config);
     }
