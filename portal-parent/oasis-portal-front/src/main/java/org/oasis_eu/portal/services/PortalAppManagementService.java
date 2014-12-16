@@ -15,7 +15,6 @@ import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
 import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.portal.model.appstore.AppInfo;
-import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,9 +44,6 @@ public class PortalAppManagementService {
 
     @Autowired
     private ApplicationInstanceStore applicationInstanceStore;
-
-    @Autowired
-    private UserInfoService userInfoService;
 
     @Autowired
     private HttpServletRequest request;

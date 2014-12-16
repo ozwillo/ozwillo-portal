@@ -13,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Arrays;
 import java.util.List;
@@ -58,4 +59,17 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
 
     }
 
+    // NOT cacheable - we want to call the kernel all the time for that
+    @Override
+    public List<ApplicationInstance> findPendingInstances(String userId) {
+        String uriString = UriComponentsBuilder.fromHttpUrl(appsEndpoint)
+                .path("/instance/user/{user_id}")
+                .queryParam("include_orgs", true)
+                .queryParam("status", "PENDING")
+                .build()
+                .expand(userId)
+                .toUriString();
+
+        return Arrays.asList(kernel.exchange(uriString, HttpMethod.GET, null, ApplicationInstance[].class, user()).getBody());
+    }
 }

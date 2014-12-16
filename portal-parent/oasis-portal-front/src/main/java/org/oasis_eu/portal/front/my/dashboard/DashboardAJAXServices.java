@@ -3,6 +3,7 @@ package org.oasis_eu.portal.front.my.dashboard;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
+import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,12 @@ public class DashboardAJAXServices {
     public void removeApp(@PathVariable String appId) {
         portalDashboardService.unsubscribeApp(appId);
     }
+
+    @RequestMapping(value = "/pending-apps", method = GET)
+    public List<DashboardPendingApp> pendingApps() {
+        return portalDashboardService.getPendingApps();
+    }
+
 
     @RequestMapping(value = "/dashboards", method = POST)
     public UserContext createDashboard(@RequestBody CreateDashRequest request) {

@@ -71,12 +71,26 @@
                     console.error("Error", status, err);
                 }.bind(this)
             });
+
+            $.ajax({
+                url: dash_service + "/pending-apps",
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    this.state.pendingApps = data;
+                    this.setState(this.state);
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error("Error", status, err);
+                }.bind(this)
+            });
         },
         getInitialState: function () {
             return {
                 dashboards: null,
                 dash: null,
                 apps: null,
+                pendingApps: null,
                 dragging: false,
                 loadingDashboards: true,
                 loadingApps: true
@@ -147,6 +161,7 @@
                 var state = this.state;
                 state.dash = dash;
                 state.loadingApps = true;
+                state.pendingApps = null;
                 this.setState(state);
 
                 $.ajax({
@@ -156,6 +171,19 @@
                     success: function (data) {
                         state.apps = data;
                         state.loadingApps = false;
+                        this.setState(state);
+                    }.bind(this),
+                    error: function (xhr, status, err) {
+                        console.error("Error", status, err);
+                    }.bind(this)
+                });
+
+                $.ajax({
+                    url: dash_service + "/pending-apps",
+                    type: 'get',
+                    dataType: 'json',
+                    success: function (data) {
+                        state.pendingApps = data;
                         this.setState(state);
                     }.bind(this),
                     error: function (xhr, status, err) {
@@ -291,8 +319,10 @@
                         removeDash={this.removeDash}
                     />
                     <Desktop
+                        dash={this.state.dash}
                         loading={this.state.loadingApps}
                         apps={this.state.apps}
+                        pendingApps={this.state.pendingApps}
                         startDrag={this.startDrag}
                         endDrag={this.endDrag}
                         dragging={this.state.dragging}
@@ -597,6 +627,19 @@
                     />;
                 }.bind(this));
 
+
+                if (this.props.pendingApps && this.props.dash.main) {
+                    for (var i in this.props.pendingApps) {
+                        var app = this.props.pendingApps[i];
+                        icons.push(
+                            <PendingApp
+                                key={app.id}
+                                app={app}
+                            />
+                        );
+                    }
+                }
+
                 icons.push(
                     <AddNew
                         key="last"
@@ -604,6 +647,7 @@
                         dropCallback={this.props.dropCallback}
                     />
                 );
+
 
                 return (
                     <div className="col-sm-10 desktop">
@@ -635,6 +679,20 @@
                             <img src={image_root + "icon/plus.png"}/>
                         </a>
                         <p>{t('ui.add')}</p>
+                    </div>
+                </div>
+            );
+        }
+    });
+
+    var PendingApp = React.createClass({
+        render: function () {
+            return (
+                <div className="appzone">
+                    <div className="dropzone"/>
+                    <div className="app text-center" draggable="false">
+                        <img src={this.props.app.icon} alt={this.props.app.name} draggable="false" className="pending"/>
+                        <p>{this.props.app.name}</p>
                     </div>
                 </div>
             );
@@ -689,5 +747,6 @@
         <Dashboard />,
         document.getElementById("dashboard")
     );
+
 
 }());

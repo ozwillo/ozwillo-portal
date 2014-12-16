@@ -1,8 +1,10 @@
 package org.oasis_eu.portal.services;
 
+import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
@@ -13,6 +15,7 @@ import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
+import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -51,6 +54,9 @@ public class PortalDashboardService {
 
     @Autowired
     private CatalogStore catalogStore;
+
+    @Autowired
+    private ApplicationInstanceStore applicationInstanceStore;
 
     @Autowired
     private UserInfoService userInfoHelper;
@@ -298,5 +304,22 @@ public class PortalDashboardService {
             dashboard.getContexts().add(new UserContext().setId(UUID.randomUUID().toString()).setName(messageSource.getMessage("my.default-dashboard-name", new Object[]{}, RequestContextUtils.getLocale(request))).setPrimary(true));
             return dashboardRepository.save(dashboard);
         }
+    }
+
+    public List<DashboardPendingApp> getPendingApps() {
+
+        return applicationInstanceStore.findPendingInstances(userInfoHelper.currentUser().getUserId())
+                .stream()
+                .map(this::toPendingApp)
+                .collect(Collectors.toList());
+    }
+
+    private DashboardPendingApp toPendingApp(ApplicationInstance instance) {
+        DashboardPendingApp app = new DashboardPendingApp();
+        app.setId(instance.getInstanceId());
+        app.setIcon(imageService.getImageForURL(catalogStore.findApplication(instance.getApplicationId()).getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
+        app.setName(instance.getName());
+
+        return app;
     }
 }

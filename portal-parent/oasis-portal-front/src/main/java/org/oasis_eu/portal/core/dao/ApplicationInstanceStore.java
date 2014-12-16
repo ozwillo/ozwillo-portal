@@ -14,5 +14,5 @@ public interface ApplicationInstanceStore {
 
     List<ApplicationInstance> findByOrganizationId(String organizationId);
 
-
+    List<ApplicationInstance> findPendingInstances(String userId);
 }
