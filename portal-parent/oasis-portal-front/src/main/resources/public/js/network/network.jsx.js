@@ -196,13 +196,19 @@ var Organization = React.createClass({
         this.props.updateOrganization(org);
     },
     renderMembers: function() {
-        var remove = this.removeMember;
-        var updateMember = this.updateMember;
-        var members = this.props.org.members.map(function(member) {
-            return <Member key={member.id} member={member} remove={remove} updateMember={updateMember}/>
-        });
+        if (this.props.org.admin) {
+            var remove = this.removeMember;
+            var updateMember = this.updateMember;
+            var members = this.props.org.members.map(function (member) {
+                return <Member key={member.id} member={member} remove={remove} updateMember={updateMember}/>
+            });
 
-        return members;
+            return members;
+        } else {
+            return this.props.org.members.map(function (member) {
+                return <ReadOnlyMember key={member.id} member={member} />
+            });
+        }
     },
     render: function() {
 
@@ -214,7 +220,7 @@ var Organization = React.createClass({
             <InformationDialog ref="infoDialog" org={this.props.org} />
         ];
 
-        var membersList = null;
+        var membersList = this.renderMembers();
 
         if (this.props.org.admin) {
             if (this.props.org.members.filter(function (m) {
@@ -243,7 +249,7 @@ var Organization = React.createClass({
                 errors={this.state.invite.errors}/>
             );
 
-            membersList = this.renderMembers();
+
         } else {
             // non-admins can leave at any time
             buttons.push(
@@ -339,6 +345,17 @@ var Member = React.createClass({
                     {actions}
             </div>
             );
+    }
+});
+
+var ReadOnlyMember = React.createClass({
+    render: function () {
+        return (
+            <div key={this.props.member.id} className="row form-table-row">
+                <div className="col-sm-3">{this.props.member.name}</div>
+                <div className="col-sm-3">{t('admin')}</div>
+            </div>
+        );
     }
 });
 

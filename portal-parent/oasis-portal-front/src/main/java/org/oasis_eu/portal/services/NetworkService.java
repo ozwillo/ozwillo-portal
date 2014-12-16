@@ -87,6 +87,12 @@ public class NetworkService {
                     .map(this::toUIOrganizationMember)
                     .sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1 : member1.getName().compareToIgnoreCase(member2.getName())))
                     .collect(Collectors.toList()));
+        } else {
+            org.setMembers(userDirectory.getAdminsOfOrganization(organizationId).stream()
+                            .map(this::toUIOrganizationMember)
+                            .sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1 : member1.getName().compareToIgnoreCase(member2.getName())))
+                            .collect(Collectors.toList())
+            );
         }
 
         return org;
