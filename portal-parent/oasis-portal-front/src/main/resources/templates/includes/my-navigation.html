@@ -50,76 +50,89 @@
         <!---->
 
         <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse">
-            <span class="sr-only">Toggle navigation</span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
             <span class="icon-bar"></span>
         </button>
-        <div class="my-oasis" data-th-data="@{/my/api/notifications}">
+        <div class="navbar-brand my-oasis" data-th-data="@{/my/api/notifications}">
             <img id="logo" data-th-src="@{/img/oasis-logo.png}" src="../../public/img/my/my-oasis.png"
                  alt="My OASIS"/>
             <a href="#" data-th-href="@{/my/notif}"><span class="badge badge-notifications">0</span></a>
         </div>
+
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse">
-    <ul class="nav navbar-nav oasis-nav" data-th-remove="all-but-first">
-        <li class="active" data-th-each="item : ${navigation}" data-th-class="${item.active ? 'active':''}">
-            <a href="#" data-th-href="@{'/my/' + ${item.id}}" data-th-class="${item.active?'':'nav-link'}">
-                <img data-th-if="${!item.active}" data-th-src="@{'/img/my/' + ${item.id} + '-gray.png'}" src="../../public/img/my/dashboard-gray.png" alt="Dashboard" data-th-alt="#{'my.' + ${item.id}}" class="gray" />
-                <img data-th-src="@{'/img/my/' + ${item.id} + '.png'}" src="../../public/img/my/dashboard.png" alt="Dashboard" data-th-alt="#{'my.' + ${item.id}}" data-th-class="${item.active?'':'purple'}" />
-                <span data-th-text="#{'my.' + ${item.id}}">Dashboard</span>
-            </a>
-            <th:block data-th-if="${item.active}">
+        <ul class="nav navbar-nav oasis-nav" data-th-remove="all-but-first">
+            <li class="active" data-th-each="item : ${navigation}" data-th-class="${item.active ? 'active':''}">
+                <a href="#" data-th-href="@{'/my/' + ${item.id}}" data-th-class="${item.active?'':'nav-link'}">
+                    <img data-th-if="${!item.active}" data-th-src="@{'/img/my/' + ${item.id} + '-gray.png'}"
+                         src="../../public/img/my/dashboard-gray.png" alt="Dashboard"
+                         data-th-alt="#{'my.' + ${item.id}}" class="gray"/>
+                    <img data-th-src="@{'/img/my/' + ${item.id} + '.png'}" src="../../public/img/my/dashboard.png"
+                         alt="Dashboard" data-th-alt="#{'my.' + ${item.id}}"
+                         data-th-class="${item.active?'':'purple'}"/>
+                    <span data-th-text="#{'my.' + ${item.id}}">Dashboard</span>
+                </a>
+                <th:block data-th-if="${item.active}">
+                    <div class="arrow-border"></div>
+                    <div class="arrow"></div>
+                </th:block>
+            </li>
+            <li>
+                <a href="#" class="nav-link">
+                    <img class="gray" data-th-src="@{/img/my/profile-gray.png}"
+                         src="../../public/img/my/profile-gray.png" alt="Profile"/>
+                    <img class="purple" data-th-src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile.png"
+                         alt="Profile"/>
+                    <span>Profile</span>
+                </a>
                 <div class="arrow-border"></div>
                 <div class="arrow"></div>
-            </th:block>
-        </li>
-        <li>
-            <a href="#" class="nav-link">
-                <img class="gray" data-th-src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile-gray.png" alt="Profile" />
-                <img class="purple" data-th-src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile.png" alt="Profile" />
-                <span>Profile</span>
-            </a>
-            <div class="arrow-border"></div>
-            <div class="arrow"></div>
-        </li>
-        <li>
-            <a href="#" class="nav-link">
-                <img class="gray" data-th-src="@{/img/my/network-gray.png}" src="../../public/img/my/network-gray.png" alt="Network" />
-                <img class="purple" data-th-src="@{/img/my/network.png}" src="../../public/img/my/network.png" alt="Network" />
-                <span>Network</span>
-            </a>
-        </li>
-        <li>
-            <a href="#"  class="nav-link">
-                <img class="gray" data-th-src="@{/img/my/apps-management-gray.png}" src="../../public/img/my/appsmanagement-gray.png" alt="Apps Management" />
-                <img class="purple" data-th-src="@{/img/my/apps-management.png}" src="../../public/img/my/appsmanagement.png" alt="Apps Management" />
-                <span>My Apps</span>
-            </a>
-        </li>
-    </ul>
+            </li>
+            <li>
+                <a href="#" class="nav-link">
+                    <img class="gray" data-th-src="@{/img/my/network-gray.png}"
+                         src="../../public/img/my/network-gray.png" alt="Network"/>
+                    <img class="purple" data-th-src="@{/img/my/network.png}" src="../../public/img/my/network.png"
+                         alt="Network"/>
+                    <span>Network</span>
+                </a>
+            </li>
+            <li>
+                <a href="#" class="nav-link">
+                    <img class="gray" data-th-src="@{/img/my/apps-management-gray.png}"
+                         src="../../public/img/my/appsmanagement-gray.png" alt="Apps Management"/>
+                    <img class="purple" data-th-src="@{/img/my/apps-management.png}"
+                         src="../../public/img/my/appsmanagement.png" alt="Apps Management"/>
+                    <span>My Apps</span>
+                </a>
+            </li>
+        </ul>
 
-    <ul class="nav navbar-nav oasis-nav navbar-right">
+        <ul class="nav navbar-nav oasis-nav navbar-right">
 
-    <li data-th-class="${isAppstore ? 'active':''}">
-            <a href="#" class="nav-link" data-th-class="${isAppstore?'':'nav-link'}" data-th-href="@{|/${currentLanguage.locale.language}/store|}">
-                <img data-th-if="${!isAppstore}" class="gray" data-th-src="@{/img/my/app-store-gray.png}" src="../../public/img/my/app-store-gray.png" alt="Apps Store" data-th-alt="#{ui.appstore}" />
-                <img data-th-class="${isAppstore?'':'purple'}" class="purple" data-th-src="@{/img/my/app-store.png}" src="../../public/img/my/app-store.png" alt="Apps Store" data-th-alt="#{ui.appstore}"/>
-                <span data-th-text="#{ui.appstore}">Apps Store</span>
-            </a>
-            <th:block data-th-if="${isAppstore}">
-                <div class="arrow-border"></div>
-                <div class="arrow"></div>
-            </th:block>
-        </li>
+            <li data-th-class="${isAppstore ? 'active':''}">
+                <a href="#" class="nav-link" data-th-class="${isAppstore?'':'nav-link'}"
+                   data-th-href="@{|/${currentLanguage.locale.language}/store|}">
+                    <img data-th-if="${!isAppstore}" class="gray" data-th-src="@{/img/my/app-store-gray.png}"
+                         src="../../public/img/my/app-store-gray.png" alt="Apps Store" data-th-alt="#{ui.appstore}"/>
+                    <img data-th-class="${isAppstore?'':'purple'}" class="purple" data-th-src="@{/img/my/app-store.png}"
+                         src="../../public/img/my/app-store.png" alt="Apps Store" data-th-alt="#{ui.appstore}"/>
+                    <span data-th-text="#{ui.appstore}">Apps Store</span>
+                </a>
+                <th:block data-th-if="${isAppstore}">
+                    <div class="arrow-border"></div>
+                    <div class="arrow"></div>
+                </th:block>
+            </li>
 
-        <li class="logout">
-            <a href="#" data-th-href="@{/logout}">
-                <img src="../../public/img/my/logout.png" alt="Logout" data-th-src="@{/img/my/logout.png}" />
-                <span data-th-text="${user.name}">A. Williams</span>
-            </a>
-        </li>
-    </ul>
+            <li class="logout">
+                <a href="#" data-th-href="@{/logout}">
+                    <img src="../../public/img/my/logout.png" alt="Logout" data-th-src="@{/img/my/logout.png}"/>
+                    <span data-th-text="${user.name}">A. Williams</span>
+                </a>
+            </li>
+        </ul>
     </div>
 </div>
 
