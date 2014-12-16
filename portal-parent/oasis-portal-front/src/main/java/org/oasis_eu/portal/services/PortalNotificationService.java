@@ -4,6 +4,7 @@ import com.google.common.base.Strings;
 import org.joda.time.format.DateTimeFormat;
 import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.model.UserNotification;
 import org.oasis_eu.portal.model.dashboard.AppNotificationData;
@@ -71,9 +72,16 @@ public class PortalNotificationService {
                     UserNotification notif = new UserNotification();
                     CatalogEntry service = null;
                     if (n.getServiceId() != null) {
-
                         service = catalogStore.findService(n.getServiceId());
                         notif.setAppName(service != null ? service.getName(locale) : "");
+                    } else if (n.getInstanceId() != null) {
+                        ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
+                        if (instance != null) {
+                            CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
+                            notif.setAppName(application != null ? application.getName(locale) : "");
+                        } else {
+                            notif.setAppName("");
+                        }
                     }
                     notif.setDate(n.getTime());
                     notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
