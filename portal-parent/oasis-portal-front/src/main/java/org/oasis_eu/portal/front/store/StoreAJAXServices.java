@@ -20,6 +20,7 @@ import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -55,14 +56,19 @@ public class StoreAJAXServices {
     @Autowired
     private RatingService ratingService;
 
+    @Value("${application.store.load_size:20}")
+    private int loadSize;
+
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
-    public List<StoreApplication> applications(@RequestParam boolean target_citizens,
+    public StoreAppResponse applications(@RequestParam boolean target_citizens,
                                                @RequestParam boolean target_publicbodies,
                                                @RequestParam boolean target_companies,
                                                @RequestParam boolean free,
-                                               @RequestParam boolean paid) {
+                                               @RequestParam boolean paid,
+                                               @RequestParam(required = false, defaultValue = "0") int last) {
 
         logger.debug("Loading applications...");
+        logger.debug("last = {}", last);
 
         List<Audience> audiences = new ArrayList<Audience>();
         if (target_citizens) audiences.add(Audience.CITIZENS);
@@ -73,9 +79,10 @@ public class StoreAJAXServices {
         if (free) paymentOptions.add(PaymentOption.FREE);
         if (paid) paymentOptions.add(PaymentOption.PAID);
 
-        return appstoreService.getAll(audiences, paymentOptions).stream()
+        List<StoreApplication> apps = appstoreService.getAll(audiences, paymentOptions, last).stream()
                 .map(this::toStoreApplication)
                 .collect(Collectors.toList());
+        return new StoreAppResponse(apps, apps.size() == loadSize); // if we got exactly as many as we'd have liked, there are likely more
     }
 
     @RequestMapping("/details/{type}/{id}")

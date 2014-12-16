@@ -49,6 +49,9 @@ public class CatalogStoreImpl implements CatalogStore {
     @Value("${kernel.portal_endpoints.apps:}")
     private String appsEndpoint;
 
+    @Value("${application.store.load_size:20}")
+    private int loadSize;
+
     // a couple of MongoDB-backed caches
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
@@ -62,10 +65,11 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     @Cacheable("appstore")
-    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
+    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions, int from) {
         String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
-                .queryParam("limit", 200) // we'll see later about this
+                .queryParam("start", from)
+                .queryParam("limit", loadSize * 4) // *4 because we need to get a lot more than there are so we can filter...
                 .build()
                 .toUriString();
 
@@ -80,6 +84,7 @@ public class CatalogStoreImpl implements CatalogStore {
                 .stream()
                 .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
                 .filter(e -> paymentOptions.stream().anyMatch(option -> option.equals(e.getPaymentOption())))
+                .limit(loadSize)
                 .collect(Collectors.toList());
     }
 

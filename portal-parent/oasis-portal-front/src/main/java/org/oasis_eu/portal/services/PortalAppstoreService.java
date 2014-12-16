@@ -67,9 +67,9 @@ public class PortalAppstoreService {
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
 
-    public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions) {
+    public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions, int from) {
 
-        return catalogStore.findAllVisible(targetAudiences, paymentOptions).stream()
+        return catalogStore.findAllVisible(targetAudiences, paymentOptions, from).stream()
                 .filter(catalogEntry -> catalogEntry != null)
                 .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false), getOrganizationName(catalogEntry),
                         getInstallationOption(catalogEntry)))

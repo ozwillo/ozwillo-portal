@@ -8,7 +8,22 @@ var AppStore = React.createClass({
         this.updateApps(true, true, true, true, true);
     },
     getInitialState: function () {
-        return {apps: [], loading: true};
+        return {
+            apps: [],
+            loading: true,
+            maybeMoreApps: false,
+            filter: {
+                audience: {
+                    citizens: true,
+                    publicbodies: true,
+                    companies: true
+                },
+                payment: {
+                    paid: true,
+                    free: true
+                }
+            }
+        };
     },
     updateApps: function (target_citizens, target_publicbodies, target_companies, paid, free) {
         $.ajax({
@@ -17,7 +32,22 @@ var AppStore = React.createClass({
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                this.setState({apps: data, loading: false});
+                this.setState({
+                    apps: data.apps,
+                    maybeMoreApps: data.maybeMoreApps,
+                    loading: false,
+                    filter: {
+                        audience: {
+                            citizens: target_citizens,
+                            publicbodies: target_publicbodies,
+                            companies: target_companies
+                        },
+                        payment: {
+                            free: free,
+                            paid: paid
+                        }
+                    }
+                });
             }.bind(this),
             error: function (xhr, status, err) {
                 this.setState({apps: [], loading: false});
@@ -25,46 +55,80 @@ var AppStore = React.createClass({
             }.bind(this)
         });
     },
+    loadMoreApps: function () {
+        var state = this.state;
+        state.loading = true;
+        this.setState(state);
+
+        $.ajax({
+            url: store_service + "/applications",
+            data: {
+                last: this.state.apps.length,
+                target_citizens: this.state.filter.audience.citizens,
+                target_publicbodies: this.state.filter.audience.publicbodies,
+                target_companies: this.state.filter.audience.companies,
+                free: this.state.filter.payment.free,
+                paid: this.state.filter.payment.paid
+            },
+            type: 'get',
+            dataType: 'json',
+            success: function (data) {
+                var state = this.state;
+                state.apps = state.apps.concat(data.apps);
+                state.loading = false;
+                state.maybeMoreApps = data.maybeMoreApps;
+                this.setState(state);
+            }.bind(this),
+            error: function (data) {
+                // maybe not such an error, could be there's no more data to get...
+                var state = this.state;
+                state.loading = false;
+                state.maybeMoreApps = false;
+                this.setState(state);
+            }.bind(this)
+        });
+    },
     render: function () {
-        if (this.state.loading) {
-            // loading...
-            return <div className="row text-center">
-                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</div>
-        }
-        else {
+        //if (this.state.loading) {
+        //    // loading...
+        //    return <div className="row text-center">
+        //        <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</div>
+        //}
+        //else {
             return (
-                <div className="row">
-                    <SideBar updateApps={this.updateApps}/>
-                    <AppList apps={this.state.apps}/>
+                <div>
+                    <div className="row">
+                        <SideBar
+                            updateApps={this.updateApps}
+                            filter={this.state.filter}
+                        />
+                        <AppList
+                            apps={this.state.apps}
+                        />
+                    </div>
+                    <div className="row">
+                        <LoadMore
+                            loading={this.state.loading}
+                            maybeMoreApps={this.state.maybeMoreApps}
+                            loadMoreApps={this.loadMoreApps}
+                        />
+                    </div>
                 </div>
                 );
-        }
+        //}
     }
 });
 
 
 var SideBar = React.createClass({
-    getInitialState: function () {
-        return {
-            audience: {
-                citizens: true,
-                publicbodies: true,
-                companies: true
-            },
-            payment: {
-                paid: true,
-                free: true
-            }
-        };
-    },
+
     change: function (category, item) {
         return function () {
-            console.log("Change...");
             // check that we can indeed change the box
             var canChange = false;
-            for (var i in this.state[category]) {
+            for (var i in this.props.filter[category]) {
                 if (i != item) {
-                    if (this.state[category][i] == true) {
+                    if (this.props.filter[category][i] == true) {
                         canChange = true;
                         break;
                     }
@@ -72,11 +136,14 @@ var SideBar = React.createClass({
             }
             if (!canChange) return;
 
-            var state = this.state;
-            state[category][item] = !(state[category][item]);
-            this.setState(state);
+            var filter = this.props.filter;
+            filter[category][item] = !(filter[category][item]);
 
-            this.props.updateApps(state.audience.citizens, state.audience.publicbodies, state.audience.companies, state.payment.paid, state.payment.free);
+            //var state = this.state;
+            //state[category][item] = !(state[category][item]);
+            //this.setState(state);
+
+            this.props.updateApps(filter.audience.citizens, filter.audience.publicbodies, filter.audience.companies, filter.payment.paid, filter.payment.free);
         }.bind(this);
     },
     render: function () {
@@ -86,29 +153,29 @@ var SideBar = React.createClass({
                     <img src={image_root + "my/app-store.png"} /> {t('ui.appstore')}</h2>
                 <div className="checkbox">
                     <label>
-                        <input type="checkbox" checked={this.state.audience.citizens} onChange={this.change('audience', 'citizens')}/>{t('citizens')}
+                        <input type="checkbox" checked={this.props.filter.audience.citizens} onChange={this.change('audience', 'citizens')}/>{t('citizens')}
                     </label>
                 </div>
                 <div className="checkbox">
                     <label>
-                        <input type="checkbox" checked={this.state.audience.publicbodies} onChange={this.change('audience', 'publicbodies')}/>{t('publicbodies')}
+                        <input type="checkbox" checked={this.props.filter.audience.publicbodies} onChange={this.change('audience', 'publicbodies')}/>{t('publicbodies')}
                     </label>
                 </div>
                 <div className="checkbox">
                     <label>
-                        <input type="checkbox" checked={this.state.audience.companies} onChange={this.change('audience', 'companies')} />{t('companies')}
+                        <input type="checkbox" checked={this.props.filter.audience.companies} onChange={this.change('audience', 'companies')} />{t('companies')}
                     </label>
                 </div>
                 <div></div>
 
                 <div className="checkbox">
                     <label>
-                        <input type="checkbox" checked={this.state.payment.free} onChange={this.change('payment', 'free')} />{t('free')}
+                        <input type="checkbox" checked={this.props.filter.payment.free} onChange={this.change('payment', 'free')} />{t('free')}
                     </label>
                 </div>
                 <div className="checkbox">
                     <label>
-                        <input type="checkbox" checked={this.state.payment.paid} onChange={this.change('payment', 'paid')} />{t('paid')}
+                        <input type="checkbox" checked={this.props.filter.payment.paid} onChange={this.change('payment', 'paid')} />{t('paid')}
                     </label>
                 </div>
             </div>
@@ -124,11 +191,38 @@ var AppList = React.createClass({
                 );
         });
 
+
         return (
             <div className="col-md-8 app-store-result">
             {apps}
             </div>
             );
+    }
+});
+
+var LoadMore = React.createClass({
+    render: function () {
+        var loading = null;
+        if (this.props.loading) {
+            loading = (
+                <div className="text-center">
+                    <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
+                </div>
+            );
+        } else if (this.props.maybeMoreApps) {
+            loading = (
+                <div className="text-center">
+                    <button className="btn btn-primary" onClick={this.props.loadMoreApps}>Load more</button>
+                </div>
+            );
+        }
+
+        return (
+            <div className="col-md-8 col-md-offset-4">
+            {loading}
+            </div>
+        );
+
     }
 });
 

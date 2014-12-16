@@ -6,6 +6,8 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
@@ -26,6 +28,8 @@ import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
  */
 @Service
 public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
+
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationInstanceStoreImpl.class);
 
     @Autowired
     private Kernel kernel;
@@ -70,6 +74,8 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
                 .expand(userId)
                 .toUriString();
 
-        return Arrays.asList(kernel.exchange(uriString, HttpMethod.GET, null, ApplicationInstance[].class, user()).getBody());
+        List<ApplicationInstance> applicationInstances = Arrays.asList(kernel.exchange(uriString, HttpMethod.GET, null, ApplicationInstance[].class, user()).getBody());
+        logger.debug("Found {} pending instances", applicationInstances.size());
+        return applicationInstances;
     }
 }
