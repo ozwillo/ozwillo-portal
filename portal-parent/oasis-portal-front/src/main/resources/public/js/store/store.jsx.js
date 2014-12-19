@@ -509,10 +509,10 @@ var AppModal = React.createClass({
                     <div className="col-md-6">
                         <p>{t('agree-to-tos')}</p>
                         <p>
-                            <a href={this.state.app.tos}>{t('tos')}</a>
+                            <a href={this.state.app.tos} target="_new">{t('tos')}</a>
                         </p>
                         <p>
-                            <a href={this.state.app.policy}>{t('privacy')}</a>
+                            <a href={this.state.app.policy} target="_new">{t('privacy')}</a>
                         </p>
                     </div>
                 </div>
