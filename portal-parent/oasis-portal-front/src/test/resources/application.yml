@@ -56,3 +56,7 @@ persistence:
   mongodatabase: portal_test
   login: portal
   password: portal
+
+cache:
+  hosts:
+    - 127.0.0.1

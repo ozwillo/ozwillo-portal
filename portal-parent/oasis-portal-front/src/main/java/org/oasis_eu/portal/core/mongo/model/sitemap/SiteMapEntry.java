@@ -1,10 +1,12 @@
 package org.oasis_eu.portal.core.mongo.model.sitemap;
 
+import java.io.Serializable;
+
 /**
  * User: schambon
  * Date: 12/15/14
  */
-public class SiteMapEntry {
+public class SiteMapEntry implements Serializable {
 
     private String url;
     private String label;

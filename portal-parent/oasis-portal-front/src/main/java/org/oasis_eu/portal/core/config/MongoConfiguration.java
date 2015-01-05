@@ -2,7 +2,6 @@ package org.oasis_eu.portal.core.config;
 
 import com.google.common.base.Strings;
 import com.mongodb.*;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.MongoPackage;
 import org.oasis_eu.portal.core.mongo.model.images.ImageDownloadAttempt;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
@@ -170,8 +169,6 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 
         ensureTtlIndex(mongoTemplate, ImageDownloadAttempt.class, "time", imageBlacklistTtl);
         ensureTtlIndex(mongoTemplate, InstalledStatus.class, "computed", installedStatusTtl);
-        ensureTtlIndex(mongoTemplate, CatalogEntry.class, "fetchedFromKernel", catalogCacheTtl);
-
 
         return mongoTemplate;
     }

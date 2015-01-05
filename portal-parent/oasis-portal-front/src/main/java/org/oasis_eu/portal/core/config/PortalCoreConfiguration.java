@@ -4,13 +4,18 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
 import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
-import net.sf.ehcache.config.CacheConfiguration;
+import com.hazelcast.config.*;
+import com.hazelcast.core.Hazelcast;
+import com.hazelcast.core.HazelcastInstance;
+import com.hazelcast.spring.cache.HazelcastCacheManager;
 import org.oasis_eu.portal.core.PortalCorePackage;
 import org.oasis_eu.spring.util.RequestBoundCacheManager;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.annotation.EnableCaching;
-import org.springframework.cache.ehcache.EhCacheCacheManager;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.cache.interceptor.SimpleKeyGenerator;
 import org.springframework.cache.support.CompositeCacheManager;
@@ -20,6 +25,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * User: schambon
@@ -29,8 +37,24 @@ import java.util.Arrays;
 @ComponentScan(basePackageClasses = PortalCorePackage.class)
 @EnableCaching
 @EnableScheduling
+@EnableConfigurationProperties(PortalCoreConfiguration.OasisCacheConfiguration.class)
 public class PortalCoreConfiguration implements CachingConfigurer {
 
+    @ConfigurationProperties(prefix = "cache")
+    public static class OasisCacheConfiguration {
+        private List<String> hosts;
+
+        public List<String> getHosts() {
+            return hosts;
+        }
+
+        public void setHosts(List<String> hosts) {
+            this.hosts = hosts;
+        }
+    }
+
+    @Autowired
+    private OasisCacheConfiguration oasisCacheConfiguration;
 
     @Bean
     public ObjectMapper objectMapper() {
@@ -52,44 +76,16 @@ public class PortalCoreConfiguration implements CachingConfigurer {
                         "org-instances",
                         "user-memberships",
                         "org-memberships",
-                        "services",
                         "services-of-instance",
                         "instances",
                         "accounts"));
     }
 
 
-    @Bean(destroyMethod = "shutdown")
-    public net.sf.ehcache.CacheManager ehCacheManager() {
-        CacheConfiguration defaultCache = new CacheConfiguration();
-        defaultCache.setMemoryStoreEvictionPolicy("LRU");
-        defaultCache.setMaxEntriesLocalHeap(1000);
-        defaultCache.setTimeToLiveSeconds(600);
-        defaultCache.setEternal(false);
-
-        CacheConfiguration organizationsCache = new CacheConfiguration("organizations", 1000);
-        organizationsCache.setTimeToLiveSeconds(600);
-        organizationsCache.setEternal(false);
-        CacheConfiguration applicationsCache = new CacheConfiguration("applications", 1000);
-        applicationsCache.setTimeToLiveSeconds(600);
-        applicationsCache.setEternal(false);
-        CacheConfiguration sitemapCache = new CacheConfiguration("sitemap", 10);
-        sitemapCache.setTimeToLiveSeconds(3600);
-        sitemapCache.setEternal(false);
-
-        net.sf.ehcache.config.Configuration config = new net.sf.ehcache.config.Configuration();
-        config.addDefaultCache(defaultCache);
-        config.addCache(organizationsCache);
-        config.addCache(applicationsCache);
-        config.addCache(sitemapCache);
-
-        return net.sf.ehcache.CacheManager.newInstance(config);
-    }
 
     @Bean
     public CacheManager longTermCacheManager() {
-        EhCacheCacheManager ehCacheCacheManager = new EhCacheCacheManager(ehCacheManager());
-        return ehCacheCacheManager;
+        return new HazelcastCacheManager(hazelcastInstance());
     }
 
     @Bean
@@ -106,5 +102,45 @@ public class PortalCoreConfiguration implements CachingConfigurer {
     @Override
     public KeyGenerator keyGenerator() {
         return new SimpleKeyGenerator();
+    }
+
+
+    @Bean
+    public HazelcastInstance hazelcastInstance() {
+        Map<String, MapConfig> mapConfigs = new HashMap<>();
+
+        mapConfigs.put("organizations", getMapConfig("organizations"));
+        mapConfigs.put("applications", getMapConfig("applications"));
+        mapConfigs.put("sitemap", getMapConfig("sitemap"));
+        mapConfigs.put("services", getMapConfig("services"));
+
+        Config config = new Config();
+        config.setMapConfigs(mapConfigs);
+
+        config.setNetworkConfig(networkConfig());
+
+        return Hazelcast.newHazelcastInstance(config);
+    }
+
+    @Bean
+    public NetworkConfig networkConfig() {
+
+        TcpIpConfig tcpIpConfig = new TcpIpConfig().setEnabled(true).setMembers(oasisCacheConfiguration.getHosts());
+
+        return new NetworkConfig()
+                .setPort(5701)
+                .setJoin(
+                        new JoinConfig()
+                                .setMulticastConfig(new MulticastConfig().setEnabled(false))
+                                .setTcpIpConfig(tcpIpConfig)
+                );
+    }
+
+    public MapConfig getMapConfig(String name) {
+        MapConfig config = new MapConfig();
+        config.setName(name);
+        config.setEvictionPolicy(EvictionPolicy.LRU);
+        config.setTimeToLiveSeconds(900);
+        return config;
     }
 }

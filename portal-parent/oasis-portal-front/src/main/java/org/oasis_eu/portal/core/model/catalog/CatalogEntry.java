@@ -2,13 +2,13 @@ package org.oasis_eu.portal.core.model.catalog;
 
 import com.fasterxml.jackson.annotation.*;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.*;
 
 /**
@@ -17,15 +17,12 @@ import java.util.*;
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "cached_service")
-public class CatalogEntry {
+public class CatalogEntry implements Serializable {
 
     private static final Logger logger = LoggerFactory.getLogger(CatalogEntry.class);
 
     @Id
     private String id;
-
-    @JsonIgnore
-    private DateTime fetchedFromKernel;
 
     private CatalogEntryType type;
 
@@ -339,14 +336,6 @@ public class CatalogEntry {
                 ", type=" + type +
                 ", defaultName='" + defaultName +
                 '}';
-    }
-
-    public DateTime getFetchedFromKernel() {
-        return fetchedFromKernel;
-    }
-
-    public void setFetchedFromKernel(DateTime fetchedFromKernel) {
-        this.fetchedFromKernel = fetchedFromKernel;
     }
 
     public Boolean getRestricted() {
