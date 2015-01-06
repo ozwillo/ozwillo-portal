@@ -114,7 +114,7 @@ public class ApplicationInstance {
         } else if (key.startsWith("icon#")) {
             localidedIcons.put(key.substring("icon#".length()), value);
         } else {
-            logger.info("Discarding unknown property {}", key);
+            logger.debug("Discarding unknown property {}", key);
         }
     }
 
