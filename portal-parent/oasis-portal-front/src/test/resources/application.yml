@@ -20,6 +20,9 @@ application:
 
 web:
   home: http://www.ozwillo-dev.eu
+  sitemap:
+    url: https://www.tagada.pouet.pouet/footer.xml
+    refresh: 0 0 3 ? DEC SUN
 
 kernel:
   token:
