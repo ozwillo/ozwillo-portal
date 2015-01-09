@@ -367,6 +367,11 @@ li.dashboard_template {
 
 .navbar-noauth {
     background: #ffffff;
+    border-bottom: 1px solid #ddd;
+}
+
+.navbar-noauth li.active a {
+    background-color: #eeeeee;
 }
 
 .navbar-noauth * a {
@@ -376,7 +381,6 @@ li.dashboard_template {
 
 .navbar-noauth * a.logo {
     padding: 3px 15px 4px;
-    background-color: rgb(238, 238, 238);
 }
 
 .navbar-noauth * img {
@@ -385,6 +389,10 @@ li.dashboard_template {
 
 .navbar-noauth * .dropdown-menu * a {
     font-size: 16px;
+}
+
+.navbar-noauth .dropdown-lang {
+    margin: 0 15px;
 }
 
 .navbar-nav > li > a.btn-nav-noauth {
