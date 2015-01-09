@@ -130,6 +130,7 @@ public class PortalNotificationService {
     public Map<String, Integer> getAppNotificationCounts() {
 
         return getNotifications().stream()
+                .filter(notif -> notif.getServiceId() != null)
                 .collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)));
 
     }
