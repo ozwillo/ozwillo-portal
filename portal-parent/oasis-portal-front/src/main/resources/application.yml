@@ -29,7 +29,10 @@ application:
   notificationsEnabled: true
 
 web:
-  home: http://www.ozwillo-dev.eu
+  home: https://www.ozwillo-dev.eu
+  sitemap:
+      url: https://www.oasis-eu.org/footer.xml
+      refresh: 0 */15 * ? * *
 
 kernel:
   base_uri: https://oasis-demo.atolcd.com

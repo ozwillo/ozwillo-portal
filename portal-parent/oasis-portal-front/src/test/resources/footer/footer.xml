@@ -1,0 +1,62 @@
+<menuset>
+    <menu>
+        <locale>fr</locale>
+        <item href="/fr/decouvrir">Découvrir</item>
+        <item href="/fr/oz/news">Actualités</item>
+        <item href="/fr/co-construire">Co-construire</item>
+        <item href="/fr/se-lancer">Se lancer</item>
+        <item href="/fr/contact">Contact</item>
+        <item href="/fr/projets">Projets</item>
+        <item href="/fr/l-equipe-projet-oasis">L'équipe projet</item>
+        <item href="/fr/l-agenda">L'agenda</item>
+        <item href="/fr/guide-utilisateur">Guide utilisateur</item>
+        <item href="/fr/cgu">CGU</item>
+        <item href="/fr/mentions-legales-confidentialite">Mentions légales</item>
+        <item href="/fr/gouvernance">Gouvernance</item>
+    </menu>
+    <menu>
+        <locale>en</locale>
+        <item href="/en/oz/discover">Discovering</item>
+        <item href="/en/oz/news">News</item>
+        <item href="/en/oz/co-construct">Co-construct</item>
+        <item href="/en/oz/let-s-go">Let's go</item>
+        <item href="/en/contact">Contact</item>
+        <item href="/en/l-equipe-projet-oasis">Project team</item>
+        <item href="/en/oz/projects">Projects</item>
+        <item></item>
+        <item href="/en/guide-utilisateur">User guide</item>
+        <item href="/en/terms">General terms of use</item>
+        <item href="/en/legal-notices">Legal Notices</item>
+        <item href="/en/oz/co-construct">Governance</item>
+    </menu>
+    <menu>
+        <locale>it</locale>
+        <item href="/it/scoprire">Scoprire</item>
+        <item href="https://www.oasis-eu.org/en/oz/news">Novità</item>
+        <item href="https://www.oasis-eu.org/en/oz/co-construct">Costruire collaborativamente</item>
+        <item href="/it/iniziare">Iniziare</item>
+        <item href="/it/contatti">Contatti</item>
+        <item href="/it/il-team-di-progetto">Il team di progetto</item>
+        <item href="https://www.oasis-eu.org/en/oz/projects">Progetti</item>
+        <item></item>
+        <item href="/it/manuale-utente">Manuale utente</item>
+        <item href="/it/termini">Termini di utilizzo</item>
+        <item href="/it/avvisi-legali">Avvisi legali</item>
+        <item></item>
+    </menu>
+    <menu>
+        <locale>tr</locale>
+        <item href="/tr/oz">Eşfetmek</item>
+        <item href="/tr/?Itemid=221">Haberler</item>
+        <item href="/tr/?Itemid=222">Birlikte inşa etmek</item>
+        <item href="/tr/oz/baslatmak">Başlatmak</item>
+        <item href="/tr/iletism">İletişm</item>
+        <item href="/tr/proje-ekibi">Proje Ekibi</item>
+        <item href="/tr/?Itemid=224">Projeler</item>
+        <item></item>
+        <item href="/tr/kulanici-kilavuzu">Kulanıcı Kılavuzu</item>
+        <item href="/tr/sartlari">Kullanım Şartları</item>
+        <item href="/tr/yasal-uyarilar">Yasal Uyarılar</item>
+        <item></item>
+    </menu>
+</menuset>
