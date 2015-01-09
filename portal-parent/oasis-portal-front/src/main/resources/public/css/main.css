@@ -395,6 +395,16 @@ li.dashboard_template {
     margin: 0 15px;
 }
 
+.navbar-noauth .nav-apps a:before {
+    display: block;
+    content: "";
+    margin-top: -5px;
+    width: 40px;
+    height: 30px;
+    float: left;
+    background: url('/img/my/app-store-sm.png') no-repeat top left;
+}
+
 .navbar-nav > li > a.btn-nav-noauth {
     padding-bottom: 6px;
     padding-top: 6px;
