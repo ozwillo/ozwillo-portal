@@ -16,7 +16,6 @@ import org.springframework.http.MediaType;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
@@ -89,6 +88,9 @@ public class SiteMapParserTest {
     @Autowired
     private SiteMapService siteMapService;
 
+    @Autowired
+    private SiteMapUpdater siteMapUpdater;
+
     @Before
     public void clean() {
         repository.deleteAll();
@@ -101,11 +103,10 @@ public class SiteMapParserTest {
 
         MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
         server.expect(requestTo(sitemapUrl)).andRespond(withSuccess(resourceLoader.getResource("classpath:/footer/footer.xml"), MediaType.APPLICATION_XML));
-        ReflectionTestUtils.setField(siteMapService, "restTemplate", restTemplate);
 
         repository.deleteAll();
 
-        siteMapService.reload();
+        siteMapUpdater.reload();
 
         assertNotNull(siteMapService.getSiteMap("fr"));
         assertEquals("http://www.ozwillo-dev.eu/fr/decouvrir", siteMapService.getSiteMap("fr").get(0).getUrl());
