@@ -7,7 +7,7 @@
     <groupId>org.oasis_eu.portal</groupId>
     <artifactId>oasis-portal-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.5-RC1</version>
+    <version>1.5-RC2</version>
 
     <properties>
         <apache-httpcomponents.version>4.3.1</apache-httpcomponents.version>
