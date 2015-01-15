@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.core.dao.impl;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,6 +52,11 @@ public class CatalogStoreImplTest {
         SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
+    }
+
+    @After
+    public void clearAuthentication() {
+        SecurityContextHolder.clearContext();
     }
 
     @Before

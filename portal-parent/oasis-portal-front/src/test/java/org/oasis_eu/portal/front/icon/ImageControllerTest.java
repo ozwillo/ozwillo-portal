@@ -3,6 +3,7 @@ package org.oasis_eu.portal.front.icon;
 import com.google.common.io.ByteStreams;
 import com.mongodb.DBCollection;
 import com.mongodb.Mongo;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -11,10 +12,12 @@ import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageDownloader;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.main.OasisPortal;
+import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.http.MediaType;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
@@ -25,6 +28,7 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
+import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,8 +66,17 @@ public class ImageControllerTest {
         collection.drop();
 
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+
+        OpenIdCAuthentication authentication = new OpenIdCAuthentication("test", "accesstoken", "idtoken", java.time.Instant.now(), java.time.Instant.now().plus(24, ChronoUnit.HOURS), true, false);
+        SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
+        SecurityContextHolder.getContext().setAuthentication(authentication);
+
     }
 
+    @After
+    public void tearDown() {
+        SecurityContextHolder.clearContext();
+    }
 
     @Test
     public void testGetImage() throws Exception {
