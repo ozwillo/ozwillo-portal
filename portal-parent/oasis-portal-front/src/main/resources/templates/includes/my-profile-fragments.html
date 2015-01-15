@@ -64,7 +64,7 @@
             <span class="value-label" data-th-id="selected-option-__${widget.id}__-label" data-th-text="#{${widget.getOptionLabel('__${value}__')}}">English</span>
             <span class="caret"></span>
         </button>
-        <ul class="dropdown-menus" role="menu" aria-labelledby="language-label">
+        <ul class="dropdown-menu" role="menu" aria-labelledby="language-label">
             <li data-th-each="option : ${widget.options}">
                 <a data-th-id="option-__${widget.id}__-__${option.key}__" class="action-select-option" data-th-data="${option.key}" href="#" data-th-text="#{${option.value}}">Blablaish</a>
             </li>
