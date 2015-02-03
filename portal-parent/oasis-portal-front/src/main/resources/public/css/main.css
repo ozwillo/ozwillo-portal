@@ -601,12 +601,13 @@ footer, .push {
 
 .sitemap ul {
     margin-top: 20px;
+    padding-left: 0;
 }
 
 .sitemap li {
     list-style-type: none;
     font-size: 16px;
-    height: 28.375px;
+    padding: 0.2em;
     line-height: 22px;
     box-sizing: border-box;
 }
@@ -621,17 +622,20 @@ footer, .push {
 
 .sitemap a {
     color: #555555;
-    padding: 0.2em;
 }
 
 .sitemap a:hover {
     text-decoration: none;
 }
 
+.sitemap p {
+    font-size: 16px;
+    color: #555;
+}
+
 .footer {
-    width: 100%;
     background-color: #6e418e;
-    padding: 10px 30%;
+    padding: 10px 0;
     color: white;
 }
 
@@ -639,14 +643,8 @@ footer, .push {
     margin-right: 10px;
 }
 
-@media (min-width: 755px) {
-    .sitemap {
-        height: 146px;
-    }
-
-    .footer {
-        height: 70px;
-    }
+.footer p {
+    margin-bottom: 0;
 }
 
 div.legalese {
