@@ -2,6 +2,7 @@ package org.oasis_eu.portal.config;
 
 import ch.qos.logback.access.tomcat.LogbackValve;
 import de.javakaffee.web.msm.MemcachedBackupSessionManager;
+
 import org.oasis_eu.spring.kernel.security.TokenRefreshInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,9 +20,11 @@ import org.springframework.web.filter.CharacterEncodingFilter;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect;
 
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
+
 import java.io.File;
 import java.util.Arrays;
 import java.util.EnumSet;
@@ -56,6 +59,11 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public LocaleResolver localeResolver() {
         return new OasisLocaleResolver();
+    }
+    
+    @Bean
+    public ConditionalCommentsDialect conditionalCommentsDialect() {
+       return new ConditionalCommentsDialect();
     }
 
     @Bean
