@@ -1,12 +1,12 @@
 <footer>
     <div class="sitemap">
         <div class="row">
-            <div class="col-sm-6 text-center">
+            <div class="col-sm-6 col-xs-12 text-center">
                 <h1>Oasis</h1>
 
                 <p data-th-text="#{footer.tagline}">A platform interactive services for a data common good</p>
             </div>
-            <div class="col-sm-2" data-th-each="col: ${sitemap}">
+            <div class="col-sm-2 col-xs-4" data-th-each="col: ${sitemap}">
                 <ul>
                     <li data-th-each="entry: ${col}"><a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
                     </li>
@@ -15,11 +15,15 @@
         </div>
     </div>
     <div class="footer">
-        <img src="/img/icons/eu.png" class="pull-left"/>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6 col-md-offset-3">
+                    <img src="/img/icons/eu.png" class="pull-left"/>
 
-        <p data-th-text="#{footer.eu}">OASIS is a project cofunded by
-            the EU under the Program for Competitiveness and
-            Innovation CIP ICT PSP- N°297210</p>
+                    <p data-th-text="#{footer.eu}">OASIS is a project cofunded by the EU under the Program for Competitiveness and Innovation CIP ICT PSP- N°297210</p>
+                </div>
+            </div>
+        </div>
     </div>
 </footer>
 
