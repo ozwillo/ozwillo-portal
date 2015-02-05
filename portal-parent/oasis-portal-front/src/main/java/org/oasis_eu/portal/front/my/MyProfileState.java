@@ -1,17 +1,28 @@
 package org.oasis_eu.portal.front.my;
 
-import org.oasis_eu.portal.model.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.stereotype.Controller;
-
-import javax.annotation.PostConstruct;
-import java.util.Arrays;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.annotation.PostConstruct;
+
+import org.oasis_eu.portal.model.AvatarWidget;
+import org.oasis_eu.portal.model.FormLayout;
+import org.oasis_eu.portal.model.FormWidget;
+import org.oasis_eu.portal.model.FormWidgetDate;
+import org.oasis_eu.portal.model.FormWidgetDropdown;
+import org.oasis_eu.portal.model.FormWidgetText;
+import org.oasis_eu.portal.model.FormWidgetUrlButton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationContext;
+import org.springframework.stereotype.Controller;
 
 /**
  * 
@@ -40,9 +51,26 @@ public class MyProfileState {
 	
 	@Value("${kernel.auth.password_change_endpoint:''}")
     protected String passwordChangeEndpoint;
+	
+	private List<String> availableAvatars;
+	
+	/** to walk avatar files */
+	@Autowired
+    private ApplicationContext applicationContext;
     
     @PostConstruct
     public void reset() {
+        
+        // loading available avatars :
+        try {
+            Path publicResourcesRootFilePath = applicationContext.getResource("classpath:public").getFile().toPath();
+            availableAvatars = Files.walk(applicationContext.getResource("classpath:public/img/my/avatar").getFile().toPath())
+                    .filter(p -> p.toFile().isFile()) // LATER check file extension of p.getFileName().toString()
+                    .map(p -> "/" + publicResourcesRootFilePath.relativize(p).toString())
+                    .collect(Collectors.toList());
+        } catch (IOException e) {
+            throw new RuntimeException(e); // don't start if fails
+        } // finally { stream.close(); // ideally...
     	
     	// Note: the widget IDs must match the OpenID properties.
     	// The values are bound in the method below.
@@ -110,11 +138,13 @@ public class MyProfileState {
 		return null;
 	}
 	
+	/**
+	 * Returns avatar images below the img/my/avatar tree
+	 * (uploaded avatars are stored in mongo elsewhere) 
+	 * @return
+	 */
 	private List<String> getAvailableAvatars() {
-		// TODO Where/how do we store avatars?
-		return Arrays.asList("/img/my/avatar/img-19.png",
-				"/img/my/avatar/img-20.png", "/img/my/avatar/img-21.png",
-				"/img/my/avatar/img-22.png", "/img/my/avatar/img-23.png");
+		return availableAvatars;
 	}
     
 }
