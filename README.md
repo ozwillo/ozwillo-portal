@@ -19,6 +19,7 @@ mvn clean install
 ## Building the sources
 
 ```
+# NB. first compile the right version of pole-numerique/oasis-spring-integration.git
 git clone git@github.com:pole-numerique/oasis-portal.git
 cd oasis-portal/portal-parent
 mvn clean install
@@ -34,15 +35,23 @@ There are the two preferred ways to run the app:
 
 ```
 cd oasis-portal-front/target
-java -jar oasis-portal-front-${VERSION}.jar
+java -jar target/oasis-portal-front-${VERSION}.jar
+# debug :
+#java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8003 -jar target/oasis-portal-front-${VERSION}.jar
 ```
 
 * By running Spring Boot from the command line
 
 ```
 cd oasis-portal-front
+# debug :
+#export MAVEN_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8003,server=y,suspend=n"
 mvn spring-boot:run
 ```
+which allows hotswapping (including of thymeleaf templates if cache set to false in application.yml, default)
+
+## Debugging js :
+in src/main/resources/application.yml, set spring: thymeleaf: cache: to false
 
 ## Configuring the reverse-proxy
 
@@ -83,3 +92,24 @@ sudo service apache2 restart
   * robert.roe@example.net / robert.roe@example.net
   * carla.coe@example.net / carla.coe@example.net
 
+
+## Release
+
+### Compile thymeleaf templates & minify :
+```
+# manage several version of node using https://github.com/creationix/nvm
+# see also http://www.mattpalmerlee.com/2013/03/23/installing-and-switching-between-multiple-versions-of-node-js-n-vs-nvm/
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.23.3/install.sh | bash
+source ~/.bashrc
+nvm install v0.10.36
+
+# install react-tools :
+#npm install jsx
+npm install -g react-tools
+#react-tools@0.12.2 /home/mdutoo/.nvm/v0.10.36/lib/node_modules/react-tools
+
+# compile & minify :
+TODO
+##jsx --watch src/ src/
+# see also http://facebook.github.io/react/docs/getting-started.html
+```
