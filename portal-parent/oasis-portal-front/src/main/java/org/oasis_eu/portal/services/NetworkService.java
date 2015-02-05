@@ -1,5 +1,13 @@
 package org.oasis_eu.portal.services;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
 import org.oasis_eu.portal.model.appsmanagement.User;
@@ -9,6 +17,7 @@ import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.model.UserAccount;
+import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.model.directory.OrgMembership;
 import org.oasis_eu.spring.kernel.model.directory.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
@@ -20,12 +29,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -83,19 +86,40 @@ public class NetworkService {
         }
 
         if (userMembership.isAdmin()) {
+            // return all members :
             org.setMembers(userDirectory.getMembershipsOfOrganization(organizationId).stream()
                     .map(this::toUIOrganizationMember)
+                    // NB. self is among returned admins
                     .sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1 : member1.getName().compareToIgnoreCase(member2.getName())))
                     .collect(Collectors.toList()));
         } else {
-            org.setMembers(userDirectory.getAdminsOfOrganization(organizationId).stream()
-                            .map(this::toUIOrganizationMember)
-                            .sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1 : member1.getName().compareToIgnoreCase(member2.getName())))
+            // return self in first position
+            // which was missing : #159 Possibility to see who are the admins of an organization one belongs to
+            // followed by admins :
+            org.setMembers(Stream.concat(Stream.of(selfNonAdminUIOrganizationMember()),
+                    userDirectory.getAdminsOfOrganization(organizationId).stream()
+                            .map(this::toUIOrganizationMember))
+                            // NB. self is already in first position, so ne need to sort
                             .collect(Collectors.toList())
             );
         }
 
         return org;
+    }
+
+    /**
+     * Used when non admin, in order to return self in first position
+     * which was missing : #159 Possibility to see who are the admins of an organization one belongs to
+     * @return
+     */
+    private UIOrganizationMember selfNonAdminUIOrganizationMember() {
+        UserInfo currentUser = userInfoService.currentUser();
+        UIOrganizationMember selfOrgMember = new UIOrganizationMember();
+        selfOrgMember.setId(currentUser.getUserId());
+        selfOrgMember.setName(currentUser.getNickname());
+        selfOrgMember.setAdmin(false);
+        selfOrgMember.setSelf(true);
+        return selfOrgMember;
     }
 
     private UIOrganizationMember toUIOrganizationMember(OrgMembership orgMembership) {

@@ -353,7 +353,7 @@ var ReadOnlyMember = React.createClass({
         return (
             <div key={this.props.member.id} className="row form-table-row">
                 <div className="col-sm-3">{this.props.member.name}</div>
-                <div className="col-sm-3">{t('admin')}</div>
+                <div className="col-sm-3">{this.props.member.self ? t('user') : t('admin')}</div>
             </div>
         );
     }
