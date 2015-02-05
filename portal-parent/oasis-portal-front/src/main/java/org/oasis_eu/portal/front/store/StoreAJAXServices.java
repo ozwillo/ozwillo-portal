@@ -82,7 +82,20 @@ public class StoreAJAXServices {
         List<StoreApplication> apps = appstoreService.getAll(audiences, paymentOptions, last).stream()
                 .map(this::toStoreApplication)
                 .collect(Collectors.toList());
+        //apps = new ArrayList<StoreApplication>(); // for easy testing
+        
         return new StoreAppResponse(apps, apps.size() == loadSize); // if we got exactly as many as we'd have liked, there are likely more
+    }
+
+    /**
+     * for loading default_app, else when direct link is not displayed if not in first page see #152
+     */
+    @RequestMapping("/application/{type}/{id}")
+    public StoreApplication application(@PathVariable String type, @PathVariable String id) {
+
+        AppstoreHit hit = appstoreService.getInfo(id, CatalogEntryType.valueOf(type.toUpperCase()));
+
+        return toStoreApplication(hit);
     }
 
     @RequestMapping("/details/{type}/{id}")

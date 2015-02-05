@@ -9,6 +9,7 @@ var AppStore = React.createClass({
     },
     getInitialState: function () {
         return {
+            defaultApp : null,
             apps: [],
             loading: true,
             maybeMoreApps: false,
@@ -25,7 +26,37 @@ var AppStore = React.createClass({
             }
         };
     },
+    mergeAppsWithDefaultAppFirst : function() {
+        if (!this.state.defaultApp) {
+            return this.state.apps;
+        }
+        return $.merge([ this.state.defaultApp ], $.map(this.state.apps, function(app, i){
+            if(app.id == this.state.defaultApp.id) return;
+            return app;
+        }));
+    },
     updateApps: function (target_citizens, target_publicbodies, target_companies, paid, free) {
+        if (default_app) {
+            $.ajax({
+                url: store_service + "/application/" + default_app.type + "/" + default_app.id,
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    default_app = null; // only once
+                    var state = this.state;
+                    state.defaultApp = data;
+                    state.defaultApp.isDefault = true; // triggers opening modal
+                    this.setState(state);
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(status, err.toString());
+                }.bind(this)
+            });
+        } else {
+            var state = this.state;
+            state.defaultApp = null;
+            this.setState(state);
+        }
         $.ajax({
             url: store_service + "/applications",
             data: {target_citizens: target_citizens, target_publicbodies: target_publicbodies, target_companies: target_companies, free: free, paid: paid},
@@ -103,7 +134,7 @@ var AppStore = React.createClass({
                             filter={this.state.filter}
                         />
                         <AppList
-                            apps={this.state.apps}
+                            apps={this.mergeAppsWithDefaultAppFirst()}
                         />
                     </div>
                     <div className="row">
@@ -228,7 +259,7 @@ var LoadMore = React.createClass({
 
 var App = React.createClass({
     componentDidMount: function () {
-        if (default_app && default_app.type == this.props.app.type && default_app.id == this.props.app.id) {
+        if (this.props.app.isDefault) {
             this.openApp();
         }
     },
