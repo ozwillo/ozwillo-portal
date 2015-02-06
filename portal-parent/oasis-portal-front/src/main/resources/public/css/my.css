@@ -158,6 +158,7 @@ h2 .badge {
     width: 110px;
     border: 5px solid white;
     transition: .2s;
+    cursor: pointer;
 }
 .btn-avatar:focus {
     outline: 0; /* hide dotted focus borders */
