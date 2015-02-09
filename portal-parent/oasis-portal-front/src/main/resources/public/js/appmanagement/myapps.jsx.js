@@ -203,6 +203,15 @@ var Instance = React.createClass({
         });
     },
     render: function () {
+        var manageUsersButton = null;
+        if (this.props.authority.slice(0, 'INDIVIDUAL:') !== 'INDIVIDUAL:') { // don't display it for organizations
+            manageUsersButton = (
+                <a className="tip btn btn-default pull-right" href="#" onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
+                    <li className="fa fa-user"></li>
+                </a>        
+            );
+        }
+        
         var instance = this.props.key;
         var services = this.props.instance.services.map(function (service) {
             return <Service key={service.service.id} service={service} instance={instance}/>;
@@ -224,9 +233,7 @@ var Instance = React.createClass({
                 <div className="panel-heading">
                     <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
                     <span className="appname">{this.props.instance.name}</span>
-                    <a className="tip btn btn-default pull-right" href="#" onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
-                        <li className="fa fa-user"></li>
-                    </a>
+                    {manageUsersButton}
                     {deprovision}
                 </div>
                 <div className="panel-body">
