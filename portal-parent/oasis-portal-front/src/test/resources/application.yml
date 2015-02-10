@@ -23,6 +23,8 @@ web:
   sitemap:
     url: https://www.tagada.pouet.pouet/footer.xml
     refresh: 0 0 3 ? DEC SUN
+  # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
+  avatarPath: img/my/avatar
 
 kernel:
   token:

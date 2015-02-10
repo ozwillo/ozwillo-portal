@@ -1,8 +1,7 @@
 package org.oasis_eu.portal.front.my;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +21,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationContext;
+import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Controller;
 
 /**
@@ -44,13 +44,15 @@ public class MyProfileState {
     
     public static final String LAYOUT_FORM_CLASS = "personal-data-form";
     
-	@SuppressWarnings("unused")
 	private static final Logger logger = LoggerFactory.getLogger(MyProfileState.class);
 
 	private Map<String, FormLayout> layouts;
 	
-	@Value("${kernel.auth.password_change_endpoint:''}")
+    @Value("${kernel.auth.password_change_endpoint:''}")
     protected String passwordChangeEndpoint;
+
+    @Value("${web.avatarPath:}")
+	private String avatarPath;
 	
 	private List<String> availableAvatars;
 	
@@ -62,15 +64,32 @@ public class MyProfileState {
     public void reset() {
         
         // loading available avatars :
+        if (!avatarPath.startsWith("/")) {
+            avatarPath = "/" + avatarPath;
+        }
+        if (!avatarPath.endsWith("/")) {
+            avatarPath = avatarPath + "/";
+        }
         try {
-            Path publicResourcesRootFilePath = applicationContext.getResource("classpath:public").getFile().toPath();
-            availableAvatars = Files.walk(applicationContext.getResource("classpath:public/img/my/avatar").getFile().toPath())
-                    .filter(p -> p.toFile().isFile()) // LATER check file extension of p.getFileName().toString()
-                    .map(p -> "/" + publicResourcesRootFilePath.relativize(p).toString())
+            String avatarPattern = "classpath:public" + avatarPath + "*";
+            Resource[] avatarResources = applicationContext.getResources(avatarPattern);
+            availableAvatars = Arrays.asList(avatarResources).stream()
+                    .filter(avatarResource -> avatarResource.exists()) // else happens ? LATER check file extension of p.getFileName().toString()
+                    .map(avatarResource -> {
+                        try {
+                            String urlString = avatarResource.getURL().toString();
+                            return urlString.substring(urlString.indexOf(avatarPath));
+                        } catch (IOException ioex) {
+                            logger.error("Error loading avatar resource " + avatarResource, ioex);
+                            return null;
+                        } // finally { stream.close(); // ideally...
+                    })
+                    .filter(avatarResource -> avatarResource != null) // in case IOException above
                     .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e); // don't start if fails
         } // finally { stream.close(); // ideally...
+        
     	
     	// Note: the widget IDs must match the OpenID properties.
     	// The values are bound in the method below.
