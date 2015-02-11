@@ -4,6 +4,7 @@ import org.oasis_eu.spring.config.OasisSecurityConfiguration;
 import org.oasis_eu.spring.kernel.security.OasisAuthenticationFilter;
 import org.oasis_eu.spring.kernel.security.OpenIdCConfiguration;
 import org.oasis_eu.spring.kernel.security.StaticOpenIdCConfiguration;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
@@ -19,6 +20,9 @@ import java.util.Arrays;
  */
 @Configuration
 public class OasisPortalSecurity extends OasisSecurityConfiguration {
+    
+    @Value("${application.security.noauthdevmode:false}") private boolean noauthdevmode;
+    @Value("${application.devmode:false}") private boolean devmode;
 
     @Bean
     @Primary
@@ -38,7 +42,9 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-
+        if (noauthdevmode && devmode) {
+            // don't configure any security
+        } else {
         http
                 .logout().logoutSuccessHandler(logoutHandler()).and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint()).and()
@@ -47,6 +53,6 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
                 .anyRequest().permitAll().and()
                 .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class)
                 .addFilterAfter(oasisExceptionTranslationFilter(authenticationEntryPoint()), ExceptionTranslationFilter.class);
-
+        }
     }
 }

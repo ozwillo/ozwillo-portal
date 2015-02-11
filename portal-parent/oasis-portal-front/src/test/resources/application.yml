@@ -13,6 +13,8 @@ application:
   url: http://localhost
   security:
     fetchUserInfo: true
+    # requires devmode, to ease up development ex. of Catalog only
+    noauthdevmode: false
   baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
   store:
