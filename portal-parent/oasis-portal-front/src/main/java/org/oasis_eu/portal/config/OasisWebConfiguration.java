@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.config;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -28,6 +29,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect;
 
 import ch.qos.logback.access.tomcat.LogbackValve;
+import de.javakaffee.web.msm.MemcachedBackupSessionManager;
 
 /**
  * User: schambon
