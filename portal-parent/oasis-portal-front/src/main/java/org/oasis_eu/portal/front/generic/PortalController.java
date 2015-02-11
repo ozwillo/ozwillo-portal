@@ -1,5 +1,17 @@
 package org.oasis_eu.portal.front.generic;
 
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.services.MyNavigationService;
@@ -22,15 +34,6 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
 
 /**
  * User: schambon Date: 6/11/14
@@ -95,6 +98,19 @@ abstract public class PortalController {
 		}
 		return Languages.getByLocale(RequestContextUtils.getLocale(request));
 	}
+
+    /** else enum harder to use in js & react.js ; also in the CURRENT locale */
+    @ModelAttribute("localeLanguages")
+    public List<String> localeLanguages() {
+        return Arrays.asList(Languages.values()).stream()
+                .map(l -> l.getLocale().getLanguage()).collect(Collectors.toList());
+    }
+
+    /** else enum harder to use in js & react.js */
+    @ModelAttribute("currentLocaleLanguage")
+    public String currentLocaleLanguage() {
+        return currentLanguage().getLocale().getLanguage();
+    }
 
 	@ModelAttribute("user")
 	public UserInfo user() {

@@ -9,6 +9,8 @@
 
     <title>DUMMY Ozwillo</title>
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="//cdn.jsdelivr.net/webjars/select2/3.5.2/select2.css" rel="stylesheet"/>
+    <!-- link href="//cdn.jsdelivr.net/webjars/select2-bootstrap-css/1.4.4/select2-bootstrap.css" rel="stylesheet"/ -->
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="../../public/css/main.css" rel="stylesheet"/>
     <link href="../../public/css/appstore.css" rel="stylesheet"/>
@@ -66,12 +68,13 @@
                 <h2><img src="../../public/img/my/app-store.png" data-th-src="@{/img/my/app-store.png}" data-th-alt="#{ui.appstore}" alt="Appstore" /><span data-th-text="#{ui.appstore}">Apps Store</span></h2>
             </div>
             <form id="searchForm" action="#" data-th-action="@{|/${currentLanguage.locale.language}/store/search|}">
-                <!--/*<div class="input-group">
-                    <input type="search" name="query" class="form-control" placeholder="Search"/>
+                <div class="input-group">
+                    <span data-th-text="#{store.look-for-an-application}">Look for an application</span>
+                    <input type="search" name="query" class="form-control" placeholder="Keywords or location" data-th-placeholder="#{store.keywords-or-location}"/>
                     <span class="input-group-btn">
                         <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                     </span>
-                </div>*/-->
+                </div>
                 <div class="checkbox">
                     <label>
                         <input name="audience" value="CITIZENS" type="checkbox" checked="checked"/><span data-th-text="#{store.citizens}">Citizens</span>
@@ -175,6 +178,7 @@
 
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+    <script src="//cdn.jsdelivr.net/webjars/select2/3.5.2/select2.min.js"></script>
 
 </th:block>
 

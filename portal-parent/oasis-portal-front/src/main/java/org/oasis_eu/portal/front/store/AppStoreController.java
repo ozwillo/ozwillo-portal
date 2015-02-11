@@ -44,7 +44,10 @@ public class AppStoreController extends PortalController {
     }
 
 
-    private static final List<String> i18nkeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid", "installed", "tos", "privacy", "by", "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app", "already-rated", "launch");
+    private static final List<String> i18nkeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid",
+            "languages-supported-by-applications", "look-for-an-application", "keywords-or-location",
+            "installed", "tos", "privacy", "by", "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app", "already-rated", "launch");
+    private static final List<String> languagekeys = Arrays.asList("all", "en", "fr", "it", "es", "ca", "tr", "bg"); // OASIS locales
     private static final List<String> generickeys = Arrays.asList("save", "cancel", "ok", "appstore", "close", "loading");
     private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "create");
 
@@ -54,6 +57,7 @@ public class AppStoreController extends PortalController {
         Map<String, String> result = new HashMap<String, String>();
         result.putAll(networkkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.network." + k, new Object[0], locale))));
         result.putAll(i18nkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store." + k, new Object[0], locale))));
+        result.putAll(languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
         result.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[0], locale))));
         return result;
     }

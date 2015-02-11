@@ -7,6 +7,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * User: schambon
@@ -22,7 +23,9 @@ public interface CatalogStore {
 
     ApplicationInstance findApplicationInstance(String instanceId);
 
-    List<CatalogEntry> findAllVisible(List<Audience> targetAudience, List<PaymentOption> paymentOptions, int from);
+    List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
+            List<Locale> supportedLocales, List<String> geographicalAreas,
+            List<String> categoryIds, String q, String hl, int from);
 
     void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
 

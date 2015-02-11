@@ -21,10 +21,13 @@ import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -66,13 +69,28 @@ public class PortalAppstoreService {
 
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
-
-    public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions, int from) {
-
-        return catalogStore.findAllVisible(targetAudiences, paymentOptions, from).stream()
+    
+    @Value("${application.store.addCurrentToSupportedLocalesIfNone:false}")
+    private boolean addCurrentToSupportedLocalesIfNone;
+    
+    
+    public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
+            List<Locale> supportedLocales, List<String> geographicalAreas,
+            List<String> categoryIds, String q, int from) {
+        
+        if (addCurrentToSupportedLocalesIfNone) {
+            supportedLocales = (supportedLocales == null || supportedLocales.isEmpty()) ?
+                    Arrays.asList(new Locale[] { RequestContextUtils.getLocale(request) }) : supportedLocales;
+                    // TODO or rather use PortalController.currentLanguage() ?? anyway, rather init it on client js side ?!!
+        }
+        
+        String currentHl = RequestContextUtils.getLocale(request).getLanguage(); // optimization
+        return catalogStore.findAllVisible(targetAudiences, paymentOptions, supportedLocales,
+                geographicalAreas, categoryIds, q, currentHl, from).stream()
                 .filter(catalogEntry -> catalogEntry != null)
-                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry, imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false), getOrganizationName(catalogEntry),
-                        getInstallationOption(catalogEntry)))
+                .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry,
+                        imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false),
+                        getOrganizationName(catalogEntry), getInstallationOption(catalogEntry)))
 
                 .collect(Collectors.toList());
     }

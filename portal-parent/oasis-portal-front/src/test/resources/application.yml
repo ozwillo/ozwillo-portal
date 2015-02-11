@@ -17,6 +17,13 @@ application:
   defaultIconUrl: ${application.url}/img/noicon.png
   store:
     load_size: 50
+    # don't enable it until applications have filled the supported_locales field
+    # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
+    addCurrentToSupportedLocalesIfNone: false
+  geoarea:
+    storageModel: geo:City_0
+    nameField: geo_city:name
+    fallbackLanguage: en
 
 web:
   home: http://www.ozwillo-dev.eu
@@ -25,6 +32,8 @@ web:
     refresh: 0 0 3 ? DEC SUN
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
+  # only for 64x64 pngs which should be mostly below 2000B
+  maxUploadSize: 5000
 
 kernel:
   token:
@@ -53,6 +62,12 @@ kernel:
     appstore: http://localhost:8081/store
     catalog: http://localhost:8081/catalog
     apps: http://localhost:8081/apps
+
+datacore:
+  #url: http://localhost:8080
+  url: https://plnm-dev-dc # dev, requires installing gen'd cert
+  #url: https://data.ozwillo-dev.eu # dev, doesn't work with current gen'd cert
+  # alt_uri ??
 
 
 persistence:

@@ -152,6 +152,10 @@ var CreateOrganizationForm = React.createClass({
                 </div>
                 {this.renderType()}
                 {errorMessage}
+                <div className="form-group">
+                    <label htmlFor="organization-territory_id" className={nameClassName}>{t('organization-territory_id')}</label>
+                    <input type="text" className="form-control" value={this.state.organization.name} onChange={this.changeInput('territory_id')} placeholder={t('organization-territory_id')}/>
+                </div>
             </form>
             );
     }

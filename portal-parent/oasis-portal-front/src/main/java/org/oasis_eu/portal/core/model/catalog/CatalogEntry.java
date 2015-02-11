@@ -1,15 +1,27 @@
 package org.oasis_eu.portal.core.model.catalog;
 
-import com.fasterxml.jackson.annotation.*;
+import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.*;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -18,6 +30,7 @@ import java.util.*;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Document(collection = "cached_service")
 public class CatalogEntry implements Serializable {
+    private static final long serialVersionUID = -2141845252496796600L;
 
     private static final Logger logger = LoggerFactory.getLogger(CatalogEntry.class);
 
@@ -41,6 +54,7 @@ public class CatalogEntry implements Serializable {
 
     private Map<String, String> localizedIcons = new HashMap<>();
 
+    /* NOO accept empty for clearing up icon i.e. getting back the default one from Kernel */
     @JsonProperty("icon")
     @NotNull
     @NotEmpty
@@ -55,17 +69,23 @@ public class CatalogEntry implements Serializable {
     @JsonIgnore
     private List<AppstoreCategory> categories = new ArrayList<>();
 
-    @JsonProperty("category_ids")
-    private List<String> categoryIds = new ArrayList<>();
-
     @JsonProperty("payment_option")
     private PaymentOption paymentOption;
 
     @JsonProperty("target_audience")
     private List<Audience> targetAudience = new ArrayList<>();
 
-    @JsonProperty("territory_id")
-    private String territoryId;
+    @JsonProperty("category_ids")
+    private List<String> categoryIds = new ArrayList<>();
+
+    @JsonProperty("supported_locales")
+    private List<String> supportedLocales; // ULocale
+
+    @JsonProperty("geographical_areas")
+    private Set<String> geographicalAreas = new HashSet<String>(); // URI
+
+    @JsonProperty("restricted_areas")
+    private Set<String> restrictedAreas = new HashSet<String>(); // URI
 
     @JsonProperty("provider_id")
     private String providerId;
@@ -201,6 +221,30 @@ public class CatalogEntry implements Serializable {
         this.categoryIds = categoryIds;
     }
 
+    public List<String> getSupportedLocales() {
+        return supportedLocales;
+    }
+
+    public void setSupportedLocales(List<String> supportedLocales) {
+        this.supportedLocales = supportedLocales;
+    }
+
+    public Set<String> getGeographicalAreas() {
+        return geographicalAreas;
+    }
+
+    public void setGeographicalAreas(Set<String> geographicalAreas) {
+        this.geographicalAreas = geographicalAreas;
+    }
+
+    public Set<String> getRestrictedAreas() {
+        return restrictedAreas;
+    }
+
+    public void setRestrictedAreas(Set<String> restrictedAreas) {
+        this.restrictedAreas = restrictedAreas;
+    }
+
     public String getUrl() {
         return url;
     }
@@ -231,14 +275,6 @@ public class CatalogEntry implements Serializable {
 
     public void setTargetAudience(List<Audience> targetAudience) {
         this.targetAudience = targetAudience;
-    }
-
-    public String getTerritoryId() {
-        return territoryId;
-    }
-
-    public void setTerritoryId(String territoryId) {
-        this.territoryId = territoryId;
     }
 
     public boolean isVisible() {

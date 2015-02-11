@@ -1,11 +1,30 @@
 package org.oasis_eu.portal.core.dao.impl;
 
-import com.fasterxml.jackson.annotation.*;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.none;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.userIfExists;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.core.model.catalog.*;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.core.model.catalog.Audience;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
+import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.service.Kernel;
@@ -24,10 +43,11 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
-import java.util.stream.Collectors;
-
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.*;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -49,6 +69,10 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Value("${application.store.load_size:20}")
     private int loadSize;
+    
+    /** to get locale */
+    @Autowired
+    private HttpServletRequest request;
 
     // a couple of MongoDB-backed caches
     @Autowired
@@ -60,13 +84,29 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     @Cacheable("appstore")
-    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions, int from) {
-        String uri = UriComponentsBuilder.fromHttpUrl(endpoint)
+    public List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
+            List<Locale> supportedLocales, List<String> geographicalAreas,
+            List<String> categoryIds, String q, String hl, int from) {
+        // NB. see Kernel API /m/search http://kernel.ozwillo-preprod.eu/swagger-ui/#!/market-search/get
+        UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromHttpUrl(endpoint)
                 .path("/search")
                 .queryParam("start", from)
-                .queryParam("limit", loadSize * 4) // *4 because we need to get a lot more than there are so we can filter...
-                .build()
-                .toUriString();
+                .queryParam("limit", loadSize) // *4 if there is any remaining post get, portal-side filter
+                ;
+        if (hl != null && !hl.isEmpty()) {
+            uriBuilder.queryParam("hl", hl);
+        }
+        targetAudiences.stream().forEach(audience -> uriBuilder.queryParam("target_audience", audience));
+        paymentOptions.stream().forEach(paymentOption -> uriBuilder.queryParam("payment_option", paymentOption));
+        if (supportedLocales != null) supportedLocales.stream().forEach(supportedLocale -> uriBuilder.queryParam("supported_locale", supportedLocale.getLanguage()));
+        if (geographicalAreas != null) geographicalAreas.stream().forEach(geographicalArea -> uriBuilder.queryParam("geographical_areas", geographicalArea));
+        //if (restrictedAreas != null) restrictedAreas.stream().forEach(restrictedArea -> uriBuilder.queryParam("restricted_areas", restrictedArea)); // TODO from user locale !?
+        if (categoryIds != null) categoryIds.stream().forEach(categoryId -> uriBuilder.queryParam("category_id", categoryId));
+        if (q != null && !q.isEmpty()) {
+            uriBuilder.queryParam("q", q);
+        }
+        
+        String uri = uriBuilder.build().toUriString();
 
         List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()));
 
@@ -77,9 +117,9 @@ public class CatalogStoreImpl implements CatalogStore {
 
         return catalogEntries
                 .stream()
-                .filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience)))
-                .filter(e -> paymentOptions.stream().anyMatch(option -> option.equals(e.getPaymentOption())))
-                .limit(loadSize)
+                //.filter(e -> e.getTargetAudience().stream().anyMatch(audience -> targetAudiences.contains(audience))) // done on Kernel side
+                //.filter(e -> paymentOptions.stream().anyMatch(option -> option.equals(e.getPaymentOption()))) // done on Kernel side
+                //.limit(loadSize) // if there is any remaining post get, portal-side filter
                 .collect(Collectors.toList());
     }
 
@@ -164,18 +204,34 @@ public class CatalogStoreImpl implements CatalogStore {
         String etag = entity.getHeaders().get("ETag").get(0);
 
         KernelService kernelService = entity.getBody();
+        
+        // copy / map localized props :
+        // TODO Q could hl be also used in GET id ?? then those service props are already localized
+        // TODO are find & GET id consistent on this point ??
         kernelService.name = service.getDefaultName();
         kernelService.description = service.getDefaultDescription();
-        kernelService.icon = service.getDefaultIcon();
+        kernelService.icon = service.getDefaultIcon(); // TODO LATER separate custom'd icon from provider's defaultIcon
+        // OR take it from application ?? :
+        /*if (service.getDefaultIcon() != null && !service.getDefaultIcon().trim().isEmpty()) {
+            kernelService.icon = service.getDefaultIcon();
+        } else {
+            ApplicationInstance app = cachedService.findApplicationInstance(service.getInstanceId());
+            kernelService.icon = app.getIcon();
+        }*/
 
         // kinda hacky, but we'll change that when the UI fully supports l10n
+        // TODO can name & description be updated ? then which behaviour outside current locale ???
         for (Locale locale : OasisLocales.values()) {
             kernelService.set("name#" + locale.getLanguage(), service.getDefaultName());
             kernelService.set("description#" + locale.getLanguage(), service.getDefaultDescription());
             kernelService.set("icon#" + locale.getLanguage(), service.getDefaultIcon());
         }
 
-        kernelService.territory_id = service.getTerritoryId();
+        // copy / map other props :
+        // TODO Q could hl be also used in GET id ?? then only if hl was not used
+        kernelService.supported_locales = service.getSupportedLocales();
+        kernelService.geographical_areas = service.getGeographicalAreas();
+        kernelService.restricted_areas = service.getRestrictedAreas();
         kernelService.visible = service.isVisible();
 
         HttpHeaders headers = new HttpHeaders();
@@ -227,7 +283,9 @@ public class CatalogStoreImpl implements CatalogStore {
         String notification_uri;
         List<String> redirect_uris;
         List<String> post_logout_redirect_uris;
-        String territory_id;
+        List<String> supported_locales;
+        Set<String> geographical_areas;
+        Set<String> restricted_areas;
         String subscription_id;
         String subscription_secret;
         @JsonProperty("contacts")
@@ -313,6 +371,30 @@ public class CatalogStoreImpl implements CatalogStore {
         public void setCategory_ids(List<String> category_ids) {
             this.category_ids = category_ids;
         }
+        
+        public List<String> getSupported_locales() {
+            return supported_locales;
+        }
+
+        public void setSupported_locales(List<String> supported_locales) {
+            this.supported_locales = supported_locales;
+        }
+
+        public Set<String> getGeographical_areas() {
+            return geographical_areas;
+        }
+
+        public void setGeographical_areas(Set<String> geographical_areas) {
+            this.geographical_areas = geographical_areas;
+        }
+
+        public Set<String> getRestricted_areas() {
+            return restricted_areas;
+        }
+
+        public void setRestricted_areas(Set<String> restricted_areas) {
+            this.restricted_areas = restricted_areas;
+        }
 
         public boolean isVisible() {
             return visible;
@@ -368,14 +450,6 @@ public class CatalogStoreImpl implements CatalogStore {
 
         public void setPost_logout_redirect_uris(List<String> post_logout_redirect_uris) {
             this.post_logout_redirect_uris = post_logout_redirect_uris;
-        }
-
-        public String getTerritory_id() {
-            return territory_id;
-        }
-
-        public void setTerritory_id(String territory_id) {
-            this.territory_id = territory_id;
         }
 
         public String getSubscription_id() {

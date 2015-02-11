@@ -1,6 +1,74 @@
 /** @jsx React.DOM */
 
 
+var params = {
+    multiple: true,
+    allowClear: true,
+    placeholder: t('keywords-or-location'),
+    separator: "|", // else http://...Barcenas, Las => two values
+    //tags: ["Valence", "Barcelone", "Torino"]
+    minimumInputLength: 3,
+    ajax: {
+        url: store_service + "/geographicalAreas",
+        dataType: "json",
+        quietMillis: 250,
+        data: function( term, page ) {
+            return {
+                // search term
+                q: term
+            };
+        },
+        results: function( data, page ) {
+                // parse the results into the format expected by Select2.
+                // since we are using custom formatting functions we do not need to alter the remote JSON data
+                return { results: data.areas };
+        },
+        cache: true
+    },
+    //initSelection: function( element, callback ) { }
+    //formatResult: formatResult,
+    //formatSelection: formatSelection,
+    text: function(area) {
+        return area.name;
+    },
+    id: function(area) {
+        return area.uri;
+    },
+    //Allow manually entered text in drop down.
+    /*createSearchChoice: function(term, data) {
+        if ($(data).filter(function(t) {
+            return t === term; // this.text.localeCompare(term)===0;
+        }).length===0) {
+            return {id:'q', text:term, name:term, uri:'q'}; // NOT id text
+        }
+    },*/
+    // apply css that makes the dropdown taller
+    dropdownCssClass: "bigdrop",
+    // we do not want to escape markup since we are displaying html in results
+    escapeMarkup: function( m ) {
+        return m;
+    }
+};
+
+function formatResult(area) {
+    var markup = "<div class='select2-result-repository clearfix'>" +
+        "<div class='select2-result-repository__meta'>" +
+            "<div class='select2-result-repository__title' title='" + area.uri + "'>" + area.name + "</div>";
+
+    if (area.detailedName) {
+        markup += "<div class='select2-result-repository__description'>" + area.detailedName + "</div>";
+    }
+
+    markup += 
+        "</div></div>";
+
+    return markup;
+};
+
+function formatSelection(area) {
+    return area.name;
+};
+
 var converter = new Showdown.converter({extensions: ['table']});
 
 var AppStore = React.createClass({
@@ -57,9 +125,27 @@ var AppStore = React.createClass({
             state.defaultApp = null;
             this.setState(state);
         }
+        var supported_locales = [];
+        if (this.refs.sideBar.state.selectedLanguage !== 'all') {
+            supported_locales.push(this.refs.sideBar.state.selectedLanguage);
+        }
+        var geographicalAreaUris = []; // this.refs.sideBar.state.geographicalAreaUris // TODO LATER once UI not reinited at each render
+        var geographicalAreas = $(this.refs.sideBar.refs.searchDiv.getDOMNode()).find(".select2-container").select2('data');
+        $.map(geographicalAreas, function(area, i) {
+            geographicalAreaUris.push(area.uri);
+        });
+        //var searchText = '';
+        var searchText = $(this.refs.sideBar.refs.searchDiv.getDOMNode()).find("input.select2-input").val();
+        var queryParams = {target_citizens: target_citizens, target_publicbodies: target_publicbodies, target_companies: target_companies,
+                free: free, paid: paid,
+                supported_locales: supported_locales,
+                geographical_areas: geographicalAreaUris,
+                category_ids: [],
+                q: searchText}; // q being empty is ok
         $.ajax({
             url: store_service + "/applications",
-            data: {target_citizens: target_citizens, target_publicbodies: target_publicbodies, target_companies: target_companies, free: free, paid: paid},
+            data: queryParams,
+            traditional: true, // else geographical_areas%5B%5D=http... see http://stackoverflow.com/questions/6011284/problem-with-brackets-in-jquery-form-data-when-sending-data-as-json
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -126,10 +212,15 @@ var AppStore = React.createClass({
         //        <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</div>
         //}
         //else {
+            var languagesAndAll = JSON.parse(JSON.stringify(languages));
+            languagesAndAll.unshift('all');
+            var initialSelectedLanguage = 'all'; // LATER currentLanguage;
             return (
                 <div>
                     <div className="row">
-                        <SideBar
+                        <SideBar ref="sideBar"
+                            currentLanguage={initialSelectedLanguage}
+                            languages={languagesAndAll}
                             updateApps={this.updateApps}
                             filter={this.state.filter}
                         />
@@ -152,7 +243,32 @@ var AppStore = React.createClass({
 
 
 var SideBar = React.createClass({
-
+    getInitialState: function () {
+        return {
+            selectedLanguage: 'en',
+            geographicalAreaUris: [],
+            searchText: '', // TODO LATER
+            }; // TODO or in top level state ??
+    },
+    componentDidMount: function () {
+        var s = this.state;
+        s.selectedLanguage = this.props.currentLanguage; // init to current language
+        this.setState(s);
+    },
+    handleLanguageClicked: function (language) {
+        var s = this.state;
+        s.selectedLanguage = language;
+        this.setState(s);
+        var filter = this.props.filter;
+        this.props.updateApps(filter.audience.citizens, filter.audience.publicbodies, filter.audience.companies, filter.payment.paid, filter.payment.free);
+    },
+    searchChanged: function (event) {
+        var s = this.state;
+        //s.geographicalAreaUris = event.val; // TODO LATER once UI not reinited at each render
+        //this.setState(s); // WARNING. reinits the select2 because re-renders it
+        var filter = this.props.filter;
+        //this.props.updateApps(filter.audience.citizens, filter.audience.publicbodies, filter.audience.companies, filter.payment.paid, filter.payment.free); // NB. also reinits
+    },
     change: function (category, item) {
         return function () {
             // check that we can indeed change the box
@@ -178,10 +294,41 @@ var SideBar = React.createClass({
         }.bind(this);
     },
     render: function () {
+        var actualSelect2Params = params; // JSON.parse(JSON.stringify(params)); // NO mangles REST conf
+        actualSelect2Params.initSelection = function(element, callback) {
+            callback(this.state.geographicalAreaUris);
+        }; // NO doesn't work
+        var languageComponents = this.props.languages.map(function(language, i) {
+            return (
+                <li><a onClick={this.handleLanguageClicked.bind(this, language)} href="#">{ t(language) }</a></li>
+            );
+        }.bind(this)); // else TypeError: this.handleLanguageClicked is undefined ; and if no previous bind, doesn't click
         return (
-            <div className="col-md-4">
+            <div className="col-md-4 sidebar">
                 <h2>
                     <img src={image_root + "my/app-store.png"} /> {t('ui.appstore')}</h2>
+
+                <div className="">
+                <ul className="nav navbar-nav">
+                <li className=""><label htmlFor="searchLocale" className="">{t('languages-supported-by-applications')}</label></li>
+                <li className="dropdown dropdown-lang search-locale" name="searchLocale">
+                    <a style={{  color: '#636884', 'font-size': '18px' }} href="#" className="dropdown-toggle" data-toggle="dropdown">
+                        <span>{ t(this.state.selectedLanguage) }</span>
+                        <i className="caret"></i></a>
+                    <ul className="dropdown-menu">
+                        { languageComponents }
+                    </ul>
+                </li>
+                </ul>
+                </div>
+                
+                <div>
+                <label htmlFor="search" className="">{t('look-for-an-application')}</label>
+                </div>
+                <div className="" ref="searchDiv">
+                    <Select2Component params={actualSelect2Params} style={{minWidth: "300px"}} onChange={this.searchChanged} name="search" />
+                </div>
+                    
                 <div className="checkbox">
                     <label>
                         <input type="checkbox" checked={this.props.filter.audience.citizens} onChange={this.change('audience', 'citizens')}/>{t('citizens')}
@@ -789,6 +936,35 @@ var Rating = React.createClass({
             onClick={this.rate}>
             </div>
             );
+    }
+});
+
+var Select2Component = React.createClass({
+    componentDidMount: function() {
+        this.renderSelect2();
+    },
+
+    componentDidUpdate: function() {
+        this.renderSelect2();
+    },
+
+    renderSelect2: function() {
+        var placeholder = this.props.placeholder;
+        var style = this.props.style;
+        //var { onChange, params, ...other } = this.props; // LATER when JSX spread attributes supported
+        var select2 = React.renderComponent(
+            React.DOM.input(Object.assign({}, this.props)), // see https://github.com/react-bootstrap/react-bootstrap/issues/188
+            // <input { ...other } />,  // LATER when JSX spread attributes supported
+            this.refs['select2div'].getDOMNode()
+        );
+        var $el = $(select2.getDOMNode());
+        //console.log($el);
+        $el.select2(this.props.params);
+        $el.on("change", this.props.onChange);
+    },
+
+    render: function() {
+        return <div ref="select2div" />;
     }
 });
 

@@ -108,6 +108,8 @@
     var store_root = /*[[@{|/${currentLanguage.locale.language}/store|}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/templates/store';
     var default_app = /*[[${defaultApp}]]*/ {type: "service", id: "ck"};
     var logged_in = /*[[${user != null}]]*/ false;
+    var currentLanguage = /*[[${currentLocaleLanguage}]]*/ 'en';
+    var languages = /*[[${localeLanguages}]]*/ ['en'];
 </script>
 
 <script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>

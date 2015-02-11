@@ -1,6 +1,12 @@
 package org.oasis_eu.portal.front.store;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
+
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
@@ -13,6 +19,7 @@ import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.portal.services.RatingService;
+import org.oasis_eu.portal.services.geoarea.GeographicalAreaService;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
@@ -22,13 +29,16 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -56,15 +66,34 @@ public class StoreAJAXServices {
     @Autowired
     private RatingService ratingService;
 
+    @Autowired
+    private GeographicalAreaService geographicalAreaService;
+
     @Value("${application.store.load_size:20}")
     private int loadSize;
-
+    
+    
+    @RequestMapping(value = "/geographicalAreas", method = RequestMethod.GET)
+    public GeographicalAreaResponse geographicalAreas(@RequestParam String q) {
+        int areaLoadSize = 10;
+        int areaDcLoadSize = areaLoadSize + 1;
+        List<GeographicalArea> areas = geographicalAreaService.find(q, 0, areaDcLoadSize);
+        
+        return new GeographicalAreaResponse(areas.stream()
+                .limit(areaLoadSize).collect(Collectors.toList()),
+                areas.size() == areaDcLoadSize);
+    }
+            
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
     public StoreAppResponse applications(@RequestParam boolean target_citizens,
                                                @RequestParam boolean target_publicbodies,
                                                @RequestParam boolean target_companies,
                                                @RequestParam boolean free,
                                                @RequestParam boolean paid,
+                                               @RequestParam(required=false) List<String> supported_locales,
+                                               @RequestParam(required=false) List<String> geographical_areas,
+                                               @RequestParam(required=false) List<String> category_ids,
+                                               @RequestParam(required=false) String q,
                                                @RequestParam(required = false, defaultValue = "0") int last) {
 
         logger.debug("Loading applications...");
@@ -79,7 +108,10 @@ public class StoreAJAXServices {
         if (free) paymentOptions.add(PaymentOption.FREE);
         if (paid) paymentOptions.add(PaymentOption.PAID);
 
-        List<StoreApplication> apps = appstoreService.getAll(audiences, paymentOptions, last).stream()
+        List<Locale> supportedLocales = supported_locales == null ? null : supported_locales.stream()
+                .map(localeString -> Locale.forLanguageTag(localeString)).collect(Collectors.toList());
+        List<StoreApplication> apps = appstoreService.getAll(audiences, paymentOptions,
+                supportedLocales, geographical_areas, category_ids, q, last).stream()
                 .map(this::toStoreApplication)
                 .collect(Collectors.toList());
         //apps = new ArrayList<StoreApplication>(); // for easy testing

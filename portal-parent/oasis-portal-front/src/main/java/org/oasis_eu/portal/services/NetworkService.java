@@ -81,6 +81,7 @@ public class NetworkService {
         Organization organization = organizationStore.find(organizationId);
         if (organization != null) {
             org.setType(organization.getType());
+            org.setTerritoryId(organization.getTerritoryId());
         } else {
             return null;
         }

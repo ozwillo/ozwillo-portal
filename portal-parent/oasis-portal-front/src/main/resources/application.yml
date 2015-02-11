@@ -17,6 +17,13 @@ application:
   defaultIconUrl: ${application.url}/img/noicon.png
   store:
     load_size: 20
+    # don't enable it until applications have filled the supported_locales field
+    # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
+    addCurrentToSupportedLocalesIfNone: false
+  geoarea:
+    storageModel: geo:City_0
+    nameField: geo_city:name
+    fallbackLanguage: en
 
 # some switches:
 # devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
@@ -35,6 +42,8 @@ web:
       refresh: 0 */15 * ? * *
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
+  # only for 64x64 pngs which should be mostly below 2000B
+  maxUploadSize: 5000
 
 kernel:
   base_uri: https://oasis-demo.atolcd.com
@@ -62,6 +71,12 @@ kernel:
     subscriptions: ${kernel.base_uri}/apps/subscriptions
     catalog: ${kernel.base_uri}/m
     apps: ${kernel.base_uri}/apps
+
+datacore:
+  #url: http://localhost:8080
+  url: https://plnm-dev-dc # dev, requires installing gen'd cert
+  #url: https://data.ozwillo-dev.eu # dev, doesn't work with current gen'd cert
+  # alt_uri ??
 
 
 persistence:

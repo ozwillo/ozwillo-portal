@@ -1,0 +1,130 @@
+/** @jsx React.DOM */
+
+/** Custom translation */
+function t(key) {
+    if (typeof _i18n != 'undefined') {
+        var v = _i18n[key];
+        if (v != null) return v;
+    }
+    return key;
+}
+
+
+
+var NotificationTable = React.createClass({displayName: "NotificationTable",
+
+    getInitialState: function() {
+        return {
+            n: [],
+            recentlyRemoved: []
+        };
+    },
+    loadNotifications: function() {
+        $.ajax({
+            url: this.props.url,
+            datatype: 'json',
+            success: function(data) {
+                var s = this.state;
+                var recentlyRemoved = s.recentlyRemoved;
+                var notifs = data.filter(function(notif) {
+                    return $.inArray(notif.id, recentlyRemoved) == -1;
+                });
+
+                this.setState({n:notifs, recentlyRemoved:recentlyRemoved});
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+
+
+    },
+    componentDidMount: function() {
+        this.loadNotifications();
+        setInterval(this.loadNotifications, this.props.pollInterval);
+    },
+    sortBy: function(criterion) {
+        var component = this;
+        return function() {
+            var n = component.state.n.sort(function (a, b) {
+                return a[criterion].localeCompare(b[criterion]);
+            });
+            component.setState({n: n, recentlyRemoved: this.state.recentlyRemoved});
+        };
+    },
+    removeNotif: function(id) {
+        var notifs = this.state.n.filter(function(n) {return n.id != id;});
+        var recentlyRemoved = this.state.recentlyRemoved;
+        recentlyRemoved.push(id);
+
+
+        this.setState({n:notifs, recentlyRemoved: recentlyRemoved});
+
+        $.ajax({
+            url: this.props.url + "/" + id,
+            method: 'delete',
+            datatype: 'json',
+            success: function(data) {
+                // nothing much to say is there?
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(this.props.url, status, err.toString());
+            }.bind(this)
+        });
+    },
+    render: function () {
+        var callback = this.removeNotif;
+        if (this.state.n.length == 0) {
+            return (
+                React.createElement("div", {className: "standard-form"}, 
+                t('no-notification')
+                )
+                );
+        } else {
+            var notificationNodes = this.state.n.map(function (notif) {
+                return (
+                    React.createElement(Notification, {key: notif.id, notif: notif, onRemoveNotif: callback})
+                    );
+            });
+            return (
+                React.createElement("div", {className: "standard-form"}, 
+                    React.createElement("div", {className: "row form-table-header"}, 
+                        React.createElement("div", {className: "col-sm-2", onClick: this.sortBy('date')}, t('date')), 
+                        React.createElement("div", {className: "col-sm-2", onClick: this.sortBy('appName')}, t('app')), 
+                        React.createElement("div", {className: "col-sm-6", onClick: this.sortBy('formattedText')}, t('message'))
+                    ), 
+                notificationNodes
+                )
+                );
+        }
+    }
+});
+
+var Notification = React.createClass({
+    displayName: "Notification",
+    removeNotif: function () {
+        this.props.onRemoveNotif(this.props.notif.id);
+    },
+    render: function() {
+        var action = null;
+        if (this.props.notif.url) {
+            action = React.createElement("a", {href: this.props.notif.url, target: "_new", className: "btn btn-primary"}, this.props.notif.actionText);
+        }
+        return (
+            React.createElement("div", {className: "row form-table-row"}, 
+                React.createElement("div", {className: "col-sm-2"}, this.props.notif.dateText), 
+                React.createElement("div", {className: "col-sm-2"}, this.props.notif.appName), 
+                React.createElement("div", {className: "col-sm-6", dangerouslySetInnerHTML: {__html: this.props.notif.formattedText}}), 
+                React.createElement("div", {className: "col-sm-2"}, 
+                    action, 
+                    React.createElement("a", {href: "#", className: "btn btn-primary", onClick: this.removeNotif}, t('archive'))
+                )
+            )
+            );
+    }
+});
+
+
+React.renderComponent(
+    React.createElement(NotificationTable, {url: notificationService, pollInterval: 2000})
+    , document.getElementById("notifications"));

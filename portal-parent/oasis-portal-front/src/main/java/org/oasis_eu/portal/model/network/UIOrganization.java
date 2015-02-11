@@ -1,10 +1,13 @@
 package org.oasis_eu.portal.model.network;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 
 import javax.validation.constraints.NotNull;
+
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,6 +27,9 @@ public class UIOrganization {
     @JsonProperty
     @NotNull
     OrganizationType type;
+    @JsonProperty("territory_id")
+    URI territoryId;
+
     @JsonProperty
     boolean admin;
 
@@ -69,6 +75,14 @@ public class UIOrganization {
     public void setMembers(List<UIOrganizationMember> members) {
         this.members = members;
     }
+    
+    public URI getTerritoryId() {
+        return territoryId;
+    }
+
+    public void setTerritoryId(URI territoryId) {
+        this.territoryId = territoryId;
+    }
 
     @Override
     public String toString() {
@@ -76,6 +90,7 @@ public class UIOrganization {
                 "id:'" + id + '\'' +
                 ", name:'" + name + '\'' +
                 ", type:" + type +
+                ", territory_id:" + territoryId +
                 ", admin:" + admin +
                 ", members:" + members +
                 '}';
