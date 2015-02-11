@@ -1,6 +1,12 @@
 package org.oasis_eu.portal.front.icon;
 
-import com.google.common.io.ByteStreams;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.util.Arrays;
+
+import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletResponse;
+
 import org.oasis_eu.portal.core.mongo.model.images.Image;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.slf4j.Logger;
@@ -10,13 +16,17 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestHeader;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.util.Arrays;
+import com.google.common.io.ByteStreams;
 
 /**
  * User: schambon
@@ -31,6 +41,13 @@ public class ImageController {
     @Autowired
     private ImageService imageService;
 
+    /**
+     * serves image
+     * @param id
+     * @param hash
+     * @param response
+     * @throws IOException
+     */
     @RequestMapping("/{id}/{name}")
     public void getIcon(@PathVariable String id, @RequestHeader(required = false, value = "If-None-Match") String hash, HttpServletResponse response) throws IOException {
         if (hash != null) {
@@ -47,6 +64,7 @@ public class ImageController {
             writeOutput(response, getIconBody(id));
         }
     }
+    
 
     private void writeOutput(HttpServletResponse response, ResponseEntity<byte[]> entity) throws IOException {
         for (String header: entity.getHeaders().keySet()) {
@@ -62,6 +80,10 @@ public class ImageController {
 
     private ResponseEntity<byte[]> getIconBody(String id) {
         Image image = imageService.getImage(id);
+        return toIconBodyResponse(image);
+    }
+
+    private ResponseEntity<byte[]> toIconBodyResponse(Image image) {
         if (image != null) {
             HttpHeaders headers = new HttpHeaders();
             headers.add("ETag", image.getHash());
@@ -85,4 +107,51 @@ public class ImageController {
 
         private static final long serialVersionUID = 9096153080333575467L;
     }
+
+    static class UploadException extends RuntimeException {
+        private static final long serialVersionUID = -2019828404927362881L;
+
+        public UploadException(String msg, Throwable cause) {
+            super(msg, cause);
+        }
+    }
+
+    static class EmptyUploadException extends UploadException {
+        private static final long serialVersionUID = 7550351339973155116L;
+
+        public EmptyUploadException() {
+            super("Uploaded file is empty", null);
+        }
+    }
+    
+    /**
+     * 
+     * @param objectId whose icon we're POSTing
+     * @param iconFile has also filename, size etc.
+     * @return
+     */
+    @RequestMapping(value="/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}", method=RequestMethod.POST)
+    public @ResponseBody String handleFileUpload(@PathVariable("objectId") String objectId,
+            @RequestParam("iconFile") MultipartFile iconFile){
+        if (!iconFile.isEmpty()) {
+            try {
+                byte[] bytes = iconFile.getBytes();
+                Image imageToStore = new Image();
+                imageToStore.setBytes(bytes);
+                imageToStore.setFilename(iconFile.getOriginalFilename());
+                // LATER OPT also iconFile.getContentType()
+                imageToStore = imageService.storeImageForObjectId(objectId, imageToStore);
+                return imageService.buildImageServedUrl(imageToStore); // ex. http://localhost:8080/media/$id/icon.png
+                // NB. alts :
+                //return imageService.buildObjectIconImageVirtualUrl(objectId); // ex. http://localhost:8080/media/objectIcon/$objectId/icon.png
+                //return imageToStore.getUrl(); // ex. http://localhost:8080/media/objectIcon/$objectId/icon.png
+            } catch (IOException ex) {
+                throw new UploadException("IO exception while getting uploaded content of file "
+                        + iconFile.getOriginalFilename(), ex); // TODO problem with upload
+            }
+        } else {
+            throw new EmptyUploadException(); // TODO no upload
+        }
+    }
+    
 }

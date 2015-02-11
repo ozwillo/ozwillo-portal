@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.core.services.icons;
 
 import com.google.common.base.Strings;
+
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
 import org.oasis_eu.portal.core.mongo.dao.icons.DirectAccessImageRepo;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.imageio.ImageIO;
+
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -36,6 +38,11 @@ import java.util.UUID;
 @Service
 public class ImageService {
     private static final Logger logger = LoggerFactory.getLogger(ImageService.class);
+
+    /** used to build "virtual", not served unique icon URL */
+    public static final String ICONIMAGE_NAME = "icon.png";
+    /** used to build "virtual", not served unique icon URL */
+    public static final String OBJECTICONIMAGE_PATHELEMENT = "objectIcon";
 
     @Autowired
     private ImageDownloader imageDownloader;
@@ -55,8 +62,95 @@ public class ImageService {
 
     @Value("${application.defaultIconUrl}")
     private String defaultIconUrl;
+    
+
+    /**
+     * Allows to store a single image / icon per object to prettify its display
+     * @param objectId id of ex. user service subscription, user...
+     * @param image imageToStore with only bytes (filename will be "icon.png"
+     * @return complete saved image (with also id, hash, servedImageUrl also used as inputUrl...)
+     */
+    public Image storeImageForObjectId(String objectId, Image imageToStore) {
+        byte[] iconBytes = imageToStore.getBytes();
+        if (iconBytes == null || imageToStore.getFilename() == null) {
+            throw new RuntimeException("Image must have bytes and name");
+        }
+        
+        // 1. build servedImageUrl, also used as "proxied" / cached inputUrl
+        String servedImageUrl = buildObjectIconImageVirtualUrl(objectId);
+        
+        // 2. make sure it is a 64x64 PNG (NB this will change in the future with more intelligent format detection / conversion)
+        if (!ensurePNG(iconBytes)) {
+            logger.error("Icon URL {} is not a PNG, returning default icon", servedImageUrl);
+            throw new RuntimeException("Image must be 64x64 PNG");
+        }
+        ImageFormat format = getFormat(iconBytes);
+        if (format == ImageFormat.INVALID) {
+            throw new RuntimeException("Invalid format of image for object " + objectId);
+        }
+        
+        Image image = imageRepository.findByUrl(servedImageUrl);
+        if (image == null) {
+            image = imageToStore; // new one
+            image.setId(UUID.randomUUID().toString());
+        }
+        
+        // 3. compute the hash and store the icon
+        image.setUrl(servedImageUrl); // servedImageUrl used as inputUrl, required in this collection, guarantees only one image per object
+        image.setImageFormat(format);
+        image.setFilename(imageToStore.getFilename()); //image.setFilename(ICONIMAGE_NAME);
+        image.setBytes(iconBytes);
+        image.setHash(getHash(iconBytes));
+        image.setDownloadedTime(DateTime.now());
+
+        imageRepository.save(image);
+        
+        return image;
+    }
+
+    /**
+     * 
+     * @param objectId of object whose icon we're trying to build the virtual URL
+     * @return URL that is unique for mongo, but not where this image will be served
+     */
+    private String buildObjectIconImageVirtualUrl(String objectId) {
+        return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
+                .path("/")
+                .path(OBJECTICONIMAGE_PATHELEMENT)
+                .path("/")
+                .path(objectId)
+                .path("/")
+                .path(ICONIMAGE_NAME) // .path(image.getFilename())
+                .build()
+                .toUriString();
+    }
+    
+    /**
+     * 
+     * @param image
+     * @return URL where this image will be served
+     */
+    public String buildImageServedUrl(Image image) {
+        return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
+                .path("/")
+                .path(image.getId())
+                .path("/")
+                .path(image.getFilename())
+                .build()
+                .toUriString();
+    }
 
     public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
+        
+        if (inputUrl != null && inputUrl.startsWith(baseImageUrl)) {
+            // Self-served (Portal object icon) image
+            return inputUrl;
+            // NB. could also allow to cache portal-served images besides POSTed ones (but for what need ?) :
+            /*if (!inputUrl.contains("objectIcon")) { // TODO better parse URI & startsWith
+                return inputUrl;
+            }
+            //throw new RuntimeException("Self-served (Portal object icon) image not found " + inputUrl);*/
+        }
 
         if (imageDownloadAttemptRepository.findByUrl(inputUrl) != null) {
             logger.debug("Image input URL {} is blacklisted, returning default icon", inputUrl);
@@ -64,7 +158,7 @@ public class ImageService {
         }
 
         Image image = imageRepository.findByUrl(inputUrl);
-
+        
         if (image == null || force) {
 
             // 1. download the icon
@@ -102,13 +196,7 @@ public class ImageService {
             image = imageRepository.save(image);
         }
 
-        return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
-                .path("/")
-                .path(image.getId())
-                .path("/")
-                .path(image.getFilename())
-                .build()
-                .toUriString();
+        return buildImageServedUrl(image);
     }
 
     public Image getImage(String id) {

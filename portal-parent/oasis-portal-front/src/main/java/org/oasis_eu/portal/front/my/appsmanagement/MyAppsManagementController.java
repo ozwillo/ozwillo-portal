@@ -27,7 +27,7 @@ public class MyAppsManagementController extends PortalController {
 
     private static List<String> i18keys = Arrays.asList(
             "none", "manage_users", "users", "settings", "name", "actions",
-            "settings-add-a-user", "description", "icon", "published", "notpublished", "services",
+            "settings-add-a-user", "description", "icon", "upload", "published", "notpublished", "services",
             "restricted-service");
 
     private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete");

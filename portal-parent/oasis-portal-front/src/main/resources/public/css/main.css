@@ -365,6 +365,23 @@ li.dashboard_template {
     background-color: #d9534f;
 }
 
+.btn.btn-default.btn-upload {
+	position: relative;
+	overflow: hidden;
+}
+.btn.btn-default.btn-upload input[type='file'] {
+	position: absolute;
+	top: 0;
+	right: 0;
+	margin: 0;
+	padding: 0;
+	font-size: 20px;
+	cursor: pointer;
+	opacity: 0;
+	filter: alpha(opacity=0);
+	width: 100%;
+}
+
 .navbar-noauth {
     background: #ffffff;
     border-bottom: 1px solid #ddd;

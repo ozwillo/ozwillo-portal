@@ -149,6 +149,12 @@ var FormField = React.createClass({
 });
 
 var ServiceSettings = React.createClass({
+    getInitialState: function() {
+        return {
+            service: this.props.service,
+            refreshedIconUrl: this.props.service.iconUrl
+        };
+    },
     handleChange: function(field, checkbox) {
         return function(event) {
             if (checkbox) {
@@ -164,6 +170,22 @@ var ServiceSettings = React.createClass({
     close: function() {
         this.refs.modal.close();
     },
+    updateUploadedIcon: function(servedImageUrlData) {
+        // for save :
+        this.props.update('icon', servedImageUrlData);
+        this.props.update('iconUrl', servedImageUrlData); // used to display icon in modal ; NOT using virtual URL
+        // for uploaded icon display :
+        var state = this.state;
+        //var virtualIconUrl = '/media/' + this.props.service.service.id + '/icon.png';
+        this.state.refreshedIconUrl = servedImageUrlData + '#' + new Date().getTime(); // refreshes (actually
+        // not required because different filenames, but could be if stayed the same ex. citizenkin.png or icon.png)
+        this.state.service.service.icon = servedImageUrlData; // the Kernel service's
+        this.state.service.iconUrl = servedImageUrlData; // not required, inited by server to the Kernel service's
+        this.setState(state);
+    },
+    /*clearIconImage: function() {
+        this.props.update('icon', '');
+    },*/
     render: function() {
         var iconClassName = "control-label col-sm-2";
         if ($.inArray("icon", this.props.errors) != -1) {
@@ -203,10 +225,21 @@ var ServiceSettings = React.createClass({
                     <div className="form-group">
                         <label htmlFor="icon" className={iconClassName}>{t('icon')}</label>
                         <div className="controls col-sm-1">
-                            <img src={this.props.service.iconUrl} />
+                            <img src={this.state.refreshedIconUrl} />
                         </div>
                         <div className="controls col-sm-9">
                             <input name="icon" type="text" id="icon" className="form-control" value={this.props.service.service.icon} onChange={this.handleChange('icon')}/>
+                        </div>
+                        {/* NO clearIcon feature yet, because can't get back the service original icon once overwritten
+                        LATER separate kernelService.defaultIcon from kernelService.icon ?
+                        <div className="controls col-sm-3">
+                            <button key="clearIcon" className="btn btn-default" onClick={this.clearIconImage}>{t('clearIcon')}</button>
+                        </div>*/}
+                        <div className="controls col-sm-9">
+                            <div className="form-control btn btn-default btn-upload">
+                                <label>{t('upload')}</label>
+                                <FileUploadInput className="upload" uploadUrl={"/media/objectIcon/" + this.props.service.service.id} success={this.updateUploadedIcon} />
+                            </div>
                         </div>
                     </div>
 
