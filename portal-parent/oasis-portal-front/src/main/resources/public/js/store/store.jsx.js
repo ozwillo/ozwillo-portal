@@ -951,14 +951,22 @@ var Select2Component = React.createClass({
     renderSelect2: function() {
         var placeholder = this.props.placeholder;
         var style = this.props.style;
-        //var { onChange, params, ...other } = this.props; // LATER when JSX spread attributes supported
         var select2 = React.renderComponent(
-            React.DOM.input(Object.assign({}, this.props)), // see https://github.com/react-bootstrap/react-bootstrap/issues/188
-            // <input { ...other } />,  // LATER when JSX spread attributes supported
+                React.DOM.input(React.__spread({}, this.props)), // React's polyfill for Object.assign()
+                // which is only supported in FF34+ #170, see also https://github.com/react-bootstrap/react-bootstrap/issues/188
+                this.refs['select2div'].getDOMNode()
+            );
+        /*
+        // Alternative using spread attributes :
+        // NB. this would work with JSX compiler, but not with JSXTransformer until this syntax
+        // is accepted by most browsers (else SyntaxError: invalid property id), which will
+        // only happen when EcmaScript7 is (Object spread attributes)
+        var { onChange, params, ...other } = this.props;
+        var select2 = React.renderComponent(
+            <input { ...other } />,
             this.refs['select2div'].getDOMNode()
-        );
+        );*/
         var $el = $(select2.getDOMNode());
-        //console.log($el);
         $el.select2(this.props.params);
         $el.on("change", this.props.onChange);
     },
