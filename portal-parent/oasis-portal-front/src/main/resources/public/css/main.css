@@ -171,6 +171,7 @@ ul.navbar-nav.oasis-nav {
 
 .navbar-brand {
     height: 76px;
+    padding-right: 8px;
 }
 
 .icon-bar {
@@ -397,7 +398,7 @@ li.dashboard_template {
 }
 
 .navbar-noauth * a.logo {
-    padding: 3px 15px 4px;
+    padding: 3px 10px 4px 15px;
 }
 
 .navbar-noauth * img {
@@ -613,7 +614,7 @@ footer, .push {
 .sitemap {
     width: 100%;
     background-color: #dfcae2;
-    padding: 10px 10%;
+    padding: 16px 10%;
 }
 
 .sitemap ul {
@@ -648,6 +649,7 @@ footer, .push {
 .sitemap p {
     font-size: 16px;
     color: #555;
+    margin: 16px 0;
 }
 
 .footer {
