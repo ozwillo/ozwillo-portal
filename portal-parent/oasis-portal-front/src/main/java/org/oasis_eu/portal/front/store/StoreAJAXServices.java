@@ -154,11 +154,11 @@ public class StoreAJAXServices {
     public void rate(@PathVariable String appType, @PathVariable String appId, @RequestBody RateRequest rateRequest) {
         ratingService.rate(appType, appId, rateRequest.rate);
     }
+    /** called by store to get organizations in which an app or service may be installed (org dropdown in the app modal) */
+    @RequestMapping(value = "/organizations/{appType}/{appId}", method = GET)
+    public List<UIOrganization> organizations(@PathVariable String appType, @PathVariable String appId) {
 
-    @RequestMapping(value = "/organizations/{appId}", method = GET)
-    public List<UIOrganization> organizations(@PathVariable String appId) {
-
-        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.APPLICATION);
+        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType.toUpperCase())); // #152 services can also be installed
         List<UIOrganization> organizations = networkService.getMyOrganizations();
 
 

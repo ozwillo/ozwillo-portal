@@ -98,10 +98,10 @@ var AppStore = React.createClass({
         if (!this.state.defaultApp) {
             return this.state.apps;
         }
-        return $.merge([ this.state.defaultApp ], $.map(this.state.apps, function(app, i){
+        return $.merge([ this.state.defaultApp ], $.map(this.state.apps, function(app, i) {
             if(app.id == this.state.defaultApp.id) return;
             return app;
-        }));
+        }.bind(this)));
     },
     updateApps: function (target_citizens, target_publicbodies, target_companies, paid, free) {
         if (default_app) {
@@ -133,7 +133,7 @@ var AppStore = React.createClass({
         var geographicalAreas = $(this.refs.sideBar.refs.searchDiv.getDOMNode()).find(".select2-container").select2('data');
         $.map(geographicalAreas, function(area, i) {
             geographicalAreaUris.push(area.uri);
-        });
+        }.bind(this));
         //var searchText = '';
         var searchText = $(this.refs.sideBar.refs.searchDiv.getDOMNode()).find("input.select2-input").val();
         var queryParams = {target_citizens: target_citizens, target_publicbodies: target_publicbodies, target_companies: target_companies,
@@ -297,7 +297,7 @@ var SideBar = React.createClass({
         var actualSelect2Params = params; // JSON.parse(JSON.stringify(params)); // NO mangles REST conf
         actualSelect2Params.initSelection = function(element, callback) {
             callback(this.state.geographicalAreaUris);
-        }; // NO doesn't work
+        }.bind(this); // NO doesn't work
         var languageComponents = this.props.languages.map(function(language, i) {
             return (
                 <li><a onClick={this.handleLanguageClicked.bind(this, language)} href="#">{ t(language) }</a></li>
@@ -367,7 +367,7 @@ var AppList = React.createClass({
             return (
                 <App key={app.id} app={app} />
                 );
-        });
+        }.bind(this));
 
 
         return (
@@ -493,7 +493,7 @@ var AppModal = React.createClass({
     componentDidMount: function () {
         $(this.refs.modal.getDOMNode()).on("hide.bs.modal", function (event) {
             history.pushState({}, "store", store_root);
-        });
+        }.bind(this));
     },
     loadApp: function () {
 
@@ -513,7 +513,7 @@ var AppModal = React.createClass({
     },
     loadOrgs: function () {
         $.ajax({
-            url: store_service + "/organizations/" + this.props.app.id,
+            url: store_service + "/organizations/" + this.props.app.type + "/" + this.props.app.id,
             type: 'get',
             dataType: 'json',
             success: function (data) {
