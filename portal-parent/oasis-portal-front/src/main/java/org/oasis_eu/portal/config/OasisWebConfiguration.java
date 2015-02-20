@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.config;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.EnumSet;
 
 import javax.servlet.DispatcherType;
@@ -15,6 +16,7 @@ import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletCont
 import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
 import org.springframework.boot.context.embedded.MimeMappings;
 import org.springframework.boot.context.embedded.ServletContextInitializer;
+import org.springframework.boot.context.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +30,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
 import org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect;
 
 import ch.qos.logback.access.tomcat.LogbackValve;
+import de.javakaffee.web.msm.MemcachedBackupSessionManager;
 
 /**
  * User: schambon
@@ -96,14 +99,15 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
                 logger.info("Customizing Tomcat container");
 
                 TomcatEmbeddedServletContainerFactory containerFactory = (TomcatEmbeddedServletContainerFactory) factory;
-                containerFactory.setTomcatContextCustomizers(Arrays.asList(context -> {
+                TomcatContextCustomizer tomcatContextCustomizer = context -> {
                     context.setSessionTimeout(30);
                     context.setManager(new MemcachedBackupSessionManager() {{
                         setMemcachedNodes(nodes);
                         setFailoverNodes(failover);
                         setRequestUriIgnorePattern(".*\\.(ico|png|gif|jpg|css|js)$");
                     }});
-                }));
+                };
+                containerFactory.setTomcatContextCustomizers(Arrays.asList(tomcatContextCustomizer));
 
                 if (new File("./config/logback-access.xml").exists()) {
                     LogbackValve accessLogValve = new LogbackValve();
