@@ -23,13 +23,20 @@ public class UIOrganizationMember {
     public void setId(String id) {
         this.id = id;
     }
-
+    /** BEWARE may be null with old accounts before user nickname was required #171 */
     public String getName() {
         return name;
     }
 
     public void setName(String name) {
         this.name = name;
+    }
+    /**
+     * @return name or, if null, id ; so NetworkService.toUIOrganization() can order old accounts
+     * before nickname was required #171
+     */
+    public String getNonNullName() {
+        return name == null ? id : name;
     }
 
     public boolean isAdmin() {
