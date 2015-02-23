@@ -101,6 +101,14 @@ div.indicator {
     color: #ffffff;
 }
 
+.locale-filter {
+    margin-bottom: 12px;
+}
+
+.locale-filter > .btn-group {
+    margin-left: 12px;
+}
+
 div#apppage {
     background-color: #ffffff;
     opacity: 1;
