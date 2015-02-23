@@ -29,7 +29,7 @@ var MyApps = React.createClass({
         }
         var auths = this.state.authorities.map(function (auth) {
             return (
-                <Authority name={auth.name} key={auth.id} openByDefault={auth.type == 'INDIVIDUAL'}/>
+                <Authority name={auth.name} key={auth.id} id={auth.id} openByDefault={auth.type == 'INDIVIDUAL'}/>
                 );
         });
         return (
@@ -52,7 +52,7 @@ var Authority = React.createClass({
     render: function () {
         var content;
         if (this.state.open) {
-            content = <InstanceList id={this.props.key} name={this.props.name} authority={this.props.key}/>;
+            content = <InstanceList id={this.props.id} name={this.props.name} authority={this.props.id}/>;
         } else {
             content = null;
         }
@@ -127,7 +127,7 @@ var InstanceList = React.createClass({
         var authority = this.props.authority;
         var reload = this.reloadInstances;
         var result = instances.length != 0 ? instances.map(function (instance) {
-            return <Instance key={instance.id} instance={instance} authority={authority} reload={reload}/>;
+            return <Instance key={instance.id} id={instance.id} instance={instance} authority={authority} reload={reload}/>;
         }) : (
             <div className="text-center">
                 <span>{t('none')} </span>
@@ -152,24 +152,24 @@ var Instance = React.createClass({
     saveUsers: function () {
         this.refs.manageUsers.close();
         $.ajax({
-            url: apps_service + "/users/instance/" + this.props.key,
+            url: apps_service + "/users/instance/" + this.props.id,
             dataType: 'json',
             contentType: 'application/json',
             type: 'post',
             data: JSON.stringify(this.refs.users.getSelectedUsers()),
             error: function (xhr, status, err) {
-                console.error(apps_service + "/users/instance/" + this.props.key, status, err.toString());
+                console.error(apps_service + "/users/instance/" + this.props.id, status, err.toString());
             }.bind(this)
         });
     },
     loadUsers: function (callback, error) {
         $.ajax({
-            url: apps_service + "/users/instance/" + this.props.key,
+            url: apps_service + "/users/instance/" + this.props.id,
             dataType: 'json',
             method: 'get',
             success: callback,
             error: function (xhr, status, err) {
-                console.error(apps_service + "/users/instance/" + this.props.key, status, err.toString());
+                console.error(apps_service + "/users/instance/" + this.props.id, status, err.toString());
                 if (error != undefined) {
                     error();
                 }
@@ -192,7 +192,7 @@ var Instance = React.createClass({
     },
     deprovision: function () {
         $.ajax({
-            url: apps_service + "/deprovision/" + this.props.key,
+            url: apps_service + "/deprovision/" + this.props.id,
             type: 'post',
             success: function () {
                 this.props.reload();
@@ -212,7 +212,7 @@ var Instance = React.createClass({
             );
         }
         
-        var instance = this.props.key;
+        var instance = this.props.id;
         var services = this.props.instance.services.map(function (service) {
             return <Service key={service.service.id} service={service} instance={instance}/>;
         });
