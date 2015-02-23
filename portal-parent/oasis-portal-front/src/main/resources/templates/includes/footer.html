@@ -2,26 +2,28 @@
     <div class="sitemap">
         <div class="row">
             <div class="col-sm-6 col-xs-12 text-center">
-                <h1>Oasis</h1>
-
-                <p data-th-text="#{footer.tagline}">A platform interactive services for a data common good</p>
+                <img src="/img/logo-xl.png" alt="Ozwillo"/>
+                <p>
+                    <span data-th-text="#{footer.tagline1}">A platform interactive services</span><br/>
+                    <span data-th-text="#{footer.tagline2}">for a data common good</span>
+                </p>
+                <p>
+                    <a href="https://www.ozwillo.com/en/oz/projects">
+                        <img src="/img/icons/CIP.png" alt="CIP" title="Competitiveness and Innovation Framework Programme"/>
+                    </a>
+                    <a href="https://www.ozwillo.com/en/oz/projects">
+                        <img src="/img/icons/EU.png" alt="EU" title="European funded OASIS project"/>
+                    </a>
+                    <a href="https://www.ozwillo.com/en/oz/projects">
+                        <img src="/img/icons/PIA.png" alt="PIA" title="Programme d'investissements d'avenir"/>
+                    </a>
+                </p>
             </div>
             <div class="col-sm-2 col-xs-4" data-th-each="col: ${sitemap}">
                 <ul>
                     <li data-th-each="entry: ${col}"><a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
                     </li>
                 </ul>
-            </div>
-        </div>
-    </div>
-    <div class="footer">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6 col-md-offset-3">
-                    <img src="/img/icons/eu.png" class="pull-left"/>
-
-                    <p data-th-text="#{footer.eu}">OASIS is a project cofunded by the EU under the Program for Competitiveness and Innovation CIP ICT PSP- N°297210</p>
-                </div>
             </div>
         </div>
     </div>
@@ -40,12 +42,12 @@
     <!-- pingdom -->
     <script>
         var _prum = [
-            ['id', '53f5ac5cabe53d4f619d2936'],
+            ['id', '54d88b12abe53d0e766aa318'],
             ['mark', 'firstbyte', (new Date()).getTime()]
         ];
-        (function () {
+        (function() {
             var s = document.getElementsByTagName('script')[0]
-                    , p = document.createElement('script');
+                , p = document.createElement('script');
             p.async = 'async';
             p.src = '//rum-static.pingdom.net/prum.min.js';
             s.parentNode.insertBefore(p, s);
@@ -57,23 +59,19 @@
     <script type="text/javascript">
         var _paq = _paq || [];
         _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-        _paq.push(["setCookieDomain", "*.portal.oasis-eu.org"]);
-        _paq.push(["setDomains", ["*.portal.oasis-eu.org"]]);
+        _paq.push(["setCookieDomain", "*.portal.ozwillo.com"]);
+        _paq.push(["setDomains", ["*.portal.ozwillo.com"]]);
         _paq.push(['trackPageView']);
         _paq.push(['enableLinkTracking']);
-        (function () {
-            var u = (("https:" == document.location.protocol) ? "https" : "http") + "://oasis.piwikpro.com/";
-            _paq.push(['setTrackerUrl', u + 'piwik.php']);
-            _paq.push(['setSiteId', 40]);
-            var d = document, g = d.createElement('script'), s = d.getElementsByTagName('script')[0];
-            g.type = 'text/javascript';
-            g.defer = true;
-            g.async = true;
-            g.src = u + 'piwik.js';
-            s.parentNode.insertBefore(g, s);
+        (function() {
+            var u="//oasis.piwikpro.com/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', 69]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
         })();
     </script>
-    <noscript><p><img src="https://oasis.piwikpro.com/piwik.php?idsite=40" style="border:0;" alt=""/></p></noscript>
+    <noscript><p><img src="//oasis.piwikpro.com/piwik.php?idsite=69" style="border:0;" alt="" /></p></noscript>
     <!-- End Piwik Code -->
 
 

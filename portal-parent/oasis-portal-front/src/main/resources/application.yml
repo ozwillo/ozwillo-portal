@@ -40,7 +40,7 @@ application:
 web:
   home: https://www.ozwillo-dev.eu
   sitemap:
-      url: https://www.oasis-eu.org/footer.xml
+      url: https://www.ozwillo.com/footer.xml
       refresh: 0 */15 * ? * *
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
