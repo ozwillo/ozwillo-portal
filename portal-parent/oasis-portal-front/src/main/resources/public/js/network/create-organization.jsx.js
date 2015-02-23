@@ -151,7 +151,7 @@ var CreateOrganizationForm = React.createClass({
                     <input type="text" className="form-control" value={this.state.organization.name} onChange={this.changeInput('name')} placeholder={t('organization-name')}/>
                 </div>
                 {this.renderType()}
-                <div className="form-group">
+                <div className="form-group" style={ (!devmode) ? { display: "none" } : {}}>
                     <label htmlFor="organization-territory_id" className={nameClassName}>{t('ui.location')}</label>
                     <GeoSingleSelect2Component className="form-control" ref="territoryId" onChange={this.changeInput('territory_id')} name="organization-territory_id" />
                 </div>

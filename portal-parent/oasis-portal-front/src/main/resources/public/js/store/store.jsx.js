@@ -255,7 +255,7 @@ var SideBar = React.createClass({
                 <label htmlFor="geoSearch" className="">{t('look-for-an-application')}</label>
                 </div>
                 
-                <div className="col-lg-13">
+                <div className="col-lg-13" style={ (!devmode) ? { display: "none" } : {}}>
                 
                 <div>
                     <GeoMultiSelect2Component className="form-control" ref="geoSearch" onChange={this.search} name="geoSearch" />
