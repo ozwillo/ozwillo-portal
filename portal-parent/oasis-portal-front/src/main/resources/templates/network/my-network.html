@@ -90,7 +90,8 @@
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 </th-block>
 <script src="../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
-<script src="http://fb.me/react-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/react.min.js}"></script>
+<script src="http://fb.me/react-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/react.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/webjars/react/0.12.2/react.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script src="http://fb.me/JSXTransformer-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/JSXTransformer.js}" data-th-if="${devmode}"></script>
 
 <script data-th-inline="javascript" type="text/javascript">

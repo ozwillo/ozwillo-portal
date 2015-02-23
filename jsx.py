@@ -3,7 +3,7 @@
 # Usage of compiled / minified JS is turned on with the "devmode" flag in the Portal
 # Note that this requires Node and the following two NPM modules:
 # - jsx
-# - uglify-js (installed with npm install uglifyjs -g to provide the command line wrapper)
+# - uglify-js (installed with npm install uglify-js -g to provide the command line wrapper)
 
 import os
 import re
