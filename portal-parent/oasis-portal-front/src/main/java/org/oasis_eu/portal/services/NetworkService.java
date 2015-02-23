@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.services;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -80,8 +81,7 @@ public class NetworkService {
 
         Organization organization = organizationStore.find(organizationId);
         if (organization != null) {
-            org.setType(organization.getType());
-            org.setTerritoryId(organization.getTerritoryId());
+            fillUIOrganization(org, organization);
         } else {
             return null;
         }
@@ -107,6 +107,16 @@ public class NetworkService {
         }
 
         return org;
+    }
+
+    private void fillUIOrganization(UIOrganization uiOrg, Organization organization) {
+        uiOrg.setId(organization.getId());
+        uiOrg.setName(organization.getName()); // TODO ??
+        uiOrg.setType(organization.getType());
+        if (organization.getTerritoryId() != null) {
+            uiOrg.setTerritoryId(organization.getTerritoryId());
+            uiOrg.setTerritoryLabel(String.valueOf(organization.getTerritoryId())); // TODO if any get label from cache with user locale (?????????!!!!!!!!!!!!!!!!)
+        }
     }
 
     /**
@@ -139,6 +149,7 @@ public class NetworkService {
         if (shouldUpdateOrg(uiOrganization, org)) {
             org.setName(uiOrganization.getName());
             org.setType(uiOrganization.getType() != null ? uiOrganization.getType() : OrganizationType.PUBLIC_BODY);
+            org.setTerritoryId(uiOrganization.getTerritoryId());
 
             organizationStore.update(org);
         }
@@ -273,19 +284,18 @@ public class NetworkService {
                 .forEach(userMembership -> userDirectory.removeMembership(userMembership, userInfoService.currentUser().getUserId()));
     }
 
-    public UIOrganization createOrganization(String name, String type) {
+    public UIOrganization createOrganization(String name, String type, URI territoryId) {
         logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type, userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
 
         Organization org = new Organization();
         org.setName(name);
-        org.setType(OrganizationType.valueOf(type));  // throws an IllegalArgumentException if the type isn't provided
+        org.setType(OrganizationType.valueOf(type)); // throws an IllegalArgumentException if the type isn't provided
+        org.setTerritoryId(territoryId); // TODO LATER throws an IllegalArgumentException if the type isn't provided
 
         org = organizationStore.create(org);
 
         UIOrganization result = new UIOrganization();
-        result.setId(org.getId());
-        result.setType(org.getType());
-        result.setName(org.getName());
+        fillUIOrganization(result, org);
         result.setAdmin(true);
         result.setMembers(Collections.emptyList());
 

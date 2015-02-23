@@ -29,6 +29,8 @@ public class UIOrganization {
     OrganizationType type;
     @JsonProperty("territory_id")
     URI territoryId;
+    @JsonProperty("territory_label")
+    String territoryLabel;
 
     @JsonProperty
     boolean admin;
@@ -82,6 +84,14 @@ public class UIOrganization {
 
     public void setTerritoryId(URI territoryId) {
         this.territoryId = territoryId;
+    }
+
+    public String getTerritoryLabel() {
+        return territoryLabel;
+    }
+
+    public void setTerritoryLabel(String territoryLabel) {
+        this.territoryLabel = territoryLabel;
     }
 
     @Override

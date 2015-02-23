@@ -1,6 +1,15 @@
 package org.oasis_eu.portal.front.my.network;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+import java.net.URI;
+import java.util.List;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
+
 import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
@@ -12,13 +21,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import java.util.List;
-
-import static org.springframework.web.bind.annotation.RequestMethod.*;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -72,9 +82,11 @@ public class NetworkAJAXServices {
 
     @RequestMapping(value = "/create-organization", method = POST)
     public UIOrganization createOrganization(@RequestBody CreateOrganizationRequest createOrganizationRequest) {
-        logger.debug("Creating organization {} of type {}", createOrganizationRequest.name, createOrganizationRequest.type);
+        logger.debug("Creating organization {} of type {}", createOrganizationRequest.name,
+                createOrganizationRequest.type, createOrganizationRequest.territoryId);
 
-        return networkService.createOrganization(createOrganizationRequest.name, createOrganizationRequest.type);
+        return networkService.createOrganization(createOrganizationRequest.name,
+                createOrganizationRequest.type, createOrganizationRequest.territoryId);
 
     }
 
@@ -124,5 +136,9 @@ public class NetworkAJAXServices {
         @NotNull
         @NotEmpty
         String type;
+        @JsonProperty("territory_id")
+        //@NotNull // TODO
+        //@NotEmpty // TODO
+        URI territoryId;
     }
 }

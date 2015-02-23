@@ -45,7 +45,7 @@ var CreateOrganizationForm = React.createClass({
                 type = "COMPANY";
             }
         }
-        return {organization: {name: '', type: type}, errors: [], saving: false};
+        return {organization: {name: '', type: type, territory_id: null}, errors: [], saving: false};
     },
     saveOrganization: function (event) {
         if (event) {
@@ -151,11 +151,11 @@ var CreateOrganizationForm = React.createClass({
                     <input type="text" className="form-control" value={this.state.organization.name} onChange={this.changeInput('name')} placeholder={t('organization-name')}/>
                 </div>
                 {this.renderType()}
-                {errorMessage}
                 <div className="form-group">
-                    <label htmlFor="organization-territory_id" className={nameClassName}>{t('organization-territory_id')}</label>
-                    <input type="text" className="form-control" value={this.state.organization.name} onChange={this.changeInput('territory_id')} placeholder={t('organization-territory_id')}/>
+                    <label htmlFor="organization-territory_id" className={nameClassName}>{t('ui.location')}</label>
+                    <GeoSingleSelect2Component className="form-control" ref="territoryId" onChange={this.changeInput('territory_id')} name="organization-territory_id" />
                 </div>
+                {errorMessage}
             </form>
             );
     }

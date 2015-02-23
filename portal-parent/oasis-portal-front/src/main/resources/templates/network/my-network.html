@@ -95,11 +95,17 @@
 
 <script data-th-inline="javascript" type="text/javascript">
     var network_service = /*[[@{/my/api/network}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
+    var store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
     var messages = /*[[${i18n}]]*/ {};
     var devmode = /*[[${devmode}]]*/ false;
 </script>
 
 <script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
+
+<script type="text/jsx" src="../../public/js/util/portal-util-react.jsx.js"
+        data-th-src="@{/js/util/portal-util-react.jsx.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/util/portal-util-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
+
 <script type="text/jsx" src="../../public/js/util/bootstrap-react.jsx.js" data-th-src="@{/js/util/bootstrap-react.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/util/bootstrap-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
 

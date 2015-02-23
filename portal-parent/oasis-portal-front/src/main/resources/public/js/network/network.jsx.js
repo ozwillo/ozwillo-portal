@@ -417,10 +417,14 @@ var InformationDialog = React.createClass({
         this.refs.modal.open();
     },
     render: function() {
+        var territoryId = (this.props.org.territory_id) ? (
+                <p>{t('ui.location')} : {this.props.org.territory_label}</p>
+        ) : '';
         return (
             <Modal ref="modal" infobox={true} buttonLabels={{'ok': t('ui.close')}} title={t('information')}>
                 <h4>{this.props.org.name}</h4>
                 <p>{t('organization-type.' + this.props.org.type)}</p>
+                {territoryId}
             </Modal>
             );
     }
