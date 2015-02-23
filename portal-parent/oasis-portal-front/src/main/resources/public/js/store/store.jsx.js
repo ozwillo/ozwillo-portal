@@ -239,14 +239,16 @@ var SideBar = React.createClass({
                 <h2>
                     <img src={image_root + "my/app-store.png"} /> {t('ui.appstore')}</h2>
 
-                <div className="btn-group">
-                <button type="button" className="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                    <span>{ t(this.state.selectedLanguage) }</span>
-                    <span className="caret"></span>
-                </button>
-                <ul className="dropdown-menu" role="menu">
-                    { languageComponents }
-                </ul>
+                <div className="locale-filter">
+                    <span>{t('languages-supported-by-applications')}</span>
+                    <div className="btn-group">
+                        <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                            <span>{ t(this.state.selectedLanguage) }</span> <span className="caret"></span>
+                        </button>
+                        <ul className="dropdown-menu" role="menu">
+                            { languageComponents }
+                        </ul>
+                    </div>
                 </div>
                 
                 <div>
