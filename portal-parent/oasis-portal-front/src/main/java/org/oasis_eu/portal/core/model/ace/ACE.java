@@ -30,6 +30,10 @@ public class ACE {
     private String creatorId;
     @JsonProperty("creator_name")
     private String creatorName;
+    @JsonProperty("app_admin")
+    private boolean appAdmin = false; // #157 Delete and re-add a service icon to my desk K#90
+    @JsonProperty("app_user")
+    private boolean appUser = false; // #157 Delete and re-add a service icon to my desk K#90
 
     @JsonAnySetter
     public void anySetter(String key, String value) {
@@ -98,5 +102,21 @@ public class ACE {
 
     public void setCreatorName(String creatorName) {
         this.creatorName = creatorName;
+    }
+
+    public boolean isAppAdmin() {
+        return appAdmin;
+    }
+
+    public void setAppAdmin(boolean appAdmin) {
+        this.appAdmin = appAdmin;
+    }
+
+    public boolean isAppUser() {
+        return appUser;
+    }
+
+    public void setAppUser(boolean appUser) {
+        this.appUser = appUser;
     }
 }
