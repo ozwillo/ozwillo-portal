@@ -32,7 +32,7 @@ public class NetworkController extends PortalController {
 
     private static List<String> i18keys = Arrays.asList("find-or-create-organization", "information", "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave", "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create");
 
-    private static List<String> generickeys = Arrays.asList("save", "cancel", "close", "loading", "go", "general-error", "edit", "remove");
+    private static List<String> generickeys = Arrays.asList("save", "cancel", "close", "loading", "go", "general-error", "edit", "remove", "location");
 
     @Autowired
     private MessageSource messageSource;

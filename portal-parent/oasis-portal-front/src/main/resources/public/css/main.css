@@ -383,6 +383,15 @@ li.dashboard_template {
 	width: 100%;
 }
 
+.btn-search {
+    background-image: url('/img/icon/btn-search.png');
+    background-repeat: no-repeat;
+    left: -23px;
+    top: 7px;
+    width: 18px;
+    height: 18px;
+}
+
 .navbar-noauth {
     background: #ffffff;
     border-bottom: 1px solid #ddd;
