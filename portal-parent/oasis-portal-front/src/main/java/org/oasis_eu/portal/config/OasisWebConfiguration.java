@@ -48,7 +48,7 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
     @Value("${ha.nodes:}")   private String  nodes;            // memcached nodes eg n1:oasis-portal-1:11211,n2:oasis-portal-2:11211
     @Value("${ha.failover:}") private String  failover;         // failover node, should be the node corresponding to localhost
     
-    @Value("${web.maxUploadSize:5000}") private int maxUploadSize; // only for 64x64 pngs which should be mostly below 2000B
+    @Value("${web.maxUploadSize:20000}") private int maxUploadSize; // only for 64x64 pngs which should be mostly below 2000B
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {

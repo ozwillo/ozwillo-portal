@@ -44,8 +44,8 @@ web:
       refresh: 0 */15 * ? * *
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
-  # only for 64x64 pngs which should be mostly below 2000B
-  maxUploadSize: 5000
+  # only for 64x64 pngs which should be mostly below 5000B
+  maxUploadSize: 20000
 
 kernel:
   base_uri: https://oasis-demo.atolcd.com
