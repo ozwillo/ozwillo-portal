@@ -47,6 +47,11 @@ web:
   # only for 64x64 pngs which should be mostly below 5000B
   maxUploadSize: 20000
 
+rest:
+  # by default uses mere HttpURLConnection, better : https://jira.spring.io/browse/ANDROID-54 http://stackoverflow.com/questions/25698072/simpleclienthttprequestfactory-vs-httpcomponentsclienthttprequestfactory-for-htt
+  # instead of using Apache HTTPComponents Client (would require specific conf for enabling SNI, which should be possible since 4.3.2)
+  revertToApacheHttpComponentsClient: false
+
 kernel:
   base_uri: https://oasis-demo.atolcd.com
   alt_uri: ${kernel.base_uri}
@@ -67,7 +72,8 @@ kernel:
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: 7706ded0-afe4-4826-9df1-ce03782b893d
   client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
-  scopes_to_require: openid profile email address phone
+  # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
+  scopes_to_require: openid profile email address phone datacore
 
   portal_endpoints:
     subscriptions: ${kernel.base_uri}/apps/subscriptions
