@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.config;
 
+import java.util.Arrays;
+
 import org.oasis_eu.spring.config.OasisSecurityConfiguration;
 import org.oasis_eu.spring.kernel.security.OasisAuthenticationFilter;
 import org.oasis_eu.spring.kernel.security.OpenIdCConfiguration;
@@ -11,8 +13,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-
-import java.util.Arrays;
 
 /**
  * User: schambon
@@ -51,8 +51,9 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers("/my/**").authenticated()
                 .anyRequest().permitAll().and()
-                .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class)
-                .addFilterAfter(oasisExceptionTranslationFilter(authenticationEntryPoint()), ExceptionTranslationFilter.class);
+                .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);
         }
+        http
+            .addFilterAfter(oasisExceptionTranslationFilter(authenticationEntryPoint()), ExceptionTranslationFilter.class);
     }
 }
