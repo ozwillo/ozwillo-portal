@@ -7,6 +7,7 @@ import java.util.EnumSet;
 import javax.servlet.DispatcherType;
 import javax.servlet.ServletContext;
 
+import org.oasis_eu.spring.kernel.rest.ResponseProviderInterceptor;
 import org.oasis_eu.spring.kernel.security.TokenRefreshInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -54,6 +55,7 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new OasisLocaleInterceptor());
         registry.addInterceptor(tokenRefreshInterceptor());
+        registry.addInterceptor(new ResponseProviderInterceptor()); // provides HTTP response as request attribute
     }
 
     @Bean

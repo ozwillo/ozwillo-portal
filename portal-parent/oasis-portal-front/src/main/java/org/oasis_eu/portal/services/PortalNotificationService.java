@@ -71,18 +71,25 @@ public class PortalNotificationService {
                 .map(n -> {
                     UserNotification notif = new UserNotification();
                     CatalogEntry service = null;
+                    
                     if (n.getServiceId() != null) {
                         service = catalogStore.findService(n.getServiceId());
+                        if (service == null) {
+                            return null; // skip deleted service, probable (?) companion case to #179 Bug with notifications referring destroyed app instances
+                            // TODO LATER keep service but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
+                        }
                         notif.setAppName(service != null ? service.getName(locale) : "");
+                        
                     } else if (n.getInstanceId() != null) {
                         ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
-                        if (instance != null) {
-                            CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
-                            notif.setAppName(application != null ? application.getName(locale) : "");
-                        } else {
-                            notif.setAppName("");
+                        if (instance == null) {
+                            return null; // skip deleted app instance (rather than displaying no name), see #179 Bug with notifications referring destroyed app instances
+                            // TODO LATER keep app instance but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
                         }
+                        CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
+                        notif.setAppName(application != null ? application.getName(locale) : "");
                     }
+                    
                     notif.setDate(n.getTime());
                     notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
 

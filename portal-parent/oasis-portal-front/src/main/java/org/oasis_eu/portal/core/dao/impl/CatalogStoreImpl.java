@@ -39,7 +39,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -137,17 +136,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
     private CatalogEntry getCatalogEntry(String id, String endpoint) {
 
-        ResponseEntity<CatalogEntry> response = kernel.getForEntity(endpoint, CatalogEntry.class, userIfExists(), id);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return response.getBody();
-        } else if (response.getStatusCode().is4xxClientError()) {
-            logger.warn("Cannot find catalog entry {} through endpoint {}", id, endpoint);
-            return null;
-        } else {
-            throw new HttpClientErrorException(response.getStatusCode(), response.getStatusCode().getReasonPhrase());
-        }
-
+        return kernel.getEntityOrNull(endpoint, CatalogEntry.class, userIfExists(), id);
     }
 
     @Override
