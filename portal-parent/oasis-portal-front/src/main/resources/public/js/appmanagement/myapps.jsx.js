@@ -28,8 +28,9 @@ var MyApps = React.createClass({
                 <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>;
         }
         var auths = this.state.authorities.map(function (auth) {
+            var openByDefault = false; // #143, before was auth.type == 'INDIVIDUAL';
             return (
-                <Authority name={auth.name} key={auth.id} id={auth.id} openByDefault={auth.type == 'INDIVIDUAL'}/>
+                <Authority name={auth.name} key={auth.id} id={auth.id} openByDefault={openByDefault}/>
                 );
         });
         return (
