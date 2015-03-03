@@ -148,7 +148,7 @@ var AppStore = React.createClass({
         //else {
             var languagesAndAll = JSON.parse(JSON.stringify(languages));
             languagesAndAll.unshift('all');
-            var initialSelectedLanguage = 'all'; // LATER currentLanguage;
+            var initialSelectedLanguage = currentLanguage; // filled by PortalController from Profile's if any else 'en'
             return (
                 <div>
                     <div className="row">
