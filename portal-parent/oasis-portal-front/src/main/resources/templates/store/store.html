@@ -96,8 +96,8 @@
 <script src="http://fb.me/JSXTransformer-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/JSXTransformer.js}"
         data-th-if="${devmode}"></script>
 
-<script data-th-src="@{/webjars/showdown/0.3.1/src/showdown.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/webjars/showdown/0.3.1/compressed/showdown.js}" data-th-if="${!devmode}"></script>/*/-->
+<script data-th-src="@{/webjars/showdown/0.3.1/src/showdown.js}"></script>
+<!-- BEWARE table.js is NOT minified in webjar and doesn't work with minified showdown (/webjars/showdown/0.3.1/compressed/showdown.js) -->
 <script data-th-src="@{/webjars/showdown/0.3.1/src/extensions/table.js}"></script>
 
 
