@@ -38,7 +38,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     @Autowired
     private Kernel kernel;
 
-    @Value("${kernel.portal_endpoints.subscriptions}")
+    @Value("${kernel.portal_endpoints.subscriptions}") // .../apps/subscriptions
     private String endpoint;
 
     @Autowired
@@ -116,11 +116,10 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             installedStatusRepository.delete(status);
         }
 
-
-        List<Subscription> subs = findByUserId(userId);
-
-
-        subs.stream().filter(s -> s.getServiceId().equals(serviceId) && s.getSubscriptionType().equals(subscriptionType))
+        List<Subscription> subs = findByServiceId(serviceId); // and NOT findByUserId() else 403 Forbidden for an other user than oneself even if admin
+        subs.stream()
+                .filter(s -> s.getSubscriptionType().equals(subscriptionType)
+                        && s.getUserId().equals(userId)) // NB. s.getServiceId() is obligatorily right (even if it is actually null !)
                 .forEach(s -> { // forEach... but there should only be one...
                     HttpHeaders headers = new HttpHeaders();
                     headers.add("If-Match", s.getSubscriptionEtag());
