@@ -126,17 +126,26 @@ public class PortalAppManagementService {
         return catalogStore.fetchAndUpdateService(serviceId, entry);
     }
 
+    /**
+     * 
+     * @param serviceId
+     * @return users (including some that are app_admin)
+     */
     public List<User> getSubscribedUsersOfService(String serviceId) {
-
         return subscriptionStore.findByServiceId(serviceId)
                 .stream()
                 .map(s -> new User(s.getUserId(), s.getUserName(), false))
                 .collect(Collectors.toList());
-
-
     }
 
 
+    /**
+     * Used to save subscriptions but also to pushToDashboard
+     * (only new subscriptions are pushed to dashboard, so to push to dashboard
+     * an existing one it must be removed in a first step)
+     * @param serviceId
+     * @param usersToSubscribe (including some that are app_admin) 
+     */
     public void updateSubscriptions(String serviceId, Set<String> usersToSubscribe) {
         if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(catalogStore.findService(serviceId).getInstanceId()).getProviderId())) {
             throw new AccessDeniedException("Unauthorized access");
@@ -166,10 +175,17 @@ public class PortalAppManagementService {
         users.forEach(u -> subscriptionStore.unsubscribe(u, serviceId, SubscriptionType.ORGANIZATION));
     }
 
-    public List<User> getAppUsers(String instanceId) {
+    /**
+     * used by MyAppsAJAXServices.getUsersForInstance() which is used by UI UserPickers
+     * to load app users (with !appAdmin) or to query service users (with appAdmin)
+     * @param instanceId
+     * @param appAdmin 
+     * @return users i.e. app_user (including if app_admin see #157)
+     */
+    public List<User> getAppUsers(String instanceId, boolean appAdmin) {
         return instanceACLStore.getACL(instanceId)
                 .stream()
-                .filter(ace -> !ace.isAppAdmin()) // #157 Delete and re-add a service icon to my desk K#90
+                .filter(ace -> ace.isAppUser() || appAdmin && ace.isAppAdmin()) // #157 Delete and re-add a service icon to my desk K#90
                 .map(ace -> new User(ace.getUserId(), ace.getUserName(), false))
                 .collect(Collectors.toList());
     }

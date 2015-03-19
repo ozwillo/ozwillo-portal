@@ -31,7 +31,7 @@ public class ACE {
     @JsonProperty("creator_name")
     private String creatorName;
     @JsonProperty("app_admin")
-    private boolean appAdmin = false; // #157 Delete and re-add a service icon to my desk K#90
+    private boolean appAdmin = false; // for now Kernel deduces it from orga admin #157 Delete and re-add a service icon to my desk K#90
     @JsonProperty("app_user")
     private boolean appUser = false; // #157 Delete and re-add a service icon to my desk K#90
 

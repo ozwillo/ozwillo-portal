@@ -95,7 +95,7 @@ var Service = React.createClass({
     },
     queryUsers: function(query, callback) {
         $.ajax({
-            url: apps_service + "/users/instance/" + this.props.instance + "?q=" + query,
+            url: apps_service + "/users/instance/" + this.props.instance + "?app_admin=true&q=" + query, // also app_admin !app_user users
             dataType:"json",
             type:'get',
             success:callback,
@@ -121,6 +121,7 @@ var Service = React.createClass({
                 <div className="col-sm-2">{links}</div>
                 <ServiceSettings ref="settings" service={this.state.service} errors={this.state.field_errors} update={this.updateServiceLocally} save={this.saveService}/>
                 <Modal title={t('users')} ref="pushToDash" successHandler={this.savePushToDash}>
+                    <div>{t('push-to-dashboard-existing-user')}</div>
                     <UserPicker ref="users" users={this.loadUsers} source={this.queryUsers} />
                 </Modal>
             </div>

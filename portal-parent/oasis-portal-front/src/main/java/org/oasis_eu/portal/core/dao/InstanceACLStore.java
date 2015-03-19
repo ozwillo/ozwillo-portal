@@ -10,7 +10,18 @@ import java.util.List;
  */
 public interface InstanceACLStore {
 
+    /**
+     * Lists ALL ACE (including app_admin !app_user which Kernel actually deduces from orga admins)
+     * @param instanceId
+     * @return
+     */
     List<ACE> getACL(String instanceId);
 
+    /**
+     * Saves ACLs, for now only where app_user
+     * (since for those that are app_admin !app_user, Kernel deduces them from app orga admins) 
+     * @param instanceId
+     * @param userIds
+     */
     void saveACL(String instanceId, List<String> userIds);
 }

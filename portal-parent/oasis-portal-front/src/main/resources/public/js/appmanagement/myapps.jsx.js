@@ -165,7 +165,8 @@ var Instance = React.createClass({
     },
     loadUsers: function (callback, error) {
         $.ajax({
-            url: apps_service + "/users/instance/" + this.props.id,
+            url: apps_service + "/users/instance/" + this.props.id + "?app_admin=false", // only users that
+            // are app_user (so not those that are !app_user app_admin)
             dataType: 'json',
             method: 'get',
             success: callback,

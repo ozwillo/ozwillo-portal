@@ -43,32 +43,39 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
             logger.debug("ACL for instance {}", instanceId);
             acl.stream().forEach(ace -> logger.debug("- {} - {}", ace.getUserId(), ace.getUserName()));
         }
-        return acl;
+        
+        return acl; // including !app_user app_admin
 
     }
 
     @Override
     public void saveACL(String instanceId, List<String> newUsers) {
         List<ACE> existingACL = getACL(instanceId);
+        
+        // NB. ACLs that are app_admin !app_user are filtered out because NOT handled here
+        // (Kernel deduces them from app orga admins)
 
         // delete the excess ACEs
-        existingACL
-                .stream()
+        existingACL.stream()
                 .filter(ace -> !newUsers.contains(ace.getUserId()))
+                .filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (and entry_uri null anyway so couldn't delete)
                 .forEach(ace -> {
                     logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
                     kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<Object>(ifmatch(ace.getEntryEtag())), Void.class, user());
                 });
 
         // add the new ACEs
-        Set<String> currentUsers = existingACL.stream().map(ACE::getUserId).collect(Collectors.toSet());
+        Set<String> currentUsers = existingACL.stream()
+                .filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (else can't make an app_admin become app_user)
+                .map(ACE::getUserId).collect(Collectors.toSet());
 
         newUsers.stream()
-                .filter(userid -> !currentUsers.contains(userid))
+                .filter(userid -> !currentUsers.contains(userid)) // only on not existing users (NB. can be already app_admin)
                 .forEach(userid -> {
                     logger.debug("Creating ACE for user {}", userid);
                     kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<ACE>(ace(userid, instanceId)), ACE.class, user(), instanceId);
                 });
+        
     }
 
     private HttpHeaders ifmatch(String etag) {
@@ -81,6 +88,8 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
         ACE ace = new ACE();
         ace.setUserId(userId);
         ace.setInstanceId(instanceId);
+        ace.setAppUser(true); // #157 (but overwritten by Kernel anyway)
+        //ace.setAppAdmin(appAdmin); // #157 LATER when there'll be app admins managed by orga admins (for now the same)
         return ace;
     }
 }

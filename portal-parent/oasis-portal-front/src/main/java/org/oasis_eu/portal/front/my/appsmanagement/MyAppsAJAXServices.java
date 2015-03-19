@@ -66,9 +66,19 @@ public class MyAppsAJAXServices {
         return myInstances;
     }
 
+    /**
+     * Used to 1. list users that can be added to app instance (with !appAdmin since app admins
+     * will only be manageable individually later, for now any app admins = the app's orga admins)
+     * and 2. to list users that can be subscribed to service (with appAdmin)
+     * @param instanceId
+     * @param q
+     * @param appAdmin whether to also return users that are app_admin (and not app_user), default is true
+     * @return app instance Users i.e. that are app_user
+     */
     @RequestMapping(value = "/users/instance/{instanceId}", method = RequestMethod.GET)
-    public List<User> getUsersForInstance(@PathVariable String instanceId, @RequestParam(required = false) String q) {
-        List<User> appUsers = appManagementService.getAppUsers(instanceId);
+    public List<User> getUsersForInstance(@PathVariable String instanceId, @RequestParam(required = false) String q,
+            @RequestParam(value="app_admin", required = false, defaultValue="true") boolean appAdmin) {
+        List<User> appUsers = appManagementService.getAppUsers(instanceId, appAdmin);
         logger.debug("Found appusers: {} for instance {}", appUsers, instanceId);
         if (q == null) {
             return appUsers;
@@ -95,11 +105,24 @@ public class MyAppsAJAXServices {
                 .collect(Collectors.toList());
     }
 
+    /**
+     * get subscriptions
+     * @param serviceId
+     * @return users including when app_admin
+     */
     @RequestMapping(value = "/users/service/{serviceId}", method = RequestMethod.GET)
     public List<User> getUsersForService(@PathVariable String serviceId) {
         return appManagementService.getSubscribedUsersOfService(serviceId);
     }
 
+    /**
+     * set subscriptions i.e. "save changes" in "push to dashboard" modal
+     * (only new subscriptions are pushed to dashboard, so to push to dashboard
+     * an existing one it must be removed in a first step)
+     * @param serviceId
+     * @param users including when app_admin
+     * @return
+     */
     @RequestMapping(value = "/users/service/{serviceId}", method = RequestMethod.POST)
     public Map<String, String> saveUsersForService(@PathVariable String serviceId, @RequestBody List<User> users) {
         appManagementService.updateSubscriptions(serviceId, users.stream().map(User::getUserid).collect(Collectors.toSet()));

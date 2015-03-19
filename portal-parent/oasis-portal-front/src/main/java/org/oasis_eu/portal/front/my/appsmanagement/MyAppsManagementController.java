@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class MyAppsManagementController extends PortalController {
 
     private static List<String> i18keys = Arrays.asList(
-            "none", "manage_users", "users", "settings", "name", "actions",
+            "none", "manage_users", "users", "push-to-dashboard-existing-user", "settings", "name", "actions",
             "settings-add-a-user", "description", "icon", "upload", "published", "notpublished", "services",
             "restricted-service");
 
