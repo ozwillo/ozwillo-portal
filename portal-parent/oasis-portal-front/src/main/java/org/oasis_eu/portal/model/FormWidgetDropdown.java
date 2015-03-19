@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.model;
 
 import com.google.common.base.Strings;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -8,6 +9,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
@@ -43,7 +45,11 @@ public class FormWidgetDropdown extends FormWidget implements Serializable {
 	
 	public String getOptionLabel(String key) {
 		if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
-        return options.containsKey(key) ? options.get(key) : key;
+		Locale keyLocale = Locale.forLanguageTag(key); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
+		if (keyLocale != null) {
+		    return keyLocale.getLanguage();
+		}
+        return key;
 	}
 
 }
