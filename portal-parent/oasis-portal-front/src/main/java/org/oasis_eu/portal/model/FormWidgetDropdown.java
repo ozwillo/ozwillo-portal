@@ -45,11 +45,7 @@ public class FormWidgetDropdown extends FormWidget implements Serializable {
 	
 	public String getOptionLabel(String key) {
 		if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
-		Locale keyLocale = Locale.forLanguageTag(key); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
-		if (keyLocale != null) {
-		    return keyLocale.getLanguage();
-		}
-        return key;
+		return options.containsKey(key) ? options.get(key) : key;
 	}
 
 }
