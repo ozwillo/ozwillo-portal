@@ -12,6 +12,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.services.MyNavigationService;
@@ -90,13 +91,15 @@ abstract public class PortalController {
 
 	@ModelAttribute("currentLanguage")
 	public Languages currentLanguage() {
-		
-		// user's locale already normalized by nameDefaults.complete in user(),
-		// however user may be null if not logged (or logout filter)
-		if(user()!=null && user().getLocale()!=null) {
-			return Languages.getByLocale(Locale.forLanguageTag(user().getLocale()), Languages.ENGLISH);
-		}
-		return Languages.getByLocale(RequestContextUtils.getLocale(request));
+        return Languages.getByLocale(currentLocale(), Languages.ENGLISH); // english if user locale unknown but not null 
+	}
+	
+	private Locale currentLocale() {
+        if(user() != null && user().getLocale() != null) { // if user logged and locale set
+            return user().getBestLocale(OasisLocales.values()); // null if unknown but not null 
+        }
+        // else if not logged (or logout filter), or logged user locale not set
+        return RequestContextUtils.getLocale(request);
 	}
 
     /** else enum harder to use in js & react.js ; also in the CURRENT locale */
@@ -114,10 +117,7 @@ abstract public class PortalController {
 
 	@ModelAttribute("user")
 	public UserInfo user() {
-        UserInfo userInfo = userInfoService.currentUser();
-        if (userInfo == null) return null;
-
-        return nameDefaults.complete(userInfo);
+        return userInfoService.currentUser(); // #186 NOT nameDefaults.complete(userInfo) which overrides ex. "en-GB fr" Kernel locale
 	}
 
     @ModelAttribute("sitemap")

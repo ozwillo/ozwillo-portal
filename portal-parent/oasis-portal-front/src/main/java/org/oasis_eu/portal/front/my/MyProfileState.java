@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import javax.annotation.PostConstruct;
 
+import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.model.AvatarWidget;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormWidget;
@@ -16,6 +17,7 @@ import org.oasis_eu.portal.model.FormWidgetDate;
 import org.oasis_eu.portal.model.FormWidgetDropdown;
 import org.oasis_eu.portal.model.FormWidgetText;
 import org.oasis_eu.portal.model.FormWidgetUrlButton;
+import org.oasis_eu.portal.services.NameDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -105,7 +107,10 @@ public class MyProfileState {
     	accountFormLayout.appendWidget(new FormWidgetUrlButton("password",
         		"my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
     	accountFormLayout.appendWidget(new FormWidgetDropdown("locale",
-        		"my.profile.account.language"));
+        		"my.profile.account.language", uiLocales -> {
+        	        Languages keyLanguages = NameDefaults.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
+        	        return (keyLanguages != null) ? keyLanguages.getLanguage() : null;
+        		}));
     	layouts.put(accountFormLayout.getId(), accountFormLayout);
         
         FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);

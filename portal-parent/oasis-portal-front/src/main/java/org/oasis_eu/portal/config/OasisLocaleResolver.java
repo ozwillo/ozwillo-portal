@@ -34,7 +34,9 @@ public class OasisLocaleResolver extends SessionLocaleResolver {
 		// Try to use profile information
 		UserInfo currentUser = userInfoService.currentUser();
 		if (currentUser != null && !Strings.isNullOrEmpty(currentUser.getLocale())) {
-			return StringUtils.parseLocaleString(currentUser.getLocale());
+			return Locale.forLanguageTag(currentUser.getLocale()); // ex. "en-GB fr" => en
+			// and NOT Spring's StringUtils.parseLocaleString()
+			// which parses only ONE locale AND with '_' separator and optional variant ex. "en_GB_GB"
 		}
 		// Otherwise use parameter
 		else {
