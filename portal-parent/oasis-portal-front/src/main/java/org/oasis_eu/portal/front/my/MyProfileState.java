@@ -61,6 +61,10 @@ public class MyProfileState {
 	/** to walk avatar files */
 	@Autowired
     private ApplicationContext applicationContext;
+	
+	/** to best display an unknown locale */
+	@Autowired
+	private NameDefaults nameDefaults;
     
     @PostConstruct
     public void reset() {
@@ -108,7 +112,7 @@ public class MyProfileState {
         		"my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
     	accountFormLayout.appendWidget(new FormWidgetDropdown("locale",
         		"my.profile.account.language", uiLocales -> {
-        	        Languages keyLanguages = NameDefaults.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
+        	        Languages keyLanguages = nameDefaults.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
         	        return (keyLanguages != null) ? keyLanguages.getLanguage() : null;
         		}));
     	layouts.put(accountFormLayout.getId(), accountFormLayout);

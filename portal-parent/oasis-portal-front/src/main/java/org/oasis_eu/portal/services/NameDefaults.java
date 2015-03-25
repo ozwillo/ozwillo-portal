@@ -5,12 +5,14 @@ import java.util.Locale;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.springframework.stereotype.Service;
 
 /**
  * Locale helper
  * User: schambon
  * Date: 8/14/14
  */
+@Service
 public class NameDefaults {
     
     /**
@@ -19,11 +21,11 @@ public class NameDefaults {
      * "fr-FR,en-GB", "en-US;q=1.0,en-GB;q=0.5,fr-FR;q=0.0" http://docs.oracle.com/javase/tutorial/i18n/locale/matching.html
      * @return null if null, "" (language of locale "und") if unknown, best otherwise
      */
-    public static Languages getBestLanguage(String uiLocales) {
+    public Languages getBestLanguage(String uiLocales) {
         return Languages.getByLocale(getBestLocale(uiLocales));
     }
     
-    private static Locale getBestLocale(String uiLocales) {
+    private Locale getBestLocale(String uiLocales) {
         if (uiLocales == null) {
             return null;
         }

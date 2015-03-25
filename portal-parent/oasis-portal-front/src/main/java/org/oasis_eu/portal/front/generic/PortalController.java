@@ -16,7 +16,6 @@ import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.services.MyNavigationService;
-import org.oasis_eu.portal.services.NameDefaults;
 import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
@@ -51,9 +50,6 @@ abstract public class PortalController {
 
 	@Autowired
 	private HttpServletRequest request;
-
-    @Autowired
-    private NameDefaults nameDefaults;
 
     @Autowired
     private MyNavigationService navigationService;
