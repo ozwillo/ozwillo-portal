@@ -204,6 +204,11 @@ var SideBar = React.createClass({
         var filter = this.props.filter;
         this.props.updateApps(filter.audience.citizens, filter.audience.publicbodies, filter.audience.companies, filter.payment.paid, filter.payment.free); // NB. also reinits
     },
+    searchOnEnterDown: function (event) {
+        if (event.keyCode === 13) { // Enter key
+            this.search(event);
+        }
+    },
     change: function (category, item) {
         return function () {
             // check that we can indeed change the box
@@ -262,7 +267,7 @@ var SideBar = React.createClass({
                 </div>
 
                 <div className="input-group">
-                    <input type="text" className="form-control" onChange={this.fullTextSearchChanged} placeholder={t('keywords')} name="fullTextSearch"/>
+                    <input type="text" className="form-control" onChange={this.fullTextSearchChanged} onKeyDown={this.searchOnEnterDown} placeholder={t('keywords')} name="fullTextSearch"/>
                     <span className="input-group-btn">
                         <button className="btn btn-default" type="button" onClick={this.search}><img className="btn-search" src="/img/icon/btn-search.png"/></button>
                     </span>
