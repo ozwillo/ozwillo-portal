@@ -70,6 +70,11 @@ public class AppStoreController extends PortalController {
         }
 
         String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
+        if (requestLanguage.isEmpty()) {
+            // happens ex. on Firefox private navigation on first time
+            requestLanguage = "en"; // switch to default, else redirects to http://store
+            // (don't merely keep lang, might be outside accepted languages)
+        }
         if (!lang.equals(requestLanguage)) {
             return "redirect:/" + requestLanguage + "/store";
         }
