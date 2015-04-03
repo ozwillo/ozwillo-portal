@@ -19,8 +19,12 @@ mvn clean install
 ## Building the sources
 
 ```
-# NB. first compile the right version of pole-numerique/oasis-spring-integration.git
+# NB. first compile pole-numerique/oasis-spring-integration.git
 git clone git@github.com:pole-numerique/oasis-portal.git
+# or if you already cloned it :
+#git checkout master ; git pull
+# make sure it has the **right version** (ex. 1.6 on 20150325), else look in [the root pom.xml](https://github.com/pole-numerique/oasis-portal/blob/master/portal-parent/pom.xml#L83) :
+git checkout oasis-spring-integration-1.6
 cd oasis-portal/portal-parent
 mvn clean install
 ```
