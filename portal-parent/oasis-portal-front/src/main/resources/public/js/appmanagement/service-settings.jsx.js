@@ -55,14 +55,16 @@ var Service = React.createClass({
             }.bind(this)
         });
     },
-    settings: function () {
+    settings: function (event) {
+        event.preventDefault(); // else scrolltop jumps to top #178
         var s = this.state;
         s.service = JSON.parse(JSON.stringify(s.saved_service));    // create a deep copy of the structure
         s.field_errors = [];
         this.setState(s);
         this.refs.settings.open();
     },
-    pushToDash: function () {
+    pushToDash: function (event) {
+        event.preventDefault(); // else scrolltop jumps to top #178
         this.refs.users.init();
         this.refs.pushToDash.open();
     },
