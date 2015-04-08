@@ -68,7 +68,7 @@ var OrganizationsList = React.createClass({
             data: JSON.stringify(organization),
             success: function (data) {
                 //data = "test"; // to easily test error return
-                if (typeof data === 'string') {
+                if (typeof data === 'string' && data.trim().length !== 0) {
                     // assuming it's a String message returned by the Kernel
                     var state = this.state;
                     state.errorMessage = data;
@@ -87,8 +87,7 @@ var OrganizationsList = React.createClass({
         this.loadOrganizations();
     },
     componentDidUpdate: function () {
-        if (typeof this.state.errorMessage === 'string' && this.state.errorMessage.trim().length !== 0) {
-            console.log("s", this.state);
+        if (typeof this.state.errorMessage === 'string') {
             this.refs.errorDialog.open();
         }
     },

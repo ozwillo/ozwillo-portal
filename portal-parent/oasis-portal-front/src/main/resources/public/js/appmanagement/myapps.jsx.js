@@ -196,7 +196,7 @@ var Instance = React.createClass({
         $("a.tip", this.getDOMNode()).tooltip();
     },
     componentDidUpdate: function () {
-        if (typeof this.state.errorMessage === 'string' && this.state.errorMessage.trim().length !== 0) {
+        if (typeof this.state.errorMessage === 'string') {
             this.refs.errorDialog.open();
         }
     },
@@ -221,13 +221,13 @@ var Instance = React.createClass({
         instance = { applicationInstance: { id: instance.applicationInstance.id, status: status } }; // else if the whole instance, Spring REST says "syntaxically incorrect" i.e. can't unmarshall
         $.ajax({
             url: apps_service + "/set-status/" + this.props.id,
-            dataType: 'json',
+            //dataType: 'json', // else parsererror on return
             contentType: 'application/json',
             type: 'post',
             data: JSON.stringify(instance),
             success: function (data) {
                 //data = "test"; // to easily test error return
-                if (typeof data === 'string') {
+                if (typeof data === 'string' && data.trim().length !== 0) {
                     // assuming it's a String message returned by the Kernel
                     var state = this.state;
                     state.errorMessage = data;
