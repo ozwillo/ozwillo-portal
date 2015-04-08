@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.front.my.network;
 
-import static org.springframework.web.bind.annotation.RequestMethod.DELETE;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
@@ -90,15 +89,11 @@ public class NetworkAJAXServices {
 
     }
 
-    @RequestMapping(value = "/organization/{organizationId}", method = DELETE)
-    public void deleteOrganization(@PathVariable String organizationId) {
-        if (!devmode) {
-            logger.error("Request to delete organization while not in devmode");
-            throw new ForbiddenException();
-        }
+    @RequestMapping(value = "/organization/{organizationId}/set-status", method = POST)
+    public String setOrganizationStatus(@RequestBody @Valid UIOrganization organization, Errors errors) {
+        logger.debug("Updating organization {}", organization);
 
-        logger.debug("Deleting organization {}", organizationId);
-        networkService.deleteOrganization(organizationId);
+        return networkService.setOrganizationStatus(organization);
     }
 
     @ExceptionHandler(WrongQueryException.class)

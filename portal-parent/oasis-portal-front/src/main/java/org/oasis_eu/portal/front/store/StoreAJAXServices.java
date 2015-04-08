@@ -22,6 +22,7 @@ import org.oasis_eu.portal.services.RatingService;
 import org.oasis_eu.portal.services.geoarea.GeographicalAreaService;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
+import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.slf4j.Logger;
@@ -161,9 +162,9 @@ public class StoreAJAXServices {
         AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType.toUpperCase())); // #152 services can also be installed
         List<UIOrganization> organizations = networkService.getMyOrganizations();
 
-
         return organizations.stream()
                 .filter(o -> o.isAdmin())
+                .filter(o -> OrganizationStatus.AVAILABLE.equals(o.getStatus())) // not deleted ones
                 .filter(o -> info.getCatalogEntry().getTargetAudience().stream().anyMatch(audience -> audience.isCompatibleWith(o.getType())))
                 .collect(Collectors.toList());
     }

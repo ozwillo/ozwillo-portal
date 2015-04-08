@@ -27,9 +27,11 @@ var Modal = React.createClass({
     componentWillUnmount: function () {
         $(this.getDOMNode()).off('hidden');
     },
-    close: function () {
+    close: function (event) {
         $(this.getDOMNode()).modal('hide');
-
+        if (this.props.onClose) {
+            this.props.onClose(event);
+        }
     },
     open: function () {
         $(this.getDOMNode()).modal('show');

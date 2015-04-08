@@ -145,6 +145,9 @@ var InstanceList = React.createClass({
 });
 
 var Instance = React.createClass({
+    getInitialState: function() {
+        return {};
+    },
     manageUsers: function (event) {
         event.preventDefault();
         this.refs.users.init();
@@ -192,12 +195,46 @@ var Instance = React.createClass({
     componentDidMount: function () {
         $("a.tip", this.getDOMNode()).tooltip();
     },
-    deprovision: function () {
+    componentDidUpdate: function () {
+        if (typeof this.state.errorMessage === 'string' && this.state.errorMessage.trim().length !== 0) {
+            this.refs.errorDialog.open();
+        }
+    },
+    confirmTrash: function (event) {
+        event.preventDefault();
+        this.refs.confirmTrash.open();
+    },
+    trash: function () {
+        this.refs.confirmTrash.close();
+        this.setStatus('STOPPED');
+    },
+    confirmUntrash: function (event) {
+        event.preventDefault();
+        this.refs.confirmUntrash.open();
+    },
+    untrash: function () {
+        this.refs.confirmUntrash.close();
+        this.setStatus('RUNNING');
+    },
+    setStatus: function (status) {
+        var instance = this.props.instance;
+        instance = { applicationInstance: { id: instance.applicationInstance.id, status: status } }; // else if the whole instance, Spring REST says "syntaxically incorrect" i.e. can't unmarshall
         $.ajax({
-            url: apps_service + "/deprovision/" + this.props.id,
+            url: apps_service + "/set-status/" + this.props.id,
+            dataType: 'json',
+            contentType: 'application/json',
             type: 'post',
-            success: function () {
-                this.props.reload();
+            data: JSON.stringify(instance),
+            success: function (data) {
+                //data = "test"; // to easily test error return
+                if (typeof data === 'string') {
+                    // assuming it's a String message returned by the Kernel
+                    var state = this.state;
+                    state.errorMessage = data;
+                    this.setState(state); // triggers update and therefore messageDialog opens, and on close props will reload
+                } else {
+                    this.props.reload();
+                }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
@@ -205,38 +242,71 @@ var Instance = React.createClass({
         });
     },
     render: function () {
+        // NB. user is necessarily admin of all displayed orgs, and apps not PENDING
+        
+        var applicationInstanceStatus = this.props.instance.applicationInstance.status;
+        
         var manageUsersButton = null;
-        if (this.props.authority.slice(0, 'INDIVIDUAL:') !== 'INDIVIDUAL:') { // don't display it for organizations
+        if (this.props.authority.slice(0, 'INDIVIDUAL:') !== 'INDIVIDUAL:') { // don't display it for personal organizations
             manageUsersButton = (
-                <a className="tip btn btn-default pull-right" href="#" onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
+                <button className="tip btn btn-default pull-right" disabled={applicationInstanceStatus === 'STOPPED'}
+                        onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
                     <li className="fa fa-user"></li>
-                </a>        
+                </button>        
             );
         }
         
         var instance = this.props.id;
         var services = this.props.instance.services.map(function (service) {
-            return <Service key={service.service.id} service={service} instance={instance}/>;
+            return <Service key={service.service.id} service={service} instance={instance} status={applicationInstanceStatus}/>;
         });
 
-        var deprovision = null;
-        if (devmode) {
-            deprovision = (
-                <a className="btn btn-danger pull-right" href="#" onClick={this.deprovision}>{t('ui.delete')}</a>
-                );
+        var buttons = [];
+        var dialogs = [];
+        if (applicationInstanceStatus === 'STOPPED') {
+            var byDeleteRequesterOnDate = t('by') + " " + this.props.instance.status_change_requester_label
+                  + " (" + moment(this.props.instance.applicationInstance.status_changed) + ")";
+            buttons.push(
+                <a className="btn btn-danger pull-right" href="#" onClick={this.confirmUntrash}>{t('ui.cancel')}...</a>
+            );
+            buttons.push(
+                <span key="untrashTtl" className="pull-right" style={{'color':'red', 'fontStyle':'Italic', 'marginLeft':'5px', 'marginRight':'5px'}} title={byDeleteRequesterOnDate}>
+                    {t('will-be-deleted')} {moment(this.props.instance.deletion_planned).fromNow()}
+                </span>
+            );
+            var confirmUntrashTitle = t('confirm-untrash.title') + ' ' + this.props.instance.name;
+            dialogs.push(
+                <Modal ref="confirmUntrash" title={confirmUntrashTitle} successHandler={this.untrash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                    {t('confirm-untrash.body')}
+                </Modal>
+            );
+        } else {
+            buttons.push(
+                <a className="btn btn-danger pull-right" href="#" onClick={this.confirmTrash}>{t('ui.delete')}...</a>
+            );
+            var confirmTrashTitle = t('confirm-trash.title') + ' ' + this.props.instance.name;
+            dialogs.push(
+                <Modal ref="confirmTrash" title={confirmTrashTitle} successHandler={this.trash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                    {t('confirm-trash.body')}
+                </Modal>
+            );
         }
 
         return (
             <div className="panel panel-instance">
+                <Modal ref="errorDialog" infobox={true} onClose={this.props.reload} buttonLabels={{'ok': t('ui.close')}} title={t('ui.unexpected_error')}>
+                    {this.state.errorMessage}
+                </Modal>
                 <Modal ref="manageUsers" title={t('manage_users')} successHandler={this.saveUsers} >
                     <UserPicker ref="users" users={this.loadUsers} source={this.queryUsers}/>
                 </Modal>
+                {dialogs}
 
                 <div className="panel-heading">
                     <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
                     <span className="appname">{this.props.instance.name}</span>
                     {manageUsersButton}
-                    {deprovision}
+                    {buttons}
                 </div>
                 <div className="panel-body">
                     <div className="standard-form">

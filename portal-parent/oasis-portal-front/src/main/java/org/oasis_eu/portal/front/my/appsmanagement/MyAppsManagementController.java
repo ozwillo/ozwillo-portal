@@ -28,9 +28,10 @@ public class MyAppsManagementController extends PortalController {
     private static List<String> i18keys = Arrays.asList(
             "none", "manage_users", "users", "push-to-dashboard-existing-user", "settings", "name", "actions",
             "settings-add-a-user", "description", "icon", "upload", "published", "notpublished", "services",
-            "restricted-service");
+            "restricted-service",
+            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
 
-    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete");
+    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete", "confirm", "close", "unexpected_error");
 
     @Autowired
     private MyNavigationService navigationService;

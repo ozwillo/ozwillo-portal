@@ -9,6 +9,8 @@ import java.util.stream.Stream;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
 import org.oasis_eu.portal.model.appsmanagement.User;
@@ -27,6 +29,7 @@ import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -39,6 +42,9 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 public class NetworkService {
 
     private static final Logger logger = LoggerFactory.getLogger(NetworkService.class);
+
+    @Value("${application.organizationDaysTillDeletedFromTrash:7}")
+    private int organizationDaysTillDeletedFromTrash;
 
     @Autowired
     private UserInfoService userInfoService;
@@ -117,6 +123,17 @@ public class NetworkService {
             uiOrg.setTerritoryId(organization.getTerritoryId());
             uiOrg.setTerritoryLabel(String.valueOf(organization.getTerritoryId())); // TODO if any get label from cache with user locale (?????????!!!!!!!!!!!!!!!!)
         }
+        uiOrg.setStatus(organization.getStatus());
+        if (organization.getStatusChanged() != null) {
+            uiOrg.setStatusChanged(organization.getStatusChanged());
+            Instant deletionPlanned = new DateTime(uiOrg.getStatusChanged())
+                .plusDays(organizationDaysTillDeletedFromTrash).toInstant();
+            uiOrg.setDeletionPlanned(deletionPlanned);
+        }
+        if (organization.getStatusChangeRequesterId() != null) {
+            uiOrg.setStatusChangeRequesterId(organization.getStatusChangeRequesterId());
+            uiOrg.setStatusChangeRequesterLabel(getUserName(organization.getStatusChangeRequesterId(), null)); // TODO protected ?? then from membership
+        }
     }
 
     /**
@@ -150,31 +167,41 @@ public class NetworkService {
             org.setName(uiOrganization.getName());
             org.setType(uiOrganization.getType() != null ? uiOrganization.getType() : OrganizationType.PUBLIC_BODY);
             org.setTerritoryId(uiOrganization.getTerritoryId());
+            //org.setStatus(uiOrganization.getStatus()); // NB. status must rather be changed by setStatus()
+            // NB. status' changed / requester can't be modified by portal
 
             organizationStore.update(org);
         }
-
-        List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(uiOrganization.getId());
-
-        // note: there can be no added users (we invite them by email directly)
-
-        // find the members to remove
-        memberships.stream().filter(om ->
-                        uiOrganization.getMembers().stream().noneMatch(member -> om.getAccountId().equals(member.getId()))
-        ).forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
-
-        // then the members to change (note: we only change the "admin" flag for now)
-        memberships.stream().filter(om ->
-                        uiOrganization.getMembers().stream().anyMatch(member -> om.getAccountId().equals(member.getId()) && (member.isAdmin() != om.isAdmin()))
-        ).forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
-
-
     }
 
-    private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) {
+
+    public String setOrganizationStatus(UIOrganization uiOrganization) {
+        Organization org = organizationStore.find(uiOrganization.getId());
+        
+        if (!userIsAdmin(org.getId())) {
+            throw new ForbiddenException();
+        }
+        
+        boolean statusHasChanged = uiOrganization.getStatus() == null || org.getStatus() == null || !(uiOrganization.getStatus().equals(org.getStatus()));
+        if (statusHasChanged) {
+            return organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @param uiOrganization
+     * @param organization
+     * @return
+     * @throws ForbiddenException if not admin
+     */
+    private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) throws ForbiddenException {
         boolean nameHasChanged = !uiOrganization.getName().equals(organization.getName());
         boolean typeHasChanged = uiOrganization.getType() == null || organization.getType() == null || !(uiOrganization.getType().equals(organization.getType()));
-
+        // NB. status must rather be changed by setStatus()
+        // TODO territoryId, can it even change ??
+        
         return nameHasChanged || typeHasChanged;
     }
 
@@ -242,7 +269,13 @@ public class NetworkService {
                 .collect(Collectors.toList());
     }
 
-    private String getUserName(String accountId, String accountName) {
+    /**
+     * reused by PortalAppManagementService for instance trash mode
+     * @param accountId
+     * @param accountName
+     * @return
+     */
+    public String getUserName(String accountId, String accountName) {
         if (accountName != null) {
             return accountName;
         } else {
@@ -300,12 +333,5 @@ public class NetworkService {
         result.setMembers(Collections.emptyList());
 
         return result;
-    }
-
-    public void deleteOrganization(String organizationId) {
-        if (!userIsAdmin(organizationId)) {
-            throw new ForbiddenException();
-        }
-        organizationStore.delete(organizationId);
     }
 }

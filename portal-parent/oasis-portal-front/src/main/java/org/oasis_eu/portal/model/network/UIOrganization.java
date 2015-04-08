@@ -3,6 +3,8 @@ package org.oasis_eu.portal.model.network;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.joda.time.Instant;
+import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 
 import javax.validation.constraints.NotNull;
@@ -31,6 +33,20 @@ public class UIOrganization {
     URI territoryId;
     @JsonProperty("territory_label")
     String territoryLabel;
+    /** optional */
+    OrganizationStatus status;
+    /** optional */
+    @JsonProperty("status_changed")
+    Instant statusChanged;
+    /** optional */
+    @JsonProperty("deletion_planned")
+    Instant deletionPlanned;
+    /** optional */
+    @JsonProperty("status_change_requester_id")
+    String statusChangeRequesterId;
+    /** optional */
+    @JsonProperty("status_change_requester_label")
+    String statusChangeRequesterLabel;
 
     @JsonProperty
     boolean admin;
@@ -94,6 +110,46 @@ public class UIOrganization {
         this.territoryLabel = territoryLabel;
     }
 
+    public OrganizationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(OrganizationStatus status) {
+        this.status = status;
+    }
+
+    public Instant getStatusChanged() {
+        return statusChanged;
+    }
+
+    public void setStatusChanged(Instant statusChanged) {
+        this.statusChanged = statusChanged;
+    }
+
+    public Instant getDeletionPlanned() {
+        return deletionPlanned;
+    }
+
+    public void setDeletionPlanned(Instant deletionPlanned) {
+        this.deletionPlanned = deletionPlanned;
+    }
+
+    public String getStatusChangeRequesterId() {
+        return statusChangeRequesterId;
+    }
+
+    public void setStatusChangeRequesterId(String statusChangeRequesterId) {
+        this.statusChangeRequesterId = statusChangeRequesterId;
+    }
+
+    public String getStatusChangeRequesterLabel() {
+        return statusChangeRequesterLabel;
+    }
+
+    public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
+        this.statusChangeRequesterLabel = statusChangeRequesterLabel;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -101,6 +157,7 @@ public class UIOrganization {
                 ", name:'" + name + '\'' +
                 ", type:" + type +
                 ", territory_id:" + territoryId +
+                ", status:" + status +
                 ", admin:" + admin +
                 ", members:" + members +
                 '}';

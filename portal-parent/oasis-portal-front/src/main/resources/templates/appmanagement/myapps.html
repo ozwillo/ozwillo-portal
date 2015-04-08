@@ -138,6 +138,9 @@
 
 </th:block>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js" data-th-src="@{/webjars/momentjs/2.9.0/min/moment-with-locales.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/webjars/momentjs/2.9.0/min/moment-with-locales.min.js}" data-th-if="${!devmode}"></script>/*/-->
+
 <script data-th-src="@{/js/csrf.js}"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js" data-th-src="@{/webjars/typeaheadjs/0.10.4/typeahead.bundle.min.js}"></script>
 <script src="http://fb.me/react-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/react.js}" data-th-if="${devmode}"></script>
@@ -148,6 +151,8 @@
     var apps_service = /*[[@{/my/api/myapps}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
     var messages = /*[[${i18n}]]*/ {};
     var devmode = /*[[${devmode}]]*/ false;
+    var currentLanguage = /*[[${currentLocaleLanguage}]]*/ 'en';
+    moment.locale(currentLanguage);
 </script>
 
 <script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>

@@ -21,6 +21,7 @@ import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance.InstantiationStatus;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
@@ -230,21 +231,32 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
-    public void deleteInstance(String instanceId) {
+    public String setInstanceStatus(String instanceId, InstantiationStatus status) {
         logger.warn("Deleting instance {}", instanceId);
 
-        ResponseEntity<ApplicationInstance> entity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
-        String eTag = entity.getHeaders().getETag();
+        ResponseEntity<ApplicationInstance> instanceEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
+        String eTag = instanceEntity.getHeaders().getETag();
 
-        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, entity.getBody().getApplicationId(), userInfoHelper.currentUser().getUserId());
-        if (status != null) {
-            installedStatusRepository.delete(status);
+        // clear local mongo cache :
+        InstalledStatus installedStatus = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, instanceEntity.getBody().getApplicationId(), userInfoHelper.currentUser().getUserId());
+        if (installedStatus != null) {
+            installedStatusRepository.delete(installedStatus);
         }
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("If-Match", eTag);
-
-        kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), ApplicationInstance.class, user(), instanceId).getBody();
+        headers.add("If-Match", eTag); // only if we have the up-to-date version
+        
+        ApplicationInstance instance = instanceEntity.getBody();
+        instance.setStatus(status);
+        ResponseEntity<String> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
+                new HttpEntity<ApplicationInstance>(instance, headers), String.class, user(), instanceId);
+        if (resEntity.getStatusCode().is4xxClientError() || resEntity.getStatusCode().is5xxServerError()) {
+            String res = resEntity.getBody();
+            if (res != null && !res.trim().isEmpty()) {
+                return res; // error message if any
+            }
+        }
+        return null;
     }
 
     @JsonInclude(JsonInclude.Include.NON_NULL)

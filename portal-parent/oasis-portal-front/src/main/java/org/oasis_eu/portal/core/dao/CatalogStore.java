@@ -1,13 +1,14 @@
 package org.oasis_eu.portal.core.dao;
 
+import java.util.List;
+import java.util.Locale;
+
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance.InstantiationStatus;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
-
-import java.util.List;
-import java.util.Locale;
 
 /**
  * User: schambon
@@ -31,5 +32,12 @@ public interface CatalogStore {
 
     CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service);
 
-    void deleteInstance(String instanceId);
+    /**
+     * for trash mode
+     * @param instanceId
+     * @param status
+     * @return optional (error, warning...) message returned by Kernel
+     */
+    String setInstanceStatus(String instanceId, InstantiationStatus status);
+    
 }

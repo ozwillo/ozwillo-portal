@@ -30,9 +30,13 @@ public class NetworkController extends PortalController {
     private static final Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
 
-    private static List<String> i18keys = Arrays.asList("find-or-create-organization", "information", "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave", "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create");
+    private static List<String> i18keys = Arrays.asList("find-or-create-organization", "information",
+            "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave",
+            "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create",
+            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
 
-    private static List<String> generickeys = Arrays.asList("save", "cancel", "close", "loading", "go", "general-error", "edit", "remove", "location");
+    private static List<String> generickeys = Arrays.asList("save", "cancel", "close", "confirm", "delete",
+            "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error");
 
     @Autowired
     private MessageSource messageSource;

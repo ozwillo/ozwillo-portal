@@ -1,5 +1,13 @@
 package org.oasis_eu.portal.services;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
+import org.joda.time.DateTime;
+import org.joda.time.Instant;
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.InstanceACLStore;
@@ -18,14 +26,10 @@ import org.oasis_eu.portal.model.appstore.AppInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -35,6 +39,9 @@ import java.util.stream.Collectors;
 public class PortalAppManagementService {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalAppstoreService.class);
+
+    @Value("${application.applicationInstanceDaysTillDeletedFromTrash:7}")
+    private int applicationInstanceDaysTillDeletedFromTrash;
 
     @Autowired
     private CatalogStore catalogStore;
@@ -95,16 +102,30 @@ public class PortalAppManagementService {
         CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
         AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), entry.getIcon(RequestContextUtils.getLocale(request)));
 
-
-        MyAppsInstance result = new MyAppsInstance()
+        MyAppsInstance uiInstance = fillUIInstance(new MyAppsInstance()
                 .setApplicationInstance(instance)
-                .setApplication(appInfo);
+                .setApplication(appInfo));
 
         if (fetchServices)
-            result = result.setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream().map(this::fetchService).collect(Collectors.toList()));
+            uiInstance = uiInstance.setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream()
+                    .map(this::fetchService).collect(Collectors.toList()));
 
-        return result;
+        return uiInstance;
     }
+
+    private MyAppsInstance fillUIInstance(MyAppsInstance uiInstance) {
+        ApplicationInstance instance = uiInstance.getApplicationInstance();
+        if (instance.getStatusChanged() != null) {
+            Instant deletionPlanned = new DateTime(instance.getStatusChanged())
+                .plusDays(applicationInstanceDaysTillDeletedFromTrash).toInstant();
+            uiInstance.setDeletionPlanned(deletionPlanned);
+        }
+        if (instance.getStatusChangeRequesterId() != null) {
+            uiInstance.setStatusChangeRequesterLabel(networkService.getUserName(instance.getStatusChangeRequesterId(), null)); // TODO protected ?? then from membership
+        }
+        return uiInstance;
+    }
+
 
     private MyAppsService fetchService(CatalogEntry service) {
 
@@ -197,10 +218,24 @@ public class PortalAppManagementService {
 
         instanceACLStore.saveACL(instanceId, userIds);
     }
+    
+    /**
+     * for (un)trash
+     * @param instance
+     * @return 
+     */
+    public String setInstanceStatus(MyAppsInstance uiInstance) {
+        ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());
+        if (!networkService.userIsAdmin(existingInstance.getProviderId())) {
+            throw new AccessDeniedException("Unauthorized access");
+        }
 
-
-    public void deleteInstance(String instanceId) {
-        catalogStore.deleteInstance(instanceId);
+        ApplicationInstance instance = uiInstance.getApplicationInstance();
+        boolean statusHasChanged = instance.getStatus() == null ||  existingInstance.getStatus() == null || !(instance.getStatus().equals( existingInstance.getStatus()));
+        if (statusHasChanged) {
+            return catalogStore.setInstanceStatus(instance.getInstanceId(), instance.getStatus());
+        }
+        return null;
     }
 
 }

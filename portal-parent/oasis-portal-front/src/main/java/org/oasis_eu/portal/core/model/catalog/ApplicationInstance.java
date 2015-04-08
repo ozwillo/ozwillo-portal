@@ -3,6 +3,8 @@ package org.oasis_eu.portal.core.model.catalog;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.joda.time.Instant;
 import org.oasis_eu.spring.kernel.model.instance.ScopeNeeded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +25,13 @@ public class ApplicationInstance {
     @JsonProperty("id")
     String instanceId;
     InstantiationStatus status;
+    /** optional */
+    @JsonProperty("status_changed")
+    Instant statusChanged;
+    /** optional */
+    @JsonProperty("status_change_requester_id")
+    String statusChangeRequesterId;
+
     String name;
     String description;
     String icon;
@@ -63,6 +72,22 @@ public class ApplicationInstance {
 
     public void setStatus(InstantiationStatus status) {
         this.status = status;
+    }
+    
+    public Instant getStatusChanged() {
+        return statusChanged;
+    }
+
+    public void setStatusChanged(Instant statusChanged) {
+        this.statusChanged = statusChanged;
+    }
+
+    public String getStatusChangeRequesterId() {
+        return statusChangeRequesterId;
+    }
+
+    public void setStatusChangeRequesterId(String statusChangeRequesterId) {
+        this.statusChangeRequesterId = statusChangeRequesterId;
     }
 
     public String getName() {
@@ -119,7 +144,7 @@ public class ApplicationInstance {
     }
 
     public static enum InstantiationStatus {
-        PENDING, RUNNING;
+        PENDING, RUNNING, STOPPED; // STOPPED means trashed (replaces deletion)
     }
 
     @Override
@@ -128,6 +153,8 @@ public class ApplicationInstance {
                 "applicationId='" + applicationId + '\'' +
                 ", instanceId='" + instanceId + '\'' +
                 ", status=" + status +
+                ", statusChanged=" + statusChanged +
+                ", statusChangeRequesterId=" + statusChangeRequesterId +
                 ", name='" + name + '\'' +
                 ", description='" + description + '\'' +
                 ", icon='" + icon + '\'' +

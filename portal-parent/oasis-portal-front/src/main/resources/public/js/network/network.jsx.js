@@ -42,7 +42,7 @@ var OrganizationsList = React.createClass({
             }.bind(this)
         });
     },
-    updateOrganization: function(organization) {
+    updateOrganization: function(organization, optionalOperation) {
         // first update locally
         var orgs = this.state.organizations;
         var idx;
@@ -57,12 +57,23 @@ var OrganizationsList = React.createClass({
         this.setState({loading: false, organizations: orgs});
 
         // then remotely
+        var url = network_service + "/organization/" + organization.id;
+        if (optionalOperation) {
+            url += '/' + optionalOperation;
+        }
         $.ajax({
-            url: network_service + "/organization/" + organization.id,
+            url: url,
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify(organization),
-            success: function () {
+            success: function (data) {
+                //data = "test"; // to easily test error return
+                if (typeof data === 'string') {
+                    // assuming it's a String message returned by the Kernel
+                    var state = this.state;
+                    state.errorMessage = data;
+                    this.setState(state);
+                }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
@@ -73,6 +84,19 @@ var OrganizationsList = React.createClass({
 
     },
     componentDidMount: function() {
+        this.loadOrganizations();
+    },
+    componentDidUpdate: function () {
+        if (typeof this.state.errorMessage === 'string' && this.state.errorMessage.trim().length !== 0) {
+            console.log("s", this.state);
+            this.refs.errorDialog.open();
+        }
+    },
+    closeErrorDialog: function () { // required else if onClose=this.loadOrganizations directly loops on displaying errorDialog
+        var state = this.state;
+        state.errorMessage = null;
+        this.setState(state);
+        // if there's an error, reload everything
         this.loadOrganizations();
     },
     render: function() {
@@ -89,7 +113,14 @@ var OrganizationsList = React.createClass({
                     <Organization key={org.id} org={org} reload={reload} updateOrganization={updateOrg}/>
                     );
             });
-            return (<div className="organizations">{orgs}</div>);
+            return (
+                    <div>
+                    <Modal ref="errorDialog" infobox={true} onClose={this.closeErrorDialog} buttonLabels={{'ok': t('ui.close')}} title={t('information')}>
+                        {this.state.errorMessage}
+                    </Modal>
+                    <div className="organizations">{orgs}</div>
+                    </div>
+                    );
         }
     }
 });
@@ -160,17 +191,23 @@ var Organization = React.createClass({
     showInformation: function() {
         this.refs.infoDialog.open();
     },
-    deleteOrganization: function () {
-        $.ajax({
-            url: network_service + "/organization/" + this.props.org.id,
-            type: 'delete',
-            success: function () {
-                this.props.reload();
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(status, err.toString());
-            }.bind(this)
-        });
+    confirmTrash: function() {
+        this.refs.confirmTrashDialog.open();
+    },
+    trash: function () {
+        var org = this.props.org;
+        org.status = 'DELETED';
+        this.props.updateOrganization(org, 'set-status');
+        this.refs.confirmTrashDialog.close();
+    },
+    confirmUntrash: function() {
+        this.refs.confirmUntrashDialog.open();
+    },
+    untrash: function () {
+        var org = this.props.org;
+        org.status = 'AVAILABLE';
+        this.props.updateOrganization(org, 'set-status');
+        this.refs.confirmUntrashDialog.close();
     },
     removeMember: function(member) {
         return function (event) {
@@ -180,7 +217,6 @@ var Organization = React.createClass({
             var org = this.props.org;
             org.members = org.members.filter(function(m) {return m.id != member.id;});
             this.props.updateOrganization(org);
-
 
         }.bind(this);
     },
@@ -212,20 +248,49 @@ var Organization = React.createClass({
     },
     render: function() {
 
-        var buttons = [
-            <a key="info" className="btn btn-primary-inverse" onClick={this.showInformation}>{t('information')}</a>
-        ];
-        var dialogs = [
-            <LeaveDialog ref="leaveDialog" onSubmit={this.leave}/>,
-            <InformationDialog ref="infoDialog" org={this.props.org} />
-        ];
+        var buttons = [];
+        var dialogs = [];
 
         var membersList = this.renderMembers();
 
+        if (this.props.org.status === 'DELETED') {
+            // trashed
+            var byDeleteRequesterOnDate = t('by') + " " + this.props.org.status_change_requester_label
+                  + " (" + moment(this.props.org.status_changed) + ")";
+            buttons.push(
+                <span key="untrashTtl" style={{'color':'red', 'fontStyle':'Italic', 'marginLeft':'5px', 'marginRight':'5px'}} title={byDeleteRequesterOnDate}>
+                    {t('will-be-deleted')} {moment(this.props.org.deletion_planned).fromNow()}
+                </span>
+            ); // (not a button per se)
+            
+            if (this.props.org.admin) {
+                buttons.push(
+                    <a key="confirmUntrash" className="btn btn-danger" onClick={this.confirmUntrash}>{t('ui.cancel')}...</a>
+                );
+                
+                var confirmUntrashTitle = t('confirm-untrash.title') + ' ' + this.props.org.name;
+                dialogs.push(
+                    <Modal ref="confirmUntrashDialog" title={confirmUntrashTitle} successHandler={this.untrash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                        {t('confirm-untrash.body')}
+                    </Modal>
+                );
+            }
+            
+        } else {
+
+            var buttons = [
+                <a key="info" className="btn btn-primary-inverse" onClick={this.showInformation}>{t('information')}</a>
+            ];
+            var dialogs = [
+                <LeaveDialog ref="leaveDialog" onSubmit={this.leave}/>,
+                <InformationDialog ref="infoDialog" org={this.props.org} />
+            ];
+            
         if (this.props.org.admin) {
             if (this.props.org.members.filter(function (m) {
                 return m.admin;
             }).length != 1) {
+                // admins can leave only if there will still be another admin
                 buttons.push(
                     <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
                 );
@@ -234,11 +299,10 @@ var Organization = React.createClass({
             buttons.push(
                 <a key="invite" className="btn btn-success-inverse" onClick={this.openInvitation}>{t('invite')}</a>
             );
-            if (devmode) {
-                buttons.push(
-                    <a key="delete" className="btn btn-danger" onClick={this.deleteOrganization}>{t('delete')}</a>
-                );
-            }
+            
+            buttons.push(
+                <a key="confirmTrash" className="btn btn-danger" onClick={this.confirmTrash}>{t('ui.delete')}...</a>
+            );
 
             dialogs.push(
                 <InviteDialog ref="inviteDialog"
@@ -248,6 +312,13 @@ var Organization = React.createClass({
                 email={this.state.invite.email}
                 errors={this.state.invite.errors}/>
             );
+            
+            var confirmTrashTitle = t('confirm-trash.title') + ' ' + this.props.org.name;
+            dialogs.push(
+                <Modal ref="confirmTrashDialog" title={confirmTrashTitle} successHandler={this.trash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                    {t('confirm-trash.body')}
+                </Modal>
+            );
 
 
         } else {
@@ -255,6 +326,7 @@ var Organization = React.createClass({
             buttons.push(
                 <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
             );
+        }
         }
 
         return (

@@ -1,7 +1,10 @@
 package org.oasis_eu.portal.model.appsmanagement;
 
+import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.model.appstore.AppInfo;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -16,6 +19,11 @@ public class MyAppsInstance {
 
     List<MyAppsService> myAppsServices;
     String icon;
+    /** optional */
+    @JsonProperty("deletion_planned")
+    Instant deletionPlanned;
+    @JsonProperty("status_change_requester_label")
+    String statusChangeRequesterLabel;
 
 
     public List<MyAppsService> getServices() {
@@ -60,4 +68,21 @@ public class MyAppsInstance {
     public String getId() {
         return applicationInstance.getInstanceId();
     }
+
+    public Instant getDeletionPlanned() {
+        return deletionPlanned;
+    }
+
+    public void setDeletionPlanned(Instant deletionPlanned) {
+        this.deletionPlanned = deletionPlanned;
+    }
+
+    public String getStatusChangeRequesterLabel() {
+        return statusChangeRequesterLabel;
+    }
+
+    public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
+        this.statusChangeRequesterLabel = statusChangeRequesterLabel;
+    }
+    
 }

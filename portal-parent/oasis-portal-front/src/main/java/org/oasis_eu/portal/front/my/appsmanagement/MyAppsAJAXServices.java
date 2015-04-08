@@ -1,6 +1,14 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.validation.Valid;
+
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
@@ -17,13 +25,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
 
-import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -158,13 +169,19 @@ public class MyAppsAJAXServices {
         return response;
     }
 
-    @RequestMapping(value = "/deprovision/{instanceId}", method = RequestMethod.POST)
-    public void deprovision(@PathVariable String instanceId) {
-        if (devmode) {
-            appManagementService.deleteInstance(instanceId);
+    /**
+     * (ideally should be {id}/set-status)
+     * @param instance
+     * @param instanceId not used
+     * @param errors
+     * @return
+     */
+    @RequestMapping(value = "/set-status/{instanceId}", method = POST)
+    public String setInstanceStatus(@RequestBody @Valid MyAppsInstance instance, @PathVariable String instanceId,
+            Errors errors) {
+        logger.debug("Updating app instance {}", instance);
 
-        }
-
+        return appManagementService.setInstanceStatus(instance);
     }
 
     public static class SaveServiceResponse {
