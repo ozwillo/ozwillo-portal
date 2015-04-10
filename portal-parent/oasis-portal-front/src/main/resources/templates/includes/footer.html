@@ -1,29 +1,33 @@
 <footer>
     <div class="sitemap">
-        <div class="row">
-            <div class="col-sm-6 col-xs-12 text-center">
-                <img src="/img/logo-xl.png" alt="Ozwillo"/>
-                <p>
-                    <span data-th-text="#{footer.tagline1}">A platform interactive services</span><br/>
-                    <span data-th-text="#{footer.tagline2}">for a data common good</span>
-                </p>
-                <p>
-                    <a href="https://www.ozwillo.com/en/oz/projects">
-                        <img src="/img/icons/CIP.png" alt="CIP" title="Competitiveness and Innovation Framework Programme"/>
-                    </a>
-                    <a href="https://www.ozwillo.com/en/oz/projects">
-                        <img src="/img/icons/EU.png" alt="EU" title="European funded OASIS project"/>
-                    </a>
-                    <a href="https://www.ozwillo.com/en/oz/projects">
-                        <img src="/img/icons/PIA.png" alt="PIA" title="Programme d'investissements d'avenir"/>
-                    </a>
-                </p>
-            </div>
-            <div class="col-sm-2 col-xs-4" data-th-each="col: ${sitemap}">
-                <ul>
-                    <li data-th-each="entry: ${col}"><a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
-                    </li>
-                </ul>
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6 col-xs-12 text-center">
+                    <img src="/img/logo-xl.png" alt="Ozwillo"/>
+                    <p class="footer-tagline">
+                        <span data-th-text="#{footer.tagline}">Digital commons creator</span>
+                    </p>
+                    <p>
+                        <a href="https://www.ozwillo.com/en/oz/projects">
+                            <img src="/img/icons/CIP.png" alt="CIP" title="Competitiveness and Innovation Framework Programme"/>
+                        </a>
+                        <a href="https://www.ozwillo.com/en/oz/projects">
+                            <img src="/img/icons/eu.png" alt="EU" title="European funded OASIS project"/>
+                        </a>
+                        <a href="https://www.ozwillo.com/en/oz/projects">
+                            <img src="/img/icons/PIA.png" alt="PIA" title="Programme d'investissements d'avenir"/>
+                        </a>
+                        <a href="https://www.ozwillo.com/en/oz/projects">
+                            <img src="/img/icons/FR.png" alt="FR"/>
+                        </a>
+                    </p>
+                </div>
+                <div class="col-sm-2 col-xs-4" data-th-each="col: ${sitemap}">
+                    <ul>
+                        <li data-th-each="entry: ${col}"><a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
