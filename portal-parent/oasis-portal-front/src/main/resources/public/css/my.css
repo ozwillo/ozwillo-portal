@@ -240,3 +240,7 @@ div.empty-avatar {
 .personal-data-form.edit {
 	border-color: #50C9C8;
 }
+
+.sortable {
+    cursor: pointer;
+}

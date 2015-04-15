@@ -16,7 +16,11 @@ var NotificationTable = React.createClass({
     getInitialState: function() {
         return {
             n: [],
-            recentlyRemoved: []
+            recentlyRemoved: [],
+            currentSort: {
+                prop: 'date',
+                dir: -1
+            }
         };
     },
     loadNotifications: function() {
@@ -30,7 +34,15 @@ var NotificationTable = React.createClass({
                     return $.inArray(notif.id, recentlyRemoved) == -1;
                 });
 
-                this.setState({n:notifs, recentlyRemoved:recentlyRemoved});
+                var currentSort = s.currentSort;
+                s.n = notifs.sort(function (a, b) {
+                    if (typeof a[currentSort.prop] == "number") {
+                        return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
+                    } else {
+                        return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
+                    }
+                });
+                this.setState(s);
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
@@ -46,10 +58,27 @@ var NotificationTable = React.createClass({
     sortBy: function(criterion) {
         var component = this;
         return function() {
+            var currentSort = component.state.currentSort;
+
+            var sortDirection = -1;
+            if (currentSort.prop == criterion) {
+                // we are already sorting by the given criterion, so let's sort inversely
+                sortDirection = currentSort.dir * -1;
+            }
+            currentSort.prop = criterion;
+            currentSort.dir = sortDirection;
+
             var n = component.state.n.sort(function (a, b) {
-                return a[criterion].localeCompare(b[criterion]);
+                if (typeof a[currentSort.prop] == "number") {
+                    return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
+                } else {
+                    return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
+                }
             });
-            component.setState({n: n, recentlyRemoved: this.state.recentlyRemoved});
+            var state = component.state;
+            state.n = n;
+            state.currentSort = currentSort;
+            component.setState(state);
         };
     },
     removeNotif: function(id) {
@@ -89,9 +118,9 @@ var NotificationTable = React.createClass({
             return (
                 <div className="standard-form">
                     <div className="row form-table-header">
-                        <div className="col-sm-2" onClick={this.sortBy('date')}>{t('date')}</div>
-                        <div className="col-sm-2" onClick={this.sortBy('appName')}>{t('app')}</div>
-                        <div className="col-sm-6" onClick={this.sortBy('formattedText')}>{t('message')}</div>
+                        <div className="col-sm-2 sortable" onClick={this.sortBy('date')}>{t('date')}</div>
+                        <div className="col-sm-2 sortable" onClick={this.sortBy('appName')}>{t('app')}</div>
+                        <div className="col-sm-6 sortable" onClick={this.sortBy('formattedText')}>{t('message')}</div>
                     </div>
                 {notificationNodes}
                 </div>
