@@ -137,3 +137,12 @@ input[type='checkbox'].switch + label {
 input[type='checkbox'].switch:checked + label {
     background-color: #5cb85c;
 }
+
+
+#myapps .panel-group .panel-heading > img {
+    margin-right: 6px;
+}
+
+#myapps .panel-group .panel-heading span.pull-right {
+    margin-top: 7px;
+}
