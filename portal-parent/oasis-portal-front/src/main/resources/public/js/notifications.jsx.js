@@ -23,6 +23,7 @@ var NotificationTable = React.createClass({
     getInitialState: function() {
         return {
             n: [],
+            apps: [],
             recentlyRemoved: [],
             currentSort: {
                 prop: 'date',
@@ -43,7 +44,7 @@ var NotificationTable = React.createClass({
             success: function(data) {
                 var s = this.state;
                 var recentlyRemoved = s.recentlyRemoved;
-                var notifs = data.filter(function(notif) {
+                var notifs = data.notifications.filter(function (notif) {
                     return $.inArray(notif.id, recentlyRemoved) == -1;
                 });
 
@@ -55,6 +56,7 @@ var NotificationTable = React.createClass({
                         return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
                     }
                 });
+                s.apps = data.apps;
                 this.setState(s);
             }.bind(this),
             error: function(xhr, status, err) {
@@ -103,7 +105,13 @@ var NotificationTable = React.createClass({
     },
     filterByApp: function (event) {
         event.preventDefault();
-        console.error("Not implemented");
+        var state = this.state;
+        var appId = event.target.value;
+        if (appId == "all") {
+            appId = null;
+        }
+        state.filter.app = appId;
+        this.setState(state);
     },
     removeNotif: function(id) {
         var notifs = this.state.n.filter(function(n) {return n.id != id;});
@@ -127,42 +135,52 @@ var NotificationTable = React.createClass({
     },
     render: function () {
         var callback = this.removeNotif;
-        if (this.state.n.length == 0) {
-            return (
-                <div className="standard-form">
-                {t('no-notification')}
-                </div>
-                );
-        } else {
-            var notificationNodes = this.state.n.map(function (notif) {
+        var appId = this.state.filter.app;
+        var notificationNodes = this.state.n
+            .filter(function (notif) {
+                if (appId == null) {
+                    return true;
+                } else {
+                    return notif.serviceId == appId;
+                }
+            })
+            .map(function (notif) {
                 return (
                     <Notification key={notif.id} notif={notif} onRemoveNotif={callback}/>
-                    );
-            });
-            return (
-                <div>
-                    <NotificationHeader filter={this.state.filter} updateStatus={this.filterByStatus} updateApp={this.filterByApp}/>
-                    <div className="standard-form">
-                        <div className="row form-table-header">
-                            <div className="col-sm-2 sortable" onClick={this.sortBy('date')}>{t('date')}</div>
-                            <div className="col-sm-2 sortable" onClick={this.sortBy('appName')}>{t('app')}</div>
-                            <div className="col-sm-6 sortable" onClick={this.sortBy('formattedText')}>{t('message')}</div>
-                        </div>
-                    {notificationNodes}
-                    </div>
-                </div>
                 );
+            });
+
+        if (notificationNodes.length == 0) {
+            notificationNodes = <div>{t('no-notification')}</div>;
         }
+
+
+        return (
+            <div>
+                <NotificationHeader filter={this.state.filter} updateStatus={this.filterByStatus} updateAppFilter={this.filterByApp} apps={this.state.apps}/>
+                <div className="standard-form">
+                    <div className="row form-table-header">
+                        <div className="col-sm-2 sortable" onClick={this.sortBy('date')}>{t('date')}</div>
+                        <div className="col-sm-2 sortable" onClick={this.sortBy('appName')}>{t('app')}</div>
+                        <div className="col-sm-6 sortable" onClick={this.sortBy('formattedText')}>{t('message')}</div>
+                    </div>
+                {notificationNodes}
+                </div>
+            </div>
+        );
     }
+
 });
 
 var NotificationHeader = React.createClass({
     render: function () {
         return (
             <div className="row">
-                <h2 className="col-sm-6">{t('ui.notifications')}</h2>
-                <div className="col-sm-6">
+                <h2 className="col-sm-3">{t('ui.notifications')}</h2>
+                <div className="col-sm-9 text-right">
                     <form className="form-inline header-form">
+                        <AppFilter apps={this.props.apps} onChange={this.props.updateAppFilter} />
+                        <span className="spacer"></span>
                         <select name="status" className="form-control" onChange={this.props.updateStatus}>
                             <option value="UNREAD">{t('unread')}</option>
                             <option value="READ">{t('read')}</option>
@@ -171,6 +189,20 @@ var NotificationHeader = React.createClass({
                     </form>
                 </div>
             </div>
+        );
+    }
+});
+
+var AppFilter = React.createClass({
+    render: function () {
+        var options = this.props.apps.map(function (app) {
+            return <option key={app.id} value={app.id}>{app.name}</option>;
+        });
+        return (
+            <select name="app" className="form-control" onChange={this.props.onChange}>
+                <option value="all">{t('all-apps')}</option>
+            {options}
+            </select>
         );
     }
 });

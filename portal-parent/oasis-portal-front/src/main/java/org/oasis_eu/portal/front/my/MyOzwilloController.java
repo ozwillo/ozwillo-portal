@@ -62,7 +62,7 @@ public class MyOzwilloController extends PortalController {
     @ModelAttribute("notif_i18n")
     public Map<String, String> getNotifI18n(HttpServletRequest request) {
 
-        List<String> keys = Arrays.asList("ui.notifications", "notif.date", "notif.app", "notif.message", "notif.archive", "notif.manage", "notif.no-notification", "notif.unread", "notif.read", "notif.any");
+        List<String> keys = Arrays.asList("ui.notifications", "notif.date", "notif.app", "notif.message", "notif.archive", "notif.manage", "notif.no-notification", "notif.unread", "notif.read", "notif.any", "notif.all-apps");
         Locale locale = RequestContextUtils.getLocale(request);
 
         return keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage(k, new Object[0], locale)));
