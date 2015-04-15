@@ -62,16 +62,17 @@ public class PortalNotificationService {
                 .count();
     }
 
-    public List<UserNotification> getNotifications(Locale locale) {
+
+    public List<UserNotification> getNotifications(Locale locale, NotificationStatus status) {
         if (!notificationsEnabled) {
             return Collections.emptyList();
         }
-        return notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+        return notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), status)
                 .stream()
                 .map(n -> {
                     UserNotification notif = new UserNotification();
                     CatalogEntry service = null;
-                    
+
                     if (n.getServiceId() != null) {
                         service = catalogStore.findService(n.getServiceId());
                         if (service == null) {
@@ -79,7 +80,7 @@ public class PortalNotificationService {
                             // TODO LATER keep service but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
                         }
                         notif.setAppName(service != null ? service.getName(locale) : "");
-                        
+
                     } else if (n.getInstanceId() != null) {
                         ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
                         if (instance == null) {
@@ -89,7 +90,7 @@ public class PortalNotificationService {
                         CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
                         notif.setAppName(application != null ? application.getName(locale) : "");
                     }
-                    
+
                     notif.setDate(n.getTime());
                     notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
 
@@ -119,7 +120,7 @@ public class PortalNotificationService {
     }
 
     public List<AppNotificationData> getAppNotificationCounts(List<String> serviceIds) {
-        List<UserNotification> userNotifications = getNotifications();
+        List<UserNotification> userNotifications = getNotifications(NotificationStatus.UNREAD);
 
         /*
         Equivalent SQL:
@@ -136,7 +137,7 @@ public class PortalNotificationService {
 
     public Map<String, Integer> getAppNotificationCounts() {
 
-        return getNotifications().stream()
+        return getNotifications(NotificationStatus.UNREAD).stream()
                 .filter(notif -> notif.getServiceId() != null)
                 .collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)));
 
@@ -154,8 +155,8 @@ public class PortalNotificationService {
         return formattedText;
     }
 
-    public List<UserNotification> getNotifications() {
-        return getNotifications(RequestContextUtils.getLocale(request));
+    public List<UserNotification> getNotifications(NotificationStatus status) {
+        return getNotifications(RequestContextUtils.getLocale(request), status);
     }
 
     public void archive(String notificationId) {

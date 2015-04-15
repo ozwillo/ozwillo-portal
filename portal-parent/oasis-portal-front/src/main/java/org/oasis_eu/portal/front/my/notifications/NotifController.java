@@ -2,11 +2,9 @@ package org.oasis_eu.portal.front.my.notifications;
 
 import org.oasis_eu.portal.model.UserNotification;
 import org.oasis_eu.portal.services.PortalNotificationService;
+import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -22,12 +20,13 @@ public class NotifController {
     private PortalNotificationService notificationService;
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
-    public List<UserNotification> getNotifications() {
-        return notificationService.getNotifications();
+    public List<UserNotification> getNotifications(@RequestParam(value = "status", required = false, defaultValue = "UNREAD") NotificationStatus status) {
+        return notificationService.getNotifications(status);
     }
 
     @RequestMapping(value = "/{notificationId}", method = RequestMethod.DELETE)
     public void archive(@PathVariable String notificationId) {
         notificationService.archive(notificationId);
     }
+
 }

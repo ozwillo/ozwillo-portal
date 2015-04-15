@@ -244,3 +244,7 @@ div.empty-avatar {
 .sortable {
     cursor: pointer;
 }
+
+.header-form {
+    margin-top: 20px;
+}

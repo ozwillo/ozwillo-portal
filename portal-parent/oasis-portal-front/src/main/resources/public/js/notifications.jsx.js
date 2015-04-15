@@ -4,7 +4,14 @@
 function t(key) {
     if (typeof _i18n != 'undefined') {
         var v = _i18n[key];
-        if (v != null) return v;
+        if (v != null) {
+            return v;
+        } else {
+            v = _i18n["notif." + key];
+            if (v != null) {
+                return v;
+            }
+        }
     }
     return key;
 }
@@ -20,12 +27,18 @@ var NotificationTable = React.createClass({
             currentSort: {
                 prop: 'date',
                 dir: -1
+            },
+            filter: {
+                app: null,
+                status: "UNREAD"
             }
         };
     },
+
     loadNotifications: function() {
         $.ajax({
             url: this.props.url,
+            data: {status: this.state.filter.status},
             datatype: 'json',
             success: function(data) {
                 var s = this.state;
@@ -81,6 +94,17 @@ var NotificationTable = React.createClass({
             component.setState(state);
         };
     },
+    filterByStatus: function (event) {
+        event.preventDefault();
+        var state = this.state;
+        state.filter.status = event.target.value;
+        this.setState(state);
+        this.loadNotifications();
+    },
+    filterByApp: function (event) {
+        event.preventDefault();
+        console.error("Not implemented");
+    },
     removeNotif: function(id) {
         var notifs = this.state.n.filter(function(n) {return n.id != id;});
         var recentlyRemoved = this.state.recentlyRemoved;
@@ -116,16 +140,38 @@ var NotificationTable = React.createClass({
                     );
             });
             return (
-                <div className="standard-form">
-                    <div className="row form-table-header">
-                        <div className="col-sm-2 sortable" onClick={this.sortBy('date')}>{t('date')}</div>
-                        <div className="col-sm-2 sortable" onClick={this.sortBy('appName')}>{t('app')}</div>
-                        <div className="col-sm-6 sortable" onClick={this.sortBy('formattedText')}>{t('message')}</div>
+                <div>
+                    <NotificationHeader filter={this.state.filter} updateStatus={this.filterByStatus} updateApp={this.filterByApp}/>
+                    <div className="standard-form">
+                        <div className="row form-table-header">
+                            <div className="col-sm-2 sortable" onClick={this.sortBy('date')}>{t('date')}</div>
+                            <div className="col-sm-2 sortable" onClick={this.sortBy('appName')}>{t('app')}</div>
+                            <div className="col-sm-6 sortable" onClick={this.sortBy('formattedText')}>{t('message')}</div>
+                        </div>
+                    {notificationNodes}
                     </div>
-                {notificationNodes}
                 </div>
                 );
         }
+    }
+});
+
+var NotificationHeader = React.createClass({
+    render: function () {
+        return (
+            <div className="row">
+                <h2 className="col-sm-6">{t('ui.notifications')}</h2>
+                <div className="col-sm-6">
+                    <form className="form-inline header-form">
+                        <select name="status" className="form-control" onChange={this.props.updateStatus}>
+                            <option value="UNREAD">{t('unread')}</option>
+                            <option value="READ">{t('read')}</option>
+                            <option value="ANY">{t('any')}</option>
+                        </select>
+                    </form>
+                </div>
+            </div>
+        );
     }
 });
 
