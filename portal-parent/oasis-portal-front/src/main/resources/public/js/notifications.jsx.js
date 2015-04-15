@@ -155,18 +155,38 @@ var NotificationTable = React.createClass({
         }
 
 
+
         return (
             <div>
                 <NotificationHeader filter={this.state.filter} updateStatus={this.filterByStatus} updateAppFilter={this.filterByApp} apps={this.state.apps}/>
                 <div className="standard-form">
                     <div className="row form-table-header">
-                        <div className="col-sm-2 sortable" onClick={this.sortBy('date')}>{t('date')}</div>
-                        <div className="col-sm-2 sortable" onClick={this.sortBy('appName')}>{t('app')}</div>
-                        <div className="col-sm-6 sortable" onClick={this.sortBy('formattedText')}>{t('message')}</div>
+                        <SortableHeader name="date" label="date" size="2" sortBy={this.sortBy} sort={this.state.currentSort}/>
+                        <SortableHeader name="appName" size="2" label="app" sortBy={this.sortBy} sort={this.state.currentSort}/>
+                        <SortableHeader name="formattedText" label="message" size="6" sortBy={this.sortBy} sort={this.state.currentSort}/>
                     </div>
                 {notificationNodes}
                 </div>
             </div>
+        );
+    }
+
+});
+
+var SortableHeader = React.createClass({
+    render: function () {
+        var className = "col-sm-" + this.props.size + " sortable";
+        var sortIcon = <i className="fa fa-sort"></i>;
+        if (this.props.sort.prop == this.props.name) {
+            if (this.props.sort.dir == -1) {
+                sortIcon = <i className="fa fa-sort-desc"></i>;
+            } else {
+                sortIcon = <i className="fa fa-sort-asc"></i>;
+            }
+        }
+
+        return (
+            <div className={className} onClick={this.props.sortBy(this.props.name)}>{t(this.props.label)} {sortIcon}</div>
         );
     }
 
