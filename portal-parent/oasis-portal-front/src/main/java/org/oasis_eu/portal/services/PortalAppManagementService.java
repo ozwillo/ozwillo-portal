@@ -226,7 +226,7 @@ public class PortalAppManagementService {
      */
     public String setInstanceStatus(MyAppsInstance uiInstance) {
         ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());
-        if (!networkService.userIsAdmin(existingInstance.getProviderId())) {
+        if (!userIsAdmin(existingInstance)) {
             throw new AccessDeniedException("Unauthorized access");
         }
 
@@ -236,6 +236,14 @@ public class PortalAppManagementService {
             return catalogStore.setInstanceStatus(instance.getInstanceId(), instance.getStatus());
         }
         return null;
+    }
+    
+    public boolean userIsAdmin(ApplicationInstance existingInstance) {
+        return isPersonalAppInstance(existingInstance) || !networkService.userIsAdmin(existingInstance.getProviderId());
+    }
+
+    public boolean isPersonalAppInstance(ApplicationInstance existingInstance) {
+        return existingInstance.getProviderId() == null;
     }
 
 }
