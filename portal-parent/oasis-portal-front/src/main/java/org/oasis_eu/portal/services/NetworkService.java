@@ -172,6 +172,20 @@ public class NetworkService {
 
             organizationStore.update(org);
         }
+        
+        List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(uiOrganization.getId());
+
+        // note: there can be no added users (we invite them by email directly)
+
+        // find the members to remove
+        memberships.stream().filter(om ->
+                        uiOrganization.getMembers().stream().noneMatch(member -> om.getAccountId().equals(member.getId()))
+        ).forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
+
+        // then the members to change (note: we only change the "admin" flag for now)
+        memberships.stream().filter(om ->
+                        uiOrganization.getMembers().stream().anyMatch(member -> om.getAccountId().equals(member.getId()) && (member.isAdmin() != om.isAdmin()))
+        ).forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
     }
 
 
