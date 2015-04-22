@@ -166,7 +166,8 @@ public class PortalNotificationService {
 
                     return notif;
                 })
-                .sorted((n1, n2) -> n1.getDate().isAfter(n2.getDate()) ? -1 : 1)
+                .sorted((n1, n2) -> n1.getDate() != null && (n2.getDate() == null // some old notif, but would mean "now" for joda time
+                        || n1.getDate().isAfter(n2.getDate())) ? -1 : 1)
                 .collect(Collectors.toList());
     }
 
