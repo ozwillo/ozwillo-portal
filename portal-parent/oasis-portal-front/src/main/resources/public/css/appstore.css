@@ -245,8 +245,9 @@ div.carousel {
     position: relative;
     left: 43px;
     width: 800px;
-    height: 450px;
+    height: 451px;
     border: 1px #5b5f84 solid;
+    margin: 12px 0 24px;
 }
 
 @media (max-width: 991px) {
@@ -325,3 +326,10 @@ div.carousel a.back i.fa {
     left: 5px;
 }
 
+.modal-content .install-application .btn-primary {
+    float: right;
+}
+
+.modal-content .rating-static {
+    margin-left: 6px;
+}
