@@ -239,7 +239,7 @@ public class PortalAppManagementService {
     }
     
     public boolean userIsAdmin(ApplicationInstance existingInstance) {
-        return isPersonalAppInstance(existingInstance) || !networkService.userIsAdmin(existingInstance.getProviderId());
+        return isPersonalAppInstance(existingInstance) || networkService.userIsAdmin(existingInstance.getProviderId());
     }
 
     public boolean isPersonalAppInstance(ApplicationInstance existingInstance) {
