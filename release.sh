@@ -1,0 +1,130 @@
+# args : optional RC number for oasis-portal and oasis-spring-integration (ex. 1, 2 1...)
+
+# generic release function :
+release_project() {
+
+#git pull
+echo "Pulled git. Abort if any problem (CTRL-C), else hit enter."
+read
+
+pushd $MAVEN_ROOT
+SNAPSHOT_DEPS=`mvn dependency:list|grep -v $RELEASE_NAME|grep SNAPSHOT`
+popd
+if [ "$SNAPSHOT_DEPS" != "" ]
+then
+   echo "ERROR Aborting ! This project has SNAPSHOT dependencies : $SNAPSHOT_DEPS"
+   exit 1
+fi
+echo "WARNING Check that dependencies ($DEPENDENCIES) have been released and this project ($RELEASE_NAME)'s pom updated to their latest version if they have any change ! Then hit enter"
+read
+
+if [ "$MINIFY_COMMAND" != "" ]
+then
+   # minify
+   eval $MINIFY_COMMAND
+fi
+git status
+echo "WARNING Check that everything is committed, especially newly minified changes if any ! Then hit enter."
+read
+
+# go in maven project to release it :
+pushd $MAVEN_ROOT
+
+# getting project version and computing next one :
+# see http://stackoverflow.com/questions/3545292/how-to-get-maven-project-version-to-the-bash-command-line
+# getting version ex. 1.10-SNAPSHOT :
+VERSION=`mvn -o org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | sed -n -e '/^\[.*\]/ !{ /^[0-9]/ { p; q } }'`
+# NB. -o else might be rather ex. "Downloaded: https://..."
+# Advances the last number of the given version string by one.
+function remove_version_suffix () {
+    local v=$1
+    # Get the last number. First remove any suffixes (such as '-SNAPSHOT').
+    local cleaned=`echo $v | sed -e 's/[^0-9][^0-9]*$//'`
+    echo $cleaned
+}
+function advance_version () {
+    local v=$1
+    # Get the last number. First remove any suffixes (such as '-SNAPSHOT').
+    local cleaned=`echo $v | sed -e 's/[^0-9][^0-9]*$//'`
+    local last_num=`echo $cleaned | sed -e 's/[0-9]*\.//g'`
+    local next_num=$(($last_num+1))
+    # Finally replace the last number in version string with the new one.
+    echo $v | sed -e "s/[0-9][0-9]*\([^0-9]*\)$/$next_num/"
+}
+function rewind_version () {
+    local v=$1
+    # Get the last number. First remove any suffixes (such as '-SNAPSHOT').
+    local cleaned=`echo $v | sed -e 's/[^0-9][^0-9]*$//'`
+    local last_num=`echo $cleaned | sed -e 's/[0-9]*\.//g'`
+    local next_num=$(($last_num-1))
+    # Finally replace the last number in version string with the new one.
+    echo $v | sed -e "s/[0-9][0-9]*\([^0-9]*\)$/$next_num/"
+}
+
+if [ "$RC" != "" ]
+then
+RELEASE_VERSION=$(rewind_version $(remove_version_suffix $VERSION))"-RC$RC"
+NEXT_VERSION=$(advance_version $RELEASE_VERSION)-SNAPSHOT
+else
+RELEASE_VERSION=$(remove_version_suffix $VERSION)"-RC$RC"
+NEXT_VERSION=$(advance_version $RELEASE_VERSION)-SNAPSHOT
+fi
+TAG="$RELEASE_NAME-$RELEASE_VERSION"
+echo "Releasing $RELEASE_NAME (now at $VERSION) as $TAG and bumping to $NEXT_VERSION. If OK hit enter, else abort (CTRL-C)"
+read
+mvn versions:set -DnewVersion=$RELEASE_VERSION
+# ex. 1.10
+mvn clean install versions:commit
+echo "Upgraded project to release version. Check that it reflects in the above logs (ex. Installing .../$RELEASE_NAME-...-$RELEASE_VERSION.jar), then hit enter"
+read
+echo "Committing changed poms :"
+find . -name "pom.xml" -exec git add {} \; -print
+git commit -m "Tag version $TAG"
+echo "WARNING About to tag already upgraded and committed version, please check everything is OK ! If not then abort (CTRL-C), else hit enter"
+read
+git tag $TAG
+mvn versions:set -DnewVersion=$NEXT_VERSION
+# ex. 1.11-SNAPSHOT
+mvn clean install -DskipTests versions:commit
+echo Committing changed poms :
+find . -name "pom.xml" -exec git add {} \; -print
+git commit -m "Bump to next development iteration"
+popd
+echo "WARNING About to push tag, if you have a doubt about it abort (CTRL-C) and replace your project's .git folder by a freshly cloned one, else hit enter"
+read
+git push && git push --tags
+
+}
+
+
+# RC suffix ex. -RC2 :
+RC=$2
+RELEASE_NAME=oasis-spring-integration
+NVM_VERSION=v0.10.36
+DEPENDENCIES=
+MAVEN_ROOT=.
+MINIFY_COMMAND=
+
+
+SNAPSHOT_DEPS=`mvn dependency:list|grep -v $RELEASE_NAME|grep SNAPSHOT`
+if [ "$SNAPSHOT_DEPS" != "" ]
+then
+   echo "The project has SNAPSHOT dependencies : $SNAPSHOT_DEPS, releasing it"
+
+pushd ../oasis-spring-integration
+release_project
+popd
+
+fi
+
+
+# RC suffix ex. -RC2 :
+RC=$1
+RELEASE_NAME=oasis-portal
+NVM_VERSION=v0.10.36
+DEPENDENCIES=oasis-spring-integration
+MAVEN_ROOT=portal-parent
+# minify : source nvm else Unknown command https://github.com/creationix/nvm/issues/521
+MINIFY_COMMAND=". ~/.nvm/nvm.sh ; nvm install $NVM_VERSION ; ./jsx.py ; echo Minified."
+
+release_project
