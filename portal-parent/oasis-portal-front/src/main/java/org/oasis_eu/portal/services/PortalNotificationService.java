@@ -1,6 +1,14 @@
 package org.oasis_eu.portal.services;
 
-import com.google.common.base.Strings;
+import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.joda.time.format.DateTimeFormat;
 import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
@@ -22,13 +30,7 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.stream.Collectors;
+import com.google.common.base.Strings;
 
 /**
  * User: schambon
@@ -37,6 +39,7 @@ import java.util.stream.Collectors;
 @Service
 public class PortalNotificationService {
 
+    @SuppressWarnings("unused")
     private static final Logger logger = LoggerFactory.getLogger(PortalNotificationService.class);
 
     @Autowired
@@ -53,6 +56,8 @@ public class PortalNotificationService {
 
     @Value("${application.notificationsEnabled:true}")
     private boolean notificationsEnabled;
+    
+    @Value("${application.devmode:false}") private boolean devmode;
 
     @Autowired
     private MessageSource messageSource;
@@ -133,13 +138,20 @@ public class PortalNotificationService {
                     } else if (n.getInstanceId() != null) {
                         ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
                         if (instance == null) {
-                            return null; // skip deleted app instance (rather than displaying no name), see #179 Bug with notifications referring destroyed app instances
-                            // TODO LATER keep app instance but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
+                            // case of #179 Bug with notifications referring destroyed app instances or #206 500 on portal notification api
+                            // LATER we could keep app instance with a "deleted" flag so it doesn't happen (rather than auto deleting this portal data),
+                            // but this wouldn't address the Forbidden case)
+                            if (!devmode) {
+                                return null; // skip deleted or (newly) Forbidden app instance (rather than displaying no name)
+                            } else {
+                                notif.setAppName("Application with deleted or forbidden instance"); // to help debug
+                                notif.setServiceId("");
+                            }
+                        } else {
+                            CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
+                            notif.setAppName(application != null ? application.getName(locale) : "");
+                            notif.setServiceId(application.getId());
                         }
-                        CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
-                        notif.setAppName(application != null ? application.getName(locale) : "");
-                        notif.setServiceId(application.getId());
-
                     }
 
                     notif.setDate(n.getTime());
@@ -162,10 +174,9 @@ public class PortalNotificationService {
                         notif.setActionText(n.getActionLabel());
                     }
 
-//                    notif.setServiceId(n.getServiceId());
-
                     return notif;
                 })
+                .filter(n -> n != null) // case of deleted or Forbidden app instance, see above
                 .sorted((n1, n2) -> n1.getDate() != null && (n2.getDate() == null // some old notif, but would mean "now" for joda time
                         || n1.getDate().isAfter(n2.getDate())) ? -1 : 1)
                 .collect(Collectors.toList());

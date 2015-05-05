@@ -22,6 +22,11 @@ public interface CatalogStore {
 
     List<CatalogEntry> findServicesOfInstance(String instanceId);
 
+    /**
+     * 
+     * @param instanceId
+     * @return null if none or 403 Forbidden
+     */
     ApplicationInstance findApplicationInstance(String instanceId);
 
     List<CatalogEntry> findAllVisible(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
