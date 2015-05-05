@@ -170,6 +170,8 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
         ensureTtlIndex(mongoTemplate, ImageDownloadAttempt.class, "time", imageBlacklistTtl);
         ensureTtlIndex(mongoTemplate, InstalledStatus.class, "computed", installedStatusTtl);
 
+
+
         return mongoTemplate;
     }
 

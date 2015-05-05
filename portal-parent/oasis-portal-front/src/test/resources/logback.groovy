@@ -10,6 +10,7 @@ appender("CONSOLE", ConsoleAppender) {
 }
 
 logger("org.oasis_eu", DEBUG)
+//logger("org.oasis_eu.spring.datacore",INFO)
 logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", DEBUG)
 
 root(WARN, ["CONSOLE"])
