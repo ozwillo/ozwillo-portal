@@ -4,6 +4,7 @@ import com.mongodb.*;
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatus;
+import org.oasis_eu.portal.core.services.search.Tokenizer;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
 import org.oasis_eu.spring.datacore.model.DCOrdering;
@@ -21,10 +22,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClientException;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Stream;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -70,20 +68,84 @@ public class GeographicalAreaCache {
     @Value("${application.geoarea.nameField:geo_city:name}")
     private String nameField = "geo_city:name"; // "geoci:name";
 
-    // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
-    // also we return a Stream since it's likely how we're going to use the data anyhow
+    @Autowired
+    private Tokenizer tokenizer;
+
     public Stream<GeographicalArea> search(String lang, String name, int start, int limit) {
 
+        // This method isn't the nicest to read ever, so here's what it does:
+        // 1. tokenize the input and search the cache for each token in the input
+        // 2. flatten the results into one big stream
+        // 3. reduce the stream into a list of pairs <Area, Frequency>
+        // 4. sort the stream in reverse frequency order so that results that match multiple query terms come first
+        // 4. turn this back into a stream of areas and return
 
+        class Pair {
+            GeographicalArea area;
+            int count = 1;
+
+            public Pair(GeographicalArea area) {
+                this.area = area;
+            }
+
+            public void inc() {
+                count = count + 1;
+            }
+
+            public void inc(int i) {
+                count = count + i;
+            }
+
+            public int count() {
+                return count;
+            }
+
+        }
+
+        LinkedHashMap<String, Pair> collected = tokenizer.tokenize(name)
+                .stream()
+                .filter(tok -> tok.length() >= 3) // only take tokens longer than 3 characters
+                .flatMap(tok -> findOneToken(lang, tok)) // note that findOneToken doesn't allow duplicate URIs in results
+                .collect(LinkedHashMap<String, Pair>::new,
+                        (set, area) -> {
+                            if (set.containsKey(area.getUri())) {
+                                set.get(area.getUri()).inc();
+                            } else {
+                                set.put(area.getUri(), new Pair(area));
+                            }
+                        },
+                        (set1, set2) -> {
+                            for (Pair val : set2.values()) {
+                                if (set1.containsKey(val.area.getUri())) {
+                                    set1.get(val.area.getUri()).inc(val.count());
+                                } else {
+                                    set1.put(val.area.getUri(), val);
+                                }
+                            }
+                        }
+                );
+
+        return collected.values()
+                .stream()
+                .sorted((pair1, pair2) -> pair2.count() - pair1.count())  // reverse order! We want decreasing sort
+                .map(pair -> pair.area)
+                .skip(start)
+                .limit(limit);
+
+
+    }
+
+    private Stream<GeographicalArea> findOneToken(String lang, String name) {
+        // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
+        // sort spec means we want older results first - so that incoming replicates are discarded as long as
+        // there is an online entry
         return template.find(
-                query(where("lang").is(lang).and("name").regex("^" + name, "i")).with(new Sort(Sort.Direction.DESC, "replicationTime")),
+                query(where("lang").is(lang).and("nameTokens").regex("^" + name)).with(new Sort(Sort.Direction.ASC, "replicationTime")),
                 GeographicalArea.class)
                 .stream()
                 .map(DCUrlWrapper::new)
                 .distinct()
-                .map(DCUrlWrapper::unwrap)
-                .skip(start)
-                .limit(limit);
+                .map(DCUrlWrapper::unwrap);
     }
 
     public void save(GeographicalArea area) {
@@ -220,18 +282,22 @@ public class GeographicalAreaCache {
         }
         String name = null;
         for (Map<String, String> nameMap : nameMaps) {
-            String l = nameMap.get("l");
+            String l = nameMap.get("@language");
             if (l == null) {
                 continue; // shouldn't happen
             }
             if (l.equals(language)) {
-                name = nameMap.get("v");
+                name = nameMap.get("@value");
                 break; // can't find better
+            }
+            if (name == null) {
+                name = nameMap.get("@value");
             }
         }
         area.setName(name);
         area.setUri(r.getUri());
         area.setLang(language);
+        area.setNameTokens(tokenizer.tokenize(name));
         //area.setDetailedName(); // TODO fill in Datacore OR RATHER CACHE using names of NUTS3 or else 2 and country
         return area;
     }

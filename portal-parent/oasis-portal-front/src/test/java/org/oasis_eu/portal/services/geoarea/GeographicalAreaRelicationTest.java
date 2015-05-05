@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services.geoarea;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oasis_eu.portal.core.mongo.dao.geo.GeographicalAreaCache;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.main.OasisPortal;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,10 @@ import static org.junit.Assert.assertNotEquals;
 @WebAppConfiguration
 @SpringApplicationConfiguration(classes = {OasisPortal.class})
 @IntegrationTest
-public class GeographicalAreaServiceTest {
+public class GeographicalAreaRelicationTest {
 
     @Autowired
-    private GeographicalAreaService service;
+    private GeographicalAreaCache cache;
 
     @Autowired
     private MongoTemplate template;
@@ -36,7 +37,7 @@ public class GeographicalAreaServiceTest {
 
         template.remove(new Query(), GeographicalArea.class);
 
-        service.cache.replicate();
+        cache.replicate();
 
         assertNotEquals(template.find(new Query(), GeographicalArea.class).size(), 0);
     }

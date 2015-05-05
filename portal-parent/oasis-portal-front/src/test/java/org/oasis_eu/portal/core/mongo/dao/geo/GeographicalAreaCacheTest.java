@@ -1,9 +1,11 @@
 package org.oasis_eu.portal.core.mongo.dao.geo;
 
+import org.joda.time.Instant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatus;
+import org.oasis_eu.portal.core.services.search.Tokenizer;
 import org.oasis_eu.portal.main.OasisPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.SpringApplicationConfiguration;
@@ -28,6 +30,9 @@ public class GeographicalAreaCacheTest {
 
     @Autowired
     private MongoTemplate template;
+
+    @Autowired
+    private Tokenizer tokenizer;
 
     @Test
     public void testSearch() throws Exception {
@@ -84,9 +89,10 @@ public class GeographicalAreaCacheTest {
         assertEquals(GeographicalAreaReplicationStatus.ONLINE, cache.search("fr", "vil", 0, 10).findFirst().get().getStatus());
 
         cache.save(area("villemiseàjour", "fr", "uri1"));
+        // although we've updated "uri1", the old online version is still there and that's the one we should find
         GeographicalArea found = cache.search("fr", "vil", 0, 10).filter(area -> area.getUri().equals("uri1")).findAny().get();
-        assertEquals("villemiseàjour", found.getName());
-        assertEquals(GeographicalAreaReplicationStatus.INCOMING, found.getStatus());
+        assertEquals("ville1", found.getName());
+        assertEquals(GeographicalAreaReplicationStatus.ONLINE, found.getStatus());
 
         cache.deleteByStatus(GeographicalAreaReplicationStatus.ONLINE);
         cache.switchToOnline();
@@ -95,11 +101,40 @@ public class GeographicalAreaCacheTest {
         assertEquals("villemiseàjour", cache.search("fr", "vil", 0, 10).findAny().get().getName());
     }
 
+    @Test
+    public void withTokenization() {
+        template.remove(new Query(), GeographicalArea.class);
+
+        cache.save(area("Éragny-Sur-Epte", "fr", "eragny"));
+        cache.save(area("Ollourdes", "fr", "ollourdes"));
+        cache.save(area("Saint-Genis-Laval", "fr", "laval"));
+        cache.save(area("Lyon Saint-Éxupéry", "fr", "saint-ex"));
+        cache.save(area("Saint-Genis-Les-Ollières", "fr", "ollieres"));
+        cache.save(area("Genisette-Lès-Bain", "fr", "bains"));
+
+
+        List<GeographicalArea> genis = cache.search("fr", "gen oll", 0, 10).collect(Collectors.toList());
+
+        // based on this we should get four results, AND "ollieres" should be 1st, AND "ollourdes" should be last
+        assertEquals(4, genis.size());
+        assertEquals("ollieres", genis.get(0).getUri());
+        assertEquals("ollourdes", genis.get(3).getUri());
+
+        // searching for "era" and "éra" does yield "éragny"
+        assertEquals("eragny", cache.search("fr", "era", 0, 10).findFirst().get().getUri());
+        assertEquals("eragny", cache.search("fr", "éra", 0, 10).findFirst().get().getUri());
+
+        // with tiny tokens...
+        assertEquals(0, cache.search("fr", "ge ol er", 0, 10).count());
+    }
+
     private GeographicalArea area(String name, String lang, String uri) {
         GeographicalArea area = new GeographicalArea();
         area.setLang(lang);
         area.setName(name);
         area.setUri(uri);
+        area.setNameTokens(tokenizer.tokenize(name));
+        area.setReplicationTime(Instant.now());
         return area;
     }
 }

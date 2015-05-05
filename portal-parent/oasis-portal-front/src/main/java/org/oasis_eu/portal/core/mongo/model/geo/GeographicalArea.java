@@ -10,9 +10,11 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.List;
+
 @Document(collection = "geographical_area")
 @CompoundIndexes({
-        @CompoundIndex(name = "lang_name", def = "{'lang':1, 'name':1}")
+        @CompoundIndex(name = "lang_nametokens", def = "{'lang':1, 'nameTokens':1}")
 })
 public class GeographicalArea {
 
@@ -30,6 +32,8 @@ public class GeographicalArea {
     @Field("detailed_name")
     @JsonProperty
     private String detailedName;
+
+    private List<String> nameTokens;
 
     /** URI in Datacore (required if ex. sending directly to store ajax) */
     @JsonProperty
@@ -102,4 +106,11 @@ public class GeographicalArea {
         this.replicationTime = replicationTime;
     }
 
+    public List<String> getNameTokens() {
+        return nameTokens;
+    }
+
+    public void setNameTokens(List<String> nameTokens) {
+        this.nameTokens = nameTokens;
+    }
 }
