@@ -23,6 +23,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClientException;
 
 import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -82,42 +83,46 @@ public class GeographicalAreaCache {
 
         class Pair {
             GeographicalArea area;
-            int count = 1;
+            int queryTerms;
+            int queryMatches = 1;
 
-            public Pair(GeographicalArea area) {
+            public Pair(GeographicalArea area, int queryTerms) {
                 this.area = area;
+                this.queryTerms = queryTerms;
             }
 
             public void inc() {
-                count = count + 1;
+                queryMatches = queryMatches + 1;
             }
 
             public void inc(int i) {
-                count = count + i;
+                queryMatches = queryMatches + i;
             }
 
-            public int count() {
-                return count;
+            public float score() {
+                float l = (float) area.getNameTokens().stream().filter(t -> t.length() >= 3).count();
+                float v = queryMatches / Math.max((float) queryTerms, l);
+                return v;
             }
-
         }
 
-        LinkedHashMap<String, Pair> collected = tokenizer.tokenize(name)
+        List<String> queryTerms = tokenizer.tokenize(name).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
+
+        LinkedHashMap<String, Pair> collected = queryTerms
                 .stream()
-                .filter(tok -> tok.length() >= 3) // only take tokens longer than 3 characters
                 .flatMap(tok -> findOneToken(lang, tok)) // note that findOneToken doesn't allow duplicate URIs in results
                 .collect(LinkedHashMap<String, Pair>::new,
                         (set, area) -> {
                             if (set.containsKey(area.getUri())) {
                                 set.get(area.getUri()).inc();
                             } else {
-                                set.put(area.getUri(), new Pair(area));
+                                set.put(area.getUri(), new Pair(area, queryTerms.size()));
                             }
                         },
                         (set1, set2) -> {
                             for (Pair val : set2.values()) {
                                 if (set1.containsKey(val.area.getUri())) {
-                                    set1.get(val.area.getUri()).inc(val.count());
+                                    set1.get(val.area.getUri()).inc(val.queryMatches);
                                 } else {
                                     set1.put(val.area.getUri(), val);
                                 }
@@ -127,7 +132,7 @@ public class GeographicalAreaCache {
 
         return collected.values()
                 .stream()
-                .sorted((pair1, pair2) -> pair2.count() - pair1.count())  // reverse order! We want decreasing sort
+                .sorted((pair1, pair2) -> new Float(pair2.score()).compareTo(new Float(pair1.score())))
                 .map(pair -> pair.area)
                 .skip(start)
                 .limit(limit);

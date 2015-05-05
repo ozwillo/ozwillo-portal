@@ -115,10 +115,9 @@ public class GeographicalAreaCacheTest {
 
         List<GeographicalArea> genis = cache.search("fr", "gen oll", 0, 10).collect(Collectors.toList());
 
-        // based on this we should get four results, AND "ollieres" should be 1st, AND "ollourdes" should be last
+        // based on this we should get four results, AND "ollieres" should be 1st
         assertEquals(4, genis.size());
         assertEquals("ollieres", genis.get(0).getUri());
-        assertEquals("ollourdes", genis.get(3).getUri());
 
         // searching for "era" and "éra" does yield "éragny"
         assertEquals("eragny", cache.search("fr", "era", 0, 10).findFirst().get().getUri());
@@ -126,6 +125,29 @@ public class GeographicalAreaCacheTest {
 
         // with tiny tokens...
         assertEquals(0, cache.search("fr", "ge ol er", 0, 10).count());
+    }
+
+    @Test
+    public void scoring() {
+        template.remove(new Query(), GeographicalArea.class);
+
+        cache.save(area("Denisovska", "fr", "denisovska"));
+        cache.save(area("Saint-Denis", "fr", "denis"));
+        cache.save(area("Saint-Denis-de-la-Réunion", "fr", "reu"));
+        cache.save(area("Carrouges saint-denis", "fr", "carrouges"));
+
+        // searching for "saint denis" should bring "denis" 1st
+        assertEquals("denis", cache.search("fr", "saint denis", 0, 10).findFirst().get().getUri());
+
+        // same search, "denisovska" should be last
+        assertEquals("denisovska", cache.search("fr", "saint denis", 0, 10).reduce((a, b) -> b).get().getUri());
+
+        // searching for "saint denis reunion" should bring "reu" 1st but still have 4 results
+        List<GeographicalArea> reu = cache.search("fr", "saint denis reunion", 0, 10).collect(Collectors.toList());
+        assertEquals(4, reu.size());
+        assertEquals("reu", reu.get(0).getUri());
+
+        // searching for "carrouges" should
     }
 
     private GeographicalArea area(String name, String lang, String uri) {
