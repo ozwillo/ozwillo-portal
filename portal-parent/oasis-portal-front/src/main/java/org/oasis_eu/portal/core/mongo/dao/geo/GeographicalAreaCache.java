@@ -1,15 +1,30 @@
 package org.oasis_eu.portal.core.mongo.dao.geo;
 
+import com.mongodb.*;
+import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatus;
+import org.oasis_eu.spring.datacore.DatacoreClient;
+import org.oasis_eu.spring.datacore.model.DCOperator;
+import org.oasis_eu.spring.datacore.model.DCOrdering;
+import org.oasis_eu.spring.datacore.model.DCQueryParameters;
+import org.oasis_eu.spring.datacore.model.DCResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.query.TextCriteria;
-import org.springframework.data.mongodb.core.query.TextQuery;
+import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Update;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.RestClientException;
 
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 import static org.springframework.data.mongodb.core.query.Criteria.where;
@@ -22,36 +37,56 @@ import static org.springframework.data.mongodb.core.query.Query.query;
 @Repository
 public class GeographicalAreaCache {
 
+    private static final Logger logger = LoggerFactory.getLogger(GeographicalArea.class);
+
+    @Autowired
+    private DatacoreClient datacore;
+
     @Autowired
     private MongoTemplate template;
+
+    @Autowired
+    private Mongo mongo;
+
+    @Autowired
+    private MappingMongoConverter mappingMongoConverter;
+
+    @Value("${persistence.mongodatabase:portal}")
+    private String mongoDatabaseName;
+
+    @Value("${application.geoarea.replication_batch_size:100}")
+    private int batchSize = 100;
+
+
+    /**
+     * TODO rename prefix ?
+     */
+    @Value("${application.geoarea.storageModel:geo:City_0}")
+    private String storageModel = "geo:City_0"; // "geo:Area_0"; // "geoci:City_0"
+
+    /**
+     * TODO LATER rather odisp:name (or field shortcuts) OR RATHER IN CACHE
+     */
+    @Value("${application.geoarea.nameField:geo_city:name}")
+    private String nameField = "geo_city:name"; // "geoci:name";
 
     // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
     // also we return a Stream since it's likely how we're going to use the data anyhow
     public Stream<GeographicalArea> search(String lang, String name, int start, int limit) {
 
-        TextQuery query = TextQuery.queryText(TextCriteria.forLanguage(FTSLanguageMapper.computeMongoLanguage(lang)).matching(name)).sortByScore();
 
-        return template.find(query, GeographicalArea.class)
+        return template.find(
+                query(where("lang").is(lang).and("name").regex("^" + name, "i")).with(new Sort(Sort.Direction.DESC, "replicationTime")),
+                GeographicalArea.class)
                 .stream()
                 .map(DCUrlWrapper::new)
                 .distinct()
                 .map(DCUrlWrapper::unwrap)
                 .skip(start)
                 .limit(limit);
-
-//        return template.find(
-//                query(where("lang").is(lang).and("name").regex("^" + name, "i")).with(new Sort(Sort.Direction.DESC, "replicationTime")),
-//                GeographicalArea.class)
-//                .stream()
-//                .map(DCUrlWrapper::new)
-//                .distinct()
-//                .map(DCUrlWrapper::unwrap)
-//                .skip(start)
-//                .limit(limit);
     }
 
     public void save(GeographicalArea area) {
-        area.setFtsLanguage(FTSLanguageMapper.computeMongoLanguage(area.getLang()));
         template.save(area);
     }
 
@@ -68,6 +103,137 @@ public class GeographicalAreaCache {
                 Update.update("status", GeographicalAreaReplicationStatus.ONLINE),
                 GeographicalArea.class
         );
+    }
+
+    @Scheduled(cron = "${application.geoarea.replication}")
+    public void replicate() {
+
+        logger.info("Starting replication of geographical data from data core");
+
+        DB db = mongo.getDB(mongoDatabaseName);
+        DBCollection collection = db.getCollection("geographical_area");
+
+        Set<String> loadedUris = new HashSet<>();
+
+        // 1. fetch all the resources from the data core and insert them with status "incoming" in the cache
+        try {
+            String lastNameFetched = null;
+
+            do {
+                logger.debug("Fetching batches of areas");
+                lastNameFetched = fetchBatches(collection, loadedUris, lastNameFetched);
+            } while (lastNameFetched != null);
+
+
+            // 2. delete all the "online" entries (they are replaced with the "incoming" ones)
+            long deleteStart = System.currentTimeMillis();
+            deleteByStatus(GeographicalAreaReplicationStatus.ONLINE);
+            logger.debug("Deleted online data in {} ms", System.currentTimeMillis() - deleteStart);
+
+            // 3. switch all "incoming" entries to "online"
+            long switchStart = System.currentTimeMillis();
+            switchToOnline();
+            logger.debug("Switch to online in {} ms", System.currentTimeMillis() - switchStart);
+
+        } catch (RestClientException e) {
+            logger.error("Error while updating the geo area cache", e);
+
+            // "rollback"
+            deleteByStatus(GeographicalAreaReplicationStatus.INCOMING);
+        }
+
+    }
+
+    private String fetchBatches(DBCollection collection, Set<String> loadedUris, String lastNameFetched) {
+
+
+        BulkWriteOperation builder = collection.initializeUnorderedBulkOperation();
+
+        DCQueryParameters params;
+        params = lastNameFetched == null ?
+                new DCQueryParameters(nameField, DCOrdering.ASCENDING) :
+                new DCQueryParameters(nameField, DCOrdering.ASCENDING, DCOperator.GT, lastNameFetched);
+
+        logger.debug("Querying the Data Core");
+        long queryStart = System.currentTimeMillis();
+        List<DCResource> resources = datacore.findResources(storageModel, params, 0, batchSize);
+        long queryEnd = System.currentTimeMillis();
+        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
+
+        boolean hasOne = false;
+
+        for (DCResource res : resources) {
+            String name = null;
+
+            for (Languages language : Languages.values()) {
+
+                GeographicalArea area = toGeographicalArea(res, language.getLanguage());
+                if (area == null) {
+                    continue;
+                }
+
+                if (!loadedUris.contains(language.getLanguage() + area.getUri())) {
+                    hasOne = true;
+                    if (name == null) {
+                        name = area.getName();
+                        logger.debug("{} - {}", name, area.getUri());
+                    }
+
+                    DBObject dbObject = new BasicDBObject();
+                    mappingMongoConverter.write(area, dbObject);
+
+                    builder.insert(dbObject);
+
+                    loadedUris.add(language.getLanguage() + area.getUri());
+                } else {
+                    if (name == null) {
+                        name = area.getName();
+                        logger.debug("Area {} already inserted for language {}, skipping", area.getName(), language.getLanguage());
+                    }
+                }
+
+            }
+
+            if (name != null) lastNameFetched = name;
+
+        }
+
+        if (hasOne) {
+            long st = System.currentTimeMillis();
+            builder.execute();
+            long durationSave = System.currentTimeMillis() - st;
+            logger.debug("Saved resources; total save time={} ms (avg = {} ms)", durationSave, durationSave / resources.size());
+        }
+
+
+        if (resources.size() < batchSize) return null;
+        else return lastNameFetched;
+    }
+
+    private GeographicalArea toGeographicalArea(DCResource r, String language) {
+        GeographicalArea area = new GeographicalArea();
+        @SuppressWarnings("unchecked")
+        List<Map<String, String>> nameMaps = (List<Map<String, String>>) r.get(nameField);
+        if (nameMaps == null) {
+            logger.warn("DC Resource {} of type {} has no field named {}", r.getUri(), r.getType(), nameField);
+            return null;
+        }
+        String name = null;
+        for (Map<String, String> nameMap : nameMaps) {
+            String l = nameMap.get("l");
+            if (l == null) {
+                continue; // shouldn't happen
+            }
+            if (l.equals(language)) {
+                name = nameMap.get("v");
+                break; // can't find better
+            }
+        }
+        area.setName(name);
+        area.setUri(r.getUri());
+        area.setLang(language);
+        //area.setDetailedName(); // TODO fill in Datacore OR RATHER CACHE using names of NUTS3 or else 2 and country
+        return area;
     }
 }
 

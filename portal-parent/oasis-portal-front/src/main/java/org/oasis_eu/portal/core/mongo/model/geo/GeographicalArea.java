@@ -7,10 +7,8 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
 import org.springframework.data.mongodb.core.index.Indexed;
-import org.springframework.data.mongodb.core.index.TextIndexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
-import org.springframework.data.mongodb.core.mapping.Language;
 
 @Document(collection = "geographical_area")
 @CompoundIndexes({
@@ -24,12 +22,8 @@ public class GeographicalArea {
     /** language used for the name */
     private String lang;
 
-    @Language
-    private String ftsLanguage;
-    
     /** displayed ; in current locale */
     @JsonProperty
-    @TextIndexed
     private String name;
 
     /** to help the user discriminate, built using names of NUTS3 or else 2 parent with country */
@@ -108,11 +102,4 @@ public class GeographicalArea {
         this.replicationTime = replicationTime;
     }
 
-    public String getFtsLanguage() {
-        return ftsLanguage;
-    }
-
-    public void setFtsLanguage(String ftsLanguage) {
-        this.ftsLanguage = ftsLanguage;
-    }
 }

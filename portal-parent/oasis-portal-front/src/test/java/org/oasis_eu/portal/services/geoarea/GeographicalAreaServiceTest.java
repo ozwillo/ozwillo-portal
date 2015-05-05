@@ -36,7 +36,7 @@ public class GeographicalAreaServiceTest {
 
         template.remove(new Query(), GeographicalArea.class);
 
-        service.replicate();
+        service.cache.replicate();
 
         assertNotEquals(template.find(new Query(), GeographicalArea.class).size(), 0);
     }
