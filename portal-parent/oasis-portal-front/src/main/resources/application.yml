@@ -26,6 +26,7 @@ application:
     storageModel: geo:City_0
     nameField: geo_city:name
     fallbackLanguage: en
+    replication: 0 0 3 ? * *
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
 

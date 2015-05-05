@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.front.store;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 
 import java.util.List;
 

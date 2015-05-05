@@ -26,6 +26,8 @@ application:
     storageModel: geo:City_0
     nameField: geo_city:name
     fallbackLanguage: en
+    replication: 0 0 4 25 DEC SUN  # no really, don't.
+    replication_test: false
 
 web:
   home: http://www.ozwillo-dev.eu
