@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.model;
+package org.oasis_eu.portal.model.notifications;
 
 import org.joda.time.Instant;
 

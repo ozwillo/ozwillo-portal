@@ -36,6 +36,10 @@ public class ApplicationInstance {
     String description;
     String icon;
 
+    /** optional ; if Personal app must be the user */
+    @JsonProperty("instantiator_id")
+    String instantiatorId;
+
     @JsonProperty("needed_scopes")
     List<ScopeNeeded> neededScopes;
 
@@ -120,6 +124,14 @@ public class ApplicationInstance {
 
     public void setProviderId(String providerId) {
         this.providerId = providerId;
+    }
+
+    public String getInstantiatorId() {
+        return instantiatorId;
+    }
+
+    public void setInstantiatorId(String instantiatorId) {
+        this.instantiatorId = instantiatorId;
     }
 
     public List<ScopeNeeded> getNeededScopes() {

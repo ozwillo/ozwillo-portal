@@ -48,11 +48,7 @@
 </div>
 
 <div class="container">
-    <h2 th:text="#{ui.notifications}">Notifications</h2>
-
     <div id="notifications"></div>
-
-
 </div>
     <div class="push"></div>
 </div>
@@ -66,13 +62,8 @@
 
 <script data-th-inline="javascript">
     /*<![CDATA[*/
-    _i18n = {};
-    _i18n['date'] = /*[[#{notif.date}]]*/ 'Date';
-    _i18n['app'] = /*[[#{notif.app}]]*/ 'App';
-    _i18n['message'] = /*[[#{notif.message}]]*/ 'Message';
-    _i18n['archive'] = /*[[#{notif.archive}]]*/ 'Archive';
-    _i18n['manage'] = /*[[#{notif.manage}]]*/ 'Manage';
-    _i18n['no-notification'] = /*[[#{notif.no-notification}]]*/ 'No notifications';
+
+    _i18n = /*[[${notif_i18n}]]*/ {};
 
     notificationService = /*[[@{/my/api/notif}]]*/ '../_proto/notif.json';
     /*]]>*/

@@ -92,6 +92,7 @@
                 apps: null,
                 pendingApps: null,
                 dragging: false,
+                draggingPending: false,
                 loadingDashboards: true,
                 loadingApps: true
             };
@@ -111,9 +112,22 @@
                 this.setState(state);
             }.bind(this);
         },
+        startDragPending: function (app) {
+            return function (event) {
+                event.dataTransfer.setData("application/json", JSON.stringify({app: app}));
+                var state = this.state;
+                state.draggingPending = true;
+                this.setState(state);
+            }.bind(this);
+        },
         endDrag: function () {
             var state = this.state;
             state.dragging = false;
+            this.setState(state);
+        },
+        endDragPending: function () {
+            var state = this.state;
+            state.draggingPending = false;
             this.setState(state);
         },
         reorderApps: function (before) {
@@ -156,6 +170,21 @@
             }.bind(this);
         },
 
+        loadPendingApps: function () {
+            var state = this.state;
+            $.ajax({
+                url: dash_service + "/pending-apps",
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    state.pendingApps = data;
+                    this.setState(state);
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error("Error", status, err);
+                }.bind(this)
+            });
+        },
         switchToDashboard: function (dash) {
             return function () {
                 var state = this.state;
@@ -178,18 +207,9 @@
                     }.bind(this)
                 });
 
-                $.ajax({
-                    url: dash_service + "/pending-apps",
-                    type: 'get',
-                    dataType: 'json',
-                    success: function (data) {
-                        state.pendingApps = data;
-                        this.setState(state);
-                    }.bind(this),
-                    error: function (xhr, status, err) {
-                        console.error("Error", status, err);
-                    }.bind(this)
-                });
+                if (dash.main) {
+                    this.loadPendingApps();
+                }
             }.bind(this);
         },
 
@@ -232,6 +252,26 @@
                 success: function() {}.bind(this),
                 error: function(xhr, status, err) {
                     console.error("Error", status, err);
+                    this.setState(this.getInitialState());
+                    this.componentDidMount();
+                }.bind(this)
+            });
+        },
+
+        deletePending: function (app) {
+            var state = this.state;
+            state.draggingPending = false;
+            console.log("Deleting pending app", app);
+            this.setState(state);
+
+            $.ajax({
+                url: dash_service + "/pending-apps/" + app.id,
+                type: "delete",
+                success: function () {
+                    this.loadPendingApps();
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error("Cannot delete pending app", status, err);
                     this.setState(this.getInitialState());
                     this.componentDidMount();
                 }.bind(this)
@@ -311,9 +351,11 @@
                         dashboards={this.state.dashboards}
                         currentDash={this.state.dash}
                         dragging={this.state.dragging}
+                        draggingPending={this.state.draggingPending}
                         switchToDashboard={this.switchToDashboard}
                         moveToDash={this.moveToDash}
                         deleteApp={this.deleteApp}
+                        deletePending={this.deletePending}
                         createDash={this.createDash}
                         renameDash={this.renameDash}
                         removeDash={this.removeDash}
@@ -324,7 +366,9 @@
                         apps={this.state.apps}
                         pendingApps={this.state.pendingApps}
                         startDrag={this.startDrag}
+                        startDragPending={this.startDragPending}
                         endDrag={this.endDrag}
+                        endDragPending={this.endDragPending}
                         dragging={this.state.dragging}
                         dropCallback={this.reorderApps}
                     />
@@ -364,12 +408,14 @@
                         <img src={image_root + "my/switch-dash.png"} />
                         <p>{t('switch-dash')}</p>
                         <ul className="nav nav-pills nav-stacked text-left">
-                {dashboards}
+                        {dashboards}
                         </ul>
                         <CreateDashboard addDash={this.props.createDash} />
                         <DeleteApp
                             dragging={this.props.dragging}
+                            draggingPending={this.props.draggingPending}
                             delete={this.props.deleteApp}
+                            deletePending={this.props.deletePending}
                         />
                     </div>
                 );
@@ -546,7 +592,7 @@
 
     var DeleteApp = React.createClass({
         getInitialState: function () {
-            return {over: false, app: null};
+            return {over: false, app: null, pending: false};
         },
         over: function (isOver) {
             return function (event) {
@@ -559,7 +605,7 @@
         drop: function (event) {
             var app = JSON.parse(event.dataTransfer.getData("application/json")).app;
 
-            this.setState({over: true, app: app});
+            this.setState({over: true, app: app, pending: this.props.draggingPending});
             this.refs.modal.open();
 
             //this.props.delete(app);
@@ -567,7 +613,11 @@
         },
         removeApp: function () {
             var app = this.state.app;
-            this.props.delete(app);
+            if (!this.state.pending) {
+                this.props.delete(app);
+            } else {
+                this.props.deletePending(app);
+            }
             this.refs.modal.close();
             this.setState(this.getInitialState());
 
@@ -577,7 +627,7 @@
             this.setState(this.getInitialState());
         },
         render: function () {
-            if (this.props.dragging || this.state.app) {
+            if (this.props.dragging || this.props.draggingPending || this.state.app) {
                 var className = "delete-app" + (this.state.over ? " over" : "");
                 var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
                 return (
@@ -635,6 +685,8 @@
                             <PendingApp
                                 key={app.id}
                                 app={app}
+                                startDrag={this.props.startDragPending}
+                                endDrag={this.props.endDragPending}
                             />
                         );
                     }
@@ -690,7 +742,7 @@
             return (
                 <div className="appzone">
                     <div className="dropzone"/>
-                    <div className="app text-center" draggable="false">
+                    <div className="app text-center" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
                         <img src={this.props.app.icon} alt={this.props.app.name} draggable="false" className="pending"/>
                         <p>{this.props.app.name}</p>
                     </div>
@@ -704,8 +756,10 @@
             return {over: false};
         },
         dragOver: function (event) {
-            event.preventDefault();         // allow dropping here!
-            this.setState({over: true});
+            if (this.props.dragging) {
+                event.preventDefault();         // allow dropping here!
+                this.setState({over: true});
+            }
         },
         dragLeave: function () {
             this.setState({over: false});

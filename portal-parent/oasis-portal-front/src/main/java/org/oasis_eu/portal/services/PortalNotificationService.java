@@ -6,8 +6,10 @@ import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.model.UserNotification;
 import org.oasis_eu.portal.model.dashboard.AppNotificationData;
+import org.oasis_eu.portal.model.notifications.NotifApp;
+import org.oasis_eu.portal.model.notifications.UserNotification;
+import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
 import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.NotificationService;
@@ -22,7 +24,10 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -62,16 +67,60 @@ public class PortalNotificationService {
                 .count();
     }
 
-    public List<UserNotification> getNotifications(Locale locale) {
+    public UserNotificationResponse getNotifications(Locale locale, NotificationStatus status) {
         if (!notificationsEnabled) {
-            return Collections.emptyList();
+            return new UserNotificationResponse();
         }
-        return notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+        List<InboundNotification> notifications = notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.ANY);
+
+        List<NotifApp> notifApps = notifications
                 .stream()
+                .map(n -> {
+                    CatalogEntry service = null;
+                    if (n.getServiceId() != null) {
+                        service = catalogStore.findService(n.getServiceId());
+                        if (service == null) {
+                            return null;
+                        } else {
+                            return new NotifApp(service.getId(), service.getName(locale));
+                        }
+                    } else if (n.getInstanceId() != null) {
+                        ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
+                        if (instance == null) {
+                            return null;
+                        } else {
+                            return new NotifApp(instance.getApplicationId(), catalogStore.findApplication(instance.getApplicationId()).getName(locale));
+                        }
+                    } else return null;
+                })
+                .filter(napp -> napp != null)
+                .distinct()
+                .collect(Collectors.toList());
+
+
+        List<UserNotification> notifs = extractNotifications(locale, status, notifications);
+
+        return new UserNotificationResponse(notifs, notifApps);
+    }
+
+    /**
+     * Specifically get unread notifications only (don't query the kernel for other stuff)
+     *
+     * @return
+     */
+    public List<UserNotification> getUnreadNotifications() {
+        return extractNotifications(RequestContextUtils.getLocale(request),
+                NotificationStatus.UNREAD, notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD));
+    }
+
+    public List<UserNotification> extractNotifications(Locale locale, NotificationStatus status, List<InboundNotification> notifications) {
+        return notifications
+                .stream()
+                .filter(n -> NotificationStatus.ANY.equals(status) || status.equals(n.getStatus()))
                 .map(n -> {
                     UserNotification notif = new UserNotification();
                     CatalogEntry service = null;
-                    
+
                     if (n.getServiceId() != null) {
                         service = catalogStore.findService(n.getServiceId());
                         if (service == null) {
@@ -79,7 +128,8 @@ public class PortalNotificationService {
                             // TODO LATER keep service but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
                         }
                         notif.setAppName(service != null ? service.getName(locale) : "");
-                        
+                        notif.setServiceId(service.getId());
+
                     } else if (n.getInstanceId() != null) {
                         ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
                         if (instance == null) {
@@ -88,8 +138,10 @@ public class PortalNotificationService {
                         }
                         CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
                         notif.setAppName(application != null ? application.getName(locale) : "");
+                        notif.setServiceId(application.getId());
+
                     }
-                    
+
                     notif.setDate(n.getTime());
                     notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
 
@@ -110,16 +162,19 @@ public class PortalNotificationService {
                         notif.setActionText(n.getActionLabel());
                     }
 
-                    notif.setServiceId(n.getServiceId());
+//                    notif.setServiceId(n.getServiceId());
 
                     return notif;
                 })
-                .sorted((n1, n2) -> n1.getDate().isAfter(n2.getDate()) ? -1 : 1)
+                .sorted((n1, n2) -> n1.getDate() != null && (n2.getDate() == null // some old notif, but would mean "now" for joda time
+                        || n1.getDate().isAfter(n2.getDate())) ? -1 : 1)
                 .collect(Collectors.toList());
     }
 
+
     public List<AppNotificationData> getAppNotificationCounts(List<String> serviceIds) {
-        List<UserNotification> userNotifications = getNotifications();
+        List<UserNotification> userNotifications = getUnreadNotifications();
+
 
         /*
         Equivalent SQL:
@@ -134,9 +189,10 @@ public class PortalNotificationService {
                 .collect(Collectors.toList());
     }
 
+
     public Map<String, Integer> getAppNotificationCounts() {
 
-        return getNotifications().stream()
+        return getUnreadNotifications().stream()
                 .filter(notif -> notif.getServiceId() != null)
                 .collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)));
 
@@ -154,8 +210,8 @@ public class PortalNotificationService {
         return formattedText;
     }
 
-    public List<UserNotification> getNotifications() {
-        return getNotifications(RequestContextUtils.getLocale(request));
+    public UserNotificationResponse getNotifications(NotificationStatus status) {
+        return getNotifications(RequestContextUtils.getLocale(request), status);
     }
 
     public void archive(String notificationId) {

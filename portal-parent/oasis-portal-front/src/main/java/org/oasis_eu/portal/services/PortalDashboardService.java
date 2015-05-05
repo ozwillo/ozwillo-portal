@@ -8,8 +8,10 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
+import org.oasis_eu.portal.core.mongo.dao.my.HiddenPendingAppsRepository;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
+import org.oasis_eu.portal.core.mongo.model.my.HiddenPendingApps;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
@@ -35,7 +37,6 @@ import java.util.stream.Collectors;
  * Date: 6/12/14
  */
 @Service
-//@Scope(value = WebApplicationContext.SCOPE_REQUEST, proxyMode = ScopedProxyMode.TARGET_CLASS) // create a new instance for each request!
 public class PortalDashboardService {
 
     private static final Logger logger = LoggerFactory.getLogger(PortalDashboardService.class);
@@ -50,6 +51,9 @@ public class PortalDashboardService {
     private DashboardRepository dashboardRepository;
 
     @Autowired
+    private HiddenPendingAppsRepository hiddenPendingAppsRepository;
+
+    @Autowired
     private SubscriptionStore subscriptionStore;
 
     @Autowired
@@ -60,9 +64,6 @@ public class PortalDashboardService {
 
     @Autowired
     private UserInfoService userInfoHelper;
-
-    @Autowired
-    private PortalNotificationService notificationService;
 
     @Autowired
     private ImageService imageService;
@@ -113,7 +114,7 @@ public class PortalDashboardService {
 
         UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
         if (userContext == null) {
-            logger.info("Cannot get apps for non-existant dashboard {}, user={}", userContextId, userInfoHelper.currentUser().getUserId());
+            logger.info("Cannot get apps for non-existing dashboard {}, user={}", userContextId, userInfoHelper.currentUser().getUserId());
             return Collections.emptyList();
         }
 
@@ -284,7 +285,7 @@ public class PortalDashboardService {
         Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
         if (dashboard != null) {
 
-            // at one point we didn't store the service id in the subscription object. Now that we do, maybe some
+            // at one point we didn't store the service id in the subscription object. Now that we do, maybe some migration is needed
             boolean needsMigrate = dashboard.getContexts().stream().flatMap(uc -> uc.getSubscriptions().stream()).anyMatch(us -> us.getServiceId() == null);
             if (needsMigrate) {
 
@@ -308,10 +309,24 @@ public class PortalDashboardService {
 
     public List<DashboardPendingApp> getPendingApps() {
 
+        HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
+
         return applicationInstanceStore.findPendingInstances(userInfoHelper.currentUser().getUserId())
                 .stream()
+                .filter(instance -> hidden == null || !hidden.getHiddenApps().contains(instance.getInstanceId()))
                 .map(this::toPendingApp)
                 .collect(Collectors.toList());
+    }
+
+    public void removePendingApp(String appId) {
+        HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
+        if (hidden == null) {
+            hidden = new HiddenPendingApps();
+            hidden.setUserId(userInfoHelper.currentUser().getUserId());
+
+        }
+        hidden.hideApp(appId);
+        hiddenPendingAppsRepository.save(hidden);
     }
 
     private DashboardPendingApp toPendingApp(ApplicationInstance instance) {

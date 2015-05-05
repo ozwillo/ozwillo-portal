@@ -61,6 +61,11 @@ public class DashboardAJAXServices {
         portalDashboardService.unsubscribeApp(appId);
     }
 
+    @RequestMapping(value = "/pending-apps/{appId}", method = DELETE)
+    public void removePendingApp(@PathVariable String appId) {
+        portalDashboardService.removePendingApp(appId);
+    }
+
     @RequestMapping(value = "/pending-apps", method = GET)
     public List<DashboardPendingApp> pendingApps() {
         return portalDashboardService.getPendingApps();

@@ -30,6 +30,7 @@ public class NotificationsController {
     @Value("${application.notificationsEnabled:true}")
     private boolean notificationsEnabled;
 
+
     @RequestMapping(method = RequestMethod.GET, value="/notifications")
     @ResponseBody
     public NotificationData getNotificationData(HttpServletRequest request) {
