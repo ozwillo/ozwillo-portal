@@ -83,6 +83,7 @@ public class PortalAppManagementService {
                 .stream()
                 .filter(instance -> ! ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
                 .map(i -> fetchInstance(i, fetchServices))
+                .filter(i -> i!= null) // skip if application deleted, Forbidden (??)... else #208 Catalog not displayed
                 .collect(Collectors.toList());
     }
 
@@ -90,16 +91,26 @@ public class PortalAppManagementService {
         return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
                 .stream()
                 .filter(instance -> !ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
-                .map(i -> fetchInstance(i, fetchServices))
+                .map(i -> fetchInstance(i, fetchServices)) // skip if application deleted, Forbidden (??)... else #208 Catalog not displayed
+                .filter(i -> i!= null)
                 .collect(Collectors.toList());
 
     }
 
+    /**
+     * 
+     * @param instance
+     * @param fetchServices
+     * @return null if can't find application : deleted, Forbidden (??)... else #208 Catalog not displayed
+     */
     private MyAppsInstance fetchInstance(ApplicationInstance instance, boolean fetchServices) {
 
         logger.debug("Fetching instance data for {}", instance);
 
         CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
+        if (entry == null) {
+            return null; // deleted, Forbidden (??)... else #208 Catalog not displayed
+        }
         AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), entry.getIcon(RequestContextUtils.getLocale(request)));
 
         MyAppsInstance uiInstance = fillUIInstance(new MyAppsInstance()
