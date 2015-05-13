@@ -34,6 +34,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -186,6 +187,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
 
     @Override
+    @CachePut(value = "services", key = "#result.id")
     public CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service) {
 
         // we need to be sure to grab everything from the original
