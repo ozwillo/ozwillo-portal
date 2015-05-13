@@ -52,10 +52,15 @@ cd oasis-portal-front
 #export MAVEN_OPTS="-Xdebug -Xnoagent -Djava.compiler=NONE -Xrunjdwp:transport=dt_socket,address=8003,server=y,suspend=n"
 mvn spring-boot:run
 ```
-which allows hotswapping (including of thymeleaf templates if cache set to false in application.yml, default)
+which allows hotswapping (including of thymeleaf templates if cache set to false in [application.yml](https://github.com/pole-numerique/oasis-portal/blob/master/portal-parent/oasis-portal-front/src/main/resources/application.yml), default)
+
+And finally open http://localhost:8080/en/store (root would redirect to the Joomla server) with your favorite browser.
+
+NB. to be used, Portal features require Kernel and Datacore servers to be deployed and configured in [application.yml](https://github.com/pole-numerique/oasis-portal/blob/master/portal-parent/oasis-portal-front/src/main/resources/application.yml).
+You can deploy your own, or [ask](http://www.ozwillo.com) to get access to the online Ozwillo dev environment.
 
 ## Debugging js :
-in src/main/resources/application.yml, set spring: thymeleaf: cache: to false
+in [application.yml](https://github.com/pole-numerique/oasis-portal/blob/master/portal-parent/oasis-portal-front/src/main/resources/application.yml), set spring: thymeleaf: cache: to false
 
 ## Configuring the reverse-proxy
 
