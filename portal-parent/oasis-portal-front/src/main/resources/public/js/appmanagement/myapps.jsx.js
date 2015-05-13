@@ -311,7 +311,7 @@ var Instance = React.createClass({
                 <div className="panel-body">
                     <div className="standard-form">
                         <div className="row form-table-header">
-                            <div class="col-sm-10">{t('services')}</div>
+                            <div className="col-sm-10">{t('services')}</div>
                         </div>
                         {services}
                     </div>
