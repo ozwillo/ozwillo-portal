@@ -713,7 +713,7 @@
     var AppZone = React.createClass({
         render: function () {
             return (
-                <div className="appzone">
+                <div className="appzone" title={this.props.app.name}>
                     <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback(this.props.app)}/>
                     <AppIcon app={this.props.app} startDrag={this.props.startDrag} endDrag={this.props.endDrag}/>
                 </div>
@@ -742,7 +742,7 @@
             return (
                 <div className="appzone">
                     <div className="dropzone"/>
-                    <div className="app text-center" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
+                    <div className="app" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
                         <img src={this.props.app.icon} alt={this.props.app.name} draggable="false" className="pending"/>
                         <p>{this.props.app.name}</p>
                     </div>
@@ -787,7 +787,7 @@
                 url = this.props.app.notificationUrl;
             }
             return (
-                <div className="app text-center" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
+                <div className="app" draggable="true" onDragStart={this.props.startDrag(this.props.app)} onDragEnd={this.props.endDrag}>
                     <img src={this.props.app.icon} alt={this.props.app.name} />
                     <a href={url} target="_new" className="app-link" draggable="false" />
                     {notif}

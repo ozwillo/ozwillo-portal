@@ -12,7 +12,21 @@ div.appzone div.app {
 
     padding-top: 10px;
     border-radius: 5px;
+    text-align:center    
+}
 
+/* See non-webkit sol : http://codepen.io/anon/pen/oXxKpE?editors=110 */
+
+@supports (-webkit-line-clamp: 4) {
+    div.appzone div.app p {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;  
+	text-overflow: ellipsis;
+    }
+    div.appzone div.app p:after {
+        display: none;
+    }
 }
 
 div.appzone div.dropzone {
