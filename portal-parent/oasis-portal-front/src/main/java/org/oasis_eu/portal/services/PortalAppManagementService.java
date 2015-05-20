@@ -83,7 +83,7 @@ public class PortalAppManagementService {
                 .stream()
                 .filter(instance -> ! ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
                 .map(i -> fetchInstance(i, fetchServices))
-                .filter(i -> i!= null) // skip if application deleted, Forbidden (??)... else #208 Catalog not displayed
+                .filter(i -> i!= null) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
                 .collect(Collectors.toList());
     }
 
@@ -91,7 +91,7 @@ public class PortalAppManagementService {
         return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
                 .stream()
                 .filter(instance -> !ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
-                .map(i -> fetchInstance(i, fetchServices)) // skip if application deleted, Forbidden (??)... else #208 Catalog not displayed
+                .map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
                 .filter(i -> i!= null)
                 .collect(Collectors.toList());
 
@@ -101,7 +101,7 @@ public class PortalAppManagementService {
      * 
      * @param instance
      * @param fetchServices
-     * @return null if can't find application : deleted, Forbidden (??)... else #208 Catalog not displayed
+     * @return null if can't find application : Forbidden (else #208 Catalog not displayed), deleted...
      */
     private MyAppsInstance fetchInstance(ApplicationInstance instance, boolean fetchServices) {
 
@@ -109,7 +109,7 @@ public class PortalAppManagementService {
 
         CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
         if (entry == null) {
-            return null; // deleted, Forbidden (??)... else #208 Catalog not displayed
+            return null; // Forbidden (else #208 Catalog not displayed), deleted...
         }
         AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), entry.getIcon(RequestContextUtils.getLocale(request)));
 
