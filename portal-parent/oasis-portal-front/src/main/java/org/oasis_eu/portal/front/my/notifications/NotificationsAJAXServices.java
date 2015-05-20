@@ -1,6 +1,8 @@
 package org.oasis_eu.portal.front.my.notifications;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -19,7 +21,7 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/my/api")
-public class NotificationsController {
+public class NotificationsAJAXServices extends BaseAJAXServices{
 
     @Autowired
     private PortalNotificationService notificationService;

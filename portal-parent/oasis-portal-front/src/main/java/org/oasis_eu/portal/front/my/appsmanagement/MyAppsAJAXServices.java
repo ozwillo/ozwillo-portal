@@ -12,6 +12,7 @@ import javax.validation.Valid;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
@@ -22,16 +23,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.access.AccessDeniedException;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -42,7 +39,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @RestController
 @RequestMapping("/my/api/myapps")
-public class MyAppsAJAXServices {
+public class MyAppsAJAXServices extends BaseAJAXServices {
 
     private static final Logger logger = LoggerFactory.getLogger(MyAppsAJAXServices.class);
 
@@ -188,10 +185,5 @@ public class MyAppsAJAXServices {
         @JsonProperty boolean success;
         @JsonProperty List<String> errors;
     }
-
-
-    @ExceptionHandler(AccessDeniedException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public void accessDenied() {}
 
 }

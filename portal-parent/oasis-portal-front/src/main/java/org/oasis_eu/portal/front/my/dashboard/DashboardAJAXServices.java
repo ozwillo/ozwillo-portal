@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.front.my.dashboard;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
+import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.portal.services.PortalDashboardService;
@@ -11,10 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import java.util.List;
 import java.util.Map;
-
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
@@ -23,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 @RequestMapping("/my/api/dashboard")
-public class DashboardAJAXServices {
+public class DashboardAJAXServices extends BaseAJAXServices {
 
     @Autowired
     private PortalDashboardService portalDashboardService;
@@ -96,4 +96,6 @@ public class DashboardAJAXServices {
     public Map<String, Integer> getAppNotificationCounts() {
         return portalNotificationService.getAppNotificationCounts();
     }
+
+    
 }

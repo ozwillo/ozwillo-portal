@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.front.store;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
@@ -8,6 +9,7 @@ import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
 import org.oasis_eu.portal.model.network.UIOrganization;
@@ -24,7 +26,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -40,7 +41,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.GET;
  */
 @RestController
 @RequestMapping("/api/store")
-public class StoreAJAXServices {
+public class StoreAJAXServices extends BaseAJAXServices {
 
     private static final Logger logger = LoggerFactory.getLogger(StoreAJAXServices.class);
 
@@ -160,13 +161,6 @@ public class StoreAJAXServices {
                 .filter(o -> OrganizationStatus.AVAILABLE.equals(o.getStatus())) // not deleted ones
                 .filter(o -> info.getCatalogEntry().getTargetAudience().stream().anyMatch(audience -> audience.isCompatibleWith(o.getType())))
                 .collect(Collectors.toList());
-    }
-
-
-    @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handleException() {
-
     }
 
     private StoreApplication toStoreApplication(AppstoreHit hit) {

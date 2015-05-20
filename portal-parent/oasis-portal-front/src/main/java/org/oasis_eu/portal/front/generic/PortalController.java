@@ -181,7 +181,10 @@ abstract public class PortalController {
     protected boolean requiresLogout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication instanceof OpenIdCAuthentication) {
-            if (openIdCService.getUserInfo(((OpenIdCAuthentication) authentication).getAccessToken()) == null) {
+        	
+        	OpenIdCAuthentication openIdCAuthentication = (OpenIdCAuthentication) authentication;        	
+        	
+            if (openIdCService.getUserInfo(openIdCAuthentication) == null) {
                 return true;
             }
         }

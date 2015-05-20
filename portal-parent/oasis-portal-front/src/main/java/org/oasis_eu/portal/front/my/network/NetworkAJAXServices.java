@@ -10,21 +10,18 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import org.hibernate.validator.constraints.NotEmpty;
+import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
-import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.validation.Errors;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -35,7 +32,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @RestController
 @RequestMapping("/my/api/network")
-public class NetworkAJAXServices {
+public class NetworkAJAXServices extends BaseAJAXServices {
 
     private static final Logger logger = LoggerFactory.getLogger(NetworkAJAXServices.class);
 
@@ -95,19 +92,8 @@ public class NetworkAJAXServices {
 
         return networkService.setOrganizationStatus(organization);
     }
-
-    @ExceptionHandler(WrongQueryException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    public void handleErrors() {
-
-    }
-
-    @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
-    public void hande403() {
-
-    }
-
+  
+    
     public static class InvitationRequest {
         @JsonProperty
         @NotNull
