@@ -7,6 +7,7 @@ release_project() {
 echo "Pulled git. Abort if any problem (CTRL-C), else hit enter."
 read
 
+# dependencies outside this current project :
 pushd $MAVEN_ROOT
 SNAPSHOT_DEPS=`mvn dependency:list|grep -v $RELEASE_NAME|grep SNAPSHOT`
 popd
@@ -33,8 +34,9 @@ pushd $MAVEN_ROOT
 # getting project version and computing next one :
 # see http://stackoverflow.com/questions/3545292/how-to-get-maven-project-version-to-the-bash-command-line
 # getting version ex. 1.10-SNAPSHOT :
-VERSION=`mvn -o org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | sed -n -e '/^\[.*\]/ !{ /^[0-9]/ { p; q } }'`
-# NB. -o else might be rather ex. "Downloaded: https://..."
+VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | sed -n -e '/^\[.*\]/ !{ /^[0-9]/ { p; q } }'`
+# NB. if this plugin is not yet there, is rather "Downloaded: https://..."
+# so it must be retried (but using -o is worse since it prevents downloading)
 # Advances the last number of the given version string by one.
 function remove_version_suffix () {
     local v=$1
@@ -66,7 +68,7 @@ then
 RELEASE_VERSION=$(rewind_version $(remove_version_suffix $VERSION))"-RC$RC"
 NEXT_VERSION=$(advance_version $RELEASE_VERSION)-SNAPSHOT
 else
-RELEASE_VERSION=$(remove_version_suffix $VERSION)"-RC$RC"
+RELEASE_VERSION=$(remove_version_suffix $VERSION)
 NEXT_VERSION=$(advance_version $RELEASE_VERSION)-SNAPSHOT
 fi
 TAG="$RELEASE_NAME-$RELEASE_VERSION"
@@ -106,10 +108,13 @@ MAVEN_ROOT=.
 MINIFY_COMMAND=
 
 
-SNAPSHOT_DEPS=`mvn dependency:list|grep -v $RELEASE_NAME|grep SNAPSHOT`
+# dependencies ON $RELEASE_NAME :
+pushd portal-parent
+SNAPSHOT_DEPS=`mvn dependency:list|grep $RELEASE_NAME|grep SNAPSHOT`
+popd
 if [ "$SNAPSHOT_DEPS" != "" ]
 then
-   echo "The project has SNAPSHOT dependencies : $SNAPSHOT_DEPS, releasing it"
+   echo "The main project has SNAPSHOT dependencies : $SNAPSHOT_DEPS, releasing it"
 
 pushd ../oasis-spring-integration
 release_project

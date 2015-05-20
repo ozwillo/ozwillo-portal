@@ -113,12 +113,13 @@ source ~/.bashrc
 nvm install v0.10.36
 
 # install react-tools :
+npm install -g uglify-js
 #npm install jsx
 npm install -g react-tools
 #react-tools@0.12.2 /home/mdutoo/.nvm/v0.10.36/lib/node_modules/react-tools
 
 # compile & minify :
-TODO
-##jsx --watch src/ src/
+Install python (2.7) using your favorite package manager, then :
+./jsx.py
 # see also http://facebook.github.io/react/docs/getting-started.html
 ```
