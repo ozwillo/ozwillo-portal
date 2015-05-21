@@ -4,6 +4,9 @@
 *.war
 *.ear
 
+*~
+.~*#
+
 # Maven
 target/
 

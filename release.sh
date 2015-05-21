@@ -16,7 +16,9 @@ then
    echo "ERROR Aborting ! This project has SNAPSHOT dependencies : $SNAPSHOT_DEPS"
    exit 1
 fi
-echo "WARNING Check that dependencies ($DEPENDENCIES) have been released and this project ($RELEASE_NAME)'s pom updated to their latest version if they have any change ! Then hit enter"
+echo "WARNING Check that dependencies ($DEPENDENCIES) have been released and this project ($RELEASE_NAME)'s pom updated to their latest version if they have any change ! Abort if any problem (CTRL-C), else hit enter."
+read
+echo "WARNING Check that unit tests work (mvn clean install) ! Abort if any problem (CTRL-C), else hit enter."
 read
 
 if [ "$MINIFY_COMMAND" != "" ]
@@ -25,7 +27,7 @@ then
    eval $MINIFY_COMMAND
 fi
 git status
-echo "WARNING Check that everything is committed, especially newly minified changes if any ! Then hit enter."
+echo "WARNING Check that everything is committed, especially newly minified changes if any ! Abort if any problem (CTRL-C), else hit enter."
 read
 
 # go in maven project to release it :
@@ -74,9 +76,11 @@ fi
 TAG="$RELEASE_NAME-$RELEASE_VERSION"
 echo "Releasing $RELEASE_NAME (now at $VERSION) as $TAG and bumping to $NEXT_VERSION. If OK hit enter, else abort (CTRL-C)"
 read
+
 mvn versions:set -DnewVersion=$RELEASE_VERSION
 # ex. 1.10
-mvn clean install versions:commit
+# NB. can't execute unit tests because they sometimes fail undeterministically (IllegalStateException)
+mvn clean install versions:commit -DskipTests=true
 echo "Upgraded project to release version. Check that it reflects in the above logs (ex. Installing .../$RELEASE_NAME-...-$RELEASE_VERSION.jar), then hit enter"
 read
 echo "Committing changed poms :"
@@ -87,14 +91,14 @@ read
 git tag $TAG
 mvn versions:set -DnewVersion=$NEXT_VERSION
 # ex. 1.11-SNAPSHOT
-mvn clean install -DskipTests versions:commit
+mvn clean install versions:commit -DskipTests
 echo Committing changed poms :
 find . -name "pom.xml" -exec git add {} \; -print
 git commit -m "Bump to next development iteration"
 popd
 echo "WARNING About to push tag, if you have a doubt about it abort (CTRL-C) and replace your project's .git folder by a freshly cloned one, else hit enter"
 read
-git push && git push --tags
+git push origin master && git push origin master --tags
 
 }
 
