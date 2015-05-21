@@ -64,6 +64,7 @@ $(document).ready(function () {
     	$('#btn-remove-avatar', $el).click(function(e) {
     		$('#selected-avatar').val('');
     		$('#selected-avatar-image').hide();
+    		
     		$('#empty-avatar-label').show();
     		$('#btn-remove-avatar').hide();
     	})
@@ -74,12 +75,42 @@ $(document).ready(function () {
     		$('#selected-avatar').val($(this).attr('src'));
     		$('#selected-avatar-image').attr('src', $(this).attr('src'));
     		$('#selected-avatar-image').show();
+    		
     		$('#btn-remove-avatar').show();
     		$('#empty-avatar-label').hide();
+    		
     		$('#modal-edit-avatar').modal('hide');
     		return false;
 		});
-		
+
+    	$('#btn-upload-avatar', $el).click(function(e) {
+    		$('#upload-avatar').click();
+    	});
+        $('#upload-avatar', $el).change(function(e) {
+        	console.log(this.files[0], this.form.action);
+    		var formData = new FormData();
+	        formData.append('iconFile', this.files[0]);
+	        $.ajax({
+	            url: this.form.action,
+	            cache: false,
+	            contentType: false,
+	            processData: false,
+	            type: "POST",
+	            data: formData,
+	            success: function(servedImageUrlData) {
+	        		$('#selected-avatar').val(servedImageUrlData);
+	        		$('#selected-avatar-image').attr('src', servedImageUrlData);
+	        		
+	        		$('#btn-remove-avatar').show();
+	        		$('#empty-avatar-label').hide();
+	            },
+	            error: function (xhr, status, err) {
+	                console.error(status, err.toString());
+	        		$('#modal-avatar-upload-failure').modal('show');
+	            }
+	        });
+    	});
+    	
     	$('.action-select-option', $el).click(function(e) {
     		var $this = $(this);
     		var optionId = e.target.id;
