@@ -74,13 +74,16 @@
 
 <div data-th-fragment="avatar-widget (widget, value, mode)">
 
-  	<div class="col-md-2 avatar-block">
+  	<div class="col-md-6 avatar-block">
   		<input id="selected-avatar" type="hidden" data-th-field="*{__${widget.id}__}" />
-      	<img id="selected-avatar-image" data-th-src="${value}" data-th-class="${#strings.isEmpty(value)}? 'avatar-empty':'avatar'" />
-      	<div id="empty-avatar-label" class="empty-avatar" data-th-if="${#strings.isEmpty(value)}" data-th-text="#{my.profile.account.noavatar}">No avatar</div>
-      	<button id="btn-edit-avatar" class="btn btn-edit" type="button" data-th-attr="disabled=${'VIEW'.equals(mode.toString())}">
+      	<img id="selected-avatar-image" class="avatar" data-th-src="${value}" data-th-style="${#strings.isEmpty(value)?'display:none':''}" />
+      	<div id="empty-avatar-label" class="avatar empty" data-th-style="${!#strings.isEmpty(value)?'display:none':''}" data-th-text="#{my.profile.account.noavatar}">No avatar</div>
+       	<button id="btn-edit-avatar" class="btn btn-edit" type="button" data-th-attr="disabled=${'VIEW'.equals(mode.toString())}">
       		<span class="edit"></span><span data-th-text="#{my.profile.account.changeavatar}">Change avatar</span>
       	</button>
+        <button id="btn-remove-avatar" class="btn btn-remove" type="button" data-th-if="${!#strings.isEmpty(value) and 'EDIT'.equals(mode.toString())}">
+            <span class="remove"></span><span data-th-text="#{ui.remove}">Remove</span>
+        </button>
   	</div>
 	
 	<div id="modal-edit-avatar" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">

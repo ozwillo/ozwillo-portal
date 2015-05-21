@@ -61,15 +61,21 @@ $(document).ready(function () {
     		$('#modal-edit-avatar').modal('show');
     		return false;
     	})
+    	$('#btn-remove-avatar', $el).click(function(e) {
+    		$('#selected-avatar').val('');
+    		$('#selected-avatar-image').hide();
+    		$('#empty-avatar-label').show();
+    		$('#btn-remove-avatar').hide();
+    	})
 		$('.action-select-avatar', $el).click(function(e) {
 			e.preventDefault();
 			$('.action-select-avatar').removeClass('selected');
 			$(this).addClass('selected');
     		$('#selected-avatar').val($(this).attr('src'));
     		$('#selected-avatar-image').attr('src', $(this).attr('src'));
-    		$('#selected-avatar-image').removeClass('avatar-empty');
-    		$('#selected-avatar-image').addClass('avatar');
-    		$('#empty-avatar-label').attr('style', 'display:none');
+    		$('#selected-avatar-image').show();
+    		$('#btn-remove-avatar').show();
+    		$('#empty-avatar-label').hide();
     		$('#modal-edit-avatar').modal('hide');
     		return false;
 		});
