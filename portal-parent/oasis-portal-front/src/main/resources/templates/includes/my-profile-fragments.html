@@ -37,6 +37,11 @@
         </div>
       </div>
     </form>
+    
+    <form role="form" data-th-action="@{'/media/objectIcon/'+${modelObject.userId}}" method="post" style="display: none">
+        <input type="file" id="upload-avatar" name="upload-avatar" />
+    </form>
+    
     </div>
   </div>
 
@@ -74,16 +79,34 @@
 
 <div data-th-fragment="avatar-widget (widget, value, mode)">
 
-  	<div class="col-md-2 avatar-block">
+  	<div class="col-md-12 avatar-block">
   		<input id="selected-avatar" type="hidden" data-th-field="*{__${widget.id}__}" />
-      	<img id="selected-avatar-image" data-th-src="${value}" data-th-class="${#strings.isEmpty(value)}? 'avatar-empty':'avatar'" />
-      	<div id="empty-avatar-label" class="empty-avatar" data-th-if="${#strings.isEmpty(value)}" data-th-text="#{my.profile.account.noavatar}">No avatar</div>
-      	<button id="btn-edit-avatar" class="btn btn-edit" type="button" data-th-attr="disabled=${'VIEW'.equals(mode.toString())}">
+      	<img id="selected-avatar-image" class="avatar" data-th-src="${value}" data-th-style="${#strings.isEmpty(value)?'display:none':''}" />
+      	<div id="empty-avatar-label" class="avatar empty" data-th-style="${!#strings.isEmpty(value)?'display:none':''}" data-th-text="#{my.profile.account.noavatar}">No avatar</div>
+       	<button id="btn-edit-avatar" class="btn btn-edit" type="button" data-th-attr="disabled=${'VIEW'.equals(mode.toString())}">
       		<span class="edit"></span><span data-th-text="#{my.profile.account.changeavatar}">Change avatar</span>
       	</button>
+        <button id="btn-upload-avatar" class="btn btn-edit" type="button" data-th-style="${'VIEW'.equals(mode.toString())?'display:none':''}">
+      		<span class="edit"></span><span data-th-text="#{my.profile.account.uploadavatar}">Upload file...</span>
+      	</button>
+        <button id="btn-remove-avatar" class="btn btn-remove" type="button" data-th-if="${!#strings.isEmpty(value) and 'EDIT'.equals(mode.toString())}">
+            <span class="remove"></span><span data-th-text="#{ui.remove}">Remove</span>
+        </button>
   	</div>
-	
-	<div id="modal-edit-avatar" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+
+    <div id="modal-avatar-upload-failure" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header" data-th-text="#{my.profile.account.uploadfailure.title}"></div>
+                <div class="modal-body" data-th-text="#{my.profile.account.uploadfailure.message}"></div>
+                <div class="modal-footer">
+                   <button type="button" class="btn btn-default" data-dismiss="modal" data-th-value="#{ui.cancel}">Cancel</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="modal-edit-avatar" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
      <div class="modal-dialog">
        <div class="modal-content">
          <div class="modal-header">

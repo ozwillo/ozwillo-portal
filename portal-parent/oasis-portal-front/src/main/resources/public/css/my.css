@@ -179,27 +179,20 @@ h2 .badge {
 }
 
 .avatar-block {
-    text-align: center;
 }
 
-img.avatar {
+.avatar {
     height: 163px;
     margin-bottom: 10px;
-    display: inline-block;
+    display: block;
 }
 
-img.avatar-empty {
-    
-    display: none;
-}
-
-div.empty-avatar {
+.avatar.empty {
    background-color: white;
-   width: 100px;
-   height: 100px;
+   width: 163px;
    border-radius: 50%;
-   margin: auto;
-   padding-top: 45%;
+   padding-top: 70px;
+   text-align: center;
 }
 
 .form-toggle-block {
