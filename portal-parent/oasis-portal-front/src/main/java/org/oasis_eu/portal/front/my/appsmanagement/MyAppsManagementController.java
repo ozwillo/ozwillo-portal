@@ -1,6 +1,14 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
@@ -12,9 +20,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * User: schambon
@@ -31,7 +37,8 @@ public class MyAppsManagementController extends PortalController {
             "restricted-service",
             "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
 
-    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete", "confirm", "close", "unexpected_error");
+    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete", "confirm", "close", 
+    		"unexpected_error","something_went_wrong_msg", "something_went_wrong_title");
 
     @Autowired
     private MyNavigationService navigationService;

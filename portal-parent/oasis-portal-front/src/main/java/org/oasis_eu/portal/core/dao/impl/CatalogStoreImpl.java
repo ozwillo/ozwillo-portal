@@ -109,8 +109,7 @@ public class CatalogStoreImpl implements CatalogStore {
         
         String uri = uriBuilder.build().toUriString();
 
-        List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getForObject(uri, CatalogEntry[].class, none()));
-
+        List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getEntityOrNull(uri, CatalogEntry[].class, none()) );
         if (logger.isDebugEnabled()) {
             logger.debug("Found catalog entries:");
             catalogEntries.forEach(e -> logger.debug(e.toString()));
@@ -137,7 +136,6 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     private CatalogEntry getCatalogEntry(String id, String endpoint) {
-
         return kernel.getEntityOrNull(endpoint, CatalogEntry.class, userIfExists(), id);
     }
 
@@ -168,10 +166,11 @@ public class CatalogStoreImpl implements CatalogStore {
     @Cacheable("services-of-instance")
     public List<CatalogEntry> findServicesOfInstance(String instanceId) {
         logger.debug("Finding services of instance {}", instanceId);
-
-        CatalogEntry[] body = kernel.exchange(appsEndpoint + "/instance/{instance_id}/services", HttpMethod.GET, null, CatalogEntry[].class, user(), instanceId).getBody();
-        if (body != null) {
-            return Arrays.asList(body);
+        
+        CatalogEntry[] catalogEntryArray = kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}/services",
+        		CatalogEntry[].class, user(), instanceId);
+        if (catalogEntryArray != null) {
+            return Arrays.asList(catalogEntryArray);
         } else {
             logger.error("Empty services collection found for instance {}", instanceId);
             return Collections.emptyList();
@@ -182,7 +181,7 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     @Cacheable("instances")
     public ApplicationInstance findApplicationInstance(String instanceId) {
-        return kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId).getBody();
+    	return kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
     }
 
 
@@ -191,11 +190,12 @@ public class CatalogStoreImpl implements CatalogStore {
     public CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service) {
 
         // we need to be sure to grab everything from the original
-
-        ResponseEntity<KernelService> entity = kernel.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.GET, null, KernelService.class, user(), serviceId);
+    	ResponseEntity<KernelService> entity = kernel.exchange(appsEndpoint + "/service/{service_id}",
+    			HttpMethod.GET, null, KernelService.class, user(), serviceId);
         String etag = entity.getHeaders().get("ETag").get(0);
 
-        KernelService kernelService = entity.getBody();
+        KernelService kernelService = kernel.getBodyUnlessClientError(entity, KernelService.class, 
+        		appsEndpoint + "/service/{service_id}", serviceId);
         
         // copy / map localized props :
         // TODO Q could hl be also used in GET id ?? then those service props are already localized
@@ -229,18 +229,21 @@ public class CatalogStoreImpl implements CatalogStore {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", etag);
 
-        return kernel.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<>(kernelService, headers), CatalogEntry.class, user(), serviceId).getBody();
+        return kernel.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<>(kernelService, headers), 
+        		CatalogEntry.class, user(), serviceId).getBody();
     }
 
     @Override
     public String setInstanceStatus(String instanceId, InstantiationStatus status) {
         logger.warn("Deleting instance {}", instanceId);
 
-        ResponseEntity<ApplicationInstance> instanceEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
-        String eTag = instanceEntity.getHeaders().getETag();
+        ResponseEntity<ApplicationInstance> respAppInstance = kernel.exchange(appsEndpoint + "/instance/{instance_id}",
+        		HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
+        String eTag = respAppInstance.getHeaders().getETag();
 
         // clear local mongo cache :
-        InstalledStatus installedStatus = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, instanceEntity.getBody().getApplicationId(), userInfoHelper.currentUser().getUserId());
+        InstalledStatus installedStatus = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, 
+        		respAppInstance.getBody().getApplicationId(), userInfoHelper.currentUser().getUserId());
         if (installedStatus != null) {
             installedStatusRepository.delete(installedStatus);
         }
@@ -248,14 +251,17 @@ public class CatalogStoreImpl implements CatalogStore {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", eTag); // only if we have the up-to-date version
         
-        ApplicationInstance instance = instanceEntity.getBody();
+        ApplicationInstance instance = kernel.getBodyUnlessClientError(respAppInstance, ApplicationInstance.class, 
+        		appsEndpoint + "/instance/{instance_id}", instanceId);
+
         instance.setStatus(status);
         ResponseEntity<String> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
                 new HttpEntity<ApplicationInstance>(instance, headers), String.class, user(), instanceId);
-        if (resEntity.getStatusCode().is4xxClientError() || resEntity.getStatusCode().is5xxServerError()) {
+        
+        if (resEntity.getStatusCode().is4xxClientError()) {
             String res = resEntity.getBody();
             if (res != null && !res.trim().isEmpty()) {
-                return res; // error message if any
+                return res; // error message if any see #162 #163
             }
         }
         return null;

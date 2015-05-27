@@ -686,3 +686,39 @@ div.legalese {
     margin-top: 40px;
     font-weight: bold;
 }
+
+/* Error Dialog */
+.ui-dialog {
+    left: 0;
+    outline: 0 none;
+    padding: 0 !important;
+    position: absolute;
+    top: 0;
+    opacity: 0.5;
+}
+
+.ui-dialog .ui-dialog-content {
+    background: none repeat scroll 0 0 transparent;
+    border: 0 none;
+    overflow: auto;
+    position: relative;
+    padding: 0 !important;
+font-weight:Bold;
+}
+
+.ui-widget-header {
+    background: #d9534f;
+    border: 0;
+    color: #222222;
+    font-weight: normal;
+}
+
+.ui-dialog .ui-dialog-titlebar {
+    padding: 0.1em .5em;
+    position: relative;
+    font-size: 1em;
+}
+
+div#dialog-error {
+    display:none;
+}

@@ -1,5 +1,10 @@
 package org.oasis_eu.portal.core.dao.impl;
 
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
@@ -19,12 +24,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.HttpServerErrorException;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
 /**
  * User: schambon
@@ -47,35 +46,37 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     @Override
     @Cacheable("subscriptions")
     public List<Subscription> findByUserId(String userId) {
-        try {
-            ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null, Subscription[].class, user(), userId);
-
-            if (logger.isDebugEnabled()) {
-                logger.debug("--> " + response.getStatusCode());
-                if (response.getBody() != null) {
-                    for (Subscription s : response.getBody()) {
-                        logger.debug("Subscribed: {}", s);
-                    }
+               	
+        ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null, 
+        			Subscription[].class, user(), userId);
+        
+        Subscription[] subscriptions = kernel.getBodyOrNull(response, Subscription[].class, endpoint + "/user/{user_id}", userId);
+        
+        if (logger.isDebugEnabled()) {
+            logger.debug("--> " + response.getStatusCode()); // supplementary, subscription-specific log
+            if (subscriptions != null) {
+                for (Subscription s : subscriptions) {
+                    logger.debug("Subscribed: {}", s);
                 }
             }
-
-            return Arrays.asList(response.getBody());
-        } catch (HttpServerErrorException hse) {
-            logger.error("Remote server threw a 500", hse);
-            throw new TechnicalErrorException();
         }
+
+        return Arrays.asList(subscriptions);
     }
 
     @Override
     public void create(String userId, Subscription subscription) {
         logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
 
-        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.SERVICE, subscription.getServiceId(), userId);
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
+        		CatalogEntryType.SERVICE, subscription.getServiceId(), userId);
+        
         if (status != null) {
             installedStatusRepository.delete(status);
         }
 
-        ResponseEntity<Void> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription), Void.class, user(), userId);
+        ResponseEntity<Void> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription), 
+        		Void.class, user(), userId);
 
         if (response.getStatusCode().is2xxSuccessful()) {
             logger.debug("Created subscription: {}", response.getStatusCode());
@@ -84,7 +85,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             if (response.getStatusCode().is4xxClientError()) {
                 throw new WrongQueryException();
             } else {
-                throw new TechnicalErrorException();
+                throw new TechnicalErrorException(); // NB. 5xx error already rethrown in Kernel
             }
         }
     }
@@ -92,18 +93,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Override
     public List<Subscription> findByServiceId(String serviceId) {
-        ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/service/{service_id}", HttpMethod.GET, null, Subscription[].class, user(), serviceId);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            return Arrays.asList(response.getBody());
-        } else {
-            if (response.getStatusCode().is4xxClientError()) {
-                throw new WrongQueryException();
-            } else {
-                throw new TechnicalErrorException();
-            }
-        }
-
+    	return Arrays.asList(kernel.getEntityOrException(endpoint + "/service/{service_id}", Subscription[].class, user(), serviceId));
     }
 
     @Override
@@ -124,7 +114,8 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
                     HttpHeaders headers = new HttpHeaders();
                     headers.add("If-Match", s.getSubscriptionEtag());
 
-                    kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<>(headers), Void.class, user(), s.getId());
+                    kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<>(headers), 
+                    		Void.class, user(), s.getId());
                 });
 
     }
@@ -132,17 +123,22 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     public void unsubscribe(String subscriptionId) {
 
+    	ResponseEntity<Subscription> response = kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.GET, null, 
+        		Subscription.class, user(), subscriptionId);
+    	
+        Subscription subscription = kernel.getBodyUnlessClientError(response, Subscription.class, 
+        		endpoint + "/subscription/{subscription_id}", subscriptionId);
 
-        HttpEntity<Subscription> entity = kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.GET, null, Subscription.class, user(), subscriptionId);
-
-        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.SERVICE, entity.getBody().getServiceId(), entity.getBody().getUserId());
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
+        		CatalogEntryType.SERVICE, subscription.getServiceId(), subscription.getUserId());
         if (status != null) {
             installedStatusRepository.delete(status);
         }
 
 
         HttpHeaders headers = new HttpHeaders();
-        headers.add("If-Match", entity.getHeaders().getETag());
-        kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), Subscription.class, user(), subscriptionId);
+        headers.add("If-Match", response.getHeaders().getETag());
+        kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), 
+        		Subscription.class, user(), subscriptionId);
     }
 }

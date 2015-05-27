@@ -1,26 +1,20 @@
 package org.oasis_eu.portal.core.dao.impl;
 
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
+
+import java.util.Arrays;
+import java.util.List;
+
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
-import org.oasis_eu.portal.core.exception.EntityNotFoundException;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
-import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
-
-import java.util.Arrays;
-import java.util.List;
-
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
 /**
  * User: schambon
@@ -40,27 +34,16 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
     @Override
     @Cacheable("user-instances")
     public List<ApplicationInstance> findByUserId(String userId) {
-
-        return Arrays.asList(kernel.exchange(appsEndpoint + "/instance/user/{user_id}", HttpMethod.GET, null, ApplicationInstance[].class, user(), userId).getBody());
+    	return Arrays.asList(kernel.getEntityOrNull(appsEndpoint + "/instance/user/{user_id}",
+    			ApplicationInstance[].class, user(), userId));
 
     }
 
     @Cacheable("org-instances")
     public List<ApplicationInstance> findByOrganizationId(String organizationId) {
-
-        ResponseEntity<ApplicationInstance[]> exchange = kernel.exchange(appsEndpoint + "/instance/organization/{organization_id}", HttpMethod.GET, null, ApplicationInstance[].class, user(), organizationId);
-
-        // note: we throw exceptions corresponding to what the actual result is. The response message itself is already logged so we are not losing any information.
-        if (exchange.getStatusCode().is2xxSuccessful()) {
-            return Arrays.asList(exchange.getBody());
-        } else if (HttpStatus.NOT_FOUND.equals(exchange.getStatusCode())) {
-            throw new EntityNotFoundException();
-        } else if (exchange.getStatusCode().is4xxClientError()) {
-            throw new WrongQueryException();
-        } else {
-            throw new TechnicalErrorException();
-        }
-
+        ApplicationInstance[] appInstanceArray = kernel.getEntityOrException(appsEndpoint + "/instance/organization/{organization_id}",
+        		ApplicationInstance[].class, user(), organizationId);
+        return Arrays.asList(appInstanceArray);
     }
 
     // NOT cacheable - we want to call the kernel all the time for that
@@ -74,8 +57,8 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
                 .expand(userId)
                 .toUriString();
 
-        List<ApplicationInstance> applicationInstances = Arrays.asList(kernel.exchange(uriString, HttpMethod.GET, null, ApplicationInstance[].class, user()).getBody());
-        logger.debug("Found {} pending instances", applicationInstances.size());
-        return applicationInstances;
+        List<ApplicationInstance> appInstancesList = Arrays.asList(kernel.getEntityOrNull(uriString,  ApplicationInstance[].class, user()));
+        logger.debug("Found {} pending instances", appInstancesList.size());
+        return appInstancesList;
     }
 }

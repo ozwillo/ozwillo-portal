@@ -1,6 +1,14 @@
 package org.oasis_eu.portal.front.my;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
@@ -17,9 +25,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * User: schambon
@@ -43,8 +49,10 @@ public class MyOzwilloController extends PortalController {
     @Autowired
     private MessageSource messageSource;
 
-    private static List<String> i18keys = Arrays.asList("create", "switch-dash", "confirm-delete-dash", "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long");
-    private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go", "general-error", "edit", "add", "remove");
+    private static List<String> i18keys = Arrays.asList("create", "switch-dash", "confirm-delete-dash", 
+    		"confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long");
+    private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go", 
+    		"general-error", "edit", "add", "remove", "something_went_wrong_msg", "something_went_wrong_title");
 
 
     @ModelAttribute("i18n")

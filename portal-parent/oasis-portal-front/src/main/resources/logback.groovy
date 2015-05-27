@@ -13,6 +13,7 @@ appender("CONSOLE", ConsoleAppender) {
 logger("org.oasis_eu.portal.main", INFO)
 logger("org.oasis_eu", INFO)
 logger("org.oasis_eu.portal.config.OasisLocaleResolver", INFO)
+logger("kernelLogging.logFullErrorResponses", ERROR) // ERROR, WARN, INFO, DEBUG
 logger("kernelLogging.logRequestTimings", DEBUG)
 
 

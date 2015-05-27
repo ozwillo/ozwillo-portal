@@ -1,5 +1,15 @@
 package org.oasis_eu.portal.front.store;
 
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
+
 import org.oasis_eu.portal.config.AppStoreNavigationStatus;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.front.generic.PortalController;
@@ -9,15 +19,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpSession;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -45,11 +55,14 @@ public class AppStoreController extends PortalController {
 
 
     private static final List<String> i18nkeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid",
-            "languages-supported-by-applications", "look-for-an-application", "keywords",
-            "installed", "tos", "privacy", "by", "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app", "already-rated", "launch");
+            "languages-supported-by-applications", "look-for-an-application", "keywords","installed", "tos", "privacy", "by", 
+            "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", 
+            "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app", "already-rated", "launch");
     private static final List<String> languagekeys = Arrays.asList("all", "en", "fr", "it", "es", "ca", "tr", "bg"); // OASIS locales
-    private static final List<String> generickeys = Arrays.asList("save", "cancel", "ok", "appstore", "close", "loading", "location");
-    private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "create");
+    private static final List<String> generickeys = Arrays.asList("save", "cancel", "ok", "appstore", "close", "loading", "location", 
+    		"something_went_wrong_msg", "something_went_wrong_title");
+    private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY", 
+    		"organization-type.COMPANY", "create");
 
     @ModelAttribute("i18n")
     public Map<String, String> i18n(HttpServletRequest request) {

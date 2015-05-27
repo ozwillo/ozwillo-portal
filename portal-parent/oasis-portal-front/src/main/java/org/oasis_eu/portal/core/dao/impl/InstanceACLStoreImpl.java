@@ -36,9 +36,8 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 
     @Override
     public List<ACE> getACL(String instanceId) {
-
-        List<ACE> acl = Arrays.asList(kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.GET, null, ACE[].class, user(), instanceId).getBody());
-
+        List<ACE> acl = Arrays.asList(kernel.getEntityOrNull(endpoint + "/acl/instance/{instanceId}",
+        		ACE[].class, user(), instanceId));
         if (logger.isDebugEnabled()) {
             logger.debug("ACL for instance {}", instanceId);
             acl.stream().forEach(ace -> logger.debug("- {} - {}", ace.getUserId(), ace.getUserName()));
