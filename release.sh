@@ -16,7 +16,7 @@ then
    echo "ERROR Aborting ! This project has SNAPSHOT dependencies : $SNAPSHOT_DEPS"
    exit 1
 fi
-echo "WARNING Check that dependencies ($DEPENDENCIES) have been released and this project ($RELEASE_NAME)'s pom updated to their latest version if they have any change ! Abort if any problem (CTRL-C), else hit enter."
+echo "WARNING Check that dependencies ($DEPENDENCIES) have been released and checked out with said release and this project ($RELEASE_NAME)'s pom updated to their latest version if they have any change ! Abort if any problem (CTRL-C), else hit enter."
 read
 echo "WARNING Check that unit tests work (mvn clean install) ! Abort if any problem (CTRL-C), else hit enter."
 read
@@ -100,6 +100,8 @@ echo "WARNING About to push tag, if you have a doubt about it abort (CTRL-C) and
 read
 git push origin master && git push origin master --tags
 
+echo "Successfully released $RELEASE_NAME ! Checking it out (required for dependent projects) :"
+git checkout $TAG
 }
 
 
