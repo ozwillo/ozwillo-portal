@@ -105,7 +105,7 @@ git checkout $TAG
 }
 
 
-# RC suffix ex. -RC2 :
+# RC suffix ex. 2 :
 RC=$2
 RELEASE_NAME=oasis-spring-integration
 NVM_VERSION=v0.10.36
@@ -129,7 +129,7 @@ popd
 fi
 
 
-# RC suffix ex. -RC2 :
+# RC suffix ex. 2 :
 RC=$1
 RELEASE_NAME=oasis-portal
 NVM_VERSION=v0.10.36

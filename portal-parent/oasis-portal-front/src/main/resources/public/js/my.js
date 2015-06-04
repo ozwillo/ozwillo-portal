@@ -60,7 +60,7 @@ $(document).ready(function () {
 			var error = jQuery("<div id='dialog-error' />" );
 			error.attr('title', messages['ui.something_went_wrong_title']);
 			error.text(err_message);
-			openErrorDialog(error, 2500);
+			//openErrorDialog(error, 2500); // RC1 hotfix (better : see #220 NullPointerException)
         }
             
 	}
@@ -71,7 +71,7 @@ $(document).ready(function () {
 		error.attr('title', messages['ui.something_went_wrong_title']);
 		error.text(messages['ui.something_went_wrong_msg']);
 
-		openErrorDialog(error, 2500);
+		//openErrorDialog(error, 2500); // RC1 hotfix (better : see #219 feedback on explicit user actions)
 	}
 });
 
