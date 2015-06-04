@@ -82,7 +82,7 @@
             <dependency>
                 <groupId>org.oasis_eu.spring-integration</groupId>
                 <artifactId>oasis-spring-integration</artifactId>
-                <version>1.11-SNAPSHOT</version>
+                <version>1.11</version>
             </dependency>
 
 
