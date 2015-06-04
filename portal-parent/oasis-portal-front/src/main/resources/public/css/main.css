@@ -530,6 +530,13 @@ div.container.main-content {
     line-height: 30px;
 }
 
+.form-table-row-italics {
+    font-style: italic;
+    padding: 1px;
+    border-bottom: 1px solid #CCC;
+    line-height: 30px;
+}
+
 .form-table-row:last-child {
     border-bottom: none;
 }
@@ -702,8 +709,8 @@ div.legalese {
     border: 0 none;
     overflow: auto;
     position: relative;
-    padding: 0 !important;
-font-weight:Bold;
+    padding: 0.1em .5em !important;
+    /*font-weight:Bold;*/
 }
 
 .ui-widget-header {

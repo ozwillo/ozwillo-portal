@@ -54,6 +54,9 @@ public class UIOrganization {
     @JsonProperty
     List<UIOrganizationMember> members = new ArrayList<>();
 
+    @JsonProperty
+    List<UIPendingOrganizationMember> pendingMemberships = new ArrayList<>();
+
     public String getId() {
         return id;
     }
@@ -150,6 +153,14 @@ public class UIOrganization {
         this.statusChangeRequesterLabel = statusChangeRequesterLabel;
     }
 
+    public List<UIPendingOrganizationMember> getPendingMemberships() {
+        return pendingMemberships;
+    }
+
+    public void setPendingMemberships(List<UIPendingOrganizationMember> pendingMemberships) {
+        this.pendingMemberships = pendingMemberships;
+    }
+
     @Override
     public String toString() {
         return "{" +
@@ -160,6 +171,7 @@ public class UIOrganization {
                 ", status:" + status +
                 ", admin:" + admin +
                 ", members:" + members +
+                ", pending_memberships:" + pendingMemberships +
                 '}';
     }
 }

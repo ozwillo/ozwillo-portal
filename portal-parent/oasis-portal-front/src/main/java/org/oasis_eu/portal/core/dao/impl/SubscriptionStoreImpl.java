@@ -11,7 +11,6 @@ import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
-import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
@@ -65,7 +64,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     }
 
     @Override
-    public void create(String userId, Subscription subscription) {
+    public void create(String userId, Subscription subscription) throws WrongQueryException{
         logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
 
         InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
@@ -75,19 +74,11 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             installedStatusRepository.delete(status);
         }
 
-        ResponseEntity<Void> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.POST, new HttpEntity<>(subscription), 
-        		Void.class, user(), userId);
-
-        if (response.getStatusCode().is2xxSuccessful()) {
-            logger.debug("Created subscription: {}", response.getStatusCode());
-        } else {
-            logger.warn("Subscription creation failed: {} {}", response.getStatusCode(), response.getStatusCode().getReasonPhrase());
-            if (response.getStatusCode().is4xxClientError()) {
-                throw new WrongQueryException();
-            } else {
-                throw new TechnicalErrorException(); // NB. 5xx error already rethrown in Kernel
-            }
-        }
+        String uri = endpoint + "/user/{user_id}";
+        ResponseEntity<Void> kernelResp = kernel.exchange(uri, HttpMethod.POST,
+                new HttpEntity<>(subscription), Void.class, user(), userId);
+        // validate response body
+        kernel.getBodyUnlessClientError(kernelResp, Void.class, uri); // TODO test
     }
 
 
@@ -121,13 +112,12 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     }
 
 
-    public void unsubscribe(String subscriptionId) {
+    public void unsubscribe(String subscriptionId) throws WrongQueryException{
 
-    	ResponseEntity<Subscription> response = kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.GET, null, 
-        		Subscription.class, user(), subscriptionId);
-    	
-        Subscription subscription = kernel.getBodyUnlessClientError(response, Subscription.class, 
-        		endpoint + "/subscription/{subscription_id}", subscriptionId);
+        String uri = endpoint + "/subscription/{subscription_id}";
+        ResponseEntity<Subscription> response = kernel.exchange(uri, HttpMethod.GET, null, Subscription.class, user(), subscriptionId);
+
+        Subscription subscription = kernel.getBodyUnlessClientError(response, Subscription.class, uri, subscriptionId);
 
         InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
         		CatalogEntryType.SERVICE, subscription.getServiceId(), subscription.getUserId());
@@ -135,10 +125,13 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             installedStatusRepository.delete(status);
         }
 
-
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", response.getHeaders().getETag());
-        kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<Object>(headers), 
-        		Subscription.class, user(), subscriptionId);
+
+        ResponseEntity<Subscription> kernelResp = kernel.exchange(uri, HttpMethod.DELETE, new HttpEntity<Object>(headers),
+                Subscription.class, user(), subscriptionId);
+        // validate response body
+        kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri); // TODO test
     }
+
 }

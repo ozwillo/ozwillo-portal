@@ -60,7 +60,7 @@ public class AppStoreController extends PortalController {
             "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app", "already-rated", "launch");
     private static final List<String> languagekeys = Arrays.asList("all", "en", "fr", "it", "es", "ca", "tr", "bg"); // OASIS locales
     private static final List<String> generickeys = Arrays.asList("save", "cancel", "ok", "appstore", "close", "loading", "location", 
-    		"something_went_wrong_msg", "something_went_wrong_title");
+            "something_went_wrong_msg", "something_went_wrong_title", "error_detail_title");
     private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY", 
     		"organization-type.COMPANY", "create");
 

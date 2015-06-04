@@ -1,6 +1,11 @@
 package org.oasis_eu.portal.front.store;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import static org.springframework.web.bind.annotation.RequestMethod.GET;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
+import java.util.stream.Collectors;
 
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.catalog.Audience;
@@ -26,14 +31,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Locale;
-import java.util.stream.Collectors;
-
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -140,7 +145,7 @@ public class StoreAJAXServices extends BaseAJAXServices {
             appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
             response.success = true;
         } catch (ApplicationInstanceCreationException | WrongQueryException e) {
-            response.success = false;
+            response.success = false; // specific error handling, TODO LATER make it more consistent with generic error handling
         }
         return response;
     }
@@ -214,7 +219,9 @@ public class StoreAJAXServices extends BaseAJAXServices {
         applicationDetails.rateable = ratingService.isRateable(hit.getCatalogEntry().getType(), hit.getId());
         List<String> screenshotUris = hit.getCatalogEntry().getScreenshotUris();
         if (screenshotUris != null) {
-            applicationDetails.screenshots = screenshotUris.stream().map(uri -> imageService.getImageForURL(uri, ImageFormat.PNG_800BY450, false)).filter(uri -> !imageService.isDefaultIcon(uri)).collect(Collectors.toList());
+            applicationDetails.screenshots = screenshotUris.stream()
+                    .map(uri -> imageService.getImageForURL(uri, ImageFormat.PNG_800BY450, false))
+                    .filter(uri -> !imageService.isDefaultIcon(uri)).collect(Collectors.toList());
         }
 
         applicationDetails.serviceUrl = hit.getCatalogEntry().getUrl();

@@ -69,6 +69,11 @@
     /*]]>*/
 </script>
 
+<script data-th-inline="javascript" type="text/javascript">
+    var messages = /*[[${i18n}]]*/ {};
+    var devmode = /*[[${devmode}]]*/ {};
+</script>
+
 <script src="../public/js/my.js" th:src="@{/js/my.js}"></script>
 <script src="../public/js/my.js" th:src="@{/js/csrf.js}"></script>
 <script src="http://fb.me/react-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/react.js}" data-th-if="${devmode}"></script>

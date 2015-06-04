@@ -13,8 +13,6 @@ import javax.servlet.http.HttpServletRequest;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -33,16 +31,18 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/my/network")
 public class NetworkController extends PortalController {
 
-    private static final Logger logger = LoggerFactory.getLogger(NetworkController.class);
+    //private static final Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
 
     private static List<String> i18keys = Arrays.asList("find-or-create-organization", "information",
             "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave",
             "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create",
-            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
+            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
+            "organization.pending-invitation");
 
     private static List<String> generickeys = Arrays.asList("save", "cancel", "close", "confirm", "delete",
-            "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg", "something_went_wrong_title");
+            "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg", 
+            "something_went_wrong_title", "error_detail_title");
 
     @Autowired
     private MessageSource messageSource;

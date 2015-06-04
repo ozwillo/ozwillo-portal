@@ -28,6 +28,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
+import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -41,7 +42,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.annotation.JsonAnyGetter;
@@ -140,7 +140,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
-    public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) {
+    public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) throws ApplicationInstanceCreationException {
 
         logger.info("Application instantiation request: {}", instancePattern);
 
@@ -150,12 +150,16 @@ public class CatalogStoreImpl implements CatalogStore {
         }
 
         try {
-            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, new HttpEntity<ApplicationInstantiationRequest>(instancePattern), String.class, user(), appId);
+            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST, 
+                    new HttpEntity<ApplicationInstantiationRequest>(instancePattern), String.class, user(), appId);
+
+            // specific error handling, TODO LATER make it more consistent with generic error handling
             if (responseEntity.getStatusCode().is4xxClientError()) {
                 logger.error("Got a client error when creating an instance of application {} ({}): {}", appId, instancePattern.getName(), responseEntity.getStatusCode().getReasonPhrase());
                 throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
             }
-        } catch (HttpServerErrorException _502) {
+        } catch (TechnicalErrorException _502) { // as thrown by the kernel when a HttpServerErrorException 502 occurs 
+            //} catch (HttpServerErrorException _502) {
             logger.error("Could not create an instance of application " + appId + " - " + instancePattern.getName(), _502);
             throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
         }
@@ -188,15 +192,14 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     @CachePut(value = "services", key = "#result.id")
     public CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service) {
+        String uriString = appsEndpoint + "/service/{service_id}";
 
         // we need to be sure to grab everything from the original
-    	ResponseEntity<KernelService> entity = kernel.exchange(appsEndpoint + "/service/{service_id}",
-    			HttpMethod.GET, null, KernelService.class, user(), serviceId);
+        ResponseEntity<KernelService> entity = kernel.exchange(uriString , HttpMethod.GET, null, KernelService.class, user(), serviceId);
         String etag = entity.getHeaders().get("ETag").get(0);
 
-        KernelService kernelService = kernel.getBodyUnlessClientError(entity, KernelService.class, 
-        		appsEndpoint + "/service/{service_id}", serviceId);
-        
+        KernelService kernelService = kernel.getBodyUnlessClientError(entity, KernelService.class, uriString, serviceId);
+
         // copy / map localized props :
         // TODO Q could hl be also used in GET id ?? then those service props are already localized
         // TODO are find & GET id consistent on this point ??
@@ -229,8 +232,11 @@ public class CatalogStoreImpl implements CatalogStore {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", etag);
 
-        return kernel.exchange(appsEndpoint + "/service/{service_id}", HttpMethod.PUT, new HttpEntity<>(kernelService, headers), 
-        		CatalogEntry.class, user(), serviceId).getBody();
+        ResponseEntity<CatalogEntry> kernelResp = kernel.exchange(uriString, HttpMethod.PUT, new HttpEntity<>(kernelService, headers),
+                CatalogEntry.class, user(), serviceId);
+        // validate response body
+        return kernel.getBodyUnlessClientError(kernelResp, CatalogEntry.class, uriString); // TODO test
+
     }
 
     @Override
@@ -257,7 +263,9 @@ public class CatalogStoreImpl implements CatalogStore {
         instance.setStatus(status);
         ResponseEntity<String> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
                 new HttpEntity<ApplicationInstance>(instance, headers), String.class, user(), instanceId);
-        
+
+        /*  DONT CHANGE BELOW code unless updating front-end app since there is a pop up linked to this message */
+        // specific error handling, TODO LATER make it more consistent with generic error handling
         if (resEntity.getStatusCode().is4xxClientError()) {
             String res = resEntity.getBody();
             if (res != null && !res.trim().isEmpty()) {
@@ -271,10 +279,14 @@ public class CatalogStoreImpl implements CatalogStore {
     public static class KernelService {
 
         // blacklist of properties we want forgotten and never sent back to the kernel
-        private static final Set<String> BLACKLISTED = new HashSet<String>() {{
-            add("modified");
-            add("type");
-        }};
+        private static final Set<String> BLACKLISTED = new HashSet<String>() {
+            private static final long serialVersionUID = 8911465747855839333L;
+
+            {
+                add("modified");
+                add("type");
+            }
+        };
 
         String id;
         String name;

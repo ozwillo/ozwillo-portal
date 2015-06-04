@@ -154,6 +154,7 @@ public class PortalNotificationService {
                         }
                     }
 
+                    //notif.setDate( n.getTime() == null ? new Instant() : n.getTime()); // TODO workaround, but kernel should always provide a date
                     notif.setDate(n.getTime());
                     notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
 

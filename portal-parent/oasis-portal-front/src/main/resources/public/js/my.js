@@ -47,43 +47,63 @@ $(document).ready(function () {
 
 })
 .ajaxError(
-	function(e, x, settings, exception) {
+	function(e, xhr, settings, exception) {
 		// blacklist containing error codes to check for page reload
 		var statusErrorMap = [401];
-		if ($.inArray(x.status, statusErrorMap) > (-1) ){
+		var xstat = xhr.status;
+		if ($.inArray(xstat, statusErrorMap) > (-1) ){
 			setTimeout(function () { location.reload(1); }, 200);
 		}
 
-		if (x.status && exception){
-			var err_message = x.status + exception;
+		if (xstat && exception){
 
-			var error = jQuery("<div id='dialog-error' />" );
-			error.attr('title', messages['ui.something_went_wrong_title']);
-			error.text(err_message);
-			openErrorDialog(error, 2500);
+            var title = messages['ui.something_went_wrong_title'];
+            var err_message = "" ; //xstat  + " " + exception ;
+            var err_detail = messages['ui.error_detail_title'] + xhr.responseText;
+            if (xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong"))
+                err_detail = err_detail + " " +xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong");
+
+            var divError = createDivError(title, err_message, err_detail);
+
+            openErrorDialog(divError, 3000);
         }
-            
-	}
+
+    }
 )
 .ajaxSuccess(function( event, xhr, settings ) {
-	if (xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong")){
-		var error = jQuery("<div id='dialog-error' />" );
-		error.attr('title', messages['ui.something_went_wrong_title']);
-		error.text(messages['ui.something_went_wrong_msg']);
+    if ( devmode && xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong")){
 
-		openErrorDialog(error, 2500);
+        var title = messages['ui.something_went_wrong_title'];
+        var err_msg = messages['ui.something_went_wrong_msg'];
+        var err_detail = messages['ui.error_detail_title']
+                + xhr.responseText + " "
+                + xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong");
+
+        var divError = createDivError(title, err_msg, details);
+
+        openErrorDialog(divError, 3500);
 	}
 });
 
 
 // Functions
 
-function openErrorDialog(error, timeOut){
-		$("body").append(error);
-		error.show();
+function createDivError(title, err_msg, details){
+    var error = jQuery("<div id='dialog-error' />" );
+    error.attr('title', title);
+    error.text(err_msg);
+    error.append(jQuery("<br />" ));
+    error.append(details);
 
-		var dlg_width = 150;
-		var dlg_height = 100;
+    return error;
+}
+
+function openErrorDialog(divError, timeOut){
+        $("body").append(divError);
+        divError.show();
+
+        var dlg_width = 250;
+        var dlg_height = 200;
 
 		var dlg_offset_x = $("#navbar-collapse").width() - dlg_width + 200;
 		var dlg_margin_top = $("#navbar-collapse").outerHeight(true); // includeMargins=true

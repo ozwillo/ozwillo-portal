@@ -27,8 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
- * User: schambon
- * Date: 10/24/14
+ * User: schambon Date: 10/24/14
  */
 @RestController
 @RequestMapping("/my/api/network")
@@ -47,6 +46,7 @@ public class NetworkAJAXServices extends BaseAJAXServices {
         List<UIOrganization> organizations = networkService.getMyOrganizations();
 
         logger.debug("Found organizations: {}", organizations);
+
         return organizations;
     }
 
@@ -58,7 +58,8 @@ public class NetworkAJAXServices extends BaseAJAXServices {
     }
 
     @RequestMapping(value = "/invite/{organizationId}", method = POST)
-    public void invite(@PathVariable String organizationId, @RequestBody @Valid InvitationRequest invitation, Errors errors) {
+    public void invite(@PathVariable String organizationId, @RequestBody @Valid InvitationRequest invitation,
+            Errors errors) {
         logger.debug("Inviting {} to organization {}", invitation.email, organizationId);
 
         if (errors.hasErrors()) {
@@ -66,6 +67,19 @@ public class NetworkAJAXServices extends BaseAJAXServices {
         }
 
         networkService.invite(invitation.email, organizationId);
+
+    }
+
+    @RequestMapping(value = "/remove-invitation/{organizationId}", method = POST)
+    public void removeInvitation(@PathVariable String organizationId,
+            @RequestBody @Valid RemoveInvitationRequest invitation, Errors errors) {
+        logger.debug("Removing invitation {} to organization {}", invitation.email, organizationId);
+
+        if (errors.hasErrors()) {
+            throw new WrongQueryException();
+        }
+
+        networkService.removeInvitation(organizationId, invitation.id, invitation.etag);
 
     }
 
@@ -81,8 +95,8 @@ public class NetworkAJAXServices extends BaseAJAXServices {
         logger.debug("Creating organization {} of type {}", createOrganizationRequest.name,
                 createOrganizationRequest.type, createOrganizationRequest.territoryId);
 
-        return networkService.createOrganization(createOrganizationRequest.name,
-                createOrganizationRequest.type, createOrganizationRequest.territoryId);
+        return networkService.createOrganization(createOrganizationRequest.name, createOrganizationRequest.type,
+                createOrganizationRequest.territoryId);
 
     }
 
@@ -92,13 +106,29 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 
         return networkService.setOrganizationStatus(organization);
     }
-  
-    
+
     public static class InvitationRequest {
         @JsonProperty
         @NotNull
         @NotEmpty
         String email;
+    }
+
+    public static class RemoveInvitationRequest {
+        @JsonProperty
+        @NotNull
+        @NotEmpty
+        String id;
+
+        @JsonProperty
+        @NotNull
+        @NotEmpty
+        String email;
+
+        @JsonProperty
+        @NotNull
+        @NotEmpty
+        String etag;
     }
 
     public static class LeaveRequest {
@@ -118,8 +148,8 @@ public class NetworkAJAXServices extends BaseAJAXServices {
         @NotEmpty
         String type;
         @JsonProperty("territory_id")
-        //@NotNull // TODO
-        //@NotEmpty // TODO
+        // @NotNull // TODO
+        // @NotEmpty // TODO
         URI territoryId;
     }
 }

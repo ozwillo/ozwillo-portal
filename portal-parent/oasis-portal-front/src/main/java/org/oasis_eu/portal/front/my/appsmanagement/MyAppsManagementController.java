@@ -37,8 +37,8 @@ public class MyAppsManagementController extends PortalController {
             "restricted-service",
             "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
 
-    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete", "confirm", "close", 
-    		"unexpected_error","something_went_wrong_msg", "something_went_wrong_title");
+    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete", "confirm", "close",
+            "unexpected_error", "something_went_wrong_msg", "something_went_wrong_title", "error_detail_title");
 
     @Autowired
     private MyNavigationService navigationService;

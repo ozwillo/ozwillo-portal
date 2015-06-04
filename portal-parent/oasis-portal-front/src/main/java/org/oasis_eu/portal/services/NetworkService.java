@@ -16,12 +16,15 @@ import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
 import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.model.network.UIOrganizationMember;
+import org.oasis_eu.portal.model.network.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.model.directory.OrgMembership;
+import org.oasis_eu.spring.kernel.model.directory.PendingOrgMembership;
 import org.oasis_eu.spring.kernel.model.directory.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserDirectory;
@@ -93,13 +96,22 @@ public class NetworkService {
         }
 
         if (userMembership.isAdmin()) {
-            // return all members :
+            // Add organization members :
             org.setMembers(userDirectory.getMembershipsOfOrganization(organizationId).stream()
                     .map(this::toUIOrganizationMember)
                     // NB. self is among returned admins
                     .sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1
                             : member1.getNonNullName().compareToIgnoreCase(member2.getNonNullName()))) // #171 old accounts may not have a name before it was required
                     .collect(Collectors.toList()));
+
+            // Add pending organization membership invitation
+            org.setPendingMemberships(userDirectory
+                    .getPendingOrgMembership(organizationId)
+                    .stream()
+                    .map(this::toUIPendingOrgMembership)
+                    // NB. Organize first by admin right, then by email
+                    .sorted((member1, member2) -> member1.isAdmin() ? -1 : (member2.isAdmin() ? 1 : member1.getEmail()
+                            .compareToIgnoreCase(member2.getEmail()))).collect(Collectors.toList()));
         } else {
             // return self in first position
             // which was missing : #159 Possibility to see who are the admins of an organization one belongs to
@@ -314,7 +326,37 @@ public class NetworkService {
             throw new ForbiddenException();
         }
 
-        userDirectory.createMembership(email, organizationId);
+        try {
+            userDirectory.createMembership(email, organizationId);
+        } catch (WrongQueryException wqex) {
+            if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
+                // Translated msg. see issue #201
+                String translatedBusinessMessage = messageSource.getMessage("error.msg.user-already-invited",
+                        new Object[] {}, RequestContextUtils.getLocale(request));
+                wqex.setTranslatedBusinessMessage(translatedBusinessMessage);
+            }
+            throw wqex;
+        }
+    }
+
+    public void removeInvitation(String organizationId, String id, String eTag) {
+        // prevent non organization admin users from removing invitations
+        if (!userIsAdmin(organizationId)) {
+            logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser()
+                    .getUserId(), organizationId);
+            throw new ForbiddenException();
+        }
+
+        try {
+            userDirectory.removePendingMembership(id, eTag);
+        } catch (WrongQueryException wqex) {
+            if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
+                String translatedBusinessMessage = messageSource.getMessage("error.msg.data-conflict",
+                        new Object[] {}, RequestContextUtils.getLocale(request));
+                wqex.setTranslatedBusinessMessage(translatedBusinessMessage);
+            }
+            throw wqex;
+        }
     }
 
 
@@ -348,4 +390,16 @@ public class NetworkService {
 
         return result;
     }
+
+    private UIPendingOrganizationMember toUIPendingOrgMembership(PendingOrgMembership pendingOrgMembership) {
+        UIPendingOrganizationMember pMembership = new UIPendingOrganizationMember();
+        pMembership.setId(pendingOrgMembership.getId());
+        pMembership.setEmail(pendingOrgMembership.getEmail());
+        pMembership.setAdmin(pendingOrgMembership.isAdmin());
+        pMembership.setPending_membership_etag(pendingOrgMembership.getPending_membership_etag());
+        pMembership.setPending_membership_uri(pendingOrgMembership.getPending_membership_uri());
+
+        return pMembership;
+    }
+
 }

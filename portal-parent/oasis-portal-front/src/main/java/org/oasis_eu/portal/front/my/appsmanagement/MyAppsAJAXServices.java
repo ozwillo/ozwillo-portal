@@ -158,7 +158,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
             }).collect(Collectors.toList());
             response.success = false;
         } else {
-            appManagementService.updateService(serviceId, entry);
+            appManagementService.updateService(serviceId, entry); // let it explode on a WrongQueryException
 
             response.success = true;
         }

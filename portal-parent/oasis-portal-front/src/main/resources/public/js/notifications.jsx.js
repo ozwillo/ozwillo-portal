@@ -26,7 +26,7 @@ var NotificationTable = React.createClass({
             apps: [],
             recentlyRemoved: [],
             currentSort: {
-                prop: 'date',
+                prop: 'date', // date, changing to dataText to test issue #217
                 dir: -1
             },
             filter: {
@@ -253,5 +253,6 @@ var Notification = React.createClass({
 
 
 React.renderComponent(
-    <NotificationTable url={notificationService} pollInterval={2000}/>
-    , document.getElementById("notifications"));
+    <NotificationTable url={notificationService} pollInterval={2000}/> ,
+    document.getElementById("notifications")
+);

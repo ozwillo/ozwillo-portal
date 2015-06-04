@@ -156,8 +156,9 @@ var Organization = React.createClass({
                 }.bind(this),
                 error: function(xhr, status, err) {
                     console.error(status, err.toString());
-                    this.state.invite.errors = ["general"];
-                    this.setState(this.state);
+                    var state = this.state;
+                    state.invite.errors = ["general"];
+                    this.setState(state);
                 }.bind(this)
             });
         }
@@ -170,6 +171,21 @@ var Organization = React.createClass({
     },
     confirmLeave: function() {
         this.refs.leaveDialog.open();
+    },
+    removeInvitation: function(pMember) {
+        $.ajax({
+            url: network_service + "/remove-invitation/"+ this.props.org.id,
+            type: 'post',
+            contentType: 'application/json',
+            data: JSON.stringify({id: pMember.id, email: pMember.email,
+                        etag: pMember.pending_membership_etag}),
+            success: function() {
+                this.props.reload();
+            }.bind(this),
+            error: function(xhr, status, err) {
+                console.error(status, err.toString());
+            }.bind(this)
+        });
     },
     leave: function() {
         $.ajax({
@@ -235,7 +251,8 @@ var Organization = React.createClass({
             var remove = this.removeMember;
             var updateMember = this.updateMember;
             var members = this.props.org.members.map(function (member) {
-                return <Member key={member.id} member={member} remove={remove} updateMember={updateMember}/>
+                return <Member key={member.id} member={member}
+			             remove={remove} updateMember={updateMember}/>
             });
 
             return members;
@@ -245,12 +262,25 @@ var Organization = React.createClass({
             });
         }
     },
+    renderPendingMemberships: function() {  //Pending Membership
+        if (this.props.org.admin) {
+	    var removeInvitation = this.removeInvitation;
+	    var pendingMemberships = this.props.org.pendingMemberships.map(
+	        function (pMember) {
+	            return <PendingMembership key={pMember.id} pMember={pMember}
+                        removeInvitation={removeInvitation}  />
+            });
+
+            return pendingMemberships;
+        }
+    },
     render: function() {
 
         var buttons = [];
         var dialogs = [];
 
         var membersList = this.renderMembers();
+        var pendingMembershipList = this.renderPendingMemberships();
 
         if (this.props.org.status === 'DELETED') {
             // trashed
@@ -338,11 +368,51 @@ var Organization = React.createClass({
                     </div>
                 </div>
                 {membersList}
+		{pendingMembershipList}
             </div>
             );
     }
 });
 
+// Pending Membership
+var PendingMembership = React.createClass({
+    getInitialState: function() {
+        return {pMember: this.props.pMember};
+    },
+    renderUserTypeInvitation: function() {
+        var admin = this.state.pMember.admin;
+
+        return admin ? t('admin') : t('user');
+
+    },
+    removeMembershipInvitation: function (event) {
+        event.preventDefault();
+        this.props.removeInvitation(this.state.pMember);
+
+    },
+    render: function() {
+        var pMember = this.state.pMember;
+	var adminStatus = this.renderUserTypeInvitation();
+
+        var actions = (
+            <div className="col-sm-2 col-sm-offset-1">
+                <a className="lnk remove" href="#"  onClick={this.removeMembershipInvitation} >
+                    <i className="fa fa-trash"></i>{t('ui.delete')}</a>
+            </div>
+        );
+
+
+        return (
+            <div key={pMember.id} className="row form-table-row-italics">
+                <div className="col-sm-4">{pMember.email}</div>
+                <div className="col-sm-4">{t('organization.pending-invitation') }</div>
+                {actions}
+            </div>
+       );
+    }
+});
+
+// Organization members
 var Member = React.createClass({
     getInitialState: function() {
         return {edit:false, member: this.props.member};
@@ -391,17 +461,20 @@ var Member = React.createClass({
         if (! member.self) {
             if (! this.state.edit) {
                 actions = (
-                    <div className="col-sm-4 col-sm-offset-2">
-                        <a className="lnk edit" href="#" onClick={toggleEdit}><i className="fa fa-pencil"></i>{t('ui.edit')}</a>
-                        <a className="lnk remove" href="#"  onClick={remove(member)}><i className="fa fa-trash"></i>{t('ui.remove')}</a>
+                    <div className="col-sm-4 col-sm-offset-1">
+                        <a className="lnk edit" href="#" onClick={toggleEdit}>
+                            <i className="fa fa-pencil"></i>{t('ui.edit')}</a>
+                        <a className="lnk remove" href="#"  onClick={remove(member)}>
+                            <i className="fa fa-trash"></i>{t('ui.remove')}</a>
                     </div>
                     );
             } else {
                 actions = (
-                    <div className="col-sm-4 col-sm-offset-2">
+                    <div className="col-sm-4 col-sm-offset-1">
                         <a className="lnk accept" href="#" onClick={save}>
                             <i className="fa fa-check"></i>{t('ui.save')}</a>
-                        <a className="lnk cancel" href="#" onClick={toggleEdit}><i className="fa fa-times"></i>{t('ui.cancel')}</a>
+                        <a className="lnk cancel" href="#" onClick={toggleEdit}>
+                            <i className="fa fa-times"></i>{t('ui.cancel')}</a>
                     </div>
                     );
             }
@@ -411,7 +484,7 @@ var Member = React.createClass({
 
         return (
             <div key={member.id} className="row form-table-row">
-                <div className="col-sm-3">{member.name}</div>
+                <div className="col-sm-4">{member.name}</div>
                 <div className="col-sm-3">{adminStatus}</div>
                     {actions}
             </div>

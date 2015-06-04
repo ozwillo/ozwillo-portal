@@ -14,8 +14,6 @@ import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalDashboardService;
 import org.oasis_eu.portal.services.PortalNotificationService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
@@ -35,7 +33,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/my")
 public class MyOzwilloController extends PortalController {
 
-    private static final Logger logger = LoggerFactory.getLogger(MyOzwilloController.class);
+    //private static final Logger logger = LoggerFactory.getLogger(MyOzwilloController.class);
 
     @Autowired
     private PortalDashboardService portalDashboardService;
@@ -51,8 +49,9 @@ public class MyOzwilloController extends PortalController {
 
     private static List<String> i18keys = Arrays.asList("create", "switch-dash", "confirm-delete-dash", 
     		"confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long");
-    private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go", 
-    		"general-error", "edit", "add", "remove", "something_went_wrong_msg", "something_went_wrong_title");
+    private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go",
+            "general-error", "edit", "add", "remove", "something_went_wrong_msg", "something_went_wrong_title",
+            "error_detail_title");
 
 
     @ModelAttribute("i18n")
