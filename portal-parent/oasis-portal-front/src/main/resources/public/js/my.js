@@ -65,7 +65,9 @@ $(document).ready(function () {
 
             var divError = createDivError(title, err_message, err_detail);
 
-            openErrorDialog(divError, 3000);
+            if ( devmode || ( (status / 100) !== 5 )){
+                openErrorDialog(divError, 3000);
+            }
         }
 
     }
