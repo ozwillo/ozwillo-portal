@@ -3,34 +3,7 @@
 # generic release function :
 release_project() {
 
-#git pull
-echo "Pulled git. Abort if any problem (CTRL-C), else hit enter."
-read
-
-# dependencies outside this current project :
-pushd $MAVEN_ROOT
-SNAPSHOT_DEPS=`mvn dependency:list|grep -v $RELEASE_NAME|grep SNAPSHOT`
-popd
-if [ "$SNAPSHOT_DEPS" != "" ]
-then
-   echo "ERROR Aborting ! This project has SNAPSHOT dependencies : $SNAPSHOT_DEPS"
-   exit 1
-fi
-echo "WARNING Check that dependencies ($DEPENDENCIES) have been released and checked out with said release and this project ($RELEASE_NAME)'s pom updated to their latest version if they have any change ! Abort if any problem (CTRL-C), else hit enter."
-read
-echo "WARNING Check that unit tests work (mvn clean install) ! Abort if any problem (CTRL-C), else hit enter."
-read
-
-if [ "$MINIFY_COMMAND" != "" ]
-then
-   # minify
-   eval $MINIFY_COMMAND
-fi
-git status
-echo "WARNING Check that everything is committed, especially newly minified changes if any ! Abort if any problem (CTRL-C), else hit enter."
-read
-
-# go in maven project to release it :
+# computing release version & RC branch if any :
 pushd $MAVEN_ROOT
 
 # getting project version and computing next one :
@@ -67,15 +40,66 @@ function rewind_version () {
 
 if [ "$RC" != "" ]
 then
-RELEASE_VERSION=$(rewind_version $(remove_version_suffix $VERSION))"-RC$RC"
-NEXT_VERSION=$(advance_version $RELEASE_VERSION)-SNAPSHOT
+VERSION_WITHOUT_SUFFIX=$(remove_version_suffix $VERSION)
+if [ "$VERSION_WITHOUT_SUFFIX" != "$VERSION" ]
+then
+# was on next SNAPSHOT, rewind
+VERSION_WITHOUT_SUFFIX=$(rewind_version $VERSION_WITHOUT_SUFFIX)
+fi
+echo $VERSION_WITHOUT_SUFFIX $VERSION
+RELEASE_VERSION=$VERSION_WITHOUT_SUFFIX"-RC$RC"
+NEXT_RC=$(($RC+1))
+NEXT_VERSION=$VERSION_WITHOUT_SUFFIX"-RC$NEXT_RC"-SNAPSHOT
+RC_START_TAG="$RELEASE_NAME-$VERSION_WITHOUT_SUFFIX"
+BRANCH=$VERSION_WITHOUT_SUFFIX"-rc"
+if [ "$RC" = "1" ]
+then
+echo "About to create RC branch $BRANCH on existing release $RC_START_TAG tag.If OK hit enter, else abort (CTRL-C)"
+read
+git checkout $RC_START_TAG
+git branch $BRANCH
+git push origin $BRANCH
+fi
 else
 RELEASE_VERSION=$(remove_version_suffix $VERSION)
 NEXT_VERSION=$(advance_version $RELEASE_VERSION)-SNAPSHOT
+BRANCH=master
 fi
 TAG="$RELEASE_NAME-$RELEASE_VERSION"
 echo "Releasing $RELEASE_NAME (now at $VERSION) as $TAG and bumping to $NEXT_VERSION. If OK hit enter, else abort (CTRL-C)"
 read
+
+popd
+
+git pull origin $BRANCH
+echo "Pulled git. Abort if any problem (CTRL-C), else hit enter."
+read
+
+# dependencies outside this current project :
+pushd $MAVEN_ROOT
+SNAPSHOT_DEPS=`mvn dependency:list|grep -v $RELEASE_NAME|grep SNAPSHOT`
+popd
+if [ "$SNAPSHOT_DEPS" != "" ]
+then
+   echo "ERROR Aborting ! This project has SNAPSHOT dependencies : $SNAPSHOT_DEPS"
+   exit 1
+fi
+echo "WARNING Check that dependencies ($DEPENDENCIES) have been released and checked out with said release and this project ($RELEASE_NAME)'s pom updated to their latest version if they have any change ! Abort if any problem (CTRL-C), else hit enter."
+read
+echo "WARNING Check that unit tests work (mvn clean install) ! Abort if any problem (CTRL-C), else hit enter."
+read
+
+if [ "$MINIFY_COMMAND" != "" ]
+then
+   # minify
+   eval $MINIFY_COMMAND
+fi
+git status
+echo "WARNING Check that everything is committed, especially newly minified changes if any ! Abort if any problem (CTRL-C), else hit enter."
+read
+
+# go in maven project to release it :
+pushd $MAVEN_ROOT
 
 mvn versions:set -DnewVersion=$RELEASE_VERSION
 # ex. 1.10
@@ -98,14 +122,15 @@ git commit -m "Bump to next development iteration"
 popd
 echo "WARNING About to push tag, if you have a doubt about it abort (CTRL-C) and replace your project's .git folder by a freshly cloned one, else hit enter"
 read
-git push origin master && git push origin master --tags
+git push origin $BRANCH && git push origin $BRANCH --tags
 
 echo "Successfully released $RELEASE_NAME ! Checking it out (required for dependent projects) :"
 git checkout $TAG
-}
+
+} # end of release_project()
 
 
-# RC suffix ex. -RC2 :
+# RC suffix ex. 1 :
 RC=$2
 RELEASE_NAME=oasis-spring-integration
 NVM_VERSION=v0.10.36
@@ -123,13 +148,13 @@ then
    echo "The main project has SNAPSHOT dependencies : $SNAPSHOT_DEPS, releasing it"
 
 pushd ../oasis-spring-integration
-release_project
+release_projectgit status
 popd
 
 fi
 
 
-# RC suffix ex. -RC2 :
+# RC suffix ex. 1 :
 RC=$1
 RELEASE_NAME=oasis-portal
 NVM_VERSION=v0.10.36
