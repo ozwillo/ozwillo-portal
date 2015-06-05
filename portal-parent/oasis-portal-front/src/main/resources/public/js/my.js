@@ -65,7 +65,9 @@ $(document).ready(function () {
 
             var divError = createDivError(title, err_message, err_detail);
 
-            openErrorDialog(divError, 3000);
+            if (devmode || ( (xstat / 100) !== 5 ) ) {
+                openErrorDialog(divError, 3000);
+            }
         }
 
     }
@@ -81,7 +83,8 @@ $(document).ready(function () {
 
         var divError = createDivError(title, err_msg, details);
 
-        openErrorDialog(divError, 3500);
+        openErrorDialog(divError, 3000);
+        
 	}
 });
 
