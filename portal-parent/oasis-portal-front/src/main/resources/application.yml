@@ -43,7 +43,11 @@ application:
 web:
   home: https://www.ozwillo-dev.eu
   sitemap:
-      url: https://www.ozwillo.com/footer.xml
+      # TODO Change it with the prod version url
+      #url_header: https://www.ozwillo.com/header.xml
+      url_header: https://www.ozwillo.com/xml/header_backup.xml
+      url_footer: https://www.ozwillo.com/footer.xml
+      #url_footer: https://www.ozwillo.com/xml/footer_backup.xml
       refresh: 0 */15 * ? * *
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
