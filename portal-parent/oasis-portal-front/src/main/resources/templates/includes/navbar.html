@@ -66,17 +66,42 @@
                              alt="Ozwillo"/>
                     </a>
                 </li>
+
+              <!-- Catalog -->
                 <li class="active nav-apps">
                     <a href="#"
                        data-th-href="@{|/${currentLanguage.locale.language}/store/|}"
                        data-th-text="#{ui.appstore}">Catalog</a>
                 </li>
+
+              <!-- Data -->
+                <li class="dropdown" >
+                   <a href="#" class="nav-link " data-th-href="${sitemapheader.items[2].url}">
+                      <img  alt="discover" data-th-src="${sitemapheader.items[2].img_url}" />
+                      <span data-th-text="${sitemapheader.items[2].label}">Discover</span >
+                   </a>
+                </li>
+
             </ul>
+
 
             <ul class="nav navbar-nav navbar-right ">
                 <li><a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login|}"
                        class=" btn  btn-nav-noauth" data-th-text="#{ui.login}">Login</a></li>
 
+              <!-- Discover -->
+                <li class="dropdown" data-th-each="submenu: ${sitemapheader.submenus[0]}">
+                   <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" data-th-href="${submenu.url}">
+                      <span data-th-text="${submenu.title}">Discover</span><span class="caret"></span>
+                   </a>
+                   <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                     <li role="presentation" data-th-each="entry: ${submenu.subItems}">
+                       <a href="#" role="menuitem" tabindex="-1" data-th-href="${entry.url}" data-th-text="${entry.label}">Item</a>
+                     </li>
+                   </ul>
+                </li>
+
+              <!-- Language -->
                 <li class="dropdown dropdown-lang">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown"><span
                             data-th-text="${currentLanguage.name}">English</span>

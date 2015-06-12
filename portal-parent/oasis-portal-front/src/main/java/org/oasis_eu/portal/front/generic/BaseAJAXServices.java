@@ -80,7 +80,7 @@ public abstract class BaseAJAXServices {
     @ResponseBody
     public String hande403(HttpServletRequest request, ForbiddenException fex) throws IOException {
         if (fex.getTranslatedBusinessMessage() == null || fex.getTranslatedBusinessMessage().isEmpty()) {
-            String translatedBusinessMessage = getErrorMessage("error.msg.action-forbidden", request);
+            String translatedBusinessMessage = getErrorMessage("action-forbidden", request);
             fex.setTranslatedBusinessMessage(translatedBusinessMessage);
         }
         return fex.getTranslatedBusinessMessage();

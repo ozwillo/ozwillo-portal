@@ -1,6 +1,13 @@
 package org.oasis_eu.portal.core.services.sitemap;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
+import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+
+import java.io.InputStream;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -20,11 +27,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.InputStream;
-
-import static org.junit.Assert.*;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * User: schambon
@@ -38,7 +41,7 @@ public class SiteMapParserTest {
     @Test
     public void testParseSiteMap() throws Exception {
 
-        InputStream stream = getClass().getClassLoader().getResourceAsStream("footer/footer.xml");
+        InputStream stream = getClass().getClassLoader().getResourceAsStream("xml/footer.xml");
         XmlMapper xmlMapper = new XmlMapper();
         Footer foo = xmlMapper.readValue(stream, Footer.class);
         assertEquals(4, foo.getMenuset().size());
@@ -56,7 +59,7 @@ public class SiteMapParserTest {
     @Qualifier("xmlAwareRestTemplate")
     private RestTemplate restTemplate;
 
-    @Value("${web.sitemap.url}")
+    @Value("${web.sitemap.url_footer}")
     private String sitemapUrl;
 
     @Autowired
@@ -66,7 +69,7 @@ public class SiteMapParserTest {
     @DirtiesContext
     public void testLoadRemote() throws Exception {
         MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
-        server.expect(requestTo(sitemapUrl)).andRespond(withSuccess(resourceLoader.getResource("classpath:/footer/footer.xml"), MediaType.APPLICATION_XML));
+        server.expect(requestTo(sitemapUrl)).andRespond(withSuccess(resourceLoader.getResource("classpath:/xml/footer.xml"), MediaType.APPLICATION_XML));
 
         Footer foo = restTemplate.getForObject(sitemapUrl, Footer.class);
         assertEquals(4, foo.getMenuset().size());
@@ -95,7 +98,6 @@ public class SiteMapParserTest {
     @Before
     public void clean() {
         repository.deleteAll();
-
     }
 
     @Test
@@ -103,17 +105,17 @@ public class SiteMapParserTest {
     public void testUpdateSiteMap() throws Exception {
 
         MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
-        server.expect(requestTo(sitemapUrl)).andRespond(withSuccess(resourceLoader.getResource("classpath:/footer/footer.xml"), MediaType.APPLICATION_XML));
+        server.expect(requestTo(sitemapUrl)).andRespond(withSuccess(resourceLoader.getResource("classpath:/xml/footer.xml"), MediaType.APPLICATION_XML));
 
-        repository.deleteAll();
+        this.clean();
 
-        siteMapUpdater.reload();
+        siteMapUpdater.reloadFooter();
 
-        assertNotNull(siteMapService.getSiteMap("fr"));
-        assertEquals("http://www.ozwillo-dev.eu/fr/decouvrir", siteMapService.getSiteMap("fr").get(0).getUrl());
-        assertNotNull(siteMapService.getSiteMap("en").get(7));
-        assertEquals("", siteMapService.getSiteMap("en").get(7).getLabel());
-        assertEquals("", siteMapService.getSiteMap("en").get(7).getUrl());
+        assertNotNull(siteMapService.getSiteMapFooter("fr"));
+        assertEquals("http://www.ozwillo-dev.eu/fr/decouvrir", siteMapService.getSiteMapFooter("fr").get(0).getUrl());
+        assertNotNull(siteMapService.getSiteMapFooter("en").get(7));
+        assertEquals("", siteMapService.getSiteMapFooter("en").get(7).getLabel());
+        assertEquals("", siteMapService.getSiteMapFooter("en").get(7).getUrl());
 
 
         server.verify();

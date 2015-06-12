@@ -111,6 +111,7 @@
 
         <ul class="nav navbar-nav oasis-nav navbar-right">
 
+           <!-- Catalog -->
             <li data-th-class="${isAppstore ? 'active':''}">
                 <a href="#" class="nav-link" data-th-class="${isAppstore?'':'nav-link'}"
                    data-th-href="@{|/${currentLanguage.locale.language}/store|}">
@@ -126,6 +127,29 @@
                 </th:block>
             </li>
 
+            <!-- Data -->
+	        <li class="dropdown" >
+	          <a href="#" class="nav-link " data-th-href="${sitemapheader.items[2].url}">
+	            <img  alt="discover" data-th-src="${sitemapheader.items[2].img_url}" />
+	            <span data-th-text="${sitemapheader.items[2].label}">Discover</span >
+	          </a>
+	       </li>
+
+	       <!-- Discover -->
+	       <li class="dropdown" data-th-each="submenu: ${sitemapheader.submenus[0]}">
+	          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="true" data-th-href="${submenu.url}">
+	            <img  class="gray" alt="discover" data-th-src="@{/img/my/oz-discover-gray.png}" src="../../public/img/my/oz-discover-gray.png"/>
+	            <img  class="purple" alt="discover" data-th-src="@{/img/my/oz-discover.png}" src="../../public/img/my/oz-discover.png"/>
+	            <span data-th-text="${submenu.title}">Discover</span><span class="caret"></span>
+	          </a>
+	          <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+		        <li role="presentation" data-th-each="entry: ${submenu.subItems}">
+		           <a href="#" role="menuitem" tabindex="-1" data-th-href="${entry.url}" data-th-text="${entry.label}">Item</a>
+		        </li>
+	          </ul>
+	       </li>
+
+	       <!-- Logout -->
             <li class="logout">
                 <a href="#" data-th-href="@{/logout}">
                     <img src="../../public/img/my/logout.png" alt="Logout" data-th-src="@{/img/my/logout.png}"/>

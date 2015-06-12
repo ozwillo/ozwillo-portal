@@ -123,6 +123,7 @@ public class PortalCoreConfiguration implements CachingConfigurer {
         mapConfigs.put("organizations", getMapConfig("organizations"));
         mapConfigs.put("applications", getMapConfig("applications"));
         mapConfigs.put("sitemap", getMapConfig("sitemap"));
+        mapConfigs.put("sitemapheader", getMapConfig("sitemapheader"));
         mapConfigs.put("services", getMapConfig("services"));
 
         Config config = new Config();

@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
 import org.oasis_eu.portal.model.appsmanagement.User;
@@ -20,6 +21,7 @@ import org.oasis_eu.portal.model.network.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
+import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.model.UserInfo;
@@ -129,7 +131,7 @@ public class NetworkService {
 
     private void fillUIOrganization(UIOrganization uiOrg, Organization organization) {
         uiOrg.setId(organization.getId());
-        uiOrg.setName(organization.getName()); // TODO ??
+        uiOrg.setName(organization.getName());
         uiOrg.setType(organization.getType());
         if (organization.getTerritoryId() != null) {
             uiOrg.setTerritoryId(organization.getTerritoryId());
@@ -138,14 +140,22 @@ public class NetworkService {
         uiOrg.setStatus(organization.getStatus());
         if (organization.getStatusChanged() != null) {
             uiOrg.setStatusChanged(organization.getStatusChanged());
-            Instant deletionPlanned = new DateTime(uiOrg.getStatusChanged())
-                .plusDays(organizationDaysTillDeletedFromTrash).toInstant();
-            uiOrg.setDeletionPlanned(deletionPlanned);
         }
+        uiOrg.setDeletionPlanned(computeDeletionPlanned(organization));
+
         if (organization.getStatusChangeRequesterId() != null) {
             uiOrg.setStatusChangeRequesterId(organization.getStatusChangeRequesterId());
             uiOrg.setStatusChangeRequesterLabel(getUserName(organization.getStatusChangeRequesterId(), null)); // TODO protected ?? then from membership
         }
+    }
+
+    private Instant computeDeletionPlanned(Organization organization) {
+        DateTime possibleDeletionAskedDate = organization.getStatus() == OrganizationStatus.DELETED
+                ? new DateTime(organization.getStatusChanged()) // the user already has clicked on "delete".
+                : new DateTime(); // when the user will click on delete, the deletion planned date
+                // will be right even without refreshing the organization first (i.e. passing again in this method).
+        Instant deletionPlanned = possibleDeletionAskedDate.plusDays(organizationDaysTillDeletedFromTrash).toInstant();
+        return deletionPlanned;
     }
 
     /**
@@ -314,11 +324,24 @@ public class NetworkService {
         }
     }
 
+    /**
+     * Verify if the current user is an administrator for a given organization.<br/>
+     * NOTE: This does not work for "personal" organization, use rather userIsAdminOrPersonalAppInstance()
+     * @param organizationId
+     * @return Boolean : True if is organization administrator, False otherwise.
+     */
     public boolean userIsAdmin(String organizationId) {
         return userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
                 .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin());
     }
 
+    public boolean userIsAdminOrPersonalAppInstance(ApplicationInstance existingInstance) {
+        return isPersonalAppInstance(existingInstance) || this.userIsAdmin(existingInstance.getProviderId());
+    }
+
+    public boolean isPersonalAppInstance(ApplicationInstance existingInstance) {
+        return existingInstance.getProviderId() == null;
+    }
 
     public void invite(String email, String organizationId) {
         if (! userIsAdmin(organizationId)) {

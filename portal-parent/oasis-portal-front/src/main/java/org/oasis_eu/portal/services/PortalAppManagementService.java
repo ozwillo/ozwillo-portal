@@ -23,6 +23,7 @@ import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
 import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.portal.model.appstore.AppInfo;
+import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,11 +112,15 @@ public class PortalAppManagementService {
         if (entry == null) {
             return null; // Forbidden (else #208 Catalog not displayed), deleted...
         }
-        AppInfo appInfo = new AppInfo(entry.getId(), entry.getName(RequestContextUtils.getLocale(request)), entry.getDescription(RequestContextUtils.getLocale(request)), null, entry.getType(), entry.getIcon(RequestContextUtils.getLocale(request)));
+        AppInfo appInfo = new AppInfo(entry.getId(),
+                entry.getName(RequestContextUtils.getLocale(request)),
+                entry.getDescription(RequestContextUtils.getLocale(request)),
+                null,
+                entry.getType(),
+                entry.getIcon(RequestContextUtils.getLocale(request)));
 
-        MyAppsInstance uiInstance = fillUIInstance(new MyAppsInstance()
-                .setApplicationInstance(instance)
-                .setApplication(appInfo));
+        MyAppsInstance uiInstance = fillUIInstance(
+                new MyAppsInstance().setApplicationInstance(instance).setApplication(appInfo) );
 
         if (fetchServices)
             uiInstance = uiInstance.setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream()
@@ -127,7 +132,7 @@ public class PortalAppManagementService {
     private MyAppsInstance fillUIInstance(MyAppsInstance uiInstance) {
         ApplicationInstance instance = uiInstance.getApplicationInstance();
         if (instance.getStatusChanged() != null) {
-            Instant deletionPlanned = new DateTime(instance.getStatusChanged())
+            Instant deletionPlanned = new DateTime(instance.getStatusChanged()) //TODO check if computeDeletionPlanned() in NetworkService is required here
                 .plusDays(applicationInstanceDaysTillDeletedFromTrash).toInstant();
             uiInstance.setDeletionPlanned(deletionPlanned);
         }
@@ -142,7 +147,10 @@ public class PortalAppManagementService {
 
         logger.debug("Fetching service data for {}", service);
 
-        return new MyAppsService().setService(service).setName(service.getName(RequestContextUtils.getLocale(request))).setIconUrl(imageService.getImageForURL(service.getDefaultIcon(), ImageFormat.PNG_64BY64, false));
+        return new MyAppsService()
+                .setService(service)
+                .setName(service.getName(RequestContextUtils.getLocale(request)))
+                .setIconUrl(imageService.getImageForURL(service.getDefaultIcon(), ImageFormat.PNG_64BY64, false));
     }
 
     public MyAppsService getService(String serviceId) {
@@ -152,8 +160,11 @@ public class PortalAppManagementService {
     }
 
     public CatalogEntry updateService(String serviceId, CatalogEntry entry) {
-        if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(catalogStore.findService(serviceId).getInstanceId()).getProviderId())) {
-            throw new AccessDeniedException("Unauthorized");
+        CatalogEntry catalogEntry = catalogStore.findService(serviceId);
+        ApplicationInstance appInstance = catalogStore.findApplicationInstance(catalogEntry.getInstanceId());
+        if ( !networkService.userIsAdminOrPersonalAppInstance(appInstance) ) {
+            // let it with the default forbidden error message
+            throw new ForbiddenException();
         }
         return catalogStore.fetchAndUpdateService(serviceId, entry);
     }
@@ -237,7 +248,7 @@ public class PortalAppManagementService {
      */
     public String setInstanceStatus(MyAppsInstance uiInstance) {
         ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());
-        if (!userIsAdmin(existingInstance)) {
+        if (!networkService.userIsAdminOrPersonalAppInstance(existingInstance)) {
             throw new AccessDeniedException("Unauthorized access");
         }
 
@@ -247,14 +258,6 @@ public class PortalAppManagementService {
             return catalogStore.setInstanceStatus(instance.getInstanceId(), instance.getStatus());
         }
         return null;
-    }
-    
-    public boolean userIsAdmin(ApplicationInstance existingInstance) {
-        return isPersonalAppInstance(existingInstance) || networkService.userIsAdmin(existingInstance.getProviderId());
-    }
-
-    public boolean isPersonalAppInstance(ApplicationInstance existingInstance) {
-        return existingInstance.getProviderId() == null;
     }
 
 }

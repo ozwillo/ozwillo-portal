@@ -65,8 +65,8 @@ $(document).ready(function () {
 
             var divError = createDivError(title, err_message, err_detail);
 
-            if ( devmode || ( (status / 100) !== 5 )){
-                openErrorDialog(divError, 3000);
+            if ( devmode || ( (xstat / 100) !== 5 )){
+                openErrorDialog(divError, 3500);
             }
         }
 

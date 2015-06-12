@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.core.mongo.model.sitemap;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,11 +13,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 
 /**
- * User: schambon
- * Date: 12/15/14
+ * User: lucaterori
+ * Date: 08/06/2015
  */
-@Document(collection = "sitemap")
-public class SiteMap {
+@Document(collection = "sitemapheader")
+public class SiteMapMenuSet implements Serializable {
+    private static final long serialVersionUID = -6572421288637503651L;
 
     @Id
     @JsonIgnore
@@ -28,7 +30,12 @@ public class SiteMap {
 
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "item")
-    private List<SiteMapEntry> entries = new ArrayList<>();
+    private List<SiteMapMenuItem> items = new ArrayList<>();
+
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "submenu")
+    private List<SiteMapSubMenuEntry> submenus = new ArrayList<>();
+
 
     public String getId() {
         return id;
@@ -46,11 +53,19 @@ public class SiteMap {
         this.language = language;
     }
 
-    public List<SiteMapEntry> getEntries() {
-        return entries;
+    public List<SiteMapMenuItem> getItems() {
+        return items;
     }
 
-    public void setEntries(List<SiteMapEntry> entries) {
-        this.entries = entries;
+    public void setItems(List<SiteMapMenuItem> items) {
+        this.items = items;
+    }
+
+    public List<SiteMapSubMenuEntry> getSubmenus() {
+        return submenus;
+    }
+
+    public void setSubmenus(List<SiteMapSubMenuEntry> submenus) {
+        this.submenus = submenus;
     }
 }

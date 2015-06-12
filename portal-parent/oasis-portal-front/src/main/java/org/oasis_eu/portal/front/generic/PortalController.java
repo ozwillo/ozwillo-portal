@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
+import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuSet;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
@@ -141,6 +142,13 @@ abstract public class PortalController {
 
 
         return result;
+    }
+
+    @ModelAttribute("sitemapheader")
+    public SiteMapMenuSet siteMapHeader() {
+        SiteMapMenuSet siteMap = navigationService.getSiteMapHeader();
+
+        return siteMap;
     }
 
     @ExceptionHandler(AuthenticationRequiredException.class)
