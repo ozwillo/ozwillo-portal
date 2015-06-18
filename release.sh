@@ -147,7 +147,8 @@ then
    echo "The main project has SNAPSHOT dependencies : $SNAPSHOT_DEPS, releasing it"
 
 pushd ../oasis-spring-integration
-release_projectgit status
+release_project
+git status
 popd
 
 fi
