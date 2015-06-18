@@ -194,7 +194,7 @@ public class NetworkService {
 
             organizationStore.update(org);
         }
-        
+
         List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(uiOrganization.getId());
 
         // note: there can be no added users (we invite them by email directly)
@@ -213,11 +213,11 @@ public class NetworkService {
 
     public String setOrganizationStatus(UIOrganization uiOrganization) {
         Organization org = organizationStore.find(uiOrganization.getId());
-        
+
         if (!userIsAdmin(org.getId())) {
             throw new ForbiddenException();
         }
-        
+
         boolean statusHasChanged = uiOrganization.getStatus() == null || org.getStatus() == null || !(uiOrganization.getStatus().equals(org.getStatus()));
         if (statusHasChanged) {
             return organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
@@ -399,10 +399,14 @@ public class NetworkService {
     public UIOrganization createOrganization(String name, String type, URI territoryId) {
         logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type, userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
 
+        if ( type == null /*|| territoryId == null*/ ) {  // TODO if territory is not an optional field, verify if it's provided
+            throw new IllegalArgumentException();
+        }
+
         Organization org = new Organization();
         org.setName(name);
-        org.setType(OrganizationType.valueOf(type)); // throws an IllegalArgumentException if the type isn't provided
-        org.setTerritoryId(territoryId); // TODO LATER throws an IllegalArgumentException if the type isn't provided
+        org.setType(OrganizationType.valueOf(type));
+        org.setTerritoryId(territoryId);
 
         org = organizationStore.create(org);
 

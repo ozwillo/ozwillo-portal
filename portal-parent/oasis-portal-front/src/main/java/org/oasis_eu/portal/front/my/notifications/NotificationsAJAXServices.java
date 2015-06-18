@@ -49,6 +49,7 @@ public class NotificationsAJAXServices extends BaseAJAXServices{
             this.notificationsCount = notificationsCount;
         }
 
+        @SuppressWarnings("unused")
         public String getNotificationsMessage() {
             return notificationsMessage;
         }

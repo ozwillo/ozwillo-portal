@@ -24,7 +24,6 @@ var NotificationTable = React.createClass({
         return {
             n: [],
             apps: [],
-            recentlyRemoved: [],
             currentSort: {
                 prop: 'date', // date, changing to dataText to test issue #217
                 dir: -1
@@ -43,10 +42,7 @@ var NotificationTable = React.createClass({
             datatype: 'json',
             success: function(data) {
                 var s = this.state;
-                var recentlyRemoved = s.recentlyRemoved;
-                var notifs = data.notifications.filter(function (notif) {
-                    return $.inArray(notif.id, recentlyRemoved) == -1;
-                });
+                var notifs = data.notifications;
 
                 var currentSort = s.currentSort;
                 s.n = notifs.sort(function (a, b) {
@@ -115,11 +111,8 @@ var NotificationTable = React.createClass({
     },
     removeNotif: function(id) {
         var notifs = this.state.n.filter(function(n) {return n.id != id;});
-        var recentlyRemoved = this.state.recentlyRemoved;
-        recentlyRemoved.push(id);
 
-
-        this.setState({n:notifs, recentlyRemoved: recentlyRemoved});
+        this.setState({n:notifs});
 
         $.ajax({
             url: this.props.url + "/" + id,
@@ -136,6 +129,7 @@ var NotificationTable = React.createClass({
     render: function () {
         var callback = this.removeNotif;
         var appId = this.state.filter.app;
+        var status = this.state.filter.status;
         var notificationNodes = this.state.n
             .filter(function (notif) {
                 if (appId == null) {
@@ -146,7 +140,7 @@ var NotificationTable = React.createClass({
             })
             .map(function (notif) {
                 return (
-                    <Notification key={notif.id} notif={notif} onRemoveNotif={callback}/>
+                    <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={callback}/>
                 );
             });
 
@@ -233,18 +227,23 @@ var Notification = React.createClass({
         this.props.onRemoveNotif(this.props.notif.id);
     },
     render: function() {
-        var action = null;
+        var action_by_url = null;
+        var action_archive = null;
+
         if (this.props.notif.url) {
-            action = <a href={this.props.notif.url} target="_new" className="btn btn-primary" >{this.props.notif.actionText}</a>;
+            action_by_url = <a href={this.props.notif.url} target="_new" className="btn btn-primary" >{this.props.notif.actionText}</a>;
         }
+        if(this.props.notif.status !== "READ"){
+            action_archive = <a href="#" className="btn btn-primary" onClick={this.removeNotif}>{t('archive')}</a>;
+        }
+
         return (
             <div className="row form-table-row">
                 <div className="col-sm-2">{this.props.notif.dateText}</div>
                 <div className="col-sm-2">{this.props.notif.appName}</div>
                 <div className="col-sm-6" dangerouslySetInnerHTML={{__html: this.props.notif.formattedText}}></div>
                 <div className="col-sm-2">
-                    {action}
-                    <a href="#" className="btn btn-primary" onClick={this.removeNotif}>{t('archive')}</a>
+                    {action_by_url} {action_archive}
                 </div>
             </div>
             );

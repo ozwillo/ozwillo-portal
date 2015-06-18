@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.model.notifications;
 
 import org.joda.time.Instant;
+import org.oasis_eu.spring.kernel.model.NotificationStatus;
 
 /**
  * User: schambon
@@ -15,6 +16,7 @@ public class UserNotification {
     String url;
     String actionText;
     String serviceId;
+    NotificationStatus status;
 
     public String getAppName() {
         return appName;
@@ -79,4 +81,13 @@ public class UserNotification {
     public void setServiceId(String serviceId) {
         this.serviceId = serviceId;
     }
+
+    public NotificationStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(NotificationStatus status) {
+        this.status = status;
+    }
+
 }

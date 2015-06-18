@@ -49,9 +49,7 @@ public class CatalogEntry implements Serializable {
     private String defaultDescription;
 
     private Map<String, String> localizedNames = new HashMap<>();
-
     private Map<String, String> localizedDescriptions = new HashMap<String, String>();
-
     private Map<String, String> localizedIcons = new HashMap<>();
 
     /* NOO accept empty for clearing up icon i.e. getting back the default one from Kernel */

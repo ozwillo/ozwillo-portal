@@ -63,6 +63,8 @@
     </div>
     <div class="collapse navbar-collapse" id="navbar-collapse">
         <ul class="nav navbar-nav oasis-nav" data-th-remove="all-but-first">
+
+         <!-- Dashboard -->
             <li class="active" data-th-each="item : ${navigation}" data-th-class="${item.active ? 'active':''}">
                 <a href="#" data-th-href="@{'/my/' + ${item.id}}" data-th-class="${item.active?'':'nav-link'}">
                     <img data-th-if="${!item.active}" data-th-src="@{'/img/my/' + ${item.id} + '-gray.png'}"
@@ -78,6 +80,8 @@
                     <div class="arrow"></div>
                 </th:block>
             </li>
+
+          <!-- Profile -->
             <li>
                 <a href="#" class="nav-link">
                     <img class="gray" data-th-src="@{/img/my/profile-gray.png}"
@@ -89,6 +93,8 @@
                 <div class="arrow-border"></div>
                 <div class="arrow"></div>
             </li>
+
+          <!-- Network -->
             <li>
                 <a href="#" class="nav-link">
                     <img class="gray" data-th-src="@{/img/my/network-gray.png}"
@@ -98,6 +104,8 @@
                     <span>Network</span>
                 </a>
             </li>
+
+            <!-- My Apps -->
             <li>
                 <a href="#" class="nav-link">
                     <img class="gray" data-th-src="@{/img/my/apps-management-gray.png}"
@@ -128,9 +136,10 @@
             </li>
 
             <!-- Data -->
-	        <li class="dropdown" >
+	        <li class="nav-apps" >
 	          <a href="#" class="nav-link " data-th-href="${sitemapheader.items[2].url}">
-	            <img  alt="discover" data-th-src="${sitemapheader.items[2].img_url}" />
+	            <img  alt="discover" class="gray" data-th-src="${sitemapheader.items[2].img_url}" />
+	            <img  alt="discover" class="purple" data-th-src="${sitemapheader.items[2].img_url}" />
 	            <span data-th-text="${sitemapheader.items[2].label}">Discover</span >
 	          </a>
 	       </li>
@@ -165,8 +174,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
 
+    <script src="../../public/js/my.js" ></script>
 
-<script src="../../public/js/my.js" ></script>
 
 </body>
 </html>

@@ -13,8 +13,8 @@ appender("CONSOLE", ConsoleAppender) {
 logger("org.oasis_eu.portal.main", DEBUG)
 logger("org.oasis_eu", DEBUG)
 logger("org.oasis_eu.portal.config.OasisLocaleResolver", DEBUG)
-logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", ERROR) // ERROR, WARN (prod), INFO (preprod, dev), DEBUG
-logger("kernelLogging.logFullErrorResponses", DEBUG) // TODO WILL CHANGE requires org.oasis_eu.spring.util.KernelLoggingInterceptor at DEBUG
+logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", INFO) // ERROR, WARN (prod), INFO (preprod, dev), DEBUG
+logger("kernelLogging.logFullErrorResponses", INFO) // DEBUG logs any response, INFO only error ones
 logger("kernelLogging.logRequestTimings", DEBUG)
 logger("org.oasis_eu.portal.front.my.network", DEBUG) // ONLY in dev mode
 

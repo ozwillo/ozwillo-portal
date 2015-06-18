@@ -56,8 +56,9 @@ public class PortalNotificationService {
 
     @Value("${application.notificationsEnabled:true}")
     private boolean notificationsEnabled;
-    
-    @Value("${application.devmode:false}") private boolean devmode;
+
+    @Value("${application.devmode:false}")
+    private boolean devmode;
 
     @Autowired
     private MessageSource messageSource;
@@ -66,6 +67,9 @@ public class PortalNotificationService {
         if (!notificationsEnabled) {
             return 0;
         }
+        // TODO: GET from kernel (not yet implemented at 18/June/2015) the actual count of {status: READ, UNREAD, ALL} message.
+        // NB. In case the user has +300 notifications, it will be fetch ALL the notification content each time, 
+        // this to be filtered and counted at the end, which implies use of unnecessary networking/processing tasks 
         return (int) notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
                 .stream()
                 .filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
@@ -175,6 +179,8 @@ public class PortalNotificationService {
                         notif.setActionText(n.getActionLabel());
                     }
 
+                    notif.setStatus(n.getStatus());
+
                     return notif;
                 })
                 .filter(n -> n != null) // case of deleted or Forbidden app instance, see above
@@ -183,7 +189,7 @@ public class PortalNotificationService {
                 .collect(Collectors.toList());
     }
 
-
+    // TODO: Method is Not used, verify if is required, otherwise remove it
     public List<AppNotificationData> getAppNotificationCounts(List<String> serviceIds) {
         List<UserNotification> userNotifications = getUnreadNotifications();
 

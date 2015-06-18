@@ -1,5 +1,15 @@
 package org.oasis_eu.portal.services;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
@@ -27,10 +37,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -310,12 +316,15 @@ public class PortalDashboardService {
     public List<DashboardPendingApp> getPendingApps() {
 
         HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
+        List<ApplicationInstance> pendingInstances = applicationInstanceStore.findPendingInstances(userInfoHelper.currentUser().getUserId());
 
-        return applicationInstanceStore.findPendingInstances(userInfoHelper.currentUser().getUserId())
-                .stream()
-                .filter(instance -> hidden == null || !hidden.getHiddenApps().contains(instance.getInstanceId()))
+        List<DashboardPendingApp> dashboardPendingAppLst = pendingInstances.stream()
+                // filter on "deleted" a.k.a portal-side hidden app : (#156 Possibility to delete "pending app instances" icons)
+                .filter(instance -> (hidden == null || !hidden.getHiddenApps().contains(instance.getInstanceId())))
                 .map(this::toPendingApp)
                 .collect(Collectors.toList());
+
+        return dashboardPendingAppLst;
     }
 
     public void removePendingApp(String appId) {
@@ -323,18 +332,28 @@ public class PortalDashboardService {
         if (hidden == null) {
             hidden = new HiddenPendingApps();
             hidden.setUserId(userInfoHelper.currentUser().getUserId());
-
         }
         hidden.hideApp(appId);
         hiddenPendingAppsRepository.save(hidden);
     }
 
     private DashboardPendingApp toPendingApp(ApplicationInstance instance) {
-        DashboardPendingApp app = new DashboardPendingApp();
-        app.setId(instance.getInstanceId());
-        app.setIcon(imageService.getImageForURL(catalogStore.findApplication(instance.getApplicationId()).getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
-        app.setName(instance.getName());
+        CatalogEntry appCatalog = catalogStore.findApplication(instance.getApplicationId());
 
-        return app;
+        String imageUrl = "";
+        if (appCatalog != null){
+            // No icons are set in the appInstance, so we have to take it directly from the app
+            // TODO remove once kernel #121 is done
+            imageUrl = appCatalog.getIcon(RequestContextUtils.getLocale(request));
+        } // #220 The app could be deleted or stopped
+
+        DashboardPendingApp dashPendingApp = new DashboardPendingApp();
+        dashPendingApp.setId(instance.getInstanceId());
+        dashPendingApp.setIcon(imageService.getImageForURL(imageUrl, ImageFormat.PNG_64BY64, false));
+        //dashPendingApp.setIcon(imageService.getImageForURL(instance.getIcon(
+        //        RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false)); // TODO once kernel #121 is done
+        dashPendingApp.setName(instance.getName(RequestContextUtils.getLocale(request)));
+
+        return dashPendingApp;
     }
 }

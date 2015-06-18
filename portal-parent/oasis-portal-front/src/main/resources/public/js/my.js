@@ -13,7 +13,7 @@ $(document).ready(function () {
     );
 
 
-    var updateNotifications = function () {
+    var getNotificationsCount = function () {
 
         $.get($(".my-oasis").attr("data").toString(),
                 function (notifData) {
@@ -34,14 +34,16 @@ $(document).ready(function () {
                     } else {
                         element.hide();
                     }
-                    setTimeout(updateNotifications, 2000);
+                    setTimeout(getNotificationsCount , 2000);
                 }
         );
 
     }
 
     if ($(".my-oasis").attr("data")) {
-        updateNotifications();
+        if(notificationsEnabled){
+            getNotificationsCount();
+        }
     }
   	
 
@@ -81,7 +83,7 @@ $(document).ready(function () {
                 + xhr.responseText + " "
                 + xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong");
 
-        var divError = createDivError(title, err_msg, details);
+        var divError = createDivError(title, err_msg, err_detail);
 
         openErrorDialog(divError, 3500);
 	}

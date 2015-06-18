@@ -11,6 +11,7 @@ appender("CONSOLE", ConsoleAppender) {
 
 logger("org.oasis_eu", DEBUG)
 //logger("org.oasis_eu.spring.datacore",INFO)
-logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", DEBUG)
+logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", DEBUG) // ERROR, WARN (prod), INFO (preprod, dev), DEBUG
+logger("kernelLogging.logFullErrorResponses", DEBUG) // DEBUG logs any response, INFO only error ones
 
 root(WARN, ["CONSOLE"])

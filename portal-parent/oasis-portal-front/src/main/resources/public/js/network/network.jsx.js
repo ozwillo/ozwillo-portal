@@ -42,19 +42,53 @@ var OrganizationsList = React.createClass({
             }.bind(this)
         });
     },
-    updateOrganization: function(organization, optionalOperation) {
-        // first update locally
-        var orgs = this.state.organizations;
-        var idx;
-        for (var i in orgs) {
-            if (orgs[i].id == organization.id) {
-                idx = i;
-                break;
-            }
+    componentDidMount: function() {
+        this.loadOrganizations();
+    },
+    render: function() {
+        if (this.state.generalError) {
+            return <p className="alert alert-danger">{t('ui.general-error')}</p>
+        } else if (this.state.loading) {
+            return <p className="text-center">
+                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>
+        } else {
+            var reload = this.loadOrganizations;
+            var orgs = this.state.organizations.map(function(org) {
+                return (
+                    <Organization key={org.id} org={org} reload={reload}/>
+                    );
+            });
+            return (
+                    <div>
+                    <div className="organizations">{orgs}</div>
+                    </div>
+                    );
         }
+    }
+});
 
-        orgs[idx] = organization;
-        this.setState({loading: false, organizations: orgs});
+var Organization = React.createClass({
+    getInitialState: function() {
+        //return {invite:{email: "", errors:[]}};
+        var state = this.props.org;
+        state.invite = {email: "", errors:[]};
+        return state;
+    },
+    componentDidUpdate: function () {
+        if (typeof this.state.errorMessage === 'string') {
+            this.refs.errorDialog.open();
+        }
+    },
+    updateInvitation: function(event) {
+        var state = this.state;
+        state.invite.email = event.target.value;
+        state.invite.errors = [];
+        this.setState(state);
+    },
+    updateOrganization: function(organization, optionalOperation) {
+        // NB. not updating locally (setState()) first because it would require rendering
+        // BEFORE doing remote ajax changes which would AGAIN render
+        // which would then block scrolling, see #221
 
         // then remotely
         var url = network_service + "/organization/" + organization.id;
@@ -67,72 +101,22 @@ var OrganizationsList = React.createClass({
             contentType: 'application/json',
             data: JSON.stringify(organization),
             success: function (data) {
+                var state = organization;
                 //data = "test"; // to easily test error return
                 if (typeof data === 'string' && data.trim().length !== 0) {
                     // assuming it's a String message returned by the Kernel
-                    var state = this.state;
                     state.errorMessage = data;
-                    this.setState(state);
                 }
+                this.props.org = state;
+                this.setState(state);
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
                 // if there's an error, reload everything
-                this.loadOrganizations();
+                this.props.reload();
             }.bind(this)
         });
 
-    },
-    componentDidMount: function() {
-        this.loadOrganizations();
-    },
-    componentDidUpdate: function () {
-        if (typeof this.state.errorMessage === 'string') {
-            this.refs.errorDialog.open();
-        }
-    },
-    closeErrorDialog: function () { // required else if onClose=this.loadOrganizations directly loops on displaying errorDialog
-        var state = this.state;
-        state.errorMessage = null;
-        this.setState(state);
-        // if there's an error, reload everything
-        this.loadOrganizations();
-    },
-    render: function() {
-        if (this.state.generalError) {
-            return <p className="alert alert-danger">{t('ui.general-error')}</p>
-        } else if (this.state.loading) {
-            return <p className="text-center">
-                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>
-        } else {
-            var reload = this.loadOrganizations;
-            var updateOrg = this.updateOrganization;
-            var orgs = this.state.organizations.map(function(org) {
-                return (
-                    <Organization key={org.id} org={org} reload={reload} updateOrganization={updateOrg}/>
-                    );
-            });
-            return (
-                    <div>
-                    <Modal ref="errorDialog" infobox={true} onClose={this.closeErrorDialog} buttonLabels={{'ok': t('ui.close')}} title={t('information')}>
-                        {this.state.errorMessage}
-                    </Modal>
-                    <div className="organizations">{orgs}</div>
-                    </div>
-                    );
-        }
-    }
-});
-
-var Organization = React.createClass({
-    getInitialState: function() {
-        return {invite:{email: "", errors:[]}};
-    },
-    updateInvitation: function(event) {
-        var state = this.state;
-        state.invite.email = event.target.value;
-        state.invite.errors = [];
-        this.setState(state);
     },
     invite: function() {
         var state = this.state;
@@ -210,19 +194,26 @@ var Organization = React.createClass({
         this.refs.confirmTrashDialog.open();
     },
     trash: function () {
-        var org = this.props.org;
+        var org = this.state;
         org.status = 'DELETED';
-        this.props.updateOrganization(org, 'set-status');
+        this.updateOrganization(org, 'set-status');
         this.refs.confirmTrashDialog.close();
     },
     confirmUntrash: function() {
         this.refs.confirmUntrashDialog.open();
     },
     untrash: function () {
-        var org = this.props.org;
+        var org = this.state;
         org.status = 'AVAILABLE';
-        this.props.updateOrganization(org, 'set-status');
+        this.updateOrganization(org, 'set-status');
         this.refs.confirmUntrashDialog.close();
+    },
+    closeErrorDialog: function () { // required else if onClose=this.props.reload() directly loops on displaying errorDialog
+        var state = this.state;
+        state.errorMessage = null;
+        this.setState(state);
+        // if there's an error, reload everything
+        this.props.reload();
     },
     removeMember: function(member) {
         return function (event) {
@@ -231,7 +222,7 @@ var Organization = React.createClass({
             }
             var org = this.props.org;
             org.members = org.members.filter(function(m) {return m.id != member.id;});
-            this.props.updateOrganization(org);
+            this.updateOrganization(org);
 
         }.bind(this);
     },
@@ -244,7 +235,7 @@ var Organization = React.createClass({
                 break;
             }
         }
-        this.props.updateOrganization(org);
+        this.updateOrganization(org);
     },
     renderMembers: function() {
         if (this.props.org.admin) {
@@ -278,6 +269,12 @@ var Organization = React.createClass({
 
         var buttons = [];
         var dialogs = [];
+
+        dialogs.push(
+            <Modal ref="errorDialog" infobox={true} onClose={this.closeErrorDialog} buttonLabels={{'ok': t('ui.close')}} title={t('information')}>
+                {this.state.errorMessage}
+            </Modal>
+        );
 
         var membersList = this.renderMembers();
         var pendingMembershipList = this.renderPendingMemberships();
@@ -315,47 +312,47 @@ var Organization = React.createClass({
                 <InformationDialog ref="infoDialog" org={this.props.org} />
             ];
             
-        if (this.props.org.admin) {
-            if (this.props.org.members.filter(function (m) {
-                return m.admin;
-            }).length != 1) {
-                // admins can leave only if there will still be another admin
+	        if (this.props.org.admin) {
+                if (this.props.org.members.filter(function (m) {
+                    return m.admin;
+                }).length != 1) {
+                    // admins can leave only if there will still be another admin
+                    buttons.push(
+                        <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
+                    );
+                }
+
                 buttons.push(
-                    <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
+                    <a key="invite" className="btn btn-success-inverse" onClick={this.openInvitation}>{t('invite')}</a>
                 );
-            }
 
-            buttons.push(
-                <a key="invite" className="btn btn-success-inverse" onClick={this.openInvitation}>{t('invite')}</a>
-            );
-            
-            buttons.push(
-                <a key="confirmTrash" className="btn btn-danger" onClick={this.confirmTrash}>{t('ui.delete')}...</a>
-            );
+                buttons.push(
+                    <a key="confirmTrash" className="btn btn-danger" onClick={this.confirmTrash}>{t('ui.delete')}...</a>
+                );
 
-            dialogs.push(
-                <InviteDialog ref="inviteDialog"
-                admin={this.props.org.admin}
-                onSubmit={this.invite}
-                onChange={this.updateInvitation}
-                email={this.state.invite.email}
-                errors={this.state.invite.errors}/>
-            );
-            
-            var confirmTrashTitle = t('confirm-trash.title') + ' ' + this.props.org.name;
-            dialogs.push(
-                <Modal ref="confirmTrashDialog" title={confirmTrashTitle} successHandler={this.trash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
-                    {t('confirm-trash.body')}
-                </Modal>
-            );
+                dialogs.push(
+                    <InviteDialog ref="inviteDialog"
+                    admin={this.props.org.admin}
+                    onSubmit={this.invite}
+                    onChange={this.updateInvitation}
+                    email={this.state.invite.email}
+                    errors={this.state.invite.errors}/>
+                );
+
+                var confirmTrashTitle = t('confirm-trash.title') + ' ' + this.props.org.name;
+                dialogs.push(
+                    <Modal ref="confirmTrashDialog" title={confirmTrashTitle} successHandler={this.trash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                        {t('confirm-trash.body')}
+                    </Modal>
+                );
 
 
-        } else {
-            // non-admins can leave at any time
-            buttons.push(
-                <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
-            );
-        }
+	        } else {
+	            // non-admins can leave at any time
+	            buttons.push(
+	                <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
+	            );
+	        }
         }
 
         return (
@@ -364,11 +361,11 @@ var Organization = React.createClass({
                 <div className="row form-table-header">
                     <div className="col-sm-6">{this.props.org.name}</div>
                     <div className="col-sm-6">
-                    {buttons}
+                        {buttons}
                     </div>
                 </div>
                 {membersList}
-		{pendingMembershipList}
+                {pendingMembershipList}
             </div>
             );
     }
