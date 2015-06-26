@@ -62,9 +62,6 @@ abstract public class PortalController {
     @Value("${application.devmode:false}")
     private boolean devmode;
 
-    @Value("${application.notificationsEnabled:true}")
-    private boolean notificationsEnabled;
-
     @Value("${application.production:false}")
     private boolean production;
 
@@ -77,11 +74,6 @@ abstract public class PortalController {
     @ModelAttribute("devmode")
     public boolean getDevMode() {
         return devmode;
-    }
-
-    @ModelAttribute("notificationsEnabled")
-    public boolean getNotificationsEnabled() {
-        return notificationsEnabled;
     }
 
     @ModelAttribute("production")
@@ -98,7 +90,7 @@ abstract public class PortalController {
 	public Languages currentLanguage() {
         return Languages.getByLocale(currentLocale(), Languages.ENGLISH); // english if user locale unknown but not null 
 	}
-
+	
 	private Locale currentLocale() {
         if(user() != null && user().getLocale() != null) { // if user logged and locale set
             return user().getBestLocale(OasisLocales.values()); // null if unknown but not null 
@@ -197,9 +189,9 @@ abstract public class PortalController {
     protected boolean requiresLogout() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication instanceof OpenIdCAuthentication) {
-
+        	
         	OpenIdCAuthentication openIdCAuthentication = (OpenIdCAuthentication) authentication;        	
-
+        	
             if (openIdCService.getUserInfo(openIdCAuthentication) == null) {
                 return true;
             }
