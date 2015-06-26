@@ -156,6 +156,10 @@ abstract public class PortalController {
     public SiteMapMenuSet siteMapHeader() {
         SiteMapMenuSet siteMap = navigationService.getSiteMapHeader();
 
+        if (siteMap == null) {
+            return new SiteMapMenuSet();
+        }
+        
         return siteMap;
     }
 
