@@ -10,6 +10,7 @@ import java.util.List;
  */
 public interface Tokenizer {
 
+    List<String> tokenize(String input, boolean toLowerCase);
     List<String> tokenize(String input);
 
 }

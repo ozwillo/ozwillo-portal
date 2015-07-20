@@ -251,7 +251,7 @@ var Notification = React.createClass({
 });
 
 
-React.renderComponent(
+React.render(
     <NotificationTable url={notificationService} pollInterval={2000}/> ,
     document.getElementById("notifications")
 );

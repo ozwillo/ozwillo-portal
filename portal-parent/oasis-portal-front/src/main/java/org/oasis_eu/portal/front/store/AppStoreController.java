@@ -1,11 +1,9 @@
 package org.oasis_eu.portal.front.store;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,6 +11,7 @@ import javax.servlet.http.HttpSession;
 import org.oasis_eu.portal.config.AppStoreNavigationStatus;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.front.generic.PortalController;
+import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 
 /**
  * User: schambon
@@ -53,26 +54,19 @@ public class AppStoreController extends PortalController {
         return true;
     }
 
-
-    private static final List<String> i18nkeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid",
-            "languages-supported-by-applications", "look-for-an-application", "keywords","installed", "tos", "privacy", "by", 
-            "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid", 
-            "for_myself", "on_behalf_of", "create-new-org", "buying", "sorry", "could-not-install-app", "already-rated", "launch");
-    private static final List<String> languagekeys = Arrays.asList("all", "en", "fr", "it", "es", "ca", "tr", "bg"); // OASIS locales
-    private static final List<String> generickeys = Arrays.asList("save", "cancel", "ok", "appstore", "close", "loading", "location", 
-            "something_went_wrong_msg", "something_went_wrong_title", "error_detail_title");
-    private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY", 
-    		"organization-type.COMPANY", "create");
-
     @ModelAttribute("i18n")
-    public Map<String, String> i18n(HttpServletRequest request) {
+    public Map<String, String> i18n(HttpServletRequest request) throws JsonProcessingException {
         Locale locale = RequestContextUtils.getLocale(request);
-        Map<String, String> result = new HashMap<String, String>();
-        result.putAll(networkkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.network." + k, new Object[0], locale))));
-        result.putAll(i18nkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store." + k, new Object[0], locale))));
-        result.putAll(languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
-        result.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[0], locale))));
-        return result;
+        Map<String, String> i18n = new HashMap<String, String>();
+
+        i18n.putAll(i18nMessages.getI18n_networkkeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_languagekeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_storekeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
+
+        return i18n;
     }
 
 

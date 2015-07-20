@@ -797,7 +797,7 @@
         }
     });
 
-    React.renderComponent(
+    React.render(
         <Dashboard />,
         document.getElementById("dashboard")
     );

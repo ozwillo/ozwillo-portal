@@ -322,6 +322,4 @@ var Instance = React.createClass({
 });
 
 
-React.renderComponent(
-    <MyApps />, document.getElementById("myapps")
-);
+React.render( <MyApps />, document.getElementById("myapps") );
