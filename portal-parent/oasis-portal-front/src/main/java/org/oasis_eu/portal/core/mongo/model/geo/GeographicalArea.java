@@ -33,6 +33,9 @@ public class GeographicalArea {
     @JsonProperty
     private String detailedName;
 
+    @JsonProperty
+    private List<String> ancestors;
+
     private List<String> nameTokens;
 
     /** URI in Datacore (required if ex. sending directly to store ajax) */
@@ -112,5 +115,13 @@ public class GeographicalArea {
 
     public void setNameTokens(List<String> nameTokens) {
         this.nameTokens = nameTokens;
+    }
+
+    public List<String> getAncestors() {
+        return ancestors;
+    }
+
+    public void setAncestors(List<String> ancestors) {
+        this.ancestors = ancestors;
     }
 }

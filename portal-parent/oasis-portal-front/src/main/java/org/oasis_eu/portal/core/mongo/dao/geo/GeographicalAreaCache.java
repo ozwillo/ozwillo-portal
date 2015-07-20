@@ -1,10 +1,12 @@
 package org.oasis_eu.portal.core.mongo.dao.geo;
 
 import com.mongodb.*;
+
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.core.services.search.Tokenizer;
+import org.oasis_eu.portal.services.dc.geoarea.GeographicalDAO;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
 import org.oasis_eu.spring.datacore.model.DCOrdering;
@@ -50,24 +52,26 @@ public class GeographicalAreaCache {
     @Autowired
     private MappingMongoConverter mappingMongoConverter;
 
+    @Autowired
+    GeographicalDAO geographicalDAO;
+
     @Value("${persistence.mongodatabase:portal}")
     private String mongoDatabaseName;
 
     @Value("${application.geoarea.replication_batch_size:100}")
     private int batchSize = 100;
 
+    @Value("${application.geoarea.project:geo_0}")
+    private String project;
 
-    /**
-     * TODO rename prefix ?
-     */
-    @Value("${application.geoarea.storageModel:geo:City_0}")
-    private String storageModel = "geo:City_0"; // "geo:Area_0"; // "geoci:City_0"
-
-    /**
-     * TODO LATER rather odisp:name (or field shortcuts) OR RATHER IN CACHE
-     */
-    @Value("${application.geoarea.nameField:geo_city:name}")
-    private String nameField = "geo_city:name"; // "geoci:name";
+    @Value("${application.geoarea.areaModel:geo:Area_0}")
+    private String areaModel; //"geo:Area_0"; // "geoci:City_0"
+    /** ex. Rhône-Alpes, France */
+    @Value("${application.geoarea.primaryNameField:odisp:name}")
+    private String displayNameField = "odisp:name"; //geo:displayName
+    /** ex. Rhône-Alpes */
+    @Value("${application.geoarea.secondaryNameField:geo:name}")
+    private String nameField; // "geoci:name";
 
     @Autowired
     private Tokenizer tokenizer;
@@ -192,12 +196,12 @@ public class GeographicalAreaCache {
             } while (lastNameFetched != null);
 
 
-            // 2. delete all the "online" entries (they are replaced with the "incoming" ones)
+        // 2. delete all the "online" entries (they are replaced with the "incoming" ones)
             long deleteStart = System.currentTimeMillis();
             deleteByStatus(GeographicalAreaReplicationStatus.ONLINE);
             logger.debug("Deleted online data in {} ms", System.currentTimeMillis() - deleteStart);
 
-            // 3. switch all "incoming" entries to "online"
+        // 3. switch all "incoming" entries to "online"
             long switchStart = System.currentTimeMillis();
             switchToOnline();
             logger.debug("Switch to online in {} ms", System.currentTimeMillis() - switchStart);
@@ -213,17 +217,17 @@ public class GeographicalAreaCache {
 
     private String fetchBatches(DBCollection collection, Set<String> loadedUris, String lastNameFetched) {
 
-
         BulkWriteOperation builder = collection.initializeUnorderedBulkOperation();
 
         DCQueryParameters params;
-        params = lastNameFetched == null ?
-                new DCQueryParameters(nameField, DCOrdering.ASCENDING) :
-                new DCQueryParameters(nameField, DCOrdering.ASCENDING, DCOperator.GT, lastNameFetched);
+        params = lastNameFetched == null
+                ? new DCQueryParameters(nameField, DCOrdering.DESCENDING)
+                : new DCQueryParameters(nameField, DCOrdering.DESCENDING, DCOperator.LT, lastNameFetched);
+                // (LT & descending order to leave possible null geo:name values at the end rather than having to skip them)
 
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(storageModel, params, 0, batchSize);
+        List<DCResource> resources = datacore.findResources(project, areaModel, params, 0, batchSize);
         long queryEnd = System.currentTimeMillis();
         logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
 
@@ -234,7 +238,7 @@ public class GeographicalAreaCache {
 
             for (Languages language : Languages.values()) {
 
-                GeographicalArea area = toGeographicalArea(res, language.getLanguage());
+                GeographicalArea area = geographicalDAO.toGeographicalArea(res, language.getLanguage(), displayNameField, nameField);
                 if (area == null) {
                     continue;
                 }
@@ -261,7 +265,7 @@ public class GeographicalAreaCache {
 
             }
 
-            if (name != null) lastNameFetched = name;
+            if (name != null) { lastNameFetched = name; }
 
         }
 
@@ -272,41 +276,12 @@ public class GeographicalAreaCache {
             logger.debug("Saved resources; total save time={} ms (avg = {} ms)", durationSave, durationSave / resources.size());
         }
 
-
         if (resources.size() < batchSize) return null;
         else return lastNameFetched;
     }
 
-    private GeographicalArea toGeographicalArea(DCResource r, String language) {
-        GeographicalArea area = new GeographicalArea();
-        @SuppressWarnings("unchecked")
-        List<Map<String, String>> nameMaps = (List<Map<String, String>>) r.get(nameField);
-        if (nameMaps == null) {
-            logger.warn("DC Resource {} of type {} has no field named {}", r.getUri(), r.getType(), nameField);
-            return null;
-        }
-        String name = null;
-        for (Map<String, String> nameMap : nameMaps) {
-            String l = nameMap.get("@language");
-            if (l == null) {
-                continue; // shouldn't happen
-            }
-            if (l.equals(language)) {
-                name = nameMap.get("@value");
-                break; // can't find better
-            }
-            if (name == null) {
-                name = nameMap.get("@value");
-            }
-        }
-        area.setName(name);
-        area.setUri(r.getUri());
-        area.setLang(language);
-        area.setNameTokens(tokenizer.tokenize(name));
-        //area.setDetailedName(); // TODO fill in Datacore OR RATHER CACHE using names of NUTS3 or else 2 and country
-        return area;
-    }
 }
+
 
 class DCUrlWrapper {
     private final GeographicalArea area;
