@@ -2,7 +2,7 @@
 
 var MyNetwork = React.createClass({
     openCreateOrgDialog: function() {
-        this.refs.createOrgDialog.show();
+        this.refs.searchOrgDialog.show();
     },
     reload: function() {
         this.refs.orgs.loadOrganizations();
@@ -10,7 +10,7 @@ var MyNetwork = React.createClass({
     render: function() {
         return (
                 <div>
-                    <CreateOrganization ref="createOrgDialog"  successHandler={this.reload} />
+                    <SearchOrganization ref="searchOrgDialog"  successHandler={this.reload} />
                     <SearchOrCreateHeader showDialog={this.openCreateOrgDialog}/>
                     <OrganizationsList ref='orgs'/>
                 </div>
@@ -20,7 +20,7 @@ var MyNetwork = React.createClass({
 
 var SearchOrCreateHeader = React.createClass({
     render: function() {
-        return <h2>{t('find-or-create-organization')} <a className="btn btn-success" href="#" onClick={this.props.showDialog}>{t('ui.go')}</a></h2>
+        return <h2>{t('my.network.find-or-create-organization')} <a className="btn btn-success" href="#" onClick={this.props.showDialog}>{t('ui.go')}</a></h2>
     }
 });
 
@@ -271,7 +271,7 @@ var Organization = React.createClass({
         var dialogs = [];
 
         dialogs.push(
-            <Modal ref="errorDialog" infobox={true} onClose={this.closeErrorDialog} buttonLabels={{'ok': t('ui.close')}} title={t('information')}>
+            <Modal ref="errorDialog" infobox={true} onClose={this.closeErrorDialog} buttonLabels={{'ok': t('ui.close')}} title={t('my.network.information')}>
                 {this.state.errorMessage}
             </Modal>
         );
@@ -281,11 +281,11 @@ var Organization = React.createClass({
 
         if (this.props.org.status === 'DELETED') {
             // trashed
-            var byDeleteRequesterOnDate = t('by') + " " + this.props.org.status_change_requester_label
+            var byDeleteRequesterOnDate = t('my.network.by') + " " + this.props.org.status_change_requester_label
                   + " (" + moment(this.props.org.status_changed) + ")";
             buttons.push(
                 <span key="untrashTtl" style={{'color':'red', 'fontStyle':'Italic', 'marginLeft':'5px', 'marginRight':'5px'}} title={byDeleteRequesterOnDate}>
-                    {t('will-be-deleted')} {moment(this.props.org.deletion_planned).fromNow()}
+                    {t('my.network.will-be-deleted')} {moment(this.props.org.deletion_planned).fromNow()}
                 </span>
             ); // (not a button per se)
             
@@ -294,10 +294,11 @@ var Organization = React.createClass({
                     <a key="confirmUntrash" className="btn btn-danger" onClick={this.confirmUntrash}>{t('ui.cancel')}...</a>
                 );
                 
-                var confirmUntrashTitle = t('confirm-untrash.title') + ' ' + this.props.org.name;
+                var confirmUntrashTitle = t('my.network.confirm-untrash.title') + ' ' + this.props.org.name;
                 dialogs.push(
-                    <Modal ref="confirmUntrashDialog" title={confirmUntrashTitle} successHandler={this.untrash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
-                        {t('confirm-untrash.body')}
+                    <Modal ref="confirmUntrashDialog" title={confirmUntrashTitle} successHandler={this.untrash}
+                                      buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                        {t('my.network.confirm-untrash.body')}
                     </Modal>
                 );
             }
@@ -305,7 +306,7 @@ var Organization = React.createClass({
         } else {
 
             var buttons = [
-                <a key="info" className="btn btn-primary-inverse" onClick={this.showInformation}>{t('information')}</a>
+                <a key="info" className="btn btn-primary-inverse" onClick={this.showInformation}>{t('my.network.information')}</a>
             ];
             var dialogs = [
                 <LeaveDialog ref="leaveDialog" onSubmit={this.leave}/>,
@@ -318,12 +319,12 @@ var Organization = React.createClass({
                 }).length != 1) {
                     // admins can leave only if there will still be another admin
                     buttons.push(
-                        <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
+                        <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('my.network.leave')}</a>
                     );
                 }
 
                 buttons.push(
-                    <a key="invite" className="btn btn-success-inverse" onClick={this.openInvitation}>{t('invite')}</a>
+                    <a key="invite" className="btn btn-success-inverse" onClick={this.openInvitation}>{t('my.network.invite')}</a>
                 );
 
                 buttons.push(
@@ -339,10 +340,11 @@ var Organization = React.createClass({
                     errors={this.state.invite.errors}/>
                 );
 
-                var confirmTrashTitle = t('confirm-trash.title') + ' ' + this.props.org.name;
+                var confirmTrashTitle = t('my.network.confirm-trash.title') + ' ' + this.props.org.name;
                 dialogs.push(
-                    <Modal ref="confirmTrashDialog" title={confirmTrashTitle} successHandler={this.trash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
-                        {t('confirm-trash.body')}
+                    <Modal ref="confirmTrashDialog" title={confirmTrashTitle} successHandler={this.trash}
+                                     buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                        {t('my.network.confirm-trash.body')}
                     </Modal>
                 );
 
@@ -350,7 +352,7 @@ var Organization = React.createClass({
 	        } else {
 	            // non-admins can leave at any time
 	            buttons.push(
-	                <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('leave')}</a>
+	                <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('my.network.leave')}</a>
 	            );
 	        }
         }
@@ -379,7 +381,7 @@ var PendingMembership = React.createClass({
     renderUserTypeInvitation: function() {
         var admin = this.state.pMember.admin;
 
-        return admin ? t('admin') : t('user');
+        return admin ? t('my.network.admin') : t('my.network.user');
 
     },
     removeMembershipInvitation: function (event) {
@@ -389,7 +391,7 @@ var PendingMembership = React.createClass({
     },
     render: function() {
         var pMember = this.state.pMember;
-	var adminStatus = this.renderUserTypeInvitation();
+        //var adminStatus = this.renderUserTypeInvitation();
 
         var actions = (
             <div className="col-sm-2 col-sm-offset-1">
@@ -402,7 +404,7 @@ var PendingMembership = React.createClass({
         return (
             <div key={pMember.id} className="row form-table-row-italics">
                 <div className="col-sm-4">{pMember.email}</div>
-                <div className="col-sm-4">{t('organization.pending-invitation') }</div>
+                <div className="col-sm-4">{t('my.network.organization.pending-invitation') }</div>
                 {actions}
             </div>
        );
@@ -434,7 +436,7 @@ var Member = React.createClass({
         var edit = this.state.edit;
 
         if (!edit) {
-            return admin ? t('admin') : t('user');
+            return admin ? t('my.network.admin') : t('my.network.user');
         } else {
             return (
                 <div>
@@ -443,7 +445,7 @@ var Member = React.createClass({
                         state.member.admin = !admin;
                         this.setState(state);
                     }.bind(this)}></input>
-                    <label>{admin ? t('admin') : t('user')}</label>
+                    <label>{admin ? t('my.network.admin') : t('my.network.user')}</label>
                 </div>
                 );
         }
@@ -494,7 +496,7 @@ var ReadOnlyMember = React.createClass({
         return (
             <div key={this.props.member.id} className="row form-table-row">
                 <div className="col-sm-3">{this.props.member.name}</div>
-                <div className="col-sm-3">{this.props.member.self ? t('user') : t('admin')}</div>
+                <div className="col-sm-3">{this.props.member.self ? t('my.network.user') : t('my.network.admin')}</div>
             </div>
         );
     }
@@ -516,14 +518,14 @@ var InviteDialog = React.createClass({
     },
     render: function() {
         if (this.props.admin) {
-            var inviteButtonLabels = {"save": t('invite'), "cancel": t('ui.cancel')};
+            var inviteButtonLabels = {"save": t('my.network.invite'), "cancel": t('ui.cancel')};
             var labelClassName = ($.inArray("email", this.props.errors) == -1 ? 'col-sm-4' : 'col-sm-4 error');
             var generalError = ($.inArray("general", this.props.errors) != -1 ? <p className="alert alert-danger" role="alert">{t('ui.general-error')}</p> : null)
             return (
-                <Modal ref="modal" title={t('invite')} successHandler={this.props.onSubmit} buttonLabels={inviteButtonLabels}>
+                <Modal ref="modal" title={t('my.network.invite')} successHandler={this.props.onSubmit} buttonLabels={inviteButtonLabels}>
                     <form className="form-horizontal" onSubmit={this.props.onSubmit}>
                         <div className="form-group">
-                            <label htmlFor="email" className={labelClassName}>{t('email')}</label>
+                            <label htmlFor="email" className={labelClassName}>{t('my.network.email')}</label>
                             <div className="col-sm-8">
                                 <input className="form-control" id="email" type="text" value={this.props.email} onChange={this.props.onChange} placeholder="name@domain.eu"/>
                             </div>
@@ -544,10 +546,10 @@ var LeaveDialog = React.createClass({
         this.refs.modal.close();
     },
     render: function() {
-        var leaveButtonLabels = {'cancel': t('ui.cancel'), 'save': t('yes-i-want-to-leave')};
+        var leaveButtonLabels = {'cancel': t('ui.cancel'), 'save': t('my.network.yes-i-want-to-leave')};
         return (
-            <Modal ref="modal" title={t('leave')} successHandler={this.props.onSubmit} buttonLabels={leaveButtonLabels}>
-                <p>{t('confirm-leave')}</p>
+            <Modal ref="modal" title={t('my.network.leave')} successHandler={this.props.onSubmit} buttonLabels={leaveButtonLabels}>
+                <p>{t('my.network.confirm-leave')}</p>
             </Modal>
             );
     }
@@ -562,13 +564,13 @@ var InformationDialog = React.createClass({
                 <p>{t('ui.location')} : {this.props.org.territory_label}</p>
         ) : '';
         return (
-            <Modal ref="modal" infobox={true} buttonLabels={{'ok': t('ui.close')}} title={t('information')}>
+            <Modal ref="modal" infobox={true} buttonLabels={{'ok': t('ui.close')}} title={t('my.network.information')}>
                 <h4>{this.props.org.name}</h4>
-                <p>{t('organization-type.' + this.props.org.type)}</p>
+                <p>{t('my.network.organization-type.' + this.props.org.type)}</p>
                 {territoryId}
             </Modal>
             );
     }
 });
 
-React.renderComponent(<MyNetwork />, document.getElementById("mynetwork"));
+React.render(<MyNetwork />, document.getElementById("mynetwork"));

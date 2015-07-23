@@ -20,6 +20,7 @@ import org.oasis_eu.portal.model.network.UIOrganizationMember;
 import org.oasis_eu.portal.model.network.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
+import org.oasis_eu.spring.kernel.model.Address;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
@@ -38,6 +39,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * User: schambon
@@ -136,6 +139,9 @@ public class NetworkService {
         if (organization.getTerritoryId() != null) {
             uiOrg.setTerritoryId(organization.getTerritoryId());
             uiOrg.setTerritoryLabel(String.valueOf(organization.getTerritoryId())); // TODO if any get label from cache with user locale (?????????!!!!!!!!!!!!!!!!)
+        }
+        if (organization.getDcId() != null) {
+            uiOrg.setDcId(organization.getDcId());
         }
         uiOrg.setStatus(organization.getStatus());
         if (organization.getStatusChanged() != null) {
@@ -241,6 +247,21 @@ public class NetworkService {
         return nameHasChanged || typeHasChanged;
     }
 
+    public UserGeneralInfo getCurrentUser() {
+        UserInfo userInfo = userInfoService.currentUser();
+        UserGeneralInfo userGeneralInfo = new UserGeneralInfo(userInfo.getGivenName(), userInfo.getFamilyName(), userInfo.getEmail(), userInfo.getAddress());
+        return userGeneralInfo;
+    }
+    public class UserGeneralInfo {
+        @JsonProperty String user_name;
+        @JsonProperty String user_email;
+        @JsonProperty String user_lastname;
+        @JsonProperty Address address;
+
+        public UserGeneralInfo(String user_name, String user_lastname, String user_email, Address address){
+            this.user_name = user_name; this.user_lastname = user_lastname; this.user_email = user_email; this.address = address;
+        }
+    }
 
     public List<Authority> getMyAuthorities(boolean includePersonal) {
         String userId = userInfoService.currentUser().getUserId();
@@ -396,10 +417,25 @@ public class NetworkService {
                 .forEach(userMembership -> userDirectory.removeMembership(userMembership, userInfoService.currentUser().getUserId()));
     }
 
-    public UIOrganization createOrganization(String name, String type, URI territoryId) {
+
+    public UIOrganization searchOrganization(String dcIc) {
+        // Search for existing organization having "GET /d/org?dc_id=xx"
+        Organization org = organizationStore.findByDCID(dcIc);
+
+        if(org != null){
+            UIOrganization result = new UIOrganization();
+            fillUIOrganization(result, org);
+            return result;
+        }
+
+        return null;
+    }
+
+    public UIOrganization createOrganization(String name, String type, URI territoryId, URI dcId) {
         logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type, userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
 
-        if ( type == null /*|| territoryId == null*/ ) {  // TODO if territory is not an optional field, verify if it's provided
+     // TODO if territory(jurisdiction) is not an optional field (or is public sector type), verify if it's provided
+        if ( type == null || dcId == null /*&&territoryId==null*/) {
             throw new IllegalArgumentException();
         }
 
@@ -407,6 +443,7 @@ public class NetworkService {
         org.setName(name);
         org.setType(OrganizationType.valueOf(type));
         org.setTerritoryId(territoryId);
+        org.setDcId(dcId);
 
         org = organizationStore.create(org);
 

@@ -3,7 +3,6 @@ package org.oasis_eu.portal.front.my.network;
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
-import java.net.URI;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -13,6 +12,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
+import org.oasis_eu.portal.services.NetworkService.UserGeneralInfo;
+import org.oasis_eu.portal.services.dc.organization.DCOrganization;
+import org.oasis_eu.portal.services.dc.organization.OrganizationService;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,6 +24,8 @@ import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -40,6 +44,8 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 
     @Autowired
     private NetworkService networkService;
+    @Autowired
+    private OrganizationService organizationService;
 
     @RequestMapping(value = "/organizations", method = GET)
     public List<UIOrganization> organizations() {
@@ -90,14 +96,35 @@ public class NetworkAJAXServices extends BaseAJAXServices {
         networkService.leave(request.organization);
     }
 
-    @RequestMapping(value = "/create-organization", method = POST)
-    public UIOrganization createOrganization(@RequestBody CreateOrganizationRequest createOrganizationRequest) {
-        logger.debug("Creating organization {} of type {}", createOrganizationRequest.name,
-                createOrganizationRequest.type, createOrganizationRequest.territoryId);
+    @RequestMapping(value = "/search-organization", method = GET)
+    public DCOrganization searchOrganization(
+            @RequestParam(required=true) String contact_name,
+            @RequestParam(required=true) String contact_lastname,
+            @RequestParam(required=true) String contact_email,
+            @RequestParam(required=true) String country,
+            @RequestParam(required=true) String country_uri,
+            @RequestParam(required=true) String legal_name,
+            @RequestParam(required=true) String tax_reg_num,
+            @RequestParam(required=true) String sector_type
+    ) {
+        logger.debug("Searching for organization {} from {} of type {}", legal_name, country, country_uri, sector_type);
 
-        return networkService.createOrganization(createOrganizationRequest.name, createOrganizationRequest.type,
-                createOrganizationRequest.territoryId);
+        return organizationService.find(contact_name,contact_lastname,contact_email,country,country_uri, sector_type, legal_name, tax_reg_num); 
+    }
 
+    @RequestMapping(value = "/create-dc-organization", method = POST)
+    public UIOrganization createDCOrganization(@RequestBody DCOrganization dcOrganization) {
+        return organizationService.create(dcOrganization);
+    }
+    @RequestMapping(value = "/update-dc-organization", method = POST)
+    public UIOrganization updateDCOrganization(@RequestBody DCOrganization dcOrganization) {
+        return organizationService.update(dcOrganization);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/general-user-info")
+    public UserGeneralInfo getUserGeneralInformation() {
+        UserGeneralInfo userGeneralInfo  = networkService.getCurrentUser();// new UserGeneralInfo();
+        return userGeneralInfo;
     }
 
     @RequestMapping(value = "/organization/{organizationId}/set-status", method = POST)
@@ -106,6 +133,7 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 
         return networkService.setOrganizationStatus(organization);
     }
+
 
     public static class InvitationRequest {
         @JsonProperty
@@ -138,18 +166,4 @@ public class NetworkAJAXServices extends BaseAJAXServices {
         String organization;
     }
 
-    public static class CreateOrganizationRequest {
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String name;
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String type;
-        @JsonProperty("territory_id")
-        // @NotNull // TODO
-        // @NotEmpty // TODO
-        URI territoryId;
-    }
 }

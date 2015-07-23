@@ -28,9 +28,9 @@ var Select2Mixin = {
     },
 
     renderSelect2: function() {
-        var placeholder = this.props.placeholder;
-        var style = this.props.style;
-        var select2 = React.renderComponent(
+        //var placeholder = this.props.placeholder;
+        //var style = this.props.style;
+        var select2 = React.render(
                 React.DOM.input(React.__spread({}, this.props)), // React's polyfill for Object.assign()
                 // which is only supported in FF34+ #170, see also https://github.com/react-bootstrap/react-bootstrap/issues/188
                 this.refs.select2div.getDOMNode()
@@ -41,7 +41,7 @@ var Select2Mixin = {
         // is accepted by most browsers (else SyntaxError: invalid property id), which will
         // only happen when EcmaScript7 is (Object spread attributes)
         var { onChange, params, ...other } = this.props;
-        var select2 = React.renderComponent(
+        var select2 = React.render(
             <input { ...other } />,
             this.refs['select2div'].getDOMNode()
         );*/
@@ -85,10 +85,10 @@ var GeoSelect2Mixin = {
             allowClear: true,
             placeholder: t('ui.location'),
             separator: "|", // else http://...Barcenas, Las => two values
-            //tags: ["Valence", "Barcelone", "Torino"]
+            //tags: ["Valence", "Barcelone", "Torino"],
             minimumInputLength: 3,
             ajax: {
-                url: store_service + "/geographicalAreas",
+                url: this.props.urlResources,//store_service + "/geographicalAreas",
                 dataType: "json",
                 quietMillis: 250,
                 data: function( term, page ) {
@@ -152,7 +152,8 @@ var GeoSelect2Mixin = {
                 return markup.join("");
             },
             markMatchWithTooltip : function(text, term, markup, escapeMarkup, tooltip) { // inspired by select2's markMatch
-                var match=window.Select2.util.stripDiacritics(text.toUpperCase()).indexOf(window.Select2.util.stripDiacritics(term.toUpperCase())), // accessing select2 internal function
+                var match=window.Select2.util.stripDiacritics(text.toUpperCase())
+                                    .indexOf(window.Select2.util.stripDiacritics(term.toUpperCase())), // accessing select2 internal function
                     tl=term.length;
 
                 if (match<0) {

@@ -191,3 +191,110 @@ var PopoverButton = React.createClass({
             );
     }
 });
+
+
+/**
+ * Bootstrap NavTab encapsulation.
+ * Expected props:
+ *  - currentTab - index of tabs[] to be displayed
+ *  - tabList - List if tab elements to use : { 'id': 1, 'name': 'Tab 1', 'url': '#' }
+
+ * Children (normally <div />) as content.
+ * Example of use:
+ *     <NavTab tabList={tabList}>
+ *        <div id="tab1"><p>Test 1</p></div>
+ *        <div id="tab2"><p>Test 2</p></div>
+ *     </NavTab>
+ */
+
+var Tab = React.createClass({
+    handleClick: function(e){
+        e.preventDefault();
+        this.props.handleClick();
+    },
+
+    render: function(){
+        var active = "";
+        if(this.props.isCurrent){
+            active="active";
+        }
+        return (
+                <li role="presentation" className={active}>
+                    <a onClick={this.handleClick} href={this.props.url}>
+                        {this.props.name}
+                    </a>
+                </li>
+            );
+    }
+});
+
+var Tabs = React.createClass({
+    handleClick: function(tab){
+        this.props.changeTab(tab);
+    },
+
+    render: function(){
+        return (
+            <nav>
+                <ul className="nav nav-tabs">
+                {this.props.tabList.map(function(tab) {
+                    return (
+                        <Tab
+                            handleClick={this.handleClick.bind(this, tab)}
+                            key={tab.id}
+                            url={tab.url}
+                            name={tab.name}
+                            isCurrent={(this.props.currentTab === tab.id)}
+                         />
+                    );
+                }.bind(this))}
+                </ul>
+            </nav>
+        );
+    }
+});
+
+var Content = React.createClass({
+    render: function(){
+        return(
+            <div className="tabcontent">
+                {this.props.currentTab > 0 ?
+                <div className={this.props.children.id}>
+                    {this.props.children[this.props.currentTab-1]}
+                </div>
+                :null}
+
+            </div>
+        );
+    }
+});
+
+var NavTab = React.createClass({
+    getInitialState: function () {
+        return {
+            currentTab: this.props.currentTab,
+            tabList: this.props.tabList
+        };
+    },
+
+    changeTab: function(tab) {
+        var state = this.state;
+        state.currentTab = tab.id;
+        this.setState(state);
+    },
+
+    render: function(){
+        return(
+            <div>
+                <Tabs
+                    currentTab={this.state.currentTab}
+                    tabList={this.state.tabList}
+                    changeTab={this.changeTab}
+                />
+                <Content currentTab={this.state.currentTab} >
+                    {this.props.children}
+                </Content>
+            </div>
+        );
+    }
+});

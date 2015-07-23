@@ -21,7 +21,7 @@ import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.portal.services.RatingService;
-import org.oasis_eu.portal.services.geoarea.GeographicalAreaService;
+import org.oasis_eu.portal.services.dc.geoarea.GeographicalAreaService;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
@@ -71,19 +71,38 @@ public class StoreAJAXServices extends BaseAJAXServices {
 
     @Value("${application.store.load_size:20}")
     private int loadSize;
-    
-    
+
+
     @RequestMapping(value = "/geographicalAreas", method = RequestMethod.GET)
     public GeographicalAreaResponse geographicalAreas(@RequestParam String q) {
         int areaLoadSize = 10;
         int areaDcLoadSize = areaLoadSize + 1;
         List<GeographicalArea> areas = geographicalAreaService.find(q, 0, areaDcLoadSize);
-        
+
         return new GeographicalAreaResponse(areas.stream()
-                .limit(areaLoadSize).collect(Collectors.toList()),
-                areas.size() == areaDcLoadSize);
+                .limit(areaLoadSize).collect(Collectors.toList()), areas.size() == areaDcLoadSize);
     }
-            
+
+
+
+    @RequestMapping(value = "/dc-cities", method = RequestMethod.GET)
+    public GeographicalAreaResponse dcCities(@RequestParam String q) {
+        int loadSize = 10;
+        List<GeographicalArea> cities = geographicalAreaService.findCities(q, 0, loadSize+1);
+
+        return new GeographicalAreaResponse(
+                cities.stream().limit(loadSize).collect(Collectors.toList()), (cities.size() == loadSize+1) );
+    }
+
+    @RequestMapping(value = "/dc-countries", method = RequestMethod.GET)
+    public GeographicalAreaResponse dcCountries(@RequestParam String q) {
+        int loadSize = 10;
+        List<GeographicalArea> countries = geographicalAreaService.findCountries(q, 0, loadSize+1);
+
+        return new GeographicalAreaResponse(
+                countries.stream().limit(loadSize).collect(Collectors.toList()), (countries.size() == loadSize+1) );
+    }
+
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
     public StoreAppResponse applications(@RequestParam boolean target_citizens,
                                                @RequestParam boolean target_publicbodies,
@@ -124,17 +143,13 @@ public class StoreAJAXServices extends BaseAJAXServices {
      */
     @RequestMapping("/application/{type}/{id}")
     public StoreApplication application(@PathVariable String type, @PathVariable String id) {
-
         AppstoreHit hit = appstoreService.getInfo(id, CatalogEntryType.valueOf(type.toUpperCase()));
-
         return toStoreApplication(hit);
     }
 
     @RequestMapping("/details/{type}/{id}")
     public ApplicationDetails applicationDetails(@PathVariable String type, @PathVariable String id) {
-
         AppstoreHit hit = appstoreService.getInfo(id, CatalogEntryType.valueOf(type.toUpperCase()));
-
         return toApplicationDetails(hit);
     }
 
@@ -147,6 +162,11 @@ public class StoreAJAXServices extends BaseAJAXServices {
         } catch (ApplicationInstanceCreationException | WrongQueryException e) {
             response.success = false; // specific error handling, TODO LATER make it more consistent with generic error handling
         }
+        try {
+            //Update user details contained in StoreBuyRequest, usually contact & address (address if personal service install)
+            appstoreService.updateUserInfo(request.contact_name, request.contact_lastname, request.contact_email,
+                    request.street_and_number, request.zip, request.city, request.country);
+        } catch (/*WrongQuery*/Exception e) {logger.warn("Couldn't update the user details : {}", request);}
         return response;
     }
 
@@ -230,22 +250,29 @@ public class StoreAJAXServices extends BaseAJAXServices {
     }
 
     private static class StoreBuyRequest {
-        @JsonProperty
-        String appId;
-        @JsonProperty
-        String appType;
-        @JsonProperty
-        String organizationId;
+        @JsonProperty String appId;
+        @JsonProperty String appType;
+        @JsonProperty String organizationId;
+        //to update user details
+        @JsonProperty String contact_name;
+        @JsonProperty String contact_lastname;
+        @JsonProperty String contact_email;
+        @JsonProperty String additional_address_field;
+        @JsonProperty String street_and_number;
+        @JsonProperty String city_uri;
+        @JsonProperty String city;
+        @JsonProperty String zip;
+        @JsonProperty String country_uri;
+        @JsonProperty String country;
+
     }
 
     private static class StoreBuyStatus {
-        @JsonProperty
-        boolean success;
+        @JsonProperty boolean success;
     }
 
 
     private static class RateRequest {
-        @JsonProperty
-        double rate;
+        @JsonProperty double rate;
     }
 }

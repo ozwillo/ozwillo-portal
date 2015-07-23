@@ -192,6 +192,10 @@ div.vcentered {
     background-position: -00px -20px;
 }
 
+.fa-check#success-app-install{
+  color: green;
+}
+
 div.app-image {
     margin-top: 20px;
     margin-bottom: 20px;

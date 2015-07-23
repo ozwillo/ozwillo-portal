@@ -49,11 +49,11 @@ public class DCOrganizationService {
     private String dcBaseUri;// = "http://data.ozwillo.com/dc/type";
 
 
-    public DCOrganization searchOrganization(String lang, String country, String sector, String legalName, String regNumber) {
+    public DCOrganization searchOrganization(String lang, String country_uri, String sector, String legalName, String regNumber) {
 
         DCOrganization dcOrganization = new DCOrganization();
 
-        DCResource resource = fetchDCOrganizationResource(lang, country, sector, legalName, regNumber);
+        DCResource resource = fetchDCOrganizationResource(country_uri, sector, legalName, regNumber);
         if(resource != null )
             dcOrganization = toDCOrganization(resource,lang);
         else{
@@ -63,18 +63,18 @@ public class DCOrganizationService {
         return dcOrganization;
     }
 
-    private DCResource fetchDCOrganizationResource(String lang, String country, String sector, String legalName, String regNumber) {
+    private DCResource fetchDCOrganizationResource(String country_uri, String sector, String legalName, String regNumber) {
         DCQueryParameters params = new DCQueryParameters()
                       .and("org:sector", DCOperator.EQ, sector) 
                       .and("org:legalName.v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+legalName)
                       .and("org:regNumber", DCOperator.EQ, regNumber)
-                      .and("org:country", DCOperator.EQ, country);
+                      .and("org:country", DCOperator.EQ, country_uri);
 
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
         List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), dcOrgModel.trim(), params, 0, 1);
-        /*if(resources ==null || resources.isEmpty()){
-            //TODO this is for test only. If is not found using all search factors, it re-search only by regNum
+        /*if(resources ==null || resources.isEmpty()){ /TODO this is for TEST only
+            //If is not found using all search factors, it re-search only by regNum
             resources = datacore.findResources(dcOrgProjectName.trim(), dcOrgModel.trim(), new DCQueryParameters("org:regNumber", DCOperator.EQ, regNumber), 0, 1);
         }*/
         long queryEnd = System.currentTimeMillis();
@@ -85,15 +85,15 @@ public class DCOrganizationService {
 
     public DCResource create(DCOrganization dcOrganization){
         // re-get DC resource before creation to validate that it doesn't exist
-        DCResource dcResource = fetchDCOrganizationResource(dcOrganization.getLang(),dcOrganization.getCountry(),
+        DCResource dcResource = fetchDCOrganizationResource(dcOrganization.getCountry_uri(),
                 DCOrganizationType.getDCOrganizationType(dcOrganization.getSector_type()).name(),
                 dcOrganization.getLegal_name(),dcOrganization.getTax_reg_num());
         // if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
         if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion()) ){ //found in DC
             // there are no previous updates, merge it from form fields and do datacoreClient.saveResource()
             mergeDCOrgToDCResources(dcOrganization, dcResource);
-            datacore.updateResource(dcOrgProjectName.trim(), dcResource);
-            return dcResource;
+            DCResult dcResult = datacore.updateResource(dcOrgProjectName.trim(), dcResource); // to test must change url as datacore namespace (plnm-dev-dc)
+            return dcResult != null ? dcResource : null;
         }else if (dcResource == null || dcResource.isNew()){  // still doesn't exist in DC
             DCResult newCreatedDCRes =  datacore.saveResource(dcOrgProjectName.trim(), toNewDCResource(dcOrganization));
             if(newCreatedDCRes.getResource() != null){ 
@@ -113,18 +113,25 @@ public class DCOrganizationService {
 
     /** Change rights of DC Organization. */
     public boolean changeDCOrganizationRights(DCResource dcResource,String kOrgId){
-        DCRights rights = new DCRights();
-        rights.setOwners(new ImmutableList.Builder<String>().add(kOrgId).build() );
+        final List<String> newRights = new ImmutableList.Builder<String>().add(kOrgId).build();
+        final List<String> dcResultErrOutter = new ArrayList<String>();
 
         //get admin authentication and change organization rights 
-        portalSystemUserService.runAs(new Runnable() { 
-            //Inner class with Runnable, its used as a function parameter (executed at parameter declaration)
-            @Override
-            public void run() {
-                datacore.setRightsOnResource(dcOrgProjectName, dcResource, rights).getResource();
-            }
-        });
-        return true;
+        portalSystemUserService.runAs(
+            new Runnable() {
+                //Inner class with Runnable, its used as a function parameter (executed at parameter declaration)
+                @Override
+                public void run() {
+                    DCRights dcRights = datacore.getRightsOnResource(dcOrgProjectName, dcResource).getRights();
+                    dcRights.addOwners(newRights);
+                    List<String> dcResultInner = datacore.setRightsOnResource(dcOrgProjectName, dcResource, dcRights).getErrorMessages();
+                    dcResultErrOutter.addAll(dcResultInner);
+                    if(dcResultInner != null && !dcResultInner.isEmpty()){
+                        logger.error("There was an error while updating rights [{}]to resource : {}", dcRights, dcResource);
+                    }
+                }}
+        );
+        return dcResultErrOutter.isEmpty();
     }
 
 
@@ -133,11 +140,14 @@ public class DCOrganizationService {
     private DCResource mergeDCOrgToDCResources(DCOrganization fromOrg, DCResource toRes){
         // Organization data
         toRes.setMappedList("org:legalName", valueAsDCList(fromOrg.getLegal_name(), fromOrg.getLang())); //list
+        toRes.setMappedList("odisp:name", valueAsDCList(
+                fromOrg.getLegal_name()+","+fromOrg.getCity()+" - "+fromOrg.getCountry()
+                , fromOrg.getLang())); //list - also find as org:displayName
 
         DCOrganizationType dcOrganizationType = DCOrganizationType.getDCOrganizationType(fromOrg.getSector_type());
         toRes.set("org:sector", (dcOrganizationType != null) ? dcOrganizationType.name() : "");
 
-        toRes.set("org:status", fromOrg.isIn_activity() ? "Enabled" : "Disabled");
+        toRes.set("org:status", fromOrg.isIn_activity() ? "Normal Activity" : "");
         toRes.setMappedList("org:altName", valueAsDCList(fromOrg.getAlt_name(), fromOrg.getLang())); //list
         toRes.set("org:type", fromOrg.getOrg_type());
         toRes.set("org:regNumber", fromOrg.getTax_reg_num());
@@ -150,13 +160,13 @@ public class DCOrganizationService {
         toRes.set("org:webSite", fromOrg.getWeb_site());
         toRes.set("org:email", fromOrg.getEmail());
         // Geolocation data
-        toRes.set("org:streetAndNumber", fromOrg.getStreet_and_number());
-        toRes.set("org:supField", fromOrg.getAdditional_address_field());
-        toRes.set("org:POBox", fromOrg.getPo_box());
-        toRes.set("org:postName", fromOrg.getCity_uri());
-        toRes.set("org:postCode", fromOrg.getZip());
-        toRes.set("org:cedex", fromOrg.getCedex());
-        toRes.set("org:country", fromOrg.getCountry_uri());
+        toRes.set("adrpost:streetAndNumber", fromOrg.getStreet_and_number());
+        toRes.set("adrpost:supField", fromOrg.getAdditional_address_field());
+        toRes.set("adrpost:POBox", fromOrg.getPo_box());
+        toRes.set("adrpost:postName", fromOrg.getCity_uri());
+        toRes.set("adrpost:postCode", fromOrg.getZip());
+        toRes.set("adrpost:cedex", fromOrg.getCedex());
+        toRes.set("adrpost:country", fromOrg.getCountry_uri());
 
         //toRes.set("org:latitude", fromOrg.getLatitude());   //use once mapping localization is ready
         //toRes.set("org:longitude", fromOrg.getLongitude()); //use once mapping localization is ready
@@ -183,10 +193,10 @@ public class DCOrganizationService {
         return dcResource;
     }
 
-    private DCResource setDCIdOrganization(DCResource dcResource, String type, @NotNull String lang, String regNumber){
+    public  DCResource setDCIdOrganization(DCResource dcResource, String type, @NotNull String lang, String regNumber){
         //"@id" : "http://data.ozwillo.com/dc/type/orgprfr:OrgPriv%C3%A9e_0/FR/47952557800049",
         String px = DCOrganizationType.getDCOrganizationType(type).equals(DCOrganizationType.Private) ? "pr": "pu";
-        String cx = lang.toLowerCase();
+        String cx = lang.toLowerCase() == "en" ? "" : lang.toLowerCase(); //if english leave it to match with orgpr/orgpu
 
         String orgModelPrefix = "org"+px+cx;
         String orgModelSuffix = dcOrgPrefixToSuffix.get(orgModelPrefix);
@@ -215,15 +225,25 @@ public class DCOrganizationService {
             .put("orgpues", "OrgPública")
             .build();
     
+    private static final List<String> dcOrgStatus = new ImmutableList.Builder<String>()
+            //.add("Normal Activity")
+            .add("Insolvent")
+            .add("Bankrupt")
+            .add("In Receivership")
+            .build();
+    
     public DCOrganization toDCOrganization(DCResource res, String language) {
 
         String legalName =       getBestI18nValue(res, language, "org:legalName", null); //Mapped list
-        boolean in_activity =    getBestI18nValue(res, language, "org:status", null).equalsIgnoreCase("enabled") ? true : false;
+
+        String in_activity_val = getBestI18nValue(res, language, "org:status", null);
+        boolean in_activity =    (in_activity_val!= null && dcOrgStatus.contains(in_activity_val) ) ? true : false;
+
         String sector =          getBestI18nValue(res, language, "org:sector", null);
         String altName =         getBestI18nValue(res, language, "org:altName", null); //Mapped list
 
         String taxRegAct_uri =    getBestI18nValue(res, language, "org:activity", null);
-        String taxRegAct =       taxRegAct_uri == null ? null : getBestI18nValue(
+        String taxRegAct =       (taxRegAct_uri == null) ? null : getBestI18nValue(
                                        datacore.getResourceFromURI(dcOrgProjectName, taxRegAct_uri).getResource(), language, "orgact:code", null
                                     );
         String officialId =      getBestI18nValue(res, language, "orgpu:officialId", null);
@@ -235,14 +255,14 @@ public class DCOrganizationService {
         String webSite =         getBestI18nValue(res, language, "org:webSite", null);
         String email =           getBestI18nValue(res, language, "org:email", null);
         // Geolocation data
-        String streetAndNumber = getBestI18nValue(res, language, "org:streetAndNumber", null);
-        String supField =        getBestI18nValue(res, language, "org:supField", null);
-        String POBox =           getBestI18nValue(res, language, "org:POBox", null);
-        String city_uri =        getBestI18nValue(res, language, "org:postName", null);
+        String streetAndNumber = getBestI18nValue(res, language, "adrpost:streetAndNumber", null);
+        String supField =        getBestI18nValue(res, language, "adrpost:supField", null);
+        String POBox =           getBestI18nValue(res, language, "adrpost:POBox", null);
+        String city_uri =        getBestI18nValue(res, language, "adrpost:postName", null);
         String zip =             getBestI18nValue(res, language, "adrpost:postCode", "org:postCode");
-        String cedex =           getBestI18nValue(res, language, "org:cedex", null);
+        String cedex =           getBestI18nValue(res, language, "adrpost:cedex", null);
 
-        String country_uri =      getBestI18nValue(res, language, "org:country", null);
+        String country_uri =      getBestI18nValue(res, language, "adrpost:country", null);
         String country =         country_uri == null ? null : getBestI18nValue(
                                        datacore.getResourceFromURI(dcOrgProjectName, country_uri).getResource(), language, "geoco:name", null
                                     );
@@ -258,9 +278,9 @@ public class DCOrganizationService {
 
         dcOrg.setTax_reg_activity_uri(taxRegAct_uri); dcOrg.setTax_reg_activity(taxRegAct);
         dcOrg.setTax_reg_num(regNumber);
-        dcOrg.setTax_reg_official_id(officialId); /* Only for Public organizations*/
+        dcOrg.setTax_reg_official_id(officialId); /* Only for public organizations*/
 
-        dcOrg.setJurisdiction_uri(jurisdiction_uri); /* Only for Public organizations*/
+        dcOrg.setJurisdiction_uri(jurisdiction_uri); /* Only for public organizations*/
 
         dcOrg.setPhone_number(phoneNumber);
         dcOrg.setWeb_site(webSite);

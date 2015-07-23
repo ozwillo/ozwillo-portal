@@ -33,6 +33,9 @@ public class UIOrganization {
     URI territoryId;
     @JsonProperty("territory_label")
     String territoryLabel;
+    @JsonProperty("dc_id;")
+    URI dcId;
+
     /** optional */
     OrganizationStatus status;
     /** optional */
@@ -111,6 +114,14 @@ public class UIOrganization {
 
     public void setTerritoryLabel(String territoryLabel) {
         this.territoryLabel = territoryLabel;
+    }
+
+    public URI getDcId() {
+        return dcId;
+    }
+
+    public void setDcId(URI dcId) {
+        this.dcId = dcId;
     }
 
     public OrganizationStatus getStatus() {

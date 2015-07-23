@@ -23,10 +23,23 @@ application:
     # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
     addCurrentToSupportedLocalesIfNone: false
   geoarea:
-    storageModel: geo:City_0
-    nameField: geo_city:name
+    project: geo_1
+    areaModel: geo:Area_0
+    primaryNameField: odisp:name
+    secondaryNameField: geo:name
+    geoCityModel: geoci:City_0
+    cityField: geoci:name
+    geoCountryModel: geoco:Country_0
+    countryField: geoco:name
+    displayNameField: odisp:name
     fallbackLanguage: en
-    replication: 0 0 3 ? * *
+    #use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year = http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
+    replication: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
+    #replication: 0 0/1 * * * ?     #Runs every minute
+  dcOrg:
+    project: org_1
+    orgModel: org:Organization_0
+    baseUri: http://data.ozwillo.com/dc/type
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
 
@@ -48,7 +61,7 @@ web:
       url_header: https://portal.ozwillo.com/xml/header_backup.xml
       url_footer: https://www.ozwillo.com/footer.xml
       #url_footer: https://portal.ozwillo.com/xml/footer_backup.xml
-      refresh: 0 */15 * ? * *
+      refresh: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
   # only for 64x64 pngs which should be mostly below 5000B
@@ -81,7 +94,7 @@ kernel:
   client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
   # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
   scopes_to_require: openid profile email address phone datacore
-
+  maxUserMembershipsPerPage: 20
   portal_endpoints:
     subscriptions: ${kernel.base_uri}/apps/subscriptions
     catalog: ${kernel.base_uri}/m
@@ -89,9 +102,12 @@ kernel:
 
 datacore:
   #url: http://localhost:8080
-  url: https://plnm-dev-dc # dev, requires installing gen'd cert
-  #url: https://data.ozwillo-dev.eu # dev, doesn't work with current gen'd cert
+  url: https://plnm-dev-dc             # dev, requires installing gen'd cert, and (MUST) set the ip in /etc/hosts
+  #url: https://data.ozwillo-dev.eu    # dev, doesn't work with current gen'd cert
   # alt_uri ??
+  systemAdminUser:  #Get it using Node.js lib / with portal clientId
+    refreshToken: oxNDM3NDY5MjQ4OTUyLCJleHjkyNDg5NTJ9eyJpZCI6Ijk2Y2IxY2IyLTU1YWEtNDYyZC04NGNmLTVlMTAyMjAzNWVmZS8wTHZsNTdXNlliYWtwSWVuZHQ0UVhnIiwiaWF0IjAiOjMwMTQyN
+    nonce: 970774665428326      #Set it when getting the refreshToken
 
 
 persistence:
