@@ -53,8 +53,8 @@ var SearchOrganizationForm = React.createClass({
         this.getProfileInfo();
         var sector_type = 'COMPANY'; //default value for the option button
 
-        var tax_reg_num = '0000000000001';//TODO TEST Only, to remove it
-        var legal_name  = 'IPGARDE2';//TODO TEST Only, to remove it
+        var tax_reg_num = '';//'0000000000001';//TODO TEST Only, to remove it
+        var legal_name  = '';//'IPGARDE2';//TODO TEST Only, to remove it
 
         return {orgSearchData: {contact_name: '', contact_lastname: '', contact_email: '', sector_type : sector_type, country: '', country_uri: '',
                       legal_name: legal_name, tax_reg_num: tax_reg_num}, errors: [], searching: false,

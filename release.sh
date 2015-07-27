@@ -119,7 +119,8 @@ echo Committing changed poms :
 find . -name "pom.xml" -exec git add {} \; -print
 git commit -m "Bump to next development iteration"
 popd
-echo "WARNING About to push tag, if you have a doubt about it abort (CTRL-C) and replace your project's .git folder by a freshly cloned one, else hit enter"
+echo "WARNING About to push tag, if you have a doubt about it abort (CTRL-C) and replace your project's .git folder by a freshly cloned one, else hit enter."
+echo "If you aborted by error, you will need to push this changes and created tags manually."
 read
 git push origin $BRANCH && git push origin $BRANCH --tags
 

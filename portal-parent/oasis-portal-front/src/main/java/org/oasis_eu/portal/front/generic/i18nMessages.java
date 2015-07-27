@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public final class i18nMessages {
     private i18nMessages(){}; //this class can't be an instance (all members are static)
 
-    private static final List<String> i18nkeys = Arrays.asList("create-org", "find-or-create-organization", "information",
+    private static final List<String> i18nkeys = Arrays.asList("create-org", "modify-org", "find-or-create-organization", "information",
             "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave",
             "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create",
             "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",

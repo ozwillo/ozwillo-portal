@@ -1,11 +1,20 @@
 package org.oasis_eu.portal.core.mongo.dao.geo;
 
-import com.mongodb.*;
+import static org.springframework.data.mongodb.core.query.Criteria.where;
+import static org.springframework.data.mongodb.core.query.Query.query;
+
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.core.services.search.Tokenizer;
+import org.oasis_eu.portal.services.PortalSystemUserService;
 import org.oasis_eu.portal.services.dc.geoarea.GeographicalDAO;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
@@ -24,12 +33,12 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClientException;
 
-import java.util.*;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
-import static org.springframework.data.mongodb.core.query.Criteria.where;
-import static org.springframework.data.mongodb.core.query.Query.query;
+import com.mongodb.BasicDBObject;
+import com.mongodb.BulkWriteOperation;
+import com.mongodb.DB;
+import com.mongodb.DBCollection;
+import com.mongodb.DBObject;
+import com.mongodb.Mongo;
 
 /**
  * User: schambon
@@ -75,6 +84,8 @@ public class GeographicalAreaCache {
 
     @Autowired
     private Tokenizer tokenizer;
+    @Autowired
+    PortalSystemUserService portalSystemUserService;
 
     public Stream<GeographicalArea> search(String lang, String name, int start, int limit) {
 
@@ -188,12 +199,17 @@ public class GeographicalAreaCache {
 
         // 1. fetch all the resources from the data core and insert them with status "incoming" in the cache
         try {
-            String lastNameFetched = null;
-
-            do {
-                logger.debug("Fetching batches of areas");
-                lastNameFetched = fetchBatches(collection, loadedUris, lastNameFetched);
-            } while (lastNameFetched != null);
+            //Since there is not admin user connected, is necessary to get its admin authorization object in order to send the request
+            portalSystemUserService.runAs(new Runnable() {
+                @Override
+                public void run() {
+                    String lastNameFetched = null;
+                    do {
+                        logger.debug("Fetching batches of areas");
+                        lastNameFetched = fetchBatches(collection, loadedUris, lastNameFetched);
+                    } while (lastNameFetched != null);
+                }
+            });
 
 
         // 2. delete all the "online" entries (they are replaced with the "incoming" ones)

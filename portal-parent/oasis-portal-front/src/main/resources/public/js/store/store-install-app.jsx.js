@@ -325,10 +325,25 @@ var AppDescriptionComponent =  React.createClass({
 
             var description = converter.makeHtml(stateApp.longdescription);
 
-            var installButton = !logged_in
-                     ? (<a className="btn btn-primary-inverse"
-                          href={store_root + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{t('install')}</a>)
-                     : (<button className="btn btn-primary" onClick={this.props.onInstallButton} >{t('install')}</button>);
+            var launchOrInstallButton;
+            if (this.props.app.installed) {
+               if (this.props.stateApp){
+                   if (this.props.stateApp.serviceUrl) {
+                       launchOrInstallButton = <a className="btn btn-primary" href={this.props.stateApp.serviceUrl} target="_new">{t('launch')}</a>;
+                   } else {
+                       launchOrInstallButton = (<label >{t('installed')}</label>);
+                   }
+               } else {
+                    launchOrInstallButton = (<label > <i className="fa fa-spinner fa-spin"></i> </label> );
+               }
+            }else{
+                var installButton = !logged_in
+                    ? (<a className="btn btn-primary-inverse"
+                         href={store_root + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{t('install')}</a>)
+                    : (<button className="btn btn-primary" onClick={this.props.onInstallButton} >{t('install')}</button>);
+                launchOrInstallButton = installButton
+            }
+
 
             return (
                 <div>
@@ -343,7 +358,7 @@ var AppDescriptionComponent =  React.createClass({
                             </div>
                         </div>
                         <div className="col-sm-4 center-container install-application">
-                            {installButton}
+                            {launchOrInstallButton}
                         </div>
                     </div>
                     <div className="row">
@@ -513,7 +528,7 @@ var InstallForm =  React.createClass({
                 <ContactSearchFormControl renderLabel={this.renderLabel} orgSearchData={this.state.installData.contact}
                     changeInput={this.changeInputContact} />
 
-                { (installType === 'PERSONAL')
+                { (installType === 'PERSONAL') || (this.props.app.type === "service")
                     ? (<div>
                           <h4>{t('search.contact.address.title')}</h4>
                           <AddressComponent ref='addressComponent' errors={this.state.errors} addressContainer={this.state.installData.address}
@@ -599,18 +614,6 @@ SetOrganizationComponent = React.createClass({
     },
 
     render: function(){
-        if (this.props.app.type == "service") {
-            if (this.props.app.installed) {
-                if (this.props.url) {
-                    return <a className="btn btn-primary" href={this.props.url} target="_new">{t('launch')}</a>;
-                } else {
-                    return (<a className="btn btn-primary">
-                                <i className="fa fa-spinner fa-spin"></i>
-                            </a>);
-                }
-            }
-        } else {
-
             return (<div className="form-group">
                        { (!this.props.isOnlyForCitizens() && this.props.orgs && this.props.orgs.length >0 )
                             ?
@@ -618,8 +621,8 @@ SetOrganizationComponent = React.createClass({
                                   <label>
                                      <input type="radio" value="EXISTING-ORGS" checked={this.state.orgSearchData.typeInstallOrg == 'EXISTING-ORGS'}
                                         onChange={this.toggleInstallOrgType}/>{t('search.organization.selection.existing')} &nbsp;&nbsp;&nbsp;
-                                     { this.renderOrganizations()}
                                   </label>
+                                  { this.renderOrganizations()}
                                </div>
                             : ''
                        }
@@ -632,8 +635,7 @@ SetOrganizationComponent = React.createClass({
                                 orgSearchData={this.state.orgSearchData} changeInput={this.onChangeOrgInput} toggleType={this.toggleSectorType}/>
                        </div>
                     </div>
-                );
-        }
+            );
     }
 });
 //END NEW INSTALL PROCESS

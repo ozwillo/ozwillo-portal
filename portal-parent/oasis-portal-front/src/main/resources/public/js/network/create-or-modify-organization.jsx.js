@@ -42,7 +42,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
 
         var saveButton = org.exist ? t('ui.save') : t('my.network.create-org');
         var buttonLabels = {"cancel": t('ui.cancel'), "save": saveButton };
-        var modalTitle = org.exist ? 'Modify Organization' : t('my.network.create-org') ;
+        var modalTitle = org.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
 
 
         return (
