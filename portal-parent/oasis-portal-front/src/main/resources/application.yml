@@ -40,6 +40,11 @@ application:
     project: org_1
     orgModel: org:Organization_0
     baseUri: http://data.ozwillo.com/dc/type
+  dcOrgSearch:
+    sector: org:sector
+    legalName: org:legalName.v
+    regNumber: org:regNumber
+    country: adrpost:country
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
 

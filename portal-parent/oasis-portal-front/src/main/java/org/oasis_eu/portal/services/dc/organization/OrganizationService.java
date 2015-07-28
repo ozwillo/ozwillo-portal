@@ -153,13 +153,23 @@ public class OrganizationService {
 
     private void updateUserInfo(DCOrganization dcOrganization) {
         UserInfo userInfo = userInfoService.currentUser();
+        boolean isChangefound = false;
+        
+        String givenName = userInfo.getGivenName() != null ? userInfo.getGivenName() : "";
+        String familyName = userInfo.getFamilyName()!= null ? userInfo.getFamilyName() : "";
+        String email = userInfo.getEmail()!= null ? userInfo.getEmail() : "";
+        
         //Only if has changes will update
-        if(!userInfo.getGivenName().equals(dcOrganization.getContact_name())
-                || !userInfo.getFamilyName().equals(dcOrganization.getContact_lastName())
-                || !userInfo.getEmail().equals(dcOrganization.getContact_email())){
-            userInfo.setGivenName(dcOrganization.getContact_name());
-            userInfo.setFamilyName(dcOrganization.getContact_lastName());
-            userInfo.setEmail(dcOrganization.getContact_email());
+        if( !givenName.equals(dcOrganization.getContact_name())){
+            userInfo.setGivenName(dcOrganization.getContact_name()); isChangefound = true;
+        }
+        if( !familyName.equals(dcOrganization.getContact_lastName()) ){
+            userInfo.setFamilyName(dcOrganization.getContact_lastName()); isChangefound = true;
+        }
+        if( !email.equals(dcOrganization.getContact_email()) ){
+            userInfo.setEmail(dcOrganization.getContact_email()); isChangefound = true;
+        }
+        if (isChangefound){
             userAccountService.saveUserAccount(new UserAccount(userInfo));
         }
     }

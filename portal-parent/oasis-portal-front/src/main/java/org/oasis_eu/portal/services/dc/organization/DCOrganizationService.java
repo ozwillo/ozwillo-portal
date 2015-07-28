@@ -48,12 +48,20 @@ public class DCOrganizationService {
     @Value("${application.dcOrg.baseUri: http://data.ozwillo.com/dc/type}")
     private String dcBaseUri;// = "http://data.ozwillo.com/dc/type";
 
+    @Value("${application.dcOrgSearch.sector: org:sector }")
+    private String dcOrgSearchSector;
+    @Value("${application.dcOrgSearch.legalName: org:legalName.v}")
+    private String dcOrgSearchLegalName;
+    @Value("${application.dcOrgSearch.regNumber: org:regNumber}")
+    private String dcOrgSearchRegNumber;
+    @Value("${application.dcOrgSearch.country: adrpost:country}")
+    private String dcOrgSearchCountry;
 
     public DCOrganization searchOrganization(String lang, String country_uri, String sector, String legalName, String regNumber) {
 
         DCOrganization dcOrganization = new DCOrganization();
 
-        DCResource resource = fetchDCOrganizationResource(country_uri, sector, legalName, regNumber);
+        DCResource resource = fetchDCOrganizationResource(country_uri, sector, legalName, regNumber, lang);
         if(resource != null )
             dcOrganization = toDCOrganization(resource,lang);
         else{
@@ -63,16 +71,18 @@ public class DCOrganizationService {
         return dcOrganization;
     }
 
-    private DCResource fetchDCOrganizationResource(String country_uri, String sector, String legalName, String regNumber) {
+    private DCResource fetchDCOrganizationResource(String country_uri, String sector, String legalName, String regNumber, String lang) {
         DCQueryParameters params = new DCQueryParameters()
-                      .and("org:sector", DCOperator.EQ, sector) 
-                      .and("org:legalName.v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+legalName)
-                      .and("org:regNumber", DCOperator.EQ, regNumber)
-                      .and("org:country", DCOperator.EQ, country_uri);
+                      .and(dcOrgSearchSector.trim(), DCOperator.EQ, sector) 
+                      .and(dcOrgSearchLegalName.trim(), DCOperator.EQ, DCOperator.REGEX.getRepresentation()+legalName)
+                      .and(dcOrgSearchRegNumber.trim(), DCOperator.EQ, regNumber)
+                      .and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri);
 
+        String type = this.generateResourceType(sector, lang, regNumber);
+        
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), dcOrgModel.trim(), params, 0, 1);
+        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), type/*dcOrgModel.trim()*/, params, 0, 1);
         /*if(resources ==null || resources.isEmpty()){ /TODO this is for TEST only
             //If is not found using all search factors, it re-search only by regNum
             resources = datacore.findResources(dcOrgProjectName.trim(), dcOrgModel.trim(), new DCQueryParameters("org:regNumber", DCOperator.EQ, regNumber), 0, 1);
@@ -87,7 +97,7 @@ public class DCOrganizationService {
         // re-get DC resource before creation to validate that it doesn't exist
         DCResource dcResource = fetchDCOrganizationResource(dcOrganization.getCountry_uri(),
                 DCOrganizationType.getDCOrganizationType(dcOrganization.getSector_type()).name(),
-                dcOrganization.getLegal_name(),dcOrganization.getTax_reg_num());
+                dcOrganization.getLegal_name(),dcOrganization.getTax_reg_num(), dcOrganization.getLang());
         // if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
         if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion()) ){ //found in DC
             // there are no previous updates, merge it from form fields and do datacoreClient.saveResource()
@@ -195,12 +205,8 @@ public class DCOrganizationService {
 
     public  DCResource setDCIdOrganization(DCResource dcResource, String type, @NotNull String lang, String regNumber){
         //"@id" : "http://data.ozwillo.com/dc/type/orgprfr:OrgPriv%C3%A9e_0/FR/47952557800049",
-        String px = DCOrganizationType.getDCOrganizationType(type).equals(DCOrganizationType.Private) ? "pr": "pu";
         String cx = lang.toLowerCase() == "en" ? "" : lang.toLowerCase(); //if english leave it to match with orgpr/orgpu
-
-        String orgModelPrefix = "org"+px+cx;
-        String orgModelSuffix = dcOrgPrefixToSuffix.get(orgModelPrefix);
-        String orgModelType = orgModelPrefix + ":" + orgModelSuffix + "_0";
+        String orgModelType = generateResourceType(type, lang, regNumber);
 
         dcResource.setBaseUri(dcBaseUri.trim());
         dcResource.setType(orgModelType);
@@ -208,6 +214,16 @@ public class DCOrganizationService {
         return dcResource;
     }
 
+    public String generateResourceType(String type, String lang, String regNumber){
+        String px = DCOrganizationType.getDCOrganizationType(type).equals(DCOrganizationType.Private) ? "pr": "pu";
+        String cx = lang.toLowerCase() == "en" ? "" : lang.toLowerCase(); //if english leave it to match with orgpr/orgpu
+
+        String orgModelPrefix = "org"+px+cx;
+        String orgModelSuffix = dcOrgPrefixToSuffix.get(orgModelPrefix);
+        String orgModelType = orgModelPrefix + ":" + orgModelSuffix + "_0";
+        return orgModelType ;
+    }
+    
     private static final Map<String, String> dcOrgPrefixToSuffix = new ImmutableMap.Builder<String, String>()
             //private
             .put("orgpr",   "PrivateOrg")
