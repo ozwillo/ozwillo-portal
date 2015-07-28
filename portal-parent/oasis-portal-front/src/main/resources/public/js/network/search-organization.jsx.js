@@ -253,7 +253,7 @@ var OrganizationSearchFormControl = React.createClass({
                    {this.props.renderLabel("organization-business-id", 'tax_reg_num', label_regNum)}
                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.tax_reg_num}
                          onChange={this.props.changeInput('tax_reg_num')} maxLength={20}
-                         placeholder={t('search.organization.business-id')}/></div>
+                         placeholder={t(label_regNum)}/></div>
                 </div>
             </div>
         )

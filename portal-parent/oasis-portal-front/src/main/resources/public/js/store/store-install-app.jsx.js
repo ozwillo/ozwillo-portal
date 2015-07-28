@@ -167,7 +167,7 @@ var AppModal = React.createClass({
            orgSearchData.contact_name     = installData.contact.contact_name;
            orgSearchData.contact_lastname = installData.contact.contact_lastname;
            orgSearchData.contact_email    = installData.contact.contact_email;
-           orgSearchData.country = orgSearchData.country_uri;
+           //orgSearchData.country = orgSearchData.country_uri;
 
            state.selectedOrg.typeInstallOrg = orgSearchData.typeInstallOrg;
 
@@ -565,7 +565,7 @@ SetOrganizationComponent = React.createClass({
             var org = this.state.orgSearchData;
             if(fieldname === "country"){
                org[fieldname+"_uri"] = event.target.value;
-               org[fieldname] = event.target.textContent;
+               org[fieldname] = event.target.selectedOptions[0].label;
             }else{ org[fieldname] = event.target.value; }
             this.setState({orgSearchData: org, errors:[]});
         }.bind(this);
