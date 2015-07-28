@@ -127,7 +127,7 @@ var SearchOrganizationForm = React.createClass({
             var org = this.state.orgSearchData;
             if(fieldname === "country"){
                org[fieldname+"_uri"] = event.target.value;
-               org[fieldname] = event.target.textContent;
+               org[fieldname] = event.target.selectedOptions[0].label;
             }else{ org[fieldname] = event.target.value; }
             this.setState({orgSearchData: org, errors: [], searching: false});
         }.bind(this);
@@ -223,6 +223,16 @@ var OrganizationSearchFormControl = React.createClass({
     },
 
     render: function () {
+        var label_regNum; 
+        switch(this.props.orgSearchData.country){
+           case 'България' : label_regNum = t('search.organization.business-id.bg'); break;
+           case 'Italia'   : label_regNum = t('search.organization.business-id.it'); break;
+           case 'France'   : label_regNum = t('search.organization.business-id.fr'); break;
+           case 'España'   : label_regNum = t('search.organization.business-id.es'); break;
+           case 'Türkiye'  : label_regNum = t('search.organization.business-id.tr'); break;
+           default         : label_regNum = t('search.organization.business-id.en'); break;
+        }
+
         return (
              <div className="form-group">
                 {this.renderType()}
@@ -240,7 +250,7 @@ var OrganizationSearchFormControl = React.createClass({
                              placeholder={t('search.organization.legal-name')}/></div>
                 </div>
                 <div className="form-group">
-                   {this.props.renderLabel("organization-business-id", 'tax_reg_num', t('search.organization.business-id'))}
+                   {this.props.renderLabel("organization-business-id", 'tax_reg_num', label_regNum)}
                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.tax_reg_num}
                          onChange={this.props.changeInput('tax_reg_num')} maxLength={20}
                          placeholder={t('search.organization.business-id')}/></div>

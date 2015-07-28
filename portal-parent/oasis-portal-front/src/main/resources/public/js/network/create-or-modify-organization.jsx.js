@@ -217,6 +217,22 @@ var Tab1 = React.createClass({
         if ($.inArray("icon", this.props.errors) != -1) { iconClassName = iconClassName + " error"; }
         this.state.organization = this.props.orgData;
         var sectorType = getSectorTypeLabel(this.state.organization.sector_type, this.props.typeRestriction);
+        var label_regNum; var label_regOfficialId = ''; var label_regActivity = '';
+        switch(this.state.organization.country){
+           case 'България' : label_regNum = 'tax_reg_num.bg'; label_regActivity = 'tax_reg_activity.bg'; break;
+           case 'Italia'   : label_regNum = 'tax_reg_num.it'; label_regActivity = 'tax_reg_activity.it'; break;
+           case 'France'   : label_regNum = 'tax_reg_num.fr';
+                             label_regOfficialId = 'tax_reg_ofical_id.fr';
+                             label_regActivity = 'tax_reg_activity.fr';
+                             break;
+           case 'España'   : label_regNum = 'tax_reg_num.es'; label_regActivity = 'tax_reg_activity.es'; break;
+           case 'Türkiye'  : label_regNum = 'tax_reg_num.tr';
+                             label_regOfficialId = 'tax_reg_ofical_id.tr';
+                             label_regActivity = 'tax_reg_activity.tr';
+                             break;
+           default         : label_regNum = 'tax_reg_num.en'; break;
+        }
+
 
         return (
              <div id="tab1">
@@ -248,17 +264,17 @@ var Tab1 = React.createClass({
                      <input className="form-control" id="org_type" type="text" value={this.state.organization.org_type}
                               onChange={this.changeInput('org_type')} placeholder={t('my.network.organization.org_type.placeholder')}/>
                   </Field>
-                  <Field name="tax_reg_num" error={$.inArray("tax_reg_num", this.props.errors) != -1} isRequired={true}>
+                  <Field name={label_regNum} error={$.inArray("tax_reg_num", this.props.errors) != -1} isRequired={true}>
                      <input className="form-control" id="tax_reg_num" type="text" value={this.state.organization.tax_reg_num}
                               onChange={this.changeInput('tax_reg_num')} disabled={this.state.organization.exist}/>
                   </Field>
-                  { (t('my.network.organization.tax_reg_ofical_id') === '') ? '' : ( // if the field is defined in messages.properties
-                      <Field name="tax_reg_ofical_id">
+                  { (label_regOfficialId === '') ? '' : ( // if the field is defined in messages.properties
+                      <Field name={label_regOfficialId}>
                           <input className="form-control" id="tax_reg_ofical_id" type="text" value={this.state.organization.tax_reg_ofical_id}
                                    onChange={this.changeInput('tax_reg_ofical_id')} />
                       </Field>
                   )}
-                  <Field name="tax_reg_activity" class_name_div='col-sm-3'>
+                  <Field name={label_regActivity} class_name_div='col-sm-3'>
                      <input className="form-control" id="tax_reg_activity" type="text" value={this.state.organization.tax_reg_activity}
                                onChange={this.changeInput('tax_reg_activity')} />
                   </Field><br/>

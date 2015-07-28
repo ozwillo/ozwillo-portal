@@ -24,13 +24,16 @@ public final class i18nMessages {
             "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
             "something_went_wrong_title", "error_detail_title", "search", "next", "previous");
 
-    private static final List<String> searchOrganization = Arrays.asList("title","country","legal-name", "business-id","sector-type",
-            "sector-type.PUBLIC_BODY","sector-type.COMPANY", "selection.new", "selection.existing", "cannot-be-used");
+    private static final List<String> searchOrganization = Arrays.asList("title","country","legal-name", "business-id.fr", "business-id.it",
+            "business-id.es", "business-id.bg", "business-id.tr", "business-id.en", "sector-type", "sector-type.PUBLIC_BODY","sector-type.COMPANY",
+            "selection.new", "selection.existing", "cannot-be-used");
 
     private static final List<String> searchContact = Arrays.asList("title","address.title","name", "lastname","email");
 
     private static final List<String> createOrModifyOrganization = Arrays.asList("legal_name","in_activity","tab1.general_information",
-            "alt_name","org_type", "org_type.placeholder","tax_reg_num","tax_reg_ofical_id","tax_reg_activity","jurisdiction",
+            "alt_name","org_type", "org_type.placeholder", "tax_reg_num.bg", "tax_reg_num.es", "tax_reg_num.fr", "tax_reg_num.it", "tax_reg_num.tr",
+            "tax_reg_num.en", "tax_reg_ofical_id.fr","tax_reg_ofical_id.tr","tax_reg_activity.bg","tax_reg_activity.es","tax_reg_activity.fr",
+            "tax_reg_activity.it","tax_reg_activity.tr","tax_reg_activity.en","jurisdiction",
             "jurisdiction.placeholder","phone_number","web_site", "email","email.placeholder","change-icon","tab2.address_geolocation",
             "street_and_number","additional_address_field","po_box","city","zip", "cedex","country");
 
