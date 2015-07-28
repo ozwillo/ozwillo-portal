@@ -396,7 +396,7 @@ var AddressComponent = React.createClass({
               changeInput(fieldname, event.added.name, isNumericField);
               changeInput(fieldname+"_uri", event.target.value, isNumericField);
 	       }else if(fieldname === "country"){
-	           changeInput(fieldname, event.target.textContent, isNumericField);
+	           changeInput(fieldname, event.target.selectedOptions[0].label, isNumericField);
 	           changeInput(fieldname+"_uri", event.target.value, isNumericField);
 	       }else {
 	           changeInput(fieldname, event.target.value, isNumericField);
