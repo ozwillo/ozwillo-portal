@@ -101,6 +101,11 @@ sudo service apache2 restart
   * robert.roe@example.net / robert.roe@example.net
   * carla.coe@example.net / carla.coe@example.net
 
+## Renew Refresh_Token to DC http access
+
+ * Use the js client app to generate a refresh_token that must be insert in file application.yml (portal the credentials are also included inside, DC credentials are in DC project/puppet repertory) :
+    https://github.com/ozwillo/ozwillo-node-client
+ * With the obtained new code, reset it in the application.yml file and restart the Portal app
 
 ## Release
 
