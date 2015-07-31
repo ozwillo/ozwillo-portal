@@ -70,6 +70,7 @@ var SearchOrganizationForm = React.createClass({
                     state.orgSearchData.contact_name =     data.user_name;
                     state.orgSearchData.contact_lastname = data.user_lastname;
                     state.orgSearchData.contact_email =    data.user_email;
+                    state.orgSearchData.country =          data.address.country;
                     this.setState(state);
             }.bind(this),
             error: function (xhr, status, err) {
@@ -232,6 +233,9 @@ var OrganizationSearchFormControl = React.createClass({
            case 'Türkiye'  : label_regNum = t('search.organization.business-id.tr'); break;
            default         : label_regNum = t('search.organization.business-id.en'); break;
         }
+        if ( (!this.props.orgSearchData.country_uri || this.props.orgSearchData.country_uri === "") && this.refs.orgCountrySelect){
+           this.props.orgSearchData.country_uri = this.refs.orgCountrySelect.getValue(this.props.orgSearchData.country);
+        }
 
         return (
              <div className="form-group">
@@ -239,7 +243,7 @@ var OrganizationSearchFormControl = React.createClass({
                 <div className="form-group">
                     {this.props.renderLabel("organization-country-name", 'country', t('search.organization.country'))}
                     <div className="col-sm-5">
-                         <CountrySelect className="form-control" url={store_service + "/dc-countries"} defValue={this.props.orgSearchData.country}
+                         <CountrySelect ref="orgCountrySelect" className="form-control" url={store_service + "/dc-countries"} defLabel={this.props.orgSearchData.country}
                              onChange={this.props.changeInput('country')} />
                     </div>
                 </div>
@@ -264,7 +268,7 @@ var OrganizationSearchFormControl = React.createClass({
 /** PROPS: onChange(), url */
 var CountrySelect = React.createClass({
     propTypes: { url: React.PropTypes.string.isRequired },
-    getInitialState: function() { return { options: [] } },
+    getInitialState: function() { return { options: [], countries: [] } },
     onChange: function(event) {this.props.onChange(event);},
     componentDidMount: function() {
         //var userCurrentLanguge = currentLanguage;
@@ -282,6 +286,7 @@ var CountrySelect = React.createClass({
                     for (var i = 0; i < areas.length; i++) {
                        options.push({ value: areas[i].uri, label: areas[i].name })
                     }
+                    this.state.countries = options;
                     this.successHandler(options); //set the list of countries
                 }.bind(this),
                 error: function (xhr, status, err) {
@@ -307,7 +312,23 @@ var CountrySelect = React.createClass({
         }
         this.forceUpdate();
     },
+    getValue: function(label) {
+       if (!label || label !== "") {
+          for (var i = 0; i < this.state.countries.length; i++) {
+             if (this.state.countries[i].label === label) {
+               return this.state.countries[i].value; break;
+             }
+          }
+       }
+       return null;
+    },
+
     render: function() {
-        return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange} value={this.props.value}>{this.state.options}</select> )
+        var label = this.props.defLabel;
+        if(!this.props.value || this.props.value === ""){
+           this.props.value = this.getValue(label); //This is to load the country_uri that couldn't be set
+        }
+        // the parameter "value=" is selected option. Default selected option can either be set here.
+        return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange} value={this.props.value}>{this.state.options}</select> );
     }
 });

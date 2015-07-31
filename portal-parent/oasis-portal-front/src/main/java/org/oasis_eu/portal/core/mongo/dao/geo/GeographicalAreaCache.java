@@ -219,14 +219,14 @@ public class GeographicalAreaCache {
 
         // 3. switch all "incoming" entries to "online"
             long switchStart = System.currentTimeMillis();
-            switchToOnline();
+            this.switchToOnline();
             logger.debug("Switch to online in {} ms", System.currentTimeMillis() - switchStart);
-
+            logger.info("Finish replication of {} geographical records from data core", collection.getCount());
         } catch (RestClientException e) {
             logger.error("Error while updating the geo area cache", e);
 
             // "rollback"
-            deleteByStatus(GeographicalAreaReplicationStatus.INCOMING);
+            this.deleteByStatus(GeographicalAreaReplicationStatus.INCOMING);
         }
 
     }
