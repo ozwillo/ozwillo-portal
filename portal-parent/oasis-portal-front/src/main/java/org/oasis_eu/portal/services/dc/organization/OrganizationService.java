@@ -105,7 +105,7 @@ public class OrganizationService {
             if(uiOrganization != null){ // if null, then the organization exists in kernel.
                 //If not null, the organization was created in Kernel, then update data rights in DC.
                 DCResource dcResource = organizationDAO.setDCIdOrganization(new DCResource(), dcOrganization.getSector_type(), 
-                        dcOrganization.getLang(), dcOrganization.getTax_reg_num());
+                        dcOrganization.getTax_reg_num(), dcOrganization.getCity_uri());
                 dcResource.setVersion(Integer.parseInt(dcOrganization.getVersion()));
                 if(organizationDAO.changeDCOrganizationRights(dcResource,  uiOrganization.getId())){
                     //If rights have changed, then the version has increased in DC, so we increase it here as well.

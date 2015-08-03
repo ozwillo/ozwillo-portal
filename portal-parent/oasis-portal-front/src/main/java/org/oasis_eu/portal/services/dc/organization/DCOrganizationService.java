@@ -5,8 +5,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.constraints.NotNull;
-
 import org.oasis_eu.portal.services.PortalSystemUserService;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
@@ -56,6 +54,8 @@ public class DCOrganizationService {
     private String dcOrgSearchRegNumber;
     @Value("${application.dcOrgSearch.country: adrpost:country}")
     private String dcOrgSearchCountry;
+    @Value("${application.dcOrgSearch.useTypeAsModel:true}")
+    private boolean useTypeAsModel;
 
     public DCOrganization searchOrganization(String lang, String country_uri, String sector, String legalName, String regNumber) {
 
@@ -78,11 +78,13 @@ public class DCOrganizationService {
                       .and(dcOrgSearchRegNumber.trim(), DCOperator.EQ, regNumber)
                       .and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri);
 
-        String type = this.generateResourceType(sector, lang, regNumber);
-        logger.info("Ressource not found using parameters : {}, {}, {}, {}, {} and {}", country_uri, sector, legalName, regNumber, lang, type);
+        String model = dcOrgModel.trim();
+        if(useTypeAsModel){ model = this.generateResourceType(sector, country_uri, regNumber); };
+
+        logger.info("Ressource not found using parameters : {}, {}, {}, {}, {} and {}", sector, legalName, regNumber, country_uri, model);
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), type/*dcOrgModel.trim()*/, params, 0, 1);
+        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), model, params, 0, 1);
         /*if(resources ==null || resources.isEmpty()){ /TODO this is for TEST only
             //If is not found using all search factors, it re-search only by regNum
             resources = datacore.findResources(dcOrgProjectName.trim(), dcOrgModel.trim(), new DCQueryParameters("org:regNumber", DCOperator.EQ, regNumber), 0, 1);
@@ -200,15 +202,16 @@ public class DCOrganizationService {
         DCResource dcResource = new DCResource();
         mergeDCOrgToDCResources(dcOrganization, dcResource);
 
-        dcResource = setDCIdOrganization(dcResource, dcOrganization.getSector_type(), dcOrganization.getLang(), dcOrganization.getTax_reg_num());
+        dcResource = setDCIdOrganization(dcResource, dcOrganization.getSector_type(), dcOrganization.getTax_reg_num(), dcOrganization.getCity_uri());
 
         return dcResource;
     }
 
-    public  DCResource setDCIdOrganization(DCResource dcResource, String type, @NotNull String lang, String regNumber){
+    public  DCResource setDCIdOrganization(DCResource dcResource, String type, String regNumber, String country_uri){
         //"@id" : "http://data.ozwillo.com/dc/type/orgprfr:OrgPriv%C3%A9e_0/FR/47952557800049",
-        String cx = lang.toLowerCase() == "en" ? "" : lang.toLowerCase(); //if english leave it to match with orgpr/orgpu
-        String orgModelType = generateResourceType(type, lang, regNumber);
+        String countryAcronym = getCountryAcronym(country_uri);
+        String cx = countryAcronym.toLowerCase() == "en" ? "" : countryAcronym.toLowerCase(); //if english leave it to match with orgpr/orgpu
+        String orgModelType = generateResourceType(type, country_uri, regNumber);
 
         dcResource.setBaseUri(dcBaseUri.trim());
         dcResource.setType(orgModelType);
@@ -216,16 +219,22 @@ public class DCOrganizationService {
         return dcResource;
     }
 
-    public String generateResourceType(String type, String lang, String regNumber){
+    public String generateResourceType(String type, String country_uri, String regNumber){
         String px = DCOrganizationType.getDCOrganizationType(type).equals(DCOrganizationType.Private) ? "pr": "pu";
-        String cx = lang.toLowerCase() == "en" ? "" : lang.toLowerCase(); //if english leave it to match with orgpr/orgpu
+        //get country acronym
+        String countryAcronym = getCountryAcronym(country_uri);
+        String cx = countryAcronym .toLowerCase().equals("en") ? "" : countryAcronym .toLowerCase(); //if english leave it to match with orgpr/orgpu
 
         String orgModelPrefix = "org"+px+cx;
         String orgModelSuffix = dcOrgPrefixToSuffix.get(orgModelPrefix);
         String orgModelType = orgModelPrefix + ":" + orgModelSuffix + "_0";
         return orgModelType ;
     }
-    
+
+    private String getCountryAcronym(String country_uri){
+        return (country_uri != null && !country_uri.isEmpty() ? country_uri.substring(country_uri.length() - 2) : "en");
+    }
+
     private static final Map<String, String> dcOrgPrefixToSuffix = new ImmutableMap.Builder<String, String>()
             //private
             .put("orgpr",   "PrivateOrg")
