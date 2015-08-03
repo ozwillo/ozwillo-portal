@@ -107,7 +107,7 @@ public class NetworkAJAXServices extends BaseAJAXServices {
             @RequestParam(required=true) String tax_reg_num,
             @RequestParam(required=true) String sector_type
     ) {
-        logger.debug("Searching for organization {} from {} of type {}", legal_name, country, country_uri, sector_type);
+        logger.debug("Searching for organization {} from {} of type {}", legal_name, country+"["+country_uri+"]", sector_type);
 
         return organizationService.find(contact_name,contact_lastname,contact_email,country,country_uri, sector_type, legal_name, tax_reg_num); 
     }

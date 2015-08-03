@@ -62,9 +62,9 @@ public class DCOrganizationService {
         DCOrganization dcOrganization = new DCOrganization();
 
         DCResource resource = fetchDCOrganizationResource(country_uri, sector, legalName, regNumber, lang);
-        if(resource != null )
+        if(resource != null ){
             dcOrganization = toDCOrganization(resource,lang);
-        else{
+        }else{
             dcOrganization = new DCOrganization();
         }
 
@@ -79,7 +79,7 @@ public class DCOrganizationService {
                       .and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri);
 
         String type = this.generateResourceType(sector, lang, regNumber);
-        
+        logger.info("Ressource not found using parameters : {}, {}, {}, {}, {} and {}", country_uri, sector, legalName, regNumber, lang, type);
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
         List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), type/*dcOrgModel.trim()*/, params, 0, 1);
@@ -100,13 +100,15 @@ public class DCOrganizationService {
                 dcOrganization.getLegal_name(),dcOrganization.getTax_reg_num(), dcOrganization.getLang());
         // if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
         if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion()) ){ //found in DC
-            // there are no previous updates, merge it from form fields and do datacoreClient.saveResource()
+            logger.debug("It exists, but there are no previous updates. Merging it from form fields, and doing a datacoreClient.updateResource()");
             mergeDCOrgToDCResources(dcOrganization, dcResource);
             DCResult dcResult = datacore.updateResource(dcOrgProjectName.trim(), dcResource); // to test must change url as datacore namespace (plnm-dev-dc)
             return dcResult != null ? dcResource : null;
         }else if (dcResource == null || dcResource.isNew()){  // still doesn't exist in DC
+            logger.debug("It doesn't exist in DC Doing a datacore.saveResource() with : {},{}", dcOrgProjectName.trim(),dcOrganization);
             DCResult newCreatedDCRes =  datacore.saveResource(dcOrgProjectName.trim(), toNewDCResource(dcOrganization));
-            if(newCreatedDCRes.getResource() != null){ 
+            if(newCreatedDCRes.getResource() != null){
+                logger.debug("Setting the new DC URI into the dcOrganization : {}", newCreatedDCRes.getResource().getUri() );
                 dcOrganization.setId(newCreatedDCRes.getResource().getUri());
                 return newCreatedDCRes.getResource();
             } 

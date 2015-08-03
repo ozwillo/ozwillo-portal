@@ -44,6 +44,7 @@ public class OrganizationService {
         DCOrganization dcOrganization = organizationDAO.searchOrganization(localLang, country_uri, dcSectorType, legalName, regNumber);
 
         if(dcOrganization == null || !dcOrganization.isExist()){ // Organization doesn't exist in DC
+            logger.info("Organization doesn't exist in DC. Letting user create one with given entries.");
             // set an empty DCOrganization to be filled by user then Create Organization in Kernel when creating
             dcOrganization = new DCOrganization();
             //contact data
@@ -61,6 +62,7 @@ public class OrganizationService {
         }else {
             UIOrganization uiOrganization = networkService.searchOrganization(dcOrganization.getId());
             if( uiOrganization == null){ // found in DC but not in KERNEL, so modification is allowed
+                logger.info("Organization found in DC but not in KERNEL, so modification by the user is allowed.");
                 // re-set contact data
                 dcOrganization.setContact_name(contact_name);
                 dcOrganization.setContact_lastName(contact_lastName);
@@ -70,6 +72,7 @@ public class OrganizationService {
                 dcOrganization.setCountry_uri(country_uri); dcOrganization.setCountry(country);
                 return dcOrganization; // there is no owner for the data, so can be modified(in DC) & created (in kernel)
             }else{
+                logger.debug("There is an owner for this data, so it should show a message to the user in front-end");
                 return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
             }
         }
@@ -87,6 +90,7 @@ public class OrganizationService {
                 logger.error("Kernel Organization had been created since you've started filling in the form.");
                 throw new IllegalArgumentException();
             }
+            logger.debug("The organization exists in kernel : " + uiOrganization.toString());
             return uiOrganization;
         }
         return null;
@@ -170,6 +174,7 @@ public class OrganizationService {
             userInfo.setEmail(dcOrganization.getContact_email()); isChangefound = true;
         }
         if (isChangefound){
+            logger.info("Updating user information: {}", userInfo); //TODO LATTER add toString() to UserInfo
             userAccountService.saveUserAccount(new UserAccount(userInfo));
         }
     }
