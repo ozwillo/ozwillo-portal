@@ -54,7 +54,7 @@ public class DCOrganizationService {
     private String dcOrgSearchRegNumber;
     @Value("${application.dcOrgSearch.country: adrpost:country}")
     private String dcOrgSearchCountry;
-    @Value("${application.dcOrgSearch.useTypeAsModel:true}")
+    @Value("${application.dcOrgSearch.useTypeAsModel:false}")
     private boolean useTypeAsModel;
 
     public DCOrganization searchOrganization(String lang, String country_uri, String sector, String legalName, String regNumber) {
@@ -73,15 +73,17 @@ public class DCOrganizationService {
 
     private DCResource fetchDCOrganizationResource(String country_uri, String sector, String legalName, String regNumber, String lang) {
         DCQueryParameters params = new DCQueryParameters()
-                      .and(dcOrgSearchSector.trim(), DCOperator.EQ, sector) 
-                      .and(dcOrgSearchLegalName.trim(), DCOperator.EQ, DCOperator.REGEX.getRepresentation()+legalName)
+                      //.and(dcOrgSearchSector.trim(), DCOperator.EQ, sector)
+                      //.and(dcOrgSearchLegalName.trim(), DCOperator.EQ, DCOperator.REGEX.getRepresentation()+legalName)
                       .and(dcOrgSearchRegNumber.trim(), DCOperator.EQ, regNumber)
                       .and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri);
 
         String model = dcOrgModel.trim();
+        // NT. Since typeAsModel requires sector and the sector is nor required to the search, useTypeAsModel should always be false;
+        // otherwise, it will be implicitly in the query (e.g. dc/type/orgpuit:OrgPubblica_0/IT/05719580010)
         if(useTypeAsModel){ model = this.generateResourceType(sector, country_uri, regNumber); };
 
-        logger.info("Ressource not found using parameters : {}, {}, {}, {}, {} and {}", sector, legalName, regNumber, country_uri, model);
+        logger.info("Ressource not found using parameters : {}, {} and {}", regNumber, country_uri, model);
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
         List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), model, params, 0, 1);
