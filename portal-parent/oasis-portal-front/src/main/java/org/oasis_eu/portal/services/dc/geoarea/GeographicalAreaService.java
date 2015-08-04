@@ -56,9 +56,9 @@ public class GeographicalAreaService {
      * @param limit ex. 11 then return 10
      * @return
      */
-    public List<GeographicalArea> findCities(String queryTerms, int start, int limit) {
+    public List<GeographicalArea> findCities(String queryTerms, String country, int start, int limit) {
         queryTerms = queryTerms.substring(0,1).toUpperCase() + queryTerms.substring(1,queryTerms.length()).toLowerCase();
-        return geographicalDAO.searchCities(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
+        return geographicalDAO.searchCities(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, country, start, limit);
     }
 
     /**

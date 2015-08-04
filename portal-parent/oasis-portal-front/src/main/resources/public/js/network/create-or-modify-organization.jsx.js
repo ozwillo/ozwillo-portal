@@ -238,7 +238,7 @@ var Tab1 = React.createClass({
              <div id="tab1">
                <div className="container-fluid">
                <div className="row">
-
+               <br/>
                 <div className="col-sm-15">
                    <Field name="legal_name" class_name={'control-label col-sm-2'} error={$.inArray("legal_name", this.props.errors) != -1} isRequired={true}>
                       <input className="form-control" id="legal_name" type="text" value={this.state.organization.legal_name}
@@ -268,21 +268,25 @@ var Tab1 = React.createClass({
                      <input className="form-control" id="tax_reg_num" type="text" value={this.state.organization.tax_reg_num}
                               onChange={this.changeInput('tax_reg_num')} disabled={this.state.organization.exist}/>
                   </Field>
-                  { (label_regOfficialId === '') ? '' : ( // if the field is defined in messages.properties
-                      <Field name={label_regOfficialId}>
-                          <input className="form-control" id="tax_reg_ofical_id" type="text" value={this.state.organization.tax_reg_ofical_id}
+                  { // Show the field if is defined (normaly only for public orgs in France or Turkey).
+                     (label_regOfficialId !== '' && this.state.organization.sector_type !== 'COMPANY') ?  (
+                        <Field name={label_regOfficialId}>
+                           <input className="form-control" id="tax_reg_ofical_id" type="text" value={this.state.organization.tax_reg_ofical_id}
                                    onChange={this.changeInput('tax_reg_ofical_id')} />
-                      </Field>
-                  )}
+                         </Field>
+                      ) : ''
+                  }
                   <Field name={label_regActivity} class_name_div='col-sm-3'>
                      <input className="form-control" id="tax_reg_activity" type="text" value={this.state.organization.tax_reg_activity}
                                onChange={this.changeInput('tax_reg_activity')} />
                   </Field><br/>
-                  { (this.state.organization.sector_type === 'COMPANY') ? "" :(
-                  <Field name="jurisdiction" error={$.inArray("jurisdiction_uri", this.props.errors) != -1} isRequired={true}>
-                     <GeoSingleSelect2Component className="form-control" ref="geoSearchJurisdiction" onChange={this.changeInput('jurisdiction_uri')} name="geoSearch" 
-                            urlResources={store_service + "/geographicalAreas"} placeholder={t('my.network.organization.jurisdiction.placeholder')}/>
-                  </Field>
+                  { // Show the field only for public orgs
+                     (this.state.organization.sector_type === 'COMPANY') ? "" :(
+                        <Field name="jurisdiction" error={$.inArray("jurisdiction_uri", this.props.errors) != -1} isRequired={true}>
+                           <GeoSingleSelect2Component ref="geoSearchJurisdiction" className="form-control" name="geoSearch"
+                              onChange={this.changeInput('jurisdiction_uri')} urlResources={store_service + "/geographicalAreas"}
+                              placeholder={t('my.network.organization.jurisdiction.placeholder')}/>
+                        </Field>
                   )}
                   <Field name="phone_number">
                      <input className="form-control" id="phone_number" type="text" value={this.state.organization.phone_number}
@@ -355,7 +359,7 @@ var Tab2 = React.createClass({
              <div id="tab2">
                <div className="container-fluid">
                <div className="row">
-
+               <br/>
                <div className="col-sm-15">
                 <Field name="legal_name" class_name={'control-label col-sm-2'} error={$.inArray("name", this.props.errors) != -1}>
                    <input className="form-control" id="legal_name" type="text" value={this.state.organization.legal_name}
@@ -395,18 +399,20 @@ var AddressComponent = React.createClass({
            if(event.added){
               changeInput(fieldname, event.added.name, isNumericField);
               changeInput(fieldname+"_uri", event.target.value, isNumericField);
-	       }else if(fieldname === "country"){
-	           changeInput(fieldname, event.target.selectedOptions[0].label, isNumericField);
-	           changeInput(fieldname+"_uri", event.target.value, isNumericField);
-	       }else {
-	           changeInput(fieldname, event.target.value, isNumericField);
-	       }
+           }else if(fieldname === "country"){
+               changeInput(fieldname, event.target.selectedOptions[0].label, isNumericField);
+               changeInput(fieldname+"_uri", event.target.value, isNumericField);
+
+           }else {
+               changeInput(fieldname, event.target.value, isNumericField);
+           }
         }
     },
 
     render: function() {
         var address = this.props.addressContainer;
         var addressType = this.props.addressType ? this.props.addressType : '';
+
 
         return (
            <div>
@@ -427,8 +433,8 @@ var AddressComponent = React.createClass({
                  </Field>
               }
               <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
-                 <GeoSingleSelect2Component className="form-control" ref="geoSearchCity"  onChange={this.changeInput('city')} name="geoSearchCity" 
-                     urlResources={store_service + "/dc-cities"} placeholder={' '}/>
+                 <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" onChange={this.changeInput('city')} name="geoSearchCity" 
+                     urlResources={store_service + "/dc-cities"} placeholder={' '} countryFilter={ {value: address} }/>
               </Field>
               <Field name="zip" class_name_div='col-sm-3' error={$.inArray("zip", this.props.errors) != -1} isRequired={true}>
                  <input className="form-control" id="zip" type="text" maxLength={6} value={address.zip}

@@ -26,7 +26,9 @@ var Select2Mixin = {
             this.props.onChange(event);
         }
     },
-
+    clear:  function() {
+       return this.props.select2Object;
+    },
     renderSelect2: function() {
         //var placeholder = this.props.placeholder;
         //var style = this.props.style;
@@ -48,7 +50,6 @@ var Select2Mixin = {
         var $el = $(select2.getDOMNode());
         $el.select2(this.props.params);
         $el.on("change", this.onChange);
-        
         this.props.select2Object = $el.data("select2"); // to access it from outside
         // NB. conf is in .opts, internal methods in window.Select2.util.
     },
@@ -71,6 +72,7 @@ var Select2Component = React.createClass({
  * Geo select2 component
  * (no need to provide params)
  */
+var geoSelectedFilter;
 var GeoSelect2Mixin = {
 
     /* To be called & overriden by the actual component's getDefaultProps().
@@ -94,7 +96,8 @@ var GeoSelect2Mixin = {
                 data: function( term, page ) {
                     return {
                         // search term
-                        q: term
+                        country_uri: geoSelectedFilter.value.country_uri,
+                        q: term,
                     };
                 },
                 results: function( data, page ) {
@@ -104,47 +107,13 @@ var GeoSelect2Mixin = {
                 },
                 cache: true
             },
-            //initSelection: function( element, callback ) { }
-            
             // Formats the dropdown list of select2 alternatives to click on (which will create a tag for it)
             formatResult: function(result, container, query, escapeMarkup) {
                 return this.formatResultWithTooltip(result, container, query, escapeMarkup);
             },
-            /* test, not used */
-            formatResultTest : function(area) {
-                var markup = "<div class='select2-result-repository clearfix'>" +
-                    "<div class='select2-result-repository__meta'>" +
-                        "<div class='select2-result-repository__title' title='" + area.uri + "'>" + area.name + "</div>";
-
-                if (area.detailedName) {
-                    markup += "<div class='select2-result-repository__description'>" + area.detailedName + "</div>";
-                }
-
-                markup += 
-                    "</div></div>";
-
-                return markup;
-            },
             tooltip : function (area) { // extended select2 option
                 return area.uri;
             },
-            /*formatResultWithTooltip : function(result, container, query, escapeMarkup) { // extends select2
-                // inspired by select2's formatResult
-                var markup=[];
-                window.Select2.util.markMatch(this.text(result), query.term, markup, escapeMarkup); // accessing select2 internal function
-                // additionally wrapping by titling span :
-                markup.push("</span>");
-                return "<span class='select2-tooltip' title='" + this.tooltip(result) + "'>"
-                    + markup.join("");
-            },
-            formatResultWithTooltip : function(result, container, query, escapeMarkup) { // extends select2
-            // inspired by select2's formatResult
-                var markup=[];
-                window.Select2.util.markMatch(this.select2Object().opts.text(result), query.term, markup, escapeMarkup);
-                // wrap by titling span :
-                markup.push("</span>"); // TOOLTIP
-                return "<span class='select2-tooltip' title='" + this.tooltip(result) + "'>" + markup.join("");
-            },*/
             formatResultWithTooltip : function(result, container, query, escapeMarkup) { // extends select2
                 // inspired by select2's formatResult
                 var markup=[];
@@ -174,11 +143,6 @@ var GeoSelect2Mixin = {
             
             // NB. selected tags can be formatted using CSS : select2-search-choice
             // or otherwise by rewriting MultiSelect2.addSelectedChoice()
-            
-            //formatSelection: formatSelectionTest,
-            formatSelectionTest : function(area) {
-                return area.name;
-            },
 
             text: function(area) {
                 return area.name;
@@ -187,18 +151,6 @@ var GeoSelect2Mixin = {
                 return area.uri;
             },
             
-            /*initSelection = function(element, callback) {
-                callback(this.state.geographicalAreaUris);
-            }, // NO doesn't work*/
-            
-            //Allow manually entered text in drop down.
-            /*createSearchChoice: function(term, data) {
-                if ($(data).filter(function(t) {
-                    return t === term; // this.text.localeCompare(term)===0;
-                }).length===0) {
-                    return {id:'q', text:term, name:term, uri:'q'}; // NOT id text
-                }
-            },*/
             // apply css that makes the dropdown taller
             dropdownCssClass: "bigdrop",
             // we do not want to escape markup since we are displaying html in results ?!
@@ -230,5 +182,6 @@ var GeoSingleSelect2Component = React.createClass({
     },
     componentWillMount : function() {
         this.props.params.multiple = false;
+        geoSelectedFilter = this.props.countryFilter ? this.props.countryFilter : "";
     }
 });

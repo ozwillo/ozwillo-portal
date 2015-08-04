@@ -37,7 +37,9 @@ public class GeographicalDAO {
     private String geoCityModel;// = "geoci:City_0";
     @Value("${application.geoarea.cityField: geoci_city:name}")
     private String cityField;// = "geo_city:name"; // "geoci:name";
-
+    @Value("${application.geoarea.countryCityField: geoci:country}")
+    private String countryCityField;// = "geoco:Country_0"; //"geocofr:Pays_0";
+    
     @Value("${application.geoarea.geoCountriesModel: geoco:Country_0}")
     private String geoCountriesModel;// = "geoco:Country_0"; //"geocofr:Pays_0";
     /**ex. Rhône-Alpes */
@@ -51,22 +53,22 @@ public class GeographicalDAO {
     private Tokenizer tokenizer;
 
     // Cities
-    public List<GeographicalArea> searchCities(String lang, String terms, int start, int limit) {
+    public List<GeographicalArea> searchCities(String lang, String terms, String country, int start, int limit) {
 
         List<String> queryTerms = tokenizer.tokenize(terms, false).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
 
         List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
 
-        fetchDCCitiesResource(lang, queryTerms, limit - start)
+        fetchDCCitiesResource(country, queryTerms, limit - start)
                .stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), cityField.trim())));
 
         return geographicalArea;
     }
 
-    private List<DCResource> fetchDCCitiesResource(String lang, List<String> queryTerms, int batchSize ) {
+    private List<DCResource> fetchDCCitiesResource(String country, List<String> queryTerms, int batchSize ) {
         // /dc/type/geo:City_0?geo_city:name.l=fr&geo_city:name.v=$regex^Aas
-        DCQueryParameters params = !queryTerms.isEmpty() 
-                ? new DCQueryParameters(/*cityField.trim()+ ".l", DCOperator.EQ, lang*/)
+        DCQueryParameters params = !queryTerms.isEmpty()
+                ? ( (country != null && !country.isEmpty()) ? new DCQueryParameters(countryCityField.trim(), DCOperator.EQ, country) : new DCQueryParameters())
                       .and(cityField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+"^"+queryTerms.get(0))
                 : new DCQueryParameters(cityField.trim(), DCOrdering.DESCENDING);
 
