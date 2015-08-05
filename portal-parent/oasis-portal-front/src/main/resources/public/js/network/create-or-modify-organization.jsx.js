@@ -219,19 +219,21 @@ var Tab1 = React.createClass({
         this.state.organization = this.props.orgData;
         var sectorType = getSectorTypeLabel(this.state.organization.sector_type, this.props.typeRestriction);
         var label_regNum; var label_regOfficialId = ''; var label_regActivity = '';
-        switch(this.state.organization.country){
-           case 'България' : label_regNum = 'tax_reg_num.bg'; label_regActivity = 'tax_reg_activity.bg'; break;
-           case 'Italia'   : label_regNum = 'tax_reg_num.it'; label_regActivity = 'tax_reg_activity.it'; break;
-           case 'France'   : label_regNum = 'tax_reg_num.fr';
+        var n = this.state.organization.country_uri.lastIndexOf('/');
+        var acronymCountry = this.state.organization.country_uri.substring(n + 1);
+        switch(acronymCountry){
+           case 'BG' : label_regNum = 'tax_reg_num.bg'; label_regActivity = 'tax_reg_activity.bg'; break;
+           case 'IT' : label_regNum = 'tax_reg_num.it'; label_regActivity = 'tax_reg_activity.it'; break;
+           case 'FR' : label_regNum = 'tax_reg_num.fr';
                              label_regOfficialId = 'tax_reg_ofical_id.fr';
                              label_regActivity = 'tax_reg_activity.fr';
                              break;
-           case 'España'   : label_regNum = 'tax_reg_num.es'; label_regActivity = 'tax_reg_activity.es'; break;
-           case 'Türkiye'  : label_regNum = 'tax_reg_num.tr';
+           case 'ES' : label_regNum = 'tax_reg_num.es'; label_regActivity = 'tax_reg_activity.es'; break;
+           case 'TR' : label_regNum = 'tax_reg_num.tr';
                              label_regOfficialId = 'tax_reg_ofical_id.tr';
                              label_regActivity = 'tax_reg_activity.tr';
                              break;
-           default         : label_regNum = 'tax_reg_num.en'; break;
+           default   : label_regNum = 'tax_reg_num.en'; break;
         }
 
 

@@ -55,7 +55,7 @@ public class GeographicalDAO {
     // Cities
     public List<GeographicalArea> searchCities(String lang, String terms, String country, int start, int limit) {
 
-        List<String> queryTerms = tokenizer.tokenize(terms, false).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
+        List<String> queryTerms = tokenizer.tokenize(terms, false, false).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
 
         List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
 
@@ -84,7 +84,7 @@ public class GeographicalDAO {
     // Countries
     public List<GeographicalArea> searchCountries(String lang, String terms, int start, int limit) {
 
-        List<String> queryTerms = tokenizer.tokenize(terms, false).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
+        List<String> queryTerms = tokenizer.tokenize(terms, false, false).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
 
         List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
 

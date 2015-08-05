@@ -22,7 +22,7 @@ public class StandardTokenizer implements Tokenizer {
      */
     @Override
     public List<String> tokenize(String input) {
-        return this.tokenize(input, true);
+        return this.tokenize(input, true, true);
 
     }
 
@@ -33,7 +33,7 @@ public class StandardTokenizer implements Tokenizer {
      * @return List of Strings spliced from original "input" String
      */
     @Override
-    public List<String> tokenize(String input, boolean toLowerCase ) {
+    public List<String> tokenize(String input, boolean toLowerCase, boolean doNormalize ) {
         if (input == null || "".equals(input)) {
             return Collections.emptyList();
         }
@@ -41,7 +41,7 @@ public class StandardTokenizer implements Tokenizer {
         return Arrays.asList(input.split("[\\p{P}\\s]+"))
                 .stream()
                 .map(s -> (toLowerCase ? s.toLowerCase() : s))
-                .map(s -> Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS}+", ""))
+                .map(s -> (doNormalize ?  Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("\\p{InCOMBINING_DIACRITICAL_MARKS}+", "") : s))
                 .collect(Collectors.toList());
 
     }
