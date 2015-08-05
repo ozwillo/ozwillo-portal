@@ -261,7 +261,7 @@ var SideBar = React.createClass({
                 
                 <div>
                     <GeoSingleSelect2Component className="form-control" ref="geoSearch" onChange={this.search} name="geoSearch"
-                            urlResources={store_service + "/geographicalAreas"}/>
+                            urlResources={store_service + "/geographicalAreas"} countryFilter={ {value: {}} } />
                 </div>
 
                 <div className="input-group">

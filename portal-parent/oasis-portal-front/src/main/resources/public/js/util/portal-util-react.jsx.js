@@ -10,6 +10,7 @@
  * are in window.Select2.util).
  */
 var Select2Mixin = {
+    getInitialState: function() { return {select2Object: null }; },
     componentDidMount: function() {
         this.renderSelect2();
     },
@@ -27,10 +28,13 @@ var Select2Mixin = {
         }
     },
     clear:  function() {
-       return this.props.select2Object;
+       var $el = this.state.select2Object;
+       $el.select2("val", null);
+       $el.trigger('change');
+       //$el.select2({ placeholder: "Select a State"});
     },
     renderSelect2: function() {
-        //var placeholder = this.props.placeholder;
+        //this.props.params.placeholder = this.props.placeholder;
         //var style = this.props.style;
         var select2 = React.render(
                 React.DOM.input(React.__spread({}, this.props)), // React's polyfill for Object.assign()
@@ -49,8 +53,13 @@ var Select2Mixin = {
         );*/
         var $el = $(select2.getDOMNode());
         $el.select2(this.props.params);
+        var option = $('<option></option>').text("").val(0);
+        option.appendTo($el);
+        $el.trigger('change');
+
         $el.on("change", this.onChange);
         this.props.select2Object = $el.data("select2"); // to access it from outside
+        this.state.select2Object = $el; // to access it from inside
         // NB. conf is in .opts, internal methods in window.Select2.util.
     },
 
@@ -107,6 +116,11 @@ var GeoSelect2Mixin = {
                 },
                 cache: true
             },
+            /*initSelection : function (element, callback) {
+                //var data = {id: element.val(), text: element.val()};
+                var data = [{id: 1, text: "Valence"}];
+                callback(data);
+            },*/
             // Formats the dropdown list of select2 alternatives to click on (which will create a tag for it)
             formatResult: function(result, container, query, escapeMarkup) {
                 return this.formatResultWithTooltip(result, container, query, escapeMarkup);

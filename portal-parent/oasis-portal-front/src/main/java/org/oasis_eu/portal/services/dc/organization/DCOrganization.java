@@ -30,6 +30,8 @@ public class DCOrganization {
     @JsonProperty
     private String tax_reg_activity_uri;
     @JsonProperty
+    private String jurisdiction;
+    @JsonProperty
     private String jurisdiction_uri;
     @JsonProperty
     private String phone_number;
@@ -165,6 +167,14 @@ public class DCOrganization {
 
     public void setTax_reg_activity_uri(String tax_reg_activity_uri) {
         this.tax_reg_activity_uri = tax_reg_activity_uri;
+    }
+
+    public String getJurisdiction() {
+        return jurisdiction;
+    }
+
+    public void setJurisdiction(String jurisdiction) {
+        this.jurisdiction = jurisdiction;
     }
 
     public String getJurisdiction_uri() {

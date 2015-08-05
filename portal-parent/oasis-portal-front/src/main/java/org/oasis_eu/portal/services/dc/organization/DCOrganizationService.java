@@ -274,11 +274,14 @@ public class DCOrganizationService {
         String taxRegAct_uri =    getBestI18nValue(res, language, "org:activity", null);
         String taxRegAct =       (taxRegAct_uri == null) ? null : getBestI18nValue(
                                        datacore.getResourceFromURI(dcOrgProjectName, taxRegAct_uri).getResource(), language, "orgact:code", null
-                                    );
+                                 );
         String officialId =      getBestI18nValue(res, language, "orgpu:officialId", null);
         String regNumber =       getBestI18nValue(res, language, "org:regNumber", null);
 
         String jurisdiction_uri =  getBestI18nValue(res, language, "orgpu:jurisdiction", null);
+        String jurisdiction =    jurisdiction_uri == null ? null : getBestI18nValue(
+                                       datacore.getResourceFromURI(dcOrgProjectName, jurisdiction_uri).getResource(), language, "geoci:displayName", null
+                                 );
 
         String phoneNumber =     getBestI18nValue(res, language, "org:phoneNumber", null);
         String webSite =         getBestI18nValue(res, language, "org:webSite", null);
@@ -288,13 +291,16 @@ public class DCOrganizationService {
         String supField =        getBestI18nValue(res, language, "adrpost:supField", null);
         String POBox =           getBestI18nValue(res, language, "adrpost:POBox", null);
         String city_uri =        getBestI18nValue(res, language, "adrpost:postName", null);
+        String city =            city_uri == null ? null : getBestI18nValue(
+                                        datacore.getResourceFromURI(dcOrgProjectName, city_uri).getResource(), language, "geoci:displayName", null
+                                 );
         String zip =             getBestI18nValue(res, language, "adrpost:postCode", "org:postCode");
         String cedex =           getBestI18nValue(res, language, "adrpost:cedex", null);
 
-        String country_uri =      getBestI18nValue(res, language, "adrpost:country", null);
+        String country_uri =     getBestI18nValue(res, language, "adrpost:country", null);
         String country =         country_uri == null ? null : getBestI18nValue(
                                        datacore.getResourceFromURI(dcOrgProjectName, country_uri).getResource(), language, "geoco:name", null
-                                    );
+                                 );
 
         //String longitude=     getBestI18nValue(res, "org:longitude", null);
         //String latitude =     getBestI18nValue(res, "org:latitude", null);
@@ -310,6 +316,7 @@ public class DCOrganizationService {
         dcOrg.setTax_reg_official_id(officialId); /* Only for public organizations*/
 
         dcOrg.setJurisdiction_uri(jurisdiction_uri); /* Only for public organizations*/
+        dcOrg.setJurisdiction(jurisdiction); /* Only for public organizations*/
 
         dcOrg.setPhone_number(phoneNumber);
         dcOrg.setWeb_site(webSite);
@@ -319,7 +326,7 @@ public class DCOrganizationService {
         dcOrg.setAdditional_address_field(supField);
         dcOrg.setPo_box(POBox);
         dcOrg.setCedex(cedex);
-        dcOrg.setCity_uri(city_uri);
+        dcOrg.setCity_uri(city_uri);dcOrg.setCity(city);
         dcOrg.setZip(zip);
         dcOrg.setCountry_uri(country_uri); dcOrg.setCountry(country);
 

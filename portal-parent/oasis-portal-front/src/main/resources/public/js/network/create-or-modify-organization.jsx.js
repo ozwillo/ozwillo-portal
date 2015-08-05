@@ -2,8 +2,8 @@
 
 var default_org_data = {
         organization: { exist: false, legal_name: '', sector_type: '', in_activity: true, alt_name: '', org_type:'',
-            tax_reg_num: '', tax_reg_ofical_id:'', tax_reg_activity:'', jurisdiction_uri:'', phone_number:'',
-            web_site:'', email:'', street_and_number:'', additional_address_field: '', po_box: '', city_uri: '',
+            tax_reg_num: '', tax_reg_ofical_id:'', tax_reg_activity:'', jurisdiction_uri:'', jurisdiction:'', phone_number:'',
+            web_site:'', email:'', street_and_number:'', additional_address_field: '', po_box: '', city: '', city_uri: '',
             zip: '', cedex: '', country_uri: ''
          }, errors: [[],[]], typeRestriction: ''
 };
@@ -199,6 +199,7 @@ var Tab1 = React.createClass({
                org[fieldname] = event.target.checked;
            } else { //org[fieldname] = this.refs.geoSearchJurisdiction.state.value;
                org[fieldname] = event.target.value;
+               if(fieldname === 'jurisdiction_uri'){ org['jurisdiction'] = event.added ? event.added.name : ''; }
            }
            this.setState({organization: org});
         }.bind(this);
@@ -285,7 +286,8 @@ var Tab1 = React.createClass({
                         <Field name="jurisdiction" error={$.inArray("jurisdiction_uri", this.props.errors) != -1} isRequired={true}>
                            <GeoSingleSelect2Component ref="geoSearchJurisdiction" className="form-control" name="geoSearch"
                               onChange={this.changeInput('jurisdiction_uri')} urlResources={store_service + "/geographicalAreas"}
-                              placeholder={t('my.network.organization.jurisdiction.placeholder')}/>
+                              countryFilter={ {value: this.state.organization}}
+                              placeholder={this.state.organization.jurisdiction/*t('my.network.organization.jurisdiction.placeholder')*/}/>
                         </Field>
                   )}
                   <Field name="phone_number">
@@ -393,6 +395,10 @@ var Tab2 = React.createClass({
 });/** end tab2 */
 
 var AddressComponent = React.createClass({
+    //getInitialState: function() { return {geoSearchCity: null }; },
+    componentDidMount: function() {
+       //if(this.refs.geoSearchCity)this.state.geoSearchCity = this.refs.geoSearchCity;
+    },
     changeInput: function (fieldname, isNumericField) {
         changeInput = this.props.changeInput;
         return function (event) {
@@ -402,17 +408,19 @@ var AddressComponent = React.createClass({
            }else if(fieldname === "country"){
                changeInput(fieldname, event.target.selectedOptions[0].label, isNumericField);
                changeInput(fieldname+"_uri", event.target.value, isNumericField);
-
+               //If country has changed, the city is not longer valid
+               changeInput("city", "", isNumericField);
+               changeInput("city_uri", "", isNumericField);
+               if(this.refs.geoSearchCity) this.refs.geoSearchCity.clear(); //works only to remove tags in current component state, geoSelect placeholder still there.
            }else {
                changeInput(fieldname, event.target.value, isNumericField);
            }
-        }
+        }.bind(this)
     },
 
     render: function() {
         var address = this.props.addressContainer;
         var addressType = this.props.addressType ? this.props.addressType : '';
-
 
         return (
            <div>
@@ -434,7 +442,7 @@ var AddressComponent = React.createClass({
               }
               <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
                  <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" onChange={this.changeInput('city')} name="geoSearchCity" 
-                     urlResources={store_service + "/dc-cities"} placeholder={' '} countryFilter={ {value: address} }/>
+                     urlResources={store_service + "/dc-cities"} placeholder={address.city} countryFilter={ {value: address} }/>
               </Field>
               <Field name="zip" class_name_div='col-sm-3' error={$.inArray("zip", this.props.errors) != -1} isRequired={true}>
                  <input className="form-control" id="zip" type="text" maxLength={6} value={address.zip}
