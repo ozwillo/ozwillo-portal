@@ -38,6 +38,10 @@ public class GeographicalArea {
 
     private List<String> nameTokens;
 
+    @JsonProperty
+    private String country;
+
+
     /** URI in Datacore (required if ex. sending directly to store ajax) */
     @JsonProperty
     private String uri;
@@ -124,4 +128,13 @@ public class GeographicalArea {
     public void setAncestors(List<String> ancestors) {
         this.ancestors = ancestors;
     }
+
+    public String getCountry() {
+        return country;
+    }
+
+    public void setCountry(String country) {
+        this.country = country;
+    }
+
 }

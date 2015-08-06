@@ -36,14 +36,14 @@ public class GeographicalAreaService {
      * @param limit ex. 11 then return 10 and loadMore=true
      * @return
      */
-    public List<GeographicalArea> find(String q, int start, int limit) {
-        return cache.search(RequestContextUtils.getLocale(request).getLanguage(), q, start, limit)
+    public List<GeographicalArea> find(String country_uri, String q, int start, int limit) {
+        return cache.search(country_uri, RequestContextUtils.getLocale(request).getLanguage(), q, start, limit)
                     .collect(Collectors.toList());
     }
     public GeographicalArea getAncestorsFromGeographicalArea(List<String> geographicalAreas){
         if(geographicalAreas == null || geographicalAreas.isEmpty()){return null;}
 
-        List<GeographicalArea> geoList = this.find(geographicalAreas.get(0), 0,1);
+        List<GeographicalArea> geoList = this.find(null, geographicalAreas.get(0), 0,1);
         if (geoList != null && !geoList.isEmpty()){
             return geoList.get(0);
         }

@@ -81,7 +81,6 @@ var Select2Component = React.createClass({
  * Geo select2 component
  * (no need to provide params)
  */
-var geoSelectedFilter;
 var GeoSelect2Mixin = {
 
     /* To be called & overriden by the actual component's getDefaultProps().
@@ -105,10 +104,10 @@ var GeoSelect2Mixin = {
                 data: function( term, page ) {
                     return {
                         // search term
-                        country_uri: geoSelectedFilter.value.country_uri,
+                        country_uri: this.props.countryFilter.country_uri,
                         q: term,
                     };
-                },
+                }.bind(this),
                 results: function( data, page ) {
                         // parse the results into the format expected by Select2.
                         // since we are using custom formatting functions we do not need to alter the remote JSON data
@@ -196,6 +195,5 @@ var GeoSingleSelect2Component = React.createClass({
     },
     componentWillMount : function() {
         this.props.params.multiple = false;
-        geoSelectedFilter = this.props.countryFilter ? this.props.countryFilter : "";
     }
 });

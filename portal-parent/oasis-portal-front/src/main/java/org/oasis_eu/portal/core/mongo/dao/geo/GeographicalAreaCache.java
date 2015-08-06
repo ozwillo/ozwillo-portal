@@ -28,6 +28,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
+import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -87,7 +88,7 @@ public class GeographicalAreaCache {
     @Autowired
     PortalSystemUserService portalSystemUserService;
 
-    public Stream<GeographicalArea> search(String lang, String name, int start, int limit) {
+    public Stream<GeographicalArea> search(String country_uri, String lang, String name, int start, int limit) {
 
         // This method isn't the nicest to read ever, so here's what it does:
         // 1. tokenize the input and search the cache for each token in the input
@@ -122,10 +123,11 @@ public class GeographicalAreaCache {
         }
 
         List<String> queryTerms = tokenizer.tokenize(name).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
+        //String country_acronym = country_uri != null && !country_uri.isEmpty() ? country_uri.substring(country_uri.length()-2) : "";
 
         LinkedHashMap<String, Pair> collected = queryTerms
                 .stream()
-                .flatMap(tok -> findOneToken(lang, tok)) // note that findOneToken doesn't allow duplicate URIs in results
+                .flatMap(tok -> findOneToken(country_uri, lang, tok)) // note that findOneToken doesn't allow duplicate URIs in results
                 .collect(LinkedHashMap<String, Pair>::new,
                         (set, area) -> {
                             if (set.containsKey(area.getUri())) {
@@ -155,12 +157,16 @@ public class GeographicalAreaCache {
 
     }
 
-    private Stream<GeographicalArea> findOneToken(String lang, String name) {
+    private Stream<GeographicalArea> findOneToken(String country, String lang, String name) {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
+        Criteria criteria = country != null && !country.trim().isEmpty()
+                ? where("lang").is(lang).and("country").is(country).and("nameTokens").regex("^" + name)
+                : where("lang").is(lang).and("nameTokens").regex("^" + name);
+
         return template.find(
-                query(where("lang").is(lang).and("nameTokens").regex("^" + name)).with(new Sort(Sort.Direction.ASC, "replicationTime")),
+                query(criteria).with(new Sort(Sort.Direction.ASC, "replicationTime")),
                 GeographicalArea.class)
                 .stream()
                 .map(DCUrlWrapper::new)

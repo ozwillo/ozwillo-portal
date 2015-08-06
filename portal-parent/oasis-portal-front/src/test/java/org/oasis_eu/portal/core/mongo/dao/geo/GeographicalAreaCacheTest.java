@@ -47,7 +47,7 @@ public class GeographicalAreaCacheTest {
         cache.save(area("ville6", "fr", "uri4"));
 
         assertEquals(6, template.findAll(GeographicalArea.class).size());
-        List<GeographicalArea> areas = cache.search("fr", "ville", 0, 10).collect(Collectors.toList());
+        List<GeographicalArea> areas = cache.search(null, "fr", "ville", 0, 10).collect(Collectors.toList());
         assertEquals(4, areas.size());
         assertEquals(GeographicalAreaReplicationStatus.INCOMING, areas.get(0).getStatus());
     }
@@ -60,8 +60,8 @@ public class GeographicalAreaCacheTest {
         cache.save(area("ville1", "en", "uri2"));
         cache.save(area("ville2", "fr", "uri3"));
 
-        assertEquals(2, cache.search("fr", "vil", 0, 10).count());
-        assertEquals(1, cache.search("en", "vil", 0, 10).count());
+        assertEquals(2, cache.search(null, "fr", "vil", 0, 10).count());
+        assertEquals(1, cache.search(null, "en", "vil", 0, 10).count());
     }
 
     @Test
@@ -71,7 +71,7 @@ public class GeographicalAreaCacheTest {
         cache.save(area("VILLE", "fr", "uri1"));
         cache.save(area("ville", "fr", "uri2"));
 
-        assertEquals(2, cache.search("fr", "vil", 0, 10).count());
+        assertEquals(2, cache.search(null, "fr", "vil", 0, 10).count());
     }
 
     @Test
@@ -83,22 +83,22 @@ public class GeographicalAreaCacheTest {
         cache.save(area("ville3", "fr", "uri3"));
         cache.save(area("ville1", "fr", "uri1"));
 
-        assertEquals(3, cache.search("fr", "vil", 0, 10).count());
+        assertEquals(3, cache.search(null, "fr", "vil", 0, 10).count());
         cache.switchToOnline();
-        assertEquals(3, cache.search("fr", "vil", 0, 10).count());
-        assertEquals(GeographicalAreaReplicationStatus.ONLINE, cache.search("fr", "vil", 0, 10).findFirst().get().getStatus());
+        assertEquals(3, cache.search(null, "fr", "vil", 0, 10).count());
+        assertEquals(GeographicalAreaReplicationStatus.ONLINE, cache.search(null, "fr", "vil", 0, 10).findFirst().get().getStatus());
 
         cache.save(area("villemiseàjour", "fr", "uri1"));
         // although we've updated "uri1", the old online version is still there and that's the one we should find
-        GeographicalArea found = cache.search("fr", "vil", 0, 10).filter(area -> area.getUri().equals("uri1")).findAny().get();
+        GeographicalArea found = cache.search(null, "fr", "vil", 0, 10).filter(area -> area.getUri().equals("uri1")).findAny().get();
         assertEquals("ville1", found.getName());
         assertEquals(GeographicalAreaReplicationStatus.ONLINE, found.getStatus());
 
         cache.deleteByStatus(GeographicalAreaReplicationStatus.ONLINE);
         cache.switchToOnline();
 
-        assertEquals(1, cache.search("fr", "vil", 0, 10).count());
-        assertEquals("villemiseàjour", cache.search("fr", "vil", 0, 10).findAny().get().getName());
+        assertEquals(1, cache.search(null, "fr", "vil", 0, 10).count());
+        assertEquals("villemiseàjour", cache.search(null, "fr", "vil", 0, 10).findAny().get().getName());
     }
 
     @Test
@@ -113,18 +113,18 @@ public class GeographicalAreaCacheTest {
         cache.save(area("Genisette-Lès-Bain", "fr", "bains"));
 
 
-        List<GeographicalArea> genis = cache.search("fr", "gen oll", 0, 10).collect(Collectors.toList());
+        List<GeographicalArea> genis = cache.search(null, "fr", "gen oll", 0, 10).collect(Collectors.toList());
 
         // based on this we should get four results, AND "ollieres" should be 1st
         assertEquals(4, genis.size());
         assertEquals("ollieres", genis.get(0).getUri());
 
         // searching for "era" and "éra" does yield "éragny"
-        assertEquals("eragny", cache.search("fr", "era", 0, 10).findFirst().get().getUri());
-        assertEquals("eragny", cache.search("fr", "éra", 0, 10).findFirst().get().getUri());
+        assertEquals("eragny", cache.search(null, "fr", "era", 0, 10).findFirst().get().getUri());
+        assertEquals("eragny", cache.search(null, "fr", "éra", 0, 10).findFirst().get().getUri());
 
         // with tiny tokens...
-        assertEquals(0, cache.search("fr", "ge ol er", 0, 10).count());
+        assertEquals(0, cache.search(null, "fr", "ge ol er", 0, 10).count());
     }
 
     @Test
@@ -137,13 +137,13 @@ public class GeographicalAreaCacheTest {
         cache.save(area("Carrouges saint-denis", "fr", "carrouges"));
 
         // searching for "saint denis" should bring "denis" 1st
-        assertEquals("denis", cache.search("fr", "saint denis", 0, 10).findFirst().get().getUri());
+        assertEquals("denis", cache.search(null, "fr", "saint denis", 0, 10).findFirst().get().getUri());
 
         // same search, "denisovska" should be last
-        assertEquals("denisovska", cache.search("fr", "saint denis", 0, 10).reduce((a, b) -> b).get().getUri());
+        assertEquals("denisovska", cache.search(null, "fr", "saint denis", 0, 10).reduce((a, b) -> b).get().getUri());
 
         // searching for "saint denis reunion" should bring "reu" 1st but still have 4 results
-        List<GeographicalArea> reu = cache.search("fr", "saint denis reunion", 0, 10).collect(Collectors.toList());
+        List<GeographicalArea> reu = cache.search(null, "fr", "saint denis reunion", 0, 10).collect(Collectors.toList());
         assertEquals(4, reu.size());
         assertEquals("reu", reu.get(0).getUri());
 

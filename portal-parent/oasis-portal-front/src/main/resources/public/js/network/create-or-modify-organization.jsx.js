@@ -288,8 +288,8 @@ var Tab1 = React.createClass({
                         <Field name="jurisdiction" error={$.inArray("jurisdiction_uri", this.props.errors) != -1} isRequired={true}>
                            <GeoSingleSelect2Component ref="geoSearchJurisdiction" className="form-control" name="geoSearch"
                               onChange={this.changeInput('jurisdiction_uri')} urlResources={store_service + "/geographicalAreas"}
-                              countryFilter={ {value: this.state.organization}}
-                              placeholder={this.state.organization.jurisdiction/*t('my.network.organization.jurisdiction.placeholder')*/}/>
+                              countryFilter={ /*{country_uri:this.state.organization.country_uri}*/ {country_uri:''} }
+                              placeholder={this.state.organization.jurisdiction} place_holder={''/*t('my.network.organization.jurisdiction.placeholder')*/} />
                         </Field>
                   )}
                   <Field name="phone_number">
@@ -444,7 +444,7 @@ var AddressComponent = React.createClass({
               }
               <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
                  <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" onChange={this.changeInput('city')} name="geoSearchCity" 
-                     urlResources={store_service + "/dc-cities"} placeholder={address.city} countryFilter={ {value: address} }/>
+                     urlResources={store_service + "/dc-cities"} placeholder={address.city} countryFilter={ {country_uri: address.country_uri} }/>
               </Field>
               <Field name="zip" class_name_div='col-sm-3' error={$.inArray("zip", this.props.errors) != -1} isRequired={true}>
                  <input className="form-control" id="zip" type="text" maxLength={6} value={address.zip}

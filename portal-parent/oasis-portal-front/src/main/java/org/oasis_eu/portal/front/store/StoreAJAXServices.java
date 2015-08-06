@@ -74,10 +74,10 @@ public class StoreAJAXServices extends BaseAJAXServices {
 
 
     @RequestMapping(value = "/geographicalAreas", method = RequestMethod.GET)
-    public GeographicalAreaResponse geographicalAreas(@RequestParam String q) {
+    public GeographicalAreaResponse geographicalAreas(@RequestParam String country_uri, @RequestParam String q) {
         int areaLoadSize = 10;
         int areaDcLoadSize = areaLoadSize + 1;
-        List<GeographicalArea> areas = geographicalAreaService.find(q, 0, areaDcLoadSize);
+        List<GeographicalArea> areas = geographicalAreaService.find(country_uri, q, 0, areaDcLoadSize);
 
         return new GeographicalAreaResponse(areas.stream()
                 .limit(areaLoadSize).collect(Collectors.toList()), areas.size() == areaDcLoadSize);

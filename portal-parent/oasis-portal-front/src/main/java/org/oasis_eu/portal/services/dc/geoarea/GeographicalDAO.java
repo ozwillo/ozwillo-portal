@@ -134,10 +134,13 @@ public class GeographicalDAO {
             //TODO LATER: Create a full body DC interceptor to test request/response to DATACORE (similar to KernelLoggingInterceptor)
         }
 
+        String country = r.getAsString("geoci:country");
+
         GeographicalArea area = new GeographicalArea();
         area.setName(name);
         area.setUri(r.getUri());
         area.setLang(language);
+        area.setCountry(country);
 
         area.setNameTokens(tokenizer.tokenize(name));
         //area.setDetailedName(); // TODO fill in Datacore OR RATHER CACHE using names of NUTS3 or else 2 and country
