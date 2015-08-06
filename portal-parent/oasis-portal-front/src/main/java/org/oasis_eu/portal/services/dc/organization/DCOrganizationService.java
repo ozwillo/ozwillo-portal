@@ -204,7 +204,7 @@ public class DCOrganizationService {
         DCResource dcResource = new DCResource();
         mergeDCOrgToDCResources(dcOrganization, dcResource);
 
-        dcResource = setDCIdOrganization(dcResource, dcOrganization.getSector_type(), dcOrganization.getTax_reg_num(), dcOrganization.getCity_uri());
+        dcResource = setDCIdOrganization(dcResource, dcOrganization.getSector_type(), dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
 
         return dcResource;
     }
@@ -233,7 +233,7 @@ public class DCOrganizationService {
         return orgModelType ;
     }
 
-    private String getCountryAcronym(String country_uri){
+    public String getCountryAcronym(String country_uri){
         return (country_uri != null && !country_uri.isEmpty() ? country_uri.substring(country_uri.length() - 2) : "en");
     }
 

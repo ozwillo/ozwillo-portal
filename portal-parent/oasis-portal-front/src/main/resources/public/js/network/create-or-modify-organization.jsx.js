@@ -31,7 +31,9 @@ var CreateOrModifyOrganizationModal = React.createClass({
             this.props.successHandler(org);
         }
     },
-
+    onError: function (data) {
+        this.refs.modalError.open();
+    },
     createOrModifOrg: function(event){
         return (this.refs.tabbedForm.createOrModifOrg(event) ); // return true if the organization has been created successful
     },
@@ -45,11 +47,18 @@ var CreateOrModifyOrganizationModal = React.createClass({
         var modalTitle = org.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
 
 
-        return (
+        return (<div>
                 <Modal large={true} ref="modalcreateOrModifyOrg" title={modalTitle}
                        successHandler={this.createOrModifOrg} buttonLabels={buttonLabels}>
-                    <CreateOrModifyOrganizationForm ref="tabbedForm" successHandler={this.close} organization={org} typeRestriction={typeRestriction}/>
+                    <CreateOrModifyOrganizationForm ref="tabbedForm" successHandler={this.close} errorHandler={this.onError} 
+                       organization={org} typeRestriction={typeRestriction}/>
                 </Modal>
+
+                <Modal ref="modalError" title={t('ui.something_went_wrong_title')} infobox={true} cancelHandler={null/*this.close()*/} >
+                    <div><h5>{t('ui.unexpected_error')}</h5></div>
+                    <br/><div><h5>Err: Possibly the organization is already assigned in kernel</h5></div>
+                </Modal>
+                </div>
             );
     }
 });
@@ -85,11 +94,15 @@ var CreateOrModifyOrganizationForm = React.createClass({
             contentType: 'application/json',
             data: JSON.stringify(org),
             success: function (data) {
-                if(data){ this.props.successHandler(data);
-                }else{ /* show message */}
+                if(data || data !== ''){ this.props.successHandler(data);
+                }else{ /* show message */
+                    console.error('No organziation was created with'+ org + '. Result :', data);
+                    this.props.errorHandler(data);
+                }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
+                this.props.errorHandler();
             }.bind(this)
         });
     },
@@ -101,10 +114,14 @@ var CreateOrModifyOrganizationForm = React.createClass({
             data: JSON.stringify(org),
             success: function (data) {
                 if(data){ this.props.successHandler(data);
-                }else{ /* show message */}
+                }else{ /* show message */
+                    console.error('No organziation was created with'+ org + '. Result :', data);
+                    this.props.errorHandler(data);
+                }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
+                this.props.errorHandler();
             }.bind(this)
         });
     },

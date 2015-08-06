@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.spring.datacore.model.DCResource;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 import org.oasis_eu.spring.kernel.model.UserAccount;
@@ -17,6 +18,7 @@ import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -35,6 +37,10 @@ public class OrganizationService {
     @Autowired
     private HttpServletRequest request;
 
+    @Value("${application.dcOrg.baseUri: http://data.ozwillo.com/dc/type}")
+    private String dcBaseUri;
+
+
     /** Search an organization in DC and Kernel to validate its modification */
     public DCOrganization find(String contact_name,String contact_lastName,String contact_email,
             String country, String country_uri,String sector, String legalName, String regNumber)
@@ -46,6 +52,16 @@ public class OrganizationService {
         if(dcOrganization == null || !dcOrganization.isExist()){ // Organization doesn't exist in DC
             logger.info("Organization doesn't exist in DC. Letting user create one with given entries.");
             // set an empty DCOrganization to be filled by user then Create Organization in Kernel when creating
+
+            String type = organizationDAO.generateResourceType(dcSectorType, country_uri, regNumber);
+            String baseUri = dcBaseUri.trim(); //"http://data.ozwillo.com/dc/type";
+            String iri = organizationDAO.getCountryAcronym(country_uri).toUpperCase()+"/"+regNumber;
+            UIOrganization uiOrganization = networkService.searchOrganization(baseUri+"/"+type+"/"+iri);
+            if(uiOrganization != null){
+                logger.debug("It already exist in kernel, so cant be re-created.");
+                return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
+            }
+
             dcOrganization = new DCOrganization();
             //contact data
             dcOrganization.setContact_name(contact_name);
@@ -59,6 +75,7 @@ public class OrganizationService {
             dcOrganization.setZip("00000");
             dcOrganization.setCountry_uri(country_uri); dcOrganization.setCountry(country);
             return dcOrganization;
+
         }else {
             UIOrganization uiOrganization = networkService.searchOrganization(dcOrganization.getId());
             if( uiOrganization == null){ // found in DC but not in KERNEL, so modification is allowed
@@ -88,7 +105,7 @@ public class OrganizationService {
             UIOrganization uiOrganization = checkAndCreateKernelOrganization(dcOrganization); 
             if(uiOrganization == null){ // if null, then the organization exists in kernel.
                 logger.error("Kernel Organization had been created since you've started filling in the form.");
-                throw new IllegalArgumentException();
+                throw new WrongQueryException();
             }
             logger.debug("The organization exists in kernel : " + uiOrganization.toString());
             return uiOrganization;

@@ -432,7 +432,8 @@ public class NetworkService {
     }
 
     public UIOrganization createOrganization(String name, String type, URI territoryId, URI dcId) {
-        logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type, userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
+        logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type,
+                userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
 
      // TODO if territory(jurisdiction) is not an optional field (or is public sector type), verify if it's provided
         if ( type == null || dcId == null /*&&territoryId==null*/) {
