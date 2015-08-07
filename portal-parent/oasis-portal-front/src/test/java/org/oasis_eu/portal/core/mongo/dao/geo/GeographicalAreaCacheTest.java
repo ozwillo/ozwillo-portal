@@ -1,5 +1,10 @@
 package org.oasis_eu.portal.core.mongo.dao.geo;
 
+import static org.junit.Assert.assertEquals;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.joda.time.Instant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,11 +19,6 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import static org.junit.Assert.assertEquals;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration

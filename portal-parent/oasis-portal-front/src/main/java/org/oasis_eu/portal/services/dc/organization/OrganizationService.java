@@ -40,9 +40,8 @@ public class OrganizationService {
     @Value("${application.dcOrg.baseUri: http://data.ozwillo.com/dc/type}")
     private String dcBaseUri;
 
-
     /** Search an organization in DC and Kernel to validate its modification */
-    public DCOrganization find(String contact_name,String contact_lastName,String contact_email,
+    public DCOrganization findOrganization(String contact_name,String contact_lastName,String contact_email,
             String country, String country_uri,String sector, String legalName, String regNumber)
     {
         String localLang = RequestContextUtils.getLocale(request).getLanguage();

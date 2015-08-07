@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.services.search.Tokenizer;
+import org.oasis_eu.portal.services.dc.organization.DCRegActivity;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
 import org.oasis_eu.spring.datacore.model.DCOrdering;
@@ -17,6 +18,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
+import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * User: Ignacio
@@ -31,7 +33,9 @@ public class GeographicalDAO {
     private DatacoreClient datacore;
 
     @Value("${application.geoarea.project:geo_0}")
-    private String project;
+    private String geoProject;
+    @Value("${application.dcOrg.project: org_0}")
+    private String dcOrgProjectName;// = "org_0";
 
     @Value("${application.geoarea.geoCityModel: geo:City_0}")
     private String geoCityModel;// = "geoci:City_0";
@@ -66,15 +70,55 @@ public class GeographicalDAO {
     }
 
     private List<DCResource> fetchDCCitiesResource(String country, List<String> queryTerms, int batchSize ) {
-        // /dc/type/geo:City_0?geo_city:name.l=fr&geo_city:name.v=$regex^Aas
+        // /dc/type/geo:City_0?geo_city:name.l=fr&geo_city:name.v=$regexAas
+        String encodedCountry = country;
+        try{
+            encodedCountry = UriComponentsBuilder.fromUriString(country).build().encode().toString();
+        }catch(Exception e){
+            logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
+        }
+
         DCQueryParameters params = !queryTerms.isEmpty()
-                ? ( (country != null && !country.isEmpty()) ? new DCQueryParameters(countryCityField.trim(), DCOperator.EQ, country) : new DCQueryParameters())
-                      .and(cityField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+"^"+queryTerms.get(0))
+                ? ( (encodedCountry != null && !encodedCountry.isEmpty()) ? new DCQueryParameters(countryCityField.trim(), DCOperator.EQ, encodedCountry) : new DCQueryParameters())
+                      .and(cityField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms.get(0))
                 : new DCQueryParameters(cityField.trim(), DCOrdering.DESCENDING);
 
-        logger.debug("Querying the Data Core");
+        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", country, encodedCountry, queryTerms );
         long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(project.trim(), geoCityModel.trim(), params, 0, batchSize);
+        List<DCResource> resources = datacore.findResources(geoProject.trim(), geoCityModel.trim(), params, 0, batchSize);
+        long queryEnd = System.currentTimeMillis();
+        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
+
+        return resources;
+    }
+
+    // Tax Reg Activity
+    public List<DCRegActivity> searchTaxRegActivity(String country, String queryTerms, int start, int limit) {
+
+        List<DCRegActivity> taxRegActivities = new ArrayList<DCRegActivity>();
+
+        fetchTaxRegActivityResource(country, queryTerms, limit - start)
+               .stream().forEach(resource -> taxRegActivities.add(toDCRegActivity(resource, displayNameField.trim(), cityField.trim())));
+
+        return taxRegActivities;
+    }
+    private List<DCResource> fetchTaxRegActivityResource(String country, String queryTerms, int batchSize ) {
+        // /dc/type/geo:City_0?geo_city:name.l=fr&geo_city:name.v=$regexAas
+        String encodedCountry = country;
+        try{
+            encodedCountry = UriComponentsBuilder.fromUriString(country).build().encode().toString();
+        }catch(Exception e){
+            logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
+        }
+
+        DCQueryParameters params = !queryTerms.isEmpty()
+                ? ( (encodedCountry != null && !encodedCountry.isEmpty()) ? new DCQueryParameters("orgact:country", DCOperator.EQ, encodedCountry) : new DCQueryParameters())
+                      .and("orgact:code", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms)
+                : new DCQueryParameters("orgact:code", DCOrdering.DESCENDING);
+
+        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", country, encodedCountry, queryTerms );
+        long queryStart = System.currentTimeMillis();
+        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), "orgact:Activity_0", params, 0, batchSize);
         long queryEnd = System.currentTimeMillis();
         logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
 
@@ -103,7 +147,7 @@ public class GeographicalDAO {
 
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(project.trim(), geoCountriesModel.trim(), params, 0, batchSize);
+        List<DCResource> resources = datacore.findResources(geoProject.trim(), geoCountriesModel.trim(), params, 0, batchSize);
         long queryEnd = System.currentTimeMillis();
         logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
 
@@ -164,6 +208,20 @@ public class GeographicalDAO {
             nameMaps = (List<Map<String, String>>) resource.get(altFieldName);
         }
         return nameMaps;
+    }
+
+    public DCRegActivity toDCRegActivity(DCResource r, String nameField, String altFieldName) {
+        String code = r.getAsString("orgact:code");
+        String country = r.getAsString("orgact:country");
+        String label = r.getAsString("orgact:label");
+
+        DCRegActivity activity = new DCRegActivity();
+        activity.setName(code);
+        activity.setLabel(label);
+        activity.setCountry(country);
+        activity.setUri(r.getUri());
+
+        return activity;
     }
 
 }

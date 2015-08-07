@@ -2,7 +2,7 @@
 
 var default_org_data = {
         organization: { exist: false, legal_name: '', sector_type: '', in_activity: true, alt_name: '', org_type:'',
-            tax_reg_num: '', tax_reg_ofical_id:'', tax_reg_activity:'', jurisdiction_uri:'', jurisdiction:'', phone_number:'',
+            tax_reg_num: '', tax_reg_ofical_id:'', tax_reg_activity_uri:'', jurisdiction_uri:'', jurisdiction:'', phone_number:'',
             web_site:'', email:'', street_and_number:'', additional_address_field: '', po_box: '', city: '', city_uri: '',
             zip: '', cedex: '', country_uri: ''
          }, errors: [[],[]], typeRestriction: ''
@@ -262,7 +262,7 @@ var Tab1 = React.createClass({
                 <div className="col-sm-15">
                    <Field name="legal_name" class_name={'control-label col-sm-2'} error={$.inArray("legal_name", this.props.errors) != -1} isRequired={true}>
                       <input className="form-control" id="legal_name" type="text" value={this.state.organization.legal_name}
-                               onChange={this.changeInput('legal_name')} disabled={this.state.organization.exist} disabled={false/*true*/}/>
+                               onChange={this.changeInput('legal_name')} disabled={this.state.organization.exist}/>
                       <label>{sectorType}</label>
 
                       <label className="col-sm-offset-3">{t('my.network.organization.in_activity')}: &nbsp;
@@ -286,27 +286,34 @@ var Tab1 = React.createClass({
                   </Field>
                   <Field name={label_regNum} error={$.inArray("tax_reg_num", this.props.errors) != -1} isRequired={true}>
                      <input className="form-control" id="tax_reg_num" type="text" value={this.state.organization.tax_reg_num}
-                              onChange={this.changeInput('tax_reg_num')} disabled={this.state.organization.exist}/>
+                              onChange={this.changeInput('tax_reg_num')} disabled={true}/>
                   </Field>
                   { // Show the field if is defined (normaly only for public orgs in France or Turkey).
                      (label_regOfficialId !== '' && this.state.organization.sector_type !== 'COMPANY') ?  (
                         <Field name={label_regOfficialId}>
                            <input className="form-control" id="tax_reg_ofical_id" type="text" value={this.state.organization.tax_reg_ofical_id}
                                    onChange={this.changeInput('tax_reg_ofical_id')} />
-                         </Field>
+                        </Field>
                       ) : ''
                   }
                   <Field name={label_regActivity} class_name_div='col-sm-3'>
-                     <input className="form-control" id="tax_reg_activity" type="text" value={this.state.organization.tax_reg_activity}
-                               onChange={this.changeInput('tax_reg_activity')} />
+                     {/*<input className="form-control" id="tax_reg_activity" type="text" value={this.state.organization.tax_reg_activity}
+                               onChange={this.changeInput('tax_reg_activity')} /> */}
+                     <GeoSingleSelect2Component ref="geoSearchtaxRegActivity" className="form-control" name="geoSearchRegActivity"
+                         onChange={this.changeInput('tax_reg_activity_uri')} urlResources={store_service + "/dc-taxRegActivity"}
+                         countryFilter={ {country_uri:this.state.organization.country_uri} /*{country_uri:''}*/ }
+                         placeholder={ !this.state.organization.tax_reg_activity_uri ? ' '
+                               : this.state.organization.tax_reg_activity_uri.substring(this.state.organization.tax_reg_activity_uri.lastIndexOf("/")+1)
+                         } minimumInputLength={2}
+                     />
                   </Field><br/>
                   { // Show the field only for public orgs
                      (this.state.organization.sector_type === 'COMPANY') ? "" :(
                         <Field name="jurisdiction" error={$.inArray("jurisdiction_uri", this.props.errors) != -1} isRequired={true}>
                            <GeoSingleSelect2Component ref="geoSearchJurisdiction" className="form-control" name="geoSearch"
                               onChange={this.changeInput('jurisdiction_uri')} urlResources={store_service + "/geographicalAreas"}
-                              countryFilter={ /*{country_uri:this.state.organization.country_uri}*/ {country_uri:''} }
-                              placeholder={this.state.organization.jurisdiction} place_holder={''/*t('my.network.organization.jurisdiction.placeholder')*/} />
+                              countryFilter={ {country_uri:this.state.organization.country_uri} /*{country_uri:''}*/ }
+                              placeholder={this.state.organization.jurisdiction /*t('my.network.organization.jurisdiction.placeholder')*/}/>
                         </Field>
                   )}
                   <Field name="phone_number">
@@ -384,11 +391,11 @@ var Tab2 = React.createClass({
                <div className="col-sm-15">
                 <Field name="legal_name" class_name={'control-label col-sm-2'} error={$.inArray("name", this.props.errors) != -1}>
                    <input className="form-control" id="legal_name" type="text" value={this.state.organization.legal_name}
-                            onChange={this.changeInput('legal_name')} disabled/>
+                            onChange={this.changeInput('legal_name')} disabled={true}/>
                    <label>{sectorType}</label>
 
                    <label className="col-sm-offset-3">{t('my.network.organization.in_activity')}: &nbsp;
-                      <input id="in_activity" type="checkbox" checked={this.state.organization.in_activity} disabled /></label>
+                      <input id="in_activity" type="checkbox" checked={this.state.organization.in_activity} disabled={true} /></label>
                 </Field><br/>
               </div></div> {/*end of col 1 row 1*/}
 
@@ -396,7 +403,7 @@ var Tab2 = React.createClass({
               <div className="col-sm-8">
 
                   <AddressComponent errors={this.props.errors} addressContainer={this.state.organization}
-                      changeInput={this.changeInputAddress} addressType='ORG'/>
+                      changeInput={this.changeInputAddress} addressType='ORG' disabled={true}/>
 
                 </div> {/* end of col1*/}
                 <div className="col-sm-4">
@@ -475,7 +482,7 @@ var AddressComponent = React.createClass({
               }
               <Field name="country" class_name_div='col-sm-5' error={$.inArray("country_uri", this.props.errors) != -1} isRequired={true}>
                  <CountrySelect className="form-control" url={store_service + "/dc-countries"} value={address.country_uri}
-                     onChange={this.changeInput('country')} />
+                     onChange={this.changeInput('country')} disabled={this.props.disabled}/>
               </Field>
 
     </div>

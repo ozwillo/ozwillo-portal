@@ -1,16 +1,17 @@
 package org.oasis_eu.portal.services.dc.geoarea;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import javax.servlet.http.HttpServletRequest;
+
 import org.oasis_eu.portal.core.mongo.dao.geo.GeographicalAreaCache;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
+import org.oasis_eu.portal.services.dc.organization.DCRegActivity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
-
-import javax.servlet.http.HttpServletRequest;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class GeographicalAreaService {
@@ -70,6 +71,14 @@ public class GeographicalAreaService {
     public List<GeographicalArea> findCountries(String queryTerms, int start, int limit) {
         queryTerms = queryTerms.substring(0,1).toUpperCase() + queryTerms.substring(1,queryTerms.length()).toLowerCase();
         return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
+    }
+
+
+    /** Search an RegActivity in DC and Kernel to validate its modification */
+    public List<DCRegActivity> findTaxRegActivity(String term, String country_uri){
+        List<DCRegActivity> dcRegActivity = geographicalDAO.searchTaxRegActivity(country_uri, term, 0, 10);
+
+        return dcRegActivity;
     }
 
 }

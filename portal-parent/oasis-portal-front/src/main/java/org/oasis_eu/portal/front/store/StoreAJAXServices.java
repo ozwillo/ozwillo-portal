@@ -22,6 +22,8 @@ import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.portal.services.RatingService;
 import org.oasis_eu.portal.services.dc.geoarea.GeographicalAreaService;
+import org.oasis_eu.portal.services.dc.organization.DCRegActivity;
+import org.oasis_eu.portal.services.dc.organization.DCRegActivityResponse;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
@@ -83,7 +85,12 @@ public class StoreAJAXServices extends BaseAJAXServices {
                 .limit(areaLoadSize).collect(Collectors.toList()), areas.size() == areaDcLoadSize);
     }
 
-
+    @RequestMapping(value = "/dc-taxRegActivity", method = GET)
+    public DCRegActivityResponse searchTaxRegActivity(@RequestParam String country_uri, @RequestParam String q) {
+        logger.debug("Searching for RegActivity {} from {} ", q, country_uri);
+        List<DCRegActivity> TaxRegActivityLst = geographicalAreaService.findTaxRegActivity(q, country_uri);
+        return new DCRegActivityResponse(TaxRegActivityLst);
+    }
 
     @RequestMapping(value = "/dc-cities", method = RequestMethod.GET)
     public GeographicalAreaResponse dcCities(@RequestParam String country_uri, @RequestParam String q) {
@@ -102,6 +109,8 @@ public class StoreAJAXServices extends BaseAJAXServices {
         return new GeographicalAreaResponse(
                 countries.stream().limit(loadSize).collect(Collectors.toList()), (countries.size() == loadSize+1) );
     }
+
+
 
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
     public StoreAppResponse applications(@RequestParam boolean target_citizens,

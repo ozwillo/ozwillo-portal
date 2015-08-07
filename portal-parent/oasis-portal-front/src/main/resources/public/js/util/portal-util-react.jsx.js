@@ -195,5 +195,6 @@ var GeoSingleSelect2Component = React.createClass({
     },
     componentWillMount : function() {
         this.props.params.multiple = false;
+        if (this.props.minimumInputLength) {this.props.params.minimumInputLength = this.props.minimumInputLength;}
     }
 });

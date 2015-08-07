@@ -109,7 +109,7 @@ public class NetworkAJAXServices extends BaseAJAXServices {
     ) {
         logger.debug("Searching for organization {} from {} of type {}", legal_name, country+"["+country_uri+"]", sector_type);
 
-        return organizationService.find(contact_name,contact_lastname,contact_email,country,country_uri, sector_type, legal_name, tax_reg_num); 
+        return organizationService.findOrganization(contact_name,contact_lastname,contact_email,country,country_uri, sector_type, legal_name, tax_reg_num); 
     }
 
     @RequestMapping(value = "/create-dc-organization", method = POST)

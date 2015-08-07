@@ -33,6 +33,7 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteOperation;
@@ -161,9 +162,15 @@ public class GeographicalAreaCache {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
-        Criteria criteria = country != null && !country.trim().isEmpty()
-                ? where("lang").is(lang).and("country").is(country).and("nameTokens").regex("^" + name)
-                : where("lang").is(lang).and("nameTokens").regex("^" + name);
+        String encodedCountry = country;
+        try{
+            encodedCountry = UriComponentsBuilder.fromUriString(country).build().encode().toString();
+        }catch(Exception e){
+            logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
+        }
+        Criteria criteria = encodedCountry != null && !encodedCountry.trim().isEmpty()
+                ? where("lang").is(lang).and("country").is(encodedCountry).and("nameTokens").regex(name)
+                : where("lang").is(lang).and("nameTokens").regex(name);
 
         return template.find(
                 query(criteria).with(new Sort(Sort.Direction.ASC, "replicationTime")),
