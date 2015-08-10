@@ -33,7 +33,7 @@ public class UIOrganization {
     URI territoryId;
     @JsonProperty("territory_label")
     String territoryLabel;
-    @JsonProperty("dc_id;")
+    @JsonProperty("dc_id")
     URI dcId;
 
     /** optional */

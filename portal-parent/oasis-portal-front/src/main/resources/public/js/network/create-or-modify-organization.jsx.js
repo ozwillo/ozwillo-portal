@@ -236,8 +236,8 @@ var Tab1 = React.createClass({
         this.state.organization = this.props.orgData;
         var sectorType = getSectorTypeLabel(this.state.organization.sector_type, this.props.typeRestriction);
         var label_regNum; var label_regOfficialId = ''; var label_regActivity = '';
-        var n = this.state.organization.country_uri.lastIndexOf('/');
-        var acronymCountry = this.state.organization.country_uri.substring(n + 1);
+        var n = this.state.organization.country_uri ? this.state.organization.country_uri.lastIndexOf('/') : -1;
+        var acronymCountry = n > 0 ? this.state.organization.country_uri.substring(n + 1) : '';
         switch(acronymCountry){
            case 'BG' : label_regNum = 'tax_reg_num.bg'; label_regActivity = 'tax_reg_activity.bg'; break;
            case 'IT' : label_regNum = 'tax_reg_num.it'; label_regActivity = 'tax_reg_activity.it'; break;
