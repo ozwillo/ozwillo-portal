@@ -21,6 +21,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
+import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class OrganizationService {
@@ -55,7 +56,7 @@ public class OrganizationService {
             String type = organizationDAO.generateResourceType(dcSectorType, country_uri, regNumber);
             String baseUri = dcBaseUri.trim(); //"http://data.ozwillo.com/dc/type";
             String iri = organizationDAO.getCountryAcronym(country_uri).toUpperCase()+"/"+regNumber;
-            UIOrganization uiOrganization = networkService.searchOrganization(baseUri+"/"+type+"/"+iri);
+            UIOrganization uiOrganization = networkService.searchOrganizationByDCId(baseUri+"/"+type+"/"+iri);
             if(uiOrganization != null){
                 logger.debug("It already exist in kernel, so cant be re-created.");
                 return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
@@ -76,7 +77,7 @@ public class OrganizationService {
             return dcOrganization;
 
         }else {
-            UIOrganization uiOrganization = networkService.searchOrganization(dcOrganization.getId());
+            UIOrganization uiOrganization = networkService.searchOrganizationByDCId(dcOrganization.getId());
             if( uiOrganization == null){ // found in DC but not in KERNEL, so modification is allowed
                 logger.info("Organization found in DC but not in KERNEL, so modification by the user is allowed.");
                 // re-set contact data
@@ -92,6 +93,16 @@ public class OrganizationService {
                 return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
             }
         }
+    }
+
+    public DCOrganization findOrganizationById(String dc_id){
+        String encodedDCId = UriComponentsBuilder.fromUriString(dc_id).build().encode().toString();
+        DCOrganization dcOrganization = organizationDAO.searchOrganizationById(encodedDCId);
+        if(dcOrganization != null){
+            dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
+        }
+
+        return dcOrganization;
     }
 
     /** Create organization in DC and create/update data in kernel */
@@ -121,7 +132,7 @@ public class OrganizationService {
             if(uiOrganization != null){ // if null, then the organization exists in kernel.
                 //If not null, the organization was created in Kernel, then update data rights in DC.
                 DCResource dcResource = organizationDAO.setDCIdOrganization(new DCResource(), dcOrganization.getSector_type(), 
-                        dcOrganization.getTax_reg_num(), dcOrganization.getCity_uri());
+                        dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
                 dcResource.setVersion(Integer.parseInt(dcOrganization.getVersion()));
                 if(organizationDAO.changeDCOrganizationRights(dcResource,  uiOrganization.getId())){
                     //If rights have changed, then the version has increased in DC, so we increase it here as well.
@@ -160,12 +171,15 @@ public class OrganizationService {
             throw new IllegalArgumentException();
         }
 
-        UIOrganization searchKOrganization = networkService.searchOrganization(dcOrganization.getId());
+        UIOrganization searchKOrganization = networkService.searchOrganizationByDCId(dcOrganization.getId());
         if(searchKOrganization == null){ // org not found in kernel
             UIOrganization creqtedKOrg = networkService.createOrganization(dcOrganization.getLegal_name(),sectorType.name(),territoryId,dcId);
             if(creqtedKOrg != null && creqtedKOrg.getId() != null ){
                 return creqtedKOrg;
             }
+        }else{
+            networkService.updateOrganization(searchKOrganization);
+            return searchKOrganization; //this is to return a value so it can continue and update data in DC
         }
 
         return null;
@@ -180,13 +194,13 @@ public class OrganizationService {
         String email = userInfo.getEmail()!= null ? userInfo.getEmail() : "";
         
         //Only if has changes will update
-        if( !givenName.equals(dcOrganization.getContact_name())){
+        if(dcOrganization.getContact_name() != null && !givenName.equals(dcOrganization.getContact_name())){
             userInfo.setGivenName(dcOrganization.getContact_name()); isChangefound = true;
         }
-        if( !familyName.equals(dcOrganization.getContact_lastName()) ){
+        if(dcOrganization.getContact_lastName() != null && !familyName.equals(dcOrganization.getContact_lastName()) ){
             userInfo.setFamilyName(dcOrganization.getContact_lastName()); isChangefound = true;
         }
-        if( !email.equals(dcOrganization.getContact_email()) ){
+        if(dcOrganization.getContact_email() != null && !email.equals(dcOrganization.getContact_email()) ){
             userInfo.setEmail(dcOrganization.getContact_email()); isChangefound = true;
         }
         if (isChangefound){

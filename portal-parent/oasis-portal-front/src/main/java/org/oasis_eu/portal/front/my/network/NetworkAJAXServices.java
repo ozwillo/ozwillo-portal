@@ -112,6 +112,13 @@ public class NetworkAJAXServices extends BaseAJAXServices {
         return organizationService.findOrganization(contact_name,contact_lastname,contact_email,country,country_uri, sector_type, legal_name, tax_reg_num); 
     }
 
+    @RequestMapping(value = "/search-organization-by-id", method = GET)
+    public DCOrganization searchOrganizationByID(@RequestParam(required=true) String dc_id) {
+        logger.debug("Searching for organization with id : {} ", dc_id);
+
+        return dc_id != null && !dc_id.isEmpty() ? organizationService.findOrganizationById(dc_id) : null;
+    }
+
     @RequestMapping(value = "/create-dc-organization", method = POST)
     public UIOrganization createDCOrganization(@RequestBody DCOrganization dcOrganization) {
         return organizationService.create(dcOrganization);

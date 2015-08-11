@@ -197,7 +197,7 @@ function getSectorTypeLabel(sector_type, type_restriction){
         if (!type_restriction.company) { sector_type = 'PUBLIC_BODY';
         } else if (!type_restriction.public_body) { sector_type = 'COMPANY'; }
     }// if not, keeps the user selection
-    return (  (sector_type === 'COMPANY' )
+    return (  (sector_type === 'COMPANY' || sector_type === 'Private' )
                   ? t('search.organization.sector-type.COMPANY')
                   : t('search.organization.sector-type.PUBLIC_BODY')
     );

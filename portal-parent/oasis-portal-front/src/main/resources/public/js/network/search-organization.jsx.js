@@ -310,6 +310,7 @@ var CountrySelect = React.createClass({
             var option = data[i];
             this.state.options.push( <option className="action-select-option" key={i} value={option.value}>{option.label}</option> );
         }
+        this.setState(this.state);
         this.forceUpdate();
     },
     getValue: function(label) {
@@ -328,7 +329,11 @@ var CountrySelect = React.createClass({
         if(!this.props.value || this.props.value === ""){
            this.props.value = this.getValue(label); //This is to load the country_uri that couldn't be set
         }
-        // the parameter "value=" is selected option. Default selected option can either be set here.
-        return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange} value={this.props.value} disabled={this.props.disabled}>{this.state.options}</select> );
+        // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-base fonctuion decodeURIComponent()
+        return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange}
+                           value={decodeURIComponent(this.props.value)} disabled={this.props.disabled}>
+                    {this.state.options}
+                 </select>
+        );
     }
 });

@@ -89,7 +89,7 @@ public class GeographicalAreaCache {
     @Autowired
     PortalSystemUserService portalSystemUserService;
 
-    public Stream<GeographicalArea> search(String country_uri, String lang, String name, int start, int limit) {
+    public Stream<GeographicalArea> search(String country_uri, String modelType, String lang, String name, int start, int limit) {
 
         // This method isn't the nicest to read ever, so here's what it does:
         // 1. tokenize the input and search the cache for each token in the input
@@ -128,7 +128,7 @@ public class GeographicalAreaCache {
 
         LinkedHashMap<String, Pair> collected = queryTerms
                 .stream()
-                .flatMap(tok -> findOneToken(country_uri, lang, tok)) // note that findOneToken doesn't allow duplicate URIs in results
+                .flatMap(tok -> findOneToken(country_uri, modelType, lang, tok)) // note that findOneToken doesn't allow duplicate URIs in results
                 .collect(LinkedHashMap<String, Pair>::new,
                         (set, area) -> {
                             if (set.containsKey(area.getUri())) {
@@ -158,7 +158,7 @@ public class GeographicalAreaCache {
 
     }
 
-    private Stream<GeographicalArea> findOneToken(String country, String lang, String name) {
+    private Stream<GeographicalArea> findOneToken(String country, String modelType, String lang, String name) {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
@@ -168,9 +168,15 @@ public class GeographicalAreaCache {
         }catch(Exception e){
             logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
         }
-        Criteria criteria = encodedCountry != null && !encodedCountry.trim().isEmpty()
-                ? where("lang").is(lang).and("country").is(encodedCountry).and("nameTokens").regex(name)
-                : where("lang").is(lang).and("nameTokens").regex(name);
+        Criteria criteria = where("lang").is(lang);
+        if (encodedCountry != null && !encodedCountry.trim().isEmpty()){
+            criteria.and("country").is(encodedCountry); //filter by country
+        }
+        if (modelType != null && !modelType.trim().isEmpty()){
+            criteria.and("modelType").in(modelType);
+        }
+
+        criteria.and("nameTokens").regex(name);
 
         return template.find(
                 query(criteria).with(new Sort(Sort.Direction.ASC, "replicationTime")),

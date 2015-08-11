@@ -97,6 +97,22 @@ public class DCOrganizationService {
         return resources.isEmpty()? null : resources.get(0);
     }
 
+    public DCOrganization searchOrganizationById(String dc_id){
+        DCQueryParameters params = new DCQueryParameters("@id", DCOperator.EQ, dc_id);
+
+        String model = dcOrgModel.trim();
+
+        logger.info("Ressource not found using parameters : {}", dc_id);
+
+        long queryStart = System.currentTimeMillis();
+        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), model, params, 0, 1);
+
+        long queryEnd = System.currentTimeMillis();
+        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd-queryStart);
+
+        return resources.isEmpty()? null : toDCOrganization(resources.get(0),"FR");
+    }
+
     public DCResource create(DCOrganization dcOrganization){
         // re-get DC resource before creation to validate that it doesn't exist
         DCResource dcResource = fetchDCOrganizationResource(dcOrganization.getCountry_uri(),

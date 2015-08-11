@@ -3,8 +3,8 @@ package org.oasis_eu.portal.services.dc.geoarea;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
+import org.oasis_eu.portal.core.mongo.dao.geo.GeographicalAreaCache;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.services.search.Tokenizer;
 import org.oasis_eu.portal.services.dc.organization.DCRegActivity;
@@ -56,20 +56,23 @@ public class GeographicalDAO {
     @Autowired
     private Tokenizer tokenizer;
 
+    @Autowired
+    private GeographicalAreaCache geographicalAreaCache;
+
     // Cities
     public List<GeographicalArea> searchCities(String lang, String terms, String country, int start, int limit) {
 
-        List<String> queryTerms = tokenizer.tokenize(terms, false, false).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
-
+        //Stream<GeographicalArea> geographicalArea = geographicalAreaCache.search(country, geoCityModel, lang, terms, start, limit);
         List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
 
-        fetchDCCitiesResource(country, queryTerms, limit - start)
+        fetchDCCitiesResource(country, terms, limit - start)
                .stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), cityField.trim())));
 
-        return geographicalArea;
+        //return geographicalArea.collect(Collectors.toList());
+       return geographicalArea;
     }
 
-    private List<DCResource> fetchDCCitiesResource(String country, List<String> queryTerms, int batchSize ) {
+    private List<DCResource> fetchDCCitiesResource(String country, String term, int batchSize ) {
         // /dc/type/geo:City_0?geo_city:name.l=fr&geo_city:name.v=$regexAas
         String encodedCountry = country;
         try{
@@ -78,12 +81,16 @@ public class GeographicalDAO {
             logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
         }
 
-        DCQueryParameters params = !queryTerms.isEmpty()
-                ? ( (encodedCountry != null && !encodedCountry.isEmpty()) ? new DCQueryParameters(countryCityField.trim(), DCOperator.EQ, encodedCountry) : new DCQueryParameters())
-                      .and(cityField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms.get(0))
-                : new DCQueryParameters(cityField.trim(), DCOrdering.DESCENDING);
+        DCQueryParameters params = new DCQueryParameters();
+        if(term != null && !term.trim().isEmpty()){
+            params.and(cityField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+term);
+        } else { params.and(cityField.trim(), DCOrdering.DESCENDING); }
 
-        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", country, encodedCountry, queryTerms );
+        if(encodedCountry != null && !encodedCountry.isEmpty()){
+            params.and(countryCityField.trim(), DCOperator.EQ, encodedCountry);
+        }
+
+        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", country, encodedCountry, term );
         long queryStart = System.currentTimeMillis();
         List<DCResource> resources = datacore.findResources(geoProject.trim(), geoCityModel.trim(), params, 0, batchSize);
         long queryEnd = System.currentTimeMillis();
@@ -111,10 +118,14 @@ public class GeographicalDAO {
             logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
         }
 
-        DCQueryParameters params = !queryTerms.isEmpty()
-                ? ( (encodedCountry != null && !encodedCountry.isEmpty()) ? new DCQueryParameters("orgact:country", DCOperator.EQ, encodedCountry) : new DCQueryParameters())
-                      .and("orgact:code", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms)
-                : new DCQueryParameters("orgact:code", DCOrdering.DESCENDING);
+        DCQueryParameters params = new DCQueryParameters();
+        if(queryTerms != null && !queryTerms.trim().isEmpty()){
+           params.and("orgact:code", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms);
+        }else{ params.and("orgact:code", DCOrdering.DESCENDING); }
+
+        if(encodedCountry != null && !encodedCountry.isEmpty()){
+            params.and("orgact:country", DCOperator.EQ, encodedCountry);
+        }
 
         logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", country, encodedCountry, queryTerms );
         long queryStart = System.currentTimeMillis();
@@ -128,22 +139,23 @@ public class GeographicalDAO {
     // Countries
     public List<GeographicalArea> searchCountries(String lang, String terms, int start, int limit) {
 
-        List<String> queryTerms = tokenizer.tokenize(terms, false, false).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
-
         List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
 
-        List<DCResource> resources = fetchDCCountriesResource(lang, queryTerms, limit - start);
+        List<DCResource> resources = fetchDCCountriesResource(lang, terms, limit - start);
 
         resources.stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), countryField.trim())));
 
         return geographicalArea;
     }
-    private List<DCResource> fetchDCCountriesResource(String lang, List<String> queryTerms, int batchSize ) {
-        // 
-        DCQueryParameters params = !queryTerms.isEmpty() 
-                ? new DCQueryParameters(/*countryField.trim()+ ".l", DCOperator.EQ, lang*/)
-                      .and(countryField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+"^"+queryTerms.get(0))
-                : new DCQueryParameters(countryField.trim(), DCOrdering.DESCENDING);
+    private List<DCResource> fetchDCCountriesResource(String lang, String queryTerms, int batchSize ) {
+
+        DCQueryParameters params = new DCQueryParameters(/*countryField.trim()+ ".l", DCOperator.EQ, lang*/);
+
+        if(queryTerms != null && !queryTerms.trim().isEmpty()){
+            params.and(countryField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms);
+        }else{
+            params.and(countryField.trim(), DCOrdering.DESCENDING);
+        }
 
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
@@ -179,12 +191,14 @@ public class GeographicalDAO {
         }
 
         String country = r.getAsString("geoci:country");
+        List<String> modelType = r.getAsStringList("@type");
 
         GeographicalArea area = new GeographicalArea();
         area.setName(name);
         area.setUri(r.getUri());
         area.setLang(language);
         area.setCountry(country);
+        area.setModelType(modelType);
 
         area.setNameTokens(tokenizer.tokenize(name));
         //area.setDetailedName(); // TODO fill in Datacore OR RATHER CACHE using names of NUTS3 or else 2 and country

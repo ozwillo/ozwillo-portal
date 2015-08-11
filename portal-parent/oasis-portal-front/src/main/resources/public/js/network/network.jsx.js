@@ -361,7 +361,7 @@ var Organization = React.createClass({
             <div className="standard-form">
                 {dialogs}
                 <div className="row form-table-header">
-                    <div className="col-sm-6">{this.props.org.name}</div>
+                    <div className="col-sm-6"><span title={this.props.org.id}>{this.props.org.name}</span></div>
                     <div className="col-sm-6">
                         {buttons}
                     </div>
@@ -556,20 +556,69 @@ var LeaveDialog = React.createClass({
 });
 
 var InformationDialog = React.createClass({
-    open: function() {
-        this.refs.modal.open();
+    getInitialState: function() {
+        return {organization: undefined};
     },
+    open: function() {
+        this.loadDCOrganizations();
+        this.refs.modalModifyKAndDCOrg.open();
+    },
+    close: function(){
+        this.refs.modalModifyKAndDCOrg.close();
+    },
+    loadDCOrganizations: function() {
+       if (this.props.org.dc_id) {
+           $.ajax({
+               url: network_service + "/search-organization-by-id",
+               type: 'get',
+               contentType: 'json',
+               data: {dc_id: this.props.org.dc_id},
+               success: function (data) {
+                  if(data){
+                     var state = this.state;
+                     state.organization = data;
+                     this.setState(state);
+                  }
+               }.bind(this),
+               error: function (xhr, status, err) {
+                  console.error(status, err.toString());
+               }.bind(this)
+           });
+       }
+    },
+    createOrModifOrg: function(event){
+        return (this.refs.tabbedFormModify.createOrModifOrg(event) ); // return true if the organization has been created successful
+    },
+
     render: function() {
         var territoryId = (this.props.org.territory_id) ? (
                 <p>{t('ui.location')} : {this.props.org.territory_label}</p>
         ) : '';
-        return (
-            <Modal ref="modal" infobox={true} buttonLabels={{'ok': t('ui.close')}} title={t('my.network.information')}>
-                <h4>{this.props.org.name}</h4>
-                <p>{t('my.network.organization-type.' + this.props.org.type)}</p>
-                {territoryId}
-            </Modal>
+
+        var modal = undefined;
+        if(this.state.organization){
+            var saveButton = t('ui.save');
+            var buttonLabels = {"cancel": t('ui.cancel'), "save": saveButton };
+            modal = (
+                    <Modal large={true} ref="modalModifyKAndDCOrg" title={t('my.network.information')} successHandler={this.createOrModifOrg} buttonLabels={buttonLabels}>
+                       <h4><span title={this.props.org.id}>{this.props.org.name}</span></h4>
+                       <CreateOrModifyOrganizationForm ref="tabbedFormModify" successHandler={this.close} organization={this.state.organization}/>
+                    </Modal>
             );
+        }else{
+           var territoryId = (this.props.org.territory_id) ? (<p>{t('ui.location')} : {this.props.org.territory_label}</p>) : '';
+
+            modal = (
+                <Modal ref="modalModifyKAndDCOrg" infobox={true} buttonLabels={{'ok': t('ui.close')}} title={t('my.network.information')}>
+                   <h4><span title={this.props.org.id}>{this.props.org.name}</span></h4>
+                   <p>{t('my.network.organization-type.' + this.props.org.type)}</p>
+                   {territoryId}
+                   <p><i>{'No other information is available.'}</i></p>
+                </Modal>
+                );
+        }
+
+        return (<div> {modal} </div>);
     }
 });
 

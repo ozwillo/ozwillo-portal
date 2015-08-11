@@ -203,17 +203,21 @@ public class NetworkService {
 
         List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(uiOrganization.getId());
 
-        // note: there can be no added users (we invite them by email directly)
+        // note: there can be no added users (we invite them by email directly), except for the creator user.
 
-        // find the members to remove
-        memberships.stream().filter(om ->
+        // NB if is only one member it could be the last one assigned (admin?), so we leave it
+        if(memberships.size()>1){
+            // find the members to remove.
+            memberships.stream().filter(om ->
                         uiOrganization.getMembers().stream().noneMatch(member -> om.getAccountId().equals(member.getId()))
-        ).forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
+                    ).forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
 
-        // then the members to change (note: we only change the "admin" flag for now)
-        memberships.stream().filter(om ->
-                        uiOrganization.getMembers().stream().anyMatch(member -> om.getAccountId().equals(member.getId()) && (member.isAdmin() != om.isAdmin()))
-        ).forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
+            // then the members to change (note: we only change the "admin" flag for now)
+            memberships.stream().filter(om ->
+                            uiOrganization.getMembers().stream().anyMatch(member -> om.getAccountId().equals(member.getId()) && (member.isAdmin() != om.isAdmin()))
+            ).forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
+        }
+
     }
 
 
@@ -240,11 +244,11 @@ public class NetworkService {
      */
     private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) throws ForbiddenException {
         boolean nameHasChanged = !uiOrganization.getName().equals(organization.getName());
-        boolean typeHasChanged = uiOrganization.getType() == null || organization.getType() == null || !(uiOrganization.getType().equals(organization.getType()));
+        boolean typeHasChanged = uiOrganization.getType() == null || !(uiOrganization.getType().equals(organization.getType()));
         // NB. status must rather be changed by setStatus()
-        // TODO territoryId, can it even change ??
-        
-        return nameHasChanged || typeHasChanged;
+        boolean territoryIdHasChanged = uiOrganization.getTerritoryId() == null || !(uiOrganization.getTerritoryId().equals(organization.getTerritoryId()));
+
+        return nameHasChanged || typeHasChanged || territoryIdHasChanged;
     }
 
     public UserGeneralInfo getCurrentUser() {
@@ -418,7 +422,7 @@ public class NetworkService {
     }
 
 
-    public UIOrganization searchOrganization(String dcIc) {
+    public UIOrganization searchOrganizationByDCId(String dcIc) {
         // Search for existing organization having "GET /d/org?dc_id=xx"
         Organization org = organizationStore.findByDCID(dcIc);
 
@@ -435,7 +439,7 @@ public class NetworkService {
         logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type,
                 userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
 
-     // TODO if territory(jurisdiction) is not an optional field (or is public sector type), verify if it's provided
+        //NB. If territory(jurisdiction) is an optional field (is set when sector type is public, so then it will be provided)...
         if ( type == null || dcId == null /*&&territoryId==null*/) {
             throw new IllegalArgumentException();
         }

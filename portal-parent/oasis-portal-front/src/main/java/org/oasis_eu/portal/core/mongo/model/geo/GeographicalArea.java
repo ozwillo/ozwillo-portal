@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.mongo.model.geo;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
+
 import org.joda.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -10,7 +10,8 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.util.List;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document(collection = "geographical_area")
 @CompoundIndexes({
@@ -28,7 +29,17 @@ public class GeographicalArea {
     @JsonProperty
     private String name;
 
-    /** to help the user discriminate, built using names of NUTS3 or else 2 parent with country */
+    /** to constraint search within this mixin or model type
+     * TODO fill, index, query criteria */
+    private List<String> modelType;
+
+    // LATER OPT to search within one type on several fields, either add their values to tokenization
+    // (provides a single autocompletion form field), or (to have one autocompletion form field
+    // per Datacore field) configure one separate fulltext index i.e. one mongo collection per
+    // Datacore field to look up in.
+
+    /** to help the user discriminate, built using names of NUTS3 or else 2 parent with country
+     * @obsolete using name instead */
     @Field("detailed_name")
     @JsonProperty
     private String detailedName;
@@ -63,6 +74,14 @@ public class GeographicalArea {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public List<String> getModelType() {
+        return modelType;
+    }
+
+    public void setModelType(List<String> modelType) {
+        this.modelType = modelType;
     }
 
     public String getDetailedName() {
