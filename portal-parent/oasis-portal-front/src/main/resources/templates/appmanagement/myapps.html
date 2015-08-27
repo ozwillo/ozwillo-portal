@@ -8,6 +8,7 @@
     <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
     <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
     <link href="../../public/css/main.css" rel="stylesheet"/>
+    <link href="../../public/css/react-select.css" rel="stylesheet"/>
     <link href="../../public/css/apps-management.css" rel="stylesheet"/>
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -149,12 +150,15 @@
 
 <script data-th-inline="javascript" type="text/javascript">
     var apps_service = /*[[@{/my/api/myapps}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
+    var store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
     moment.locale(currentLanguage);
 </script>
 
 <script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
 <script type="text/jsx" src="../../public/js/util/bootstrap-react.jsx.js" data-th-src="@{/js/util/bootstrap-react.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/util/bootstrap-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
+<script type="text/jsx" src="../../public/js/util/portal-util-react.jsx.js" data-th-src="@{/js/util/portal-util-react.jsx.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/util/portal-util-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/util/userpicker.jsx.js" data-th-src="@{/js/util/userpicker.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/util/userpicker.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/util/fileuploadinput.jsx.js" data-th-src="@{/js/util/fileuploadinput.jsx.js}" data-th-if="${devmode}"></script>

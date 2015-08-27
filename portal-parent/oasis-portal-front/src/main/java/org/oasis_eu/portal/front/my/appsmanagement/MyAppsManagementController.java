@@ -1,15 +1,14 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.front.generic.PortalController;
+import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,15 +30,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/my/appsmanagement")
 public class MyAppsManagementController extends PortalController {
 
-    private static List<String> i18keys = Arrays.asList(
-            "none", "manage_users", "users", "push-to-dashboard-existing-user", "settings", "name", "actions",
-            "settings-add-a-user", "description", "icon", "upload", "published", "notpublished", "services",
-            "restricted-service",
-            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
-
-    private static List<String> generickeys = Arrays.asList("save", "cancel", "loading", "delete", "confirm", "close",
-            "unexpected_error", "something_went_wrong_msg", "something_went_wrong_title", "error_detail_title");
-
     @Autowired
     private MyNavigationService navigationService;
 
@@ -57,8 +47,9 @@ public class MyAppsManagementController extends PortalController {
         Locale locale = RequestContextUtils.getLocale(request);
 
         Map<String, String> i18n = new HashMap<>();
-        i18n.putAll(i18keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[]{}, locale))));
-        i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
+        i18n.putAll(i18nMessages.getI18n_myApps(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+
         return i18n;
     }
 

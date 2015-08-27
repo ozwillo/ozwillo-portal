@@ -60,114 +60,69 @@ public class GeographicalDAO {
     private GeographicalAreaCache geographicalAreaCache;
 
     // Cities
-    public List<GeographicalArea> searchCities(String lang, String terms, String country, int start, int limit) {
+    public List<GeographicalArea> searchCities(String lang, String queryTerm, String countryUri, int start, int limit) {
 
-        //Stream<GeographicalArea> geographicalArea = geographicalAreaCache.search(country, geoCityModel, lang, terms, start, limit);
         List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
 
-        fetchDCCitiesResource(country, terms, limit - start)
+        fetchResourceByCountryAndNameStartingWith(queryTerm, cityField, ".v", countryUri, countryCityField, geoProject, geoCityModel, limit - start)
                .stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), cityField.trim())));
 
-        //return geographicalArea.collect(Collectors.toList());
        return geographicalArea;
     }
 
-    private List<DCResource> fetchDCCitiesResource(String country, String term, int batchSize ) {
-        // /dc/type/geo:City_0?geo_city:name.l=fr&geo_city:name.v=$regexAas
-        String encodedCountry = country;
-        try{
-            encodedCountry = UriComponentsBuilder.fromUriString(country).build().encode().toString();
-        }catch(Exception e){
-            logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
-        }
+    // Countries
+    public List<GeographicalArea> searchCountries(String lang, String term, int start, int limit) {
 
-        DCQueryParameters params = new DCQueryParameters();
-        if(term != null && !term.trim().isEmpty()){
-            params.and(cityField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+term);
-        } else { params.and(cityField.trim(), DCOrdering.DESCENDING); }
+        List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
 
-        if(encodedCountry != null && !encodedCountry.isEmpty()){
-            params.and(countryCityField.trim(), DCOperator.EQ, encodedCountry);
-        }
+        fetchResourceByCountryAndNameStartingWith(term, countryField, ".v", null,null, geoProject,geoCountriesModel, limit - start)
+            .stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), countryField.trim())));
 
-        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", country, encodedCountry, term );
-        long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(geoProject.trim(), geoCityModel.trim(), params, 0, batchSize);
-        long queryEnd = System.currentTimeMillis();
-        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
-
-        return resources;
+        return geographicalArea;
     }
 
     // Tax Reg Activity
-    public List<DCRegActivity> searchTaxRegActivity(String country, String queryTerms, int start, int limit) {
+    public List<DCRegActivity> searchTaxRegActivity(String countryUri, String queryTerms, int start, int limit) {
 
         List<DCRegActivity> taxRegActivities = new ArrayList<DCRegActivity>();
 
-        fetchTaxRegActivityResource(country, queryTerms, limit - start)
+        fetchResourceByCountryAndNameStartingWith(queryTerms, "orgact:code", null, countryUri, "orgact:country", dcOrgProjectName, "orgact:Activity_0", limit - start)
                .stream().forEach(resource -> taxRegActivities.add(toDCRegActivity(resource, displayNameField.trim(), cityField.trim())));
 
         return taxRegActivities;
     }
-    private List<DCResource> fetchTaxRegActivityResource(String country, String queryTerms, int batchSize ) {
-        // /dc/type/geo:City_0?geo_city:name.l=fr&geo_city:name.v=$regexAas
-        String encodedCountry = country;
-        try{
-            encodedCountry = UriComponentsBuilder.fromUriString(country).build().encode().toString();
-        }catch(Exception e){
-            logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
-        }
 
-        DCQueryParameters params = new DCQueryParameters();
-        if(queryTerms != null && !queryTerms.trim().isEmpty()){
-           params.and("orgact:code", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms);
-        }else{ params.and("orgact:code", DCOrdering.DESCENDING); }
-
-        if(encodedCountry != null && !encodedCountry.isEmpty()){
-            params.and("orgact:country", DCOperator.EQ, encodedCountry);
-        }
-
-        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", country, encodedCountry, queryTerms );
-        long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), "orgact:Activity_0", params, 0, batchSize);
-        long queryEnd = System.currentTimeMillis();
-        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
-
-        return resources;
-    }
-
-    // Countries
-    public List<GeographicalArea> searchCountries(String lang, String terms, int start, int limit) {
-
-        List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
-
-        List<DCResource> resources = fetchDCCountriesResource(lang, terms, limit - start);
-
-        resources.stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), countryField.trim())));
-
-        return geographicalArea;
-    }
-    private List<DCResource> fetchDCCountriesResource(String lang, String queryTerms, int batchSize ) {
-
-        DCQueryParameters params = new DCQueryParameters(/*countryField.trim()+ ".l", DCOperator.EQ, lang*/);
-
-        if(queryTerms != null && !queryTerms.trim().isEmpty()){
-            params.and(countryField.trim()+".v", DCOperator.EQ, DCOperator.REGEX.getRepresentation()+queryTerms);
-        }else{
-            params.and(countryField.trim(), DCOrdering.DESCENDING);
-        }
-
-        logger.debug("Querying the Data Core");
-        long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(geoProject.trim(), geoCountriesModel.trim(), params, 0, batchSize);
-        long queryEnd = System.currentTimeMillis();
-        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
-
-        return resources;
-    }
 
 
     // Helper & Handler methods
+
+    private List<DCResource> fetchResourceByCountryAndNameStartingWith(String queryTerm, String field, String subField,
+            String countryUri, String countryField, String projectName, String modelName, int batchSize ){
+
+        DCQueryParameters params = new DCQueryParameters();
+        if(queryTerm != null && !queryTerm.trim().isEmpty()){
+            params.and(field.trim()+(subField == null ? "" : subField), DCOperator.EQ, DCOperator.REGEX.getRepresentation()+"^"+queryTerm);
+        } else { params.and(field.trim(), DCOrdering.DESCENDING); }
+
+        String encodedCountryUri = countryUri;
+        try{
+            if(encodedCountryUri != null && !encodedCountryUri.isEmpty()){
+                encodedCountryUri  = UriComponentsBuilder.fromUriString(countryUri).build().encode().toString();
+                params.and(countryField.trim(), DCOperator.EQ, encodedCountryUri);
+            }
+        }catch(Exception e){
+            logger.debug("The country URI \"{}\" cannot be encoded : {}", countryUri, e.toString());
+        }
+
+        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", countryUri, encodedCountryUri, queryTerm );
+        long queryStart = System.currentTimeMillis();
+        List<DCResource> resources = datacore.findResources(projectName.trim(), modelName.trim(), params, 0, batchSize);
+        long queryEnd = System.currentTimeMillis();
+        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
+
+        return resources;
+    }
+
     public GeographicalArea toGeographicalArea(DCResource r, String language, String nameField, String altFieldName) {
 
         List<Map<String, String>> nameMaps = getBestI18nValue(r, nameField, altFieldName);

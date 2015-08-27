@@ -11,7 +11,11 @@ var Service = React.createClass({
     },
     updateServiceLocally: function(fieldname, fieldvalue) {
         var state = this.state;
-        state.service.service[fieldname] = fieldvalue;
+        if(fieldname === 'geographical_areas'){
+            state.service.service.geographical_areas = [fieldvalue];
+        }else{
+            state.service.service[fieldname] = fieldvalue;
+        }
         this.setState(state);
     },
     saveService: function() {
@@ -166,6 +170,8 @@ var ServiceSettings = React.createClass({
         return function(event) {
             if (checkbox) {
                 this.props.update(field, event.target.checked);
+            }else if(field === 'geographical_areas'){
+                this.props.update(field, event.val);
             } else {
                 this.props.update(field, event.target.value);
             }
@@ -193,6 +199,7 @@ var ServiceSettings = React.createClass({
     /*clearIconImage: function() {
         this.props.update('icon', '');
     },*/
+
     render: function() {
         var iconClassName = "control-label col-sm-2";
         if ($.inArray("icon", this.props.errors) != -1) {
@@ -226,7 +233,8 @@ var ServiceSettings = React.createClass({
                         <input type="text" name="name" id="name" className="form-control" value={this.props.service.service.name} onChange={this.handleChange("name")}></input>
                     </FormField>
                     <FormField name="description" error={$.inArray("description", this.props.errors) != -1}>
-                        <textarea name="description" id="description" className="form-control" value={this.props.service.service.description} onChange={this.handleChange("description")}></textarea>
+                        <textarea name="description" id="description" className="form-control" value={this.props.service.service.description}
+                            onChange={this.handleChange("description")}></textarea>
                     </FormField>
 
                     <div className="form-group">
@@ -249,6 +257,18 @@ var ServiceSettings = React.createClass({
                             </div>
                         </div>
                     </div>
+                    {/*value={this.props.service.service.geographical_areas}*/}
+                    <FormField name="geographical-area-of-interest" error={$.inArray("description", this.props.errors) != -1}>
+                        <GeoSingleSelect2Component className="form-control" ref="geoSearch" name="geoAreaOfInterest" key={this.props.service.service.geographical_areas}
+                            urlResources={store_service + "/geographicalAreas"}
+                            onChange={this.handleChange("geographical_areas")}   countryFilter={ {country_uri:''} } 
+                            placeholder={ !this.props.service.service.geographical_areas || this.props.service.service.geographical_areas.length === 0 ? ' '
+                                : decodeURIComponent(this.props.service.service.geographical_areas[0])
+                                        .substring(this.props.service.service.geographical_areas[0].lastIndexOf("/")+1)
+                            }
+                        />
+
+                     </FormField>
 
                     {visibility}
                 </form>

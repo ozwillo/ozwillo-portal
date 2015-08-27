@@ -51,7 +51,7 @@ public class GeographicalAreaService {
         }
         return null;
     }
-    
+
     /**
      * @param q
      * @param start
@@ -59,9 +59,7 @@ public class GeographicalAreaService {
      * @return
      */
     public List<GeographicalArea> findCities(String queryTerms, String country, int start, int limit) {
-        queryTerms = queryTerms.substring(0,1).toUpperCase() + queryTerms.substring(1,queryTerms.length()).toLowerCase();
         return geographicalDAO.searchCities(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, country, start, limit);
-        //return this.find(country, "geoci:City_0", queryTerms, start, limit);
     }
 
     /**
@@ -73,7 +71,6 @@ public class GeographicalAreaService {
     public List<GeographicalArea> findCountries(String queryTerms, int start, int limit) {
         queryTerms = queryTerms.substring(0,1).toUpperCase() + queryTerms.substring(1,queryTerms.length()).toLowerCase();
         return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
-        //return this.find(null, "geoco:Country_0", queryTerms, start, limit);
     }
 
 

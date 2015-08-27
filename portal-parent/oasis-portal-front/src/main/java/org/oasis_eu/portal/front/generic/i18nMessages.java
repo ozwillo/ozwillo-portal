@@ -50,6 +50,12 @@ public final class i18nMessages {
     private static final List<String> networkkeys = Arrays.asList("organization-name", "organization-type", "organization-type.PUBLIC_BODY",
             "organization-type.COMPANY", "create");
 
+    private static final List<String> myApps = Arrays.asList(
+            "none", "manage_users", "users", "push-to-dashboard-existing-user", "settings", "name", "actions",
+            "settings-add-a-user", "description", "icon", "upload", "published", "notpublished", "services",
+            "restricted-service", "geographical-area-of-interest",
+            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
+
     public static Map<String, String> getI18n_all(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         Map<String, String> i18n = new HashMap<>();
 
@@ -69,6 +75,7 @@ public final class i18nMessages {
         i18n.putAll(storeInstallkeys.stream().collect(Collectors.toMap(k -> "install.org."+k,
                 k -> messageSource.getMessage("install.org." + k, new Object[0], locale))));
         i18n.putAll(languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
+        i18n.putAll(myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
 
         return i18n;
     }
@@ -102,6 +109,10 @@ public final class i18nMessages {
                 k -> messageSource.getMessage("install.org." + k, new Object[0], locale))));
         return i18n;
     }
+    public static Map<String, String> getI18n_myApps(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
+    }
+
     public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
     }

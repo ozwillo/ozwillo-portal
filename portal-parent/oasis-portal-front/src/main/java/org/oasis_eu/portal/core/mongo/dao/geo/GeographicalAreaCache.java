@@ -3,6 +3,7 @@ package org.oasis_eu.portal.core.mongo.dao.geo;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -117,14 +118,16 @@ public class GeographicalAreaCache {
             }
 
             public float score() {
-                float l = (float) area.getNameTokens().stream().filter(t -> t.length() >= 3).count();
+                float l = (float) area.getNameTokens().stream().count();
                 float v = queryMatches / Math.max((float) queryTerms, l);
                 return v;
             }
         }
 
-        List<String> queryTerms = tokenizer.tokenize(name).stream().filter(t -> t.length() >= 3).collect(Collectors.toList());
-        //String country_acronym = country_uri != null && !country_uri.isEmpty() ? country_uri.substring(country_uri.length()-2) : "";
+        boolean atLeastOneLongToken=false;
+        List<String> queryTerms = tokenizer.tokenize(name).stream().collect(Collectors.toList());
+        for (String token : queryTerms) { if (token.length() >= 3) { atLeastOneLongToken=true; } }
+        if(!atLeastOneLongToken || queryTerms.isEmpty()){  return (new ArrayList<GeographicalArea>()).stream(); }
 
         LinkedHashMap<String, Pair> collected = queryTerms
                 .stream()

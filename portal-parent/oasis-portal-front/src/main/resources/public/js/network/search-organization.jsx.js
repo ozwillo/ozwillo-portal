@@ -9,6 +9,8 @@ var SearchOrganization = React.createClass({
     },
 
     show: function() {
+        this.refs.form.resetSearchVals();
+        this.refs.form.getProfileInfo();
         this.refs.modal.open();
     },
     close: function () {
@@ -50,9 +52,7 @@ var SearchOrganization = React.createClass({
 // Form modal
 var SearchOrganizationForm = React.createClass({
     getInitialState: function () {
-        this.getProfileInfo();
         var sector_type = 'COMPANY'; //default value for the option button
-
         var tax_reg_num = '';//'0000000000001';//TODO TEST Only, to remove it
         var legal_name  = '';//'IPGARDE2';//TODO TEST Only, to remove it
 
@@ -77,6 +77,9 @@ var SearchOrganizationForm = React.createClass({
                 console.error(status, err.toString());
             }.bind(this)
         });
+    },
+    resetSearchVals: function (event) {
+        this.state.orgSearchData= {contact_name: '', contact_lastname: '', contact_email: '', sector_type : this.state.orgSearchData.sector_type, country: '', country_uri: '', legal_name: '', tax_reg_num: ''};
     },
     searchOrganization: function (event) {
         if (event) { event.preventDefault(); }
@@ -105,8 +108,10 @@ var SearchOrganizationForm = React.createClass({
                     if (this.props.successHandler) {
                         var organization = data;/* ? data
                                   : jQuery.extend(true, {}, this.state.orgTEST); // Test only - Deep copy of the TestsData to avoid overwriting */
+
                         var state = {searching: false, errors: []};
                         this.setState(state);
+
                         this.props.successHandler(organization);
                     }
                 }.bind(this),

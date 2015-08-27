@@ -24,6 +24,8 @@ var CreateOrModifyOrganizationModal = React.createClass({
            this.setState(state);
         }
         this.refs.modalcreateOrModifyOrg.open();
+        //this.refs.tabbedForm.switchTab(2);
+        //this.refs.tabbedForm.switchTab(1);
     },
     close: function (org) {
         this.refs.modalcreateOrModifyOrg.close();
@@ -299,19 +301,21 @@ var Tab1 = React.createClass({
                   <Field name={label_regActivity} class_name_div='col-sm-3'>
                      {/*<input className="form-control" id="tax_reg_activity" type="text" value={this.state.organization.tax_reg_activity}
                                onChange={this.changeInput('tax_reg_activity')} /> */}
-                     <GeoSingleSelect2Component ref="geoSearchtaxRegActivity" className="form-control" name="geoSearchRegActivity"
-                         onChange={this.changeInput('tax_reg_activity_uri')} urlResources={store_service + "/dc-taxRegActivity"}
+                     <GeoSingleSelect2Component ref="geoSearchtaxRegActivity" className="form-control" key={this.state.organization.tax_reg_activity_uri}
+                         name="geoSearchRegActivity" urlResources={store_service + "/dc-taxRegActivity"}
+                         onChange={this.changeInput('tax_reg_activity_uri')} minimumInputLength={2}
                          countryFilter={ {country_uri:this.state.organization.country_uri} /*{country_uri:''}*/ }
                          placeholder={ !this.state.organization.tax_reg_activity_uri ? ' '
                                : this.state.organization.tax_reg_activity_uri.substring(this.state.organization.tax_reg_activity_uri.lastIndexOf("/")+1)
-                         } minimumInputLength={2}
+                         }
                      />
                   </Field><br/>
                   { // Show the field only for public orgs
                      (this.state.organization.sector_type === 'COMPANY') ? "" :(
                         <Field name="jurisdiction" error={$.inArray("jurisdiction_uri", this.props.errors) != -1} isRequired={true}>
-                           <GeoSingleSelect2Component ref="geoSearchJurisdiction" className="form-control" name="geoSearch"
-                              onChange={this.changeInput('jurisdiction_uri')} urlResources={store_service + "/geographicalAreas"}
+                           <GeoSingleSelect2Component ref="geoSearchJurisdiction" className="form-control" key={this.state.organization.jurisdiction}
+                              name="geoSearch" urlResources={store_service + "/geographicalAreas"}
+                              onChange={this.changeInput('jurisdiction_uri')}
                               countryFilter={ {country_uri:this.state.organization.country_uri} /*{country_uri:''}*/ }
                               placeholder={this.state.organization.jurisdiction /*t('my.network.organization.jurisdiction.placeholder')*/}/>
                         </Field>
@@ -467,8 +471,10 @@ var AddressComponent = React.createClass({
                  </Field>
               }
               <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
-                 <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" onChange={this.changeInput('city')} name="geoSearchCity" 
-                     urlResources={store_service + "/dc-cities"} placeholder={address.city} countryFilter={ {country_uri: address.country_uri} }/>
+                 <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" name="geoSearchCity" key={address.city}
+                     urlResources={store_service + "/dc-cities"}
+                     onChange={this.changeInput('city')}   countryFilter={ {country_uri: address.country_uri} }
+                     placeholder={address.city} />
               </Field>
               <Field name="zip" class_name_div='col-sm-3' error={$.inArray("zip", this.props.errors) != -1} isRequired={true}>
                  <input className="form-control" id="zip" type="text" maxLength={6} value={address.zip}
