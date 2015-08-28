@@ -171,7 +171,7 @@ var ServiceSettings = React.createClass({
             if (checkbox) {
                 this.props.update(field, event.target.checked);
             }else if(field === 'geographical_areas'){
-                this.props.update(field, event.val);
+                this.props.update(field, event.val); // added.name/uri
             } else {
                 this.props.update(field, event.target.value);
             }

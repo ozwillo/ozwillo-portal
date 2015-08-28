@@ -2,7 +2,7 @@
 
 var default_org_data = {
         organization: { exist: false, legal_name: '', sector_type: '', in_activity: true, alt_name: '', org_type:'',
-            tax_reg_num: '', tax_reg_ofical_id:'', tax_reg_activity_uri:'', jurisdiction_uri:'', jurisdiction:'', phone_number:'',
+            tax_reg_num: '', tax_reg_official_id:'', tax_reg_activity_uri:'', jurisdiction_uri:'', jurisdiction:'', phone_number:'',
             web_site:'', email:'', street_and_number:'', additional_address_field: '', po_box: '', city: '', city_uri: '',
             zip: '', cedex: '', country_uri: ''
          }, errors: [[],[]], typeRestriction: ''
@@ -24,8 +24,6 @@ var CreateOrModifyOrganizationModal = React.createClass({
            this.setState(state);
         }
         this.refs.modalcreateOrModifyOrg.open();
-        //this.refs.tabbedForm.switchTab(2);
-        //this.refs.tabbedForm.switchTab(1);
     },
     close: function (org) {
         this.refs.modalcreateOrModifyOrg.close();
@@ -216,7 +214,7 @@ var Tab1 = React.createClass({
            var org = this.state.organization;
            if (isCheckbox) {
                org[fieldname] = event.target.checked;
-           } else { //org[fieldname] = this.refs.geoSearchJurisdiction.state.value;
+           } else {
                org[fieldname] = event.target.value;
                if(fieldname === 'jurisdiction_uri'){ org['jurisdiction'] = event.added ? event.added.name : ''; }
            }
@@ -244,12 +242,12 @@ var Tab1 = React.createClass({
            case 'BG' : label_regNum = 'tax_reg_num.bg'; label_regActivity = 'tax_reg_activity.bg'; break;
            case 'IT' : label_regNum = 'tax_reg_num.it'; label_regActivity = 'tax_reg_activity.it'; break;
            case 'FR' : label_regNum = 'tax_reg_num.fr';
-                             label_regOfficialId = 'tax_reg_ofical_id.fr';
+                             label_regOfficialId = 'tax_reg_official_id.fr';
                              label_regActivity = 'tax_reg_activity.fr';
                              break;
            case 'ES' : label_regNum = 'tax_reg_num.es'; label_regActivity = 'tax_reg_activity.es'; break;
            case 'TR' : label_regNum = 'tax_reg_num.tr';
-                             label_regOfficialId = 'tax_reg_ofical_id.tr';
+                             label_regOfficialId = 'tax_reg_official_id.tr';
                              label_regActivity = 'tax_reg_activity.tr';
                              break;
            default   : label_regNum = 'tax_reg_num.en'; break;
@@ -293,14 +291,12 @@ var Tab1 = React.createClass({
                   { // Show the field if is defined (normaly only for public orgs in France or Turkey).
                      (label_regOfficialId !== '' && this.state.organization.sector_type !== 'COMPANY') ?  (
                         <Field name={label_regOfficialId}>
-                           <input className="form-control" id="tax_reg_ofical_id" type="text" value={this.state.organization.tax_reg_ofical_id}
-                                   onChange={this.changeInput('tax_reg_ofical_id')} />
+                           <input className="form-control" id="tax_reg_official_id" type="text" value={this.state.organization.tax_reg_official_id}
+                                   onChange={this.changeInput('tax_reg_official_id')} />
                         </Field>
                       ) : ''
                   }
                   <Field name={label_regActivity} class_name_div='col-sm-3'>
-                     {/*<input className="form-control" id="tax_reg_activity" type="text" value={this.state.organization.tax_reg_activity}
-                               onChange={this.changeInput('tax_reg_activity')} /> */}
                      <GeoSingleSelect2Component ref="geoSearchtaxRegActivity" className="form-control" key={this.state.organization.tax_reg_activity_uri}
                          name="geoSearchRegActivity" urlResources={store_service + "/dc-taxRegActivity"}
                          onChange={this.changeInput('tax_reg_activity_uri')} minimumInputLength={2}
