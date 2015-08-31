@@ -34,7 +34,6 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.util.UriComponentsBuilder;
 
 import com.mongodb.BasicDBObject;
 import com.mongodb.BulkWriteOperation;
@@ -84,6 +83,9 @@ public class GeographicalAreaCache {
     /** ex. Rhône-Alpes */
     @Value("${application.geoarea.secondaryNameField:geo:name}")
     private String nameField; // "geoci:name";
+    /** ex. "http://data.ozwillo.com/dc/type/geocifr:Commune_0/FR/FR-38/Saint-Clair-de-la-Tour" */
+    @Value("${application.geoarea.searchCronField:@id}")
+    private String searchCronField; // "@id";
 
     @Autowired
     private Tokenizer tokenizer;
@@ -165,12 +167,12 @@ public class GeographicalAreaCache {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
-        String encodedCountry = country;
-        try{
+        String encodedCountry = country; //comes already encoded
+        /*try{
             encodedCountry = UriComponentsBuilder.fromUriString(country).build().encode().toString();
         }catch(Exception e){
             logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
-        }
+        }*/
         Criteria criteria = where("lang").is(lang);
         if (encodedCountry != null && !encodedCountry.trim().isEmpty()){
             criteria.and("country").is(encodedCountry); //filter by country
@@ -182,8 +184,8 @@ public class GeographicalAreaCache {
         criteria.and("nameTokens").regex(name);
 
         return template.find(
-                query(criteria).with(new Sort(Sort.Direction.ASC, "replicationTime")),
-                GeographicalArea.class)
+                   query(criteria).limit(100).with(new Sort(Sort.Direction.ASC, "replicationTime")),
+                   GeographicalArea.class )
                 .stream()
                 .map(DCUrlWrapper::new)
                 .distinct()
@@ -225,11 +227,11 @@ public class GeographicalAreaCache {
             portalSystemUserService.runAs(new Runnable() {
                 @Override
                 public void run() {
-                    String lastNameFetched = null;
+                    String lastDCIdFetched = null;
                     do {
                         logger.debug("Fetching batches of areas");
-                        lastNameFetched = fetchBatches(collection, loadedUris, lastNameFetched);
-                    } while (lastNameFetched != null);
+                        lastDCIdFetched = fetchBatches(collection, loadedUris, lastDCIdFetched);
+                    } while (lastDCIdFetched != null);
                 }
             });
 
@@ -253,14 +255,15 @@ public class GeographicalAreaCache {
 
     }
 
-    private String fetchBatches(DBCollection collection, Set<String> loadedUris, String lastNameFetched) {
+    private String fetchBatches(DBCollection collection, Set<String> loadedUris, String lastDCIdFetched) {
 
         BulkWriteOperation builder = collection.initializeUnorderedBulkOperation();
+        String prevDcId = lastDCIdFetched;
 
         DCQueryParameters params;
-        params = lastNameFetched == null
-                ? new DCQueryParameters(nameField, DCOrdering.DESCENDING)
-                : new DCQueryParameters(nameField, DCOrdering.DESCENDING, DCOperator.LT, lastNameFetched);
+        params = lastDCIdFetched == null
+                ? new DCQueryParameters(searchCronField, DCOrdering.DESCENDING)
+                : new DCQueryParameters(searchCronField, DCOrdering.DESCENDING, DCOperator.LT, "\""+lastDCIdFetched+"\"");
                 // (LT & descending order to leave possible null geo:name values at the end rather than having to skip them)
 
         logger.debug("Querying the Data Core");
@@ -285,7 +288,7 @@ public class GeographicalAreaCache {
                     hasOne = true;
                     if (name == null) {
                         name = area.getName();
-                        logger.debug("{} - {}", name, area.getUri());
+                        //logger.debug("{} - {}", name, area.getUri());
                     }
 
                     DBObject dbObject = new BasicDBObject();
@@ -300,10 +303,10 @@ public class GeographicalAreaCache {
                         logger.debug("Area {} already inserted for language {}, skipping", area.getName(), language.getLanguage());
                     }
                 }
-
             }
 
-            if (name != null) { lastNameFetched = name; }
+            String id = res.getUri(); //  ID resource in DC is always encoded, so to match values we need to encoded as well
+            if (id != null) { lastDCIdFetched = id; }
 
         }
 
@@ -314,8 +317,8 @@ public class GeographicalAreaCache {
             logger.debug("Saved resources; total save time={} ms (avg = {} ms)", durationSave, durationSave / resources.size());
         }
 
-        if (resources.size() < batchSize) return null;
-        else return lastNameFetched;
+        if ( (prevDcId != null && prevDcId.equals(lastDCIdFetched)) || resources.size() < batchSize){ return null;}
+        else return lastDCIdFetched;
     }
 
 }

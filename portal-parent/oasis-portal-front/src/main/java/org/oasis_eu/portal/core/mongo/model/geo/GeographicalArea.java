@@ -15,7 +15,8 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document(collection = "geographical_area")
 @CompoundIndexes({
-        @CompoundIndex(name = "lang_nametokens", def = "{'lang':1, 'nameTokens':1}")
+        @CompoundIndex(name = "lang_nametokens", def = "{'lang':1, 'nameTokens':1}"),
+        @CompoundIndex(name = "lang_nametokens_country", def = "{'lang':1, 'nameTokens':1, country:1}")
 })
 public class GeographicalArea {
 

@@ -18,7 +18,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.util.UriComponentsBuilder;
 
 /**
  * User: Ignacio
@@ -107,7 +106,8 @@ public class GeographicalDAO {
         String encodedCountryUri = countryUri;
         try{
             if(encodedCountryUri != null && !encodedCountryUri.isEmpty()){
-                encodedCountryUri  = UriComponentsBuilder.fromUriString(countryUri).build().encode().toString();
+                //encodedCountryUri  = UriComponentsBuilder.fromUriString(countryUri).build().encode().toString();
+                encodedCountryUri  = countryUri;
                 params.and(countryField.trim(), DCOperator.EQ, encodedCountryUri);
             }
         }catch(Exception e){
@@ -132,7 +132,7 @@ public class GeographicalDAO {
         }
         String name = null;
         for (Map<String, String> nameMap : nameMaps) {
-            logger.debug("nameMaps: " + nameMaps.toString());
+            //logger.debug("nameMaps: " + nameMaps.toString());
             String l = nameMap.get("@language"); // TODO Q why ?? @language only in application/json+ld, otherwise l
             if (l == null) { continue; /* shouldn't happen */ }
             if (l.equals(language)) {
@@ -145,7 +145,9 @@ public class GeographicalDAO {
             //TODO LATER: Create a full body DC interceptor to test request/response to DATACORE (similar to KernelLoggingInterceptor)
         }
 
-        String country = r.getAsString("geoci:country");
+        String country = r.getAsString("geo:country");  /* The true value should be the main referenced model id (geo:country), but today
+                                                           * it is not linked in the models. NB today it makes that some of the fields are not
+                                                           * stored due to this field (been empty for those cases) */
         List<String> modelType = r.getAsStringList("@type");
 
         GeographicalArea area = new GeographicalArea();

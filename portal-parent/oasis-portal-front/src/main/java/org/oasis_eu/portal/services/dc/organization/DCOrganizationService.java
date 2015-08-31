@@ -298,7 +298,7 @@ public class DCOrganizationService {
 
         String jurisdiction_uri =  getBestI18nValue(res, language, "orgpu:jurisdiction", null);
         String jurisdiction =    jurisdiction_uri == null ? null : getBestI18nValue(
-                                       datacore.getResourceFromURI(dcOrgProjectName, jurisdiction_uri).getResource(), language, "geoci:displayName", null
+                                       datacore.getResourceFromURI(dcOrgProjectName, jurisdiction_uri).getResource(), language, "odisp:name", null
                                  );
 
         String phoneNumber =     getBestI18nValue(res, language, "org:phoneNumber", null);
@@ -310,14 +310,14 @@ public class DCOrganizationService {
         String POBox =           getBestI18nValue(res, language, "adrpost:POBox", null);
         String city_uri =        getBestI18nValue(res, language, "adrpost:postName", null);
         String city =            city_uri == null ? null : getBestI18nValue(
-                                        datacore.getResourceFromURI(dcOrgProjectName, city_uri).getResource(), language, "geoci:displayName", null
+                                        datacore.getResourceFromURI(dcOrgProjectName, city_uri).getResource(), language, "odisp:name", null
                                  );
         String zip =             getBestI18nValue(res, language, "adrpost:postCode", "org:postCode");
         String cedex =           getBestI18nValue(res, language, "adrpost:cedex", null);
 
         String country_uri =     getBestI18nValue(res, language, "adrpost:country", null);
         String country =         country_uri == null ? null : getBestI18nValue(
-                                       datacore.getResourceFromURI(dcOrgProjectName, country_uri).getResource(), language, "geoco:name", null
+                                       datacore.getResourceFromURI(dcOrgProjectName, country_uri).getResource(), language, "geo:name", null
                                  );
 
         //String longitude=     getBestI18nValue(res, "org:longitude", null);

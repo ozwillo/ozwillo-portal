@@ -326,13 +326,12 @@ var AppDescriptionComponent =  React.createClass({
             var description = converter.makeHtml(stateApp.longdescription);
 
             var launchOrInstallButton;
-            if (this.props.app.installed) {
-               if (this.props.stateApp){
-                   if (this.props.stateApp.serviceUrl) {
+            if (this.props.app.type == "service" && this.props.app.installed) {
+               if (this.props.stateApp && this.props.stateApp.serviceUrl) {
                        launchOrInstallButton = <a className="btn btn-primary" href={this.props.stateApp.serviceUrl} target="_new">{t('launch')}</a>;
-                   } else {
+                   /*} else {
                        launchOrInstallButton = (<label >{t('installed')}</label>);
-                   }
+                   }*/
                } else {
                     launchOrInstallButton = (<label > <i className="fa fa-spinner fa-spin"></i> </label> );
                }

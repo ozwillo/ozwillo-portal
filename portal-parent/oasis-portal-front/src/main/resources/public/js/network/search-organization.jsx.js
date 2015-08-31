@@ -332,11 +332,12 @@ var CountrySelect = React.createClass({
     render: function() {
         var label = this.props.defLabel;
         if(!this.props.value || this.props.value === ""){
-           this.props.value = this.getValue(label); //This is to load the country_uri that couldn't be set
+           //This is to load the country_uri that couldn't be set |
+           this.props.value = (this.getValue(label)); // decodeURIComponent()
         }
         // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-base fonctuion decodeURIComponent()
         return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange}
-                           value={decodeURIComponent(this.props.value)} disabled={this.props.disabled}>
+                           value={this.props.value} disabled={this.props.disabled}>
                     {this.state.options}
                  </select>
         );
