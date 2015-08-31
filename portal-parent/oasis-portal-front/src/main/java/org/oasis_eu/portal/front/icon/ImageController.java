@@ -125,20 +125,35 @@ public class ImageController {
     }
     
     /**
-     * 
      * @param objectId whose icon we're POSTing
+     * @param filename (Optional) overrides body file's name. Set it to "icon.png" if the
+     * image served url is not stored in the business object to that the image url
+     * can be computed from imageService.buildObjectIconImageVirtualUrlOrNullIfNone()
      * @param iconFile has also filename, size etc.
      * @return
      */
     @RequestMapping(value="/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}", method=RequestMethod.POST)
-    public @ResponseBody String handleFileUpload(@PathVariable("objectId") String objectId,
+    public @ResponseBody String serviceHandleFileUploadWithNoFilename(@PathVariable("objectId") String objectId,
             @RequestParam("iconFile") MultipartFile iconFile){
+        return this.handleFileUpload(objectId, iconFile, null);
+    }
+    @RequestMapping(value="/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}/{filename}", method=RequestMethod.POST)
+    public @ResponseBody String serviceHandleFileUpload(@PathVariable("objectId") String objectId,
+            @PathVariable("filename") String filename,
+            @RequestParam("iconFile") MultipartFile iconFile){
+        return this.handleFileUpload(objectId, iconFile, filename);
+    }
+    private String handleFileUpload(String objectId, MultipartFile iconFile, String filename){
         if (!iconFile.isEmpty()) {
             try {
                 byte[] bytes = iconFile.getBytes();
                 Image imageToStore = new Image();
                 imageToStore.setBytes(bytes);
-                imageToStore.setFilename(iconFile.getOriginalFilename());
+                if (filename != null && filename.trim().length() != 0) {
+                    imageToStore.setFilename(filename); // ex. ImageService.ICONIMAGE_NAME i.e. icon.png
+                } else {
+                    imageToStore.setFilename(iconFile.getOriginalFilename());
+                }
                 // LATER OPT also iconFile.getContentType()
                 imageToStore = imageService.storeImageForObjectId(objectId, imageToStore);
                 return imageService.buildImageServedUrl(imageToStore); // ex. http://localhost:8080/media/$id/icon.png
@@ -153,5 +168,5 @@ public class ImageController {
             throw new EmptyUploadException(); // TODO no upload
         }
     }
-    
+
 }

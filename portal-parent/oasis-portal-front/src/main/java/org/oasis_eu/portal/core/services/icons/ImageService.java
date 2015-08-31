@@ -1,6 +1,14 @@
 package org.oasis_eu.portal.core.services.icons;
 
-import com.google.common.base.Strings;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.List;
+import java.util.UUID;
+
+import javax.imageio.ImageIO;
 
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
@@ -16,19 +24,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.MongoOperations;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.imageio.ImageIO;
-
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.util.List;
-import java.util.UUID;
+import com.google.common.base.Strings;
 
 /**
  * User: schambon
@@ -56,13 +59,17 @@ public class ImageService {
     @Autowired
     private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
+    /** to avoid writing a custom spring repository for exists(url) only */
+    @Autowired
+    private MongoOperations mgo;
+
 
     @Value("${application.baseImageUrl}")
     private String baseImageUrl;
 
     @Value("${application.defaultIconUrl}")
     private String defaultIconUrl;
-    
+
 
     /**
      * Allows to store a single image / icon per object to prettify its display
@@ -109,11 +116,13 @@ public class ImageService {
     }
 
     /**
-     * 
+     * Computes URL where image (business object icon) is served in the case where the original
+     * (be it proxied or uploaded) URL is unavailable because NOT stored in the business object.
+     * To be used only when storing it, otherwise to get image use buildObjectIconImageVirtualUrlOrNullIfNone().
      * @param objectId of object whose icon we're trying to build the virtual URL
      * @return URL that is unique for mongo, but not where this image will be served
      */
-    private String buildObjectIconImageVirtualUrl(String objectId) {
+    public String buildObjectIconImageVirtualUrl(String objectId) {
         return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
                 .path("/")
                 .path(OBJECTICONIMAGE_PATHELEMENT)
@@ -124,10 +133,24 @@ public class ImageService {
                 .build()
                 .toUriString();
     }
-    
+
     /**
      * 
-     * @param image
+     * @param objectId
+     * @return null if none, allowing caller to rather use business object default url
+     */
+    public String buildObjectIconImageVirtualUrlOrNullIfNone(String objectId) {
+        String url = buildObjectIconImageVirtualUrl(objectId);
+        Image image = mgo.findOne(new Query(new Criteria("url").is(url)), Image.class);
+        if (image != null) {
+            return this.buildImageServedUrl(image);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * @param image (only id & filename params are required)
      * @return URL where this image will be served
      */
     public String buildImageServedUrl(Image image) {
@@ -140,6 +163,14 @@ public class ImageService {
                 .toUriString();
     }
 
+    /**
+     * Retrieves URL where image is served in the case where the original (be it proxied
+     * or uploaded) URL is stored in the business object
+     * @param inputUrl the original (be it proxied or uploaded) URL of the image
+     * @param format
+     * @param force
+     * @return
+     */
     public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
         
         if (inputUrl != null && inputUrl.startsWith(baseImageUrl)) {

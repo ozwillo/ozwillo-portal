@@ -83,7 +83,7 @@ public class DCOrganizationService {
         // otherwise, it will be implicitly in the query (e.g. dc/type/orgpuit:OrgPubblica_0/IT/05719580010)
         if(useTypeAsModel){ model = this.generateResourceType(sector, country_uri, regNumber); };
 
-        logger.info("Ressource not found using parameters : {}, {} and {}", regNumber, country_uri, model);
+        logger.info("Searching ressource using parameters : {}, {} and {}", regNumber, country_uri, model);
         logger.debug("Querying the Data Core");
         long queryStart = System.currentTimeMillis();
         List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), model, params, 0, 1);
@@ -120,7 +120,7 @@ public class DCOrganizationService {
                 dcOrganization.getLegal_name(),dcOrganization.getTax_reg_num(), dcOrganization.getLang());
         // if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
         if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion()) ){ //found in DC
-            logger.debug("It exists, but there are no previous updates. Merging it from form fields, and doing a datacoreClient.updateResource()");
+            logger.debug("It exists, and there are no previous updates. Merging it from form fields, and doing a datacoreClient.updateResource()");
             mergeDCOrgToDCResources(dcOrganization, dcResource);
             DCResult dcResult = datacore.updateResource(dcOrgProjectName.trim(), dcResource); // to test must change url as datacore namespace (plnm-dev-dc)
             return dcResult != null ? dcResource : null;
@@ -133,7 +133,7 @@ public class DCOrganizationService {
                 return newCreatedDCRes.getResource();
             } 
         }
-        
+
         // if version has changed : "Sorry, did change while you were editing it, please copy your fields, close and restart the wizard"
         return null;
     }
@@ -287,6 +287,8 @@ public class DCOrganizationService {
         String sector =          getBestI18nValue(res, language, "org:sector", null);
         String altName =         getBestI18nValue(res, language, "org:altName", null); //Mapped list
 
+        String org_type =        getBestI18nValue(res, language, "org:type", null);
+
         String taxRegAct_uri =    getBestI18nValue(res, language, "org:activity", null);
         String taxRegAct =       (taxRegAct_uri == null) ? null : getBestI18nValue(
                                        datacore.getResourceFromURI(dcOrgProjectName, taxRegAct_uri).getResource(), language, "orgact:code", null
@@ -326,10 +328,11 @@ public class DCOrganizationService {
         dcOrg.setIn_activity(in_activity);
         dcOrg.setSector_type(sector);
         dcOrg.setAlt_name(altName);
+        dcOrg.setOrg_type(org_type);
 
-        dcOrg.setTax_reg_activity_uri(taxRegAct_uri); dcOrg.setTax_reg_activity(taxRegAct);
-        dcOrg.setTax_reg_num(regNumber);
-        dcOrg.setTax_reg_official_id(officialId); /* Only for public organizations*/
+        dcOrg.setTax_reg_num(regNumber);                // tax Id number / N SIRET
+        dcOrg.setTax_reg_official_id(officialId);       // localTaxId / INSEE    /* Only for public organizations*/
+        dcOrg.setTax_reg_activity_uri(taxRegAct_uri); dcOrg.setTax_reg_activity(taxRegAct);  // NACE/NAF code
 
         dcOrg.setJurisdiction_uri(jurisdiction_uri); /* Only for public organizations*/
         dcOrg.setJurisdiction(jurisdiction); /* Only for public organizations*/
@@ -372,7 +375,7 @@ public class DCOrganizationService {
             object = resource.get(altFieldName);
         }
         if (object == null) { // if after double matched is not found then return null
-            logger.warn("DC Resource {} of type {} has no field required fields.", resource.getUri(), resource.getType());
+            logger.warn("DC Resource {} of type {} has no the required fields.", resource.getUri(), resource.getType());
             return null;
         }
         // Parse the list checking if it's a simple list or a listed map

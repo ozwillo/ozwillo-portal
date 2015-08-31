@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.spring.datacore.model.DCResource;
@@ -37,9 +38,14 @@ public class OrganizationService {
     private UserAccountService userAccountService;
     @Autowired
     private HttpServletRequest request;
+    @Autowired
+    private ImageService imageService;
 
     @Value("${application.dcOrg.baseUri: http://data.ozwillo.com/dc/type}")
     private String dcBaseUri;
+    @Value("${application.defaultIconUrl: /img/noicon.png")
+    private String defaultIconUrl;
+
 
     /** Search an organization in DC and Kernel to validate its modification */
     public DCOrganization findOrganization(String contact_name,String contact_lastName,String contact_email,
@@ -100,6 +106,13 @@ public class OrganizationService {
         DCOrganization dcOrganization = organizationDAO.searchOrganizationById(encodedDCId);
         if(dcOrganization != null){
             dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
+
+            //load icon stored in local DB
+            String iconUrl = imageService.buildObjectIconImageVirtualUrlOrNullIfNone(dcOrganization.getTax_reg_num());
+            if (iconUrl == null) {
+                iconUrl = defaultIconUrl.trim();
+            }
+            dcOrganization.setIconUrl(iconUrl);
         }
 
         return dcOrganization;
@@ -131,7 +144,7 @@ public class OrganizationService {
             UIOrganization uiOrganization = checkAndCreateKernelOrganization(dcOrganization);
             if(uiOrganization != null){ // if null, then the organization exists in kernel.
                 //If not null, the organization was created in Kernel, then update data rights in DC.
-                DCResource dcResource = organizationDAO.setDCIdOrganization(new DCResource(), dcOrganization.getSector_type(), 
+                DCResource dcResource = organizationDAO.setDCIdOrganization(new DCResource(), dcOrganization.getSector_type(),
                         dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
                 dcResource.setVersion(Integer.parseInt(dcOrganization.getVersion()));
                 if(organizationDAO.changeDCOrganizationRights(dcResource,  uiOrganization.getId())){

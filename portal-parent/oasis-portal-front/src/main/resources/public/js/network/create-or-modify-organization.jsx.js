@@ -339,7 +339,7 @@ var Tab1 = React.createClass({
                       <div className="btn btn-success-inverse btn-edit">
                          <i className="pull-left fa fa-pencil" />
                          <label>{t('my.network.organization.change-icon')}</label>
-                         <FileUploadInput className="edit" uploadUrl={"/media/objectIcon/"+this.state.organization.tax_reg_num}
+                         <FileUploadInput className="edit" uploadUrl={"/media/objectIcon/"+this.state.organization.tax_reg_num+"/"+"orgIcon.png"}
                               success={this.updateUploadedIcon} error={this.error}/>
                       </div>
                    </div>
