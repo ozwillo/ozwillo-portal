@@ -192,7 +192,7 @@ public class GeographicalAreaCache {
             criteria.and("modelType").in(modelType);
         }
 
-        criteria.and("nameTokens").regex(name);
+        criteria.and("nameTokens").regex("^"+name);
 
         List<GeographicalArea> foundAreas = template.find(
                 query(criteria).limit(findOneTokenLimit) // limit to prevent too much performance-hampering object scanning 
