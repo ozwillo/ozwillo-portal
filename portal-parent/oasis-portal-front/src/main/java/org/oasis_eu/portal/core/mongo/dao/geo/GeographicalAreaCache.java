@@ -93,6 +93,8 @@ public class GeographicalAreaCache {
     /** ex. "http://data.ozwillo.com/dc/type/geocifr:Commune_0/FR/FR-38/Saint-Clair-de-la-Tour" */
     @Value("${application.geoarea.searchCronField:@id}")
     private String searchCronField; // "@id";
+    @Value("${application.geoarea.findOneTokenLimit:100}")
+    private int findOneTokenLimit;
 
     @Autowired
     private Tokenizer tokenizer;
@@ -106,7 +108,7 @@ public class GeographicalAreaCache {
         // 2. flatten the results into one big stream
         // 3. reduce the stream into a list of pairs <Area, Frequency>
         // 4. sort the stream in reverse frequency order so that results that match multiple query terms come first
-        // 4. turn this back into a stream of areas and return
+        // 5. turn this back into a stream of areas and return
 
         class Pair {
             GeographicalArea area;
@@ -192,9 +194,16 @@ public class GeographicalAreaCache {
 
         criteria.and("nameTokens").regex(name);
 
-        return template.find(
-                   query(criteria).limit(100).with(new Sort(Sort.Direction.ASC, "replicationTime")),
-                   GeographicalArea.class )
+        List<GeographicalArea> foundAreas = template.find(
+                query(criteria).limit(findOneTokenLimit) // limit to prevent too much performance-hampering object scanning 
+                .with(new Sort(Sort.Direction.ASC, "replicationTime")),
+                GeographicalArea.class);
+        if (foundAreas.size() == findOneTokenLimit) {
+            // should not happen
+            logger.warn("Hit findOneTokenLimit (so probably missing some results) on query " + query(criteria));
+        }
+
+        return foundAreas
                 .stream()
                 .map(DCUrlWrapper::new)
                 .distinct()
@@ -253,7 +262,7 @@ public class GeographicalAreaCache {
         // 3. switch all "incoming" entries to "online"
             long switchStart = System.currentTimeMillis();
             this.switchToOnline();
-            logger.debug("Switch to online in {} ms", System.currentTimeMillis() - switchStart);
+            logger.debug("Switched to online in {} ms", System.currentTimeMillis() - switchStart);
             logger.info("Finish replication of {} geographical records from data core", collection.getCount());
         } catch (RestClientException e) {
             logger.error("Error while updating the geo area cache", e);
@@ -288,7 +297,7 @@ public class GeographicalAreaCache {
 
             for (Languages language : Languages.values()) {
 
-                GeographicalArea area = geographicalDAO.toGeographicalArea(res, language.getLanguage(), displayNameField, nameField);
+                GeographicalArea area = geographicalDAO.toGeographicalArea(res, language.getLanguage(), nameField, null); // displayNameField is not taken
                 if (area == null) {
                     continue;
                 }

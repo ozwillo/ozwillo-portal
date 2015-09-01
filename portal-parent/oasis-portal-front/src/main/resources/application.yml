@@ -31,9 +31,11 @@ application:
     cityModel: geoci:City_0
     countryField: geo:country
     fallbackLanguage: en
-    #use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year = http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
-    replication: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
-    #replication: 0 0/1 * * * ?     #Runs every minute
+    findOneTokenLimit: 100
+    # use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year => 0 0/30 * * * (every 30 minutes) | 0 30 * * * (at the minute 30 of any hour)
+    # examples http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
+    replication: 0 0 1 1/5 * ?    #Runs at 1am every 5 days every month, starting on the first day of the month
+    #replication: 0 0/5 * * * ?   #Runs every minute
   dcOrg:
     project: org
     orgModel: org:Organization_0

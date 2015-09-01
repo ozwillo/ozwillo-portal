@@ -331,7 +331,7 @@ var CountrySelect = React.createClass({
 
     render: function() {
         var label = this.props.defLabel;
-        if(!this.props.value || this.props.value === ""){
+        if(label && (!this.props.value || this.props.value === "") ){
            //This is to load the country_uri that couldn't be set |
            this.props.value = (this.getValue(label)); // decodeURIComponent()
         }

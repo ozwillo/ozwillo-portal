@@ -179,6 +179,7 @@ public class UIOrganization {
                 ", name:'" + name + '\'' +
                 ", type:" + type +
                 ", territory_id:" + territoryId +
+                ", dcId:" + dcId +
                 ", status:" + status +
                 ", admin:" + admin +
                 ", members:" + members +
