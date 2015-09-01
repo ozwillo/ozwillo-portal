@@ -68,14 +68,14 @@ public class GeographicalDAO {
     public List<GeographicalArea> searchCities(String lang, String queryTerm, String countryUri, int start, int limit) {
 
        return fetchResourceByCountryAndNameStartingWith(queryTerm, nameField, ".v", countryUri, countryField, geoProject, cityModel, limit - start)
-               .stream().map(resource -> toGeographicalArea(resource,lang, displayNameField.trim(), nameField.trim()))
+               .stream().map(resource -> toGeographicalArea(resource,lang))
                .collect(Collectors.toList());
     }
 
     // Countries
     public List<GeographicalArea> searchCountries(String lang, String term, int start, int limit) {
         return fetchResourceByCountryAndNameStartingWith(term, nameField, ".v", null,null, geoProject, countryModel, limit - start)
-              .stream().map(resource -> toGeographicalArea(resource,lang, displayNameField.trim(), nameField.trim()))
+              .stream().map(resource -> toGeographicalArea(resource,lang))
               .collect(Collectors.toList());
     }
 
@@ -130,27 +130,20 @@ public class GeographicalDAO {
         return resources;
     }
 
-    public GeographicalArea toGeographicalArea(DCResource r, String language, String nameField, String altFieldName) {
+    /**
+     * 
+     * @param r
+     * @param language
+     * @return geo area, using geo:name as nameTokens and odisp:name as (displayed) name
+     */
+    public GeographicalArea toGeographicalArea(DCResource r, String language) {
 
-        List<Map<String, String>> nameMaps = getBestI18nValue(r, nameField, altFieldName);
-        if (nameMaps == null) {
+        String displayName = getBestI18nValue(r, language, displayNameField, nameField);
+        if (displayName == null) {
             logger.warn("DC Resource {} of type {} has no field named {}", r.getUri(), r.getType(), nameField);
             return null;
         }
-        String name = null;
-        for (Map<String, String> nameMap : nameMaps) {
-            //logger.debug("nameMaps: " + nameMaps.toString());
-            String l = nameMap.get("@language"); // TODO Q why ?? @language only in application/json+ld, otherwise l
-            if (l == null) { continue; /* shouldn't happen */ }
-            if (l.equals(language)) {
-                name = nameMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
-                break; // can't find better
-            }
-            if (name == null) {
-                name = nameMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
-            }
-            //TODO LATER: Create a full body DC interceptor to test request/response to DATACORE (similar to KernelLoggingInterceptor)
-        }
+        String name = getI18nValue(r, language, nameField);
 
         String country = r.getAsString(countryField);  /* The true value should be the main referenced model id (geo:country), but today
                                                            * it is not linked in the models. NB today it makes that some of the fields are not
@@ -158,14 +151,13 @@ public class GeographicalDAO {
         List<String> modelType = r.getAsStringList("@type");
 
         GeographicalArea area = new GeographicalArea();
-        area.setName(name);
+        area.setName(displayName);
         area.setUri(r.getUri());
         area.setLang(language);
         area.setCountry(country);
         area.setModelType(modelType);
 
         area.setNameTokens(tokenizer.tokenize(name));
-        //area.setDetailedName(); // TODO fill in Datacore OR RATHER CACHE using names of NUTS3 or else 2 and country
 
         try {
             List<String>  ancestors = r.getAsStringList("oanc:ancestors");
@@ -178,15 +170,37 @@ public class GeographicalDAO {
         return area;
     }
     
-    /** TODO move to generic (-integration ? DCResource ??) */
-    @SuppressWarnings("unchecked")
-    private List<Map<String, String>> getBestI18nValue(DCResource resource, String fieldName, String altFieldName){
+    private String getI18nValue(DCResource r, String language, String i18nField) {
+        String value = null;
+        @SuppressWarnings("unchecked")
+        List<Map<String, String>> valueMaps = (List<Map<String, String>>) r.get(i18nField);
+        //logger.debug("valueMaps: " + valueMaps.toString());
+        for (Map<String, String> valueMap : valueMaps) {
+            String l = valueMap.get("@language"); // TODO Q why ?? @language only in application/json+ld, otherwise l
+            if (l == null) { continue; /* shouldn't happen */ }
+            if (l.equals(language)) {
+                value = valueMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
+                break; // can't find better
+            }
+            if (value == null) {
+                value = valueMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
+            }
+            //TODO LATER: Create a full body DC interceptor to test request/response to DATACORE (similar to KernelLoggingInterceptor)
+        }
+        return value;
+    }
+
+    /** TODO move to generic (-integration ? DCResource ??) 
+     * @param nameField2 */
+    private String getBestI18nValue(DCResource resource,
+            String language, String fieldName, String altFieldName){
+        @SuppressWarnings("unchecked")
         List<Map<String, String>> nameMaps = (List<Map<String, String>>) resource.get(fieldName);
         if( (nameMaps == null || nameMaps.isEmpty()) && (altFieldName != null && !altFieldName.isEmpty() ) ){
             logger.warn("Field \"{}\" not found. Fallback using field name \"{}\"", fieldName, altFieldName);
-            nameMaps = (List<Map<String, String>>) resource.get(altFieldName);
+            return getI18nValue(resource, language, altFieldName);
         }
-        return nameMaps;
+        return getI18nValue(resource, language, fieldName);
     }
     
     /** TODO move to OrgDAO */

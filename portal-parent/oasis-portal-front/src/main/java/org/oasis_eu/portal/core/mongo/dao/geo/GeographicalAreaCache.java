@@ -297,7 +297,7 @@ public class GeographicalAreaCache {
 
             for (Languages language : Languages.values()) {
 
-                GeographicalArea area = geographicalDAO.toGeographicalArea(res, language.getLanguage(), nameField, null); // displayNameField is not taken
+                GeographicalArea area = geographicalDAO.toGeographicalArea(res, language.getLanguage());
                 if (area == null) {
                     continue;
                 }
