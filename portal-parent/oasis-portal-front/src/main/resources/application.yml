@@ -23,21 +23,19 @@ application:
     # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
     addCurrentToSupportedLocalesIfNone: false
   geoarea:
-    project: geo_1
-    areaModel: geo:Area_0
-    primaryNameField: odisp:name
-    secondaryNameField: geo:name
-    geoCityModel: geoci:City_0
-    cityField: geoci:name
-    geoCountryModel: geoco:Country_0
-    countryField: geoco:name
+    project: geo
     displayNameField: odisp:name
+    areaModel: geo:Area_0
+    nameField: geo:name
+    countryModel: geoco:Country_0
+    cityModel: geoci:City_0
+    countryField: geo:country
     fallbackLanguage: en
     #use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year = http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
     replication: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
     #replication: 0 0/1 * * * ?     #Runs every minute
   dcOrg:
-    project: org_1
+    project: org
     orgModel: org:Organization_0
     baseUri: http://data.ozwillo.com/dc/type
   dcOrgSearch:
@@ -96,7 +94,7 @@ kernel:
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: portal
-  client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
+  client_secret: changeit
   # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
   scopes_to_require: openid profile email address phone datacore
   maxUserMembershipsPerPage: 20
@@ -107,12 +105,16 @@ kernel:
 
 datacore:
   #url: http://localhost:8080
-  url: https://plnm-dev-dc             # dev, requires installing gen'd cert, and (MUST) set the ip in /etc/hosts
+  url: https://plnm-dev-dc             # dev, requires (MUST) set the IP in /etc/hosts, and installing gen'd cert :
+  # go to https://data.ozwillo-dev.eu, right click on lock, export certificate to plnm-dev-dc.cer,
+  # then import it and check :
+  # sudo keytool -import -alias plnm-dev-dc -keystore /usr/lib/jvm/jdk1.8.xx/jre/lib/security/cacerts -file plnm-dev-dc.cer
+  # keytool -list -v -keystore /usr/lib/jvm/jdk1.8.xx/jre/lib/security/cacerts
   #url: https://data.ozwillo-dev.eu    # dev, doesn't work with current gen'd cert
   # alt_uri ??
   systemAdminUser:  #Get it using Node.js lib / with portal clientId
-    refreshToken: oxNDM3NDY5MjQ4OTUyLCJleHjkyNDg5NTJ9eyJpZCI6Ijk2Y2IxY2IyLTU1YWEtNDYyZC04NGNmLTVlMTAyMjAzNWVmZS8wTHZsNTdXNlliYWtwSWVuZHQ0UVhnIiwiaWF0IjAiOjMwMTQyN
-    nonce: 970774665428326      #Set it when getting the refreshToken
+    refreshToken: changeit
+    nonce: changeit      #Set it when getting the refreshToken
 
 
 persistence:

@@ -1,8 +1,8 @@
 package org.oasis_eu.portal.services.dc.geoarea;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.oasis_eu.portal.core.mongo.dao.geo.GeographicalAreaCache;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
@@ -20,6 +20,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 /**
+ * TODO #252 move generic & org stuff outside, better Service vs DAO archi
+ * 
+ * TODO LATER #252 make generic DatacoreBusinessFulltextCache/Dao<BO> (business object)
+ * and concretize GeographicalAreaFulltextCache extends DatacoreBusinessFulltextCache<GeographicalArea>
+ * created in its own @Configuration class see http://stackoverflow.com/questions/11845871/spring-value-annotation-inheritance-and-common-fields-but-different-values
+ *
  * User: Ignacio
  * Date: 7/2/15
  */
@@ -31,26 +37,26 @@ public class GeographicalDAO {
     @Autowired
     private DatacoreClient datacore;
 
-    @Value("${application.geoarea.project:geo_0}")
+    /** geo_0/1... can also be used to use a version not yet published (i.e. made visible in geo) */
+    @Value("${application.geoarea.project:geo}")
     private String geoProject;
-    @Value("${application.dcOrg.project: org_0}")
-    private String dcOrgProjectName;// = "org_0";
+    /** org_0/1... can also be used to use a version not yet published (i.e. made visible in org) */
+    @Value("${application.dcOrg.project:org}")
+    private String dcOrgProjectName;
 
-    @Value("${application.geoarea.geoCityModel: geo:City_0}")
-    private String geoCityModel;// = "geoci:City_0";
-    @Value("${application.geoarea.cityField: geoci_city:name}")
-    private String cityField;// = "geo_city:name"; // "geoci:name";
-    @Value("${application.geoarea.countryCityField: geoci:country}")
-    private String countryCityField;// = "geoco:Country_0"; //"geocofr:Pays_0";
-    
-    @Value("${application.geoarea.geoCountriesModel: geoco:Country_0}")
-    private String geoCountriesModel;// = "geoco:Country_0"; //"geocofr:Pays_0";
     /**ex. Rhône-Alpes */
-    @Value("${application.geoarea.countryField: geoco:name}")
-    private String countryField;// = "geoco:name"; // "geo:name";
+    @Value("${application.geoarea.nameField:geo:name}")
+    private String nameField; // or city specific "geoci:name", country-specific "geoco:name"
     /** ex. Rhône-Alpes, France */
     @Value("${application.geoarea.displayNameField:odisp:name}")
-    private String displayNameField;// = "odisp:name"; //geo:displayName
+    private String displayNameField;// or geo specific "geo:displayName"
+
+    @Value("${application.geoarea.countryModel:geoco:Country_0}")
+    private String countryModel; // or country specific "geocofr:Pays_0"
+    @Value("${application.geoarea.cityModel:geoci:City_0}")
+    private String cityModel;
+    @Value("${application.geoarea.countryField:geo:country}")
+    private String countryField; // or city specific "geoci:country"
 
     @Autowired
     private Tokenizer tokenizer;
@@ -61,40 +67,41 @@ public class GeographicalDAO {
     // Cities
     public List<GeographicalArea> searchCities(String lang, String queryTerm, String countryUri, int start, int limit) {
 
-        List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
-
-        fetchResourceByCountryAndNameStartingWith(queryTerm, cityField, ".v", countryUri, countryCityField, geoProject, geoCityModel, limit - start)
-               .stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), cityField.trim())));
-
-       return geographicalArea;
+       return fetchResourceByCountryAndNameStartingWith(queryTerm, nameField, ".v", countryUri, countryField, geoProject, cityModel, limit - start)
+               .stream().map(resource -> toGeographicalArea(resource,lang, displayNameField.trim(), nameField.trim()))
+               .collect(Collectors.toList());
     }
 
     // Countries
     public List<GeographicalArea> searchCountries(String lang, String term, int start, int limit) {
-
-        List<GeographicalArea> geographicalArea = new ArrayList<GeographicalArea>();
-
-        fetchResourceByCountryAndNameStartingWith(term, countryField, ".v", null,null, geoProject,geoCountriesModel, limit - start)
-            .stream().forEach(resource -> geographicalArea.add(toGeographicalArea(resource,lang, displayNameField.trim(), countryField.trim())));
-
-        return geographicalArea;
+        return fetchResourceByCountryAndNameStartingWith(term, nameField, ".v", null,null, geoProject, countryModel, limit - start)
+              .stream().map(resource -> toGeographicalArea(resource,lang, displayNameField.trim(), nameField.trim()))
+              .collect(Collectors.toList());
     }
 
     // Tax Reg Activity
     public List<DCRegActivity> searchTaxRegActivity(String countryUri, String queryTerms, int start, int limit) {
-
-        List<DCRegActivity> taxRegActivities = new ArrayList<DCRegActivity>();
-
-        fetchResourceByCountryAndNameStartingWith(queryTerms, "orgact:code", null, countryUri, "orgact:country", dcOrgProjectName, "orgact:Activity_0", limit - start)
-               .stream().forEach(resource -> taxRegActivities.add(toDCRegActivity(resource, displayNameField.trim(), cityField.trim())));
-
-        return taxRegActivities;
+        return fetchResourceByCountryAndNameStartingWith(queryTerms, "orgact:code", null, countryUri, "orgact:country", dcOrgProjectName, "orgact:Activity_0", limit - start)
+               .stream().map(resource -> toDCRegActivity(resource))
+               .collect(Collectors.toList());
     }
 
 
 
     // Helper & Handler methods
 
+    /**
+     * 
+     * @param queryTerm
+     * @param field
+     * @param subField
+     * @param countryUri (already encoded)
+     * @param countryField
+     * @param projectName
+     * @param modelName
+     * @param batchSize
+     * @return
+     */
     private List<DCResource> fetchResourceByCountryAndNameStartingWith(String queryTerm, String field, String subField,
             String countryUri, String countryField, String projectName, String modelName, int batchSize ){
 
@@ -145,7 +152,7 @@ public class GeographicalDAO {
             //TODO LATER: Create a full body DC interceptor to test request/response to DATACORE (similar to KernelLoggingInterceptor)
         }
 
-        String country = r.getAsString("geo:country");  /* The true value should be the main referenced model id (geo:country), but today
+        String country = r.getAsString(countryField);  /* The true value should be the main referenced model id (geo:country), but today
                                                            * it is not linked in the models. NB today it makes that some of the fields are not
                                                            * stored due to this field (been empty for those cases) */
         List<String> modelType = r.getAsStringList("@type");
@@ -170,7 +177,8 @@ public class GeographicalDAO {
 
         return area;
     }
-
+    
+    /** TODO move to generic (-integration ? DCResource ??) */
     @SuppressWarnings("unchecked")
     private List<Map<String, String>> getBestI18nValue(DCResource resource, String fieldName, String altFieldName){
         List<Map<String, String>> nameMaps = (List<Map<String, String>>) resource.get(fieldName);
@@ -180,8 +188,9 @@ public class GeographicalDAO {
         }
         return nameMaps;
     }
-
-    public DCRegActivity toDCRegActivity(DCResource r, String nameField, String altFieldName) {
+    
+    /** TODO move to OrgDAO */
+    public DCRegActivity toDCRegActivity(DCResource r) {
         String code = r.getAsString("orgact:code");
         String country = r.getAsString("orgact:country");
         String label = r.getAsString("orgact:label");

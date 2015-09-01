@@ -10,7 +10,7 @@ ha:
   failover:
 
 application:
-  url: http://localhost
+  url: http://localhost:8080
   security:
     fetchUserInfo: true
     # requires devmode, to ease up development ex. of Catalog only
@@ -23,11 +23,29 @@ application:
     # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
     addCurrentToSupportedLocalesIfNone: false
   geoarea:
-    storageModel: geo:City_0
-    nameField: geo_city:name
-    fallbackLanguage: en
+    project: geo
+    displayNameField: odisp:name
+    areaModel: geo:Area_0
+    nameField: geo:name
+    countryModel: geoco:Country_0
+    cityModel: geoci:City_0
+    countryField: geo:country
+    #use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year = http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
+    replication: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
+    #replication: 0 0/1 * * * ?     #Runs every minute
     replication: 0 0 4 25 DEC SUN  # no really, don't.
     replication_test: false
+  dcOrg:
+    project: org
+    orgModel: org:Organization_0
+    baseUri: http://data.ozwillo.com/dc/type
+  dcOrgSearch:
+    sector: org:sector
+    legalName: org:legalName.v
+    regNumber: org:regNumber
+    country: adrpost:country
+  organizationDaysTillDeletedFromTrash: 7
+  applicationInstanceDaysTillDeletedFromTrash: 7
 
 web:
   home: http://www.ozwillo-dev.eu
@@ -44,7 +62,7 @@ web:
 kernel:
   token:
     expiry: 300
-  base_uri: https://oasis-demo.atolcd.com
+  base_uri: http://kernel.ozwillo-dev.eu
   auth:
     issuer: ${kernel.base_uri}/
     auth_endpoint: ${kernel.base_uri}/a/auth
@@ -58,8 +76,8 @@ kernel:
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   application_id: 8b0e62e5-e3af-45de-8834-0d7d8a3f6139
-  client_id: 7706ded0-afe4-4826-9df1-ce03782b893d
-  client_secret: 7706ded0-afe4-4826-9df1-ce03782b893d
+  client_id: portal
+  client_secret: changeit
   scopes_to_require: openid profile email address
 
   portal_endpoints:
@@ -74,6 +92,9 @@ datacore:
   url: https://plnm-dev-dc # dev, requires installing gen'd cert
   #url: https://data.ozwillo-dev.eu # dev, doesn't work with current gen'd cert
   # alt_uri ??
+  systemAdminUser:  #Get it using Node.js lib / with portal clientId
+    refreshToken: changeit
+    nonce: changeit      #Set it when getting the refreshToken
 
 
 persistence:

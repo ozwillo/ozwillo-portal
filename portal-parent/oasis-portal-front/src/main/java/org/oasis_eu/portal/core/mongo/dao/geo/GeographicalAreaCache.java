@@ -43,6 +43,12 @@ import com.mongodb.DBObject;
 import com.mongodb.Mongo;
 
 /**
+ * TODO move generic & org stuff outside, better Service vs DAO archi
+ * 
+ * TODO LATER make generic DatacoreBusinessFulltextCache<BO> (business object)
+ * and concretize GeographicalAreaFulltextCache extends DatacoreBusinessFulltextCache<GeographicalArea>
+ * created in its own @Configuration class see http://stackoverflow.com/questions/11845871/spring-value-annotation-inheritance-and-common-fields-but-different-values
+ *
  * User: schambon
  * Date: 4/16/15
  */
@@ -72,17 +78,18 @@ public class GeographicalAreaCache {
     @Value("${application.geoarea.replication_batch_size:100}")
     private int batchSize = 100;
 
-    @Value("${application.geoarea.project:geo_0}")
+    /** geo_0/1... can also be used to use a version not yet published (i.e. made visible in geo) */
+    @Value("${application.geoarea.project:geo}")
     private String project;
 
     @Value("${application.geoarea.areaModel:geo:Area_0}")
     private String areaModel; //"geo:Area_0"; // "geoci:City_0"
-    /** ex. Rhône-Alpes, France */
-    @Value("${application.geoarea.primaryNameField:odisp:name}")
-    private String displayNameField = "odisp:name"; //geo:displayName
-    /** ex. Rhône-Alpes */
-    @Value("${application.geoarea.secondaryNameField:geo:name}")
-    private String nameField; // "geoci:name";
+    /** used as secondary search field in cache ex. Rhône-Alpes */
+    @Value("${application.geoarea.nameField:geo:name}")
+    private String nameField; // or city specific "geoci:name", country-specific "geoco:name"
+    /** USED AS PRIMARY SEARCH FIELD IN CACHE ex. Rhône-Alpes, France */
+    @Value("${application.geoarea.displayNameField:odisp:name}")
+    private String displayNameField;// or geo specific "geo:displayName"
     /** ex. "http://data.ozwillo.com/dc/type/geocifr:Commune_0/FR/FR-38/Saint-Clair-de-la-Tour" */
     @Value("${application.geoarea.searchCronField:@id}")
     private String searchCronField; // "@id";
@@ -163,19 +170,21 @@ public class GeographicalAreaCache {
 
     }
 
-    private Stream<GeographicalArea> findOneToken(String country, String modelType, String lang, String name) {
+    /**
+     * 
+     * @param countryUri URI of DC country Resource, therefore already encoded
+     * @param modelType
+     * @param lang
+     * @param name
+     * @return
+     */
+    private Stream<GeographicalArea> findOneToken(String countryUri, String modelType, String lang, String name) {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
-        String encodedCountry = country; //comes already encoded
-        /*try{
-            encodedCountry = UriComponentsBuilder.fromUriString(country).build().encode().toString();
-        }catch(Exception e){
-            logger.debug("The country URI \"{}\" cannot be encoded : {}", country, e.toString());
-        }*/
         Criteria criteria = where("lang").is(lang);
-        if (encodedCountry != null && !encodedCountry.trim().isEmpty()){
-            criteria.and("country").is(encodedCountry); //filter by country
+        if (countryUri != null && !countryUri.trim().isEmpty()){
+            criteria.and("country").is(countryUri); //filter by country
         }
         if (modelType != null && !modelType.trim().isEmpty()){
             criteria.and("modelType").in(modelType);

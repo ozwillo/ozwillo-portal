@@ -16,11 +16,20 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.Assert.assertNotEquals;
 
+
+/**
+ * Its output can also be used to fill non-test portal instance cache, this way :
+ * mongodump -d portal_test -c geographical_area -o portal_geoarea1
+ * mongorestore -d portal -c geographical_area portal_geoarea1/portal_test/geographical_area.bson
+ * 
+ * @author schambon
+ *
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringApplicationConfiguration(classes = {OasisPortal.class})
 @IntegrationTest
-public class GeographicalAreaRelicationTest {
+public class GeographicalAreaReplicationTest {
 
     @Autowired
     private GeographicalAreaCache cache;
