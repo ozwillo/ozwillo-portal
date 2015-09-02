@@ -27,6 +27,8 @@ git clone git@github.com:pole-numerique/oasis-portal.git
 git checkout oasis-spring-integration-1.6
 cd oasis-portal/portal-parent
 mvn clean install
+#or if you dont want to run the tests 
+#mvn clean install -DskipTests
 ```
 
 ## Running the portal
@@ -39,9 +41,9 @@ There are the two preferred ways to run the app:
 
 ```
 cd oasis-portal-front/target
-java -jar target/oasis-portal-front-${VERSION}.jar
-# debug :
-#java -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8003 -jar target/oasis-portal-front-${VERSION}.jar
+java -Xmx1G -jar oasis-portal-front-$VERSION.jar
+# debug (-Djsse.enableSNIExtension=true by default):
+#java -Xmx1G -Xdebug -Xrunjdwp:transport=dt_socket,server=y,suspend=n,address=8003 -jar target/oasis-portal-front-${VERSION}.jar
 ```
 
 * By running Spring Boot from the command line
@@ -58,6 +60,7 @@ And finally open http://localhost:8080/en/store (root would redirect to the Joom
 
 NB. to be used, Portal features require Kernel and Datacore servers to be deployed and configured in [application.yml](https://github.com/pole-numerique/oasis-portal/blob/master/portal-parent/oasis-portal-front/src/main/resources/application.yml).
 You can deploy your own, or [ask](http://www.ozwillo.com) to get access to the online Ozwillo dev environment.
+Also, a valid refresh_token needs to be set in the configuration (explained below).
 
 ## Debugging js :
 in [application.yml](https://github.com/pole-numerique/oasis-portal/blob/master/portal-parent/oasis-portal-front/src/main/resources/application.yml), set spring: thymeleaf: cache: to false
@@ -91,7 +94,11 @@ sudo service apache2 restart
 
 ## Using the portal
 
-* Front-end access: http://www.ozwillo.local
+* Front-end access: 
+  * DEV  : http://localhost:8080/my
+  * PROD : http://www.ozwillo.com
+
+## Using Citizen-Kin (app in Portal)
 
 * Citizen accounts:
   * alice@example.com / alice
@@ -103,7 +110,7 @@ sudo service apache2 restart
 
 ## Renew Refresh_Token to DC http access
 
- * Use the js client app to generate a refresh_token that must be insert in file application.yml (portal the credentials are also included inside, DC credentials are in DC project/puppet repertory) :
+ * Use the js client app to generate a refresh_token that must be set in file application.yml (Portal and DC credentials can be found in **DC project/puppet** protected repertory) :
     https://github.com/ozwillo/ozwillo-node-client
  * With the obtained new code, reset it in the application.yml file and restart the Portal app
 
@@ -128,3 +135,11 @@ Install python (2.7) using your favorite package manager, then :
 ./jsx.py
 # see also http://facebook.github.io/react/docs/getting-started.html
 ```
+
+### Git Tagging, JAR Generation and Installation of sources
+
+For the release, a new tag must be created as follows `git tag $TAG_RELEASE_NAME_VERSION`.
+
+Then in the server, the code and TAG must be pulled and there set the TAG in git and generate the JAR with `mvn clean install`. 
+
+The generated JAR file must be placed in the running server location (apache/tomcat) or in the configured directory for spring-boot / java -jar.
