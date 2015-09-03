@@ -102,8 +102,7 @@ public class OrganizationService {
     }
 
     public DCOrganization findOrganizationById(String dc_id){
-        String encodedDCId = UriComponentsBuilder.fromUriString(dc_id).build().encode().toString();
-        DCOrganization dcOrganization = organizationDAO.searchOrganizationById(encodedDCId);
+        DCOrganization dcOrganization = organizationDAO.searchOrganizationById(dc_id);
         if(dcOrganization != null){
             dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
 
