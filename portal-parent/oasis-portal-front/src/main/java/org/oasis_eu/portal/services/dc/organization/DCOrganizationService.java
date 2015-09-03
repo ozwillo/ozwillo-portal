@@ -179,7 +179,7 @@ public class DCOrganizationService {
         DCOrganizationType dcOrganizationType = DCOrganizationType.getDCOrganizationType(fromOrg.getSector_type());
         toRes.set("org:sector", (dcOrganizationType != null) ? dcOrganizationType.name() : "");
 
-        toRes.set("org:status", fromOrg.isIn_activity() ? "Normal Activity" : "");
+        toRes.set("org:status", fromOrg.isIn_activity() ? dcOrgStatusActive : dcOrgStatusInactive);
         toRes.setMappedList("org:altName", valueAsDCList(fromOrg.getAlt_name(), fromOrg.getLang())); //list
         toRes.set("org:type", fromOrg.getOrg_type());
         toRes.set("org:regNumber", fromOrg.getTax_reg_num());
@@ -233,7 +233,8 @@ public class DCOrganizationService {
 
         dcResource.setBaseUri(dcBaseUri.trim());
         dcResource.setType(orgModelType);
-        dcResource.setIri(cx.toUpperCase()+"/"+regNumber);
+        dcResource.setIri(cx.toUpperCase() // country acronym has no characters requiring encoding
+                +"/"+DCResource.encodeUriPathSegment(regNumber));
         return dcResource;
     }
 
@@ -269,9 +270,12 @@ public class DCOrganizationService {
             .put("orgputr", "KamuKurumu")
             .put("orgpues", "OrgPública")
             .build();
-    
-    private static final List<String> dcOrgStatus = new ImmutableList.Builder<String>()
-            //.add("Normal Activity")
+
+    private static final String dcOrgStatusActive = "Normal Activity";
+    private static final String dcOrgStatusInactive = "Inactive";
+    private static final List<String> dcOrgStatusInactiveList = new ImmutableList.Builder<String>()
+            .add(dcOrgStatusInactive) // translation of portal's "false"
+            // original list of inactive statuses :
             .add("Insolvent")
             .add("Bankrupt")
             .add("In Receivership")
@@ -282,7 +286,7 @@ public class DCOrganizationService {
         String legalName =       getBestI18nValue(res, language, "org:legalName", null); //Mapped list
 
         String in_activity_val = getBestI18nValue(res, language, "org:status", null);
-        boolean in_activity =    (in_activity_val!= null && dcOrgStatus.contains(in_activity_val) ) ? true : false;
+        boolean in_activity =    (in_activity_val!= null && dcOrgStatusActive.equals(in_activity_val) ) ? true : false;
 
         String sector =          getBestI18nValue(res, language, "org:sector", null);
         String altName =         getBestI18nValue(res, language, "org:altName", null); //Mapped list
