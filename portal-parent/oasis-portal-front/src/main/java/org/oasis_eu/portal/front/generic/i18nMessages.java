@@ -56,6 +56,10 @@ public final class i18nMessages {
             "restricted-service", "geographical-area-of-interest",
             "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
 
+    private static final List<String> errors = Arrays.asList("datacore.forbidden");
+
+
+    /* Messages Handlers  */
     public static Map<String, String> getI18n_all(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         Map<String, String> i18n = new HashMap<>();
 
@@ -76,6 +80,7 @@ public final class i18nMessages {
                 k -> messageSource.getMessage("install.org." + k, new Object[0], locale))));
         i18n.putAll(languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
         i18n.putAll(myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
+        i18n.putAll(errors.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("error." + k, new Object[0], locale))));
 
         return i18n;
     }
@@ -108,6 +113,9 @@ public final class i18nMessages {
         i18n.putAll(storeInstallkeys.stream().collect(Collectors.toMap(k -> "install.org."+k,
                 k -> messageSource.getMessage("install.org." + k, new Object[0], locale))));
         return i18n;
+    }
+    public static Map<String, String> getI18n_errors(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (errors.stream().collect(Collectors.toMap(k -> "error." + k, k -> messageSource.getMessage("error." + k, new Object[]{}, locale))));
     }
     public static Map<String, String> getI18n_myApps(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));

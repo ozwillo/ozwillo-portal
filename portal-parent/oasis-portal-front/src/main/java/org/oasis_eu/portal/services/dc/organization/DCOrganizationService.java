@@ -11,7 +11,9 @@ import org.oasis_eu.spring.datacore.model.DCOperator;
 import org.oasis_eu.spring.datacore.model.DCQueryParameters;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.datacore.model.DCResult;
+import org.oasis_eu.spring.datacore.model.DCResultType;
 import org.oasis_eu.spring.datacore.model.DCRights;
+import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -113,7 +115,14 @@ public class DCOrganizationService {
         return resources.isEmpty()? null : toDCOrganization(resources.get(0),"FR");
     }
 
-    public DCResource create(DCOrganization dcOrganization){
+    /**
+     * Creates a new DC Organization. It fetch last DC org, then merge it with current data, update it in DC OR create it if it doesn't exist
+     * @param dcOrganization
+     * @return DCResource
+     * @throws ForbiddenException if operation not authorized by Datacore, probably because
+     * user organizations have been changed see #264 & DC#100
+     */
+    public DCResource create(DCOrganization dcOrganization) throws ForbiddenException {
         // re-get DC resource before creation to validate that it doesn't exist
         DCResource dcResource = fetchDCOrganizationResource(dcOrganization.getCountry_uri(),
                 DCOrganizationType.getDCOrganizationType(dcOrganization.getSector_type()).name(),
@@ -122,7 +131,10 @@ public class DCOrganizationService {
         if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion()) ){ //found in DC
             logger.debug("It exists, and there are no previous updates. Merging it from form fields, and doing a datacoreClient.updateResource()");
             mergeDCOrgToDCResources(dcOrganization, dcResource);
-            DCResult dcResult = datacore.updateResource(dcOrgProjectName.trim(), dcResource); // to test must change url as datacore namespace (plnm-dev-dc)
+            DCResult dcResult = datacore.updateResource(dcOrgProjectName.trim(), dcResource); // to test locally, you must change url as datacore namespace (plnm-dev-dc)
+            if (dcResult.getType() == DCResultType.FORBIDDEN) {
+                throw new ForbiddenException();
+            }
             return dcResult != null ? dcResource : null;
         }else if (dcResource == null || dcResource.isNew()){  // still doesn't exist in DC
             logger.debug("It doesn't exist in DC Doing a datacore.saveResource() with : {},{}", dcOrgProjectName.trim(),dcOrganization);

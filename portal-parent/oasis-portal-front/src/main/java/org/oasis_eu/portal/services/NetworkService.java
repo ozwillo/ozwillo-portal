@@ -251,9 +251,8 @@ public class NetworkService {
      * @param uiOrganization
      * @param organization
      * @return
-     * @throws ForbiddenException if not admin
      */
-    private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) throws ForbiddenException {
+    private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) {
         boolean nameHasChanged = !uiOrganization.getName().equals(organization.getName());
         boolean typeHasChanged = uiOrganization.getType() == null || !(uiOrganization.getType().equals(organization.getType()));
         // NB. status must rather be changed by setStatus()

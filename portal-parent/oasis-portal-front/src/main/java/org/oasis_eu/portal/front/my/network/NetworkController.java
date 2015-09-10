@@ -53,6 +53,7 @@ public class NetworkController extends PortalController {
         i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_errors(locale, messageSource));
 
         return i18n;
     }

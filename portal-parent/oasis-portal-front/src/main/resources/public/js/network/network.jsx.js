@@ -566,6 +566,16 @@ var InformationDialog = React.createClass({
     close: function(){
         this.refs.modalModifyKAndDCOrg.close();
     },
+    onError: function(srvErrCode, srvErrMessage){
+        this.state.srvErrCode = srvErrCode;
+        this.state.errMessage = srvErrMessage;
+
+        if(srvErrCode == 403){
+            this.state.errMessage = t('error.datacore.forbidden');
+        }
+        this.setState(this.state);
+        this.refs.modalOrgInfoError.open();
+    },
     loadDCOrganizations: function() {
        if (this.props.org.dc_id) {
            $.ajax({
@@ -594,7 +604,12 @@ var InformationDialog = React.createClass({
         var territoryId = (this.props.org.territory_id) ? (
                 <p>{t('ui.location')} : {this.props.org.territory_label}</p>
         ) : '';
-
+        var errorModal = (
+            <Modal ref="modalOrgInfoError" title={t('my.network.information')} infobox={true} cancelHandler={null/*this.close()*/} >
+                {/*<div><h5>{t('error.datacore.forbidden')}</h5></div>*/}
+                <br/><div><h5>{this.state.errMessage}</h5></div>
+            </Modal>
+        );
         var modal = undefined;
         if(this.state.organization){
             var saveButton = t('ui.save');
@@ -602,10 +617,11 @@ var InformationDialog = React.createClass({
             modal = (
                     <Modal large={true} ref="modalModifyKAndDCOrg" title={t('my.network.information')} successHandler={this.createOrModifOrg} buttonLabels={buttonLabels}>
                        <h4><span title={this.props.org.id}>{this.props.org.name}</span></h4>
-                       <CreateOrModifyOrganizationForm ref="tabbedFormModify" successHandler={this.close} organization={this.state.organization}/>
+                       <CreateOrModifyOrganizationForm ref="tabbedFormModify" successHandler={this.close} errorHandler={this.onError} organization={this.state.organization}/>
                     </Modal>
             );
         }else{
+           {/* This part is to show a short message to users of very old organizations that doesnt exist in DC */}
            var territoryId = (this.props.org.territory_id) ? (<p>{t('ui.location')} : {this.props.org.territory_label}</p>) : '';
 
             modal = (
@@ -618,7 +634,7 @@ var InformationDialog = React.createClass({
                 );
         }
 
-        return (<div> {modal} </div>);
+        return (<div> {modal} {errorModal} </div>);
     }
 });
 

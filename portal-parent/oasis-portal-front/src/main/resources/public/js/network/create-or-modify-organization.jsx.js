@@ -31,8 +31,11 @@ var CreateOrModifyOrganizationModal = React.createClass({
             this.props.successHandler(org);
         }
     },
-    onError: function (data) {
-        this.refs.modalError.open();
+    onError: function (srvErrCode, srvErrMessage) {
+        this.state.srvErrCode = srvErrCode;
+        this.state.srvErrMessage = srvErrMessage;
+        this.setState(this.state);
+        this.refs.modalCreatOrgError.open();
     },
     createOrModifOrg: function(event){
         return (this.refs.tabbedForm.createOrModifOrg(event) ); // return true if the organization has been created successful
@@ -42,21 +45,20 @@ var CreateOrModifyOrganizationModal = React.createClass({
         var org = this.state.organization; //Note: objects are passed by ref so all changes will visible for all (if rendered)
         var typeRestriction = this.props.typeRestriction;
 
-        var saveButton = org.exist ? t('ui.save') : t('my.network.create-org');
-        var buttonLabels = {"cancel": t('ui.cancel'), "save": saveButton };
+        var saveButtonLabel = org.exist ? t('ui.save') : t('my.network.create-org');
+        var buttonLabels = {"cancel": t('ui.cancel'), "save": saveButtonLabel };
         var modalTitle = org.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
 
 
         return (<div>
-                <Modal large={true} ref="modalcreateOrModifyOrg" title={modalTitle}
-                       successHandler={this.createOrModifOrg} buttonLabels={buttonLabels}>
-                    <CreateOrModifyOrganizationForm ref="tabbedForm" successHandler={this.close} errorHandler={this.onError} 
+                <Modal large={true} ref="modalcreateOrModifyOrg" title={modalTitle} successHandler={this.createOrModifOrg} buttonLabels={buttonLabels}>
+                    <CreateOrModifyOrganizationForm ref="tabbedForm" successHandler={this.close} errorHandler={this.onError}
                        organization={org} typeRestriction={typeRestriction}/>
                 </Modal>
 
-                <Modal ref="modalError" title={t('ui.something_went_wrong_title')} infobox={true} cancelHandler={null/*this.close()*/} >
-                    <div><h5>{t('ui.unexpected_error')}</h5></div>
-                    <br/><div><h5>Err: Possibly the organization is already assigned in kernel</h5></div>
+                <Modal ref="modalCreatOrgError" title={t('my.network.information')} infobox={true} cancelHandler={null/*this.close()*/} >
+                    {/*<div><h5>{t('error.datacore.forbidden')}</h5></div>*/}
+                    <br/><div><h5>{this.state.srvErrMessage}</h5></div>
                 </Modal>
                 </div>
             );
@@ -97,12 +99,12 @@ var CreateOrModifyOrganizationForm = React.createClass({
                 if(data || data !== ''){ this.props.successHandler(data);
                 }else{ /* show message */
                     console.error('No organziation was created with'+ org + '. Result :', data);
-                    this.props.errorHandler(data);
+                    this.props.errorHandler('Not Valid Response', 'The received response was empty.'); // Should not happen
                 }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
-                this.props.errorHandler();
+                this.props.errorHandler(err, xhr.responseText);
             }.bind(this)
         });
     },
@@ -115,13 +117,13 @@ var CreateOrModifyOrganizationForm = React.createClass({
             success: function (data) {
                 if(data){ this.props.successHandler(data);
                 }else{ /* show message */
-                    console.error('No organziation was created with'+ org + '. Result :', data);
-                    this.props.errorHandler(data);
+                    console.error('No organziation was modified with'+ org + '. Result :', data);
+                    this.props.errorHandler('Not Valid Response', 'The received response was empty.'); // Should not happen
                 }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
-                this.props.errorHandler();
+                this.props.errorHandler(xhr.status, xhr.responseText);
             }.bind(this)
         });
     },
@@ -332,8 +334,8 @@ var Tab1 = React.createClass({
                 </div>{/* End of col 1 */}
 
                 <div className="col-sm-2">
-                  {/* util/fileuploadinput.jsx.js*/}
-                  {/* TODO LATER : UNCOMMENT - ISSUE #
+                  {/* util/fileuploadinput.jsx.js */}
+                  {/* TODO LATER : UNCOMMENT - ISSUE #259
                   <div className="form-group">
                    <div className="control">
                       <img src={this.state.organization.iconUrl}/>
