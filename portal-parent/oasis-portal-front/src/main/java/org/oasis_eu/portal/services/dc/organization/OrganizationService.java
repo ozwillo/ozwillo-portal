@@ -22,7 +22,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
-import org.springframework.web.util.UriComponentsBuilder;
 
 @Service
 public class OrganizationService {
@@ -180,22 +179,29 @@ public class OrganizationService {
             logger.error("The Jurisdiction \"{}\" or DCOrganization ID \"{}\" can't be parsed into URI. "
                     + "Verify that they are definied correctly.", dcOrganization.getJurisdiction_uri(), dcOrganization.getId());
             logger.error("Error : {}", e.getMessage());
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(e);
         }
 
         UIOrganization searchKOrganization = networkService.searchOrganizationByDCId(dcOrganization.getId());
         if(searchKOrganization == null){ // org not found in kernel
-            UIOrganization creqtedKOrg = networkService.createOrganization(dcOrganization.getLegal_name(),sectorType.name(),territoryId,dcId);
-            if(creqtedKOrg != null && creqtedKOrg.getId() != null ){
-                return creqtedKOrg;
+            UIOrganization createdKOrg = networkService.createOrganization(dcOrganization.getLegal_name(),sectorType.name(),territoryId,dcId);
+            if(createdKOrg != null && createdKOrg.getId() != null ){
+                return createdKOrg;
             }
         }else{
-            networkService.updateOrganization(searchKOrganization);
+            // TODO LATER fillUiOrgFromDcOrg(searchKOrganization, dcOrganization) ?
+            // NB. actually ONLY territory_id can change (not legal name nor type, so it should be the same)
+            searchKOrganization.setName(dcOrganization.getLegal_name());
+            searchKOrganization.setType(sectorType);
+            searchKOrganization.setTerritoryId(territoryId);
+            // update existing org in Kernel
+            networkService.updateOrganizationInfo(searchKOrganization);
             return searchKOrganization; //this is to return a value so it can continue and update data in DC
         }
 
         return null;
     }
+
 
     private void updateUserInfo(DCOrganization dcOrganization) {
         UserInfo userInfo = userInfoService.currentUser();

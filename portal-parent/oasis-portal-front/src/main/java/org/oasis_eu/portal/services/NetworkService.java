@@ -189,17 +189,26 @@ public class NetworkService {
     }
 
 
-    public void updateOrganization(UIOrganization uiOrganization) {
+    public void updateOrganizationInfo(UIOrganization uiOrganization){
         Organization org = organizationStore.find(uiOrganization.getId());
         if (shouldUpdateOrg(uiOrganization, org)) {
             org.setName(uiOrganization.getName());
-            org.setType(uiOrganization.getType() != null ? uiOrganization.getType() : OrganizationType.PUBLIC_BODY);
+            org.setType(uiOrganization.getType() != null ? uiOrganization.getType() : OrganizationType.PUBLIC_BODY); // though can't change from a functional point of view
             org.setTerritoryId(uiOrganization.getTerritoryId());
             //org.setStatus(uiOrganization.getStatus()); // NB. status must rather be changed by setStatus()
             // NB. status' changed / requester can't be modified by portal
 
             organizationStore.update(org);
         }
+    }
+
+    /**
+     * Modify Organization info and remove and update valid Org Memberships
+     * @see updateOrganizationInfo(UIOrganization uiOrganization)
+     * @param uiOrganization
+     */
+    public void updateOrganization(UIOrganization uiOrganization) {
+        this.updateOrganizationInfo(uiOrganization);
 
         List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(uiOrganization.getId());
 
@@ -208,14 +217,16 @@ public class NetworkService {
         // NB if is only one member it could be the last one assigned (admin?), so we leave it
         if(memberships.size()>1){
             // find the members to remove.
-            memberships.stream().filter(om ->
+            List<OrgMembership> toBeRemoved = memberships.stream().filter(om ->
                         uiOrganization.getMembers().stream().noneMatch(member -> om.getAccountId().equals(member.getId()))
-                    ).forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
+                    ).collect(Collectors.toList());
+            toBeRemoved.forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
 
             // then the members to change (note: we only change the "admin" flag for now)
-            memberships.stream().filter(om ->
+            List<OrgMembership> toBeChanged = memberships.stream().filter(om ->
                             uiOrganization.getMembers().stream().anyMatch(member -> om.getAccountId().equals(member.getId()) && (member.isAdmin() != om.isAdmin()))
-            ).forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
+            ).collect(Collectors.toList());
+            toBeChanged.forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
         }
 
     }
@@ -246,7 +257,9 @@ public class NetworkService {
         boolean nameHasChanged = !uiOrganization.getName().equals(organization.getName());
         boolean typeHasChanged = uiOrganization.getType() == null || !(uiOrganization.getType().equals(organization.getType()));
         // NB. status must rather be changed by setStatus()
-        boolean territoryIdHasChanged = uiOrganization.getTerritoryId() == null || !(uiOrganization.getTerritoryId().equals(organization.getTerritoryId()));
+        boolean territoryIdHasChanged = (uiOrganization.getTerritoryId() == null && organization.getTerritoryId() != null)
+                || ( uiOrganization.getTerritoryId() != null && organization.getTerritoryId() != null
+                     && !uiOrganization.getTerritoryId().equals(organization.getTerritoryId())  );
 
         return nameHasChanged || typeHasChanged || territoryIdHasChanged;
     }
