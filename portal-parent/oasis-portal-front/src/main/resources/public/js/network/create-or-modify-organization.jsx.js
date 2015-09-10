@@ -332,7 +332,8 @@ var Tab1 = React.createClass({
                 </div>{/* End of col 1 */}
 
                 <div className="col-sm-2">
-                  {/* util/fileuploadinput.jsx.js */}
+                  {/* util/fileuploadinput.jsx.js*/}
+                  {/* TODO LATER : UNCOMMENT - ISSUE #
                   <div className="form-group">
                    <div className="control">
                       <img src={this.state.organization.iconUrl}/>
@@ -344,7 +345,7 @@ var Tab1 = React.createClass({
                       </div>
                    </div>
                   </div>
-
+                   */}
                 </div></div>{/* End of row2 */}
                 </div>{/* End of container */}
                 <div className="error"><label>{this.state.errorMsg}</label> </div>
