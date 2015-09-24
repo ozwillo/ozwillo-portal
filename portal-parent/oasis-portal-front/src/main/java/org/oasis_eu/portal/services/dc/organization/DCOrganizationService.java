@@ -347,7 +347,7 @@ public class DCOrganizationService {
         dcOrg.setOrg_type(org_type);
 
         dcOrg.setTax_reg_num(regNumber);                // tax Id number / N SIRET
-        dcOrg.setTax_reg_official_id(officialId);       // localTaxId / INSEE    /* Only for public organizations*/
+        dcOrg.setTax_reg_official_id(officialId);       // localTaxId / INSEE    /* Only for public organizations from FR and TR*/
         dcOrg.setTax_reg_activity_uri(taxRegAct_uri); dcOrg.setTax_reg_activity(taxRegAct);  // NACE/NAF code
 
         dcOrg.setJurisdiction_uri(jurisdiction_uri); /* Only for public organizations*/

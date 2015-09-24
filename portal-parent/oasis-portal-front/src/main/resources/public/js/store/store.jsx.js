@@ -252,27 +252,24 @@ var SideBar = React.createClass({
                         </ul>
                     </div>
                 </div>
-                
+
+                {/* geo-filer - filtering by jurisdiction (geoArea) */}
                 <div>
                 <label htmlFor="geoSearch" className="">{t('look-for-an-application')}</label>
                 </div>
-                
-                <div className="col-lg-13" style={ (!devmode) ? { display: "none" } : {}}>
-                
-                <div>
-                    <GeoSingleSelect2Component className="form-control" ref="geoSearch" onChange={this.search} name="geoSearch"
+                <div className="col-lg-13">
+                   <div>
+                       <GeoSingleSelect2Component className="form-control" ref="geoSearch" onChange={this.search} name="geoSearch"
                             urlResources={store_service + "/geographicalAreas"} countryFilter={ {country_uri:''} } />
+                   </div>
+                   <div className="input-group">
+                      <input type="text" className="form-control" onChange={this.fullTextSearchChanged} onKeyDown={this.searchOnEnterDown} placeholder={t('keywords')} name="fullTextSearch"/>
+                       <span className="input-group-btn">
+                          <button className="btn btn-default" type="button" onClick={this.search}><img className="btn-search" src="/img/icon/btn-search.png"/></button>
+                       </span>
+                   </div>
                 </div>
 
-                <div className="input-group">
-                    <input type="text" className="form-control" onChange={this.fullTextSearchChanged} onKeyDown={this.searchOnEnterDown} placeholder={t('keywords')} name="fullTextSearch"/>
-                    <span className="input-group-btn">
-                        <button className="btn btn-default" type="button" onClick={this.search}><img className="btn-search" src="/img/icon/btn-search.png"/></button>
-                    </span>
-                </div>
-                  
-                </div>
-                
                 <div className="checkbox">
                     <label>
                         <input type="checkbox" checked={this.props.filter.audience.citizens} onChange={this.change('audience', 'citizens')}/>{t('citizens')}
