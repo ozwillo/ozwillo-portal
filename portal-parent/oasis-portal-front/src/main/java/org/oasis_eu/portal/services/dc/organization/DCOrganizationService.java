@@ -305,36 +305,31 @@ public class DCOrganizationService {
 
         String org_type =        getBestI18nValue(res, language, "org:type", null);
 
-        String taxRegAct_uri =    getBestI18nValue(res, language, "org:activity", null);
-        String taxRegAct =       (taxRegAct_uri == null) ? null : getBestI18nValue(
-                                       datacore.getResourceFromURI(dcOrgProjectName, taxRegAct_uri).getResource(), language, "orgact:code", null
-                                 );
+        String taxRegAct_uri =   getBestI18nValue(res, language, "org:activity", null);
+        String taxRegAct =       getRemoteBestI18nValue(taxRegAct_uri, dcOrgProjectName, language, "orgact:code", null);
+
         String officialId =      getBestI18nValue(res, language, "orgpu:officialId", null);
         String regNumber =       getBestI18nValue(res, language, "org:regNumber", null);
 
         String jurisdiction_uri =  getBestI18nValue(res, language, "orgpu:jurisdiction", null);
-        String jurisdiction =    jurisdiction_uri == null ? null : getBestI18nValue(
-                                       datacore.getResourceFromURI(dcOrgProjectName, jurisdiction_uri).getResource(), language, "odisp:name", null
-                                 );
+        String jurisdiction =    getRemoteBestI18nValue(jurisdiction_uri, dcOrgProjectName, language, "odisp:name", null);
 
         String phoneNumber =     getBestI18nValue(res, language, "org:phoneNumber", null);
         String webSite =         getBestI18nValue(res, language, "org:webSite", null);
         String email =           getBestI18nValue(res, language, "org:email", null);
+
         // Geolocation data
         String streetAndNumber = getBestI18nValue(res, language, "adrpost:streetAndNumber", null);
         String supField =        getBestI18nValue(res, language, "adrpost:supField", null);
         String POBox =           getBestI18nValue(res, language, "adrpost:POBox", null);
         String city_uri =        getBestI18nValue(res, language, "adrpost:postName", null);
-        String city =            city_uri == null ? null : getBestI18nValue(
-                                        datacore.getResourceFromURI(dcOrgProjectName, city_uri).getResource(), language, "odisp:name", null
-                                 );
+        String city =            getRemoteBestI18nValue(city_uri, dcOrgProjectName, language, "odisp:name", null);
+
         String zip =             getBestI18nValue(res, language, "adrpost:postCode", "org:postCode");
         String cedex =           getBestI18nValue(res, language, "adrpost:cedex", null);
 
         String country_uri =     getBestI18nValue(res, language, "adrpost:country", null);
-        String country =         country_uri == null ? null : getBestI18nValue(
-                                       datacore.getResourceFromURI(dcOrgProjectName, country_uri).getResource(), language, "geo:name", null
-                                 );
+        String country =         getRemoteBestI18nValue(country_uri, dcOrgProjectName, language, "geo:name", null);
 
         //String longitude=     getBestI18nValue(res, "org:longitude", null);
         //String latitude =     getBestI18nValue(res, "org:latitude", null);
@@ -391,7 +386,8 @@ public class DCOrganizationService {
             object = resource.get(altFieldName);
         }
         if (object == null) { // if after double matched is not found then return null
-            logger.warn("DC Resource {} of type {} has no the required fields.", resource.getUri(), resource.getType());
+            logger.warn("DC Resource {} of type {} has no the required field \"{}\" nor alt field \"{}\"",
+                    resource.getUri(), resource.getType(), fieldName, altFieldName);
             return null;
         }
         // Parse the list checking if it's a simple list or a listed map
@@ -413,10 +409,41 @@ public class DCOrganizationService {
                 }else {valueMap = ((List<String>)object).toString();} // Its a list of strings //TODO use it and test it
             }
             return valueMap;
-
         }else if (object instanceof String ) {
             String val = (String)object;
             return val == null || val.isEmpty() ? null : val;
+        }else {
+            logger.warn("No value was found in mapped list using language \"{}\" nor as a string field.", language);
+        }
+
+        return null;
+    }
+
+    /**
+     * Return the resource value, first fetch the resource in the passed parameter,
+     * then it matches the said resource with the fieldName, if not found then match with the altFieldName.
+     * In case a Listed Map is found, the inner values are matched using i18n key @language, and @value. 
+     * @param dcOrgProjectName
+     * @param resource_uri
+     * @param language
+     * @param fieldName
+     * @param altFieldName
+     * @return String with found value, null if not value was found (empty counts as not found value)
+     */
+    private String getRemoteBestI18nValue(String resource_uri, String dcOrgProjectName, String language, String fieldName, String altFieldName){
+
+        if(resource_uri == null || resource_uri.length() == 0) {
+            logger.warn("Resource URI is null or empty. No {} nor {} value will be fetched.", fieldName, altFieldName);
+            return null;
+        }
+
+        DCResult dcResult = datacore.getResourceFromURI(dcOrgProjectName, resource_uri);
+        if(dcResult.getType() == DCResultType.SUCCESS){
+            DCResource dcResource = dcResult.getResource();
+            String i18nValue = getBestI18nValue(dcResource, language, fieldName, altFieldName);
+            return i18nValue;
+        }else{
+            logger.error("Got an unsuccessful response from Datacore while fetching the ressource \"{}\". Error code:\"{}\", Message:{}",resource_uri, dcResult.getErrorMessages(), dcResult.getType());
         }
         return null;
     }
