@@ -423,8 +423,8 @@ public class DCOrganizationService {
      * Return the resource value, first fetch the resource in the passed parameter,
      * then it matches the said resource with the fieldName, if not found then match with the altFieldName.
      * In case a Listed Map is found, the inner values are matched using i18n key @language, and @value. 
-     * @param dcOrgProjectName
      * @param resource_uri
+     * @param dcOrgProjectName
      * @param language
      * @param fieldName
      * @param altFieldName
@@ -443,7 +443,7 @@ public class DCOrganizationService {
             String i18nValue = getBestI18nValue(dcResource, language, fieldName, altFieldName);
             return i18nValue;
         }else{
-            logger.error("Got an unsuccessful response from Datacore while fetching the ressource \"{}\". Error code:\"{}\", Message:{}",resource_uri, dcResult.getErrorMessages(), dcResult.getType());
+            logger.error("Got an unsuccessful response from Datacore while fetching the ressource \"{}\". Error:\"{}\", Message:{}",resource_uri, dcResult.getType(), dcResult.getErrorMessages());
         }
         return null;
     }

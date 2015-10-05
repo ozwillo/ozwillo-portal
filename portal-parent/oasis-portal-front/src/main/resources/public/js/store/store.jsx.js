@@ -58,19 +58,12 @@ var AppStore = React.createClass({
         if (this.refs.sideBar.state.selectedLanguage !== 'all') {
             supported_locales.push(this.refs.sideBar.state.selectedLanguage);
         }
-        var geographicalAreaUris = this.refs.sideBar.refs.geoSearch.state.value;
-        /*var geographicalAreaUris = []; // alt looking in select2 DOM rather than react state
-        var geographicalAreas = $(this.refs.sideBar.refs.geoSearch.getDOMNode()).find(".select2-container").select2('data');
-        //this.refs.sideBar.refs.searchDiv.props.select2Object
-        $.map(geographicalAreas, function(area, i) {
-            geographicalAreaUris.push(area.uri);
-        }.bind(this))*/
+        var geoAreaAncestorsUris = this.refs.sideBar.state.geoAreaAncestorsUris;
         var searchText = this.refs.sideBar.state.searchText;
-        //var searchText = $(this.refs.sideBar.refs.searchDiv.getDOMNode()).find("input.select2-input").val(); // alt looking in select2 DOM rather than react state
         var queryParams = {target_citizens: target_citizens, target_publicbodies: target_publicbodies, target_companies: target_companies,
                 free: free, paid: paid,
                 supported_locales: supported_locales,
-                geographical_areas: geographicalAreaUris,
+                geoArea_AncestorsUris: geoAreaAncestorsUris,
                 category_ids: [],
                 q: searchText}; // q being empty is ok
         $.ajax({
@@ -177,7 +170,7 @@ var SideBar = React.createClass({
     getInitialState: function () {
         return {
             selectedLanguage: 'en',
-            geographicalAreaUris: [],
+            geoAreaAncestorsUris: [],
             searchText: '',
             }; // TODO or in top level state ??
     },
@@ -205,6 +198,10 @@ var SideBar = React.createClass({
         if (event.keyCode === 13) { // Enter key
             this.search(event);
         }
+    },
+    onGeoChange: function (event) {
+        this.state.geoAreaAncestorsUris = event.added ? event.added.ancestors : [];
+        this.search(event);
     },
     change: function (category, item) {
         return function () {
@@ -259,7 +256,7 @@ var SideBar = React.createClass({
                 </div>
                 <div className="col-lg-13">
                    <div>
-                       <GeoSingleSelect2Component className="form-control" ref="geoSearch" onChange={this.search} name="geoSearch"
+                       <GeoSingleSelect2Component className="form-control" ref="geoSearch" onChange={this.onGeoChange} name="geoSearch"
                             urlResources={store_service + "/geographicalAreas"} countryFilter={ {country_uri:''} } />
                    </div>
                    <div className="input-group">

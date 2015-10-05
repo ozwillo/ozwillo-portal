@@ -42,15 +42,6 @@ public class GeographicalAreaService {
         return cache.search(country_uri, modelType,RequestContextUtils.getLocale(request).getLanguage(), q, start, limit)
                     .collect(Collectors.toList());
     }
-    public GeographicalArea getAncestorsFromGeographicalArea(List<String> geographicalAreas){
-        if(geographicalAreas == null || geographicalAreas.isEmpty()){return null;}
-
-        List<GeographicalArea> geoList = this.find(null, null, geographicalAreas.get(0), 0,1);
-        if (geoList != null && !geoList.isEmpty()){
-            return geoList.get(0);
-        }
-        return null;
-    }
 
     /**
      * @param q

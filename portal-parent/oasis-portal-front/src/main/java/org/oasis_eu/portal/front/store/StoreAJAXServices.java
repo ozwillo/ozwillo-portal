@@ -119,7 +119,7 @@ public class StoreAJAXServices extends BaseAJAXServices {
                                                @RequestParam boolean free,
                                                @RequestParam boolean paid,
                                                @RequestParam(required=false) List<String> supported_locales,
-                                               @RequestParam(required=false) List<String> geographical_areas,
+                                               @RequestParam(required=false) List<String> geoArea_AncestorsUris,
                                                @RequestParam(required=false) List<String> category_ids,
                                                @RequestParam(required=false) String q,
                                                @RequestParam(required = false, defaultValue = "0") int last) {
@@ -139,11 +139,11 @@ public class StoreAJAXServices extends BaseAJAXServices {
         List<Locale> supportedLocales = supported_locales == null ? null : supported_locales.stream()
                 .map(localeString -> Locale.forLanguageTag(localeString)).collect(Collectors.toList());
         List<StoreApplication> apps = appstoreService.getAll(audiences, paymentOptions,
-                supportedLocales, geographical_areas, category_ids, q, last).stream()
+                supportedLocales, geoArea_AncestorsUris, category_ids, q, last).stream()
                 .map(this::toStoreApplication)
                 .collect(Collectors.toList());
         //apps = new ArrayList<StoreApplication>(); // for easy testing
-        
+
         return new StoreAppResponse(apps, apps.size() == loadSize); // if we got exactly as many as we'd have liked, there are likely more
     }
 

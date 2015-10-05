@@ -19,7 +19,6 @@ import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
-import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.portal.core.services.icons.ImageService;
@@ -84,6 +83,17 @@ public class PortalAppstoreService {
     private boolean addCurrentToSupportedLocalesIfNone;
 
 
+    /**
+     * Mirrors Kernel API
+     * @param targetAudiences
+     * @param paymentOptions
+     * @param supportedLocales
+     * @param geographicalAreas actually ancestors of the geo area chosen in the autocomplete field
+     * @param categoryIds
+     * @param q
+     * @param from
+     * @return
+     */
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
             List<Locale> supportedLocales, List<String> geographicalAreas,
             List<String> categoryIds, String q, int from) {
@@ -93,22 +103,15 @@ public class PortalAppstoreService {
                     Arrays.asList(new Locale[] { RequestContextUtils.getLocale(request) }) : supportedLocales;
                     // TODO or rather use PortalController.currentLanguage() ?? anyway, rather init it on client js side ?!!
         }
-        List<String> ancestors = null;
-        GeographicalArea geoArea = geographicalAreaService.getAncestorsFromGeographicalArea(geographicalAreas);
-        if(geoArea != null && geoArea.getAncestors() != null && !geoArea.getAncestors().isEmpty()){
-            ancestors = geoArea.getAncestors();
-        }else{
-            ancestors = geographicalAreas; // fallback
-        }
 
         String currentHl = RequestContextUtils.getLocale(request).getLanguage(); // optimization
-        return catalogStore.findAllVisible(targetAudiences, paymentOptions, supportedLocales,
-                ancestors, categoryIds, q, currentHl, from).stream()
-                .filter(catalogEntry -> catalogEntry != null)
+        List<CatalogEntry> catalogEntryLst = catalogStore.findAllVisible(targetAudiences, paymentOptions, supportedLocales,
+                geographicalAreas, categoryIds, q, currentHl, from);
+
+        return  catalogEntryLst.stream().filter(catalogEntry -> catalogEntry != null)
                 .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry,
                         imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false),
                         getOrganizationName(catalogEntry), getInstallationOption(catalogEntry)))
-
                 .collect(Collectors.toList());
     }
 
