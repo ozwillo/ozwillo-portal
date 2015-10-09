@@ -19,6 +19,11 @@ public class GeographicalAreaService {
     @Value("${application.geoarea.fallbackLanguage:en}")
     private String fallbackLanguage = "en";
 
+    @Value("${application.geoarea.countryModel:geoco:Country_0}")
+    private String countryModel;
+    @Value("${application.geoarea.cityModel:geoci:City_0}")
+    private String cityModel;
+    
     @Autowired
     private GeographicalAreaCache cache;
 
@@ -49,8 +54,10 @@ public class GeographicalAreaService {
      * @param limit ex. 11 then return 10
      * @return
      */
-    public List<GeographicalArea> findCities(String queryTerms, String country, int start, int limit) {
-        return geographicalDAO.searchCities(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, country, start, limit);
+    public List<GeographicalArea> findCities(String queryTerms, String country_uri, int start, int limit) {
+        //return geographicalDAO.searchCities(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, country, start, limit);
+        return cache.search(country_uri, cityModel, RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit)
+                .collect(Collectors.toList());
     }
 
     /**
@@ -60,12 +67,18 @@ public class GeographicalAreaService {
      * @return
      */
     public List<GeographicalArea> findCountries(String queryTerms, int start, int limit) {
-        queryTerms = queryTerms.substring(0,1).toUpperCase() + queryTerms.substring(1,queryTerms.length()).toLowerCase();
-        return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
+        //return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
+        return cache.search(null, countryModel, RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit)
+                .collect(Collectors.toList());
     }
 
 
-    /** Search an RegActivity in DC and Kernel to validate its modification */
+    /**
+     * Search an RegActivity in DC and Kernel to validate its modification
+     * @param term actually numbers, so is fine without fulltext search
+     * @param country_uri
+     * @return
+     */
     public List<DCRegActivity> findTaxRegActivity(String term, String country_uri){
         List<DCRegActivity> dcRegActivity = geographicalDAO.searchTaxRegActivity(country_uri, term, 0, 10);
 
