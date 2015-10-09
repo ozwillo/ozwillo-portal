@@ -35,6 +35,8 @@ mvn clean install
 
 The portal gets built in portal-parent/oasis-portal-front/target/oasis-portal-front-${VERSION}.jar.
 
+Only once after install, change in the https://github.com/pole-numerique/oasis-portal/blob/master/portal-parent/oasis-portal-front/src/test/resources/application.yml the ```web.sitemap.refresh: 0 * * * * ?``` line in order to fill mongo with required header & footer cached data. Once it is filled (it can be seen in the logs, wait 2 minute, so that it will have been filled twice), change it back.
+
 There are the two preferred ways to run the app:
 
 * By running the apps the old-fashioned way (callin the main() method), either from your IDE or in command-line
