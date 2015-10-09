@@ -68,7 +68,7 @@ public class GeographicalAreaService {
      */
     public List<GeographicalArea> findCountries(String queryTerms, int start, int limit) {
         //return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
-        return cache.search(null, countryModel, RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit)
+        return cache.findOneToken(null, countryModel, RequestContextUtils.getLocale(request).getLanguage(), null)
                 .collect(Collectors.toList());
     }
 

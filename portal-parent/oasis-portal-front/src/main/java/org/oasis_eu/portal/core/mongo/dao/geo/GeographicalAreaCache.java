@@ -173,14 +173,14 @@ public class GeographicalAreaCache {
     }
 
     /**
-     * 
+     * Search in local DB, filtering the results using the parameters
      * @param countryUri URI of DC country Resource, therefore already encoded
-     * @param modelType
+     * @param modelType 
      * @param lang
-     * @param name
-     * @return
+     * @param nameTokens null to list all ex. geoco:Country_0
+     * @return Stream GeographicalArea
      */
-    private Stream<GeographicalArea> findOneToken(String countryUri, String modelType, String lang, String name) {
+    public Stream<GeographicalArea> findOneToken(String countryUri, String modelType, String lang, String nameTokens) {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
@@ -192,7 +192,9 @@ public class GeographicalAreaCache {
             criteria.and("modelType").in(modelType);
         }
 
-        criteria.and("nameTokens").regex("^"+name);
+        if (nameTokens != null && !nameTokens.trim().isEmpty()){
+            criteria.and("nameTokens").regex("^"+nameTokens);
+        }
 
         List<GeographicalArea> foundAreas = template.find(
                 query(criteria).limit(findOneTokenLimit) // limit to prevent too much performance-hampering object scanning 
@@ -209,6 +211,7 @@ public class GeographicalAreaCache {
                 .distinct()
                 .map(DCUrlWrapper::unwrap);
     }
+
 
     public void save(GeographicalArea area) {
         template.save(area);
