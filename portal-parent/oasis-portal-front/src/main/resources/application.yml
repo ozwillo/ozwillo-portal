@@ -28,7 +28,7 @@ application:
     areaModel: geo:Area_0
     nameField: geo:name
     countryModel: geoco:Country_0
-    cityModel: geoci:City_0
+    cityModel: addrpostci:PostalCity_0
     countryField: geo:country
     fallbackLanguage: en
     findOneTokenLimit: 100
