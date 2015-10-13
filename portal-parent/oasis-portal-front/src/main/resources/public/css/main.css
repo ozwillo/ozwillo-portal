@@ -257,7 +257,6 @@ span.badge-notifications {
     position: absolute;
     top: 20px;
     right: 0px;
-    display: none;
 }
 
 div.app span.badge-notifications {
