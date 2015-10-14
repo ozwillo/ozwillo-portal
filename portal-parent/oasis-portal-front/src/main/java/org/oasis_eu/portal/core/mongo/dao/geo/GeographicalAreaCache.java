@@ -264,7 +264,6 @@ public class GeographicalAreaCache {
                     do {
                         logger.debug("Fetching batches of areas");
                         lastDCIdFetched = fetchBatches(collection, loadedUris, lastDCIdFetched);
-                        System.gc();
                     } while (lastDCIdFetched != null);
                 }
             });
