@@ -137,12 +137,14 @@ public class GeographicalAreaCache {
 
         boolean atLeastOneLongToken=false;
         List<String> queryTerms = tokenizer.tokenize(name).stream().collect(Collectors.toList());
-        for (String token : queryTerms) { if (token.length() >= 3) { atLeastOneLongToken=true; } }
-        if(!atLeastOneLongToken || queryTerms.isEmpty()){  return (new ArrayList<GeographicalArea>()).stream(); }
+        for (String token : queryTerms) {
+            if (token.length() >= 3) { atLeastOneLongToken=true; }
+        }
+        if(!atLeastOneLongToken || queryTerms.isEmpty()){
+            return (new ArrayList<GeographicalArea>()).stream();
+        }
 
-        LinkedHashMap<String, Pair> collected = queryTerms
-                .stream()
-                .flatMap(tok -> findOneToken(country_uri, modelType, lang, tok)) // note that findOneToken doesn't allow duplicate URIs in results
+        LinkedHashMap<String, Pair> collected = findOneToken(country_uri, modelType, lang, queryTerms.toArray(new String[queryTerms.size()])) // note that findOneToken doesn't allow duplicate URIs in results
                 .collect(LinkedHashMap<String, Pair>::new,
                         (set, area) -> {
                             if (set.containsKey(area.getUri())) {
@@ -180,7 +182,7 @@ public class GeographicalAreaCache {
      * @param nameTokens null to list all ex. geoco:Country_0
      * @return Stream GeographicalArea
      */
-    public Stream<GeographicalArea> findOneToken(String countryUri, String modelType, String lang, String nameTokens) {
+    public Stream<GeographicalArea> findOneToken(String countryUri, String modelType, String lang, String[] nameTokens) {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
@@ -192,13 +194,23 @@ public class GeographicalAreaCache {
             criteria.and("modelType").in(modelType);
         }
 
-        if (nameTokens != null && !nameTokens.trim().isEmpty()){
-            criteria.and("nameTokens").regex("^"+nameTokens);
+        if (nameTokens != null ){
+            List<Criteria> c = new ArrayList<Criteria>();
+            for(String nToken : nameTokens){
+                if (!nToken.trim().isEmpty()){
+                    c.add(where("nameTokens").regex("^"+nToken) );
+                }
+            }
+            if(!c.isEmpty()){
+                criteria.andOperator(c.toArray(new Criteria[c.size()]));
+            }
         }
 
         List<GeographicalArea> foundAreas = template.find(
-                query(criteria).limit(findOneTokenLimit) // limit to prevent too much performance-hampering object scanning 
-                .with(new Sort(Sort.Direction.ASC, "replicationTime")),
+                query(criteria) // limit to prevent too much performance-hampering object scanning
+                .with(new Sort(Sort.Direction.ASC, "name"))
+                .with(new Sort(Sort.Direction.ASC, "replicationTime"))
+                .limit(findOneTokenLimit),
                 GeographicalArea.class);
         if (foundAreas.size() == findOneTokenLimit) {
             // should not happen
@@ -252,6 +264,7 @@ public class GeographicalAreaCache {
                     do {
                         logger.debug("Fetching batches of areas");
                         lastDCIdFetched = fetchBatches(collection, loadedUris, lastDCIdFetched);
+                        System.gc();
                     } while (lastDCIdFetched != null);
                 }
             });
