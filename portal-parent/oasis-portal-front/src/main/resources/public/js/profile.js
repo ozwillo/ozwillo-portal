@@ -150,6 +150,34 @@ $(document).ready(function () {
     		$datePicker.datepicker("option", "altFormat", "yy-mm-dd");
     		$datePicker.datepicker("option", "altField", '#' + $valueHolder.attr('id'));
 		});
+
+		$('#address\\.country', $el).select2({
+			minimumInputLength: 0,
+			ajax: {
+				url: store_service + "/dc-countries",
+				dataType: 'json',
+				quietMillis: 250,
+				data: function (term) {
+					return {
+						q: term
+					};
+				},
+				results: function (data) {
+					var areas = data.areas;
+					areas = areas.filter(function(n){return n !== null; });
+					return { results: areas };
+				},
+				cache: true
+			},
+			formatResult: function(area) {
+				return '<option className="action-select-option" value=' + area.uri + '>' + area.name + '</option>';
+			},
+			formatSelection: function(area) {
+				return area.name;
+			},
+			dropdownCssClass: "bigdrop",
+			escapeMarkup: function (m) { return m; }
+		});
 	}
 	
 	function localizeDate($el) {

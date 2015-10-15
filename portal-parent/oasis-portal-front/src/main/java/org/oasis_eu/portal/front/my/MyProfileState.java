@@ -10,13 +10,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 
 import org.oasis_eu.portal.core.controller.Languages;
-import org.oasis_eu.portal.model.AvatarWidget;
-import org.oasis_eu.portal.model.FormLayout;
-import org.oasis_eu.portal.model.FormWidget;
-import org.oasis_eu.portal.model.FormWidgetDate;
-import org.oasis_eu.portal.model.FormWidgetDropdown;
-import org.oasis_eu.portal.model.FormWidgetText;
-import org.oasis_eu.portal.model.FormWidgetUrlButton;
+import org.oasis_eu.portal.model.*;
 import org.oasis_eu.portal.services.NameDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -136,14 +130,14 @@ public class MyProfileState {
         
         FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
         idFormLayout.setOrder(3);
-        adFormLayout.appendWidget(new FormWidgetText("address.streetAddress",
-        		"my.profile.personal.streetaddress"));
+        adFormLayout.appendWidget(new FormWidgetHidden("address.country",
+                "my.profile.personal.country"));
         adFormLayout.appendWidget(new FormWidgetText("address.locality",
         		"my.profile.personal.locality"));
         adFormLayout.appendWidget(new FormWidgetText("address.postalCode",
         		"my.profile.personal.postalcode"));
-        adFormLayout.appendWidget(new FormWidgetText("address.country",
-        		"my.profile.personal.country"));
+		adFormLayout.appendWidget(new FormWidgetText("address.streetAddress",
+				"my.profile.personal.streetaddress"));
         layouts.put(adFormLayout.getId(), adFormLayout);
     }
 	
