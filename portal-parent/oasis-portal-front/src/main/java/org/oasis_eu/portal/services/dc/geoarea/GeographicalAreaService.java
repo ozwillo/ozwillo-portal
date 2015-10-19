@@ -21,6 +21,8 @@ public class GeographicalAreaService {
 
     @Value("${application.geoarea.countryModel:geoco:Country_0}")
     private String countryModel;
+    @Value("${application.geoarea.countryModelHier:geohier:Hierarchical_0}")
+    private String countryModelHier;
     @Value("${application.geoarea.cityModel:geoci:City_0}")
     private String cityModel;
     
@@ -44,7 +46,7 @@ public class GeographicalAreaService {
      * @return
      */
     public List<GeographicalArea> find(String country_uri, String modelType, String q, int start, int limit) {
-        return cache.search(country_uri, modelType,RequestContextUtils.getLocale(request).getLanguage(), q, start, limit)
+        return cache.search(country_uri, modelType, RequestContextUtils.getLocale(request).getLanguage(), q, start, limit)
                     .collect(Collectors.toList());
     }
 
@@ -68,7 +70,7 @@ public class GeographicalAreaService {
      */
     public List<GeographicalArea> findCountries(String queryTerms, int start, int limit) {
         //return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
-        return cache.findOneToken(null, countryModel, RequestContextUtils.getLocale(request).getLanguage(), null)
+        return cache.findOneToken(null, new String[]{countryModel, countryModelHier}, RequestContextUtils.getLocale(request).getLanguage(), null)
                 .collect(Collectors.toList());
     }
 

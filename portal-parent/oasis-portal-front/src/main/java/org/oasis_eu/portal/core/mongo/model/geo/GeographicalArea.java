@@ -15,11 +15,10 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Document(collection = "geographical_area")
 @CompoundIndexes({
-        @CompoundIndex(name = "lang_nametokens_country", def = "{'lang':1, 'nameTokens':1, country:1}")/*, // 
+        @CompoundIndex(name = "lang_nametokens_country", def = "{'lang':1, 'nameTokens':1, country:1}"),
         @CompoundIndex(name = "lang_modelType", def = "{'lang':1, 'modelType':1}"),  // to get list of countries
         @CompoundIndex(name = "status", def = "{'status':1}"), //used on replication cron job
         @CompoundIndex(name = "replicationTime", def = "{'replicationTime':1}") //used on replication cron job
-        */ //Added manually in db
 })
 public class GeographicalArea {
 

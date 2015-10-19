@@ -64,22 +64,8 @@ public class GeographicalDAO {
     @Autowired
     private GeographicalAreaCache geographicalAreaCache;
 
-    // Cities
-    public List<GeographicalArea> searchCities(String lang, String queryTerm, String countryUri, int start, int limit) {
-
-       return fetchResourceByCountryAndNameStartingWith(queryTerm, nameField, ".v", countryUri, countryField, geoProject, cityModel, limit - start)
-               .stream().map(resource -> toGeographicalArea(resource,lang))
-               .collect(Collectors.toList());
-    }
-
-    // Countries
-    public List<GeographicalArea> searchCountries(String lang, String term, int start, int limit) {
-        return fetchResourceByCountryAndNameStartingWith(term, nameField, ".v", null,null, geoProject, countryModel, limit - start)
-              .stream().map(resource -> toGeographicalArea(resource,lang))
-              .collect(Collectors.toList());
-    }
-
     // Tax Reg Activity
+    // TODO : this is not a GeographicalArea value, and it is not even cached. Put in in its respective Class or create a new one for all semi-direct DC calls
     public List<DCRegActivity> searchTaxRegActivity(String countryUri, String queryTerms, int start, int limit) {
         return fetchResourceByCountryAndNameStartingWith(queryTerms, "orgact:code", null, countryUri, "orgact:country", dcOrgProjectName, "orgact:Activity_0", limit - start)
                .stream().map(resource -> toDCRegActivity(resource))
@@ -91,7 +77,7 @@ public class GeographicalDAO {
     // Helper & Handler methods
 
     /**
-     * 
+     * Search values in DC, filtering by country
      * @param queryTerm
      * @param field
      * @param subField

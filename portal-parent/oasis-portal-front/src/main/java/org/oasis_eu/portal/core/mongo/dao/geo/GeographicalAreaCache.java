@@ -144,7 +144,7 @@ public class GeographicalAreaCache {
             return (new ArrayList<GeographicalArea>()).stream();
         }
 
-        LinkedHashMap<String, Pair> collected = findOneToken(country_uri, modelType, lang, queryTerms.toArray(new String[queryTerms.size()])) // note that findOneToken doesn't allow duplicate URIs in results
+        LinkedHashMap<String, Pair> collected = findOneToken(country_uri, new String[]{modelType}, lang, queryTerms.toArray(new String[queryTerms.size()])) // note that findOneToken doesn't allow duplicate URIs in results
                 .collect(LinkedHashMap<String, Pair>::new,
                         (set, area) -> {
                             if (set.containsKey(area.getUri())) {
@@ -182,28 +182,35 @@ public class GeographicalAreaCache {
      * @param nameTokens null to list all ex. geoco:Country_0
      * @return Stream GeographicalArea
      */
-    public Stream<GeographicalArea> findOneToken(String countryUri, String modelType, String lang, String[] nameTokens) {
+    public Stream<GeographicalArea> findOneToken(String countryUri, String[] modelTypes, String lang, String[] nameTokens) {
         // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
         // sort spec means we want older results first - so that incoming replicates are discarded as long as
         // there is an online entry
         Criteria criteria = where("lang").is(lang);
+
         if (countryUri != null && !countryUri.trim().isEmpty()){
             criteria.and("country").is(countryUri); //filter by country
         }
-        if (modelType != null && !modelType.trim().isEmpty()){
-            criteria.and("modelType").in(modelType);
+
+        List<Criteria> andCriteria = new ArrayList<Criteria>();
+        if (modelTypes != null && modelTypes.length != 0){
+            for(String modelType : modelTypes){
+                if (modelType != null && !modelType.trim().isEmpty()){
+                    andCriteria.add(where("modelType").in(modelType) );
+                }
+            }
         }
 
         if (nameTokens != null ){
-            List<Criteria> c = new ArrayList<Criteria>();
             for(String nToken : nameTokens){
-                if (!nToken.trim().isEmpty()){
-                    c.add(where("nameTokens").regex("^"+nToken) );
+                if (nToken != null && !nToken.trim().isEmpty()){
+                    andCriteria.add(where("nameTokens").regex("^"+nToken) );
                 }
             }
-            if(!c.isEmpty()){
-                criteria.andOperator(c.toArray(new Criteria[c.size()]));
-            }
+        }
+
+        if(!andCriteria.isEmpty()){
+            criteria.andOperator(andCriteria.toArray(new Criteria[andCriteria.size()]));
         }
 
         List<GeographicalArea> foundAreas = template.find(
