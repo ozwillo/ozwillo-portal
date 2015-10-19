@@ -74,17 +74,4 @@ public class GeographicalAreaService {
                 .collect(Collectors.toList());
     }
 
-
-    /**
-     * Search an RegActivity in DC and Kernel to validate its modification
-     * @param term actually numbers, so is fine without fulltext search
-     * @param country_uri
-     * @return
-     */
-    public List<DCRegActivity> findTaxRegActivity(String term, String country_uri){
-        List<DCRegActivity> dcRegActivity = geographicalDAO.searchTaxRegActivity(country_uri, term, 0, 10);
-
-        return dcRegActivity;
-    }
-
 }

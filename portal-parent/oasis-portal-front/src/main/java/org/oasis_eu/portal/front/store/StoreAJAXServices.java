@@ -22,6 +22,7 @@ import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppstoreService;
 import org.oasis_eu.portal.services.RatingService;
 import org.oasis_eu.portal.services.dc.geoarea.GeographicalAreaService;
+import org.oasis_eu.portal.services.dc.organization.DCOrganizationService;
 import org.oasis_eu.portal.services.dc.organization.DCRegActivity;
 import org.oasis_eu.portal.services.dc.organization.DCRegActivityResponse;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
@@ -71,6 +72,9 @@ public class StoreAJAXServices extends BaseAJAXServices {
     @Autowired
     private GeographicalAreaService geographicalAreaService;
 
+    @Autowired
+    private DCOrganizationService organizationService;
+
     @Value("${application.store.load_size:20}")
     private int loadSize;
 
@@ -88,7 +92,7 @@ public class StoreAJAXServices extends BaseAJAXServices {
     @RequestMapping(value = "/dc-taxRegActivity", method = GET)
     public DCRegActivityResponse searchTaxRegActivity(@RequestParam String country_uri, @RequestParam String q) {
         logger.debug("Searching for RegActivity {} from {} ", q, country_uri);
-        List<DCRegActivity> TaxRegActivityLst = geographicalAreaService.findTaxRegActivity(q, country_uri);
+        List<DCRegActivity> TaxRegActivityLst = organizationService.searchTaxRegActivity(q, country_uri, 0,1);
         return new DCRegActivityResponse(TaxRegActivityLst);
     }
 

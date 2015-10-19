@@ -4,10 +4,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.oasis_eu.portal.services.PortalSystemUserService;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
+import org.oasis_eu.spring.datacore.model.DCOrdering;
 import org.oasis_eu.spring.datacore.model.DCQueryParameters;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.datacore.model.DCResult;
@@ -179,7 +181,56 @@ public class DCOrganizationService {
     }
 
 
+    public List<DCRegActivity> searchTaxRegActivity(String countryUri, String queryTerms, int start, int limit) {
+        return fetchResourceByCountryAndNameStartingWith(queryTerms, "orgact:code", null, countryUri, "orgact:country", dcOrgProjectName, "orgact:Activity_0", limit - start)
+               .stream().map(resource -> toDCRegActivity(resource))
+               .collect(Collectors.toList());
+    }
+
+
+
+
     // Helper & Handler methods
+
+    /**
+     * Search values in DC, filtering by country
+     * @param queryTerm
+     * @param field
+     * @param subField
+     * @param countryUri (already encoded)
+     * @param countryField
+     * @param projectName
+     * @param modelName
+     * @param batchSize
+     * @return
+     */
+    private List<DCResource> fetchResourceByCountryAndNameStartingWith(String queryTerm, String field, String subField,
+            String countryUri, String countryField, String projectName, String modelName, int batchSize ){
+
+        DCQueryParameters params = new DCQueryParameters();
+        if(queryTerm != null && !queryTerm.trim().isEmpty()){
+            params.and(field.trim()+(subField == null ? "" : subField), DCOperator.EQ, DCOperator.REGEX.getRepresentation()+"^"+queryTerm);
+        } else { params.and(field.trim(), DCOrdering.DESCENDING); }
+
+        String encodedCountryUri = countryUri;
+        try{
+            if(encodedCountryUri != null && !encodedCountryUri.isEmpty()){
+                //encodedCountryUri  = UriComponentsBuilder.fromUriString(countryUri).build().encode().toString();
+                encodedCountryUri  = countryUri;
+                params.and(countryField.trim(), DCOperator.EQ, encodedCountryUri);
+            }
+        }catch(Exception e){
+            logger.debug("The country URI \"{}\" cannot be encoded : {}", countryUri, e.toString());
+        }
+
+        logger.debug("Querying the Data Core with : country \"{}\"/encoded \"{}\", and terms {}", countryUri, encodedCountryUri, queryTerm );
+        long queryStart = System.currentTimeMillis();
+        List<DCResource> resources = datacore.findResources(projectName.trim(), modelName.trim(), params, 0, batchSize);
+        long queryEnd = System.currentTimeMillis();
+        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
+
+        return resources;
+    }
 
     private DCResource mergeDCOrgToDCResources(DCOrganization fromOrg, DCResource toRes){
         // Organization data
@@ -448,5 +499,19 @@ public class DCOrganizationService {
         return null;
     }
 
+    /** TODO move to OrgDAO */
+    public DCRegActivity toDCRegActivity(DCResource r) {
+        String code = r.getAsString("orgact:code");
+        String country = r.getAsString("orgact:country");
+        String label = r.getAsString("orgact:label");
+
+        DCRegActivity activity = new DCRegActivity();
+        activity.setName(code);
+        activity.setLabel(label);
+        activity.setCountry(country);
+        activity.setUri(r.getUri());
+
+        return activity;
+    }
 
 }
