@@ -1,8 +1,11 @@
 /** @jsx React.DOM */
 
 var MyNetwork = React.createClass({
-    openCreateOrgDialog: function() {
-        this.refs.searchOrgDialog.show();
+    openSearchOrgDialog: function() {
+        this.refs.searchOrgDialog.open();
+    },
+    openCreateOrgDialog: function(organization) {
+        this.refs.createOrgDialog.show(organization);
     },
     reload: function() {
         this.refs.orgs.loadOrganizations();
@@ -10,9 +13,10 @@ var MyNetwork = React.createClass({
     render: function() {
         return (
                 <div>
-                    <SearchOrganization ref="searchOrgDialog"  successHandler={this.reload} />
-                    <SearchOrCreateHeader showDialog={this.openCreateOrgDialog}/>
-                    <OrganizationsList ref='orgs'/>
+                    <SearchOrganizationModal ref="searchOrgDialog" successHandler={this.openCreateOrgDialog} />
+                    <CreateOrModifyOrganizationModal ref="createOrgDialog" successHandler={this.reload} />
+                    <SearchOrCreateHeader showDialog={this.openSearchOrgDialog}/>
+                    <OrganizationsList ref="orgs"/>
                 </div>
             );
     }
@@ -20,7 +24,12 @@ var MyNetwork = React.createClass({
 
 var SearchOrCreateHeader = React.createClass({
     render: function() {
-        return <h2>{t('my.network.find-or-create-organization')} <a className="btn btn-success" href="#" onClick={this.props.showDialog}>{t('ui.go')}</a></h2>
+        return (
+            <h2>
+                {t('my.network.find-or-create-organization')}
+                <a className="btn btn-success" href="#" onClick={this.props.showDialog}>{t('ui.go')}</a>
+            </h2>
+        );
     }
 });
 

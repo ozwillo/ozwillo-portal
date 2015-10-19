@@ -47,14 +47,13 @@ public class OrganizationService {
 
 
     /** Search an organization in DC and Kernel to validate its modification */
-    public DCOrganization findOrganization(String contact_name,String contact_lastName,String contact_email,
-            String country, String country_uri,String sector, String legalName, String regNumber)
+    public DCOrganization findOrganization(String country, String country_uri,String sector, String legalName, String regNumber)
     {
         String localLang = RequestContextUtils.getLocale(request).getLanguage();
         String dcSectorType = DCOrganizationType.getDCOrganizationType(sector).name();
         DCOrganization dcOrganization = organizationDAO.searchOrganization(localLang, country_uri, dcSectorType, legalName, regNumber);
 
-        if(dcOrganization == null || !dcOrganization.isExist()){ // Organization doesn't exist in DC
+        if (dcOrganization == null || !dcOrganization.isExist()){ // Organization doesn't exist in DC
             logger.info("Organization doesn't exist in DC. Letting user create one with given entries.");
             // set an empty DCOrganization to be filled by user then Create Organization in Kernel when creating
 
@@ -68,32 +67,23 @@ public class OrganizationService {
             }
 
             dcOrganization = new DCOrganization();
-            //contact data
-            dcOrganization.setContact_name(contact_name);
-            dcOrganization.setContact_lastName(contact_lastName);
-            dcOrganization.setContact_email(contact_email);
-            //organization data
             dcOrganization.setLegal_name(legalName);
             dcOrganization.setTax_reg_num(regNumber);
             dcOrganization.setSector_type(sector);
-            dcOrganization.setEmail(contact_email); // Do it only in case of new organization
             dcOrganization.setZip("00000");
-            dcOrganization.setCountry_uri(country_uri); dcOrganization.setCountry(country);
+            dcOrganization.setCountry_uri(country_uri);
+            dcOrganization.setCountry(country);
             return dcOrganization;
 
-        }else {
+        } else {
             UIOrganization uiOrganization = networkService.searchOrganizationByDCId(dcOrganization.getId());
-            if( uiOrganization == null){ // found in DC but not in KERNEL, so modification is allowed
+            if( uiOrganization == null) { // found in DC but not in KERNEL, so modification is allowed
                 logger.info("Organization found in DC but not in KERNEL, so modification by the user is allowed.");
-                // re-set contact data
-                dcOrganization.setContact_name(contact_name);
-                dcOrganization.setContact_lastName(contact_lastName);
-                dcOrganization.setContact_email(contact_email);
-                //Set the sector type supported by the UI
                 dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
-                dcOrganization.setCountry_uri(country_uri); dcOrganization.setCountry(country);
+                dcOrganization.setCountry_uri(country_uri);
+                dcOrganization.setCountry(country);
                 return dcOrganization; // there is no owner for the data, so can be modified(in DC) & created (in kernel)
-            }else{
+            }else {
                 logger.debug("There is an owner for this data, so it should show a message to the user in front-end");
                 return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
             }
