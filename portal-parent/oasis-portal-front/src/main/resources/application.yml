@@ -28,6 +28,7 @@ application:
     areaModel: geo:Area_0
     nameField: geo:name
     countryModel: geoco:Country_0
+    countryModelHier: geohier:Hierarchical_0
     cityModel: addrpostci:PostalCity_0
     countryField: geo:country
     fallbackLanguage: en
