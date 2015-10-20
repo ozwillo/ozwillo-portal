@@ -253,11 +253,10 @@ span.badge-notifications {
     background-color: #d9534f;
     font-size: 20px;
     border-radius: 15px;
-    padding: 5px 10px;
     position: absolute;
-    top: 20px;
-    right: 0px;
-    display: none;
+    top: 15px;
+    right: -15px;
+    display: inline !important;
 }
 
 div.app span.badge-notifications {
