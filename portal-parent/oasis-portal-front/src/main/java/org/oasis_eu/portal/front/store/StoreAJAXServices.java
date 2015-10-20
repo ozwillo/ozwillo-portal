@@ -92,7 +92,7 @@ public class StoreAJAXServices extends BaseAJAXServices {
     @RequestMapping(value = "/dc-taxRegActivity", method = GET)
     public DCRegActivityResponse searchTaxRegActivity(@RequestParam String country_uri, @RequestParam String q) {
         logger.debug("Searching for RegActivity {} from {} ", q, country_uri);
-        List<DCRegActivity> TaxRegActivityLst = organizationService.searchTaxRegActivity(q, country_uri, 0,1);
+        List<DCRegActivity> TaxRegActivityLst = organizationService.searchTaxRegActivity(country_uri, q, 0, 10);
         return new DCRegActivityResponse(TaxRegActivityLst);
     }
 
