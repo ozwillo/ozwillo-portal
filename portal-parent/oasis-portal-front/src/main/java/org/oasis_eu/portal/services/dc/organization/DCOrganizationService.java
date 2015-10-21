@@ -76,32 +76,55 @@ public class DCOrganizationService {
     }
 
     private DCResource fetchDCOrganizationResource(String country_uri, String sector, String legalName, String regNumber, String lang) {
+        String model = dcOrgModel.trim();
+        String project = dcOrgProjectName.trim();
+
         DCQueryParameters params = new DCQueryParameters()
                       //.and(dcOrgSearchSector.trim(), DCOperator.EQ, sector)
                       //.and(dcOrgSearchLegalName.trim(), DCOperator.EQ, DCOperator.REGEX.getRepresentation()+legalName)
                       .and(dcOrgSearchRegNumber.trim(), DCOperator.EQ, regNumber)
-                      .and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri);
+                      .and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri); /* country is encoded as a dc-resource, it should be sent also as it was fetched */
 
-        String model = dcOrgModel.trim();
-        // NT. Since typeAsModel requires sector and the sector is nor required to the search, useTypeAsModel should always be false;
-        // otherwise, it will be implicitly in the query (e.g. dc/type/orgpuit:OrgPubblica_0/IT/05719580010)
-        if(useTypeAsModel){ model = this.generateResourceType(sector, country_uri, regNumber); };
-
-        logger.info("Searching ressource using parameters : {}, {} and {}", regNumber, country_uri, model);
-        logger.debug("Querying the Data Core");
+        logger.info("Searching resource in DC using parameters : {}, {} and {}", regNumber, country_uri, model);
         long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), model, params, 0, 1);
-        /*if(resources ==null || resources.isEmpty()){ /TODO this is for TEST only
-            //If is not found using all search factors, it re-search only by regNum
-            resources = datacore.findResources(dcOrgProjectName.trim(), dcOrgModel.trim(), new DCQueryParameters("org:regNumber", DCOperator.EQ, regNumber), 0, 1);
-        }*/
+        List<DCResource> resources = datacore.findResources(project, model, params, 0, 1);
         long queryEnd = System.currentTimeMillis();
         logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd-queryStart);
 
-        return resources.isEmpty()? null : resources.get(0);
+        DCResource orgResource = this.processResourcesBySectorType(resources, sector);
+
+        return orgResource;
     }
 
-    public DCOrganization searchOrganizationById(String dc_id){
+    /**
+     * Filter a DCResource list with a valid sector type (accept only resource with no sector, or r.sector ==> param_sector), and remove spaces from found sector in resource.
+     * <br>It also set the param_sector into the resource sector in case it is not found in resource.
+     * @param resources
+     * @param sector
+     * @return returns only the first element (DCResource) in resources list
+     */
+    private DCResource processResourcesBySectorType(List<DCResource> resources, String sector){
+        resources.forEach(r->{ // remove side spaces
+            String rSector = r.getAsString("org:sector");
+            if(rSector != null){ 
+                r.set("org:sector", rSector.trim());
+            }
+        });
+
+        resources.stream().filter(r -> r.getAsString("org:sector") == null // sector not known yet (none or null valued)
+                                       || r.getAsString("org:sector").equals(sector))
+                 .collect(Collectors.toList());
+
+        if (resources.isEmpty()) { return null; }
+
+        DCResource orgResource = resources.get(0);
+        if(orgResource.getAsString("org:sector") == null){
+            orgResource.set("org:sector", sector); // sets sector if not yet known
+        }
+        return orgResource;
+    }
+
+    public DCOrganization searchOrganizationById(String dc_id, String language){
         DCQueryParameters params = new DCQueryParameters("@id", DCOperator.EQ, dc_id);
 
         String model = dcOrgModel.trim();
@@ -114,7 +137,7 @@ public class DCOrganizationService {
         long queryEnd = System.currentTimeMillis();
         logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd-queryStart);
 
-        return resources.isEmpty()? null : toDCOrganization(resources.get(0),"FR");
+        return resources.isEmpty()? null : toDCOrganization(resources.get(0), language);
     }
 
     /**
@@ -190,7 +213,10 @@ public class DCOrganizationService {
 
 
 
-    // Helper & Handler methods
+
+
+
+    // ******************* Helper methods *****************************************
 
     /**
      * Search values in DC, filtering by country
@@ -289,9 +315,9 @@ public class DCOrganizationService {
     }
 
     public  DCResource setDCIdOrganization(DCResource dcResource, String type, String regNumber, String country_uri){
-        //"@id" : "http://data.ozwillo.com/dc/type/orgprfr:OrgPriv%C3%A9e_0/FR/47952557800049",
+        //"@id" : "http://data.ozwillo.com/dc/type/orgfr:Organization_0/FR/47952557800049",
         String countryAcronym = getCountryAcronym(country_uri);
-        String cx = countryAcronym.toLowerCase() == "en" ? "" : countryAcronym.toLowerCase(); //if english leave it to match with orgpr/orgpu
+        String cx = countryAcronym.toLowerCase(); //could throw NullPointerException when country is not provided
         String orgModelType = generateResourceType(type, country_uri, regNumber);
 
         dcResource.setBaseUri(dcBaseUri.trim());
@@ -302,36 +328,31 @@ public class DCOrganizationService {
     }
 
     public String generateResourceType(String type, String country_uri, String regNumber){
-        String px = DCOrganizationType.getDCOrganizationType(type).equals(DCOrganizationType.Private) ? "pr": "pu";
         //get country acronym
         String countryAcronym = getCountryAcronym(country_uri);
-        String cx = countryAcronym .toLowerCase().equals("en") ? "" : countryAcronym .toLowerCase(); //if english leave it to match with orgpr/orgpu
+        String cx = countryAcronym.toLowerCase(); //could throw NullPointerException when country is not provided
 
-        String orgModelPrefix = "org"+px+cx;
+        String orgModelPrefix = "org"+cx;
         String orgModelSuffix = dcOrgPrefixToSuffix.get(orgModelPrefix);
         String orgModelType = orgModelPrefix + ":" + orgModelSuffix + "_0";
         return orgModelType ;
     }
 
     public String getCountryAcronym(String country_uri){
-        return (country_uri != null && !country_uri.isEmpty() ? country_uri.substring(country_uri.length() - 2) : "en");
+        //Assumes that all the country have the abbreviation at the end of URL : http://data.ozwillo.com/dc/type/geocotr:%C3%9Clke_0/TR
+        if(country_uri != null && !country_uri.isEmpty()){
+            return country_uri.substring(country_uri.length() - 2);
+        }
+        return null;
     }
 
     private static final Map<String, String> dcOrgPrefixToSuffix = new ImmutableMap.Builder<String, String>()
-            //private
-            .put("orgpr",   "PrivateOrg")
-            .put("orgprfr", "OrgPrivée")
-            .put("orgprbg", "ЧастнаОрг")
-            .put("orgprit", "OrgPrivata")
-            .put("orgprtr", "ÖzelSektKuru")
-            .put("orgpres", "OrgPrivada")
-            //public
-            .put("orgpu",   "PublicOrg")
-            .put("orgpufr", "OrgPublique")
-            .put("orgpubg", "ПубличнаОрг")
-            .put("orgpuit", "OrgPubblica")
-            .put("orgputr", "KamuKurumu")
-            .put("orgpues", "OrgPública")
+            //.put("org", "Organisation") //org:Organisation_0 when there is no country defined (but it neve should happen)
+            .put("orgfr", "Organisation")
+            .put("orgbg", "Организация")
+            .put("orgit", "Organizzazione")
+            .put("orgtr", "Organizasyon")
+            .put("orges", "Organización")
             .build();
 
     private static final String dcOrgStatusActive = "Normal Activity";
@@ -450,7 +471,7 @@ public class DCOrganizationService {
                     logger.debug("nameMap: " + nameMap.toString());
                     String l = nameMap.get("@language"); // TODO Q why ?? @language only in application/json+ld, otherwise l
                     if (l == null) { continue; /* shouldn't happen */ }
-                    if (l.equals(language)) {
+                    if (l.equalsIgnoreCase(language)) {
                         String val = nameMap.get("@value");
                         return val == null || val.isEmpty() ? null : nameMap.get("@value"); //break; // can't find better
                     }
@@ -494,12 +515,13 @@ public class DCOrganizationService {
             String i18nValue = getBestI18nValue(dcResource, language, fieldName, altFieldName);
             return i18nValue;
         }else{
-            logger.error("Got an unsuccessful response from Datacore while fetching the ressource \"{}\". Error:\"{}\", Message:{}",resource_uri, dcResult.getType(), dcResult.getErrorMessages());
+            logger.error("Got an unsuccessful response from Datacore while fetching the ressource \"{}\". Error:\"{}\", Message:{}",
+                    resource_uri, dcResult.getType(), dcResult.getErrorMessages());
         }
         return null;
     }
 
-    /** TODO move to OrgDAO */
+    /** TODO move to OrgDAO / OrganizationDCResourceHelper class*/
     public DCRegActivity toDCRegActivity(DCResource r) {
         String code = r.getAsString("orgact:code");
         String country = r.getAsString("orgact:country");

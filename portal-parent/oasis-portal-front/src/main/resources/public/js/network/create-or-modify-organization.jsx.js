@@ -373,8 +373,12 @@ var Tab2 = React.createClass({
     },
     changeInputAddress: function (fieldname, value, isNumericField) {
         var org = this.state.organization;
-        if(isNumericField && value !== ''){
-           org[fieldname] =  isInteger(value) ? value.trim() : org[fieldname];
+        if(isNumericField && value !== '' ){
+           if(isInteger(value)){
+              org[fieldname] = value;
+           }else{
+              org[fieldname]= (org[fieldname] !== undefined) ? org[fieldname] : '';// If the referenced value is "undefined" React doesnt re-render its field
+           }
         } else {
            org[fieldname] = value;
         }

@@ -51,13 +51,14 @@ var SearchOrganization = React.createClass({
 
 // Form modal
 var SearchOrganizationForm = React.createClass({
-    getInitialState: function () {
-        var sector_type = 'COMPANY'; //default value for the option button
+    getInitialState: function () { //should never be called directly outside this component, it is not correct React way...
+        var sector_type = '';//'COMPANY'; //default value for the option button
         var tax_reg_num = '';//'0000000000001';//TODO TEST Only, to remove it
         var legal_name  = '';//'IPGARDE2';//TODO TEST Only, to remove it
 
         return {orgSearchData: {contact_name: '', contact_lastname: '', contact_email: '', sector_type : sector_type, country: '', country_uri: '',
-                      legal_name: legal_name, tax_reg_num: tax_reg_num}, errors: [], searching: false,
+                      legal_name: legal_name, tax_reg_num: tax_reg_num},
+                errors:[], searching: false,
         };
     },
     getProfileInfo: function(){
@@ -79,7 +80,9 @@ var SearchOrganizationForm = React.createClass({
         });
     },
     resetSearchVals: function (event) {
-        this.state.orgSearchData= {contact_name: '', contact_lastname: '', contact_email: '', sector_type : this.state.orgSearchData.sector_type, country: '', country_uri: '', legal_name: '', tax_reg_num: ''};
+        this.state.orgSearchData = this.getInitialState();
+        this.state.errors = [];
+        this.searching = false;
     },
     searchOrganization: function (event) {
         if (event) { event.preventDefault(); }
@@ -106,8 +109,8 @@ var SearchOrganizationForm = React.createClass({
                 data: this.state.orgSearchData,
                 success: function (data) {
                     if (this.props.successHandler) {
-                        var organization = data;/* ? data
-                                  : jQuery.extend(true, {}, this.state.orgTEST); // Test only - Deep copy of the TestsData to avoid overwriting */
+                        var organization = data;
+                        //var organization = jQuery.extend(true, {}, this.state.orgTEST); // Test only - Deep copy of the TestsData to avoid overwriting
 
                         var state = {searching: false, errors: []};
                         this.setState(state);
@@ -135,7 +138,7 @@ var SearchOrganizationForm = React.createClass({
                org[fieldname+"_uri"] = event.target.value;
                org[fieldname] = event.target.selectedOptions[0].label;
             }else if(fieldname === "tax_reg_num" ){
-               org[fieldname] = event.target.value.trim();  /*Remove whitespace*/
+               org[fieldname] = ''+event.target.value.replace(/\s+/g, ''); /*Remove whitespace avoiding setting undefined*/
             }else {org[fieldname] = event.target.value;}
             this.setState({orgSearchData: org, errors: [], searching: false});
         }.bind(this);
