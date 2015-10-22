@@ -318,7 +318,8 @@ public class NetworkService {
                         .filter(m -> m.getOrganizationId().equals(authorityId))
                         .findFirst()
                         .orElse(null);
-                return new Authority(AuthorityType.ORGANIZATION, organizationStore.find(authorityId).getName(), authorityId, um.isAdmin());
+
+                return new Authority(AuthorityType.ORGANIZATION, um.getOrganizationName(), authorityId, um.isAdmin());
         }
 
         return null;
