@@ -54,7 +54,8 @@ public final class i18nMessages {
             "none", "manage_users", "users", "push-to-dashboard-existing-user", "settings", "name", "actions",
             "settings-add-a-user", "description", "icon", "upload", "published", "notpublished", "services",
             "restricted-service", "geographical-area-of-interest",
-            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body");
+            "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
+            "apps-for-organization", "apps-for-personal-use");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 

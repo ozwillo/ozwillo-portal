@@ -28,9 +28,8 @@ var MyApps = React.createClass({
                 <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>;
         }
         var auths = this.state.authorities.map(function (auth) {
-            var openByDefault = false; // #143, before was auth.type == 'INDIVIDUAL';
             return (
-                <Authority name={auth.name} key={auth.id} id={auth.id} openByDefault={openByDefault}/>
+                <Authority name={auth.name} key={auth.id} id={auth.id} isPersonal={auth.type === 'INDIVIDUAL'}/>
                 );
         });
         return (
@@ -39,52 +38,27 @@ var MyApps = React.createClass({
             </div>
             );
     }
-
-
 });
+
 var Authority = React.createClass({
 
-    getInitialState: function () {
-        return {open: this.props.openByDefault};
-    },
-    toggle: function () {
-        this.setState({open: !this.state.open});
-    },
     render: function () {
-        var content;
-        if (this.state.open) {
-            content = <InstanceList id={this.props.id} name={this.props.name} authority={this.props.id}/>;
-        } else {
-            content = null;
-        }
+        var content = <InstanceList id={this.props.id} name={this.props.name} authority={this.props.id}/>;
+        var title = this.props.isPersonal ?
+            (<span>{t('apps-for-personal-use')}</span>) : (<span>{t('apps-for-organization')} {this.props.name}</span>);
 
         return (
             <div className="panel panel-default">
                 <div className="panel-heading">
-                    <h4 className="panel-title" onClick={this.toggle}>
-                        <span>{this.props.name}</span>
-                        <OpenAuthority callback={this.toggle} open={this.state.open} />
+                    <h4 className="panel-title">
+                        {title}
                     </h4>
                 </div>
                 <div ref="content">
-          {content}
+                    {content}
                 </div>
             </div>
-            );
-    }
-});
-
-var OpenAuthority = React.createClass({
-    click: function () {
-        this.props.callback();
-    },
-    render: function () {
-        var className = this.props.open ? 'caret' : 'caret inverse';
-        return (
-            <a className="authority-link pull-right" onClick={this.click}>
-                <b className={className}></b>
-            </a>
-            );
+        );
     }
 });
 
@@ -134,7 +108,7 @@ var InstanceList = React.createClass({
                 <span>{t('none')} </span>
                 <b>{this.props.name}</b>
             </div>
-            )
+            );
 
         return (
             <div className="panel collapse">
