@@ -101,7 +101,7 @@ public class OrganizationService {
     }
 
     public DCOrganization findOrganizationById(String dc_id){
-        DCOrganization dcOrganization = organizationDAO.searchOrganizationById(dc_id);
+        DCOrganization dcOrganization = organizationDAO.searchOrganizationById(dc_id, RequestContextUtils.getLocale(request).getLanguage());
         if(dcOrganization != null){
             dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
 

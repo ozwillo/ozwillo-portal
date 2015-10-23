@@ -566,7 +566,7 @@ SetOrganizationComponent = React.createClass({
                org[fieldname+"_uri"] = event.target.value;
                org[fieldname] = event.target.selectedOptions[0].label;
             }else if(fieldname === "tax_reg_num" ){
-                org[fieldname] = event.target.value.trim();  /*Remove whitespace*/
+               org[fieldname] = ''+event.target.value.replace(/\s+/g, ''); /*Remove whitespace avoiding setting undefined*/
             }else{ org[fieldname] = event.target.value; }
             this.setState({orgSearchData: org, errors:[]});
         }.bind(this);
