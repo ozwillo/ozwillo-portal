@@ -38,7 +38,7 @@ public final class i18nMessages {
             "jurisdiction.placeholder","phone_number","web_site", "email","email.placeholder","change-icon",
             "additional_information",
             "street_and_number","additional_address_field","po_box","city","zip", "cedex","country",
-            "invalid_fields");
+            "invalid_fields", "step");
 
     private static final List<String> storekeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid",
             "languages-supported-by-applications", "look-for-an-application", "keywords","installed", "tos", "privacy", "by",

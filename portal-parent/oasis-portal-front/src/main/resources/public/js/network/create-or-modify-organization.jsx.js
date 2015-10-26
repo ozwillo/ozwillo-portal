@@ -13,7 +13,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
         });
     },
     open: function(organization) {
-        this.setState({ organization: organization });
+        this.setState({ organization: organization, step: 1 });
         $(this.getDOMNode()).modal('show');
     },
     onStepChange: function(stepId) {
@@ -28,7 +28,9 @@ var CreateOrModifyOrganizationModal = React.createClass({
     },
     render: function () {
 
-        var modalTitle = this.state.organization.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
+        var modalTitle = this.state.organization.exist ? t('my.network.modify-org') : t('my.network.create-org');
+        modalTitle = modalTitle + " " + this.state.organization.legal_name;
+        var modalSubTitle = t('my.network.organization.step') + " " + this.state.step + " / 2";
 
         return (
             <div className="modal fade">
@@ -37,6 +39,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
                         <div className="modal-header">
                             <button type="button" className="close" onClick={this.close}>&times;</button>
                             <h3>{modalTitle}</h3>
+                            <h4>{modalSubTitle}</h4>
                         </div>
                         <CreateOrModifyOrganizationForm ref="form"
                                                         successHandler={this.closeAfterSuccess}
@@ -61,11 +64,13 @@ var CreateOrModifyOrganizationForm = React.createClass({
         if (this.refs.tab1.validateFields()) {
             this.setState({ activeTab: 2 });
         }
+        this.props.onStepChange(2);
     },
     onPrevTab: function() {
         if (this.refs.tab2.validateFields()) {
             this.setState({ activeTab: 1 });
         }
+        this.props.onStepChange(1);
     },
     onCreate: function() {
         // TODO
