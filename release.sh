@@ -1,3 +1,4 @@
+#!/usr/bin/env bash
 # args : optional RC number for oasis-portal and oasis-spring-integration (ex. 1, 2 1...)
 
 # generic release function :
