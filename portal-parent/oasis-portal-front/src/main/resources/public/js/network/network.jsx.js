@@ -493,7 +493,7 @@ var Member = React.createClass({
 
         return (
             <div key={member.id} className="row form-table-row">
-                <div className="col-sm-4">{member.name}</div>
+                <div className="col-sm-3">{member.name}</div>
                 <div className="col-sm-3">{adminStatus}</div>
                     {actions}
             </div>
