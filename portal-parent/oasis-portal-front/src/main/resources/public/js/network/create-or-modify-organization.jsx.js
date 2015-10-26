@@ -505,7 +505,7 @@ var Tab2 = React.createClass({
                                 <Field name="legal_name" error={$.inArray("legal_name", this.props.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="legal_name" id="legal_name" type="text"
                                            value={this.state.organization.legal_name} onChange={this.handleInputChange}
-                                           disabled={this.state.organization.inModification} />
+                                           disabled={this.state.organization.inModification || this.state.organization.exist} />
                                 </Field>
                                 <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.props.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="tax_reg_num" id="tax_reg_num" type="text"
