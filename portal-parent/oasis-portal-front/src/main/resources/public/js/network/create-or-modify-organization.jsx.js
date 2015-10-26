@@ -45,6 +45,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
                                                         successHandler={this.closeAfterSuccess}
                                                         cancelHandler={this.close}
                                                         organization={this.state.organization}
+                                                        step={this.state.step}
                                                         onStepChange={this.onStepChange} />
                     </div>
                 </div>
@@ -56,27 +57,20 @@ var CreateOrModifyOrganizationModal = React.createClass({
 var CreateOrModifyOrganizationForm = React.createClass({
     getInitialState: function () {
         return {
-            activeTab: 1,
             createOrUpdateError: { code: '', message: ''}
         }
     },
     onNextTab: function() {
         if (this.refs.tab1.validateFields()) {
-            this.setState({ activeTab: 2 });
+            this.props.onStepChange(2);
         }
-        this.props.onStepChange(2);
     },
     onPrevTab: function() {
         if (this.refs.tab2.validateFields()) {
-            this.setState({ activeTab: 1 });
+            this.props.onStepChange(1);
         }
-        this.props.onStepChange(1);
     },
     onCreate: function() {
-        // TODO
-        //    - ask each tab to validate its data
-        //    - if ok, perform the creation / modification
-        //    - if ok, call parent success handler
         if (this.refs.tab1.validateFields() && this.refs.tab2.validateFields()) {
             // TODO : can be simplified
             var finalOrganization = $.extend({}, this.props.organization, this.refs.tab1.getFields(), this.refs.tab2.getFields());
@@ -146,14 +140,14 @@ var CreateOrModifyOrganizationForm = React.createClass({
                 <div className="modal-body">
                     <form id="add-organization" onSubmit={this.onCreate} className="form-horizontal">
                         <div className="form-horizontal">
-                            <Tab1 id="1" ref="tab1" organization={organization} currentTab={this.state.activeTab} />
-                            <Tab2 id="2" ref="tab2" organization={organization} currentTab={this.state.activeTab} />
+                            <Tab1 id="1" ref="tab1" organization={organization} currentTab={this.props.step} />
+                            <Tab2 id="2" ref="tab2" organization={organization} currentTab={this.props.step} />
                         </div>
                         {this.renderCreateOrUpdateError()}
                     </form>
                 </div>
                 <div className="modal-footer">
-                    <Button activeTab={this.state.activeTab}
+                    <Button activeTab={this.props.step}
                             onNext={this.onNextTab}
                             onPrev={this.onPrevTab}
                             onCancel={this.props.cancelHandler}
