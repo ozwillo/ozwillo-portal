@@ -1,500 +1,533 @@
 /** @jsx React.DOM */
 
-var default_org_data = {
-        organization: { exist: false, legal_name: '', sector_type: '', in_activity: true, alt_name: '', org_type:'',
-            tax_reg_num: '', tax_reg_official_id:'', tax_reg_activity_uri:'', jurisdiction_uri:'', jurisdiction:'', phone_number:'',
-            web_site:'', email:'', street_and_number:'', additional_address_field: '', po_box: '', city: '', city_uri: '',
-            zip: '', cedex: '', country_uri: ''
-         }, errors: [[],[]], typeRestriction: ''
-};
-
-// Main modal
 var CreateOrModifyOrganizationModal = React.createClass({
-    getInitialState: function () { return default_org_data },
-
+    getInitialState: function () {
+        return {
+            organization: {},
+            step: 1
+        };
+    },
     componentDidMount: function() {
-        $(this.refs.modalcreateOrModifyOrg.getDOMNode()).on("shown.bs.modal", function() {
-            $("input", this).first().focus();
+        $(this.getDOMNode()).on("shown.bs.modal", function() {
+            $("input#contact_lastname", this).focus();
         });
     },
-    show: function(org) {
-        if(org){
-           var state = this.state;
-           state.organization = org;
-           this.setState(state);
-        }
-        this.refs.modalcreateOrModifyOrg.open();
+    open: function(organization) {
+        this.setState({ organization: organization });
+        $(this.getDOMNode()).modal('show');
     },
-    close: function (org) {
-        this.refs.modalcreateOrModifyOrg.close();
-        if (this.props.successHandler) {
-            this.props.successHandler(org);
-        }
+    onStepChange: function(stepId) {
+        this.setState({ step: stepId });
     },
-    onError: function (srvErrCode, srvErrMessage) {
-        this.state.srvErrCode = srvErrCode;
-        this.state.srvErrMessage = srvErrMessage;
-        this.setState(this.state);
-        this.refs.modalCreatOrgError.open();
+    close: function(event) {
+        $(this.getDOMNode()).modal('hide');
     },
-    createOrModifOrg: function(event){
-        return (this.refs.tabbedForm.createOrModifOrg(event) ); // return true if the organization has been created successful
+    closeAfterSuccess: function() {
+        $(this.getDOMNode()).modal('hide');
+        this.props.successHandler();
     },
+    render: function () {
 
-    render: function() {
-        var org = this.state.organization; //Note: objects are passed by ref so all changes will visible for all (if rendered)
-        var typeRestriction = this.props.typeRestriction;
+        var organization = this.state.organization;
+        var modalTitle = organization.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
 
-        var saveButtonLabel = org.exist ? t('ui.save') : t('my.network.create-org');
-        var buttonLabels = {"cancel": t('ui.cancel'), "save": saveButtonLabel };
-        var modalTitle = org.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
-
-
-        return (<div>
-                <Modal large={true} ref="modalcreateOrModifyOrg" title={modalTitle} successHandler={this.createOrModifOrg} buttonLabels={buttonLabels}>
-                    <CreateOrModifyOrganizationForm ref="tabbedForm" successHandler={this.close} errorHandler={this.onError}
-                       organization={org} typeRestriction={typeRestriction}/>
-                </Modal>
-
-                <Modal ref="modalCreatOrgError" title={t('my.network.information')} infobox={true} cancelHandler={null/*this.close()*/} >
-                    {/*<div><h5>{t('error.datacore.forbidden')}</h5></div>*/}
-                    <br/><div><h5>{this.state.srvErrMessage}</h5></div>
-                </Modal>
+        return (
+            <div className="modal fade">
+                <div className='modal-dialog modal-lg'>
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" onClick={this.close}>&times;</button>
+                            <h3>{modalTitle}</h3>
+                        </div>
+                        <CreateOrModifyOrganizationForm ref="form"
+                                                        successHandler={this.closeAfterSuccess}
+                                                        cancelHandler={this.close}
+                                                        organization={organization}
+                                                        onStepChange={this.onStepChange} />
+                    </div>
                 </div>
-            );
+            </div>
+        );
     }
 });
 
 var CreateOrModifyOrganizationForm = React.createClass({
-    getDefaultProps: function () { return { organization: default_org_data.organization, errors: default_org_data.errors } },
-    getInitialState: function () { return { organization: this.props.organization, errors: default_org_data.errors, activeTab: 1}},
-    switchTab: function (idx) {  this.refs.navtab.changeTab({id: idx}); },
-    validateFields: function(org){
-        var errors = [];
-        // tab 1
-        var errTab1 = [];
-        if (!org.legal_name  || org.legal_name.trim() == '')       { errTab1.push('legal_name'); }
-        if (!org.tax_reg_num || org.tax_reg_num.trim() == '')      { errTab1.push('tax_reg_num'); }
-        if ((org.sector_type === 'PUBLIC_BODY') &&
-            (!org.jurisdiction_uri || org.jurisdiction_uri.trim() == '')) { errTab1.push('jurisdiction_uri'); }
-        errors.push(errTab1);
-        // tab 2
-        var errTab2 = [];
-        if (!org.street_and_number || org.street_and_number.trim() == '')       { errTab2.push('street_and_number'); }
-        if (!org.zip               || org.zip.trim() == '')                     { errTab2.push('zip'); }
-        if (!org.city_uri          || org.city_uri.trim() == '')                { errTab2.push('city_uri'); errTab2.push('city'); }
-        if (!org.exist && (!org.country_uri || org.country_uri.trim() == ''))   { errTab2.push('country_uri'); errTab2.push('country'); }
-        errors.push(errTab2);
-
-        this.setState({errors: errors});
-        return errors;
-     },
-    callCreateOrganization: function(org){
+    getInitialState: function () {
+        return {
+            activeTab: 1,
+            createOrUpdateError: { code: '', message: ''}
+        }
+    },
+    onNextTab: function() {
+        if (this.refs.tab1.validateFields()) {
+            this.setState({ activeTab: 2 });
+        }
+    },
+    onPrevTab: function() {
+        if (this.refs.tab2.validateFields()) {
+            this.setState({ activeTab: 1 });
+        }
+    },
+    onCreate: function() {
+        // TODO
+        //    - ask each tab to validate its data
+        //    - if ok, perform the creation / modification
+        //    - if ok, call parent success handler
+        if (this.refs.tab1.validateFields() && this.refs.tab2.validateFields()) {
+            // TODO : can be simplified
+            var finalOrganization = $.extend({}, this.props.organization, this.refs.tab1.getFields(), this.refs.tab2.getFields());
+            console.log(finalOrganization);
+            if (finalOrganization.exist) {
+                this.callUpdateOrganization(finalOrganization);
+            } else {
+                this.callCreateOrganization(finalOrganization);
+            }
+        }
+    },
+    callCreateOrganization: function(organization) {
         $.ajax({
             url: network_service + '/create-dc-organization',
             type: 'post',
             contentType: 'application/json',
-            data: JSON.stringify(org),
+            data: JSON.stringify(organization),
             success: function (data) {
-                if(data || data !== ''){ this.props.successHandler(data);
-                }else{ /* show message */
-                    console.error('No organziation was created with'+ org + '. Result :', data);
-                    this.props.errorHandler('Not Valid Response', 'The received response was empty.'); // Should not happen
+                if (data) {
+                    this.props.successHandler();
+                } else {
+                    console.error('Organization was not created');
+                    console.error('Submitted data was : ' + organization);
+                    this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
                 }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
-                this.props.errorHandler(err, xhr.responseText);
+                this.setState({ createOrUpdateError: { code: err, message: xhr.responseText } });
             }.bind(this)
         });
     },
-    callUpdateOrganization: function(org){
+    callUpdateOrganization: function(organization){
         $.ajax({
             url: network_service + '/update-dc-organization',
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify(org),
             success: function (data) {
-                if(data){ this.props.successHandler(data);
-                }else{ /* show message */
-                    console.error('No organziation was modified with'+ org + '. Result :', data);
-                    this.props.errorHandler('Not Valid Response', 'The received response was empty.'); // Should not happen
+                if (data) {
+                    this.props.successHandler();
+                } else {
+                    console.error('Organization was not modified');
+                    console.error('Submitted data was : ' + organization);
+                    this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
                 }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
-                this.props.errorHandler(xhr.status, xhr.responseText);
+                this.setState({ createOrUpdateError: { code: err, message: xhr.responseText } });
             }.bind(this)
         });
     },
-    createOrModifOrg: function (event) {
-        if (event) { event.preventDefault(); }
-        var org = this.props.organization;
-        var errs = this.validateFields(org);
-        if ( (errs[0].length + errs[1].length) > 0) {
-            if(errs[0].length > 0){ this.switchTab(1);
-            } else{ this.switchTab(2);}
-            return false;
-        } else {
-           //if variable "exist" from Organization (was found) then call updateOrganization, otherwise createOrganization
-           if(org.exist){
-              this.callUpdateOrganization(org);
-           } else {
-              this.callCreateOrganization(org);
-           }
-           // Reinitialize some values
-           this.switchTab(1);
-           // If everything was done correctly
-           if(this.props.successHandler){this.props.successHandler()}
-           return true;
+    renderCreateOrUpdateError: function () {
+        if (this.state.createOrUpdateError.code !== '') {
+            return (
+                <label className="error">{this.state.createOrUpdateError.message} ({this.state.createOrUpdateError.code})</label>
+            )
         }
     },
-
     render: function () {
-        var tabList = [
-                       { 'id': 1, 'name': t('my.network.organization.tab1.general_information'), 'url': '#' },
-                       { 'id': 2, 'name': t('my.network.organization.tab2.address_geolocation'), 'url': '#' },
-        ];
         var organization = this.props.organization;
+        console.log(organization);
 
         return (
-              <div className="form-horizontal">
-                  <NavTab ref="navtab"  tabList={tabList} currentTab={this.state.activeTab}>
-                     <Tab1 id={1} orgData={organization} errors={this.state.errors[0]} switchTab={this.switchTab}
-                             valdiate={this.validateFields} typeRestriction={this.props.typeRestriction}/>
-                     <Tab2 id={2} orgData={organization} errors={this.state.errors[1]} switchTab={this.switchTab}
-                             valdiate={this.validateFields} typeRestriction={this.props.typeRestriction}/>
-                  </NavTab>
-              </div>
-            );
-    }
-});
-
-/* PROPS: name, className, class_name_div, error, isRequired, (children)*/
-var Field = React.createClass({
-     renderLabel: function(htmlFor, class_name, label, isRequired){
-        var cn = isRequired ? <label className={'error'}>{'*'}</label> : ''
-        return (<label htmlFor={htmlFor} className={class_name}>{label} {cn}</label>);
-     },
-    render: function() {
-        var className = "control-label col-sm-3";
-        var classNameDiv = "col-sm-7";
-        if (this.props.class_name) {className = this.props.class_name; }
-        if (this.props.error) { className = className + " error"; }
-        if (this.props.class_name_div) {classNameDiv = this.props.class_name_div; }
-        return (
-            <div className="form-group">
-                {this.renderLabel(this.props.name, className, t('my.network.organization.'+this.props.name), this.props.isRequired)}
-                <div className={classNameDiv}>
-                   {this.props.children}
+            <div>
+                <div className="modal-body">
+                    <form id="add-organization" onSubmit={this.onCreate} className="form-horizontal">
+                        <div className="form-horizontal">
+                            <Tab1 id="1" ref="tab1" organization={organization} currentTab={this.state.activeTab} />
+                            <Tab2 id="2" ref="tab2" organization={organization} currentTab={this.state.activeTab} />
+                        </div>
+                        {this.renderCreateOrUpdateError()}
+                    </form>
+                </div>
+                <div className="modal-footer">
+                    <Button activeTab={this.state.activeTab}
+                            onNext={this.onNextTab}
+                            onPrev={this.onPrevTab}
+                            onCancel={this.props.cancelHandler}
+                            onCreate={this.onCreate}/>
                 </div>
             </div>
-            );
+        );
     }
 });
 
-var iconClassName = "control-label col-sm-2";
-function getSectorTypeLabel(sector_type, type_restriction){
-    if (type_restriction) { // if user has organization type restriction
-        if (!type_restriction.company) { sector_type = 'PUBLIC_BODY';
-        } else if (!type_restriction.public_body) { sector_type = 'COMPANY'; }
-    }// if not, keeps the user selection
-    return (  (sector_type === 'COMPANY' || sector_type === 'Private' )
-                  ? t('search.organization.sector-type.COMPANY')
-                  : t('search.organization.sector-type.PUBLIC_BODY')
-    );
-}
+var Button = React.createClass({
+    renderStepSwitcherButton() {
+        if (this.props.activeTab === 1) {
+            return (
+                <button key="next" className="control btn btn-primary-inverse" onClick={this.props.onNext}>
+                    {t('ui.next')}
+                </button>
+            )
+        } else {
+            return (
+                <button key="prev" className="control btn btn-primary-inverse" onClick={this.props.onPrev}>
+                    {t('ui.previous')}
+                </button>
+            )
+        }
+    },
+    renderCreateButton() {
+        if (this.props.activeTab === 2) {
+            return (
+                <button key="success" className="btn btn-primary" onClick={this.props.onCreate}>
+                    {t('my.network.create')}
+                </button>
+            )
+        }
+    },
+    render: function() {
+        return (
+            <div>
+                <button key="cancel" className="btn btn-default" onClick={this.props.onCancel}>
+                    {t('ui.cancel')}
+                </button>
+                {this.renderStepSwitcherButton()}
+                {this.renderCreateButton()}
+            </div>
+        );
+    }
+});
+
+var Field = React.createClass({
+    propTypes: {
+        name: React.PropTypes.string.isRequired,
+        labelClassName: React.PropTypes.string,
+        divClassName: React.PropTypes.string,
+        error: React.PropTypes.bool,
+        isRequired: React.PropTypes.bool
+    },
+    renderLabel: function(htmlFor, class_name, label, isRequired) {
+        var cn = isRequired ? <label className='error'>&nbsp;*</label> : '';
+        return (
+            <label htmlFor={htmlFor} className={class_name}>{label} {cn}</label>
+        );
+    },
+    render: function() {
+        var labelClassName = this.props.labelClassName ? this.props.labelClassName : "control-label col-sm-3";
+        var divClassName = this.props.divClassName ? this.props.divClassName : "col-sm-7";
+        if (this.props.error) { labelClassName = labelClassName + " error"; }
+
+        return (
+            <div className="form-group">
+                {this.renderLabel(this.props.name, labelClassName, t('my.network.organization.' + this.props.name), this.props.isRequired)}
+                <div className={divClassName}>
+                    {this.props.children}
+                </div>
+            </div>
+        );
+    }
+});
 
 var Tab1 = React.createClass({
-    getInitialState: function() { return {organization: this.props.orgData, errors: [], errorMsg:'' }; },
-    moveTabRight: function() {
-        var errors = this.props.valdiate(this.state.organization);
-        if(errors[0].length == 0){ this.props.switchTab(this.props.id+1); }
+    getInitialState: function() {
+        return {
+            organization: {},
+            contact_lastname: '',
+            contact_name: '',
+            errors: []
+        };
     },
-    changeInput: function (fieldname, isCheckbox) {
-        return function (event) {
-           var org = this.state.organization;
-           if (isCheckbox) {
-               org[fieldname] = event.target.checked;
-           } else {
-               org[fieldname] = event.target.value;
-               if(fieldname === 'jurisdiction_uri'){ org['jurisdiction'] = event.added ? event.added.name : ''; }
-           }
-           this.setState({organization: org});
-        }.bind(this);
+    componentWillMount: function() {
+        $.ajax({
+            url: network_service + '/general-user-info',
+            type: 'get',
+            contentType: 'json',
+            success: function (data) {
+                this.setState({
+                    contact_lastname: data.user_lastname,
+                    contact_name: data.user_name
+                });
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(status, err.toString());
+            }.bind(this)
+        });
     },
-    updateUploadedIcon: function (servedImageUrlData){
-        var org = this.state.organization;
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({ organization: nextProps.organization });
+    },
+    handleInputChange: function(event) {
+        var organization = this.state.organization;
+        if (event.target.id === 'contact_lastname')
+            this.setState({ contact_lastname : event.target.value });
+        else if (event.target.id === 'contact_name')
+            this.setState({ contact_name : event.target.value });
+        else if (event.target.name === 'city') {
+            organization.city_uri = event.target.value;
+            if (event.added)
+                organization.city = event.added.name;
+        } else
+            organization[event.target.id] = event.target.value;
 
-        org.iconUrl = servedImageUrlData; // not required, inited by server to the Kernel service's
-        this.setState({organization: org, errorMsg:''});
+        this.setState({ organization: organization });
     },
-    error: function (xhr, status, err) {
-        this.setState({errorMsg: t("ui.unexpected_error")});
-    },
+    validateFields: function() {
+        var errors = [];
+        // TODO : boilerplate
+        if (this.refs.contact_lastname.getDOMNode().value.trim() === '')
+            errors.push("contact_lastname");
+        if (this.refs.street_and_number.getDOMNode().value.trim() === '')
+            errors.push("street_and_number");
+        if (!this.state.organization.city || this.state.organization.city === '')
+            errors.push("city");
+        if (this.refs.zip.getDOMNode().value.trim() === ''
+            || this.refs.zip.getDOMNode().value.trim().search(/^\d+$/) === -1)
+            errors.push("zip");
+        if (this.refs.cedex.getDOMNode().value.trim() !== ''
+            && this.refs.cedex.getDOMNode().value.trim().search(/^\d+$/) === -1)
+            errors.push("cedex");
 
-    render: function() {
-        if ($.inArray("icon", this.props.errors) != -1) { iconClassName = iconClassName + " error"; }
-        this.state.organization = this.props.orgData;
-        var sectorType = getSectorTypeLabel(this.state.organization.sector_type, this.props.typeRestriction);
-        var label_regNum; var label_regOfficialId = ''; var label_regActivity = '';
-        var n = this.state.organization.country_uri ? this.state.organization.country_uri.lastIndexOf('/') : -1;
-        var acronymCountry = n > 0 ? this.state.organization.country_uri.substring(n + 1) : '';
-        switch(acronymCountry){
-           case 'BG' : label_regNum = 'tax_reg_num.bg'; label_regActivity = 'tax_reg_activity.bg'; break;
-           case 'IT' : label_regNum = 'tax_reg_num.it'; label_regActivity = 'tax_reg_activity.it'; break;
-           case 'FR' : label_regNum = 'tax_reg_num.fr';
-                             label_regOfficialId = 'tax_reg_official_id.fr';
-                             label_regActivity = 'tax_reg_activity.fr';
-                             break;
-           case 'ES' : label_regNum = 'tax_reg_num.es'; label_regActivity = 'tax_reg_activity.es'; break;
-           case 'TR' : label_regNum = 'tax_reg_num.tr';
-                             label_regOfficialId = 'tax_reg_official_id.tr';
-                             label_regActivity = 'tax_reg_activity.tr';
-                             break;
-           default   : label_regNum = 'tax_reg_num.en'; break;
+        if (errors.length > 0)
+            errors.push("validation");
+        this.setState({ errors: errors });
+
+        return (errors.length == 0);
+    },
+    getFields: function() {
+        return {
+            contact_lastName: this.refs.contact_lastname.getDOMNode().value.trim(),
+            contact_name: this.refs.contact_name.getDOMNode().value.trim()
         }
-
+    },
+    renderGeneralErrorMessage: function() {
+        if ($.inArray('validation', this.state.errors) != -1) {
+            return (
+                <label className="error">{t('my.network.organization.invalid_fields')}</label>
+            )
+        }
+    },
+    render: function() {
+        var className = this.props.currentTab === 1 ? "" : "hidden";
+        var country_uri = this.props.organization ? this.props.organization.country_uri : '';
 
         return (
-             <div id="tab1">
-               <div className="container-fluid">
-               <div className="row">
-               <br/>
-                <div className="col-sm-15">
-                   <Field name="legal_name" class_name={'control-label col-sm-2'} error={$.inArray("legal_name", this.props.errors) != -1} isRequired={true}>
-                      <input className="form-control" id="legal_name" type="text" value={this.state.organization.legal_name}
-                               onChange={this.changeInput('legal_name')} disabled={this.state.organization.exist}/>
-                      <label>{sectorType}</label>
-
-                      <label className="col-sm-offset-3">{t('my.network.organization.in_activity')}: &nbsp;
-                         <input id="in_activity" type="checkbox" checked={this.state.organization.in_activity}
-                               onChange={this.changeInput('in_activity', true)}/></label>
-                   </Field><br/>
-
-                   <Field name="alt_name" class_name={'control-label col-sm-2'}>
-                      <input className="form-control" id="alt_name" type="text" value={this.state.organization.alt_name}
-                      onChange={this.changeInput('alt_name')} />
-                   </Field>
-
-               </div></div> { /* End of col 1 & row 1*/}
-
-               <div className="row">
-                  <div className="col-sm-8">
-
-                  <Field name="org_type" class_name_div='col-sm-5'>
-                     <input className="form-control" id="org_type" type="text" value={this.state.organization.org_type}
-                              onChange={this.changeInput('org_type')} placeholder={t('my.network.organization.org_type.placeholder')}/>
-                  </Field>
-                  <Field name={label_regNum} error={$.inArray("tax_reg_num", this.props.errors) != -1} isRequired={true}>
-                     <input className="form-control" id="tax_reg_num" type="text" value={this.state.organization.tax_reg_num}
-                              onChange={this.changeInput('tax_reg_num')} disabled={true}/>
-                  </Field>
-                  { // Show the field if is defined (normaly only for public orgs in France or Turkey).
-                     (label_regOfficialId !== '' && this.state.organization.sector_type !== 'COMPANY') ?  (
-                        <Field name={label_regOfficialId}>
-                           <input className="form-control" id="tax_reg_official_id" type="text" value={this.state.organization.tax_reg_official_id}
-                                   onChange={this.changeInput('tax_reg_official_id')} />
-                        </Field>
-                      ) : ''
-                  }
-                  <Field name={label_regActivity} class_name_div='col-sm-3'>
-                     <GeoSingleSelect2Component ref="geoSearchtaxRegActivity" className="form-control" key={this.state.organization.tax_reg_activity_uri}
-                         name="geoSearchRegActivity" urlResources={store_service + "/dc-taxRegActivity"}
-                         onChange={this.changeInput('tax_reg_activity_uri')} minimumInputLength={2}
-                         countryFilter={ {country_uri:this.state.organization.country_uri} /*{country_uri:''}*/ }
-                         placeholder={ !this.state.organization.tax_reg_activity_uri ? ' '
-                               : this.state.organization.tax_reg_activity_uri.substring(this.state.organization.tax_reg_activity_uri.lastIndexOf("/")+1)
-                         }
-                     />
-                  </Field><br/>
-                  { // Show the field only for public orgs
-                     (this.state.organization.sector_type === 'COMPANY') ? "" :(
-                        <Field name="jurisdiction" error={$.inArray("jurisdiction_uri", this.props.errors) != -1} isRequired={true}>
-                           <GeoSingleSelect2Component ref="geoSearchJurisdiction" className="form-control" key={this.state.organization.jurisdiction}
-                              name="geoSearch" urlResources={store_service + "/geographicalAreas"}
-                              onChange={this.changeInput('jurisdiction_uri')}
-                              countryFilter={ {country_uri:this.state.organization.country_uri} /*{country_uri:''}*/ }
-                              placeholder={this.state.organization.jurisdiction /*t('my.network.organization.jurisdiction.placeholder')*/}/>
-                        </Field>
-                  )}
-                  <Field name="phone_number">
-                     <input className="form-control" id="phone_number" type="text" value={this.state.organization.phone_number}
-                              onChange={this.changeInput('phone_number')}/>
-                  </Field>
-                  <Field name="web_site">
-                     <input className="form-control" id="web_site" type="text" value={this.state.organization.web_site}
-                     onChange={this.changeInput('web_site')}/>
-                  </Field>
-                  <Field name="email">
-                     <input className="form-control" id="email" type="email" value={this.state.organization.email}
-                     onChange={this.changeInput('email')} placeholder={t('my.network.organization.email.placeholder')}/>
-                  </Field>
-
-                </div>{/* End of col 1 */}
-
-                <div className="col-sm-2">
-                  {/* util/fileuploadinput.jsx.js */}
-                  {/* TODO LATER : UNCOMMENT - ISSUE #259
-                  <div className="form-group">
-                   <div className="control">
-                      <img src={this.state.organization.iconUrl}/>
-                      <div className="btn btn-success-inverse btn-edit">
-                         <i className="pull-left fa fa-pencil" />
-                         <label>{t('my.network.organization.change-icon')}</label>
-                         <FileUploadInput className="edit" uploadUrl={"/media/objectIcon/"+this.state.organization.tax_reg_num+"/"+"orgIcon.png"}
-                              success={this.updateUploadedIcon} error={this.error}/>
-                      </div>
-                   </div>
-                  </div>
-                   */}
-                </div></div>{/* End of row2 */}
-                </div>{/* End of container */}
-                <div className="error"><label>{this.state.errorMsg}</label> </div>
-                <button key="next" className="control pull-right btn btn-primary-inverse" onClick={this.moveTabRight}>{t('ui.next')}</button>
-
-             </div>
-            );
+            <div id="tab1" className={className}>
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-sm-15">
+                            <fieldset>
+                                <legend>{t('my.network.organization.profile_information')}</legend>
+                                <Field name="contact_lastname" error={$.inArray("contact_lastname", this.state.errors) != -1} isRequired={true}>
+                                    <input className="form-control" ref="contact_lastname" id="contact_lastname" type="text"
+                                        value={this.state.contact_lastname} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="contact_name" error={$.inArray("contact_name", this.state.errors) != -1} isRequired={true}>
+                                    <input className="form-control" ref="contact_name" id="contact_name" type="text"
+                                        value={this.state.contact_name} onChange={this.handleInputChange} />
+                                </Field>
+                            </fieldset>
+                            <fieldset>
+                                <legend>{t('my.network.organization.contact_information')}</legend>
+                                <Field name="street_and_number" error={$.inArray("street_and_number", this.state.errors) != -1} isRequired={true}>
+                                    <input className="form-control" ref="street_and_number" id="street_and_number" type="text"
+                                           value={this.state.organization.street_and_number} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="additional_address_field" error={$.inArray("additional_address_field", this.state.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="additional_address_field" id="additional_address_field" type="text"
+                                           value={this.state.organization.additional_address_field} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="po_box" error={$.inArray("po_box", this.state.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="po_box" id="po_box" type="text"
+                                           value={this.state.organization.po_box} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="city" error={$.inArray("city", this.state.errors) != -1} isRequired={true}>
+                                    <GeoSingleSelect2Component ref="city" className="form-control" name="city"
+                                                               urlResources={store_service + "/dc-cities"}
+                                                               countryFilter={ {country_uri: country_uri} }
+                                                               onChange={this.handleInputChange}
+                                                               placeholder={this.state.organization.city} />
+                                </Field>
+                                <Field name="zip" divClassName='col-sm-2' error={$.inArray("zip", this.state.errors) != -1} isRequired={true}>
+                                    <input className="form-control" ref="zip" id="zip" type="text" maxLength={6}
+                                           value={this.state.organization.zip} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="cedex" divClassName='col-sm-2' error={$.inArray("cedex", this.state.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="cedex" id="cedex" type="text" maxLength={3}
+                                           value={this.state.organization.cedex} onChange={this.handleInputChange} />
+                                </Field>
+                            </fieldset>
+                        </div>
+                    </div>
+                </div>
+                {this.renderGeneralErrorMessage()}
+            </div>
+        );
     }
-});/** end tab1 */
-
-var isInteger = function(obj){ return (jQuery.isNumeric(obj) && obj.indexOf('.') <0); }
+});
 
 var Tab2 = React.createClass({
-    getInitialState: function() { return {organization: this.props.orgData, errors: [] }; },
-    moveTabLeft: function() {
-        var errors = this.props.valdiate(this.state.organization);
-        if(errors[1].length == 0){ this.props.switchTab(this.props.id - 1); }
+    getInitialState: function() {
+        return {
+            organization: {},
+            errors: []
+        };
     },
-    changeInput: function (fieldname, isNumericField) {
-        return function (event) {
-            this.changeInputAddress(fieldname, event.target.value, isNumericField);
-        }.bind(this);
+    componentWillReceiveProps: function(nextProps) {
+        this.setState({ organization: nextProps.organization });
     },
-    changeInputAddress: function (fieldname, value, isNumericField) {
-        var org = this.state.organization;
-        if(isNumericField && value !== '' ){
-           if(isInteger(value)){
-              org[fieldname] = value;
-           }else{
-              org[fieldname]= (org[fieldname] !== undefined) ? org[fieldname] : '';// If the referenced value is "undefined" React doesnt re-render its field
-           }
-        } else {
-           org[fieldname] = value;
+    handleInputChange: function(event) {
+        var organization = this.state.organization;
+
+        if (event.target.id === 'in_activity')
+            organization.in_activity = event.target.checked;
+        else if (event.target.name === 'tax_reg_activity') {
+            organization.tax_reg_activity_uri = event.target.value;
+            if (event.added)
+                organization.tax_reg_activity = event.added.name;
+        } else if (event.target.name === 'jurisdiction') {
+            organization.jurisdiction_uri = event.target.value;
+            if (event.added)
+                organization.jurisdiction = event.added.name;
+        } else
+            organization[event.target.id] = event.target.value;
+
+        this.setState({ organization: organization });
+    },
+    validateFields: function() {
+        var errors = [];
+        if (this.refs.legal_name.getDOMNode().value.trim() === '')
+            errors.push("legal_name");
+        if (this.state.organization.sector_type === 'PUBLIC_BODY' &&
+            (!this.state.organization.jurisdiction || this.state.organization.jurisdiction === ''))
+            errors.push("jurisdiction");
+
+        if (errors.length > 0)
+            errors.push("validation");
+        this.setState({ errors: errors });
+
+        return (errors.length == 0);
+    },
+    getFields: function() {
+        return {}
+    },
+    // Get tax reg related labels according to organization's country
+    // returns { tax_reg_num_label : string, tax_reg_official_id_label : string (optional), tax_reg_activity_uri_label : string (optional)
+    getTaxRegLabels: function() {
+        var tax_reg_num_label,
+            tax_reg_official_id_label = '',
+            tax_reg_activity_label = '';
+        var n = this.state.organization.country_uri ? this.state.organization.country_uri.lastIndexOf('/') : -1;
+        var acronymCountry = n > 0 ? this.state.organization.country_uri.substring(n + 1) : '';
+        switch (acronymCountry) {
+            case 'BG' : tax_reg_num_label = 'tax_reg_num.bg'; tax_reg_official_id_label = 'tax_reg_activity.bg'; break;
+            case 'IT' : tax_reg_num_label = 'tax_reg_num.it'; tax_reg_official_id_label = 'tax_reg_activity.it'; break;
+            case 'FR' : tax_reg_num_label = 'tax_reg_num.fr'; tax_reg_official_id_label = 'tax_reg_official_id.fr';
+                        tax_reg_activity_label = 'tax_reg_activity.fr'; break;
+            case 'ES' : tax_reg_num_label = 'tax_reg_num.es'; tax_reg_official_id_label = 'tax_reg_activity.es'; break;
+            case 'TR' : tax_reg_num_label = 'tax_reg_num.tr'; tax_reg_official_id_label = 'tax_reg_official_id.tr';
+                        tax_reg_activity_label = 'tax_reg_activity.tr'; break;
+            default   : tax_reg_num_label = 'tax_reg_num.en'; break;
         }
-        this.setState({organization: org});
-    },
 
+        return {
+            tax_reg_num_label: tax_reg_num_label,
+            tax_reg_official_id_label: tax_reg_official_id_label,
+            tax_reg_activity_label: tax_reg_activity_label
+        };
+    },
+    renderTaxRegOfficialId: function(tax_reg_official_id_label) {
+        if (tax_reg_official_id_label !== '' && this.state.organization.sector_type === 'PUBLIC_BODY') {
+            return (
+                <Field name={tax_reg_official_id_label} error={$.inArray("tax_reg_official_id", this.props.errors) != -1} isRequired={false}>
+                    <input className="form-control" ref="tax_reg_official_id" id="tax_reg_official_id" type="text"
+                           value={this.state.organization.tax_reg_official_id} onChange={this.handleInputChange} />
+                </Field>
+            )
+        }
+    },
+    renderJurisdiction: function() {
+        if (this.state.organization.sector_type === 'PUBLIC_BODY') {
+            return (
+                <Field name="jurisdiction" error={$.inArray("jurisdiction", this.props.errors) != -1} isRequired={true}>
+                    <GeoSingleSelect2Component ref="jurisdiction" className="form-control" name="jurisdiction"
+                                               urlResources={store_service + "/geographicalAreas"}
+                                               countryFilter={ {country_uri: this.props.organization.country_uri} }
+                                               onChange={this.handleInputChange}
+                                               placeholder={this.state.organization.jurisdiction} />
+                </Field>
+
+            )
+        }
+    },
+    renderGeneralErrorMessage: function() {
+        if ($.inArray('validation', this.state.errors) != -1) {
+            return (
+                <label className="error">{t('my.network.organization.invalid_fields')}</label>
+            )
+        }
+    },
     render: function() {
-        if ($.inArray("icon", this.props.errors) != -1) { iconClassName = iconClassName + " error"; }
-        this.state.organization = this.props.orgData;
-        var sectorType = getSectorTypeLabel(this.state.organization.sector_type, this.props.typeRestriction);
+        var className = this.props.currentTab === 2 ? "" : "hidden";
+        var taxRegNumLabels = this.getTaxRegLabels();
+        var tax_reg_activity_uri_placeholder = !this.state.organization.tax_reg_activity_uri ? ' '
+            : this.state.organization.tax_reg_activity_uri.substring(this.state.organization.tax_reg_activity_uri.lastIndexOf("/") + 1);
 
         return (
-             <div id="tab2">
-               <div className="container-fluid">
-               <div className="row">
-               <br/>
-               <div className="col-sm-15">
-                <Field name="legal_name" class_name={'control-label col-sm-2'} error={$.inArray("name", this.props.errors) != -1}>
-                   <input className="form-control" id="legal_name" type="text" value={this.state.organization.legal_name}
-                            onChange={this.changeInput('legal_name')} disabled={true}/>
-                   <label>{sectorType}</label>
-
-                   <label className="col-sm-offset-3">{t('my.network.organization.in_activity')}: &nbsp;
-                      <input id="in_activity" type="checkbox" checked={this.state.organization.in_activity} disabled={true} /></label>
-                </Field><br/>
-              </div></div> {/*end of col 1 row 1*/}
-
-              <div className="row">
-              <div className="col-sm-8">
-
-                  <AddressComponent errors={this.props.errors} addressContainer={this.state.organization}
-                      changeInput={this.changeInputAddress} addressType='ORG' disabled={true}/>
-
-                </div> {/* end of col1*/}
-                <div className="col-sm-4">
-                {/**
-                  geo maps
-                **/}
+            <div id="tab2" className={className}>
+                <div className="container-fluid">
+                    <div className="row">
+                        <div className="col-sm-15">
+                            <fieldset>
+                                <legend>{t('my.network.organization.additional_information')}</legend>
+                                <Field name="legal_name" error={$.inArray("legal_name", this.props.errors) != -1} isRequired={true}>
+                                    <input className="form-control" ref="legal_name" id="legal_name" type="text"
+                                           value={this.state.organization.legal_name} onChange={this.handleInputChange}/>
+                                </Field>
+                                <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.props.errors) != -1} isRequired={true}>
+                                    <input className="form-control" ref="tax_reg_num" id="tax_reg_num" type="text"
+                                           value={this.state.organization.tax_reg_num} disabled={true} />
+                                </Field>
+                                <Field name="in_activity" error={$.inArray("in_activity", this.props.errors) != -1} isRequired={false}>
+                                    <input id="in_activity" type="checkbox" checked={this.state.organization.in_activity}
+                                           onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="alt_name" error={$.inArray("alt_name", this.props.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="alt_name" id="alt_name" type="text"
+                                           value={this.state.organization.alt_name} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="org_type" error={$.inArray("org_type", this.props.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="org_type" id="org_type" type="text"
+                                           value={this.state.organization.org_type} onChange={this.handleInputChange}
+                                           placeholder={t('my.network.organization.org_type.placeholder')} />
+                                </Field>
+                                <Field name={taxRegNumLabels.tax_reg_activity_label} class_name_div='col-sm-3' isRequired={false}>
+                                    <GeoSingleSelect2Component ref="tax_reg_activity" className="form-control" name="tax_reg_activity"
+                                                               urlResources={store_service + "/dc-taxRegActivity"}
+                                                               countryFilter={ {country_uri: this.props.organization.country_uri} }
+                                                               onChange={this.handleInputChange}
+                                                               minimumInputLength={2}
+                                                               placeholder={tax_reg_activity_uri_placeholder} />
+                                </Field>
+                                {this.renderTaxRegOfficialId(taxRegNumLabels.tax_reg_official_id_label)}
+                                {this.renderJurisdiction()}
+                                <Field name="phone_number" error={$.inArray("phone_number", this.props.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="phone_number" id="phone_number" type="text"
+                                           value={this.state.organization.phone_number} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="web_site" error={$.inArray("web_site", this.props.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="web_site" id="web_site" type="text"
+                                           value={this.state.organization.web_site} onChange={this.handleInputChange} />
+                                </Field>
+                                <Field name="email" error={$.inArray("email", this.props.errors) != -1} isRequired={false}>
+                                    <input className="form-control" ref="email" id="email" type="text"
+                                           value={this.state.organization.email} onChange={this.handleInputChange} />
+                                </Field>
+                            </fieldset>
+                        </div>
+                    </div>
                 </div>
-                </div></div> {/* end of row2 & container*/}
-
-                <button key="next" className="control pull-right btn btn-primary-inverse" onClick={this.moveTabLeft}>{t('ui.previous')}</button>
-
-             </div>
-            );
-    }
-});/** end tab2 */
-
-var AddressComponent = React.createClass({
-    //getInitialState: function() { return {geoSearchCity: null }; },
-    componentDidMount: function() {
-       //if(this.refs.geoSearchCity)this.state.geoSearchCity = this.refs.geoSearchCity;
-    },
-    changeInput: function (fieldname, isNumericField) {
-        changeInput = this.props.changeInput;
-        return function (event) {
-           if(event.added){
-              changeInput(fieldname, event.added.name, isNumericField);
-              changeInput(fieldname+"_uri", event.target.value, isNumericField);
-           }else if(fieldname === "country"){
-               changeInput(fieldname, event.target.selectedOptions[0].label, isNumericField);
-               changeInput(fieldname+"_uri", event.target.value, isNumericField);
-               //If country has changed, the city is not longer valid
-               changeInput("city", "", isNumericField);
-               changeInput("city_uri", "", isNumericField);
-               if(this.refs.geoSearchCity) this.refs.geoSearchCity.clear(); //works only to remove tags in current component state, geoSelect placeholder still there.
-           }else {
-               changeInput(fieldname, event.target.value, isNumericField);
-           }
-        }.bind(this)
-    },
-
-    render: function() {
-        var address = this.props.addressContainer;
-        var addressType = this.props.addressType ? this.props.addressType : '';
-
-        return (
-           <div>
-
-              <Field name="street_and_number" error={$.inArray("street_and_number", this.props.errors) != -1}
-                        isRequired={( addressType == 'ORG') ? true : false } >
-                 <input className="form-control" id="street_and_number" type="text" value={address.street_and_number}
-                    onChange={this.changeInput('street_and_number')} />
-              </Field>
-              <Field name="additional_address_field">
-                 <input className="form-control" id="additional_address_field" type="text" value={address.additional_address_field}
-                    onChange={this.changeInput('additional_address_field')} />
-              </Field>
-              { ( addressType !== 'ORG') ? '' : //personal address
-                 <Field name="po_box">
-                    <input className="form-control" id="po_box" type="text" value={address.po_box}
-                       onChange={this.changeInput('po_box')} />
-                 </Field>
-              }
-              <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
-                 <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" name="geoSearchCity" key={address.city}
-                     urlResources={store_service + "/dc-cities"}
-                     onChange={this.changeInput('city')}   countryFilter={ {country_uri: address.country_uri} }
-                     placeholder={address.city} />
-              </Field>
-              <Field name="zip" class_name_div='col-sm-3' error={$.inArray("zip", this.props.errors) != -1} isRequired={true}>
-                 <input className="form-control" id="zip" type="text" maxLength={6} value={address.zip}
-                    onChange={this.changeInput('zip', true)} />
-              </Field>
-              { ( addressType !== 'ORG') ? '' : //personal address
-                  <Field name="cedex" class_name_div='col-sm-2'>
-                     <input className="form-control" id="cedex" type="cedex" maxLength={3} value={address.cedex}
-                        onChange={this.changeInput('cedex', true)} />
-                  </Field>
-              }
-              <Field name="country" class_name_div='col-sm-5' error={$.inArray("country_uri", this.props.errors) != -1} isRequired={true}>
-                 <CountrySelect className="form-control" url={store_service + "/dc-countries"} value={address.country_uri}
-                     onChange={this.changeInput('country')} disabled={this.props.disabled}/>
-              </Field>
-
-    </div>
-     );
+                {this.renderGeneralErrorMessage()}
+            </div>
+        );
     }
 });

@@ -70,7 +70,6 @@ public class OrganizationService {
             dcOrganization.setLegal_name(legalName);
             dcOrganization.setTax_reg_num(regNumber);
             dcOrganization.setSector_type(sector);
-            dcOrganization.setZip("00000");
             dcOrganization.setCountry_uri(country_uri);
             dcOrganization.setCountry(country);
             return dcOrganization;

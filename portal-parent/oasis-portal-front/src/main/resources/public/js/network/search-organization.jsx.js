@@ -1,9 +1,11 @@
 /** @jsx React.DOM */
 
-// Modal containing the organization search form
 var SearchOrganizationModal = React.createClass({
     componentDidMount: function () {
         $(this.getDOMNode()).modal({show: false});
+        $(this.getDOMNode()).on("shown.bs.modal", function() {
+            $("input#legal_name", this).focus();
+        });
     },
     componentWillUnmount: function () {
         $(this.getDOMNode()).off('hidden');
@@ -26,7 +28,7 @@ var SearchOrganizationModal = React.createClass({
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" onClick={this.close}>&times;</button>
-                            <h3>{t('my.network.find-or-create-organization')}</h3>
+                            <h3>{t('search.organization.search-organization')}</h3>
                         </div>
                         <SearchOrganizationForm ref="form"
                                                 successHandler={this.openCreateOrModify}
@@ -56,6 +58,7 @@ var SearchOrganizationForm = React.createClass({
         this.refs.sector_type_PUBLIC_BODY.getDOMNode().checked = false;
         this.refs.sector_type_COMPANY.getDOMNode().checked = false;
         this.refs.country.getUserCountry();
+        this.setState({ errors: [] });
     },
     searchOrganization: function (event) {
         if (event) { event.preventDefault(); }
@@ -95,11 +98,11 @@ var SearchOrganizationForm = React.createClass({
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(status, err.toString());
-                    this.setState({ searching: false, errors: ['general'] });
+                    this.setState({ searching: false, errors: ['technical'] });
                 }.bind(this)
             });
         } else {
-            this.setState({ errors : errors });
+            this.setState({ errors: errors });
         }
     },
     renderLabel: function(htmlFor, class_name, label){
@@ -121,16 +124,18 @@ var SearchOrganizationForm = React.createClass({
                            className={sectorTypeClassName}>{t('search.organization.sector-type')}
                         <label className="error">&nbsp;*</label>
                     </label>
-                    <label className="radio-inline col-sm-3">
-                        <input type="radio" value="PUBLIC_BODY" ref="sector_type_PUBLIC_BODY">
-                            {t('search.organization.sector-type.PUBLIC_BODY')}
-                        </input>
-                    </label>
-                    <label className="radio-inline col-sm-3">
-                        <input type="radio" value="COMPANY" ref="sector_type_COMPANY">
-                            {t('search.organization.sector-type.COMPANY')}
-                        </input>
-                    </label>
+                    <div className="col-sm-8">
+                        <label className="radio-inline col-sm-3">
+                            <input type="radio" value="PUBLIC_BODY" ref="sector_type_PUBLIC_BODY">
+                                {t('search.organization.sector-type.PUBLIC_BODY')}
+                            </input>
+                        </label>
+                        <label className="radio-inline col-sm-3">
+                            <input type="radio" value="COMPANY" ref="sector_type_COMPANY">
+                                {t('search.organization.sector-type.COMPANY')}
+                            </input>
+                        </label>
+                    </div>
                 </div>
             );
         }
@@ -141,7 +146,7 @@ var SearchOrganizationForm = React.createClass({
                 <div className="form-group">
                     {this.renderLabel("organization-name", 'legal_name', t('search.organization.legal-name'))}
                     <div className="col-sm-8">
-                        <input type="text" className="form-control" maxLength="100" ref="legal_name" />
+                        <input type="text" id="legal_name" className="form-control" maxLength="100" ref="legal_name" />
                     </div>
                 </div>
             )
@@ -173,6 +178,10 @@ var SearchOrganizationForm = React.createClass({
             return (
                 <label className="error">{t('search.organization.cannot-be-used')}</label>
             )
+        } else if ($.inArray('technical', this.state.errors) != -1) {
+            return (
+                <label className="error">{t('search.organization.technical-problem')}</label>
+            )
         }
     },
     render: function () {
@@ -198,7 +207,7 @@ var SearchOrganizationForm = React.createClass({
                     {this.renderGeneralErrorMessage()}
                 </div>
                 <div className="modal-footer">
-                    <button key="cancel" className="btn btn-default" onClick={this.props.cancelHandler}>{t('ui.cancel')}</button>,
+                    <button key="cancel" className="btn btn-default" onClick={this.props.cancelHandler}>{t('ui.cancel')}</button>
                     <button key="success" className="btn btn-primary" onClick={this.searchOrganization}>{t('ui.search')}</button>
                 </div>
             </div>

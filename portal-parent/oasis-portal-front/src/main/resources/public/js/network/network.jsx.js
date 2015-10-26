@@ -5,7 +5,7 @@ var MyNetwork = React.createClass({
         this.refs.searchOrgDialog.open();
     },
     openCreateOrgDialog: function(organization) {
-        this.refs.createOrgDialog.show(organization);
+        this.refs.createOrgDialog.open(organization);
     },
     reload: function() {
         this.refs.orgs.loadOrganizations();
@@ -25,10 +25,11 @@ var MyNetwork = React.createClass({
 var SearchOrCreateHeader = React.createClass({
     render: function() {
         return (
-            <h2>
-                {t('my.network.find-or-create-organization')}
-                <a className="btn btn-success" href="#" onClick={this.props.showDialog}>{t('ui.go')}</a>
-            </h2>
+            <div className="row add-organization-action">
+                <a className="btn btn-success pull-right" role="button" href="#" onClick={this.props.showDialog}>
+                    {t('my.network.add-organization')}
+                </a>
+            </div>
         );
     }
 });
@@ -65,13 +66,13 @@ var OrganizationsList = React.createClass({
             var orgs = this.state.organizations.map(function(org) {
                 return (
                     <Organization key={org.id} org={org} reload={reload}/>
-                    );
+                );
             });
             return (
-                    <div>
+                <div>
                     <div className="organizations">{orgs}</div>
-                    </div>
-                    );
+                </div>
+            );
         }
     }
 });
@@ -197,7 +198,7 @@ var Organization = React.createClass({
         this.refs.leaveDialog.close();
     },
     showInformation: function() {
-        this.refs.infoDialog.open();
+        this.refs.infoDialog.open(this.props.org);
     },
     confirmTrash: function() {
         this.refs.confirmTrashDialog.open();
@@ -319,7 +320,7 @@ var Organization = React.createClass({
             ];
             var dialogs = [
                 <LeaveDialog ref="leaveDialog" onSubmit={this.leave}/>,
-                <InformationDialog ref="infoDialog" org={this.props.org} />
+                <InformationDialog ref="infoDialog" org={this.props.org} onUpdate={this.props.reload} />
             ];
             
 	        if (this.props.org.admin) {
@@ -570,7 +571,6 @@ var InformationDialog = React.createClass({
     },
     open: function() {
         this.loadDCOrganizations();
-        this.refs.modalModifyKAndDCOrg.open();
     },
     close: function(){
         this.refs.modalModifyKAndDCOrg.close();
@@ -594,9 +594,8 @@ var InformationDialog = React.createClass({
                data: {dc_id: this.props.org.dc_id},
                success: function (data) {
                   if(data){
-                     var state = this.state;
-                     state.organization = data;
-                     this.setState(state);
+                     this.setState({ organization: data });
+                     this.refs.modalModifyKAndDCOrg.open(data);
                   }
                }.bind(this),
                error: function (xhr, status, err) {
@@ -621,13 +620,8 @@ var InformationDialog = React.createClass({
         );
         var modal = undefined;
         if(this.state.organization){
-            var saveButton = t('ui.save');
-            var buttonLabels = {"cancel": t('ui.cancel'), "save": saveButton };
             modal = (
-                    <Modal large={true} ref="modalModifyKAndDCOrg" title={t('my.network.information')} successHandler={this.createOrModifOrg} buttonLabels={buttonLabels}>
-                       <h4><span title={this.props.org.id}>{this.props.org.name}</span></h4>
-                       <CreateOrModifyOrganizationForm ref="tabbedFormModify" successHandler={this.close} errorHandler={this.onError} organization={this.state.organization}/>
-                    </Modal>
+                <CreateOrModifyOrganizationModal ref="modalModifyKAndDCOrg" successHandler={this.props.onUpdate} />
             );
         }else{
            {/* This part is to show a short message to users of very old organizations that doesnt exist in DC */}

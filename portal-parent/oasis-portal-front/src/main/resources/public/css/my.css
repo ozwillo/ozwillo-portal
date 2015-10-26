@@ -246,3 +246,12 @@ h2 .badge {
 span.spacer {
     padding-left: 5px;
 }
+
+.add-organization-action {
+    margin-bottom: 10px;
+    margin-right: 0;
+}
+
+#add-organization legend {
+    border-bottom: none;
+}

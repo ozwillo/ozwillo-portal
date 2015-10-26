@@ -93,7 +93,6 @@ var GeoSelect2Mixin = {
         this.props.params = {
             multiple: true,
             allowClear: true,
-            placeholder: t('ui.location'),
             separator: "|", // else http://...Barcenas, Las => two values
             //tags: ["Valence", "Barcelone", "Torino"],
             minimumInputLength: 3,
