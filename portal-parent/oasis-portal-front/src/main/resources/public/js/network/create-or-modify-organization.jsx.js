@@ -28,8 +28,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
     },
     render: function () {
 
-        var organization = this.state.organization;
-        var modalTitle = organization.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
+        var modalTitle = this.state.organization.exist ? t('my.network.modify-org') : t('my.network.create-org') ;
 
         return (
             <div className="modal fade">
@@ -42,7 +41,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
                         <CreateOrModifyOrganizationForm ref="form"
                                                         successHandler={this.closeAfterSuccess}
                                                         cancelHandler={this.close}
-                                                        organization={organization}
+                                                        organization={this.state.organization}
                                                         onStepChange={this.onStepChange} />
                     </div>
                 </div>
@@ -110,7 +109,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
             url: network_service + '/update-dc-organization',
             type: 'post',
             contentType: 'application/json',
-            data: JSON.stringify(org),
+            data: JSON.stringify(organization),
             success: function (data) {
                 if (data) {
                     this.props.successHandler();
@@ -153,7 +152,8 @@ var CreateOrModifyOrganizationForm = React.createClass({
                             onNext={this.onNextTab}
                             onPrev={this.onPrevTab}
                             onCancel={this.props.cancelHandler}
-                            onCreate={this.onCreate}/>
+                            onCreate={this.onCreate}
+                            inModification={this.props.organization.inModification} />
                 </div>
             </div>
         );
@@ -178,11 +178,19 @@ var Button = React.createClass({
     },
     renderCreateButton() {
         if (this.props.activeTab === 2) {
-            return (
-                <button key="success" className="btn btn-primary" onClick={this.props.onCreate}>
-                    {t('my.network.create')}
-                </button>
-            )
+            if (this.props.inModification) {
+                return (
+                    <button key="success" className="btn btn-primary" onClick={this.props.onCreate}>
+                        {t('ui.edit')}
+                    </button>
+                )
+            } else {
+                return (
+                    <button key="success" className="btn btn-primary" onClick={this.props.onCreate}>
+                        {t('my.network.create')}
+                    </button>
+                )
+            }
         }
     },
     render: function() {
@@ -274,7 +282,7 @@ var Tab1 = React.createClass({
     validateFields: function() {
         var errors = [];
         // TODO : boilerplate
-        if (this.refs.contact_lastname.getDOMNode().value.trim() === '')
+        if (!this.state.organization.inModification && this.refs.contact_lastname.getDOMNode().value.trim() === '')
             errors.push("contact_lastname");
         if (this.refs.street_and_number.getDOMNode().value.trim() === '')
             errors.push("street_and_number");
@@ -294,9 +302,13 @@ var Tab1 = React.createClass({
         return (errors.length == 0);
     },
     getFields: function() {
-        return {
-            contact_lastName: this.refs.contact_lastname.getDOMNode().value.trim(),
-            contact_name: this.refs.contact_name.getDOMNode().value.trim()
+        if (!this.props.organization.inModification) {
+            return {
+                contact_lastName: this.refs.contact_lastname.getDOMNode().value.trim(),
+                contact_name: this.refs.contact_name.getDOMNode().value.trim()
+            }
+        } else {
+            return {}
         }
     },
     renderGeneralErrorMessage: function() {
@@ -305,6 +317,22 @@ var Tab1 = React.createClass({
                 <label className="error">{t('my.network.organization.invalid_fields')}</label>
             )
         }
+    },
+    renderProfileInformation: function() {
+        if (!this.props.organization.inModification)
+            return (
+                <fieldset>
+                    <legend>{t('my.network.organization.profile_information')}</legend>
+                    <Field name="contact_lastname" error={$.inArray("contact_lastname", this.state.errors) != -1} isRequired={true}>
+                        <input className="form-control" ref="contact_lastname" id="contact_lastname" type="text"
+                               value={this.state.contact_lastname} onChange={this.handleInputChange} />
+                    </Field>
+                    <Field name="contact_name" error={$.inArray("contact_name", this.state.errors) != -1} isRequired={true}>
+                        <input className="form-control" ref="contact_name" id="contact_name" type="text"
+                               value={this.state.contact_name} onChange={this.handleInputChange} />
+                    </Field>
+                </fieldset>
+            )
     },
     render: function() {
         var className = this.props.currentTab === 1 ? "" : "hidden";
@@ -315,17 +343,7 @@ var Tab1 = React.createClass({
                 <div className="container-fluid">
                     <div className="row">
                         <div className="col-sm-15">
-                            <fieldset>
-                                <legend>{t('my.network.organization.profile_information')}</legend>
-                                <Field name="contact_lastname" error={$.inArray("contact_lastname", this.state.errors) != -1} isRequired={true}>
-                                    <input className="form-control" ref="contact_lastname" id="contact_lastname" type="text"
-                                        value={this.state.contact_lastname} onChange={this.handleInputChange} />
-                                </Field>
-                                <Field name="contact_name" error={$.inArray("contact_name", this.state.errors) != -1} isRequired={true}>
-                                    <input className="form-control" ref="contact_name" id="contact_name" type="text"
-                                        value={this.state.contact_name} onChange={this.handleInputChange} />
-                                </Field>
-                            </fieldset>
+                            {this.renderProfileInformation()}
                             <fieldset>
                                 <legend>{t('my.network.organization.contact_information')}</legend>
                                 <Field name="street_and_number" error={$.inArray("street_and_number", this.state.errors) != -1} isRequired={true}>

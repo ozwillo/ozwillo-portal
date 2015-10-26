@@ -198,7 +198,7 @@ var Organization = React.createClass({
         this.refs.leaveDialog.close();
     },
     showInformation: function() {
-        this.refs.infoDialog.open(this.props.org);
+        this.refs.infoDialog.open();
     },
     confirmTrash: function() {
         this.refs.confirmTrashDialog.open();
@@ -594,8 +594,9 @@ var InformationDialog = React.createClass({
                data: {dc_id: this.props.org.dc_id},
                success: function (data) {
                   if(data){
-                     this.setState({ organization: data });
-                     this.refs.modalModifyKAndDCOrg.open(data);
+                      data.inModification = true;
+                      this.setState({ organization: data });
+                      this.refs.modalModifyKAndDCOrg.open(data);
                   }
                }.bind(this),
                error: function (xhr, status, err) {
