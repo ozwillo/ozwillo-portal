@@ -358,6 +358,7 @@ var Tab1 = React.createClass({
                                 </Field>
                                 <Field name="city" error={$.inArray("city", this.state.errors) != -1} isRequired={true}>
                                     <GeoSingleSelect2Component ref="city" className="form-control" name="city"
+                                                               key={this.state.organization.city}
                                                                urlResources={store_service + "/dc-cities"}
                                                                countryFilter={ {country_uri: country_uri} }
                                                                onChange={this.handleInputChange}
@@ -466,6 +467,7 @@ var Tab2 = React.createClass({
             return (
                 <Field name="jurisdiction" error={$.inArray("jurisdiction", this.props.errors) != -1} isRequired={true}>
                     <GeoSingleSelect2Component ref="jurisdiction" className="form-control" name="jurisdiction"
+                                               key={this.state.organization.jurisdiction}
                                                urlResources={store_service + "/geographicalAreas"}
                                                countryFilter={ {country_uri: this.props.organization.country_uri} }
                                                onChange={this.handleInputChange}
@@ -519,6 +521,7 @@ var Tab2 = React.createClass({
                                 </Field>
                                 <Field name={taxRegNumLabels.tax_reg_activity_label} class_name_div='col-sm-3' isRequired={false}>
                                     <GeoSingleSelect2Component ref="tax_reg_activity" className="form-control" name="tax_reg_activity"
+                                                               key={this.props.organization.tax_reg_activity_uri}
                                                                urlResources={store_service + "/dc-taxRegActivity"}
                                                                countryFilter={ {country_uri: this.props.organization.country_uri} }
                                                                onChange={this.handleInputChange}
