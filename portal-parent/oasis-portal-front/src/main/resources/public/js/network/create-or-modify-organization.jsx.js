@@ -8,6 +8,8 @@ var CreateOrModifyOrganizationModal = React.createClass({
         };
     },
     componentDidMount: function() {
+        // TODO only effective when adding an organization
+        // TODO make it work in modification mode and deal with current step
         $(this.getDOMNode()).on("shown.bs.modal", function() {
             $("input#contact_lastname", this).focus();
         });
@@ -28,8 +30,8 @@ var CreateOrModifyOrganizationModal = React.createClass({
     },
     render: function () {
 
-        var modalTitle = this.state.organization.exist ? t('my.network.modify-org') : t('my.network.create-org');
-        modalTitle = modalTitle + " " + this.state.organization.legal_name;
+        var modalTitle = (this.state.organization.exist ? t('my.network.modify-org') : t('my.network.create-org'))
+            + " " + this.state.organization.legal_name;
         var modalSubTitle = t('my.network.organization.step') + " " + this.state.step + " / 2";
 
         return (
@@ -72,17 +74,15 @@ var CreateOrModifyOrganizationForm = React.createClass({
     },
     onCreate: function() {
         if (this.refs.tab1.validateFields() && this.refs.tab2.validateFields()) {
-            // TODO : can be simplified
-            var finalOrganization = $.extend({}, this.props.organization, this.refs.tab1.getFields(), this.refs.tab2.getFields());
-            console.log(finalOrganization);
+            var finalOrganization = $.extend({}, this.props.organization, this.refs.tab1.getFields());
             if (finalOrganization.exist) {
-                this.callUpdateOrganization(finalOrganization);
+                this.updateOrganization(finalOrganization);
             } else {
-                this.callCreateOrganization(finalOrganization);
+                this.createOrganization(finalOrganization);
             }
         }
     },
-    callCreateOrganization: function(organization) {
+    createOrganization: function(organization) {
         $.ajax({
             url: network_service + '/create-dc-organization',
             type: 'post',
@@ -92,8 +92,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
                 if (data) {
                     this.props.successHandler();
                 } else {
-                    console.error('Organization was not created');
-                    console.error('Submitted data was : ' + organization);
+                    console.error('Organization was not created : ' + organization);
                     this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
                 }
             }.bind(this),
@@ -103,7 +102,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
             }.bind(this)
         });
     },
-    callUpdateOrganization: function(organization){
+    updateOrganization: function(organization){
         $.ajax({
             url: network_service + '/update-dc-organization',
             type: 'post',
@@ -113,8 +112,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
                 if (data) {
                     this.props.successHandler();
                 } else {
-                    console.error('Organization was not modified');
-                    console.error('Submitted data was : ' + organization);
+                    console.error('Organization was not modified : ' + organization);
                     this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
                 }
             }.bind(this),
@@ -133,7 +131,6 @@ var CreateOrModifyOrganizationForm = React.createClass({
     },
     render: function () {
         var organization = this.props.organization;
-        console.log(organization);
 
         return (
             <div>
@@ -152,7 +149,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
                             onPrev={this.onPrevTab}
                             onCancel={this.props.cancelHandler}
                             onCreate={this.onCreate}
-                            inModification={this.props.organization.inModification} />
+                            inModification={organization.inModification} />
                 </div>
             </div>
         );
@@ -221,8 +218,10 @@ var Field = React.createClass({
     },
     render: function() {
         var labelClassName = this.props.labelClassName ? this.props.labelClassName : "control-label col-sm-3";
+        if (this.props.error) {
+            labelClassName = labelClassName + " error";
+        }
         var divClassName = this.props.divClassName ? this.props.divClassName : "col-sm-7";
-        if (this.props.error) { labelClassName = labelClassName + " error"; }
 
         return (
             <div className="form-group">
@@ -273,14 +272,14 @@ var Tab1 = React.createClass({
             organization.city_uri = event.target.value;
             if (event.added)
                 organization.city = event.added.name;
-        } else
+        } else {
             organization[event.target.id] = event.target.value;
+        }
 
         this.setState({ organization: organization });
     },
     validateFields: function() {
         var errors = [];
-        // TODO : boilerplate
         if (!this.state.organization.inModification && this.refs.contact_lastname.getDOMNode().value.trim() === '')
             errors.push("contact_lastname");
         if (this.refs.street_and_number.getDOMNode().value.trim() === '')
