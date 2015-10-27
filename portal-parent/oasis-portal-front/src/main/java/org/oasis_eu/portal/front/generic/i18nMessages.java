@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 public final class i18nMessages {
     private i18nMessages(){}; //this class can't be an instance (all members are static)
 
-    private static final List<String> i18nkeys = Arrays.asList("create-org", "modify-org", "find-or-create-organization", "information",
+    private static final List<String> i18nkeys = Arrays.asList("create-org", "modify-org", "add-organization", "information",
             "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave",
             "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create",
             "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
@@ -24,18 +24,21 @@ public final class i18nMessages {
             "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
             "something_went_wrong_title", "error_detail_title", "search", "next", "previous");
 
-    private static final List<String> searchOrganization = Arrays.asList("title","country","legal-name", "business-id.fr", "business-id.it",
+    private static final List<String> searchOrganization = Arrays.asList("search-organization", "title","country","legal-name", "business-id.fr", "business-id.it",
             "business-id.es", "business-id.bg", "business-id.tr", "business-id.en", "sector-type", "sector-type.PUBLIC_BODY","sector-type.COMPANY",
-            "selection.new", "selection.existing", "cannot-be-used");
+            "selection.new", "selection.existing", "cannot-be-used", "technical-problem");
 
     private static final List<String> searchContact = Arrays.asList("title","address.title","name", "lastname","email");
 
-    private static final List<String> createOrModifyOrganization = Arrays.asList("legal_name","in_activity","tab1.general_information",
+    private static final List<String> createOrModifyOrganization = Arrays.asList(
+            "profile_information", "contact_lastname", "contact_name", "contact_information", "legal_name","in_activity",
             "alt_name","org_type", "org_type.placeholder", "tax_reg_num.bg", "tax_reg_num.es", "tax_reg_num.fr", "tax_reg_num.it", "tax_reg_num.tr",
             "tax_reg_num.en", "tax_reg_official_id.fr","tax_reg_official_id.tr","tax_reg_activity.bg","tax_reg_activity.es","tax_reg_activity.fr",
             "tax_reg_activity.it","tax_reg_activity.tr","tax_reg_activity.en","jurisdiction",
-            "jurisdiction.placeholder","phone_number","web_site", "email","email.placeholder","change-icon","tab2.address_geolocation",
-            "street_and_number","additional_address_field","po_box","city","zip", "cedex","country");
+            "jurisdiction.placeholder","phone_number","web_site", "email","email.placeholder","change-icon",
+            "additional_information",
+            "street_and_number","additional_address_field","po_box","city","zip", "cedex","country",
+            "invalid_fields", "step");
 
     private static final List<String> storekeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid",
             "languages-supported-by-applications", "look-for-an-application", "keywords","installed", "tos", "privacy", "by",
