@@ -32,6 +32,9 @@ public class GeographicalArea {
     @JsonProperty
     private String name;
 
+    @JsonProperty
+    private String postalCode;
+
     /** to constraint search within this mixin or model type
      * TODO fill, index, query criteria */
     private List<String> modelType;
@@ -78,6 +81,14 @@ public class GeographicalArea {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getPostalCode() {
+        return postalCode;
+    }
+
+    public void setPostalCode(String postalCode) {
+        this.postalCode = postalCode;
     }
 
     public List<String> getModelType() {

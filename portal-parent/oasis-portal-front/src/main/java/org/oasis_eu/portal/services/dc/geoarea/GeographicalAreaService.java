@@ -7,7 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.core.mongo.dao.geo.GeographicalAreaCache;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
-import org.oasis_eu.portal.services.dc.organization.DCRegActivity;
+import org.oasis_eu.portal.core.services.search.Tokenizer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -28,6 +28,9 @@ public class GeographicalAreaService {
     
     @Autowired
     private GeographicalAreaCache cache;
+
+    @Autowired
+    private Tokenizer tokenizer;
 
     @Autowired
     private GeographicalDAO geographicalDAO;
@@ -68,9 +71,14 @@ public class GeographicalAreaService {
      * @param limit ex. 11 then return 10
      * @return
      */
-    public List<GeographicalArea> findCountries(String queryTerms, int start, int limit) {
+    public List<GeographicalArea> findCountries(String q, int start, int limit) {
         //return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
-        return cache.findOneToken(null, new String[]{countryModel, countryModelHier}, RequestContextUtils.getLocale(request).getLanguage(), null)
+        String[] queryTerms = null;
+        if(q != null && !q.isEmpty()){
+            List<String> termsLst = tokenizer.tokenize(q).stream().collect(Collectors.toList());
+            queryTerms = termsLst.toArray(new String[termsLst.size()]);
+        }
+        return cache.findOneToken(null, new String[]{countryModel, countryModelHier}, RequestContextUtils.getLocale(request).getLanguage(), queryTerms)
                 .collect(Collectors.toList());
     }
 

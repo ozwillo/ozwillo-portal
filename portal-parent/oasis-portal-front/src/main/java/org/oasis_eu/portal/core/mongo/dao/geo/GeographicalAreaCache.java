@@ -261,6 +261,9 @@ public class GeographicalAreaCache {
 
         Set<String> loadedUris = new HashSet<>();
 
+        // 0. remove all pre-existing INCOMING records created but never changed to ONLINE
+        deleteByStatus(GeographicalAreaReplicationStatus.INCOMING);
+
         // 1. fetch all the resources from the data core and insert them with status "incoming" in the cache
         try {
             //Since there is not admin user connected, is necessary to get its admin authorization object in order to send the request
@@ -289,7 +292,7 @@ public class GeographicalAreaCache {
         } catch (RestClientException e) {
             logger.error("Error while updating the geo area cache", e);
 
-            // "rollback"
+            // "rollback" to avoid duplicates on search (currently NOT filtered by the Status)
             this.deleteByStatus(GeographicalAreaReplicationStatus.INCOMING);
         }
 

@@ -57,7 +57,7 @@ $(document).ready(function () {
 			setTimeout(function () { location.reload(1); }, 200);
 		}
 
-		if (xstat && exception){
+		if (xstat && exception && messages){
 
             var title = messages['ui.something_went_wrong_title'];
             var err_message = "" ; //xstat  + " " + exception ;

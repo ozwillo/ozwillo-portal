@@ -1,9 +1,9 @@
 $(document).ready(function () {
-    
+
 	initBindings();
 
 	function initBindings($el) {
-		
+
 		// Data layouts
 		$('.action-toggle-edit', $el).click(function() {
 			toggleProfileLayout($(this).attr('data'), 'EDIT');
@@ -110,7 +110,7 @@ $(document).ready(function () {
 	            }
 	        });
     	});
-    	
+
     	$('.action-select-option', $el).click(function(e) {
     		var $this = $(this);
     		var optionId = e.target.id;
@@ -122,7 +122,7 @@ $(document).ready(function () {
     		$('#selected-option-'+widgetId).val($this.attr('data'));
     		$('#selected-option-'+widgetId+'-label').html($this.html());
     	});
-    	
+
     	// Special layout widgets
     	$('.widget-dropdown', $el).each(function() {
     		var $widget = $(this);
@@ -135,7 +135,7 @@ $(document).ready(function () {
     			return false;
     		});
     	});
-    	
+
     	$('.widget-date-view', $el).each(function() {
     		localizeDate($(this));
     	});
@@ -151,8 +151,15 @@ $(document).ready(function () {
     		$datePicker.datepicker("option", "altField", '#' + $valueHolder.attr('id'));
 		});
 
-		$('#address\\.country', $el).select2({
+    	/****** Country SELECT2 *******/
+
+    	var countryName = $('#address\\.country').val();
+
+    	$('#address\\.country', $el).prepend('<option/>').val(function(){return $('[selected]',this).val() ;}) //to show the placeholder it is required to have at least one option
+    	$('#address\\.country', $el).select2({
 			minimumInputLength: 0,
+			multiple: false,
+			placeholder: countryName, // saved preset country name
 			ajax: {
 				url: store_service + "/dc-countries",
 				dataType: 'json',
@@ -162,7 +169,7 @@ $(document).ready(function () {
 						q: term
 					};
 				},
-				results: function (data) {
+				results: function (data, page) {
 					var areas = data.areas;
 					areas = areas.filter(function(n){return n !== null; });
 					return { results: areas };
@@ -170,16 +177,108 @@ $(document).ready(function () {
 				cache: true
 			},
 			formatResult: function(area) {
+				return '<option className="action-select-option" value=' + area.name + '>' + area.name + '</option>';
+			},
+			id: function(area) { // This option must ALWAYS be set, otherwise it will take the Id from the object return (area.id)
+				return area.name;
+			},
+			formatSelection: function(data) { // (data, container, escapeMarkup) {
+				var area = data;
+				if (area.uri) { setCountryUri(area.uri); } //set Country uri in order to filter the localization by it
+				if(countryName !== area.name){// clean other fields if the country has changed
+					$('#address\\.locality').attr("placeholder", " ");
+					$('#address\\.locality').val("");
+					$('#address\\.locality').data("select2").setPlaceholder();
+					// empty the postal code
+					$('#address\\.postalCode').val("");
+				}
+				return area.name;
+			},
+			dropdownCssClass: "bigdrop"
+		});
+		var countryUri ; // = null;
+		function setCountryUri(country_uri) { countryUri = country_uri; }
+		function getCountryUri() { return countryUri; }
+
+		/* If country is present (contains a preset country name) it should fetch the list of countries and filter it by its
+		   name in order to set the countryURI */
+		if(countryName !== undefined && countryName !== null){
+			$.ajax({
+				url: store_service + "/dc-countries",
+				type: 'get',
+				dataType: 'json',
+				data: {q: countryName}, // fetch only those that matche the preset country name, otherwise it will require to update the country field
+				success: function (data) {
+					if(data && data.areas ){
+						var areas = data.areas.filter(function(n){return n.name === countryName; });
+						if(areas !== null && areas.constructor === Array && areas.length>0){
+							$('#address\\.country').val(areas[0].name);
+							countryUri =  areas[0].uri;
+						}
+					}
+				},
+				error: function (xhr, status, err) {
+					console.error(status, err.toString());
+				}
+			});
+		}
+
+		/****** City SELECT2 *******/
+
+		var localityName = $('#address\\.locality').val();
+
+		$('#address\\.locality', $el).prepend('<option/>').val(function(){return $('[selected]',this).val() ;})
+		$('#address\\.locality', $el).select2({
+			placeholder: localityName,
+			minimumInputLength: 3,
+			multiple: false,
+			ajax: {
+				url: store_service + "/dc-cities",
+				dataType: 'json',
+				quietMillis: 250,
+				data: function (term) {
+					return {
+						country_uri: ''+getCountryUri(), // to filter by country
+						q: term  // to avoid getting any results when the country is not selected
+					};
+				},
+				results: function (data) {
+					var areas = data.areas;
+					areas = areas.filter(function(n){return n !== null; });
+					return { results: areas };
+				},
+				/*transport: function (params, success, failure) {
+				    var $request = $.ajax(params);
+				    $request.then(success);
+				    $request.fail(failure); // in case error should be shown as a displayed message?
+				    return $request;
+				},*/
+				cache: true
+			},
+			formatResult: function(area) {
 				return '<option className="action-select-option" value=' + area.uri + '>' + area.name + '</option>';
 			},
+			formatNoMatches: function () { // displayed error message in select2 if not match any fetch value
+				return t("my.profile.errormsg.formatNoMatches")
+			},
+			formatAjaxError: function (jqXHR, textStatus, errorThrown) { // displayed error message in select2 if error in request/response
+				return t("my.profile.errormsg.formatAjaxError")
+			},
+			id: function(data) { // This option must ALWAYS be set, otherwise it will take the Id from the object return (area.id)
+				return data.name;
+			},
 			formatSelection: function(area) {
+				if(area.postalCode) { $('#address\\.postalCode').val(area.postalCode); } // get and update the zip code from selected ville/zone
+				localityName = area.name;
 				return area.name;
 			},
 			dropdownCssClass: "bigdrop",
 			escapeMarkup: function (m) { return m; }
 		});
-	}
-	
+		$('#address\\.locality').val(localityName);
+
+	} // end of initBindings() function
+
 	function localizeDate($el) {
 		var locale = $('#layouts').attr('data');
 		var dateFormat = $.datepicker.regional[locale.replace('en', 'en-GB')].dateFormat;
@@ -195,7 +294,8 @@ $(document).ready(function () {
     		}
     	}
 	}
-	
+
+	// Change to EDIT mode
 	function toggleProfileLayout(id, mode) {
 		$.ajax({
 			url: '/my/profile/mode',
