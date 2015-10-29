@@ -31,6 +31,7 @@ public class FormWidgetDropdown extends FormWidget implements Serializable {
 		this.normalizeKey = normalizeKey;
 	}
 
+	@Override
 	public String getType() {
 		return "dropdown";
 	}
@@ -46,6 +47,7 @@ public class FormWidgetDropdown extends FormWidget implements Serializable {
 	
 	public List<Entry<String, String>> getOptions() {
 		return options.entrySet().stream().sorted(new Comparator<Entry<String, String>>() {
+			@Override
 			public int compare(Entry<String, String> o1, Entry<String, String> o2) {
 				return o1.getKey().compareTo(o2.getKey());
 			}

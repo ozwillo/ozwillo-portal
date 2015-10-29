@@ -79,10 +79,12 @@ public class Subscription extends GenericEntity {
 		this.subscriptionType = subscriptionType;
 	}
 
+	@Override
 	public String getId() {
 		return id;
 	}
 
+	@Override
 	public void setId(String id) {
 		this.id = id;
 	}

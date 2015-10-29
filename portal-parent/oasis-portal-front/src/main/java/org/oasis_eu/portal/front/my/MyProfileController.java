@@ -86,6 +86,7 @@ public class MyProfileController extends PortalController {
 		
 		binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
 
+			@Override
 			public void setAsText(String value) {
 				try {
 					//DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE.withLocale(new Locale(currentLanguage().getLanguage())); // Languages.locale renvoie en pour locale en-GB
@@ -97,6 +98,7 @@ public class MyProfileController extends PortalController {
 				}
 			}
 
+			@Override
 			public String getAsText() {
 				return getValue() != null ? getValue().toString() : "1970-01-01";
 			}

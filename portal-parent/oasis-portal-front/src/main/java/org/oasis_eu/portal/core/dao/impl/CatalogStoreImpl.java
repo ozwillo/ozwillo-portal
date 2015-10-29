@@ -1,21 +1,10 @@
 package org.oasis_eu.portal.core.dao.impl;
 
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.none;
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.userIfExists;
-
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
+import com.fasterxml.jackson.annotation.JsonAnySetter;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.core.constants.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
@@ -44,11 +33,20 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.fasterxml.jackson.annotation.JsonAnyGetter;
-import com.fasterxml.jackson.annotation.JsonAnySetter;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.none;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.userIfExists;
 
 /**
  * User: schambon
@@ -130,6 +128,7 @@ public class CatalogStoreImpl implements CatalogStore {
 	}
 
 
+	@Override
 	@Cacheable("services")
 	public CatalogEntry findService(String id) {
 		return getCatalogEntry(id, appsEndpoint + "/service/{id}");

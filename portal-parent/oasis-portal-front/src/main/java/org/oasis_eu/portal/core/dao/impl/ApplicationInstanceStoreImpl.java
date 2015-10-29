@@ -1,10 +1,5 @@
 package org.oasis_eu.portal.core.dao.impl;
 
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.spring.kernel.service.Kernel;
@@ -15,6 +10,11 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
 /**
  * User: schambon
@@ -39,6 +39,7 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
 
 	}
 
+	@Override
 	@Cacheable("org-instances")
 	public List<ApplicationInstance> findByOrganizationId(String organizationId) {
 		ApplicationInstance[] appInstanceArray = kernel.getEntityOrException(appsEndpoint + "/instance/organization/{organization_id}",

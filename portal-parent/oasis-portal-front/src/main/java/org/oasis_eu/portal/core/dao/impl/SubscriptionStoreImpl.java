@@ -112,6 +112,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 	}
 
 
+	@Override
 	public void unsubscribe(String subscriptionId) throws WrongQueryException{
 
 		String uri = endpoint + "/subscription/{subscription_id}";
