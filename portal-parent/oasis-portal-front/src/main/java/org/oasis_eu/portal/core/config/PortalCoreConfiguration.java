@@ -50,118 +50,118 @@ import com.hazelcast.spring.cache.HazelcastCacheManager;
 @EnableConfigurationProperties(PortalCoreConfiguration.OasisCacheConfiguration.class)
 public class PortalCoreConfiguration implements CachingConfigurer {
 
-    @ConfigurationProperties(prefix = "cache")
-    public static class OasisCacheConfiguration {
-        private List<String> hosts;
+	@ConfigurationProperties(prefix = "cache")
+	public static class OasisCacheConfiguration {
+		private List<String> hosts;
 
-        public List<String> getHosts() {
-            return hosts;
-        }
+		public List<String> getHosts() {
+			return hosts;
+		}
 
-        public void setHosts(List<String> hosts) {
-            this.hosts = hosts;
-        }
-    }
+		public void setHosts(List<String> hosts) {
+			this.hosts = hosts;
+		}
+	}
 
-    @Autowired
-    private OasisCacheConfiguration oasisCacheConfiguration;
+	@Autowired
+	private OasisCacheConfiguration oasisCacheConfiguration;
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.registerModule(new JodaModule());
-        mapper.registerModule(new JSR310Module());
+	@Bean
+	public ObjectMapper objectMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.registerModule(new JodaModule());
+		mapper.registerModule(new JSR310Module());
 
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-        return mapper;
-    }
+		mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+		return mapper;
+	}
 
-    @Bean
-    public RequestBoundCacheManager portalCacheManager() {
-        return new RequestBoundCacheManager(
-                Arrays.asList(
-                        "appstore",
-                        "subscriptions",
-                        "user-instances",
-                        "org-instances",
-                        "user-memberships",
-                        "org-memberships",
-                        "pending-memberships",
-                        "services-of-instance",
-                        "instances",
-                        "accounts"));
-    }
-
-
-
-    @Bean
-    public CacheManager longTermCacheManager() {
-        return new HazelcastCacheManager(hazelcastInstance());
-    }
-
-    @Bean
-    public CacheManager cacheManager() {
-        CompositeCacheManager compositeCacheManager = new CompositeCacheManager();
-
-        compositeCacheManager.setCacheManagers(Arrays.asList(
-                portalCacheManager(),
-                longTermCacheManager()));
-        return compositeCacheManager;
-    }
+	@Bean
+	public RequestBoundCacheManager portalCacheManager() {
+		return new RequestBoundCacheManager(
+				Arrays.asList(
+						"appstore",
+						"subscriptions",
+						"user-instances",
+						"org-instances",
+						"user-memberships",
+						"org-memberships",
+						"pending-memberships",
+						"services-of-instance",
+						"instances",
+						"accounts"));
+	}
 
 
-    @Override
-    public KeyGenerator keyGenerator() {
-        return new SimpleKeyGenerator();
-    }
+
+	@Bean
+	public CacheManager longTermCacheManager() {
+		return new HazelcastCacheManager(hazelcastInstance());
+	}
+
+	@Bean
+	public CacheManager cacheManager() {
+		CompositeCacheManager compositeCacheManager = new CompositeCacheManager();
+
+		compositeCacheManager.setCacheManagers(Arrays.asList(
+				portalCacheManager(),
+				longTermCacheManager()));
+		return compositeCacheManager;
+	}
 
 
-    @Bean
-    public HazelcastInstance hazelcastInstance() {
-        Map<String, MapConfig> mapConfigs = new HashMap<>();
+	@Override
+	public KeyGenerator keyGenerator() {
+		return new SimpleKeyGenerator();
+	}
 
-        mapConfigs.put("organizations", getMapConfig("organizations"));
-        mapConfigs.put("applications", getMapConfig("applications"));
-        mapConfigs.put("sitemap", getMapConfig("sitemap"));
-        mapConfigs.put("sitemapheader", getMapConfig("sitemapheader"));
-        mapConfigs.put("services", getMapConfig("services"));
 
-        Config config = new Config();
-        config.setMapConfigs(mapConfigs);
+	@Bean
+	public HazelcastInstance hazelcastInstance() {
+		Map<String, MapConfig> mapConfigs = new HashMap<>();
 
-        config.setNetworkConfig(networkConfig());
+		mapConfigs.put("organizations", getMapConfig("organizations"));
+		mapConfigs.put("applications", getMapConfig("applications"));
+		mapConfigs.put("sitemap", getMapConfig("sitemap"));
+		mapConfigs.put("sitemapheader", getMapConfig("sitemapheader"));
+		mapConfigs.put("services", getMapConfig("services"));
 
-        return Hazelcast.newHazelcastInstance(config);
-    }
+		Config config = new Config();
+		config.setMapConfigs(mapConfigs);
 
-    @Bean
-    public NetworkConfig networkConfig() {
+		config.setNetworkConfig(networkConfig());
 
-        TcpIpConfig tcpIpConfig = new TcpIpConfig().setEnabled(true).setMembers(oasisCacheConfiguration.getHosts());
+		return Hazelcast.newHazelcastInstance(config);
+	}
 
-        return new NetworkConfig()
-                .setPort(5701)
-                .setJoin(
-                        new JoinConfig()
-                                .setMulticastConfig(new MulticastConfig().setEnabled(false))
-                                .setTcpIpConfig(tcpIpConfig)
-                );
-    }
+	@Bean
+	public NetworkConfig networkConfig() {
 
-    public MapConfig getMapConfig(String name) {
-        MapConfig config = new MapConfig();
-        config.setName(name);
-        config.setEvictionPolicy(EvictionPolicy.LRU);
-        config.setTimeToLiveSeconds(900);
-        return config;
-    }
+		TcpIpConfig tcpIpConfig = new TcpIpConfig().setEnabled(true).setMembers(oasisCacheConfiguration.getHosts());
 
-    @Bean
-    @Qualifier("xmlAwareRestTemplate")
-    public RestTemplate xmlAwareRestTemplate() {
-        RestTemplate rt = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-        rt.setMessageConverters(Arrays.asList(new XmlParserConverter()));
-        return rt;
-    }
+		return new NetworkConfig()
+				.setPort(5701)
+				.setJoin(
+						new JoinConfig()
+								.setMulticastConfig(new MulticastConfig().setEnabled(false))
+								.setTcpIpConfig(tcpIpConfig)
+				);
+	}
+
+	public MapConfig getMapConfig(String name) {
+		MapConfig config = new MapConfig();
+		config.setName(name);
+		config.setEvictionPolicy(EvictionPolicy.LRU);
+		config.setTimeToLiveSeconds(900);
+		return config;
+	}
+
+	@Bean
+	@Qualifier("xmlAwareRestTemplate")
+	public RestTemplate xmlAwareRestTemplate() {
+		RestTemplate rt = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
+		rt.setMessageConverters(Arrays.asList(new XmlParserConverter()));
+		return rt;
+	}
 
 }

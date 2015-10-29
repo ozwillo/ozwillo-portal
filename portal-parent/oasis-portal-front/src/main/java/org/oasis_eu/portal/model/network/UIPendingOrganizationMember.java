@@ -13,7 +13,7 @@ public class UIPendingOrganizationMember {
 	@JsonProperty String email;
 	@JsonProperty boolean admin;
 	
-    public String getId() {
+	public String getId() {
 		return id;
 	}
 
@@ -54,13 +54,13 @@ public class UIPendingOrganizationMember {
 	}
 
 	@Override
-    public String toString() {
-        return "{" +
-                "id:'" + id + '\'' +
-                ", pending_membership_uri:'" + pending_membership_uri + '\'' +
-                ", pending_membership_etag:" + pending_membership_etag +
-                ", email:" + email +
-                ", admin:" + admin +
-                '}';
-    }
+	public String toString() {
+		return "{" +
+				"id:'" + id + '\'' +
+				", pending_membership_uri:'" + pending_membership_uri + '\'' +
+				", pending_membership_etag:" + pending_membership_etag +
+				", email:" + email +
+				", admin:" + admin +
+				'}';
+	}
 }

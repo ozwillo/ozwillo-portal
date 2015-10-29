@@ -12,6 +12,6 @@ package org.oasis_eu.portal.core.model.subscription;
  * Date: 6/12/14
  */
 public enum SubscriptionType {
-    PERSONAL,
-    ORGANIZATION
+	PERSONAL,
+	ORGANIZATION
 }

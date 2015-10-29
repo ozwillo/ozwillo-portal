@@ -21,23 +21,23 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 @Service
 public class MyNavigationService {
 
-    @Autowired
-    private SiteMapService siteMapService;
+	@Autowired
+	private SiteMapService siteMapService;
 
-    @Autowired
-    private HttpServletRequest httpRequest;
+	@Autowired
+	private HttpServletRequest httpRequest;
 
-    private List<String> pages = Arrays.asList("dashboard", "profile", "network", "appsmanagement");
+	private List<String> pages = Arrays.asList("dashboard", "profile", "network", "appsmanagement");
 
-    public List<MyNavigation> getNavigation(String pagename) {
-        return pages.stream().map(id -> new MyNavigation().setId(id).setActive(id.equals(pagename))).collect(Collectors.toList());
-    }
+	public List<MyNavigation> getNavigation(String pagename) {
+		return pages.stream().map(id -> new MyNavigation().setId(id).setActive(id.equals(pagename))).collect(Collectors.toList());
+	}
 
-    public List<SiteMapEntry> getSiteMap() {
-        return siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
-    }
-    public SiteMapMenuSet getSiteMapHeader() {
-        return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
-    }
+	public List<SiteMapEntry> getSiteMap() {
+		return siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
+	}
+	public SiteMapMenuSet getSiteMapHeader() {
+		return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
+	}
 
 }

@@ -12,59 +12,59 @@ import org.springframework.data.mongodb.core.mapping.Document;
  */
 @Document(collection = "rating")
 @CompoundIndexes({
-        @CompoundIndex(name = "appType_appId", def = "{'appType':1, 'appId':1}"),
-        @CompoundIndex(name = "appType_appId_userId", def = "{'appType':1, 'appId':1, 'userId':1}")
+		@CompoundIndex(name = "appType_appId", def = "{'appType':1, 'appId':1}"),
+		@CompoundIndex(name = "appType_appId_userId", def = "{'appType':1, 'appId':1, 'userId':1}")
 })
 public class Rating {
 
-    @Id
-    private String id;
+	@Id
+	private String id;
 
-    private CatalogEntryType appType;
+	private CatalogEntryType appType;
 
-    private String appId;
+	private String appId;
 
-    private double rating;
+	private double rating;
 
-    private String userId;
+	private String userId;
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public CatalogEntryType getAppType() {
-        return appType;
-    }
+	public CatalogEntryType getAppType() {
+		return appType;
+	}
 
-    public void setAppType(CatalogEntryType appType) {
-        this.appType = appType;
-    }
+	public void setAppType(CatalogEntryType appType) {
+		this.appType = appType;
+	}
 
-    public String getAppId() {
-        return appId;
-    }
+	public String getAppId() {
+		return appId;
+	}
 
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 
-    public double getRating() {
-        return rating;
-    }
+	public double getRating() {
+		return rating;
+	}
 
-    public void setRating(double rating) {
-        this.rating = rating;
-    }
+	public void setRating(double rating) {
+		this.rating = rating;
+	}
 
-    public String getUserId() {
-        return userId;
-    }
+	public String getUserId() {
+		return userId;
+	}
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 }

@@ -6,5 +6,5 @@ package org.oasis_eu.portal.core.services.icons;
  */
 public interface ImageDownloader {
 
-    byte[] download(String url);
+	byte[] download(String url);
 }

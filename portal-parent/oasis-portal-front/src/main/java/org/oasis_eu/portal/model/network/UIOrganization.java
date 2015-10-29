@@ -18,172 +18,172 @@ import java.util.List;
  * Date: 10/24/14
  */
 public class UIOrganization {
-    @JsonProperty
-    @NotNull
-    @NotEmpty
-    String id;
-    @JsonProperty
-    @NotNull
-    @NotEmpty
-    String name;
-    @JsonProperty
-    @NotNull
-    OrganizationType type;
-    @JsonProperty("territory_id")
-    URI territoryId;
-    @JsonProperty("territory_label")
-    String territoryLabel;
-    @JsonProperty("dc_id")
-    URI dcId;
+	@JsonProperty
+	@NotNull
+	@NotEmpty
+	String id;
+	@JsonProperty
+	@NotNull
+	@NotEmpty
+	String name;
+	@JsonProperty
+	@NotNull
+	OrganizationType type;
+	@JsonProperty("territory_id")
+	URI territoryId;
+	@JsonProperty("territory_label")
+	String territoryLabel;
+	@JsonProperty("dc_id")
+	URI dcId;
 
-    /** optional */
-    OrganizationStatus status;
-    /** optional */
-    @JsonProperty("status_changed")
-    Instant statusChanged;
-    /** optional */
-    @JsonProperty("deletion_planned")
-    Instant deletionPlanned;
-    /** optional */
-    @JsonProperty("status_change_requester_id")
-    String statusChangeRequesterId;
-    /** optional */
-    @JsonProperty("status_change_requester_label")
-    String statusChangeRequesterLabel;
+	/** optional */
+	OrganizationStatus status;
+	/** optional */
+	@JsonProperty("status_changed")
+	Instant statusChanged;
+	/** optional */
+	@JsonProperty("deletion_planned")
+	Instant deletionPlanned;
+	/** optional */
+	@JsonProperty("status_change_requester_id")
+	String statusChangeRequesterId;
+	/** optional */
+	@JsonProperty("status_change_requester_label")
+	String statusChangeRequesterLabel;
 
-    @JsonProperty
-    boolean admin;
+	@JsonProperty
+	boolean admin;
 
-    @JsonProperty
-    List<UIOrganizationMember> members = new ArrayList<>();
+	@JsonProperty
+	List<UIOrganizationMember> members = new ArrayList<>();
 
-    @JsonProperty
-    List<UIPendingOrganizationMember> pendingMemberships = new ArrayList<>();
+	@JsonProperty
+	List<UIPendingOrganizationMember> pendingMemberships = new ArrayList<>();
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public OrganizationType getType() {
-        return type;
-    }
+	public OrganizationType getType() {
+		return type;
+	}
 
-    public void setType(OrganizationType type) {
-        this.type = type;
-    }
+	public void setType(OrganizationType type) {
+		this.type = type;
+	}
 
-    public boolean isAdmin() {
-        return admin;
-    }
+	public boolean isAdmin() {
+		return admin;
+	}
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
-    public List<UIOrganizationMember> getMembers() {
-        return members;
-    }
+	public List<UIOrganizationMember> getMembers() {
+		return members;
+	}
 
-    public void setMembers(List<UIOrganizationMember> members) {
-        this.members = members;
-    }
-    
-    public URI getTerritoryId() {
-        return territoryId;
-    }
+	public void setMembers(List<UIOrganizationMember> members) {
+		this.members = members;
+	}
 
-    public void setTerritoryId(URI territoryId) {
-        this.territoryId = territoryId;
-    }
+	public URI getTerritoryId() {
+		return territoryId;
+	}
 
-    public String getTerritoryLabel() {
-        return territoryLabel;
-    }
+	public void setTerritoryId(URI territoryId) {
+		this.territoryId = territoryId;
+	}
 
-    public void setTerritoryLabel(String territoryLabel) {
-        this.territoryLabel = territoryLabel;
-    }
+	public String getTerritoryLabel() {
+		return territoryLabel;
+	}
 
-    public URI getDcId() {
-        return dcId;
-    }
+	public void setTerritoryLabel(String territoryLabel) {
+		this.territoryLabel = territoryLabel;
+	}
 
-    public void setDcId(URI dcId) {
-        this.dcId = dcId;
-    }
+	public URI getDcId() {
+		return dcId;
+	}
 
-    public OrganizationStatus getStatus() {
-        return status;
-    }
+	public void setDcId(URI dcId) {
+		this.dcId = dcId;
+	}
 
-    public void setStatus(OrganizationStatus status) {
-        this.status = status;
-    }
+	public OrganizationStatus getStatus() {
+		return status;
+	}
 
-    public Instant getStatusChanged() {
-        return statusChanged;
-    }
+	public void setStatus(OrganizationStatus status) {
+		this.status = status;
+	}
 
-    public void setStatusChanged(Instant statusChanged) {
-        this.statusChanged = statusChanged;
-    }
+	public Instant getStatusChanged() {
+		return statusChanged;
+	}
 
-    public Instant getDeletionPlanned() {
-        return deletionPlanned;
-    }
+	public void setStatusChanged(Instant statusChanged) {
+		this.statusChanged = statusChanged;
+	}
 
-    public void setDeletionPlanned(Instant deletionPlanned) {
-        this.deletionPlanned = deletionPlanned;
-    }
+	public Instant getDeletionPlanned() {
+		return deletionPlanned;
+	}
 
-    public String getStatusChangeRequesterId() {
-        return statusChangeRequesterId;
-    }
+	public void setDeletionPlanned(Instant deletionPlanned) {
+		this.deletionPlanned = deletionPlanned;
+	}
 
-    public void setStatusChangeRequesterId(String statusChangeRequesterId) {
-        this.statusChangeRequesterId = statusChangeRequesterId;
-    }
+	public String getStatusChangeRequesterId() {
+		return statusChangeRequesterId;
+	}
 
-    public String getStatusChangeRequesterLabel() {
-        return statusChangeRequesterLabel;
-    }
+	public void setStatusChangeRequesterId(String statusChangeRequesterId) {
+		this.statusChangeRequesterId = statusChangeRequesterId;
+	}
 
-    public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
-        this.statusChangeRequesterLabel = statusChangeRequesterLabel;
-    }
+	public String getStatusChangeRequesterLabel() {
+		return statusChangeRequesterLabel;
+	}
 
-    public List<UIPendingOrganizationMember> getPendingMemberships() {
-        return pendingMemberships;
-    }
+	public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
+		this.statusChangeRequesterLabel = statusChangeRequesterLabel;
+	}
 
-    public void setPendingMemberships(List<UIPendingOrganizationMember> pendingMemberships) {
-        this.pendingMemberships = pendingMemberships;
-    }
+	public List<UIPendingOrganizationMember> getPendingMemberships() {
+		return pendingMemberships;
+	}
 
-    @Override
-    public String toString() {
-        return "{" +
-                "id:'" + id + '\'' +
-                ", name:'" + name + '\'' +
-                ", type:" + type +
-                ", territory_id:" + territoryId +
-                ", dcId:" + dcId +
-                ", status:" + status +
-                ", admin:" + admin +
-                ", members:" + members +
-                ", pending_memberships:" + pendingMemberships +
-                '}';
-    }
+	public void setPendingMemberships(List<UIPendingOrganizationMember> pendingMemberships) {
+		this.pendingMemberships = pendingMemberships;
+	}
+
+	@Override
+	public String toString() {
+		return "{" +
+				"id:'" + id + '\'' +
+				", name:'" + name + '\'' +
+				", type:" + type +
+				", territory_id:" + territoryId +
+				", dcId:" + dcId +
+				", status:" + status +
+				", admin:" + admin +
+				", members:" + members +
+				", pending_memberships:" + pendingMemberships +
+				'}';
+	}
 }

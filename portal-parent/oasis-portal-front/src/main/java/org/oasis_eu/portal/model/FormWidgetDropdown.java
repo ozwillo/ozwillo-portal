@@ -17,28 +17,28 @@ import com.google.common.base.Strings;
 
 public class FormWidgetDropdown extends FormWidget implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(FormWidgetDropdown.class);
+	private static final Logger logger = LoggerFactory.getLogger(FormWidgetDropdown.class);
 	private static final long serialVersionUID = 3937276983783616794L;
 
 	private Map<String, String> options = new HashMap<String, String>();
 	private Function<String, String> normalizeKey = null;
 
-    public FormWidgetDropdown(String id, String label) {
+	public FormWidgetDropdown(String id, String label) {
 		super(id, label);
 	}
 	
 	public FormWidgetDropdown(String id, String label, Function<String, String> normalizeKey) {
-        this(id, label);
-        this.normalizeKey = normalizeKey;
-    }
+		this(id, label);
+		this.normalizeKey = normalizeKey;
+	}
 
-    public String getType() {
+	public String getType() {
 		return "dropdown";
 	}
-    
-    public Function<String, String> getNormalizeKey() {
-        return normalizeKey;
-    }
+
+	public Function<String, String> getNormalizeKey() {
+		return normalizeKey;
+	}
 	
 	public FormWidgetDropdown addOption(String key, String value) {
 		options.put(key, value);
@@ -56,8 +56,8 @@ public class FormWidgetDropdown extends FormWidget implements Serializable {
 	public String getOptionLabel(String key) {
 		if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
 		if (normalizeKey != null) {
-		    key = normalizeKey.apply(key);
-		    if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
+			key = normalizeKey.apply(key);
+			if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
 		}
 		return options.containsKey(key) ? options.get(key) : key;
 	}

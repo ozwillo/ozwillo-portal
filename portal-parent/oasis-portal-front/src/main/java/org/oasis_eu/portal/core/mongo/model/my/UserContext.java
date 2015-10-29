@@ -12,48 +12,48 @@ import java.util.List;
  */
 public class UserContext {
 
-    private String id;
-    private String name;
+	private String id;
+	private String name;
 
-    @JsonProperty("main")
-    private boolean primary = false;
+	@JsonProperty("main")
+	private boolean primary = false;
 
-    @JsonIgnore
-    private List<UserSubscription> subscriptions = new ArrayList<>();
+	@JsonIgnore
+	private List<UserSubscription> subscriptions = new ArrayList<>();
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public UserContext setId(String id) {
-        this.id = id;
-        return this;
-    }
+	public UserContext setId(String id) {
+		this.id = id;
+		return this;
+	}
 
-    public List<UserSubscription> getSubscriptions() {
-        return subscriptions;
-    }
+	public List<UserSubscription> getSubscriptions() {
+		return subscriptions;
+	}
 
-    public UserContext setSubscriptions(List<UserSubscription> subscriptions) {
-        this.subscriptions = subscriptions;
-        return this;
-    }
+	public UserContext setSubscriptions(List<UserSubscription> subscriptions) {
+		this.subscriptions = subscriptions;
+		return this;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public UserContext setName(String name) {
-        this.name = name;
-        return this;
-    }
+	public UserContext setName(String name) {
+		this.name = name;
+		return this;
+	}
 
-    public boolean isPrimary() {
-        return primary;
-    }
+	public boolean isPrimary() {
+		return primary;
+	}
 
-    public UserContext setPrimary(boolean primary) {
-        this.primary = primary;
-        return this;
-    }
+	public UserContext setPrimary(boolean primary) {
+		this.primary = primary;
+		return this;
+	}
 }

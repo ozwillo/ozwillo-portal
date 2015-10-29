@@ -33,67 +33,67 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/my")
 public class MyOzwilloController extends PortalController {
 
-    //private static final Logger logger = LoggerFactory.getLogger(MyOzwilloController.class);
+	//private static final Logger logger = LoggerFactory.getLogger(MyOzwilloController.class);
 
-    @Autowired
-    private PortalDashboardService portalDashboardService;
+	@Autowired
+	private PortalDashboardService portalDashboardService;
 
-    @Autowired
-    private PortalNotificationService notificationService;
+	@Autowired
+	private PortalNotificationService notificationService;
 
-    @Autowired
-    private MyNavigationService myNavigationService;
+	@Autowired
+	private MyNavigationService myNavigationService;
 
-    @Autowired
-    private MessageSource messageSource;
+	@Autowired
+	private MessageSource messageSource;
 
-    private static List<String> i18keys = Arrays.asList("create", "switch-dash", "confirm-delete-dash", 
-    		"confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long");
-    private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go",
-            "general-error", "edit", "add", "remove", "something_went_wrong_msg", "something_went_wrong_title",
-            "error_detail_title");
-
-
-    @ModelAttribute("i18n")
-    public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
-        Locale locale = RequestContextUtils.getLocale(request);
-
-        Map<String, String> i18n = new HashMap<>();
-        i18n.putAll(i18keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my." + k, new Object[]{}, locale))));
-        i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
-
-        return i18n;
-    }
+	private static List<String> i18keys = Arrays.asList("create", "switch-dash", "confirm-delete-dash",
+			"confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long");
+	private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go",
+			"general-error", "edit", "add", "remove", "something_went_wrong_msg", "something_went_wrong_title",
+			"error_detail_title");
 
 
-    @ModelAttribute("notif_i18n")
-    public Map<String, String> getNotifI18n(HttpServletRequest request) {
+	@ModelAttribute("i18n")
+	public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
+		Locale locale = RequestContextUtils.getLocale(request);
 
-        List<String> keys = Arrays.asList("ui.notifications", "notif.date", "notif.app", "notif.message", "notif.archive", "notif.manage", "notif.no-notification", "notif.unread", "notif.read", "notif.any", "notif.all-apps");
-        Locale locale = RequestContextUtils.getLocale(request);
+		Map<String, String> i18n = new HashMap<>();
+		i18n.putAll(i18keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my." + k, new Object[]{}, locale))));
+		i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
 
-        return keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage(k, new Object[0], locale)));
-
-    }
-
-    @ModelAttribute("navigation")
-    public List<MyNavigation> getNavigation() {
-        return myNavigationService.getNavigation("dashboard");
-    }
-
-    @RequestMapping(method = RequestMethod.GET, value = {"/", "", "/dashboard"})
-    public String show(Model model) {
-        if (requiresLogout()) {
-            return "redirect:/logout";
-        }
-        return "dashboard/dashboard";
-    }
+		return i18n;
+	}
 
 
-    @RequestMapping(method = RequestMethod.GET, value = "/notif")
-    public String notifications(Model model, HttpServletRequest request) {
-        model.addAttribute("navigation", myNavigationService.getNavigation("notifications"));
-        return "my-notif";
-    }
+	@ModelAttribute("notif_i18n")
+	public Map<String, String> getNotifI18n(HttpServletRequest request) {
+
+		List<String> keys = Arrays.asList("ui.notifications", "notif.date", "notif.app", "notif.message", "notif.archive", "notif.manage", "notif.no-notification", "notif.unread", "notif.read", "notif.any", "notif.all-apps");
+		Locale locale = RequestContextUtils.getLocale(request);
+
+		return keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage(k, new Object[0], locale)));
+
+	}
+
+	@ModelAttribute("navigation")
+	public List<MyNavigation> getNavigation() {
+		return myNavigationService.getNavigation("dashboard");
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value = {"/", "", "/dashboard"})
+	public String show(Model model) {
+		if (requiresLogout()) {
+			return "redirect:/logout";
+		}
+		return "dashboard/dashboard";
+	}
+
+
+	@RequestMapping(method = RequestMethod.GET, value = "/notif")
+	public String notifications(Model model, HttpServletRequest request) {
+		model.addAttribute("navigation", myNavigationService.getNavigation("notifications"));
+		return "my-notif";
+	}
 
 }

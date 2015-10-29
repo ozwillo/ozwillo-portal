@@ -41,49 +41,49 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext
 public class TestTokenRefresh {
 
-    @Autowired
-    private WebApplicationContext wac;
+	@Autowired
+	private WebApplicationContext wac;
 
-    @Autowired
-    private Filter springSecurityFilterChain;
+	@Autowired
+	private Filter springSecurityFilterChain;
 
-    @Autowired
-    private OpenIdCAuthProvider openIdCAuthProvider;
+	@Autowired
+	private OpenIdCAuthProvider openIdCAuthProvider;
 
-    private MockMvc mockMvc;
+	private MockMvc mockMvc;
 
-    @Before
-    public void setup() {
-        mockMvc = MockMvcBuilders
-                .webAppContextSetup(wac)
-                .addFilters(springSecurityFilterChain)
-                .build();
+	@Before
+	public void setup() {
+		mockMvc = MockMvcBuilders
+				.webAppContextSetup(wac)
+				.addFilters(springSecurityFilterChain)
+				.build();
 
-        // force not loading user info from the Kernel
-        openIdCAuthProvider.setFetchUserInfo(false);
-    }
-
-
-    /**
-     * Test that the access token's being expired correctly, that is to say the interceptor throws a RefreshTokenNeededException
-     * (wrapped in a NestedServletException as may be).
-     * Note that we get the exception rather than a redirect to
-     * @throws Throwable
-     */
-    @Test
-    public void testExpiry() throws Exception {
+		// force not loading user info from the Kernel
+		openIdCAuthProvider.setFetchUserInfo(false);
+	}
 
 
-        OpenIdCAuthentication auth = new OpenIdCAuthentication("-test-subject-", "-test-accesstoken-", "-test-idtoken-", Instant.now(), Instant.now().plus(3, ChronoUnit.SECONDS), true, false);
-        SecurityContextHolder.getContext().setAuthentication(auth);
+	/**
+	 * Test that the access token's being expired correctly, that is to say the interceptor throws a RefreshTokenNeededException
+	 * (wrapped in a NestedServletException as may be).
+	 * Note that we get the exception rather than a redirect to
+	 * @throws Throwable
+	 */
+	@Test
+	public void testExpiry() throws Exception {
 
-        MockHttpSession session = new MockHttpSession();
-        session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
 
-        mockMvc.perform(get("/my").session(session)).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("http://localhost/login?ui_locales=en"));
+		OpenIdCAuthentication auth = new OpenIdCAuthentication("-test-subject-", "-test-accesstoken-", "-test-idtoken-", Instant.now(), Instant.now().plus(3, ChronoUnit.SECONDS), true, false);
+		SecurityContextHolder.getContext().setAuthentication(auth);
+
+		MockHttpSession session = new MockHttpSession();
+		session.setAttribute(HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY, SecurityContextHolder.getContext());
+
+		mockMvc.perform(get("/my").session(session)).andExpect(status().is3xxRedirection()).andExpect(redirectedUrlPattern("http://localhost/login?ui_locales=en"));
 
 
-    }
+	}
 
 
 

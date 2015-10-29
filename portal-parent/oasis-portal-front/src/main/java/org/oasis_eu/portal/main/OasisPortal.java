@@ -15,7 +15,7 @@ import org.springframework.context.annotation.Configuration;
 @ComponentScan(basePackageClasses = PortalPackage.class)
 public class OasisPortal {
 
-    public static void main(String[] args) {
-        SpringApplication.run(OasisPortal.class);
-    }
+	public static void main(String[] args) {
+		SpringApplication.run(OasisPortal.class);
+	}
 }

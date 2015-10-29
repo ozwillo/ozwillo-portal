@@ -9,6 +9,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface ImageDownloadAttemptRepository extends MongoRepository<ImageDownloadAttempt, String> {
 
-    ImageDownloadAttempt findByUrl(String url);
+	ImageDownloadAttempt findByUrl(String url);
 
 }

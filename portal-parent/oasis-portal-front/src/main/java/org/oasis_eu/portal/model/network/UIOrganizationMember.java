@@ -7,61 +7,61 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Date: 10/24/14
  */
 public class UIOrganizationMember {
-    @JsonProperty
-    String id;
-    @JsonProperty
-    String name;
-    @JsonProperty
-    boolean admin;
-    @JsonProperty
-    boolean self;
+	@JsonProperty
+	String id;
+	@JsonProperty
+	String name;
+	@JsonProperty
+	boolean admin;
+	@JsonProperty
+	boolean self;
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
-    /** BEWARE may be null with old accounts before user nickname was required #171 */
-    public String getName() {
-        return name;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
+	/** BEWARE may be null with old accounts before user nickname was required #171 */
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
-    /**
-     * @return name or, if null, id ; so NetworkService.toUIOrganization() can order old accounts
-     * before nickname was required #171
-     */
-    public String getNonNullName() {
-        return name == null ? id : name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
+	/**
+	 * @return name or, if null, id ; so NetworkService.toUIOrganization() can order old accounts
+	 * before nickname was required #171
+	 */
+	public String getNonNullName() {
+		return name == null ? id : name;
+	}
 
-    public boolean isAdmin() {
-        return admin;
-    }
+	public boolean isAdmin() {
+		return admin;
+	}
 
-    public void setAdmin(boolean admin) {
-        this.admin = admin;
-    }
+	public void setAdmin(boolean admin) {
+		this.admin = admin;
+	}
 
-    public boolean isSelf() {
-        return self;
-    }
+	public boolean isSelf() {
+		return self;
+	}
 
-    public void setSelf(boolean self) {
-        this.self = self;
-    }
+	public void setSelf(boolean self) {
+		this.self = self;
+	}
 
-    @Override
-    public String toString() {
-        return "{" +
-                "id:'" + id + '\'' +
-                ", name:'" + name + '\'' +
-                ", admin:" + admin +
-                ", self:" + self +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "{" +
+				"id:'" + id + '\'' +
+				", name:'" + name + '\'' +
+				", admin:" + admin +
+				", self:" + self +
+				'}';
+	}
 }

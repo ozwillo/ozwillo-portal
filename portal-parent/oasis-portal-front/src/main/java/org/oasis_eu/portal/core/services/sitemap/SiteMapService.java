@@ -26,112 +26,112 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SiteMapService {
-    private static final Logger logger = LoggerFactory.getLogger(SiteMapService.class);
+	private static final Logger logger = LoggerFactory.getLogger(SiteMapService.class);
 
-    @Autowired
-    private SiteMapRepository repository;
+	@Autowired
+	private SiteMapRepository repository;
 
-    @Autowired
-    private SiteMapHeaderRepository headerRepository;
+	@Autowired
+	private SiteMapHeaderRepository headerRepository;
 
-    @Value("${web.home}")
-    private String webHome;
+	@Value("${web.home}")
+	private String webHome;
 
-    // Header
+	// Header
 
-    @Cacheable(value = "sitemapheader", key = "#language")
-    public SiteMapMenuSet getSiteMapHeader(String language) {
-        SiteMapMenuSet menuset = headerRepository.findByLanguage(language);
-        if (menuset != null) {
-            menuset.getItems().forEach(si -> setHyperLinks(si) );
-            menuset.getSubmenus().forEach(sm -> setHLSubMenus(sm));
-        }
-        return menuset;
-    }
+	@Cacheable(value = "sitemapheader", key = "#language")
+	public SiteMapMenuSet getSiteMapHeader(String language) {
+		SiteMapMenuSet menuset = headerRepository.findByLanguage(language);
+		if (menuset != null) {
+			menuset.getItems().forEach(si -> setHyperLinks(si) );
+			menuset.getSubmenus().forEach(sm -> setHLSubMenus(sm));
+		}
+		return menuset;
+	}
 
-    private SiteMapSubMenuEntry setHLSubMenus(SiteMapSubMenuEntry submenuEntry) {
-        submenuEntry.setUrl(webHome + submenuEntry.getUrl());
-        submenuEntry.getSubItems().forEach(si -> setHyperLinks(si) );
+	private SiteMapSubMenuEntry setHLSubMenus(SiteMapSubMenuEntry submenuEntry) {
+		submenuEntry.setUrl(webHome + submenuEntry.getUrl());
+		submenuEntry.getSubItems().forEach(si -> setHyperLinks(si) );
 
-        return submenuEntry;
-    }
+		return submenuEntry;
+	}
 
-    /**
-     * Complete the hyperlinks with the current root url (https://www.ozwillo-dev.eu, https://www.ozwillo-preprod.eu, etc)
-     * @param entry
-     * @return SiteMapMenuItem
-     */
-    private SiteMapMenuItem setHyperLinks(SiteMapMenuItem entry) {
-        if (entry == null) return new SiteMapMenuItem();
-        if (entry.getUrl().startsWith("/") || entry.getUrl().isEmpty()){
-            entry.setUrl(webHome + entry.getUrl());
-        }
+	/**
+	 * Complete the hyperlinks with the current root url (https://www.ozwillo-dev.eu, https://www.ozwillo-preprod.eu, etc)
+	 * @param entry
+	 * @return SiteMapMenuItem
+	 */
+	private SiteMapMenuItem setHyperLinks(SiteMapMenuItem entry) {
+		if (entry == null) return new SiteMapMenuItem();
+		if (entry.getUrl().startsWith("/") || entry.getUrl().isEmpty()){
+			entry.setUrl(webHome + entry.getUrl());
+		}
 
-        // get root url to compute the complete img url
-        try {
-            if ( !entry.getUrl().isEmpty() && entry.getImg_url().startsWith("/") ){
-                URL aURL = new URL(entry.getUrl());
-                String url = aURL.getProtocol() + "://" + aURL.getAuthority() ;
-                entry.setImg_url(url + entry.getImg_url());
-            }
-        } catch (MalformedURLException e) {
-            logger.error("An error as occurred with URL {"+entry.getUrl()+"}. Error: " + e.getMessage());
-        }
+		// get root url to compute the complete img url
+		try {
+			if ( !entry.getUrl().isEmpty() && entry.getImg_url().startsWith("/") ){
+				URL aURL = new URL(entry.getUrl());
+				String url = aURL.getProtocol() + "://" + aURL.getAuthority() ;
+				entry.setImg_url(url + entry.getImg_url());
+			}
+		} catch (MalformedURLException e) {
+			logger.error("An error as occurred with URL {"+entry.getUrl()+"}. Error: " + e.getMessage());
+		}
 
-        return entry;
-    }
-
-
-    @CacheEvict(value = "sitemapheader", key = "#language")
-    public void updateSiteMapHeader(String language, SiteMapMenuSet siteMapheadaer) {
-        SiteMapMenuSet old = headerRepository.findByLanguage(language);
-        if (old != null) {
-            headerRepository.delete(old.getId());
-        }
-
-        siteMapheadaer.setLanguage(language);
-        siteMapheadaer.setId(null);
-
-        headerRepository.save(siteMapheadaer);
-    }
+		return entry;
+	}
 
 
-    // Footer
+	@CacheEvict(value = "sitemapheader", key = "#language")
+	public void updateSiteMapHeader(String language, SiteMapMenuSet siteMapheadaer) {
+		SiteMapMenuSet old = headerRepository.findByLanguage(language);
+		if (old != null) {
+			headerRepository.delete(old.getId());
+		}
 
-    @Cacheable(value = "sitemap", key = "#language")
-    public List<SiteMapEntry> getSiteMapFooter(String language) {
-        SiteMap siteMap = repository.findByLanguage(language);
-        if (siteMap != null) {
-            return siteMap.getEntries()
-                    .stream()
-                    .map(this::fixSME)
-                    .collect(Collectors.toList());
+		siteMapheadaer.setLanguage(language);
+		siteMapheadaer.setId(null);
 
-        } else {
-            return null;
-        }
-    }
-
-    private SiteMapEntry fixSME(SiteMapEntry entry) {
-        if (entry == null) return new SiteMapEntry();
-
-        entry.setUrl(webHome + entry.getUrl());
-        return entry;
-    }
+		headerRepository.save(siteMapheadaer);
+	}
 
 
-    @CacheEvict(value = "sitemap", key = "#language")
-    public void updateSiteMapFooter(String language, SiteMap siteMap) {
-        SiteMap old = repository.findByLanguage(language);
-        if (old != null) {
-            repository.delete(old.getId());
-        }
+	// Footer
 
-        siteMap.setLanguage(language);
-        siteMap.setId(null);
+	@Cacheable(value = "sitemap", key = "#language")
+	public List<SiteMapEntry> getSiteMapFooter(String language) {
+		SiteMap siteMap = repository.findByLanguage(language);
+		if (siteMap != null) {
+			return siteMap.getEntries()
+					.stream()
+					.map(this::fixSME)
+					.collect(Collectors.toList());
 
-        repository.save(siteMap);
-    }
+		} else {
+			return null;
+		}
+	}
+
+	private SiteMapEntry fixSME(SiteMapEntry entry) {
+		if (entry == null) return new SiteMapEntry();
+
+		entry.setUrl(webHome + entry.getUrl());
+		return entry;
+	}
+
+
+	@CacheEvict(value = "sitemap", key = "#language")
+	public void updateSiteMapFooter(String language, SiteMap siteMap) {
+		SiteMap old = repository.findByLanguage(language);
+		if (old != null) {
+			repository.delete(old.getId());
+		}
+
+		siteMap.setLanguage(language);
+		siteMap.setId(null);
+
+		repository.save(siteMap);
+	}
 
 
 }

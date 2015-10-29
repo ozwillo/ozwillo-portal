@@ -10,26 +10,26 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
  * Date: 12/15/14
  */
 public class SiteMapEntry implements Serializable {
-    private static final long serialVersionUID = 5598242680668173525L;
+	private static final long serialVersionUID = 5598242680668173525L;
 
-    @JacksonXmlProperty(localName = "href", isAttribute = true)
-    private String url = "";
-    @JacksonXmlText
-    private String label = "";
+	@JacksonXmlProperty(localName = "href", isAttribute = true)
+	private String url = "";
+	@JacksonXmlText
+	private String label = "";
 
-    public String getUrl() {
-        return url;
-    }
+	public String getUrl() {
+		return url;
+	}
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
+	public void setUrl(String url) {
+		this.url = url;
+	}
 
-    public String getLabel() {
-        return label;
-    }
+	public String getLabel() {
+		return label;
+	}
 
-    public void setLabel(String label) {
-        this.label = label;
-    }
+	public void setLabel(String label) {
+		this.label = label;
+	}
 }

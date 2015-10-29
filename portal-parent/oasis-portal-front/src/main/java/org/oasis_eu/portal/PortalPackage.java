@@ -6,5 +6,5 @@ package org.oasis_eu.portal;
  * Date: 5/20/14
  */
 final public class PortalPackage {
-    private PortalPackage() {}
+	private PortalPackage() {}
 }

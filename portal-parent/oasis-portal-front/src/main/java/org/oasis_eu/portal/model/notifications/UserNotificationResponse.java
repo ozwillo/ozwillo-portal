@@ -9,30 +9,30 @@ import java.util.List;
  */
 public class UserNotificationResponse {
 
-    private List<UserNotification> notifications = Collections.emptyList();
-    private List<NotifApp> apps = Collections.emptyList();
+	private List<UserNotification> notifications = Collections.emptyList();
+	private List<NotifApp> apps = Collections.emptyList();
 
-    public UserNotificationResponse(List<UserNotification> notifications, List<NotifApp> apps) {
-        this.notifications = notifications;
-        this.apps = apps;
-    }
+	public UserNotificationResponse(List<UserNotification> notifications, List<NotifApp> apps) {
+		this.notifications = notifications;
+		this.apps = apps;
+	}
 
-    public UserNotificationResponse() {
-    }
+	public UserNotificationResponse() {
+	}
 
-    public List<UserNotification> getNotifications() {
-        return notifications;
-    }
+	public List<UserNotification> getNotifications() {
+		return notifications;
+	}
 
-    public void setNotifications(List<UserNotification> notifications) {
-        this.notifications = notifications;
-    }
+	public void setNotifications(List<UserNotification> notifications) {
+		this.notifications = notifications;
+	}
 
-    public List<NotifApp> getApps() {
-        return apps;
-    }
+	public List<NotifApp> getApps() {
+		return apps;
+	}
 
-    public void setApps(List<NotifApp> apps) {
-        this.apps = apps;
-    }
+	public void setApps(List<NotifApp> apps) {
+		this.apps = apps;
+	}
 }
