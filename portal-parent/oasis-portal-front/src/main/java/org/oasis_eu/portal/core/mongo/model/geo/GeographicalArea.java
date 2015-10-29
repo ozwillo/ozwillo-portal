@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.mongo.model.geo;
 
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
@@ -10,8 +10,7 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.List;
 
 @Document(collection = "geographical_area")
 @CompoundIndexes({
@@ -74,6 +73,10 @@ public class GeographicalArea {
 	public GeographicalArea() {
 
 	}
+
+    public String getName() {
+        return name;
+    }
 
 	public void setName(String name) {
 		this.name = name;
