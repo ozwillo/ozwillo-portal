@@ -101,7 +101,7 @@ public class MyProfileState {
 		// Note: the widget IDs must match the OpenID properties.
 		// The values are bound in the method below.
 
-		layouts = new HashMap<String, FormLayout>(); 
+		layouts = new HashMap<>();
 
 		FormLayout accountFormLayout = new FormLayout(LAYOUT_ACCOUNT, "my.profile.title.account", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
 		accountFormLayout.setOrder(1);

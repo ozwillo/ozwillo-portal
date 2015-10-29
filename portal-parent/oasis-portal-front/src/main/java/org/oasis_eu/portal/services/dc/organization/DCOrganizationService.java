@@ -183,7 +183,7 @@ public class DCOrganizationService {
 	/** Change rights of DC Organization. */
 	public boolean changeDCOrganizationRights(DCResource dcResource,String kOrgId){
 		final List<String> newRights = new ImmutableList.Builder<String>().add(kOrgId).build();
-		final List<String> dcResultErrOutter = new ArrayList<String>();
+		final List<String> dcResultErrOutter = new ArrayList<>();
 
 		//get admin authentication and change organization rights
 		portalSystemUserService.runAs(

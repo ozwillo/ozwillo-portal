@@ -74,7 +74,7 @@ public class MyProfileController extends PortalController {
     @ModelAttribute("i18n")
     public Map<String, String> i18n(HttpServletRequest request) throws JsonProcessingException {
         Locale locale = RequestContextUtils.getLocale(request);
-        Map<String, String> i18n = new HashMap<String, String>();
+        Map<String, String> i18n = new HashMap<>();
 
         i18n.putAll(i18nMessages.getI18n_profilekeys(locale, messageSource));
 

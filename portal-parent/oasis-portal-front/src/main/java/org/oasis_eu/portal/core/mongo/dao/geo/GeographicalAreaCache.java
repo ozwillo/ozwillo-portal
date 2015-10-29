@@ -192,7 +192,7 @@ public class GeographicalAreaCache {
 			criteria.and("country").is(countryUri); //filter by country
 		}
 
-		List<Criteria> andCriteria = new ArrayList<Criteria>();
+		List<Criteria> andCriteria = new ArrayList<>();
 		if (modelTypes != null && modelTypes.length != 0){
 			for(String modelType : modelTypes){
 				if (modelType != null && !modelType.trim().isEmpty()){

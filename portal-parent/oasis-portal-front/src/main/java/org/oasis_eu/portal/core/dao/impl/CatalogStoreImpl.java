@@ -150,7 +150,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
 		try {
 			ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST,
-					new HttpEntity<ApplicationInstantiationRequest>(instancePattern), String.class, user(), appId);
+																	   new HttpEntity<>(instancePattern), String.class, user(), appId);
 
 			// specific error handling, TODO LATER make it more consistent with generic error handling
 			if (responseEntity.getStatusCode().is4xxClientError()) {
@@ -261,7 +261,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
 		instance.setStatus(status);
 		ResponseEntity<String> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
-				new HttpEntity<ApplicationInstance>(instance, headers), String.class, user(), instanceId);
+															  new HttpEntity<>(instance, headers), String.class, user(), instanceId);
 
 		/*  DONT CHANGE BELOW code unless updating front-end app since there is a pop up linked to this message */
 		// specific error handling, TODO LATER make it more consistent with generic error handling

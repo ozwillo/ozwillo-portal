@@ -57,7 +57,7 @@ public class AppStoreController extends PortalController {
 	@ModelAttribute("i18n")
 	public Map<String, String> i18n(HttpServletRequest request) throws JsonProcessingException {
 		Locale locale = RequestContextUtils.getLocale(request);
-		Map<String, String> i18n = new HashMap<String, String>();
+		Map<String, String> i18n = new HashMap<>();
 
 		i18n.putAll(i18nMessages.getI18n_networkkeys(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18n_languagekeys(locale, messageSource));
@@ -141,7 +141,7 @@ public class AppStoreController extends PortalController {
 
 	@ExceptionHandler(ApplicationInstanceCreationException.class)
 	public ModelAndView instantiationError(ApplicationInstanceCreationException e) {
-		Map<String, Object> model = new HashMap<String, Object>();
+		Map<String, Object> model = new HashMap<>();
 		model.put("appname", e.getRequested().getName());
 		model.put("appid", e.getApplicationId());
 		model.put("errortype", e.getType().toString());

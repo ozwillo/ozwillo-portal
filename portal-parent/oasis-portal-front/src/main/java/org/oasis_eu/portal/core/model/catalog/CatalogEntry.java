@@ -78,10 +78,10 @@ public class CatalogEntry implements Serializable {
 	private List<String> supportedLocales; // ULocale
 
 	@JsonProperty("geographical_areas")
-	private Set<String> geographicalAreas = new HashSet<String>(); // URI
+	private Set<String> geographicalAreas = new HashSet<>(); // URI
 
 	@JsonProperty("restricted_areas")
-	private Set<String> restrictedAreas = new HashSet<String>(); // URI
+	private Set<String> restrictedAreas = new HashSet<>(); // URI
 
 	@JsonProperty("provider_id")
 	private String providerId;

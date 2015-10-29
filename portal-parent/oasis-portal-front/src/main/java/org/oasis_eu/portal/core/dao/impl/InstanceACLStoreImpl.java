@@ -60,7 +60,7 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 				.filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (and entry_uri null anyway so couldn't delete)
 				.forEach(ace -> {
 					logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
-					kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<Object>(ifmatch(ace.getEntryEtag())), Void.class, user());
+					kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<>(ifmatch(ace.getEntryEtag())), Void.class, user());
 				});
 
 		// add the new ACEs

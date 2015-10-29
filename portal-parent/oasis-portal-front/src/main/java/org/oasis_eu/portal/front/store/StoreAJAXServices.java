@@ -131,7 +131,7 @@ public class StoreAJAXServices extends BaseAJAXServices {
 		logger.debug("Loading applications...");
 		logger.debug("last = {}", last);
 
-		List<Audience> audiences = new ArrayList<Audience>();
+		List<Audience> audiences = new ArrayList<>();
 		if (target_citizens) audiences.add(Audience.CITIZENS);
 		if (target_publicbodies) audiences.add(Audience.PUBLIC_BODIES);
 		if (target_companies) audiences.add(Audience.COMPANIES);
