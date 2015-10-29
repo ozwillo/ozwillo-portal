@@ -44,9 +44,7 @@
         <div class="row">
             <div class="col-sm-10 col-sm-offset-2">
                 <p data-th-text="#{my.profile.disclaimer.line1}">Disclaimer line 1</p>
-
                 <p data-th-text="#{my.profile.disclaimer.line2}">Disclaimer line 2</p>
-
                 <p data-th-text="#{my.profile.disclaimer.line3}">Disclaimer line 3</p>
             </div>
         </div>
@@ -60,8 +58,10 @@
 </data-th-block>
 
 <script data-th-inline="javascript" type="text/javascript">
-
+    var store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
 </script>
+
+<script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
 
 <script data-th-src="@{/webjars/jquery-ui/1.10.4/ui/i18n/jquery.ui.datepicker-it.js}"></script>
 <script data-th-src="@{/webjars/jquery-ui/1.10.4/ui/i18n/jquery.ui.datepicker-es.js}"></script>

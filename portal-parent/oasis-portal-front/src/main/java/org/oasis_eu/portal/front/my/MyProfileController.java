@@ -2,6 +2,7 @@ package org.oasis_eu.portal.front.my;
 
 import org.oasis_eu.portal.core.controller.Languages;
 import org.oasis_eu.portal.front.generic.PortalController;
+import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormLayoutMode;
 import org.oasis_eu.portal.model.FormWidgetDropdown;
@@ -11,6 +12,7 @@ import org.oasis_eu.spring.kernel.service.UserAccountService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -18,13 +20,21 @@ import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+
 import java.beans.PropertyEditorSupport;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 /**
  * 
@@ -48,12 +58,24 @@ public class MyProfileController extends PortalController {
 	@Autowired
     private UserAccountService userAccountService;
 
+    @Autowired
+    private MessageSource messageSource;
+
     @ModelAttribute("modelObject")
 	UserAccount getCurrentUserAccount() {
-		
 		return new UserAccount(user());
 	}
-	
+
+    @ModelAttribute("i18n")
+    public Map<String, String> i18n(HttpServletRequest request) throws JsonProcessingException {
+        Locale locale = RequestContextUtils.getLocale(request);
+        Map<String, String> i18n = new HashMap<String, String>();
+
+        i18n.putAll(i18nMessages.getI18n_profilekeys(locale, messageSource));
+
+        return i18n;
+    }
+
 	@InitBinder
 	protected void initBinder(WebDataBinder binder){
 		

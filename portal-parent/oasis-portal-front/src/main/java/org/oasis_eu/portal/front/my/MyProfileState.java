@@ -15,6 +15,7 @@ import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormWidget;
 import org.oasis_eu.portal.model.FormWidgetDate;
 import org.oasis_eu.portal.model.FormWidgetDropdown;
+import org.oasis_eu.portal.model.FormWidgetHidden;
 import org.oasis_eu.portal.model.FormWidgetText;
 import org.oasis_eu.portal.model.FormWidgetUrlButton;
 import org.oasis_eu.portal.services.NameDefaults;
@@ -65,10 +66,10 @@ public class MyProfileState {
 	/** to best display an unknown locale */
 	@Autowired
 	private NameDefaults nameDefaults;
-    
+
     @PostConstruct
     public void reset() {
-        
+
         // loading available avatars :
         if (!avatarPath.startsWith("/")) {
             avatarPath = "/" + avatarPath;
@@ -95,55 +96,42 @@ public class MyProfileState {
         } catch (IOException e) {
             throw new RuntimeException(e); // don't start if fails
         } // finally { stream.close(); // ideally...
-        
-    	
+
+
     	// Note: the widget IDs must match the OpenID properties.
     	// The values are bound in the method below.
-    	
+
     	layouts = new HashMap<String, FormLayout>(); 
-    	
+
     	FormLayout accountFormLayout = new FormLayout(LAYOUT_ACCOUNT, "my.profile.title.account", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
     	accountFormLayout.setOrder(1);
 		accountFormLayout.appendWidget(new FormWidgetText("nickname", "my.profile.personal.nickname"));
 		accountFormLayout.appendWidget(new AvatarWidget("pictureUrl", "my.profile.account.avatar", getAvailableAvatars()));
-		accountFormLayout.appendWidget(new FormWidgetText("email",
-        		"my.profile.account.email"));
-    	accountFormLayout.appendWidget(new FormWidgetUrlButton("password",
-        		"my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
-    	accountFormLayout.appendWidget(new FormWidgetDropdown("locale",
-        		"my.profile.account.language", uiLocales -> {
+        accountFormLayout.appendWidget(new FormWidgetText("email", "my.profile.account.email"));
+        accountFormLayout.appendWidget(new FormWidgetUrlButton("password", "my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
+        accountFormLayout.appendWidget(new FormWidgetDropdown("locale", "my.profile.account.language", uiLocales -> {
         	        Languages keyLanguages = nameDefaults.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
         	        return (keyLanguages != null) ? keyLanguages.getLanguage() : null;
         		}));
-    	layouts.put(accountFormLayout.getId(), accountFormLayout);
-        
+        layouts.put(accountFormLayout.getId(), accountFormLayout);
+
         FormLayout idFormLayout = new FormLayout(LAYOUT_IDENTITY, "my.profile.personal.identity", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
         idFormLayout.setOrder(2);
-
-		idFormLayout.appendWidget(new FormWidgetText("givenName",
-        		"my.profile.personal.firstname"));
-        idFormLayout.appendWidget(new FormWidgetText("familyName",
-        		"my.profile.personal.lastname"));
-        idFormLayout.appendWidget(new FormWidgetDate("birthdate",
-        		"my.profile.personal.birthdate"));
-        idFormLayout.appendWidget(new FormWidgetDropdown("gender",
-        		"my.profile.personal.gender")
-    		.addOption("female", "my.profile.personal.gender.female")
-        	.addOption("male", "my.profile.personal.gender.male"));
-        idFormLayout.appendWidget(new FormWidgetText("phoneNumber",
-        		"my.profile.personal.phonenumber"));
+        idFormLayout.appendWidget(new FormWidgetText("givenName", "my.profile.personal.firstname"));
+        idFormLayout.appendWidget(new FormWidgetText("familyName", "my.profile.personal.lastname"));
+        idFormLayout.appendWidget(new FormWidgetDate("birthdate", "my.profile.personal.birthdate"));
+        idFormLayout.appendWidget(new FormWidgetDropdown("gender","my.profile.personal.gender")
+            .addOption("female", "my.profile.personal.gender.female")
+            .addOption("male", "my.profile.personal.gender.male"));
+        idFormLayout.appendWidget(new FormWidgetText("phoneNumber", "my.profile.personal.phonenumber"));
         layouts.put(idFormLayout.getId(), idFormLayout);
-        
+
         FormLayout adFormLayout = new FormLayout(LAYOUT_ADDRESS, "my.profile.personal.address", LAYOUT_FORM_ACTION, LAYOUT_FORM_CLASS);
         idFormLayout.setOrder(3);
-        adFormLayout.appendWidget(new FormWidgetText("address.streetAddress",
-        		"my.profile.personal.streetaddress"));
-        adFormLayout.appendWidget(new FormWidgetText("address.locality",
-        		"my.profile.personal.locality"));
-        adFormLayout.appendWidget(new FormWidgetText("address.postalCode",
-        		"my.profile.personal.postalcode"));
-        adFormLayout.appendWidget(new FormWidgetText("address.country",
-        		"my.profile.personal.country"));
+        adFormLayout.appendWidget(new FormWidgetHidden("address.country","my.profile.personal.country"));
+        adFormLayout.appendWidget(new FormWidgetHidden("address.locality", "my.profile.personal.locality"));
+        adFormLayout.appendWidget(new FormWidgetText("address.postalCode", "my.profile.personal.postalcode"));
+        adFormLayout.appendWidget(new FormWidgetText("address.streetAddress","my.profile.personal.streetaddress"));
         layouts.put(adFormLayout.getId(), adFormLayout);
     }
 	

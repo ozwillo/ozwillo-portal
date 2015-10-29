@@ -21,6 +21,8 @@
           <label data-th-for="${widget.id}" class="col-sm-2 control-label" data-th-text="#{${widget.label}}">First name :</label>
           <div class="col-sm-10" data-th-if="${'text'.equals(widget.type)}"
                 data-th-include="includes/my-profile-fragments :: text-widget (${widget.id}, ${modelObject.__${widget.id}__}, ${layout.mode})">?</div>
+          <div class="col-sm-10" data-th-if="${'hidden'.equals(widget.type)}"
+               data-th-include="includes/my-profile-fragments :: hidden-widget (${widget.id}, ${modelObject.__${widget.id}__}, ${layout.mode})">?</div>
           <div class="col-sm-10" data-th-if="${'dropdown'.equals(widget.type)}"
                 data-th-include="includes/my-profile-fragments :: dropdown-widget (${widget}, ${modelObject.__${widget.id}__}, ${layout.mode})">?</div>
           <div class="col-sm-10" data-th-if="${'date'.equals(widget.type)}"
@@ -49,7 +51,16 @@
 
 <div data-th-fragment="text-widget (id, value, mode)">
     <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="${value}">?</span>
-    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-field="*{__${id}__}" /><!-- data-th-errorClass="form-control has-error" -->
+    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-field="*{__${id}__}" />
+    <!-- data-th-errorClass="form-control has-error" -->
+    <span data-th-if="${#fields.hasErrors('__${id}__')}" data-th-errors="*{__${id}__}">Incorrect value</span>
+</div>
+
+<!-- used for select2 components -->
+<div data-th-fragment="hidden-widget (id, value, mode)">
+    <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="${value}">?</span>
+    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="hidden" class="form-control" data-th-field="*{__${id}__}" />
+    <!-- data-th-errorClass="form-control has-error" -->
     <span data-th-if="${#fields.hasErrors('__${id}__')}" data-th-errors="*{__${id}__}">Incorrect value</span>
 </div>
 
