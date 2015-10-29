@@ -33,7 +33,6 @@
         <respond.version>1.4.2</respond.version>
         <html5shiv.version>3.7.0</html5shiv.version>
         <typeaheadjs.version>0.10.4</typeaheadjs.version>
-        <underscore.version>1.6.0-3</underscore.version>
         <react.version>0.12.2</react.version>
         <showdown.version>0.3.1</showdown.version>
         <select2.version>3.5.2</select2.version>
@@ -245,11 +244,6 @@
                 <groupId>org.webjars</groupId>
                 <artifactId>typeaheadjs</artifactId>
                 <version>${typeaheadjs.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>underscorejs</artifactId>
-                <version>${underscore.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.webjars</groupId>
