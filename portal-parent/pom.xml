@@ -186,6 +186,16 @@
                 <groupId>com.hazelcast</groupId>
                 <artifactId>hazelcast</artifactId>
                 <version>${hazelcast.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>net.sourceforge.findbugs</groupId>
+                        <artifactId>annotations</artifactId>
+                    </exclusion>
+                    <exclusion>
+                        <groupId>com.eclipsesource.minimal-json</groupId>
+                        <artifactId>minimal-json</artifactId>
+                    </exclusion>
+                </exclusions>
             </dependency>
             <dependency>
                 <groupId>com.hazelcast</groupId>
