@@ -1,10 +1,5 @@
 package org.oasis_eu.portal.core.dao.impl;
 
-import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
-
-import java.util.Arrays;
-import java.util.List;
-
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
@@ -23,6 +18,11 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+
+import java.util.Arrays;
+import java.util.List;
+
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
 /**
  * User: schambon
@@ -128,7 +128,7 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 		HttpHeaders headers = new HttpHeaders();
 		headers.add("If-Match", response.getHeaders().getETag());
 
-		ResponseEntity<Subscription> kernelResp = kernel.exchange(uri, HttpMethod.DELETE, new HttpEntity<Object>(headers),
+		ResponseEntity<Subscription> kernelResp = kernel.exchange(uri, HttpMethod.DELETE, new HttpEntity<>(headers),
 				Subscription.class, user(), subscriptionId);
 		// validate response body
 		kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri); // TODO test

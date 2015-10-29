@@ -1,5 +1,9 @@
 package org.oasis_eu.portal.model;
 
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,18 +13,13 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
-
 
 public class FormWidgetDropdown extends FormWidget implements Serializable {
 
 	private static final Logger logger = LoggerFactory.getLogger(FormWidgetDropdown.class);
 	private static final long serialVersionUID = 3937276983783616794L;
 
-	private Map<String, String> options = new HashMap<String, String>();
+	private Map<String, String> options = new HashMap<>();
 	private Function<String, String> normalizeKey = null;
 
 	public FormWidgetDropdown(String id, String label) {

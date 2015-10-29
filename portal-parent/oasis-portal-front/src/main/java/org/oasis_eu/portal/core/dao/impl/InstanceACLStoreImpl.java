@@ -72,7 +72,7 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 				.filter(userid -> !currentUsers.contains(userid)) // only on not existing users (NB. can be already app_admin)
 				.forEach(userid -> {
 					logger.debug("Creating ACE for user {}", userid);
-					kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<ACE>(ace(userid, instanceId)), ACE.class, user(), instanceId);
+					kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<>(ace(userid, instanceId)), ACE.class, user(), instanceId);
 				});
 
 	}

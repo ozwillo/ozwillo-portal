@@ -1,14 +1,6 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
-import javax.validation.Valid;
-
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
@@ -31,7 +23,13 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import javax.validation.Valid;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 /**
  * User: schambon
@@ -134,7 +132,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	@RequestMapping(value = "/users/service/{serviceId}", method = RequestMethod.POST)
 	public Map<String, String> saveUsersForService(@PathVariable String serviceId, @RequestBody List<User> users) {
 		appManagementService.updateSubscriptions(serviceId, users.stream().map(User::getUserid).collect(Collectors.toSet()));
-		Map<String, String> result = new HashMap<String, String>();
+		Map<String, String> result = new HashMap<>();
 		result.put("result", "OK");
 		return result;
 	}

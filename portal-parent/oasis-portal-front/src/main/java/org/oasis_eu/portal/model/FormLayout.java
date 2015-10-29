@@ -18,7 +18,7 @@ public class FormLayout implements Comparable<FormLayout>, Serializable {
 	
 	private FormLayoutMode mode = FormLayoutMode.VIEW;
 	
-	private Map<String, FormWidget> widgets = new HashMap<String, FormWidget>();
+	private Map<String, FormWidget> widgets = new HashMap<>();
 
 	private final String id;
 	

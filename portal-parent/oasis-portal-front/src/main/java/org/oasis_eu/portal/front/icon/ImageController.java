@@ -90,7 +90,7 @@ public class ImageController {
 			headers.add("Content-Type", "image/png");
 			headers.add("Content-Length", Integer.toString(image.getBytes().length));
 			headers.put("Cache-Control", Arrays.asList("public, max-age=31536000")); // one year
-			ResponseEntity<byte[]> res = new ResponseEntity<byte[]>(image.getBytes(), headers, HttpStatus.OK);
+			ResponseEntity<byte[]> res = new ResponseEntity<>(image.getBytes(), headers, HttpStatus.OK);
 			return res;
 		} else {
 			throw new IconNotFound();
