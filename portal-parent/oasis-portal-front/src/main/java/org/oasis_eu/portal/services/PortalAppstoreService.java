@@ -1,14 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
@@ -37,6 +28,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -100,7 +99,7 @@ public class PortalAppstoreService {
 
 		if (addCurrentToSupportedLocalesIfNone) {
 			supportedLocales = (supportedLocales == null || supportedLocales.isEmpty()) ?
-					Arrays.asList(new Locale[] { RequestContextUtils.getLocale(request) }) : supportedLocales;
+					Arrays.asList(RequestContextUtils.getLocale(request)) : supportedLocales;
 					// TODO or rather use PortalController.currentLanguage() ?? anyway, rather init it on client js side ?!!
 		}
 
