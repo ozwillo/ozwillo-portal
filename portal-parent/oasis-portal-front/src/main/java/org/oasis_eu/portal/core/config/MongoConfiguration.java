@@ -1,7 +1,13 @@
 package org.oasis_eu.portal.core.config;
 
 import com.google.common.base.Strings;
-import com.mongodb.*;
+import com.mongodb.Mongo;
+import com.mongodb.MongoClient;
+import com.mongodb.MongoClientOptions;
+import com.mongodb.MongoCredential;
+import com.mongodb.ReadPreference;
+import com.mongodb.ServerAddress;
+import com.mongodb.WriteConcern;
 import org.oasis_eu.portal.core.mongo.MongoPackage;
 import org.oasis_eu.portal.core.mongo.model.images.ImageDownloadAttempt;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
