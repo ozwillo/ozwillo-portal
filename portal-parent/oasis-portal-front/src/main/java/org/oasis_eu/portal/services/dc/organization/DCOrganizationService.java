@@ -1,11 +1,7 @@
 package org.oasis_eu.portal.services.dc.organization;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
-
+import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import org.oasis_eu.portal.services.PortalSystemUserService;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
@@ -23,8 +19,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * User: Ignacio
@@ -478,7 +477,7 @@ public class DCOrganizationService {
 					if (valueMap == null) { // takes the last valid match
 						valueMap = nameMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
 					}
-				}else {valueMap = ((List<String>)object).toString();} // Its a list of strings //TODO use it and test it
+				}else {valueMap = object.toString();} // Its a list of strings //TODO use it and test it
 			}
 			return valueMap;
 		}else if (object instanceof String ) {
