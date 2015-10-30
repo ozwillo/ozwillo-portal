@@ -30,41 +30,41 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/my/network")
 public class NetworkController extends PortalController {
 
-    //private static final Logger logger = LoggerFactory.getLogger(NetworkController.class);
+	//private static final Logger logger = LoggerFactory.getLogger(NetworkController.class);
 
-    @Autowired
-    private MessageSource messageSource;
+	@Autowired
+	private MessageSource messageSource;
 
-    @Autowired
-    private MyNavigationService myNavigationService;
+	@Autowired
+	private MyNavigationService myNavigationService;
 
 
-    @ModelAttribute("navigation")
-    private List<MyNavigation> getNavigation() {
-        return myNavigationService.getNavigation("network");
-    }
+	@ModelAttribute("navigation")
+	private List<MyNavigation> getNavigation() {
+		return myNavigationService.getNavigation("network");
+	}
 
-    @ModelAttribute("i18n")
-    public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
-        Locale locale = RequestContextUtils.getLocale(request);
+	@ModelAttribute("i18n")
+	public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
+		Locale locale = RequestContextUtils.getLocale(request);
 
-        Map<String, String> i18n = new HashMap<>();
-        i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_errors(locale, messageSource));
+		Map<String, String> i18n = new HashMap<>();
+		i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_errors(locale, messageSource));
 
-        return i18n;
-    }
+		return i18n;
+	}
 
-    @RequestMapping(method = RequestMethod.GET, value = "")
-    public String network() throws ExecutionException {
-        if (requiresLogout()) {
-            return "redirect:/logout";
-        }
-        return "network/my-network";
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "")
+	public String network() throws ExecutionException {
+		if (requiresLogout()) {
+			return "redirect:/logout";
+		}
+		return "network/my-network";
+	}
 
 
 }

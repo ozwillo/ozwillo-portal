@@ -18,25 +18,25 @@ import java.util.List;
  */
 public class XmlParserConverter extends AbstractHttpMessageConverter<Object> {
 
-    private XmlMapper xmlMapper = new XmlMapper();
+	private XmlMapper xmlMapper = new XmlMapper();
 
-    @Override
-    public List<MediaType> getSupportedMediaTypes() {
-        return Arrays.asList(MediaType.APPLICATION_XML);
-    }
+	@Override
+	public List<MediaType> getSupportedMediaTypes() {
+		return Arrays.asList(MediaType.APPLICATION_XML);
+	}
 
-    @Override
-    protected boolean supports(Class<?> clazz) {
-        return true;
-    }
+	@Override
+	protected boolean supports(Class<?> clazz) {
+		return true;
+	}
 
-    @Override
-    protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
-        return xmlMapper.readValue(inputMessage.getBody(), clazz);
-    }
+	@Override
+	protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+		return xmlMapper.readValue(inputMessage.getBody(), clazz);
+	}
 
-    @Override
-    protected void writeInternal(Object o, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
-        throw new UnsupportedOperationException("Not implemented");
-    }
+	@Override
+	protected void writeInternal(Object o, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+		throw new UnsupportedOperationException("Not implemented");
+	}
 }

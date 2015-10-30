@@ -1,5 +1,9 @@
 package org.oasis_eu.portal.model;
 
+import com.google.common.base.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.Serializable;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -9,36 +13,32 @@ import java.util.Map.Entry;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.common.base.Strings;
-
 
 public class FormWidgetDropdown extends FormWidget implements Serializable {
 
-    private static final Logger logger = LoggerFactory.getLogger(FormWidgetDropdown.class);
+	private static final Logger logger = LoggerFactory.getLogger(FormWidgetDropdown.class);
 	private static final long serialVersionUID = 3937276983783616794L;
 
-	private Map<String, String> options = new HashMap<String, String>();
+	private Map<String, String> options = new HashMap<>();
 	private Function<String, String> normalizeKey = null;
 
-    public FormWidgetDropdown(String id, String label) {
+	public FormWidgetDropdown(String id, String label) {
 		super(id, label);
 	}
 	
 	public FormWidgetDropdown(String id, String label, Function<String, String> normalizeKey) {
-        this(id, label);
-        this.normalizeKey = normalizeKey;
-    }
+		this(id, label);
+		this.normalizeKey = normalizeKey;
+	}
 
-    public String getType() {
+	@Override
+	public String getType() {
 		return "dropdown";
 	}
-    
-    public Function<String, String> getNormalizeKey() {
-        return normalizeKey;
-    }
+
+	public Function<String, String> getNormalizeKey() {
+		return normalizeKey;
+	}
 	
 	public FormWidgetDropdown addOption(String key, String value) {
 		options.put(key, value);
@@ -47,6 +47,7 @@ public class FormWidgetDropdown extends FormWidget implements Serializable {
 	
 	public List<Entry<String, String>> getOptions() {
 		return options.entrySet().stream().sorted(new Comparator<Entry<String, String>>() {
+			@Override
 			public int compare(Entry<String, String> o1, Entry<String, String> o2) {
 				return o1.getKey().compareTo(o2.getKey());
 			}
@@ -56,8 +57,8 @@ public class FormWidgetDropdown extends FormWidget implements Serializable {
 	public String getOptionLabel(String key) {
 		if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
 		if (normalizeKey != null) {
-		    key = normalizeKey.apply(key);
-		    if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
+			key = normalizeKey.apply(key);
+			if(Strings.isNullOrEmpty(key) || "null".equals(key)) return "ui.default_value";
 		}
 		return options.containsKey(key) ? options.get(key) : key;
 	}

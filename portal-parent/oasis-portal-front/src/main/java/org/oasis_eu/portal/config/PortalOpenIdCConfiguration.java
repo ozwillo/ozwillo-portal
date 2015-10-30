@@ -9,12 +9,12 @@ import org.springframework.beans.factory.annotation.Value;
  */
 public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
 
-    @Value("${application.security.noauthdevmode:false}") private boolean noauthdevmode;
-    @Value("${application.devmode:false}") private boolean devmode;
-    
-    @Override
-    public boolean requireAuthenticationForPath(String path) {
-        return path.contains("/my/api/"
-                + ((noauthdevmode && devmode) ? "nothing" : ""));
-    }
+	@Value("${application.security.noauthdevmode:false}") private boolean noauthdevmode;
+	@Value("${application.devmode:false}") private boolean devmode;
+
+	@Override
+	public boolean requireAuthenticationForPath(String path) {
+		return path.contains("/my/api/"
+				+ ((noauthdevmode && devmode) ? "nothing" : ""));
+	}
 }

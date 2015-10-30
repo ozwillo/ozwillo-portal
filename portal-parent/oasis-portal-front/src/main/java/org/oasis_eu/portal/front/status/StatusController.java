@@ -14,20 +14,20 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/status")
 public class StatusController {
 
-    @Autowired
-    private DashboardRepository dashboardRepository;
+	@Autowired
+	private DashboardRepository dashboardRepository;
 
-    @RequestMapping
-    public Status status() {
-        Status status = new Status();
+	@RequestMapping
+	public Status status() {
+		Status status = new Status();
 
-        status.databaseOk = dashboardRepository.count() != 0;
+		status.databaseOk = dashboardRepository.count() != 0;
 
-        return status;
-    }
+		return status;
+	}
 
-    public static class Status {
-        @JsonProperty boolean databaseOk;
-    }
+	public static class Status {
+		@JsonProperty boolean databaseOk;
+	}
 
 }

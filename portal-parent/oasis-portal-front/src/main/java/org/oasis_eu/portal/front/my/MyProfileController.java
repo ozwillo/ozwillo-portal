@@ -18,7 +18,12 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.WebDataBinder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -56,12 +61,12 @@ public class MyProfileController extends PortalController {
 	private MyProfileState myProfileState;
 
 	@Autowired
-    private UserAccountService userAccountService;
+	private UserAccountService userAccountService;
 
     @Autowired
     private MessageSource messageSource;
 
-    @ModelAttribute("modelObject")
+	@ModelAttribute("modelObject")
 	UserAccount getCurrentUserAccount() {
 		return new UserAccount(user());
 	}
@@ -69,7 +74,7 @@ public class MyProfileController extends PortalController {
     @ModelAttribute("i18n")
     public Map<String, String> i18n(HttpServletRequest request) throws JsonProcessingException {
         Locale locale = RequestContextUtils.getLocale(request);
-        Map<String, String> i18n = new HashMap<String, String>();
+        Map<String, String> i18n = new HashMap<>();
 
         i18n.putAll(i18nMessages.getI18n_profilekeys(locale, messageSource));
 
@@ -81,26 +86,28 @@ public class MyProfileController extends PortalController {
 		
 		binder.registerCustomEditor(LocalDate.class, new PropertyEditorSupport() {
 
-            public void setAsText(String value) {
-                try {
-                    //DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE.withLocale(new Locale(currentLanguage().getLanguage())); // Languages.locale renvoie en pour locale en-GB
-                    //setValue(LocalDate.parse(value, dateTimeFormatter));
-                    setValue(LocalDate.parse(value));
-                } catch (DateTimeParseException e) {
+			@Override
+			public void setAsText(String value) {
+				try {
+					//DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ISO_LOCAL_DATE.withLocale(new Locale(currentLanguage().getLanguage())); // Languages.locale renvoie en pour locale en-GB
+					//setValue(LocalDate.parse(value, dateTimeFormatter));
+					setValue(LocalDate.parse(value));
+				} catch (DateTimeParseException e) {
 
-                    setValue(null);
-                }
-            }
+					setValue(null);
+				}
+			}
 
-            public String getAsText() {
-                return getValue() != null ? getValue().toString() : "1970-01-01";
-            }
+			@Override
+			public String getAsText() {
+				return getValue() != null ? getValue().toString() : "1970-01-01";
+			}
 
-        });
+		});
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "")
-    public String profile(Model model) {
+	public String profile(Model model) {
 		if (requiresLogout()) {
 			return "redirect:/logout";
 		}
@@ -112,9 +119,9 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.GET, value = "/fragment/layout/{id}")
 	public String profileLayoutFragment(@PathVariable("id") String layoutId,
-                                        Model model, RedirectAttributes redirectAttributes) {
+										Model model, RedirectAttributes redirectAttributes) {
 
-        initProfileModel(model);
+		initProfileModel(model);
 		model.addAttribute("layout", myProfileState.getLayout(layoutId));
 		
 		return "includes/my-profile-fragments :: layout";
@@ -122,8 +129,8 @@ public class MyProfileController extends PortalController {
 
 	@RequestMapping(method = RequestMethod.POST, value = "/mode")
 	public String toggleProfileLayout(@RequestParam("mode") String mode,
-                                      @RequestParam("id") String layoutId, Model model, RedirectAttributes redirectAttributes) {
-        FormLayout formLayout = myProfileState.getLayout(layoutId);
+									  @RequestParam("id") String layoutId, Model model, RedirectAttributes redirectAttributes) {
+		FormLayout formLayout = myProfileState.getLayout(layoutId);
 		if (formLayout != null) {
 			formLayout.setMode(FormLayoutMode.valueOf(mode));
 		}
@@ -131,13 +138,13 @@ public class MyProfileController extends PortalController {
 		model.addAttribute("layout", formLayout);
 
 //		return "redirect:/my/profile/fragment/layout/" + layoutId;
-        return "includes/my-profile-fragments::layout";
-    }
+		return "includes/my-profile-fragments::layout";
+	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/{layoutId}")
 	public String saveLayout(@PathVariable("layoutId") String layoutId,
-                             @ModelAttribute("modelObject") @Valid UserAccount currentUser, BindingResult result, Model model,
-                             RedirectAttributes redirectAttributes) {
+							 @ModelAttribute("modelObject") @Valid UserAccount currentUser, BindingResult result, Model model,
+							 RedirectAttributes redirectAttributes) {
 
 		if(result.hasErrors()) {
 			
@@ -163,13 +170,13 @@ public class MyProfileController extends PortalController {
 		currentUser.setName(currentUser.getNickname()); // force name = nickname
 		userAccountService.saveUserAccount(currentUser);
 
-        FormLayout layout = myProfileState.getLayout(layoutId);
-        layout.setMode(FormLayoutMode.VIEW);
-        initProfileModel(model);
-        model.addAttribute("layout", layout);
+		FormLayout layout = myProfileState.getLayout(layoutId);
+		layout.setMode(FormLayoutMode.VIEW);
+		initProfileModel(model);
+		model.addAttribute("layout", layout);
 
 //		return "redirect:/my/profile/fragment/layout/" + layoutId;
-//        return "includes/my-profile-fragments::layout";
+//		return "includes/my-profile-fragments::layout";
 		return "redirect:/my/profile";
 	}
 

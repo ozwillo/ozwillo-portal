@@ -37,140 +37,140 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @RequestMapping("/my/api/network")
 public class NetworkAJAXServices extends BaseAJAXServices {
 
-    private static final Logger logger = LoggerFactory.getLogger(NetworkAJAXServices.class);
+	private static final Logger logger = LoggerFactory.getLogger(NetworkAJAXServices.class);
 
-    @Value("${application.devmode:false}")
-    private boolean devmode;
+	@Value("${application.devmode:false}")
+	private boolean devmode;
 
-    @Autowired
-    private NetworkService networkService;
-    @Autowired
-    private OrganizationService organizationService;
+	@Autowired
+	private NetworkService networkService;
+	@Autowired
+	private OrganizationService organizationService;
 
-    @RequestMapping(value = "/organizations", method = GET)
-    public List<UIOrganization> organizations() {
-        List<UIOrganization> organizations = networkService.getMyOrganizations();
+	@RequestMapping(value = "/organizations", method = GET)
+	public List<UIOrganization> organizations() {
+		List<UIOrganization> organizations = networkService.getMyOrganizations();
 
-        logger.debug("Found organizations: {}", organizations);
+		logger.debug("Found organizations: {}", organizations);
 
-        return organizations;
-    }
+		return organizations;
+	}
 
-    @RequestMapping(value = "/organization/{organizationId}", method = POST)
-    public void updateOrganization(@RequestBody @Valid UIOrganization organization, Errors errors) {
-        logger.debug("Updating organization {}", organization);
+	@RequestMapping(value = "/organization/{organizationId}", method = POST)
+	public void updateOrganization(@RequestBody @Valid UIOrganization organization, Errors errors) {
+		logger.debug("Updating organization {}", organization);
 
-        networkService.updateOrganization(organization);
-    }
+		networkService.updateOrganization(organization);
+	}
 
-    @RequestMapping(value = "/invite/{organizationId}", method = POST)
-    public void invite(@PathVariable String organizationId, @RequestBody @Valid InvitationRequest invitation,
-            Errors errors) {
-        logger.debug("Inviting {} to organization {}", invitation.email, organizationId);
+	@RequestMapping(value = "/invite/{organizationId}", method = POST)
+	public void invite(@PathVariable String organizationId, @RequestBody @Valid InvitationRequest invitation,
+			Errors errors) {
+		logger.debug("Inviting {} to organization {}", invitation.email, organizationId);
 
-        if (errors.hasErrors()) {
-            throw new WrongQueryException();
-        }
+		if (errors.hasErrors()) {
+			throw new WrongQueryException();
+		}
 
-        networkService.invite(invitation.email, organizationId);
+		networkService.invite(invitation.email, organizationId);
 
-    }
+	}
 
-    @RequestMapping(value = "/remove-invitation/{organizationId}", method = POST)
-    public void removeInvitation(@PathVariable String organizationId,
-            @RequestBody @Valid RemoveInvitationRequest invitation, Errors errors) {
-        logger.debug("Removing invitation {} to organization {}", invitation.email, organizationId);
+	@RequestMapping(value = "/remove-invitation/{organizationId}", method = POST)
+	public void removeInvitation(@PathVariable String organizationId,
+			@RequestBody @Valid RemoveInvitationRequest invitation, Errors errors) {
+		logger.debug("Removing invitation {} to organization {}", invitation.email, organizationId);
 
-        if (errors.hasErrors()) {
-            throw new WrongQueryException();
-        }
+		if (errors.hasErrors()) {
+			throw new WrongQueryException();
+		}
 
-        networkService.removeInvitation(organizationId, invitation.id, invitation.etag);
+		networkService.removeInvitation(organizationId, invitation.id, invitation.etag);
 
-    }
+	}
 
-    @RequestMapping(value = "/leave", method = POST)
-    public void leave(@RequestBody @Valid LeaveRequest request) {
-        logger.debug("Leaving {}", request.organization);
+	@RequestMapping(value = "/leave", method = POST)
+	public void leave(@RequestBody @Valid LeaveRequest request) {
+		logger.debug("Leaving {}", request.organization);
 
-        networkService.leave(request.organization);
-    }
+		networkService.leave(request.organization);
+	}
 
-    @RequestMapping(value = "/search-organization", method = GET)
-    public DCOrganization searchOrganization(
-            @RequestParam(required=true) String contact_name,
-            @RequestParam(required=true) String contact_lastname,
-            @RequestParam(required=true) String contact_email,
-            @RequestParam(required=true) String country,
-            @RequestParam(required=true) String country_uri,
-            @RequestParam(required=true) String legal_name,
-            @RequestParam(required=true) String tax_reg_num,
-            @RequestParam(required=true) String sector_type
-    ) {
-        logger.debug("Searching for organization {} from {} of type {}", legal_name, country+"["+country_uri+"]", sector_type);
+	@RequestMapping(value = "/search-organization", method = GET)
+	public DCOrganization searchOrganization(
+			@RequestParam(required=true) String contact_name,
+			@RequestParam(required=true) String contact_lastname,
+			@RequestParam(required=true) String contact_email,
+			@RequestParam(required=true) String country,
+			@RequestParam(required=true) String country_uri,
+			@RequestParam(required=true) String legal_name,
+			@RequestParam(required=true) String tax_reg_num,
+			@RequestParam(required=true) String sector_type
+	) {
+		logger.debug("Searching for organization {} from {} of type {}", legal_name, country+"["+country_uri+"]", sector_type);
 
-        return organizationService.findOrganization(contact_name,contact_lastname,contact_email,country,country_uri, sector_type, legal_name, tax_reg_num); 
-    }
+		return organizationService.findOrganization(contact_name,contact_lastname,contact_email,country,country_uri, sector_type, legal_name, tax_reg_num);
+	}
 
-    @RequestMapping(value = "/search-organization-by-id", method = GET)
-    public DCOrganization searchOrganizationByID(@RequestParam(required=true) String dc_id) {
-        logger.debug("Searching for organization with id : {} ", dc_id);
+	@RequestMapping(value = "/search-organization-by-id", method = GET)
+	public DCOrganization searchOrganizationByID(@RequestParam(required=true) String dc_id) {
+		logger.debug("Searching for organization with id : {} ", dc_id);
 
-        return dc_id != null && !dc_id.isEmpty() ? organizationService.findOrganizationById(dc_id) : null;
-    }
+		return dc_id != null && !dc_id.isEmpty() ? organizationService.findOrganizationById(dc_id) : null;
+	}
 
-    @RequestMapping(value = "/create-dc-organization", method = POST)
-    public UIOrganization createDCOrganization(@RequestBody DCOrganization dcOrganization) {
-        return organizationService.create(dcOrganization);
-    }
-    @RequestMapping(value = "/update-dc-organization", method = POST)
-    public UIOrganization updateDCOrganization(@RequestBody DCOrganization dcOrganization) {
-        return organizationService.update(dcOrganization);
-    }
+	@RequestMapping(value = "/create-dc-organization", method = POST)
+	public UIOrganization createDCOrganization(@RequestBody DCOrganization dcOrganization) {
+		return organizationService.create(dcOrganization);
+	}
+	@RequestMapping(value = "/update-dc-organization", method = POST)
+	public UIOrganization updateDCOrganization(@RequestBody DCOrganization dcOrganization) {
+		return organizationService.update(dcOrganization);
+	}
 
-    @RequestMapping(method = RequestMethod.GET, value = "/general-user-info")
-    public UserGeneralInfo getUserGeneralInformation() {
-        UserGeneralInfo userGeneralInfo  = networkService.getCurrentUser();// new UserGeneralInfo();
-        return userGeneralInfo;
-    }
+	@RequestMapping(method = RequestMethod.GET, value = "/general-user-info")
+	public UserGeneralInfo getUserGeneralInformation() {
+		UserGeneralInfo userGeneralInfo  = networkService.getCurrentUser();// new UserGeneralInfo();
+		return userGeneralInfo;
+	}
 
-    @RequestMapping(value = "/organization/{organizationId}/set-status", method = POST)
-    public String setOrganizationStatus(@RequestBody @Valid UIOrganization organization, Errors errors) {
-        logger.debug("Updating organization {}", organization);
+	@RequestMapping(value = "/organization/{organizationId}/set-status", method = POST)
+	public String setOrganizationStatus(@RequestBody @Valid UIOrganization organization, Errors errors) {
+		logger.debug("Updating organization {}", organization);
 
-        return networkService.setOrganizationStatus(organization);
-    }
+		return networkService.setOrganizationStatus(organization);
+	}
 
 
-    public static class InvitationRequest {
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String email;
-    }
+	public static class InvitationRequest {
+		@JsonProperty
+		@NotNull
+		@NotEmpty
+		String email;
+	}
 
-    public static class RemoveInvitationRequest {
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String id;
+	public static class RemoveInvitationRequest {
+		@JsonProperty
+		@NotNull
+		@NotEmpty
+		String id;
 
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String email;
+		@JsonProperty
+		@NotNull
+		@NotEmpty
+		String email;
 
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String etag;
-    }
+		@JsonProperty
+		@NotNull
+		@NotEmpty
+		String etag;
+	}
 
-    public static class LeaveRequest {
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String organization;
-    }
+	public static class LeaveRequest {
+		@JsonProperty
+		@NotNull
+		@NotEmpty
+		String organization;
+	}
 
 }

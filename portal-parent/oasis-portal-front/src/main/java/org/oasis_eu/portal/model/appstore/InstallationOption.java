@@ -6,9 +6,9 @@ package org.oasis_eu.portal.model.appstore;
  */
 public enum InstallationOption {
 
-    FREE,
-    PAID,
-    INSTALLED,
-    INSTALL_PENDING
+	FREE,
+	PAID,
+	INSTALLED,
+	INSTALL_PENDING
 
 }

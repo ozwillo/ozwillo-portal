@@ -15,19 +15,19 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @JacksonXmlRootElement(localName = "menuset")
 public class HeaderMenuSet {
 
-    /**
-     * Set in a list one menuset per language (as defined in the xml)
-     * menuset [menu, menu, ..., menu ]
-     */
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "menu")
-    private List<SiteMapMenuSet> menuset;
+	/**
+	 * Set in a list one menuset per language (as defined in the xml)
+	 * menuset [menu, menu, ..., menu ]
+	 */
+	@JacksonXmlElementWrapper(useWrapping = false)
+	@JacksonXmlProperty(localName = "menu")
+	private List<SiteMapMenuSet> menuset;
 
-    public List<SiteMapMenuSet> getMenuset() {
-        return menuset;
-    }
+	public List<SiteMapMenuSet> getMenuset() {
+		return menuset;
+	}
 
-    public void setMenuset(List<SiteMapMenuSet> menuset) {
-        this.menuset = menuset;
-    }
+	public void setMenuset(List<SiteMapMenuSet> menuset) {
+		this.menuset = menuset;
+	}
 }

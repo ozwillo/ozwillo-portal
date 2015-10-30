@@ -5,7 +5,7 @@ package org.oasis_eu.portal.core.exception;
  * Date: 5/28/14
  */
 public class InvalidEntityException extends RuntimeException {
-    public InvalidEntityException(String message) {
-        super(message);
-    }
+	public InvalidEntityException(String message) {
+		super(message);
+	}
 }

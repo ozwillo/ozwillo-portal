@@ -5,19 +5,19 @@ package org.oasis_eu.portal.model.dashboard;
 * Date: 6/18/14
 */
 public class AppNotificationData {
-    String applicationId;
-    int count;
+	String applicationId;
+	int count;
 
-    public AppNotificationData(String applicationId, int count) {
-        this.applicationId = applicationId;
-        this.count = count;
-    }
+	public AppNotificationData(String applicationId, int count) {
+		this.applicationId = applicationId;
+		this.count = count;
+	}
 
-    public String getApplicationId() {
-        return applicationId;
-    }
+	public String getApplicationId() {
+		return applicationId;
+	}
 
-    public int getCount() {
-        return count;
-    }
+	public int getCount() {
+		return count;
+	}
 }

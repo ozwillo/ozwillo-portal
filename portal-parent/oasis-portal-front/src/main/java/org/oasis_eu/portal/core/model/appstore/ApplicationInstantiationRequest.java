@@ -9,46 +9,46 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 public class ApplicationInstantiationRequest {
 
-    @JsonProperty("name")
-    private String name;
+	@JsonProperty("name")
+	private String name;
 
-    @JsonProperty("description")
-    private String description;
+	@JsonProperty("description")
+	private String description;
 
-    @JsonProperty("provider_id")
-    private String providerId;
+	@JsonProperty("provider_id")
+	private String providerId;
 
-    public String getProviderId() {
-        return providerId;
-    }
+	public String getProviderId() {
+		return providerId;
+	}
 
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
-    }
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public String getDescription() {
-        return description;
-    }
+	public String getDescription() {
+		return description;
+	}
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
 
-    @Override
-    public String toString() {
-        return "ApplicationInstantiationRequest{" +
-                "name='" + name + '\'' +
-                ", description='" + description + '\'' +
-                ", providerId='" + providerId + '\'' +
-                '}';
-    }
+	@Override
+	public String toString() {
+		return "ApplicationInstantiationRequest{" +
+				"name='" + name + '\'' +
+				", description='" + description + '\'' +
+				", providerId='" + providerId + '\'' +
+				'}';
+	}
 }

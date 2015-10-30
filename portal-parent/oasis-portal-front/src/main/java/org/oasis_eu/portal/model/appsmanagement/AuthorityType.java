@@ -6,7 +6,7 @@ package org.oasis_eu.portal.model.appsmanagement;
  */
 public enum AuthorityType {
 
-    INDIVIDUAL,
-    ORGANIZATION
+	INDIVIDUAL,
+	ORGANIZATION
 
 }

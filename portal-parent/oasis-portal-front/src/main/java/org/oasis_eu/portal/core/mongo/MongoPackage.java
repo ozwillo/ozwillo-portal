@@ -6,7 +6,7 @@ package org.oasis_eu.portal.core.mongo;
  * Date: 6/11/14
  */
 final public class MongoPackage {
-    private MongoPackage() {
+	private MongoPackage() {
 
-    }
+	}
 }

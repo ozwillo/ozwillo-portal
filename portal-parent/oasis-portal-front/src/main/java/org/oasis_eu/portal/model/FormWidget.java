@@ -52,5 +52,4 @@ public abstract class FormWidget implements Comparable<FormWidget> {
 	public int compareTo(FormWidget o) {
 		return getOrder() - o.getOrder();
 	}
-
 }
