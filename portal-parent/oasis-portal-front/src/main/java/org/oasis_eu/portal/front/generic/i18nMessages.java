@@ -60,6 +60,8 @@ public final class i18nMessages {
             "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
             "apps-for-organization", "apps-for-personal-use");
 
+    private static final List<String> profilekeys = Arrays.asList("errormsg.formatNoMatches", "errormsg.formatAjaxError");
+
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 
 
@@ -84,6 +86,7 @@ public final class i18nMessages {
                 k -> messageSource.getMessage("install.org." + k, new Object[0], locale))));
         i18n.putAll(languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
         i18n.putAll(myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
+        i18n.putAll(profilekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.profile." + k, new Object[0], locale))));
         i18n.putAll(errors.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("error." + k, new Object[0], locale))));
 
         return i18n;
@@ -123,6 +126,10 @@ public final class i18nMessages {
     }
     public static Map<String, String> getI18n_myApps(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_profilekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (profilekeys.stream().collect(Collectors.toMap(k ->"my.profile."+ k, k -> messageSource.getMessage("my.profile." + k, new Object[0], locale))));
     }
 
     public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {

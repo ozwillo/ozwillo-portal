@@ -44,6 +44,8 @@ public class GeographicalDAO {
     /** ex. Rhône-Alpes, France */
     @Value("${application.geoarea.displayNameField:odisp:name}")
     private String displayNameField;// or geo specific "geo:displayName"
+    @Value("${application.geoarea.codePostalField:geoci:zipCode}")
+    private String postalCode; // or city specific "geoci:country"
 
     @Value("${application.geoarea.countryModel:geoco:Country_0}")
     private String countryModel; // or country specific "geocofr:Pays_0"
@@ -72,6 +74,7 @@ public class GeographicalDAO {
             return null;
         }
         String name = getI18nValue(r, language, nameField);
+        String zip = r.getAsString(postalCode);
 
         String country = r.getAsString(countryField);  /* The true value should be the main referenced model id (geo:country), but today
                                                            * it is not linked in the models. NB today it makes that some of the fields are not
@@ -80,6 +83,7 @@ public class GeographicalDAO {
 
         GeographicalArea area = new GeographicalArea();
         area.setName(displayName);
+        area.setPostalCode(zip);
         area.setUri(r.getUri());
         area.setLang(language);
         area.setCountry(country);
