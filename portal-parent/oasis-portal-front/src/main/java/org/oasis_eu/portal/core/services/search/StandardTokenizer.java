@@ -1,12 +1,12 @@
 package org.oasis_eu.portal.core.services.search;
 
+import org.springframework.stereotype.Service;
+
 import java.text.Normalizer;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
-
-import org.springframework.stereotype.Service;
 
 /**
  * User: schambon

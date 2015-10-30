@@ -1,350 +1,296 @@
 /** @jsx React.DOM */
 
-// Main modal
-var SearchOrganization = React.createClass({
-    componentDidMount: function() {
-        $(this.refs.modal.getDOMNode()).on("shown.bs.modal", function() {
-            $("input", this).first().focus();
+var SearchOrganizationModal = React.createClass({
+    componentDidMount: function () {
+        $(this.getDOMNode()).modal({show: false});
+        $(this.getDOMNode()).on("shown.bs.modal", function() {
+            $("input#legal_name", this).focus();
         });
     },
-
-    show: function() {
+    componentWillUnmount: function () {
+        $(this.getDOMNode()).off('hidden');
+    },
+    close: function (event) {
+        $(this.getDOMNode()).modal('hide');
+    },
+    open: function () {
+        $(this.getDOMNode()).modal('show');
         this.refs.form.resetSearchVals();
-        this.refs.form.getProfileInfo();
-        this.refs.modal.open();
     },
-    close: function () {
-        this.refs.modal.close();
-        if (this.props.successHandler) {
-            this.props.successHandler();
-        }
+    openCreateOrModify: function(organization) {
+        this.close();
+        this.props.successHandler(organization);
     },
-    openCreateOrModify: function(organization){
-        if(organization){
-            this.close();
-            this.refs.createOrgDialog.show(organization);
-        }else{
-            /* If organization is found in DC and in Kernel, it returns a null value.
-             * In this case the user cannot modified it or be assigned, so a msg is shown */
-            this.refs.modalError.open();
-        }
-    },
-    searchOrg: function () {
-        this.refs.form.searchOrganization();
-    },
-    render: function() {
-        var buttonLabels = {"cancel": t('ui.cancel'), "save": t('ui.search')};
+    render: function () {
         return (
-            <div>
-                <Modal ref="modal" title={t('my.network.find-or-create-organization')} successHandler={this.searchOrg} buttonLabels={buttonLabels}>
-                    <SearchOrganizationForm ref="form" successHandler={this.openCreateOrModify}/>
-                </Modal>
-                <CreateOrModifyOrganizationModal ref="createOrgDialog"  successHandler={this.close} />
-
-                <Modal ref="modalError" title={t('ui.something_went_wrong_title')} infobox={true} cancelHandler={null/*this.close()*/} >
-                   <div><h5>{t('search.organization.cannot-be-used')}</h5></div>
-                </Modal>
+            <div className="modal fade">
+                <div className='modal-dialog modal-lg'>
+                    <div className="modal-content">
+                        <div className="modal-header">
+                            <button type="button" className="close" onClick={this.close}>&times;</button>
+                            <h3>{t('search.organization.search-organization')}</h3>
+                        </div>
+                        <SearchOrganizationForm ref="form"
+                                                successHandler={this.openCreateOrModify}
+                                                cancelHandler={this.close} />
+                    </div>
+                </div>
             </div>
-            );
+        );
     }
 });
 
-// Form modal
 var SearchOrganizationForm = React.createClass({
-    getInitialState: function () { //should never be called directly outside this component, it is not correct React way...
-        var sector_type = '';//'COMPANY'; //default value for the option button
-        var tax_reg_num = '';//'0000000000001';//TODO TEST Only, to remove it
-        var legal_name  = '';//'IPGARDE2';//TODO TEST Only, to remove it
-
-        return {orgSearchData: {contact_name: '', contact_lastname: '', contact_email: '', sector_type : sector_type, country: '', country_uri: '',
-                      legal_name: legal_name, tax_reg_num: tax_reg_num},
-                errors:[], searching: false,
+    getInitialState: function () {
+        return {
+            country: '',
+            country_uri : '',
+            errors: [],
+            searching: false
         };
     },
-    getProfileInfo: function(){
-        $.ajax({
-            url: network_service+'/general-user-info',
-            type: 'get',
-            contentType: 'json',
-            success: function (data) {
-                    var state = this.state;
-                    state.orgSearchData.contact_name =     data.user_name;
-                    state.orgSearchData.contact_lastname = data.user_lastname;
-                    state.orgSearchData.contact_email =    data.user_email;
-                    state.orgSearchData.country =          data.address.country;
-                    this.setState(state);
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(status, err.toString());
-            }.bind(this)
-        });
+    onCountryChange: function(country, country_uri) {
+        this.setState({ country: country, country_uri: country_uri });
     },
-    resetSearchVals: function (event) {
-        this.state.orgSearchData = this.getInitialState();
-        this.state.errors = [];
-        this.searching = false;
+    resetSearchVals: function() {
+        this.refs.legal_name.getDOMNode().value = '';
+        this.refs.tax_reg_num.getDOMNode().value = '';
+        this.refs.sector_type_PUBLIC_BODY.getDOMNode().checked = false;
+        this.refs.sector_type_COMPANY.getDOMNode().checked = false;
+        this.refs.country.getUserCountry();
+        this.setState({ errors: [] });
     },
     searchOrganization: function (event) {
         if (event) { event.preventDefault(); }
         if (this.state.searching) { return; } /* do nothing if we're already searching... */
-        var org = this.state.orgSearchData;
+        var legal_name = this.refs.legal_name.getDOMNode().value.trim();
+        var tax_reg_num = this.refs.tax_reg_num.getDOMNode().value.replace(/\s/g, '');
+        var sector_type = '';
+        if (this.refs.sector_type_PUBLIC_BODY.getDOMNode().checked)
+            sector_type = 'PUBLIC_BODY';
+        else if (this.refs.sector_type_COMPANY.getDOMNode().checked)
+            sector_type = 'COMPANY';
         var errors = [];
-        //Contact
-        if (!org.contact_name     || org.contact_name.trim() == '')     { errors.push("name"); }
-        if (!org.contact_lastname || org.contact_lastname.trim() == '') { errors.push("lastname"); }
-        if (!org.contact_email    || org.contact_email.trim() == '')    { errors.push("email"); }
-        // Organization
-        if (!org.country_uri     || org.country_uri.trim() == '')     { errors.push("country"); }
-        if (!org.legal_name  || org.legal_name.trim() == '')  { errors.push("legal_name"); }
-        if (!org.tax_reg_num || org.tax_reg_num.trim() == '') { errors.push("tax_reg_num"); }
-        if (!org.sector_type || org.sector_type.trim() == '') { errors.push("sector_type"); }
+        if (!this.state.country) { errors.push("country"); }
+        if (!legal_name)  { errors.push("legal_name"); }
+        if (!tax_reg_num) { errors.push("tax_reg_num"); }
+        if (sector_type === '') { errors.push("sector_type"); }
 
         if (errors.length == 0) {
-            this.state.searching = true;
+            this.setState({ searching: true });
 
             $.ajax({
-                url: network_service + "/search-organization",
+                url: network_service + '/search-organization',
                 type: 'get',
                 contentType: 'json',
-                data: this.state.orgSearchData,
+                data: { country: this.state.country, country_uri: this.state.country_uri, legal_name: legal_name,
+                    tax_reg_num: tax_reg_num, sector_type: sector_type},
                 success: function (data) {
-                    if (this.props.successHandler) {
-                        var organization = data;
-                        //var organization = jQuery.extend(true, {}, this.state.orgTEST); // Test only - Deep copy of the TestsData to avoid overwriting
-
-                        var state = {searching: false, errors: []};
-                        this.setState(state);
-
-                        this.props.successHandler(organization);
+                    if (data) {
+                        // organization does not exist in Ozwillo, going to next step
+                        // data is the organization retrieved from DC or newly created
+                        this.setState({searching: false });
+                        this.props.successHandler(data);
+                    } else {
+                        // organization exists in Ozwillo, display an error message in the modal
+                        this.setState({ searching: false, errors: ['general'] });
                     }
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(status, err.toString());
-                    var state = this.state;
-                    state.errors = ["general"];
-                    state.searching = false;
-                    this.setState(state);
+                    this.setState({ searching: false, errors: ['technical'] });
                 }.bind(this)
             });
         } else {
-            this.state.errors = errors;
-            this.setState(this.state);
+            this.setState({ errors: errors });
         }
-    },
-    changeInput: function (fieldname) {
-        return function (event) {
-            var org = this.state.orgSearchData;
-            if(fieldname === "country"){
-               org[fieldname+"_uri"] = event.target.value;
-               org[fieldname] = event.target.selectedOptions[0].label;
-            }else if(fieldname === "tax_reg_num" ){
-               org[fieldname] = ''+event.target.value.replace(/\s+/g, ''); /*Remove whitespace avoiding setting undefined*/
-            }else {org[fieldname] = event.target.value;}
-            this.setState({orgSearchData: org, errors: [], searching: false});
-        }.bind(this);
-    },
-    toggleType: function (event) {
-        var org = this.state.orgSearchData;
-        org.sector_type = event.target.value;
-        this.setState({orgSearchData: org, errors: [], searching: false});
     },
     renderLabel: function(htmlFor, class_name, label){
-       var cn = ($.inArray(class_name, this.state.errors) != -1 ? 'col-sm-3 control-label error' : 'col-sm-3 control-label');
-       return (<label htmlFor={htmlFor} className={cn}>{label}
-                  <label className={'error'}>{'*'}</label>
-               </label>);
-    },
-
-    render: function () {
-        //var errorMessage = (<label className="error">{this.props.errors["general"]}</label> );
+        var cn = ($.inArray(class_name, this.state.errors) != -1 ? 'col-sm-3 control-label error' : 'col-sm-3 control-label');
         return (
-            <form onSubmit={this.searchOrganization} className="form-horizontal">
-                 <h4>{t('search.contact.title')}</h4>
-                 <ContactSearchFormControl renderLabel={this.renderLabel} orgSearchData={this.state.orgSearchData}
-                 changeInput={this.changeInput}/>
-
-                  <h4>{t('search.organization.title')}</h4>
-                  <OrganizationSearchFormControl errors={this.state.errors} renderLabel={this.renderLabel} orgSearchData={this.state.orgSearchData}
-                               changeInput={this.changeInput} toggleType={this.toggleType}/>
-
-                {/*errorMessage*/}
-            </form>
-            );
-    }
-});
-
-var ContactSearchFormControl  = React.createClass({
-    render: function() {
-        return (
-           <div className="form-group">
-             <div className="form-group">
-                {this.props.renderLabel("contact-name", 'name', t('search.contact.name'))}
-                <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_name}
-                   onChange={this.props.changeInput('contact_name')} maxLength={100}  placeholder={t('search.contact.name')}/></div>
-             </div>
-             <div className="form-group">
-                {this.props.renderLabel("contact-lastname", 'lastname', t('search.contact.lastname'))}
-                <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_lastname}
-                   onChange={this.props.changeInput('contact_lastname')} maxLength={100} placeholder={t('search.contact.lastname')}/></div>
-             </div>
-             <div className="form-group">
-                {this.props.renderLabel("contact-email", 'email', t('search.contact.email'))}
-                <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_email}
-                       onChange={this.props.changeInput('contact_email')} maxLength={100} placeholder={t('search.contact.email')}/></div>
-             </div>
-          </div>
-        )
-    }
-});
-
-var OrganizationSearchFormControl = React.createClass({
-    renderType: function () {
-        var restriction = this.props.typeRestriction ? this.props.typeRestriction : {company: true, public_body: true};
-
-        var public_body = null;
-        if (restriction.public_body) {
-            public_body = (
-                        <label className="radio-inline col-sm-3">
-                            <input type="radio" value="PUBLIC_BODY" checked={this.props.orgSearchData.sector_type == 'PUBLIC_BODY'}
-                                 onChange={this.props.toggleType}>{t('search.organization.sector-type.PUBLIC_BODY')}</input>
-                        </label>
-            );
-        }
-
-        var company = null;
-        if (restriction.company) {
-            company = (
-                    <label className="radio-inline col-sm-3">
-                        <input type="radio" value="COMPANY" checked={this.props.orgSearchData.sector_type  == 'COMPANY'}
-                            onChange={this.props.toggleType}>{t('search.organization.sector-type.COMPANY')}</input>
-                    </label>
-            );
-        }
-
-        var sectorTypeClassName = 'col-sm-3 control-label';
-        sectorTypeClassName = ($.inArray('sector_type', this.props.errors) != -1 ? sectorTypeClassName+' error' : sectorTypeClassName);
-
-        return (
-            <div className="form-group">
-                <label htmlFor="organization-sector-type" className={sectorTypeClassName}>{t('search.organization.sector-type')}</label>
-                {public_body}
-                {company}
-            </div>
+            <label htmlFor={htmlFor} className={cn}>{label}
+                <label className="error">&nbsp;*</label>
+            </label>
         );
     },
+    renderSectorType: function () {
+        if (this.state.country) {
+            var sectorTypeClassName = 'col-sm-3 control-label';
+            sectorTypeClassName = ($.inArray('sector_type', this.state.errors) != -1 ? sectorTypeClassName + ' error' : sectorTypeClassName);
 
-    render: function () {
-        var label_regNum; 
-        switch(this.props.orgSearchData.country){
-           case 'България' : label_regNum = t('search.organization.business-id.bg'); break;
-           case 'Italia'   : label_regNum = t('search.organization.business-id.it'); break;
-           case 'France'   : label_regNum = t('search.organization.business-id.fr'); break;
-           case 'España'   : label_regNum = t('search.organization.business-id.es'); break;
-           case 'Türkiye'  : label_regNum = t('search.organization.business-id.tr'); break;
-           default         : label_regNum = t('search.organization.business-id.en'); break;
-        }
-        if ( (!this.props.orgSearchData.country_uri || this.props.orgSearchData.country_uri === "") && this.refs.orgCountrySelect){
-           this.props.orgSearchData.country_uri = this.refs.orgCountrySelect.getValue(this.props.orgSearchData.country);
-        }
-
-        return (
-             <div className="form-group">
-                {this.renderType()}
+            return (
                 <div className="form-group">
-                    {this.props.renderLabel("organization-country-name", 'country', t('search.organization.country'))}
-                    <div className="col-sm-5">
-                         <CountrySelect ref="orgCountrySelect" className="form-control" url={store_service + "/dc-countries"} defLabel={this.props.orgSearchData.country}
-                             onChange={this.props.changeInput('country')} />
+                    <label htmlFor="organization-sector-type"
+                           className={sectorTypeClassName}>{t('search.organization.sector-type')}
+                        <label className="error">&nbsp;*</label>
+                    </label>
+                    <div className="col-sm-8">
+                        <label className="radio-inline col-sm-3">
+                            <input type="radio" value="PUBLIC_BODY" ref="sector_type_PUBLIC_BODY">
+                                {t('search.organization.sector-type.PUBLIC_BODY')}
+                            </input>
+                        </label>
+                        <label className="radio-inline col-sm-3">
+                            <input type="radio" value="COMPANY" ref="sector_type_COMPANY">
+                                {t('search.organization.sector-type.COMPANY')}
+                            </input>
+                        </label>
                     </div>
                 </div>
+            );
+        }
+    },
+    renderLegalName: function() {
+        if (this.state.country) {
+            return (
                 <div className="form-group">
-                    {this.props.renderLabel("organization-name", 'legal_name', t('search.organization.legal-name'))}
-                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.legal_name}
-                             onChange={this.props.changeInput('legal_name')} maxLength={100}
-                             placeholder={t('search.organization.legal-name')}/></div>
+                    {this.renderLabel("organization-name", 'legal_name', t('search.organization.legal-name'))}
+                    <div className="col-sm-8">
+                        <input type="text" id="legal_name" className="form-control" maxLength="100" ref="legal_name" />
+                    </div>
                 </div>
+            )
+        }
+    },
+    renderTaxRegNum: function() {
+        if (this.state.country) {
+            var taxRegNumLabel = '';
+            switch(this.state.country){
+                case 'България' : taxRegNumLabel = t('search.organization.business-id.bg'); break;
+                case 'Italia'   : taxRegNumLabel = t('search.organization.business-id.it'); break;
+                case 'France'   : taxRegNumLabel = t('search.organization.business-id.fr'); break;
+                case 'España'   : taxRegNumLabel = t('search.organization.business-id.es'); break;
+                case 'Türkiye'  : taxRegNumLabel = t('search.organization.business-id.tr'); break;
+                default         : taxRegNumLabel = t('search.organization.business-id.en'); break;
+            }
+            return (
                 <div className="form-group">
-                   {this.props.renderLabel("organization-business-id", 'tax_reg_num', label_regNum)}
-                   <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.tax_reg_num}
-                         onChange={this.props.changeInput('tax_reg_num')} maxLength={20}
-                         placeholder={t(label_regNum)}/></div>
+                    {this.renderLabel("organization-business-id", 'tax_reg_num', taxRegNumLabel)}
+                    <div className="col-sm-8">
+                        <input type="text" className="form-control" maxLength="20" ref="tax_reg_num"/>
+                    </div>
+                </div>
+            )
+        }
+    },
+    renderGeneralErrorMessage: function() {
+        if ($.inArray('general', this.state.errors) != -1) {
+            return (
+                <label className="error">{t('search.organization.cannot-be-used')}</label>
+            )
+        } else if ($.inArray('technical', this.state.errors) != -1) {
+            return (
+                <label className="error">{t('search.organization.technical-problem')}</label>
+            )
+        }
+    },
+    render: function () {
+        return (
+            <div>
+                <div className="modal-body">
+                    <form onSubmit={this.searchOrganization} className="form-horizontal">
+                        <div className="form-group">
+                            <div className="form-group">
+                                {this.renderLabel("organization-country-name", 'country', t('search.organization.country'))}
+                                <div className="col-sm-5">
+                                    <CountrySelect className="form-control"
+                                                   ref="country"
+                                                   url={store_service + "/dc-countries"}
+                                                   onCountryChange={this.onCountryChange} />
+                                </div>
+                            </div>
+                            {this.renderLegalName()}
+                            {this.renderTaxRegNum()}
+                            {this.renderSectorType()}
+                        </div>
+                    </form>
+                    {this.renderGeneralErrorMessage()}
+                </div>
+                <div className="modal-footer">
+                    <button key="cancel" className="btn btn-default" onClick={this.props.cancelHandler}>{t('ui.cancel')}</button>
+                    <button key="success" className="btn btn-primary" onClick={this.searchOrganization}>{t('ui.search')}</button>
                 </div>
             </div>
-        )
-   }
+        );
+    }
 });
 
 //http://stackoverflow.com/questions/25793918/creating-select-elements-in-react-js
 /** PROPS: onChange(), url */
 var CountrySelect = React.createClass({
-    propTypes: { url: React.PropTypes.string.isRequired },
-    getInitialState: function() { return { options: [], countries: [] } },
-    onChange: function(event) {this.props.onChange(event);},
-    componentDidMount: function() {
-        //var userCurrentLanguge = currentLanguage;
-        if(this.props.url){
-            // get country dc data
+    propTypes: {
+        url: React.PropTypes.string.isRequired
+    },
+    getInitialState: function() {
+        return { countries: [], country_uri: '' }
+    },
+    handleCountryChange: function(event) {
+        var country_uri = event.target.value;
+        var country = event.target.selectedOptions[0].label;
+        this.setState({ country_uri : country_uri });
+        this.props.onCountryChange(country, country_uri);
+    },
+    componentWillMount: function() {
+        if (this.props.url) {
+            // get countries from DC
             $.ajax({
                 url: this.props.url,
                 type: 'get',
                 dataType: 'json',
                 data: {q:' '},
                 success: function (data) {
-                    var areas = data.areas;
+                    var areas = data.areas.filter(function(n){return n !== null; });
                     var options = [{ value: '', label: '' }];
-                    areas = areas.filter(function(n){return n !== null; });
                     for (var i = 0; i < areas.length; i++) {
-                       options.push({ value: areas[i].uri, label: areas[i].name })
+                        options.push({ value: areas[i].uri, label: areas[i].name })
                     }
-                    this.state.countries = options;
-                    this.successHandler(options); //set the list of countries
+                    this.setState({ countries : options });
+                    this.getUserCountry();
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(status, err.toString());
                 }.bind(this)
             });
-        }/*else{ // for TEST only
-            var options = [
-                   { value: '',       label: ''       },
-                   { value: 'France', label: 'France' },
-                   { value: 'Italy',  label: 'Italy'  },
-                   { value: 'Spain',  label: 'Spain'  },
-                   { value: 'Turkey', label: 'Turkey' }
-               ];
-            this.successHandler(options);
-        }*/
-    },
-    successHandler: function(data) {
-        // assuming data is an array of {name: "foo", value: "bar"}
-        for (var i = 0; i < data.length; i++) {
-            var option = data[i];
-            this.state.options.push( <option className="action-select-option" key={i} value={option.value}>{option.label}</option> );
         }
-        this.setState(this.state);
-        this.forceUpdate();
+    },
+    getUserCountry: function() {
+        $.ajax({
+            url: network_service + '/general-user-info',
+            type: 'get',
+            contentType: 'json',
+            success: function (data) {
+                // For now country is a free field, we gonna try to match it with countries loaded from the DC
+                // When profile is integrated with geodata from DC, migrate this part
+                this.setState({ country_uri: this.getValue(data.address.country) });
+                this.props.onCountryChange(data.address.country, this.getValue(data.address.country));
+            }.bind(this),
+            error: function (xhr, status, err) {
+                console.error(status, err.toString());
+            }.bind(this)
+        });
     },
     getValue: function(label) {
-       if (!label || label !== "") {
-          for (var i = 0; i < this.state.countries.length; i++) {
-             if (this.state.countries[i].label === label) {
-               return this.state.countries[i].value; break;
-             }
-          }
-       }
-       return null;
-    },
-
-    render: function() {
-        var label = this.props.defLabel;
-        if(label && (!this.props.value || this.props.value === "") ){
-           //This is to load the country_uri that couldn't be set |
-           this.props.value = (this.getValue(label)); // decodeURIComponent()
+        if (!label || label !== "") {
+            for (var i = 0; i < this.state.countries.length; i++) {
+                if (this.state.countries[i].label === label) {
+                    return this.state.countries[i].value;
+                }
+            }
         }
-        // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-base fonctuion decodeURIComponent()
-        return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange}
-                           value={this.props.value} disabled={this.props.disabled}>
-                    {this.state.options}
-                 </select>
+        return null;
+    },
+    render: function() {
+
+        var options = this.state.countries.map(function(country, index) {
+            return <option className="action-select-option" key={index} value={country.value}>{country.label}</option>;
+        });
+
+        // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-based function decodeURIComponent()
+        return (
+            <select className="btn btn-default dropdown-toggle" ref="country"
+                    value={this.state.country_uri} onChange={this.handleCountryChange} >
+                {options}
+            </select>
         );
     }
 });
