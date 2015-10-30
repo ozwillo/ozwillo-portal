@@ -26,69 +26,69 @@ import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 @Component
 public class InstanceACLStoreImpl implements InstanceACLStore {
 
-    private static Logger logger = LoggerFactory.getLogger(InstanceACLStoreImpl.class);
+	private static Logger logger = LoggerFactory.getLogger(InstanceACLStoreImpl.class);
 
-    @Autowired
-    private Kernel kernel;
+	@Autowired
+	private Kernel kernel;
 
-    @Value("${kernel.portal_endpoints.apps}")
-    private String endpoint;
+	@Value("${kernel.portal_endpoints.apps}")
+	private String endpoint;
 
-    @Override
-    public List<ACE> getACL(String instanceId) {
-        List<ACE> acl = Arrays.asList(kernel.getEntityOrNull(endpoint + "/acl/instance/{instanceId}",
-        		ACE[].class, user(), instanceId));
-        if (logger.isDebugEnabled()) {
-            logger.debug("ACL for instance {}", instanceId);
-            acl.stream().forEach(ace -> logger.debug("- {} - {}", ace.getUserId(), ace.getUserName()));
-        }
-        
-        return acl; // including !app_user app_admin
+	@Override
+	public List<ACE> getACL(String instanceId) {
+		List<ACE> acl = Arrays.asList(kernel.getEntityOrNull(endpoint + "/acl/instance/{instanceId}",
+				ACE[].class, user(), instanceId));
+		if (logger.isDebugEnabled()) {
+			logger.debug("ACL for instance {}", instanceId);
+			acl.stream().forEach(ace -> logger.debug("- {} - {}", ace.getUserId(), ace.getUserName()));
+		}
 
-    }
+		return acl; // including !app_user app_admin
 
-    @Override
-    public void saveACL(String instanceId, List<String> newUsers) {
-        List<ACE> existingACL = getACL(instanceId);
-        
-        // NB. ACLs that are app_admin !app_user are filtered out because NOT handled here
-        // (Kernel deduces them from app orga admins)
+	}
 
-        // delete the excess ACEs
-        existingACL.stream()
-                .filter(ace -> !newUsers.contains(ace.getUserId()))
-                .filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (and entry_uri null anyway so couldn't delete)
-                .forEach(ace -> {
-                    logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
-                    kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<Object>(ifmatch(ace.getEntryEtag())), Void.class, user());
-                });
+	@Override
+	public void saveACL(String instanceId, List<String> newUsers) {
+		List<ACE> existingACL = getACL(instanceId);
 
-        // add the new ACEs
-        Set<String> currentUsers = existingACL.stream()
-                .filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (else can't make an app_admin become app_user)
-                .map(ACE::getUserId).collect(Collectors.toSet());
+		// NB. ACLs that are app_admin !app_user are filtered out because NOT handled here
+		// (Kernel deduces them from app orga admins)
 
-        newUsers.stream()
-                .filter(userid -> !currentUsers.contains(userid)) // only on not existing users (NB. can be already app_admin)
-                .forEach(userid -> {
-                    logger.debug("Creating ACE for user {}", userid);
-                    kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<ACE>(ace(userid, instanceId)), ACE.class, user(), instanceId);
-                });
-        
-    }
+		// delete the excess ACEs
+		existingACL.stream()
+				.filter(ace -> !newUsers.contains(ace.getUserId()))
+				.filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (and entry_uri null anyway so couldn't delete)
+				.forEach(ace -> {
+					logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
+					kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<>(ifmatch(ace.getEntryEtag())), Void.class, user());
+				});
 
-    private HttpHeaders ifmatch(String etag) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("If-Match", etag);
-        return headers;
-    }
+		// add the new ACEs
+		Set<String> currentUsers = existingACL.stream()
+				.filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (else can't make an app_admin become app_user)
+				.map(ACE::getUserId).collect(Collectors.toSet());
 
-    private ACE ace(String userId, String instanceId) {
-        ACE ace = new ACE();
-        ace.setUserId(userId);
-        ace.setInstanceId(instanceId);
-        ace.setAppUser(true); // #157 (but overwritten by Kernel anyway)
-        //ace.setAppAdmin(appAdmin); // #157 LATER when there'll be app admins managed by orga admins (for now the same)
-        return ace;
-    }
+		newUsers.stream()
+				.filter(userid -> !currentUsers.contains(userid)) // only on not existing users (NB. can be already app_admin)
+				.forEach(userid -> {
+					logger.debug("Creating ACE for user {}", userid);
+					kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<>(ace(userid, instanceId)), ACE.class, user(), instanceId);
+				});
+
+	}
+
+	private HttpHeaders ifmatch(String etag) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("If-Match", etag);
+		return headers;
+	}
+
+	private ACE ace(String userId, String instanceId) {
+		ACE ace = new ACE();
+		ace.setUserId(userId);
+		ace.setInstanceId(instanceId);
+		ace.setAppUser(true); // #157 (but overwritten by Kernel anyway)
+		//ace.setAppAdmin(appAdmin); // #157 LATER when there'll be app admins managed by orga admins (for now the same)
+		return ace;
+	}
 }

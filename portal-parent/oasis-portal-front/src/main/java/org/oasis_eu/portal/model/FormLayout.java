@@ -18,7 +18,7 @@ public class FormLayout implements Comparable<FormLayout>, Serializable {
 	
 	private FormLayoutMode mode = FormLayoutMode.VIEW;
 	
-	private Map<String, FormWidget> widgets = new HashMap<String, FormWidget>();
+	private Map<String, FormWidget> widgets = new HashMap<>();
 
 	private final String id;
 	
@@ -43,23 +43,23 @@ public class FormLayout implements Comparable<FormLayout>, Serializable {
 		this.actionUrl = actionUrl;
 		this.formClass = formClass;
 	}
-    
+
 	public String getId() {
 		return id;
 	}
 	
-    public String getLabel() {
+	public String getLabel() {
 		return label;
 	}
-    
-    public int getOrder() {
+
+	public int getOrder() {
 		return order;
 	}
-    
-    public void setOrder(int order) {
+
+	public void setOrder(int order) {
 		this.order = order;
 	}
-    
+
 	public FormLayoutMode getMode() {
 		return mode;
 	}

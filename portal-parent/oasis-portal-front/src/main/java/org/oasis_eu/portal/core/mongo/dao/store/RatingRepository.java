@@ -12,6 +12,6 @@ import java.util.List;
  */
 public interface RatingRepository extends MongoRepository<Rating, String> {
 
-    public List<Rating> findByAppTypeAndAppIdAndUserId(CatalogEntryType appType, String appId, String userId);
+	public List<Rating> findByAppTypeAndAppIdAndUserId(CatalogEntryType appType, String appId, String userId);
 
 }

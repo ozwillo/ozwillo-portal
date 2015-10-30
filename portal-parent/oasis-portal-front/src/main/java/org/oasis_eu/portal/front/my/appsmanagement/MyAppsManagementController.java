@@ -30,36 +30,36 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 @RequestMapping("/my/appsmanagement")
 public class MyAppsManagementController extends PortalController {
 
-    @Autowired
-    private MyNavigationService navigationService;
+	@Autowired
+	private MyNavigationService navigationService;
 
-    @Autowired
-    private MessageSource messageSource;
+	@Autowired
+	private MessageSource messageSource;
 
 
-    @ModelAttribute("navigation")
-    public List<MyNavigation> getNavigation() {
-        return navigationService.getNavigation("appsmanagement");
-    }
+	@ModelAttribute("navigation")
+	public List<MyNavigation> getNavigation() {
+		return navigationService.getNavigation("appsmanagement");
+	}
 
-    @ModelAttribute("i18n")
-    public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
-        Locale locale = RequestContextUtils.getLocale(request);
+	@ModelAttribute("i18n")
+	public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
+		Locale locale = RequestContextUtils.getLocale(request);
 
-        Map<String, String> i18n = new HashMap<>();
-        i18n.putAll(i18nMessages.getI18n_myApps(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+		Map<String, String> i18n = new HashMap<>();
+		i18n.putAll(i18nMessages.getI18n_myApps(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
 
-        return i18n;
-    }
+		return i18n;
+	}
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String show() {
+	@RequestMapping(method = RequestMethod.GET)
+	public String show() {
 
-        if (requiresLogout()) {
-            return "redirect:/logout";
-        }
-        return "appmanagement/myapps";
-    }
+		if (requiresLogout()) {
+			return "redirect:/logout";
+		}
+		return "appmanagement/myapps";
+	}
 
 }

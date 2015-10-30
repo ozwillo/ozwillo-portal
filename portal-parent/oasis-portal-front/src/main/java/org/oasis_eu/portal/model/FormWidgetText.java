@@ -12,6 +12,7 @@ public class FormWidgetText extends FormWidget implements Serializable {
 		super(id, label);
 	}
 	
+	@Override
 	public String getType() {
 		return "text";
 	}

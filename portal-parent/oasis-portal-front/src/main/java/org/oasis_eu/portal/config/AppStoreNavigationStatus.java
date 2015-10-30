@@ -6,26 +6,26 @@ package org.oasis_eu.portal.config;
  */
 public class AppStoreNavigationStatus {
 
-    String appId = null;
-    String appType = null;
+	String appId = null;
+	String appType = null;
 
-    public String getAppId() {
-        return appId;
-    }
+	public String getAppId() {
+		return appId;
+	}
 
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
+	public void setAppId(String appId) {
+		this.appId = appId;
+	}
 
-    public String getAppType() {
-        return appType;
-    }
+	public String getAppType() {
+		return appType;
+	}
 
-    public void setAppType(String appType) {
-        this.appType = appType;
-    }
+	public void setAppType(String appType) {
+		this.appType = appType;
+	}
 
-    public boolean hasApp() {
-        return appId != null;
-    }
+	public boolean hasApp() {
+		return appId != null;
+	}
 }

@@ -23,219 +23,219 @@ import javax.validation.constraints.NotNull;
  * Date: 7/29/14
  */
 public class ApplicationInstance {
-    private static final Logger logger = LoggerFactory.getLogger(ApplicationInstance.class);
+	private static final Logger logger = LoggerFactory.getLogger(ApplicationInstance.class);
 
-    @JsonProperty("application_id")
-    String applicationId;
-    @JsonProperty("id")
-    String instanceId;
-    InstantiationStatus status;
-    /** optional */
-    @JsonProperty("status_changed")
-    Instant statusChanged;
-    /** optional */
-    @JsonProperty("status_change_requester_id")
-    String statusChangeRequesterId;
+	@JsonProperty("application_id")
+	String applicationId;
+	@JsonProperty("id")
+	String instanceId;
+	InstantiationStatus status;
+	/** optional */
+	@JsonProperty("status_changed")
+	Instant statusChanged;
+	/** optional */
+	@JsonProperty("status_change_requester_id")
+	String statusChangeRequesterId;
 
-    /** optional ; if Personal app must be the user ; ID of the user who created the instance. */
-    @JsonProperty("instantiator_id")
-    String instantiatorId;
+	/** optional ; if Personal app must be the user ; ID of the user who created the instance. */
+	@JsonProperty("instantiator_id")
+	String instantiatorId;
 
-    @JsonProperty("needed_scopes")
-    List<ScopeNeeded> neededScopes;
+	@JsonProperty("needed_scopes")
+	List<ScopeNeeded> neededScopes;
 
-    // Kernel Common Properties
-    @JsonProperty("name")
-    @NotNull @NotEmpty
-    String defaultName;
+	// Kernel Common Properties
+	@JsonProperty("name")
+	@NotNull @NotEmpty
+	String defaultName;
 
-    @JsonProperty("description")
-    @NotNull @NotEmpty
-    String defaultDescription;
+	@JsonProperty("description")
+	@NotNull @NotEmpty
+	String defaultDescription;
 
-    @JsonProperty("icon")
-    @NotNull @NotEmpty
-    String defaultIcon;
+	@JsonProperty("icon")
+	@NotNull @NotEmpty
+	String defaultIcon;
 
-    private Map<String, String> localizedNames = new HashMap<>();
-    private Map<String, String> localizedDescriptions = new HashMap<>();
-    private Map<String, String> localizedIcons = new HashMap<>();
+	private Map<String, String> localizedNames = new HashMap<>();
+	private Map<String, String> localizedDescriptions = new HashMap<>();
+	private Map<String, String> localizedIcons = new HashMap<>();
 
-    @JsonProperty("provider_id")
-    String providerId;
+	@JsonProperty("provider_id")
+	String providerId;
 
 
-    public String getApplicationId() {
-        return applicationId;
-    }
+	public String getApplicationId() {
+		return applicationId;
+	}
 
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
+	public void setApplicationId(String applicationId) {
+		this.applicationId = applicationId;
+	}
 
-    public String getInstanceId() {
-        return instanceId;
-    }
+	public String getInstanceId() {
+		return instanceId;
+	}
 
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
-    }
+	public void setInstanceId(String instanceId) {
+		this.instanceId = instanceId;
+	}
 
-    public InstantiationStatus getStatus() {
-        return status;
-    }
+	public InstantiationStatus getStatus() {
+		return status;
+	}
 
-    public void setStatus(InstantiationStatus status) {
-        this.status = status;
-    }
-    
-    public Instant getStatusChanged() {
-        return statusChanged;
-    }
+	public void setStatus(InstantiationStatus status) {
+		this.status = status;
+	}
 
-    public void setStatusChanged(Instant statusChanged) {
-        this.statusChanged = statusChanged;
-    }
+	public Instant getStatusChanged() {
+		return statusChanged;
+	}
 
-    public String getStatusChangeRequesterId() {
-        return statusChangeRequesterId;
-    }
+	public void setStatusChanged(Instant statusChanged) {
+		this.statusChanged = statusChanged;
+	}
 
-    public void setStatusChangeRequesterId(String statusChangeRequesterId) {
-        this.statusChangeRequesterId = statusChangeRequesterId;
-    }
+	public String getStatusChangeRequesterId() {
+		return statusChangeRequesterId;
+	}
 
-    public String getName(Locale locale) {
-        if (localizedNames.containsKey(locale.getLanguage())) {
-            return localizedNames.get(locale.getLanguage());
-        } else {
-            return defaultName;
-        }
-    }
+	public void setStatusChangeRequesterId(String statusChangeRequesterId) {
+		this.statusChangeRequesterId = statusChangeRequesterId;
+	}
 
-    public String getDescription(Locale locale) {
-        if (localizedDescriptions.containsKey(locale.getLanguage())) {
-            return localizedDescriptions.get(locale.getLanguage());
-        } else {
-            return defaultDescription != null ? defaultDescription : "";
-        }
-    }
+	public String getName(Locale locale) {
+		if (localizedNames.containsKey(locale.getLanguage())) {
+			return localizedNames.get(locale.getLanguage());
+		} else {
+			return defaultName;
+		}
+	}
 
-    public String getIcon(Locale locale) {
-        if (localizedIcons.containsKey(locale.getLanguage())) {
-            return localizedIcons.get(locale.getLanguage());
-        } else {
-            return defaultIcon;
-        }
-    }
+	public String getDescription(Locale locale) {
+		if (localizedDescriptions.containsKey(locale.getLanguage())) {
+			return localizedDescriptions.get(locale.getLanguage());
+		} else {
+			return defaultDescription != null ? defaultDescription : "";
+		}
+	}
 
-    public String getDefaultName() {
-        return defaultName;
-    }
+	public String getIcon(Locale locale) {
+		if (localizedIcons.containsKey(locale.getLanguage())) {
+			return localizedIcons.get(locale.getLanguage());
+		} else {
+			return defaultIcon;
+		}
+	}
 
-    public void setDefaultName(String defaultName) {
-        this.defaultName = defaultName;
-    }
+	public String getDefaultName() {
+		return defaultName;
+	}
 
-    public String getDefaultDescription() {
-        return defaultDescription;
-    }
+	public void setDefaultName(String defaultName) {
+		this.defaultName = defaultName;
+	}
 
-    public void setDefaultDescription(String defaultDescription) {
-        this.defaultDescription = defaultDescription;
-    }
+	public String getDefaultDescription() {
+		return defaultDescription;
+	}
 
-    public String getDefaultIcon() {
-        return defaultIcon;
-    }
+	public void setDefaultDescription(String defaultDescription) {
+		this.defaultDescription = defaultDescription;
+	}
 
-    public void setDefaultIcon(String defaultIcon) {
-        this.defaultIcon = defaultIcon;
-    }
+	public String getDefaultIcon() {
+		return defaultIcon;
+	}
 
-    @JsonIgnore
-    public void setLocalizedNames(Map<String, String> localizedNames) {
-        this.localizedNames = localizedNames;
-    }
+	public void setDefaultIcon(String defaultIcon) {
+		this.defaultIcon = defaultIcon;
+	}
 
-    @JsonIgnore
-    public void setLocalizedDescriptions(Map<String, String> localizedDescriptions) {
-        this.localizedDescriptions = localizedDescriptions;
-    }
+	@JsonIgnore
+	public void setLocalizedNames(Map<String, String> localizedNames) {
+		this.localizedNames = localizedNames;
+	}
 
-    @JsonIgnore
-    public void setLocalizedIcons(Map<String, String> localizedIcons) {
-        this.localizedIcons = localizedIcons;
-    }
+	@JsonIgnore
+	public void setLocalizedDescriptions(Map<String, String> localizedDescriptions) {
+		this.localizedDescriptions = localizedDescriptions;
+	}
 
-    public String getProviderId() {
-        return providerId;
-    }
+	@JsonIgnore
+	public void setLocalizedIcons(Map<String, String> localizedIcons) {
+		this.localizedIcons = localizedIcons;
+	}
 
-    public void setProviderId(String providerId) {
-        this.providerId = providerId;
-    }
+	public String getProviderId() {
+		return providerId;
+	}
 
-    public String getInstantiatorId() {
-        return instantiatorId;
-    }
+	public void setProviderId(String providerId) {
+		this.providerId = providerId;
+	}
 
-    public void setInstantiatorId(String instantiatorId) {
-        this.instantiatorId = instantiatorId;
-    }
+	public String getInstantiatorId() {
+		return instantiatorId;
+	}
 
-    public List<ScopeNeeded> getNeededScopes() {
-        return neededScopes;
-    }
+	public void setInstantiatorId(String instantiatorId) {
+		this.instantiatorId = instantiatorId;
+	}
 
-    public void setNeededScopes(List<ScopeNeeded> neededScopes) {
-        this.neededScopes = neededScopes;
-    }
+	public List<ScopeNeeded> getNeededScopes() {
+		return neededScopes;
+	}
 
-    @JsonAnyGetter
-    public Map<String, String> anyGetter() {
-        Map<String, String> result = new HashMap<>();
+	public void setNeededScopes(List<ScopeNeeded> neededScopes) {
+		this.neededScopes = neededScopes;
+	}
 
-        localizedNames.entrySet().forEach(e -> result.put("name#" + e.getKey(), e.getValue()));
-        localizedDescriptions.entrySet().forEach(e -> result.put("description#" + e.getKey(), e.getValue()));
-        localizedIcons.entrySet().forEach(e -> result.put("icon#" + e.getKey(), e.getValue()));
+	@JsonAnyGetter
+	public Map<String, String> anyGetter() {
+		Map<String, String> result = new HashMap<>();
 
-        return result;
-    }
+		localizedNames.entrySet().forEach(e -> result.put("name#" + e.getKey(), e.getValue()));
+		localizedDescriptions.entrySet().forEach(e -> result.put("description#" + e.getKey(), e.getValue()));
+		localizedIcons.entrySet().forEach(e -> result.put("icon#" + e.getKey(), e.getValue()));
 
-    @JsonAnySetter
-    public void anySetter(String key, String value) {
-        if (key.startsWith("name#")) {
-            localizedNames.put(key.substring("name#".length()), value);
-        } else if (key.startsWith("description#")) {
-            localizedDescriptions.put(key.substring("description#".length()), value);
-        } else if (key.startsWith("icon#")) {
-            localizedIcons.put(key.substring("icon#".length()), value);
-        } else {
-            logger.debug("Discarding unknown property {}", key);
-        }
-    }
+		return result;
+	}
 
-    public static enum InstantiationStatus {
-        PENDING, RUNNING, STOPPED; // STOPPED means trashed (replaces deletion)
-    }
+	@JsonAnySetter
+	public void anySetter(String key, String value) {
+		if (key.startsWith("name#")) {
+			localizedNames.put(key.substring("name#".length()), value);
+		} else if (key.startsWith("description#")) {
+			localizedDescriptions.put(key.substring("description#".length()), value);
+		} else if (key.startsWith("icon#")) {
+			localizedIcons.put(key.substring("icon#".length()), value);
+		} else {
+			logger.debug("Discarding unknown property {}", key);
+		}
+	}
 
-    @Override
-    public String toString() {
-        return "ApplicationInstance{" +
-                "applicationId='" + applicationId + '\'' +
-                ", instanceId='" + instanceId + '\'' +
-                ", status=" + status +
-                ", statusChanged=" + statusChanged +
-                ", statusChangeRequesterId=" + statusChangeRequesterId +
-                ", defaultName='" + defaultName + '\'' +
-                ", defaultDescription='" + defaultDescription + '\'' +
-                ", defaultIcon='" + defaultIcon + '\'' +
-                ", neededScopes=" + neededScopes +
-                ", localizedNames=" + localizedNames +
-                ", localizedDescriptions=" + localizedDescriptions +
-                ", localidedIcons=" + localizedIcons +
-                ", providerId='" + providerId + '\'' +
-                '}';
-    }
+	public static enum InstantiationStatus {
+		PENDING, RUNNING, STOPPED; // STOPPED means trashed (replaces deletion)
+	}
+
+	@Override
+	public String toString() {
+		return "ApplicationInstance{" +
+				"applicationId='" + applicationId + '\'' +
+				", instanceId='" + instanceId + '\'' +
+				", status=" + status +
+				", statusChanged=" + statusChanged +
+				", statusChangeRequesterId=" + statusChangeRequesterId +
+				", defaultName='" + defaultName + '\'' +
+				", defaultDescription='" + defaultDescription + '\'' +
+				", defaultIcon='" + defaultIcon + '\'' +
+				", neededScopes=" + neededScopes +
+				", localizedNames=" + localizedNames +
+				", localizedDescriptions=" + localizedDescriptions +
+				", localidedIcons=" + localizedIcons +
+				", providerId='" + providerId + '\'' +
+				'}';
+	}
 }

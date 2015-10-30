@@ -18,54 +18,54 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
  */
 @Document(collection = "sitemapheader")
 public class SiteMapMenuSet implements Serializable {
-    private static final long serialVersionUID = -6572421288637503651L;
+	private static final long serialVersionUID = -6572421288637503651L;
 
-    @Id
-    @JsonIgnore
-    private String id;
+	@Id
+	@JsonIgnore
+	private String id;
 
-    @Indexed(unique = true)
-    @JacksonXmlProperty(localName = "locale")
-    private String language;
+	@Indexed(unique = true)
+	@JacksonXmlProperty(localName = "locale")
+	private String language;
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "item")
-    private List<SiteMapMenuItem> items = new ArrayList<>();
+	@JacksonXmlElementWrapper(useWrapping = false)
+	@JacksonXmlProperty(localName = "item")
+	private List<SiteMapMenuItem> items = new ArrayList<>();
 
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "submenu")
-    private List<SiteMapSubMenuEntry> submenus = new ArrayList<>();
+	@JacksonXmlElementWrapper(useWrapping = false)
+	@JacksonXmlProperty(localName = "submenu")
+	private List<SiteMapSubMenuEntry> submenus = new ArrayList<>();
 
 
-    public String getId() {
-        return id;
-    }
+	public String getId() {
+		return id;
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
+	public void setId(String id) {
+		this.id = id;
+	}
 
-    public String getLanguage() {
-        return language;
-    }
+	public String getLanguage() {
+		return language;
+	}
 
-    public void setLanguage(String language) {
-        this.language = language;
-    }
+	public void setLanguage(String language) {
+		this.language = language;
+	}
 
-    public List<SiteMapMenuItem> getItems() {
-        return items;
-    }
+	public List<SiteMapMenuItem> getItems() {
+		return items;
+	}
 
-    public void setItems(List<SiteMapMenuItem> items) {
-        this.items = items;
-    }
+	public void setItems(List<SiteMapMenuItem> items) {
+		this.items = items;
+	}
 
-    public List<SiteMapSubMenuEntry> getSubmenus() {
-        return submenus;
-    }
+	public List<SiteMapSubMenuEntry> getSubmenus() {
+		return submenus;
+	}
 
-    public void setSubmenus(List<SiteMapSubMenuEntry> submenus) {
-        this.submenus = submenus;
-    }
+	public void setSubmenus(List<SiteMapSubMenuEntry> submenus) {
+		this.submenus = submenus;
+	}
 }

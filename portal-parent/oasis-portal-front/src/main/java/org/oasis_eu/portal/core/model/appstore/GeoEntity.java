@@ -12,41 +12,41 @@ import java.util.Set;
  */
 public class GeoEntity extends GenericEntity {
 
-    private Set<String> keywords = new HashSet<>();
+	private Set<String> keywords = new HashSet<>();
 
-    private Set<String> isContainedIn = new HashSet<>();
+	private Set<String> isContainedIn = new HashSet<>();
 
-    public Set<String> getKeywords() {
-        return keywords;
-    }
+	public Set<String> getKeywords() {
+		return keywords;
+	}
 
-    public void setKeywords(Set<String> keywords) {
-        this.keywords = keywords;
-    }
+	public void setKeywords(Set<String> keywords) {
+		this.keywords = keywords;
+	}
 
-    public Set<String> getIsContainedIn() {
-        return isContainedIn;
-    }
+	public Set<String> getIsContainedIn() {
+		return isContainedIn;
+	}
 
-    public void setIsContainedIn(Set<String> isContainedIn) {
-        this.isContainedIn = isContainedIn;
-    }
+	public void setIsContainedIn(Set<String> isContainedIn) {
+		this.isContainedIn = isContainedIn;
+	}
 
-    public void addKeywords(String... keywordsToAdd) {
-        for (String s : keywordsToAdd) {
-            keywords.add(s);
-        }
-    }
+	public void addKeywords(String... keywordsToAdd) {
+		for (String s : keywordsToAdd) {
+			keywords.add(s);
+		}
+	}
 
-    public void addContainingEntities(String... containers) {
-        for (String c : containers) {
-            this.isContainedIn.add(c);
-        }
-    }
+	public void addContainingEntities(String... containers) {
+		for (String c : containers) {
+			this.isContainedIn.add(c);
+		}
+	}
 
-    public void addContainingEntities(GeoEntity... entities) {
-        for (GeoEntity e : entities) {
-            this.isContainedIn.add(e.getId());
-        }
-    }
+	public void addContainingEntities(GeoEntity... entities) {
+		for (GeoEntity e : entities) {
+			this.isContainedIn.add(e.getId());
+		}
+	}
 }

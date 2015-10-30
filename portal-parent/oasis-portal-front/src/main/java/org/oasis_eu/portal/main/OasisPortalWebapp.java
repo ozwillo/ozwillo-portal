@@ -8,8 +8,8 @@ import org.springframework.boot.context.web.SpringBootServletInitializer;
  * Date: 5/19/14
  */
 public class OasisPortalWebapp extends SpringBootServletInitializer {
-    @Override
-    protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
-        return application.sources(OasisPortal.class);
-    }
+	@Override
+	protected SpringApplicationBuilder configure(SpringApplicationBuilder application) {
+		return application.sources(OasisPortal.class);
+	}
 }

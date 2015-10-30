@@ -13,24 +13,24 @@ import java.util.List;
 @Document
 public class Dashboard {
 
-    @Id
-    private String userId;
+	@Id
+	private String userId;
 
-    private List<UserContext> contexts = new ArrayList<>();
+	private List<UserContext> contexts = new ArrayList<>();
 
-    public String getUserId() {
-        return userId;
-    }
+	public String getUserId() {
+		return userId;
+	}
 
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
+	public void setUserId(String userId) {
+		this.userId = userId;
+	}
 
-    public List<UserContext> getContexts() {
-        return contexts;
-    }
+	public List<UserContext> getContexts() {
+		return contexts;
+	}
 
-    public void setContexts(List<UserContext> contexts) {
-        this.contexts = contexts;
-    }
+	public void setContexts(List<UserContext> contexts) {
+		this.contexts = contexts;
+	}
 }

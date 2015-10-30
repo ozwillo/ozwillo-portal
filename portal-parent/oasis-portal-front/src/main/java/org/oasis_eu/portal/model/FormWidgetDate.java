@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.model;
 
 
-import java.awt.*;
 import java.io.Serializable;
 
 public class FormWidgetDate extends FormWidget implements Serializable {
@@ -12,6 +11,7 @@ public class FormWidgetDate extends FormWidget implements Serializable {
 		super(id, label);
 	}
 	
+	@Override
 	public String getType() {
 		return "date";
 	}

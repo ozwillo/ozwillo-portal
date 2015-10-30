@@ -31,23 +31,23 @@ import static org.junit.Assert.assertNotEquals;
 @IntegrationTest
 public class GeographicalAreaReplicationTest {
 
-    @Autowired
-    private GeographicalAreaCache cache;
+	@Autowired
+	private GeographicalAreaCache cache;
 
-    @Autowired
-    private MongoTemplate template;
+	@Autowired
+	private MongoTemplate template;
 
-    @Value("${application.geoarea.replication_test:false}")
-    private boolean testReplication = false;
+	@Value("${application.geoarea.replication_test:false}")
+	private boolean testReplication = false;
 
-    @Test
-    public void testReplicate() throws Exception {
-        if(!testReplication) return; // skip replication testing since it is VERY long
+	@Test
+	public void testReplicate() throws Exception {
+		if(!testReplication) return; // skip replication testing since it is VERY long
 
-        template.remove(new Query(), GeographicalArea.class);
+		template.remove(new Query(), GeographicalArea.class);
 
-        cache.replicate();
+		cache.replicate();
 
-        assertNotEquals(template.find(new Query(), GeographicalArea.class).size(), 0);
-    }
+		assertNotEquals(template.find(new Query(), GeographicalArea.class).size(), 0);
+	}
 }

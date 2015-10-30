@@ -30,76 +30,76 @@ import static org.mockito.Mockito.when;
 @SpringApplicationConfiguration(classes = {OasisPortal.class, MockServletContext.class})
 public class RatingServiceTest {
 
-    static Logger logger = LoggerFactory.getLogger(RatingServiceTest.class);
+	static Logger logger = LoggerFactory.getLogger(RatingServiceTest.class);
 
-    @Autowired
-    private RatingRepository repository;
+	@Autowired
+	private RatingRepository repository;
 
-    @Autowired
-    private RatingService ratingService;
+	@Autowired
+	private RatingService ratingService;
 
-    @Before
-    public void setUp() {
-        logger.warn("Emptying database");
-        repository.deleteAll();
-    }
+	@Before
+	public void setUp() {
+		logger.warn("Emptying database");
+		repository.deleteAll();
+	}
 
 
-    private void setAuthentication(String userId) {
-        UserInfo dummy = new UserInfo();
-        dummy.setUserId(userId);
+	private void setAuthentication(String userId) {
+		UserInfo dummy = new UserInfo();
+		dummy.setUserId(userId);
 
-        OpenIdCAuthentication auth = mock(OpenIdCAuthentication.class);
-        when(auth.getUserInfo()).thenReturn(dummy);
+		OpenIdCAuthentication auth = mock(OpenIdCAuthentication.class);
+		when(auth.getUserInfo()).thenReturn(dummy);
 
-        SecurityContext sc = mock(SecurityContext.class);
-        when(sc.getAuthentication()).thenReturn(auth);
-        SecurityContextHolder.setContext(sc);
-    }
+		SecurityContext sc = mock(SecurityContext.class);
+		when(sc.getAuthentication()).thenReturn(auth);
+		SecurityContextHolder.setContext(sc);
+	}
 
-    @Test
-    public void testRating() {
-        setAuthentication("toto");
-        ratingService.rate("application", "citizenkin", 4);
-        assertEquals(4, ratingService.getRating("application", "citizenkin"), 0.01);
-    }
+	@Test
+	public void testRating() {
+		setAuthentication("toto");
+		ratingService.rate("application", "citizenkin", 4);
+		assertEquals(4, ratingService.getRating("application", "citizenkin"), 0.01);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testMultipleRating() {
-        setAuthentication("toto");
-        ratingService.rate("application", "citizenkin", 3);
-        ratingService.rate("application", "citizenkin", 4);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void testMultipleRating() {
+		setAuthentication("toto");
+		ratingService.rate("application", "citizenkin", 3);
+		ratingService.rate("application", "citizenkin", 4);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testRatingTooLow() {
-        setAuthentication("toto");
-        ratingService.rate("application", "citizenkin", -1);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void testRatingTooLow() {
+		setAuthentication("toto");
+		ratingService.rate("application", "citizenkin", -1);
+	}
 
-    @Test(expected = IllegalArgumentException.class)
-    public void testRatingTooHigh() {
-        setAuthentication("toto");
-        ratingService.rate("application", "citizenkin", 5);
-    }
+	@Test(expected = IllegalArgumentException.class)
+	public void testRatingTooHigh() {
+		setAuthentication("toto");
+		ratingService.rate("application", "citizenkin", 5);
+	}
 
-    @Test
-    public void testAverage() {
-        setAuthentication("toto");
-        ratingService.rate("application", "citizenkin", 4);
-        setAuthentication("tata");
-        ratingService.rate("application", "citizenkin", 4);
-        setAuthentication("titi");
-        ratingService.rate("application", "citizenkin", 3);
-        setAuthentication("tutu");
-        ratingService.rate("application", "citizenkin", 4);
+	@Test
+	public void testAverage() {
+		setAuthentication("toto");
+		ratingService.rate("application", "citizenkin", 4);
+		setAuthentication("tata");
+		ratingService.rate("application", "citizenkin", 4);
+		setAuthentication("titi");
+		ratingService.rate("application", "citizenkin", 3);
+		setAuthentication("tutu");
+		ratingService.rate("application", "citizenkin", 4);
 
-        // so now the average is at 3.75 - the service should respond with 4
-        assertEquals(4, ratingService.getRating("application", "citizenkin"), 0.01);
+		// so now the average is at 3.75 - the service should respond with 4
+		assertEquals(4, ratingService.getRating("application", "citizenkin"), 0.01);
 
-        // another rating at just 3.5 should bring the average to 3.7 - the service now rounds to 3.5
-        setAuthentication("tete");
-        ratingService.rate("application", "citizenkin", 3.5);
-        assertEquals(3.5, ratingService.getRating("application", "citizenkin"), 0.01);
-    }
+		// another rating at just 3.5 should bring the average to 3.7 - the service now rounds to 3.5
+		setAuthentication("tete");
+		ratingService.rate("application", "citizenkin", 3.5);
+		assertEquals(3.5, ratingService.getRating("application", "citizenkin"), 0.01);
+	}
 }

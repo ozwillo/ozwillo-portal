@@ -14,75 +14,75 @@ import java.util.List;
  */
 public class MyAppsInstance {
 
-    ApplicationInstance applicationInstance;
-    AppInfo application;
+	ApplicationInstance applicationInstance;
+	AppInfo application;
 
-    List<MyAppsService> myAppsServices;
-    String icon;
-    /** optional */
-    @JsonProperty("deletion_planned")
-    Instant deletionPlanned;
-    @JsonProperty("status_change_requester_label")
-    String statusChangeRequesterLabel;
+	List<MyAppsService> myAppsServices;
+	String icon;
+	/** optional */
+	@JsonProperty("deletion_planned")
+	Instant deletionPlanned;
+	@JsonProperty("status_change_requester_label")
+	String statusChangeRequesterLabel;
 
 
-    public List<MyAppsService> getServices() {
-        return myAppsServices;
-    }
+	public List<MyAppsService> getServices() {
+		return myAppsServices;
+	}
 
-    public MyAppsInstance setServices(List<MyAppsService> myAppsServices) {
-        this.myAppsServices = myAppsServices;
-        return this;
-    }
+	public MyAppsInstance setServices(List<MyAppsService> myAppsServices) {
+		this.myAppsServices = myAppsServices;
+		return this;
+	}
 
-    public ApplicationInstance getApplicationInstance() {
-        return applicationInstance;
-    }
+	public ApplicationInstance getApplicationInstance() {
+		return applicationInstance;
+	}
 
-    public MyAppsInstance setApplicationInstance(ApplicationInstance applicationInstance) {
-        this.applicationInstance = applicationInstance;
-        return this;
-    }
+	public MyAppsInstance setApplicationInstance(ApplicationInstance applicationInstance) {
+		this.applicationInstance = applicationInstance;
+		return this;
+	}
 
-    public AppInfo getApplication() {
-        return application;
-    }
+	public AppInfo getApplication() {
+		return application;
+	}
 
-    public MyAppsInstance setApplication(AppInfo application) {
-        this.application = application;
-        return this;
-    }
+	public MyAppsInstance setApplication(AppInfo application) {
+		this.application = application;
+		return this;
+	}
 
-    public String getName() {
-        return application != null ? application.getName() : "--";
-    }
+	public String getName() {
+		return application != null ? application.getName() : "--";
+	}
 
-    public void setIcon(String icon) {
-        this.icon = icon;
-    }
+	public void setIcon(String icon) {
+		this.icon = icon;
+	}
 
-    public String getIcon() {
-        return icon;
-    }
+	public String getIcon() {
+		return icon;
+	}
 
-    public String getId() {
-        return applicationInstance.getInstanceId();
-    }
+	public String getId() {
+		return applicationInstance.getInstanceId();
+	}
 
-    public Instant getDeletionPlanned() {
-        return deletionPlanned;
-    }
+	public Instant getDeletionPlanned() {
+		return deletionPlanned;
+	}
 
-    public void setDeletionPlanned(Instant deletionPlanned) {
-        this.deletionPlanned = deletionPlanned;
-    }
+	public void setDeletionPlanned(Instant deletionPlanned) {
+		this.deletionPlanned = deletionPlanned;
+	}
 
-    public String getStatusChangeRequesterLabel() {
-        return statusChangeRequesterLabel;
-    }
+	public String getStatusChangeRequesterLabel() {
+		return statusChangeRequesterLabel;
+	}
 
-    public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
-        this.statusChangeRequesterLabel = statusChangeRequesterLabel;
-    }
-    
+	public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
+		this.statusChangeRequesterLabel = statusChangeRequesterLabel;
+	}
+
 }

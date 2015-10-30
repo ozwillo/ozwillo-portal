@@ -15,14 +15,14 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 public class ContentController extends PortalController {
 
-    @RequestMapping("/{page}/{content}.html")
-    public String contentPage(@PathVariable String page, @PathVariable String content, Model model, HttpServletResponse response) {
-        model.addAttribute("content", content);
-        model.addAttribute("page", page);
+	@RequestMapping("/{page}/{content}.html")
+	public String contentPage(@PathVariable String page, @PathVariable String content, Model model, HttpServletResponse response) {
+		model.addAttribute("content", content);
+		model.addAttribute("page", page);
 
-        response.setHeader("Cache-Control", "public");
+		response.setHeader("Cache-Control", "public");
 
-        return "content";
-    }
+		return "content";
+	}
 
 }

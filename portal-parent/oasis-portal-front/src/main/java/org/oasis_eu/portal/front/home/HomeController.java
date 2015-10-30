@@ -18,16 +18,16 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 @Controller
 public class HomeController extends PortalController {
 
-    @Value("${web.home}")
-    private String webHome;
+	@Value("${web.home}")
+	private String webHome;
 
-    @RequestMapping("/")
-    public ResponseEntity<?> index(HttpServletRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", webHome + "/" + RequestContextUtils.getLocale(request).getLanguage());
+	@RequestMapping("/")
+	public ResponseEntity<?> index(HttpServletRequest request) {
+		HttpHeaders headers = new HttpHeaders();
+		headers.add("Location", webHome + "/" + RequestContextUtils.getLocale(request).getLanguage());
 
-        ResponseEntity<?> response = new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
-        return response;
-    }
-    
+		ResponseEntity<?> response = new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+		return response;
+	}
+
 }
