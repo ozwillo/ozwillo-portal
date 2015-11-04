@@ -49,6 +49,7 @@ public class MyAppsManagementController extends PortalController {
 		Map<String, String> i18n = new HashMap<>();
 		i18n.putAll(i18nMessages.getI18n_myApps(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
 
 		return i18n;
 	}

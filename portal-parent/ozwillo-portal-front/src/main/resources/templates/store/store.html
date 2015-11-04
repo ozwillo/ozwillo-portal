@@ -43,7 +43,6 @@
 <script data-th-inline="javascript" type="text/javascript">
     var network_service = /*[[@{/my/api/network}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
     var store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store';
-    var image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
     var store_root = /*[[@{|/${currentLanguage.locale.language}/store|}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/templates/store';
     var default_app = /*[[${defaultApp}]]*/ {type: "service", id: "ck"};
     var logged_in = /*[[${user != null}]]*/ false;
@@ -61,6 +60,9 @@
 <!--/*/<script type="text/javascript" data-th-src="@{/js/store/store-install-app.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/store/store.jsx.js" data-th-src="@{/js/store/store.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/store/store.min.js}" data-th-if="${!devmode}"></script>/*/-->
+
+<script type="text/jsx" src="../../public/js/contact.jsx.js" data-th-src="@{/js/contact.jsx.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/contact.min.js}" data-th-if="${!devmode}"></script>/*/-->
 
 </body>
 </html>

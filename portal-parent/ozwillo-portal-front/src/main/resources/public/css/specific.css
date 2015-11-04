@@ -147,6 +147,12 @@ label.required {
     text-transform: uppercase;
 }
 
+.footer-link div.modal {
+    text-transform: none;
+    font-weight: 300;
+    font-size: 14px;
+}
+
 .top {
     margin-top: 25px;
 }

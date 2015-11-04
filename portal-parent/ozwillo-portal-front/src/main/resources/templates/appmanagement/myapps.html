@@ -42,7 +42,6 @@
 <script data-th-inline="javascript" type="text/javascript">
     var apps_service = /*[[@{/my/api/myapps}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
     var store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
-    var image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
     moment.locale(currentLanguage);
 </script>
 
@@ -54,6 +53,9 @@
 <!--/*/<script type="text/javascript" data-th-src="@{/js/appmanagement/service-settings.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/appmanagement/myapps.jsx.js" data-th-src="@{/js/appmanagement/myapps.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/appmanagement/myapps.min.js}" data-th-if="${!devmode}"></script>/*/-->
+
+<script type="text/jsx" src="../../public/js/contact.jsx.js" data-th-src="@{/js/contact.jsx.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/contact.min.js}" data-th-if="${!devmode}"></script>/*/-->
 
 </body>
 </html>

@@ -77,6 +77,8 @@ public class MyProfileController extends PortalController {
         Map<String, String> i18n = new HashMap<>();
 
         i18n.putAll(i18nMessages.getI18n_profilekeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
 
         return i18n;
     }

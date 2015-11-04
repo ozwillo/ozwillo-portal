@@ -63,6 +63,7 @@ public class AppStoreController extends PortalController {
 		i18n.putAll(i18nMessages.getI18n_languagekeys(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18n_storekeys(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
 
