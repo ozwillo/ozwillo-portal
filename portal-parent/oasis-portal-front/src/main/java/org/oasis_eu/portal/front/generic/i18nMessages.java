@@ -35,7 +35,8 @@ public final class i18nMessages {
 			"tax_reg_num.en", "tax_reg_official_id.fr","tax_reg_official_id.tr","tax_reg_activity.bg","tax_reg_activity.es","tax_reg_activity.fr",
 			"tax_reg_activity.it","tax_reg_activity.tr","tax_reg_activity.en","jurisdiction",
 			"jurisdiction.placeholder","phone_number","web_site", "email","email.placeholder","change-icon",
-			"street_and_number","additional_address_field","po_box","city","zip", "cedex","country", "invalid_fields", "step");
+			"street_and_number","additional_address_field","po_box","city","zip", "cedex","country", "invalid_fields", "step",
+			"additional_information");
 
 	private static final List<String> storekeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid",
 			"languages-supported-by-applications", "look-for-an-application", "keywords","installed", "tos", "privacy", "by",
