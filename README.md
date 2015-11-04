@@ -122,7 +122,7 @@ sudo service apache2 restart
 ```
 # manage several version of node using https://github.com/creationix/nvm
 # see also http://www.mattpalmerlee.com/2013/03/23/installing-and-switching-between-multiple-versions-of-node-js-n-vs-nvm/
-wget -qO- https://raw.githubusercontent.com/creationix/nvm/v0.23.3/install.sh | bash
+wget -qO- https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
 source ~/.bashrc
 nvm install v0.10.36
 
