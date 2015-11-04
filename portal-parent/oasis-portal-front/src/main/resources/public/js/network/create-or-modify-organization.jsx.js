@@ -157,7 +157,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
 });
 
 var Button = React.createClass({
-    renderStepSwitcherButton() {
+    renderStepSwitcherButton: function () {
         if (this.props.activeTab === 1) {
             return (
                 <button key="next" className="control btn btn-primary-inverse" onClick={this.props.onNext}>
@@ -172,7 +172,7 @@ var Button = React.createClass({
             )
         }
     },
-    renderCreateButton() {
+    renderCreateButton: function () {
         if (this.props.activeTab === 2) {
             if (this.props.inModification) {
                 return (
