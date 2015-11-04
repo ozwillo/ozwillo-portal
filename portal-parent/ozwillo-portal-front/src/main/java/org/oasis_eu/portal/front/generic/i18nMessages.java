@@ -22,7 +22,11 @@ public final class i18nMessages {
 
 	private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
 			"loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
-			"something_went_wrong_title", "error_detail_title", "search", "next", "previous");
+			"something_went_wrong_title", "error_detail_title", "search", "next", "previous", "send");
+
+	private static final List<String> contactKeys = Arrays.asList("title",
+			"form.motive", "form.motive.information", "form.motive.problem", "form.motive.other",
+			"form.subject", "form.body", "form-sent", "technical-problem");
 
 	private static final List<String> searchOrganization = Arrays.asList("search-organization", "title","country","legal-name", "business-id.fr", "business-id.it",
 			"business-id.es", "business-id.bg", "business-id.tr", "business-id.en", "sector-type", "sector-type.PUBLIC_BODY","sector-type.COMPANY",
@@ -71,6 +75,8 @@ public final class i18nMessages {
 				k -> messageSource.getMessage("my.network." + k, new Object[]{}, locale))));
 		i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k,
 				k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
+		i18n.putAll(contactKeys.stream().collect(Collectors.toMap(k -> "contact." + k,
+				k -> messageSource.getMessage("contact." + k, new Object[]{}, locale))));
 		i18n.putAll(searchOrganization.stream().collect(Collectors.toMap(k -> "search.organization." + k,
 				k -> messageSource.getMessage("search.organization." + k, new Object[]{}, locale))));
 		i18n.putAll(searchContact.stream().collect(Collectors.toMap(k -> "search.contact." + k,
@@ -97,6 +103,16 @@ public final class i18nMessages {
 	public static Map<String, String> getI18n_generickeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
 		return (generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
 	}
+
+	public static Map<String, String> getI18nContactKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+		Map<String, String> i18n = new HashMap<>();
+		i18n.putAll(contactKeys.stream().collect(Collectors.toMap(k -> "contact." + k,
+				k -> messageSource.getMessage("contact." + k, new Object[]{}, locale))));
+		// because there is some magic done with keys prefixes, manually add footer.contact key
+		i18n.put("footer.contact", messageSource.getMessage("footer.contact", new Object[]{}, locale));
+		return i18n;
+	}
+
 	public static Map<String, String> getI18n_searchOrganization(Locale locale, MessageSource messageSource) throws JsonProcessingException {
 		Map<String, String> i18n = new HashMap<>();
 		i18n.putAll(searchOrganization.stream().collect(Collectors.toMap(k -> "search.organization." + k,
