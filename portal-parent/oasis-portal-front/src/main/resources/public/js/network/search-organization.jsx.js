@@ -259,10 +259,12 @@ var CountrySelect = React.createClass({
             type: 'get',
             contentType: 'json',
             success: function (data) {
-                // For now country is a free field, we gonna try to match it with countries loaded from the DC
-                // When profile is integrated with geodata from DC, migrate this part
-                this.setState({ country_uri: this.getValue(data.address.country) });
-                this.props.onCountryChange(data.address.country, this.getValue(data.address.country));
+                // Address is an optional field in user's profile
+                if (data.address) {
+                    // Try to match country with countries loaded from the DC
+                    this.setState({country_uri: this.getValue(data.address.country)});
+                    this.props.onCountryChange(data.address.country, this.getValue(data.address.country));
+                }
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
