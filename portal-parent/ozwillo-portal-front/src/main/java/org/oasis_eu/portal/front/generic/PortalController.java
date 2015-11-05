@@ -139,12 +139,16 @@ abstract public class PortalController {
 		for (SiteMapEntry entry : siteMap) {
 			current.add(entry);
 
-			if (current.size() == colLength) {
+			// There is an ugly thing happening here
+			// In order to add our own contact link in the footer, we leave an « empty » space in the second column
+			//     and our link to our contact form is then manually added in footer.html
+			// It should have to be dealt with when current CMS is replaced
+			if (current.size() == colLength || (result.size() == 1 && current.size() == colLength - 1)) {
 				result.add(current);
 				current = new ArrayList<>(colLength);
 			}
 		}
-		if (current.size() != 0) {
+		if (!current.isEmpty()) {
 			result.add(current);
 		}
 
