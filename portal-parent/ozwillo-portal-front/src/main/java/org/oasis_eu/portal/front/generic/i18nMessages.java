@@ -25,8 +25,8 @@ public final class i18nMessages {
 			"something_went_wrong_title", "error_detail_title", "search", "next", "previous", "send");
 
 	private static final List<String> contactKeys = Arrays.asList("title",
-			"form.motive", "form.motive.information", "form.motive.problem", "form.motive.other",
-			"form.subject", "form.body", "form-sent", "technical-problem");
+			"form.motive", "form.motive.question", "form.motive.feedback", "form.motive.application-problem",
+			"form.motive.other-problem", "form.motive.other", "form.subject", "form.body", "form-sent", "technical-problem");
 
 	private static final List<String> searchOrganization = Arrays.asList("search-organization", "title","country","legal-name", "business-id.fr", "business-id.it",
 			"business-id.es", "business-id.bg", "business-id.tr", "business-id.en", "sector-type", "sector-type.PUBLIC_BODY","sector-type.COMPANY",

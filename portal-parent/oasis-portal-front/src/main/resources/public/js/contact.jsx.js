@@ -100,16 +100,14 @@ var ContactForm = React.createClass({
                 }),
                 success: function (data) {
                     if (!data.error) {
-                        console.log(data);
-                        this.setState({sending: false, formSent: true, errors: []});
-
+                        this.setState({ sending: false, formSent: true, errors: [] });
                     } else {
-                        this.setState({sending: false, errors: ['technical']});
+                        this.setState({ sending: false, errors: ['technical'] });
                     }
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error(status, err.toString());
-                    this.setState({sending: false, errors: ['technical']});
+                    this.setState({ sending: false, errors: ['technical'] });
                 }.bind(this)
             });
         } else {
@@ -140,8 +138,10 @@ var ContactForm = React.createClass({
     },
     render: function () {
         var motiveOptions = [
-            { value: "Information", label: t('contact.form.motive.information')},
-            { value: "Problem", label: t('contact.form.motive.problem')},
+            { value: "Question", label: t('contact.form.motive.question')},
+            { value: "Feedback", label: t('contact.form.motive.feedback')},
+            { value: "Problem_With_Application", label: t('contact.form.motive.application-problem')},
+            { value: "Other_Problem", label: t('contact.form.motive.other-problem')},
             { value: "Other", label: t('contact.form.motive.other')}
         ];
         return (
