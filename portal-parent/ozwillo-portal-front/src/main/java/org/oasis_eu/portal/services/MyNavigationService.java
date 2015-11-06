@@ -1,11 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
-
-import javax.servlet.http.HttpServletRequest;
-
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuSet;
 import org.oasis_eu.portal.core.services.sitemap.SiteMapService;
@@ -13,6 +7,11 @@ import org.oasis_eu.portal.model.MyNavigation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
+
+import javax.servlet.http.HttpServletRequest;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User: schambon

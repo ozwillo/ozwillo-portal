@@ -4,52 +4,93 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>org.oasis_eu.portal</groupId>
-    <artifactId>oasis-portal-parent</artifactId>
+    <groupId>org.ozwillo</groupId>
+    <artifactId>ozwillo-portal-parent</artifactId>
     <packaging>pom</packaging>
     <version>1.32-SNAPSHOT</version>
 
+
+    <!-- =================== -->
+    <!-- Project information -->
+    <!-- =================== -->
+    <licenses>
+        <license>
+            <name>The GNU Affero General Public License, Version 3</name>
+            <url>http://www.gnu.org/licenses/agpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>Ozwillo Consortium</name>
+        <url>http://www.ozwillo.com/</url>
+    </organization>
+
+    <url>http://www.ozwillo.com/</url>
+    <scm>
+        <connection>scm:git:git://github.com/ozwillo/ozwillo-portal.git</connection>
+        <developerConnection>scm:git:git@github.com:ozwillo/ozwillo-portal.git</developerConnection>
+        <url>https://github.com/ozwillo/ozwillo-portal</url>
+    </scm>
+
+    <mailingLists>
+        <mailingList>
+            <name>Ozwillo Announcements</name>
+            <archive>https://groups.google.com/forum/?fromgroups#!forum/ozwillo-core</archive>
+            <post>ozwillo-core@googlegroups.com</post>
+        </mailingList>
+        <mailingList>
+            <name>Ozwillo Discussion</name>
+            <archive>https://groups.google.com/forum/?fromgroups#!forum/ozwillo-talk</archive>
+            <post>ozwillo-talk@googlegroups.com</post>
+        </mailingList>
+    </mailingLists>
+    <issueManagement>
+        <url>https://github.com/ozwillo/ozwillo-portal/issues</url>
+        <system>GitHub Issues</system>
+    </issueManagement>
+    <ciManagement>
+        <!-- Missing -->
+    </ciManagement>
+
     <properties>
-        <apache-httpcomponents.version>4.3.1</apache-httpcomponents.version>
+        <ehcache.version>2.8.3</ehcache.version>
+        <groovy.version>2.1.3</groovy.version>
+        <hazelcast.version>3.4</hazelcast.version>
         <jackson.version>2.3.1</jackson.version>
         <java.version>1.8</java.version>
         <joda.version>2.2</joda.version>
+        <logback.version>1.1.2</logback.version>
+        <markdown4j.version>2.2-cj-1.0</markdown4j.version>
+        <mongo-java-driver.version>2.13.1</mongo-java-driver.version>
         <slf4j.version>1.7.5</slf4j.version>
         <spring-boot.version>1.0.2.RELEASE</spring-boot.version>
-        <spring-framework.version>4.0.3.RELEASE</spring-framework.version>
-        <thymeleaf.version>2.1.3.RELEASE</thymeleaf.version>
-        <thymeleaf.conditionalcomment.version>2.1.1.RELEASE</thymeleaf.conditionalcomment.version>
-        <tika.version>1.5</tika.version>
         <springdata-mongodb.version>1.5.4.RELEASE</springdata-mongodb.version>
+        <spring-framework.version>4.0.3.RELEASE</spring-framework.version>
+        <thymeleaf.conditionalcomment.version>2.1.1.RELEASE</thymeleaf.conditionalcomment.version>
+        <thymeleaf.version>2.1.3.RELEASE</thymeleaf.version>
+        <tika.version>1.5</tika.version>
         <validation-api.version>1.1.0.Final</validation-api.version>
-        <ehcache.version>2.8.3</ehcache.version>
-        <groovy.version>2.1.3</groovy.version>
 
         <!-- webjars -->
         <bootstrap.version>3.1.1</bootstrap.version>
         <font-awesome.version>4.2.0</font-awesome.version>
-        <jquery.version>1.11.0</jquery.version>
-        <jquery-ui.version>1.10.4</jquery-ui.version>
-        <respond.version>1.4.2</respond.version>
         <html5shiv.version>3.7.0</html5shiv.version>
-        <typeaheadjs.version>0.10.4</typeaheadjs.version>
-        <react.version>0.12.2</react.version>
-        <showdown.version>0.3.1</showdown.version>
-        <select2.version>3.5.2</select2.version>
+        <jquery-ui.version>1.10.4</jquery-ui.version>
+        <jquery.version>1.11.0</jquery.version>
         <momentjs.version>2.9.0</momentjs.version>
+        <react.version>0.12.2</react.version>
+        <respond.version>1.4.2</respond.version>
+        <select2.version>3.5.2</select2.version>
+        <showdown.version>0.3.1</showdown.version>
+        <typeaheadjs.version>0.10.4</typeaheadjs.version>
 
         <!-- Hosting -->
-        <tomcat.version>8.0.8</tomcat.version>
         <memcached-session-manager.version>1.8.2</memcached-session-manager.version>
-
-        <logback.version>1.1.2</logback.version>
-        <markdown4j.version>2.2-cj-1.0</markdown4j.version>
-        <hazelcast.version>3.4</hazelcast.version>
-        <mongo-java-driver.version>2.13.1</mongo-java-driver.version>
+        <tomcat.version>8.0.8</tomcat.version>
     </properties>
 
     <modules>
-        <module>oasis-portal-front</module>
+        <module>ozwillo-portal-front</module>
     </modules>
 
 
@@ -77,13 +118,12 @@
                 <version>${mongo-java-driver.version}</version>
             </dependency>
 
-            <!-- OASIS Spring Integration -->
+            <!-- Ozwillo Spring Integration -->
             <dependency>
-                <groupId>org.oasis_eu.spring-integration</groupId>
-                <artifactId>oasis-spring-integration</artifactId>
+                <groupId>org.ozwillo</groupId>
+                <artifactId>ozwillo-java-spring-integration</artifactId>
                 <version>1.17</version>
             </dependency>
-
 
             <!-- Jackson -->
             <dependency>
@@ -116,7 +156,6 @@
                 <artifactId>jackson-dataformat-xml</artifactId>
                 <version>${jackson.version}</version>
             </dependency>
-
 
             <!-- Joda Time -->
             <dependency>
@@ -172,8 +211,7 @@
 		          <version>1.3.1</version>
 		      </dependency>
 
-
-            <!-- Tika -->
+            <!-- Apache -->
             <dependency>
                 <groupId>org.apache.tika</groupId>
                 <artifactId>tika-core</artifactId>
@@ -319,14 +357,8 @@
                 <!-- Note we use Tomcat 8! -->
                 <version>${memcached-session-manager.version}</version>
             </dependency>
-
         </dependencies>
     </dependencyManagement>
-
-
-    <scm>
-        <developerConnection>scm:git:git@github.com:pole-numerique/oasis-portal.git</developerConnection>
-    </scm>
 
     <build>
         <plugins>
