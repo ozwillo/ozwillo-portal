@@ -36,8 +36,8 @@ application:
     findOneTokenLimit: 100
     # use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year => 0 0/30 * * * (every 30 minutes) | 0 30 * * * (at the minute 30 of any hour)
     # examples http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
-    replication: 0 0 1 1/5 * ?    #Runs at 1am every 5 days every month, starting on the first day of the month
-    #replication: 0 0/5 * * * ?   #Runs every minute
+    #replication: 0 0 1 1/5 * ?    #Runs at 1am every 5 days every month, starting on the first day of the month
+    replication: 0/30 * * * * ?   #Runs every minute
   dcOrg:
     project: org
     orgModel: org:Organization_0
@@ -56,9 +56,9 @@ application:
 # notificationsEnabled = enable notifications
 # at some point we should use these as default values & instead look for the values in the database
 # (to allow live switching of feature flags)
-  devmode: false
+  devmode: true
   production: false
-  notificationsEnabled: true
+  notificationsEnabled: false
 
 web:
   home: https://www.ozwillo-dev.eu
@@ -98,7 +98,7 @@ kernel:
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: portal
-  client_secret: changeit
+  client_secret: 8eAhg4X6HXpSlS/HPsdj6HmcjcwjRYn3gwwv6Z7SaP4
   # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
   scopes_to_require: openid profile email address phone datacore
   maxUserMembershipsPerPage: 20
@@ -117,7 +117,7 @@ datacore:
   #url: https://data.ozwillo-dev.eu    # dev, doesn't work with current gen'd cert
   # alt_uri ??
   systemAdminUser:  #Get it using Node.js lib / with portal clientId
-    refreshToken: changeit
+    refreshToken: eyJpZCI6ImRjMmIyM2IwLTFlNGItNDI3OC1iZDc2LTNjYzhmY2Q1NmI0OC9LZXlzTmhURUtFaXZQeFYzQnNuLU9BIiwiaWF0IjoxNDQxMzc0NDM1ODk2LCJleHAiOjMwMTgxNzQ0MzU4OTZ9
     nonce: changeit      #Set it when getting the refreshToken
 
 
