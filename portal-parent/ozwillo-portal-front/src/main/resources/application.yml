@@ -98,7 +98,7 @@ kernel:
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: portal
-  client_secret: 8eAhg4X6HXpSlS/HPsdj6HmcjcwjRYn3gwwv6Z7SaP4
+  client_secret: changeit
   # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
   scopes_to_require: openid profile email address phone datacore
   maxUserMembershipsPerPage: 20
@@ -117,7 +117,7 @@ datacore:
   #url: https://data.ozwillo-dev.eu    # dev, doesn't work with current gen'd cert
   # alt_uri ??
   systemAdminUser:  #Get it using Node.js lib / with portal clientId
-    refreshToken: eyJpZCI6ImRjMmIyM2IwLTFlNGItNDI3OC1iZDc2LTNjYzhmY2Q1NmI0OC9LZXlzTmhURUtFaXZQeFYzQnNuLU9BIiwiaWF0IjoxNDQxMzc0NDM1ODk2LCJleHAiOjMwMTgxNzQ0MzU4OTZ9
+    refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 
 
