@@ -1,3 +1,5 @@
+var nextNotificationTimeoutId;
+
 $(document).ready(function () {
 
 
@@ -34,11 +36,11 @@ $(document).ready(function () {
                     } else {
                         element.hide();
                     }
-                    setTimeout(getNotificationsCount , 2000);
+                    nextNotificationTimeoutId = setTimeout(getNotificationsCount , 2000);
                 }
         );
 
-    }
+    };
 
     if ($(".my-oasis").attr("data")) {
         if(notificationsEnabled){
@@ -54,7 +56,8 @@ $(document).ready(function () {
 		var statusErrorMap = [401];
 		var xstat = xhr.status;
 		if ($.inArray(xstat, statusErrorMap) > (-1) ){
-			setTimeout(function () { location.reload(1); }, 200);
+            window.clearTimeout(nextNotificationTimeoutId);
+            nextNotificationTimeoutId = undefined;
 		}
 
 		if (xstat && exception && messages){
