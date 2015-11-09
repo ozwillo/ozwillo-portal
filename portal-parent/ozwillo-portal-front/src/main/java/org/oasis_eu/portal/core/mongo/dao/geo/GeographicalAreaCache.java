@@ -30,6 +30,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
@@ -145,6 +146,10 @@ public class GeographicalAreaCache {
 		}
 
 		LinkedHashMap<String, Pair> collected = findOneToken(country_uri, new String[]{modelType}, lang, queryTerms.toArray(new String[queryTerms.size()])) // note that findOneToken doesn't allow duplicate URIs in results
+		      // ordering by number of hits :
+		      // (not used anymore since findOneToken() is only called once now,
+		      // but still required to deduplicate exact token match & actual fulltext queries,
+		      // though that could be done in a simpler way)
 				.collect(LinkedHashMap<String, Pair>::new,
 						(set, area) -> {
 							if (set.containsKey(area.getUri())) {
@@ -183,48 +188,27 @@ public class GeographicalAreaCache {
 	 * @return Stream GeographicalArea
 	 */
 	public Stream<GeographicalArea> findOneToken(String countryUri, String[] modelTypes, String lang, String[] nameTokens) {
-		// we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
-		// sort spec means we want older results first - so that incoming replicates are discarded as long as
-		// there is an online entry
-		Criteria criteria = where("lang").is(lang);
-
-		if (countryUri != null && !countryUri.trim().isEmpty()){
-			criteria.and("country").is(countryUri); //filter by country
-		}
-
-		List<Criteria> andCriteria = new ArrayList<>();
-		if (modelTypes != null && modelTypes.length != 0){
-			for(String modelType : modelTypes){
-				if (modelType != null && !modelType.trim().isEmpty()){
-					andCriteria.add(where("modelType").in(modelType) );
-				}
-			}
-		}
-
-		if (nameTokens != null ){
-			for(String nToken : nameTokens){
-				if (nToken != null && !nToken.trim().isEmpty()){
-					andCriteria.add(where("nameTokens").regex("^"+nToken) );
-				}
-			}
-		}
-
-		if(!andCriteria.isEmpty()){
-			criteria.andOperator(andCriteria.toArray(new Criteria[andCriteria.size()]));
-		}
-
-		List<GeographicalArea> foundAreas = template.find(
-				query(criteria) // limit to prevent too much performance-hampering object scanning
-				.with(new Sort(Sort.Direction.ASC, "name"))
-				.with(new Sort(Sort.Direction.ASC, "replicationTime"))
-				.limit(findOneTokenLimit),
-				GeographicalArea.class);
+	   // looking for exact token matches first :
+	   // (otherwise Saint-Lô is hidden behind a lot of ex. Saint-Lormel)
+      Query exactQuery = buildQuery(countryUri, modelTypes, lang, nameTokens, "$");
+      List<GeographicalArea> foundExactAreas = template.find(exactQuery, GeographicalArea.class);
+      if (foundExactAreas.size() == findOneTokenLimit) {
+         // should not happen
+         logger.warn("Hit findOneTokenLimit (so probably missing some results) on query " + exactQuery);
+      }
+      
+      // actuall fulltext search next :
+		Query query = buildQuery(countryUri, modelTypes, lang, nameTokens, "");
+      List<GeographicalArea> foundAreas = template.find(query, GeographicalArea.class);
 		if (foundAreas.size() == findOneTokenLimit) {
 			// should not happen
-			logger.warn("Hit findOneTokenLimit (so probably missing some results) on query " + query(criteria));
+			logger.warn("Hit findOneTokenLimit (so probably missing some results) on query " + query);
 		}
 
-		return foundAreas
+		// merging both (deduplicated in search()'s Pair lambda above) :
+		foundExactAreas.addAll(foundAreas);
+		
+		return foundExactAreas
 				.stream()
 				.map(DCUrlWrapper::new)
 				.distinct()
@@ -232,7 +216,48 @@ public class GeographicalAreaCache {
 	}
 
 
-	public void save(GeographicalArea area) {
+	private Query buildQuery(String countryUri, String[] modelTypes, String lang,
+	      String[] nameTokens, String regexSuffix) {
+	   if (regexSuffix == null) {
+	      regexSuffix = "";
+	   }
+	   
+      // we search irrespective of the replication status, but we deduplicate based on DC Resource URI.
+      // sort spec means we want older results first - so that incoming replicates are discarded as long as
+      // there is an online entry
+      Criteria criteria = where("lang").is(lang);
+
+      if (countryUri != null && !countryUri.trim().isEmpty()){
+         criteria.and("country").is(countryUri); //filter by country
+      }
+
+      List<Criteria> andCriteria = new ArrayList<>();
+      if (modelTypes != null && modelTypes.length != 0){
+         for(String modelType : modelTypes){
+            if (modelType != null && !modelType.trim().isEmpty()){
+               andCriteria.add(where("modelType").in(modelType) );
+            }
+         }
+      }
+
+      if (nameTokens != null ){
+         for(String nToken : nameTokens){
+            if (nToken != null && !nToken.trim().isEmpty()){
+               andCriteria.add(where("nameTokens").regex("^"+nToken + regexSuffix) );
+            }
+         }
+      }
+
+      if(!andCriteria.isEmpty()){
+         criteria.andOperator(andCriteria.toArray(new Criteria[andCriteria.size()]));
+      }
+      return query(criteria )
+            .with(new Sort(Sort.Direction.ASC, "name"))
+            .with(new Sort(Sort.Direction.ASC, "replicationTime"))
+            .limit(findOneTokenLimit); // limit to prevent too much performance-hampering object scanning
+   }
+
+   public void save(GeographicalArea area) {
 		template.save(area);
 	}
 
