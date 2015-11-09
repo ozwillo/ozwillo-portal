@@ -55,8 +55,8 @@ application:
 # notificationsEnabled = enable notifications
 # at some point we should use these as default values & instead look for the values in the database
 # (to allow live switching of feature flags)
-  devmode: true
-  production: false
+  devmode: false
+  production: true
   notificationsEnabled: false
 
 web:
