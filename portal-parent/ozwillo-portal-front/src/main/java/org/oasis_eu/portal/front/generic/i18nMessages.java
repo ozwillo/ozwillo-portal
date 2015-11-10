@@ -20,7 +20,7 @@ public final class i18nMessages {
 			"by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
 			"organization.pending-invitation");
 
-	private static final List<String> generickeys = Arrays.asList("save", "cancel", "close", "appstore", "confirm", "delete",
+	private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
 			"loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
 			"something_went_wrong_title", "error_detail_title", "search", "next", "previous");
 

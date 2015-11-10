@@ -1,5 +1,32 @@
 /** @jsx React.DOM */
 
+var default_org_data = {
+    organization: {
+        exist: false,
+        legal_name: '',
+        sector_type: '',
+        in_activity: true,
+        alt_name: '',
+        org_type: '',
+        tax_reg_num: '',
+        tax_reg_official_id: '',
+        tax_reg_activity_uri: '',
+        jurisdiction_uri: '',
+        jurisdiction: '',
+        phone_number: '',
+        web_site: '',
+        email: '',
+        street_and_number: '',
+        additional_address_field: '',
+        po_box: '',
+        city: '',
+        city_uri: '',
+        zip: '',
+        cedex: '',
+        country_uri: ''
+    }, errors: [[], []], typeRestriction: ''
+};
+
 var AppModal = React.createClass({
     getInitialState: function () {
         return {
@@ -10,7 +37,8 @@ var AppModal = React.createClass({
             buying: false,
             installing: false,
             isInstalled: false,
-            error: false
+            error: false,
+            step: 1
         };
     },
     componentDidMount: function () {
@@ -118,9 +146,6 @@ var AppModal = React.createClass({
         if (org) { this.doInstallApp(org.id); }
         this.setState(state);
     },
-    doCreateOrg: function () {
-        if (this.refs.tabbedForm){this.refs.tabbedForm.createOrModifOrg();}
-    },
     cancelCreateOrg: function () {
         var state = this.state;
         state.createOrg = false;
@@ -187,6 +212,7 @@ var AppModal = React.createClass({
                          state.installing = false;
                          state.createOrg = true;
                          state.selectedOrg = data;
+                         state.selectedOrg.inModification = false;
                          state.errors = [];
                          this.setState(state);
                       }else{
@@ -221,18 +247,18 @@ var AppModal = React.createClass({
             public_body: this.props.app.target_publicbodies
         };
     },
+    onStepChange: function(stepId) {
+        this.setState({ step: stepId });
+    },
     renderCreateNewOrganization: function () {
         return (
             <div>
-                <h3>{ !this.state.selectedOrg.exist ? t('create-new-org') : t('modify-org')}</h3>
-                <CreateOrModifyOrganizationForm ref="tabbedForm" successHandler={this.orgCreated}
-                     typeRestriction={this.orgTypeRestriction()} organization={this.state.selectedOrg}/>
-
-                    <div className="col-sm-4 col-sm-offset-8">
-                        <a className="btn btn-default" onClick={this.cancelCreateOrg}>{t('ui.cancel')}</a>
-                        <a className="btn btn-primary" onClick={this.doCreateOrg}>{t('create')}</a>
-                    </div>
-
+                <h4>{t('my.network.organization.step') + " " + this.state.step + " / 2"}</h4>
+                <CreateOrModifyOrganizationForm ref="tabbedForm"
+                    successHandler={this.orgCreated} cancelHandler={this.cancelCreateOrg}
+                    organization={this.state.selectedOrg} typeRestriction={this.orgTypeRestriction()}
+                    step={this.state.step} onStepChange={this.onStepChange}
+                    fromStore={true} />
             </div>
             );
     },
@@ -276,9 +302,12 @@ var AppModal = React.createClass({
      },
 
     render: function () {
+        var title = this.props.app.name;
         var content = null;
         if (this.state.buying){                content = this.renderBuying();
-        } else if (this.state.createOrg){      content = this.renderCreateNewOrganization();
+        } else if (this.state.createOrg){
+            content = this.renderCreateNewOrganization();
+            title = (!this.state.selectedOrg.exist ? t('create-new-org') : t('modify-org')) + " " + this.state.selectedOrg.legal_name;
         } else if (this.state.installing){     content = this.renderInstallingForm();
         } else if (this.state.isInstalled){    content = this.renderSucessfulInstallationForm();
         } else {                               content = this.renderAppDescription();
@@ -286,7 +315,7 @@ var AppModal = React.createClass({
 
         return (
           <div>
-            <Modal ref="modal" large={true} infobox={true} title={this.props.app.name} cancelHandler={this.close}>
+            <Modal ref="modal" large={true} infobox={true} title={title} cancelHandler={this.close}>
                {content}
             </Modal>
             <Modal ref="modalError" title={t('ui.something_went_wrong_title')} infobox={true} cancelHandler={null} >
@@ -542,6 +571,277 @@ var InstallForm =  React.createClass({
 
                 <a className="btn btn-primary pull-right" onClick={this.validateAndContinue}>{t('ui.next')}</a>
             </div>
+        );
+    }
+});
+
+var ContactSearchFormControl = React.createClass({
+    render: function() {
+        return (
+            <div className="form-group">
+                <div className="form-group">
+                    {this.props.renderLabel("contact-name", 'name', t('search.contact.name'))}
+                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_name}
+                                                     onChange={this.props.changeInput('contact_name')} maxLength={100}  placeholder={t('search.contact.name')}/></div>
+                </div>
+                <div className="form-group">
+                    {this.props.renderLabel("contact-lastname", 'lastname', t('search.contact.lastname'))}
+                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_lastname}
+                                                     onChange={this.props.changeInput('contact_lastname')} maxLength={100} placeholder={t('search.contact.lastname')}/></div>
+                </div>
+                <div className="form-group">
+                    {this.props.renderLabel("contact-email", 'email', t('search.contact.email'))}
+                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_email}
+                                                     onChange={this.props.changeInput('contact_email')} maxLength={100} placeholder={t('search.contact.email')}/></div>
+                </div>
+            </div>
+        )
+    }
+});
+
+var OrganizationSearchFormControl = React.createClass({
+    renderType: function () {
+        var restriction = this.props.typeRestriction ? this.props.typeRestriction : {company: true, public_body: true};
+
+        var public_body = null;
+        if (restriction.public_body) {
+            public_body = (
+                <label className="radio-inline col-sm-3">
+                    <input type="radio" value="PUBLIC_BODY" checked={this.props.orgSearchData.sector_type == 'PUBLIC_BODY'}
+                           onChange={this.props.toggleType}>{t('search.organization.sector-type.PUBLIC_BODY')}</input>
+                </label>
+            );
+        }
+
+        var company = null;
+        if (restriction.company) {
+            company = (
+                <label className="radio-inline col-sm-3">
+                    <input type="radio" value="COMPANY" checked={this.props.orgSearchData.sector_type  == 'COMPANY'}
+                           onChange={this.props.toggleType}>{t('search.organization.sector-type.COMPANY')}</input>
+                </label>
+            );
+        }
+
+        var sectorTypeClassName = 'col-sm-3 control-label';
+        sectorTypeClassName = ($.inArray('sector_type', this.props.errors) != -1 ? sectorTypeClassName+' error' : sectorTypeClassName);
+
+        return (
+            <div className="form-group">
+                <label htmlFor="organization-sector-type" className={sectorTypeClassName}>{t('search.organization.sector-type')}</label>
+                {public_body}
+                {company}
+            </div>
+        );
+    },
+
+    render: function () {
+        var label_regNum;
+        switch(this.props.orgSearchData.country){
+            case 'България' : label_regNum = t('search.organization.business-id.bg'); break;
+            case 'Italia'   : label_regNum = t('search.organization.business-id.it'); break;
+            case 'France'   : label_regNum = t('search.organization.business-id.fr'); break;
+            case 'España'   : label_regNum = t('search.organization.business-id.es'); break;
+            case 'Türkiye'  : label_regNum = t('search.organization.business-id.tr'); break;
+            default         : label_regNum = t('search.organization.business-id.en'); break;
+        }
+        if ( (!this.props.orgSearchData.country_uri || this.props.orgSearchData.country_uri === "") && this.refs.orgCountrySelect){
+            this.props.orgSearchData.country_uri = this.refs.orgCountrySelect.getValue(this.props.orgSearchData.country);
+        }
+
+        return (
+            <div className="form-group">
+                {this.renderType()}
+                <div className="form-group">
+                    {this.props.renderLabel("organization-country-name", 'country', t('search.organization.country'))}
+                    <div className="col-sm-5">
+                        <CountrySelect ref="orgCountrySelect" className="form-control" url={store_service + "/dc-countries"} defLabel={this.props.orgSearchData.country}
+                                       onChange={this.props.changeInput('country')} />
+                    </div>
+                </div>
+                <div className="form-group">
+                    {this.props.renderLabel("organization-name", 'legal_name', t('search.organization.legal-name'))}
+                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.legal_name}
+                                                     onChange={this.props.changeInput('legal_name')} maxLength={100}
+                                                     placeholder={t('search.organization.legal-name')}/></div>
+                </div>
+                <div className="form-group">
+                    {this.props.renderLabel("organization-business-id", 'tax_reg_num', label_regNum)}
+                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.tax_reg_num}
+                                                     onChange={this.props.changeInput('tax_reg_num')} maxLength={20}
+                                                     placeholder={t(label_regNum)}/></div>
+                </div>
+            </div>
+        )
+    }
+});
+
+var AddressComponent = React.createClass({
+    //getInitialState: function() { return {geoSearchCity: null }; },
+    componentDidMount: function() {
+        //if(this.refs.geoSearchCity)this.state.geoSearchCity = this.refs.geoSearchCity;
+    },
+    changeInput: function (fieldname, isNumericField) {
+        changeInput = this.props.changeInput;
+        return function (event) {
+            if(event.added){
+                changeInput(fieldname, event.added.name, isNumericField);
+                changeInput(fieldname+"_uri", event.target.value, isNumericField);
+            }else if(fieldname === "country"){
+                changeInput(fieldname, event.target.selectedOptions[0].label, isNumericField);
+                changeInput(fieldname+"_uri", event.target.value, isNumericField);
+                //If country has changed, the city is not longer valid
+                changeInput("city", "", isNumericField);
+                changeInput("city_uri", "", isNumericField);
+                if(this.refs.geoSearchCity) this.refs.geoSearchCity.clear(); //works only to remove tags in current component state, geoSelect placeholder still there.
+            }else {
+                changeInput(fieldname, event.target.value, isNumericField);
+            }
+        }.bind(this)
+    },
+
+    render: function() {
+        var address = this.props.addressContainer;
+        var addressType = this.props.addressType ? this.props.addressType : '';
+
+        return (
+            <div>
+
+                <Field name="street_and_number" error={$.inArray("street_and_number", this.props.errors) != -1}
+                       isRequired={( addressType == 'ORG') ? true : false } >
+                    <input className="form-control" id="street_and_number" type="text" value={address.street_and_number}
+                           onChange={this.changeInput('street_and_number')} />
+                </Field>
+                <Field name="additional_address_field">
+                    <input className="form-control" id="additional_address_field" type="text" value={address.additional_address_field}
+                           onChange={this.changeInput('additional_address_field')} />
+                </Field>
+                { ( addressType !== 'ORG') ? '' : //personal address
+                    <Field name="po_box">
+                        <input className="form-control" id="po_box" type="text" value={address.po_box}
+                               onChange={this.changeInput('po_box')} />
+                    </Field>
+                }
+                <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
+                    <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" name="geoSearchCity" key={address.city}
+                                               urlResources={store_service + "/dc-cities"}
+                                               onChange={this.changeInput('city')}   countryFilter={ {country_uri: address.country_uri} }
+                                               placeholder={address.city} />
+                </Field>
+                <Field name="zip" class_name_div='col-sm-3' error={$.inArray("zip", this.props.errors) != -1} isRequired={true}>
+                    <input className="form-control" id="zip" type="text" maxLength={6} value={address.zip}
+                           onChange={this.changeInput('zip', true)} />
+                </Field>
+                { ( addressType !== 'ORG') ? '' : //personal address
+                    <Field name="cedex" class_name_div='col-sm-2'>
+                        <input className="form-control" id="cedex" type="cedex" maxLength={3} value={address.cedex}
+                               onChange={this.changeInput('cedex', true)} />
+                    </Field>
+                }
+                <Field name="country" class_name_div='col-sm-5' error={$.inArray("country_uri", this.props.errors) != -1} isRequired={true}>
+                    <CountrySelect className="form-control" url={store_service + "/dc-countries"} value={address.country_uri}
+                                   onChange={this.changeInput('country')} disabled={this.props.disabled}/>
+                </Field>
+
+            </div>
+        );
+    }
+});
+
+/* PROPS: name, className, class_name_div, error, isRequired, (children)*/
+var Field = React.createClass({
+    renderLabel: function(htmlFor, class_name, label, isRequired){
+        var cn = isRequired ? <label className={'error'}>{'*'}</label> : ''
+        return (<label htmlFor={htmlFor} className={class_name}>{label} {cn}</label>);
+    },
+    render: function() {
+        var className = "control-label col-sm-3";
+        var classNameDiv = "col-sm-7";
+        if (this.props.class_name) {className = this.props.class_name; }
+        if (this.props.error) { className = className + " error"; }
+        if (this.props.class_name_div) {classNameDiv = this.props.class_name_div; }
+        return (
+            <div className="form-group">
+                {this.renderLabel(this.props.name, className, t('my.network.organization.'+this.props.name), this.props.isRequired)}
+                <div className={classNameDiv}>
+                    {this.props.children}
+                </div>
+            </div>
+        );
+    }
+});
+
+//http://stackoverflow.com/questions/25793918/creating-select-elements-in-react-js
+/** PROPS: onChange(), url */
+var CountrySelect = React.createClass({
+    propTypes: { url: React.PropTypes.string.isRequired },
+    getInitialState: function() { return { options: [], countries: [] } },
+    onChange: function(event) {this.props.onChange(event);},
+    componentDidMount: function() {
+        //var userCurrentLanguge = currentLanguage;
+        if(this.props.url){
+            // get country dc data
+            $.ajax({
+                url: this.props.url,
+                type: 'get',
+                dataType: 'json',
+                data: {q:' '},
+                success: function (data) {
+                    var areas = data.areas;
+                    var options = [{ value: '', label: '' }];
+                    areas = areas.filter(function(n){return n !== null; });
+                    for (var i = 0; i < areas.length; i++) {
+                        options.push({ value: areas[i].uri, label: areas[i].name })
+                    }
+                    this.state.countries = options;
+                    this.successHandler(options); //set the list of countries
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(status, err.toString());
+                }.bind(this)
+            });
+        }/*else{ // for TEST only
+         var options = [
+         { value: '',       label: ''       },
+         { value: 'France', label: 'France' },
+         { value: 'Italy',  label: 'Italy'  },
+         { value: 'Spain',  label: 'Spain'  },
+         { value: 'Turkey', label: 'Turkey' }
+         ];
+         this.successHandler(options);
+         }*/
+    },
+    successHandler: function(data) {
+        // assuming data is an array of {name: "foo", value: "bar"}
+        for (var i = 0; i < data.length; i++) {
+            var option = data[i];
+            this.state.options.push( <option className="action-select-option" key={i} value={option.value}>{option.label}</option> );
+        }
+        this.setState(this.state);
+        this.forceUpdate();
+    },
+    getValue: function(label) {
+        if (!label || label !== "") {
+            for (var i = 0; i < this.state.countries.length; i++) {
+                if (this.state.countries[i].label === label) {
+                    return this.state.countries[i].value; break;
+                }
+            }
+        }
+        return null;
+    },
+
+    render: function() {
+        var label = this.props.defLabel;
+        if(label && (!this.props.value || this.props.value === "") ){
+            //This is to load the country_uri that couldn't be set |
+            this.props.value = (this.getValue(label)); // decodeURIComponent()
+        }
+        // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-base fonctuion decodeURIComponent()
+        return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange}
+                         value={this.props.value} disabled={this.props.disabled}>
+                {this.state.options}
+            </select>
         );
     }
 });

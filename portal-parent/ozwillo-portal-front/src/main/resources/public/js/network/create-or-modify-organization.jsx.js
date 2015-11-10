@@ -48,7 +48,8 @@ var CreateOrModifyOrganizationModal = React.createClass({
                                                         cancelHandler={this.close}
                                                         organization={this.state.organization}
                                                         step={this.state.step}
-                                                        onStepChange={this.onStepChange} />
+                                                        onStepChange={this.onStepChange}
+                                                        fromStore={false} />
                     </div>
                 </div>
             </div>
@@ -90,7 +91,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
             data: JSON.stringify(organization),
             success: function (data) {
                 if (data) {
-                    this.props.successHandler();
+                    this.props.successHandler(organization);
                 } else {
                     console.error('Organization was not created : ' + organization);
                     this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
@@ -110,7 +111,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
             data: JSON.stringify(organization),
             success: function (data) {
                 if (data) {
-                    this.props.successHandler();
+                    this.props.successHandler(organization);
                 } else {
                     console.error('Organization was not modified : ' + organization);
                     this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
@@ -137,7 +138,8 @@ var CreateOrModifyOrganizationForm = React.createClass({
                 <div className="modal-body">
                     <form id="add-organization" onSubmit={this.onCreate} className="form-horizontal">
                         <div className="form-horizontal">
-                            <Tab1 id="1" ref="tab1" organization={organization} currentTab={this.props.step} />
+                            <Tab1 id="1" ref="tab1" organization={organization} currentTab={this.props.step}
+                                  fromStore={this.props.fromStore} />
                             <Tab2 id="2" ref="tab2" organization={organization} currentTab={this.props.step} />
                         </div>
                         {this.renderCreateOrUpdateError()}
@@ -183,7 +185,7 @@ var Button = React.createClass({
             } else {
                 return (
                     <button key="success" className="btn btn-primary" onClick={this.props.onCreate}>
-                        {t('my.network.create')}
+                        {t('ui.create')}
                     </button>
                 )
             }
@@ -280,8 +282,12 @@ var Tab1 = React.createClass({
     },
     validateFields: function() {
         var errors = [];
-        if (!this.state.organization.inModification && this.refs.contact_lastname.getDOMNode().value.trim() === '')
-            errors.push("contact_lastname");
+        if (!this.props.organization.inModification && !this.props.fromStore) {
+            if (this.refs.contact_lastname.getDOMNode().value.trim() === '')
+                errors.push("contact_lastname");
+            if (this.refs.contact_name.getDOMNode().value.trim() === '')
+                errors.push("contact_name");
+        }
         if (this.refs.street_and_number.getDOMNode().value.trim() === '')
             errors.push("street_and_number");
         if (!this.state.organization.city || this.state.organization.city === '')
@@ -300,7 +306,7 @@ var Tab1 = React.createClass({
         return (errors.length == 0);
     },
     getFields: function() {
-        if (!this.props.organization.inModification) {
+        if (!this.props.organization.inModification && !this.props.fromStore) {
             return {
                 contact_lastName: this.refs.contact_lastname.getDOMNode().value.trim(),
                 contact_name: this.refs.contact_name.getDOMNode().value.trim()
@@ -317,7 +323,7 @@ var Tab1 = React.createClass({
         }
     },
     renderProfileInformation: function() {
-        if (!this.props.organization.inModification)
+        if (!this.props.organization.inModification && !this.props.fromStore)
             return (
                 <fieldset>
                     <legend>{t('my.network.organization.profile_information')}</legend>
@@ -335,6 +341,10 @@ var Tab1 = React.createClass({
     render: function() {
         var className = this.props.currentTab === 1 ? "" : "hidden";
         var country_uri = this.props.organization ? this.props.organization.country_uri : '';
+        // FIXME : quite ugly and non-Reacty, find a better way to do this
+        //         when called from the store, componentWillReceiveProps does not get called b/c there is no change in props
+        //         find the right lifecycle hook to handle this properly
+        this.state.organization = this.props.organization;
 
         return (
             <div id="tab1" className={className}>
