@@ -740,7 +740,7 @@ var AddressComponent = React.createClass({
                 }
                 <Field name="country" class_name_div='col-sm-5' error={$.inArray("country_uri", this.props.errors) != -1} isRequired={true}>
                     <CountrySelect className="form-control" url={store_service + "/dc-countries"} value={address.country_uri}
-                                   onChange={this.changeInput('country')} disabled={this.props.disabled}/>
+                                   defLabel={address.country} onChange={this.changeInput('country')} disabled={this.props.disabled}/>
                 </Field>
 
             </div>
