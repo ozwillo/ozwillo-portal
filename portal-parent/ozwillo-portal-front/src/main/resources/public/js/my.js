@@ -1,5 +1,3 @@
-var nextNotificationTimeoutId;
-
 $(document).ready(function () {
 
 
@@ -14,31 +12,40 @@ $(document).ready(function () {
         }
     );
 
-
+    var nextNotificationTimeoutId;
     var getNotificationsCount = function () {
 
-        $.get($(".my-oasis").attr("data").toString(),
-                function (notifData) {
-                    var element = $(".my-oasis span.badge.badge-notifications");
-                    if (notifData.notificationsCount > 0) {
-                        element.html(notifData.notificationsCount);
-                        element.show();
+        $.ajax({
+            url: $(".my-oasis").attr("data").toString(),
+            type: 'get',
+            global: false,
+            success: function (notifData) {
+                var element = $(".my-oasis span.badge.badge-notifications");
+                if (notifData.notificationsCount > 0) {
+                    element.html(notifData.notificationsCount);
+                    element.show();
 
-                        element.data("popover", null).popover({
+                    element.data("popover", null).popover({
                                 placement:"bottom",
                                 trigger:"hover",
                                 container:"body",
                                 content:notifData.notificationsMessage
-                            });
+                    });
 
-                        element.attr("data-content", notifData.notificationsMessage);
+                    element.attr("data-content", notifData.notificationsMessage);
 
-                    } else {
-                        element.hide();
-                    }
-                    nextNotificationTimeoutId = setTimeout(getNotificationsCount , 2000);
+                } else {
+                    element.hide();
                 }
-        );
+                nextNotificationTimeoutId = setTimeout(getNotificationsCount , 2000);
+            },
+            error: function(xhr, status, err) {
+                if ($.inArray(xhr.status, [401]) > -1) {
+                    window.clearTimeout(nextNotificationTimeoutId);
+                    nextNotificationTimeoutId = undefined;
+                }
+            }
+        });
 
     };
 
@@ -56,9 +63,8 @@ $(document).ready(function () {
 		var statusErrorMap = [401];
 		var xstat = xhr.status;
 		if ($.inArray(xstat, statusErrorMap) > (-1) ){
-            window.clearTimeout(nextNotificationTimeoutId);
-            nextNotificationTimeoutId = undefined;
-		}
+            setTimeout(function () { location.reload(1); }, 200);
+        }
 
 		if (xstat && exception && messages){
 
