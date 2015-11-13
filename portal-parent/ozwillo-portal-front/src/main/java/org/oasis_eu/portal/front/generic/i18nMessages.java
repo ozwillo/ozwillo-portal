@@ -1,15 +1,14 @@
 package org.oasis_eu.portal.front.generic;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import org.springframework.context.MessageSource;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import org.springframework.context.MessageSource;
-
-import com.fasterxml.jackson.core.JsonProcessingException;
 
 public final class i18nMessages {
 	private i18nMessages(){}; //this class can't be an instance (all members are static)
@@ -24,7 +23,7 @@ public final class i18nMessages {
 			"loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
 			"something_went_wrong_title", "error_detail_title", "search", "next", "previous", "send");
 
-	private static final List<String> contactKeys = Arrays.asList("title",
+	private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",
 			"form.motive", "form.motive.question", "form.motive.feedback", "form.motive.application-problem",
 			"form.motive.other-problem", "form.motive.other", "form.subject", "form.body", "form-sent", "technical-problem");
 

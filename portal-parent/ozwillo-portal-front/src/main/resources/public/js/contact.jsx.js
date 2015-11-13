@@ -40,8 +40,7 @@ var ContactModal = React.createClass({
                             <button type="button" className="close" onClick={this.close}>&times;</button>
                             <h3>{t('contact.title')}</h3>
                         </div>
-                        <ContactForm ref="contactForm"
-                                     cancelHandler={this.close} />
+                        <ContactForm ref="contactForm" cancelHandler={this.close} />
                     </div>
                 </div>
             </div>
@@ -58,7 +57,8 @@ var ContactForm = React.createClass({
             fields: {
                 motive: '',
                 subject: '',
-                body: ''
+                body: '',
+                copyToSender: false
             }
         };
     },
@@ -68,14 +68,19 @@ var ContactForm = React.createClass({
             fields: {
                 motive: '',
                 subject: '',
-                body: ''
+                body: '',
+                copyToSender: false
             }
         });
     },
+    closeModal: function(){
+        this.props.cancelHandler();
+        this.setState(this.getInitialState());
+    },
     handleChange: function(field, value) {
-        var fields = this.state.fields;
-        fields[field] = value;
-        this.setState({ fields: fields });
+        var state = this.state;
+        state.fields[field] = value;
+        this.setState(state);
     },
     sendForm: function (event) {
         if (event) { event.preventDefault(); }
@@ -96,7 +101,8 @@ var ContactForm = React.createClass({
                 data: JSON.stringify({
                     motive: this.state.fields.motive,
                     subject: this.state.fields.subject,
-                    body: this.state.fields.body
+                    body: this.state.fields.body,
+                    copyToSender: this.state.fields.copyToSender
                 }),
                 success: function (data) {
                     if (!data.error) {
@@ -155,6 +161,8 @@ var ContactForm = React.createClass({
                                                    name="subject" value={this.state.fields.subject} />
                             <ContactTextareaField onChange={this.handleChange} renderLabel={this.renderLabel}
                                                   name="body" value={this.state.fields.body} />
+                            <ContactCheckboxField onChange={this.handleChange} renderLabel={this.renderLabel}
+                                                  name="copyToSender" labelName="copy-to-sender" value={this.state.fields.copyToSender} />
                         </div>
                     </form>
                     {this.renderSendingResult()}
@@ -162,7 +170,7 @@ var ContactForm = React.createClass({
                 </div>
                 <Buttons cancelHandler={this.props.cancelHandler}
                          sendFormHandler={this.sendForm}
-                         closeHandler={this.props.cancelHandler}
+                         closeHandler={this.closeModal}
                          formSent={this.state.formSent} />
             </div>
         );
@@ -217,8 +225,23 @@ var ContactTextareaField = React.createClass({
             <div className="form-group">
                 {this.props.renderLabel(this.props.name, this.props.name, t('contact.form.' + this.props.name))}
                 <div className="col-sm-8">
-                    <textarea name={this.props.name} rows="10" cols="5" className="form-control"
-                              value={this.props.value} onChange={this.handleChange}></textarea>
+                    <textarea name={this.props.name} rows="10" cols="5" className="form-control" value={this.props.value} onChange={this.handleChange}></textarea>
+                </div>
+            </div>
+        );
+    }
+});
+
+var ContactCheckboxField = React.createClass({
+    handleChange: function(event) {
+        this.props.onChange(this.props.name, event.target.checked);
+    },
+    render: function() {
+        return (
+            <div className="form-group">
+                {this.props.renderLabel(this.props.labelName, this.props.labelName, t('contact.form.' + this.props.labelName))}
+                <div className="col-sm-8">
+                    <input type="checkbox" checked={this.props.value? "checked":""} name={this.props.name} onChange={this.handleChange} />
                 </div>
             </div>
         );
