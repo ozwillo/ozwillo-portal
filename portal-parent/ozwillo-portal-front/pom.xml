@@ -18,6 +18,12 @@
             <artifactId>ozwillo-java-spring-integration</artifactId>
         </dependency>
 
+        <!-- java.mail API replacement (Apache 2.0 License) -->
+        <dependency>
+            <groupId>org.apache.geronimo.javamail</groupId>
+            <artifactId>geronimo-javamail_1.4_mail</artifactId>
+        </dependency>
+
         <!-- Spring -->
         <dependency>
             <groupId>org.springframework.boot</groupId>

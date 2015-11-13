@@ -132,3 +132,13 @@ cache:
   hosts:
     - 192.168.56.1
     - 192.168.56.102
+
+mail:
+  host: changeit
+  port: 587
+  starttls: true
+  smtps: false
+  login: changeit
+  password: changeit
+  # Recipient of contact form requests sent by users
+  contact: contact@ozwillo.com
