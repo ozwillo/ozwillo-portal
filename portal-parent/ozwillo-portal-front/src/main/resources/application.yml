@@ -132,3 +132,11 @@ cache:
   hosts:
     - 192.168.56.1
     - 192.168.56.102
+
+# Be sure the MTA have STARTTLS authentification on 587 port if you use it
+mail:
+  host: changeit
+  port: 587
+  starttls: true
+  login: changeit
+  password: changeit
