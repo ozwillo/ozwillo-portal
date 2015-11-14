@@ -509,7 +509,7 @@ var InstallForm =  React.createClass({
     changeInputAddress: function (fieldname, value, isNumericField) {
              var org = this.state.installData;
              if(isNumericField && value !== ''){
-                org.address[fieldname] =  isInteger(value) ? value.trim() : org.address[fieldname];
+                org.address[fieldname] =  value.trim().search(/^\d+$/) !== -1 ? value.trim() : org.address[fieldname];
              } else {
                 org.address[fieldname] = value;
              }
@@ -528,12 +528,12 @@ var InstallForm =  React.createClass({
     validateAddress: function(){
         var errs = this.state.errors;
         var address = this.state.installData.address;
-        if (!address.city_uri    || address.city.trim() == '')       { errs.push('city_uri'); errs.push('city');}
-        if (!address.zip         || address.zip.trim() == '')        { errs.push('zip'); }
-        if (!address.country_uri || address.country_uri.trim() == ''){ errs.push('country_uri'); }
+        if (!address.city    || address.city.trim() == '')       { errs.push('city'); }
+        if (!address.zip     || address.zip.trim() == '')        { errs.push('zip'); }
+        if (!address.country || address.country.trim() == '')    { errs.push('country'); }
 
         this.setState({errors: errs});
-        if (errs.length > 0) {return false;}else{return true;}
+        return errs.length <= 0;
     },
     validateAndContinue: function(){
         var installType = this.getInstallType();
@@ -677,12 +677,8 @@ var OrganizationSearchFormControl = React.createClass({
 });
 
 var AddressComponent = React.createClass({
-    //getInitialState: function() { return {geoSearchCity: null }; },
-    componentDidMount: function() {
-        //if(this.refs.geoSearchCity)this.state.geoSearchCity = this.refs.geoSearchCity;
-    },
     changeInput: function (fieldname, isNumericField) {
-        changeInput = this.props.changeInput;
+        var changeInput = this.props.changeInput;
         return function (event) {
             if(event.added){
                 changeInput(fieldname, event.added.name, isNumericField);
@@ -708,7 +704,7 @@ var AddressComponent = React.createClass({
             <div>
 
                 <Field name="street_and_number" error={$.inArray("street_and_number", this.props.errors) != -1}
-                       isRequired={( addressType == 'ORG') ? true : false } >
+                       isRequired={( addressType == 'ORG')} >
                     <input className="form-control" id="street_and_number" type="text" value={address.street_and_number}
                            onChange={this.changeInput('street_and_number')} />
                 </Field>
@@ -722,6 +718,10 @@ var AddressComponent = React.createClass({
                                onChange={this.changeInput('po_box')} />
                     </Field>
                 }
+                <Field name="country" class_name_div='col-sm-5' error={$.inArray("country", this.props.errors) != -1} isRequired={true}>
+                    <CountrySelect className="form-control" url={store_service + "/dc-countries"} value={address.country_uri}
+                                   defLabel={address.country} onChange={this.changeInput('country')} disabled={this.props.disabled}/>
+                </Field>
                 <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
                     <GeoSingleSelect2Component ref="geoSearchCity" className="form-control" name="geoSearchCity" key={address.city}
                                                urlResources={store_service + "/dc-cities"}
@@ -738,11 +738,6 @@ var AddressComponent = React.createClass({
                                onChange={this.changeInput('cedex', true)} />
                     </Field>
                 }
-                <Field name="country" class_name_div='col-sm-5' error={$.inArray("country_uri", this.props.errors) != -1} isRequired={true}>
-                    <CountrySelect className="form-control" url={store_service + "/dc-countries"} value={address.country_uri}
-                                   defLabel={address.country} onChange={this.changeInput('country')} disabled={this.props.disabled}/>
-                </Field>
-
             </div>
         );
     }
