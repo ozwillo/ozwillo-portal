@@ -133,10 +133,12 @@ cache:
     - 192.168.56.1
     - 192.168.56.102
 
-# Be sure the MTA have STARTTLS authentification on 587 port if you use it
+# Be sure the mail account can send email with contact adress
 mail:
   host: changeit
   port: 587
   starttls: true
+  smtps: false
   login: changeit
   password: changeit
+  contact: contact@ozwillo.com # Used for contact form

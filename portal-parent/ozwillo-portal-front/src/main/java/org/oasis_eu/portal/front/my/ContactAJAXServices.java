@@ -7,6 +7,7 @@ import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.services.MailService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -27,6 +28,9 @@ public class ContactAJAXServices extends BaseAJAXServices {
 	@Autowired
 	private UserInfoService userInfoService;
 
+	@Value("${mail.contact}")
+	private String mailContact;
+
 	@RequestMapping(value = "/send", method = RequestMethod.POST)
 	public void send(@RequestBody @Valid ContactRequest contactRequest) throws MessagingException {
 		log.debug("send {}'s contact type with subject {}, body {}", contactRequest.motive, contactRequest.subject, contactRequest.body);
@@ -39,7 +43,7 @@ public class ContactAJAXServices extends BaseAJAXServices {
 
 		String subject = String.format("[%s by %s]%s",contactRequest.motive, userInfoService.currentUser().getNickname(), contactRequest.subject);
 
-		mailService.sendMail("contact@ozwillo.com", carbonCopy, senderEmail, subject, contactRequest.body);
+		mailService.sendMail(mailContact, carbonCopy, senderEmail, subject, contactRequest.body);
 	}
 
 	public static class ContactRequest {

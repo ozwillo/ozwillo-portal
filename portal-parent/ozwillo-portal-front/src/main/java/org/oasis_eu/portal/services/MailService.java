@@ -24,18 +24,27 @@ public class MailService {
 	private final Properties connexionProperties;
 	private final String login;
 	private final String password;
+	private final String protocol;
 
 	@Autowired
 	MailService(@Value("${mail.host}") String host,
 				@Value("${mail.port}") String port,
+				@Value("${mail.smtps}") boolean smtps,
 				@Value("${mail.starttls}") boolean starttls,
 				@Value("${mail.login}") String login,
 				@Value("${mail.password}") String password) {
+
+		protocol = smtps ? "smtps" : "smtp";
+		String prefix = "mail." + protocol;
+
 		connexionProperties = new Properties();
-		connexionProperties.setProperty("mail.smtp.auth", "true");
-		connexionProperties.setProperty("mail.smtp.starttls.enable", String.valueOf(starttls));
-		connexionProperties.setProperty("mail.smtp.host", host);
-		connexionProperties.setProperty("mail.smtp.port", port);
+		connexionProperties.setProperty(prefix + ".auth", "true");
+		connexionProperties.setProperty(prefix + ".starttls.enable", String.valueOf(starttls));
+		connexionProperties.setProperty(prefix + ".host", host);
+
+		if (Integer.valueOf(port) > 0) {
+			connexionProperties.setProperty(prefix + ".port", port);
+		}
 
 		if (log.isDebugEnabled()) {
 			connexionProperties.setProperty("mail.debug", "true");
@@ -47,13 +56,18 @@ public class MailService {
 
 	private Session authenticateSession() {
 		log.debug("Authentication for SMTP");
-		return Session.getInstance(connexionProperties,
-			new Authenticator() {
-				@Override
-				protected PasswordAuthentication getPasswordAuthentication() {
-					return new PasswordAuthentication(login, password);
-				}
-			});
+		Session session = Session.getInstance(connexionProperties, getAuthenticator());
+		session.setProtocolForAddress("rfc822", protocol);
+		return session;
+	}
+
+	private Authenticator getAuthenticator(){
+		return new Authenticator() {
+			@Override
+			protected PasswordAuthentication getPasswordAuthentication() {
+				return new PasswordAuthentication(login, password);
+			}
+		};
 	}
 
 	public void sendMail(String to, String subject, String text) throws MessagingException {
@@ -72,8 +86,7 @@ public class MailService {
 		try {
 			Message message = new MimeMessage(authenticateSession());
 			message.setFrom(new InternetAddress(login));
-			// message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
-			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse("matthieu.lecoupeau@openwide.fr"));
+			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(to));
 
 			if (!Strings.isNullOrEmpty(cc)) {
 				message.setRecipients(Message.RecipientType.CC, InternetAddress.parse(cc));
