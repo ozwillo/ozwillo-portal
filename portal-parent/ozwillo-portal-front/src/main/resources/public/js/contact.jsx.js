@@ -78,9 +78,9 @@ var ContactForm = React.createClass({
         this.setState(this.getInitialState());
     },
     handleChange: function(field, value) {
-        var state = this.state;
-        state.fields[field] = value;
-        this.setState(state);
+        var fields = this.state.fields;
+        fields[field] = value;
+        this.setState({ fields: fields });
     },
     sendForm: function (event) {
         if (event) { event.preventDefault(); }
