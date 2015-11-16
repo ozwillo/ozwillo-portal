@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.front.my.appsmanagement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.google.common.base.Strings;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
@@ -77,20 +78,29 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	 * will only be manageable individually later, for now any app admins = the app's orga admins)
 	 * and 2. to list users that can be subscribed to service (with appAdmin)
 	 * @param instanceId
-	 * @param q
+	 * @param q the query string
 	 * @param appAdmin whether to also return users that are app_admin (and not app_user), default is true
 	 * @return app instance Users i.e. that are app_user
 	 */
 	@RequestMapping(value = "/users/instance/{instanceId}", method = RequestMethod.GET)
-	public List<User> getUsersForInstance(@PathVariable String instanceId, @RequestParam(required = false) String q,
-			@RequestParam(value="app_admin", required = false, defaultValue="true") boolean appAdmin) {
+	public List<User> getUsersForInstance(@PathVariable String instanceId,
+										  @RequestParam(required = false) String q,
+										  @RequestParam(value="app_admin", required = false, defaultValue="true") boolean appAdmin) {
 		List<User> appUsers = appManagementService.getAppUsers(instanceId, appAdmin);
 		logger.debug("Found appusers: {} for instance {}", appUsers, instanceId);
 		if (q == null) {
 			return appUsers;
-		} else {
-			return appUsers.stream().filter(u -> u.getFullname().toLowerCase().contains(q.toLowerCase())).collect(Collectors.toList());
 		}
+		return appUsers.stream().filter(u -> isMatchUser(u,q)).collect(Collectors.toList());
+	}
+
+	private static boolean isMatchUser(User u, String query){
+		if (Strings.isNullOrEmpty(u.getFullname())) {
+			logger.debug("User without Fullname, user id : {}", u.getUserid());
+			// See #293 also clean kernel data
+			return false;
+		}
+		return u.getFullname().toLowerCase().contains(query.toLowerCase());
 	}
 
 	@RequestMapping(value = "/users/instance/{instanceId}", method = RequestMethod.POST)
