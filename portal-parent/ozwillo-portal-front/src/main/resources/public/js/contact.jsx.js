@@ -6,10 +6,12 @@ var ContactLink = React.createClass({
     },
     render: function () {
         return (
-            <a href="#">
-                <span onClick={this.onClick}>{t('footer.contact')}</span>
+            <div>
+                <a href="#">
+                    <span onClick={this.onClick}>{t('footer.contact')}</span>
+                </a>
                 <ContactModal ref="contactModal" />
-            </a>
+            </div>
         )
     }
 });
