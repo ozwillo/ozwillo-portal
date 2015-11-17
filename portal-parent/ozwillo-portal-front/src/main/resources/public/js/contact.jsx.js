@@ -185,15 +185,15 @@ var ContactSelectField = React.createClass({
     },
     render: function() {
         var options = this.props.options.map(function(option, index) {
-            return <option className="action-select-option" key={index + 1} value={option.value}>{option.label}</option>;
+            return <option key={index + 1} value={option.value}>{option.label}</option>;
         });
 
         return (
             <div className="form-group">
                 {this.props.renderLabel(this.props.name, this.props.name, t('contact.form.' + this.props.name))}
                 <div className="col-sm-8">
-                    <select name={this.props.name} className="form-control" value={this.props.value} onChange={this.handleChange}>
-                        <option className="action-select-option" key="0" value=""></option>;
+                    <select name={this.props.name} id={this.props.name} className="form-control" value={this.props.value} onChange={this.handleChange}>
+                        <option key={0} value=""></option>
                         {options}
                     </select>
                 </div>
@@ -211,7 +211,8 @@ var ContactTextInputField = React.createClass({
             <div className="form-group">
                 {this.props.renderLabel(this.props.name, this.props.name, t('contact.form.' + this.props.name))}
                 <div className="col-sm-8">
-                    <input type="text" name={this.props.name} className="form-control" value={this.props.value} onChange={this.handleChange} />
+                    <input type="text" name={this.props.name} id={this.props.name} className="form-control"
+                           value={this.props.value} onChange={this.handleChange} />
                 </div>
             </div>
         );
@@ -227,7 +228,8 @@ var ContactTextareaField = React.createClass({
             <div className="form-group">
                 {this.props.renderLabel(this.props.name, this.props.name, t('contact.form.' + this.props.name))}
                 <div className="col-sm-8">
-                    <textarea name={this.props.name} rows="10" cols="5" className="form-control" value={this.props.value} onChange={this.handleChange}></textarea>
+                    <textarea name={this.props.name} id={this.props.name} rows="10" cols="5" className="form-control"
+                              value={this.props.value} onChange={this.handleChange}></textarea>
                 </div>
             </div>
         );
@@ -243,7 +245,8 @@ var ContactCheckboxField = React.createClass({
             <div className="form-group">
                 {this.props.renderLabel(this.props.labelName, this.props.labelName, t('contact.form.' + this.props.labelName))}
                 <div className="col-sm-8">
-                    <input type="checkbox" checked={this.props.value? "checked":""} name={this.props.name} onChange={this.handleChange} />
+                    <input type="checkbox" checked={this.props.value? "checked":""} name={this.props.name} id={this.props.name}
+                           onChange={this.handleChange} />
                 </div>
             </div>
         );
