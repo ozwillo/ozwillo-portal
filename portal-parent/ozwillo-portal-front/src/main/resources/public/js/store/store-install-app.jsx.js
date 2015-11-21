@@ -869,7 +869,6 @@ SetOrganizationComponent = React.createClass({
     toggleInstallOrgType: function (event) {
         var org = this.state.orgSearchData;
         org.typeInstallOrg = event.target.value;
-        org.selectedOrgId = this.props.orgs[0].id;
         this.setState({orgSearchData: org, errors:[]});
   },
     toggleSectorType: function (event) {
@@ -883,7 +882,7 @@ SetOrganizationComponent = React.createClass({
              opts.push(<option key={org.id} className="action-select-option" value={org.id}>{org.name}</option>);
         }.bind(this));
 
-        return (<select className="btn btn-default dropdown-toggle" onChange={this.onChangeOrgInput('selectedOrg')}>{opts}</select>);
+        return (<select className="btn btn-default dropdown-toggle" onChange={this.onChangeOrgInput('selectedOrgId')}>{opts}</select>);
     },
     validate: function(){
        var state = this.state;
