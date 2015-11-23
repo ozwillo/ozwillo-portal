@@ -91,7 +91,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
             data: JSON.stringify(organization),
             success: function (data) {
                 if (data) {
-                    this.props.successHandler(organization);
+                    this.props.successHandler(data);
                 } else {
                     console.error('Organization was not created : ' + organization);
                     this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
@@ -111,7 +111,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
             data: JSON.stringify(organization),
             success: function (data) {
                 if (data) {
-                    this.props.successHandler(organization);
+                    this.props.successHandler(data);
                 } else {
                     console.error('Organization was not modified : ' + organization);
                     this.setState({ createOrUpdateError: { code: 'Invalid response', message: 'The received response was empty' } });
