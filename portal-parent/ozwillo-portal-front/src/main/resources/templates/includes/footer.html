@@ -24,7 +24,11 @@
                 </div>
                 <div class="col-sm-2 col-xs-4" data-th-each="col: ${sitemap}">
                     <ul>
-                        <li data-th-each="entry: ${col}"><a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
+                        <li id="contact" data-th-if="${colStat.count == 2}">
+                            <!-- Here, we'll insert the link that calls the contact modal in React's contact.jsx module -->
+                        </li>
+                        <li data-th-each="entry: ${col}">
+                            <a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
                         </li>
                     </ul>
                 </div>
@@ -33,6 +37,9 @@
     </div>
 </footer>
 
+<script data-th-inline="javascript" type="text/javascript">
+    var contact_service = /*[[@{/my/api/contact}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
+</script>
 
 <script data-th-src="@{/webjars/jquery/1.11.0/jquery.min.js}" src="/webjars/jquery/1.11.0/jquery.min.js"></script>
 <script data-th-src="@{/webjars/jquery-ui/1.10.4/ui/minified/jquery-ui.min.js}"

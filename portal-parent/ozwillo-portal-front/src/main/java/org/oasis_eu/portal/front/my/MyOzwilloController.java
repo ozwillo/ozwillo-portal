@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 import javax.servlet.http.HttpServletRequest;
 
 import org.oasis_eu.portal.front.generic.PortalController;
+import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.services.PortalDashboardService;
@@ -47,33 +48,31 @@ public class MyOzwilloController extends PortalController {
 	@Autowired
 	private MessageSource messageSource;
 
-	private static List<String> i18keys = Arrays.asList("create", "switch-dash", "confirm-delete-dash",
-			"confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long");
-	private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go",
-			"general-error", "edit", "add", "remove", "something_went_wrong_msg", "something_went_wrong_title",
-			"error_detail_title");
-
-
 	@ModelAttribute("i18n")
 	public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
 		Locale locale = RequestContextUtils.getLocale(request);
 
 		Map<String, String> i18n = new HashMap<>();
-		i18n.putAll(i18keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my." + k, new Object[]{}, locale))));
-		i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
+		i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
 
 		return i18n;
 	}
 
 
 	@ModelAttribute("notif_i18n")
-	public Map<String, String> getNotifI18n(HttpServletRequest request) {
-
-		List<String> keys = Arrays.asList("ui.notifications", "notif.date", "notif.app", "notif.message", "notif.archive", "notif.manage", "notif.no-notification", "notif.unread", "notif.read", "notif.any", "notif.all-apps");
+	public Map<String, String> getNotifI18n(HttpServletRequest request) throws JsonProcessingException {
 		Locale locale = RequestContextUtils.getLocale(request);
 
-		return keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage(k, new Object[0], locale)));
+		Map<String, String> i18n = new HashMap<>();
 
+		List<String> keys = Arrays.asList("ui.notifications", "notif.date", "notif.app", "notif.message", "notif.archive", "notif.manage", "notif.no-notification", "notif.unread", "notif.read", "notif.any", "notif.all-apps");
+		i18n.putAll(keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage(k, new Object[0], locale))));
+		i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+
+		return i18n;
 	}
 
 	@ModelAttribute("navigation")
