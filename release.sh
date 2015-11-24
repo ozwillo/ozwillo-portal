@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# args : optional RC number for oasis-portal and oasis-spring-integration (ex. 1, 2 1...)
+# args : optional RC number for ozwillo-portal and ozwillo-java-spring-integration (ex. 1, 2 1...)
 
 # generic release function :
 release_project() {
@@ -133,7 +133,7 @@ git checkout $TAG
 
 # RC suffix ex. 1 :
 RC=$2
-RELEASE_NAME=oasis-spring-integration
+RELEASE_NAME=ozwillo-java-spring-integration
 NVM_VERSION=v0.10.36
 DEPENDENCIES=
 MAVEN_ROOT=.
@@ -148,7 +148,7 @@ if [ "$SNAPSHOT_DEPS" != "" ]
 then
    echo "The main project has SNAPSHOT dependencies : $SNAPSHOT_DEPS, releasing it"
 
-pushd ../oasis-spring-integration
+pushd ../ozwillo-java-spring-integration
 release_project
 git status
 popd
@@ -158,9 +158,9 @@ fi
 
 # RC suffix ex. 1 :
 RC=$1
-RELEASE_NAME=oasis-portal
+RELEASE_NAME=ozwillo-portal
 NVM_VERSION=v0.10.36
-DEPENDENCIES=oasis-spring-integration
+DEPENDENCIES=ozwillo-java-spring-integration
 MAVEN_ROOT=portal-parent
 # minify : source nvm else Unknown command https://github.com/creationix/nvm/issues/521
 MINIFY_COMMAND=". ~/.nvm/nvm.sh ; nvm install $NVM_VERSION ; ./jsx.py ; echo Minified."
