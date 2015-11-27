@@ -85,22 +85,23 @@ public class PortalNotificationService {
 		List<NotifApp> notifApps = notifications
 				.stream()
 				.map(n -> {
-					CatalogEntry service = null;
 					if (n.getServiceId() != null) {
-						service = catalogStore.findService(n.getServiceId());
+						CatalogEntry service = catalogStore.findService(n.getServiceId());
 						if (service == null) {
 							return null;
 						} else {
 							return new NotifApp(service.getId(), service.getName(locale));
 						}
-					} else if (n.getInstanceId() != null) {
+					}
+					if (n.getInstanceId() != null) {
 						ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
 						if (instance == null) {
 							return null;
 						} else {
 							return new NotifApp(instance.getApplicationId(), catalogStore.findApplication(instance.getApplicationId()).getName(locale));
 						}
-					} else return null;
+					}
+					return null;
 				})
 				.filter(napp -> napp != null)
 				.distinct()
@@ -136,7 +137,7 @@ public class PortalNotificationService {
 							return null; // skip deleted service, probable (?) companion case to #179 Bug with notifications referring destroyed app instances
 							// TODO LATER keep service but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
 						}
-						notif.setAppName(service != null ? service.getName(locale) : "");
+						notif.setAppName(service.getName(locale));
 						notif.setServiceId(service.getId());
 
 					} else if (n.getInstanceId() != null) {
@@ -145,16 +146,16 @@ public class PortalNotificationService {
 							// case of #179 Bug with notifications referring destroyed app instances or #206 500 on portal notification api
 							// LATER we could keep app instance with a "deleted" flag so it doesn't happen (rather than auto deleting this portal data),
 							// but this wouldn't address the Forbidden case)
-							if (!devmode) {
-								return null; // skip deleted or (newly) Forbidden app instance (rather than displaying no name)
-							} else {
+							if (devmode) {
 								notif.setAppName("Application with deleted or forbidden instance"); // to help debug
 								notif.setServiceId("");
+							} else {
+								return null; // skip deleted or (newly) Forbidden app instance (rather than displaying no name)
 							}
 						} else {
 							CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
 							notif.setAppName(application != null ? application.getName(locale) : "");
-							notif.setServiceId(application.getId());
+							notif.setServiceId(application != null ? application.getId() : "");
 						}
 					}
 
@@ -162,7 +163,7 @@ public class PortalNotificationService {
 					notif.setDate(n.getTime());
 					notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
 
-					notif.setFormattedText(getFormattedText(n));
+					notif.setFormattedText(getFormattedText(n, locale));
 					notif.setId(n.getId());
 
 					if (Strings.isNullOrEmpty(n.getActionUri())) {
@@ -216,13 +217,13 @@ public class PortalNotificationService {
 
 	}
 
-	private String getFormattedText(InboundNotification n) {
+	private static String getFormattedText(InboundNotification notification, Locale locale) {
 		String formattedText;
-		String message = n.getMessage().replaceAll("[<>]", "");
+		String message = notification.getMessage(locale).replaceAll("[<>]", "");
 
 		try {
 			formattedText = new Markdown4jProcessor().process(message);
-		} catch (IOException e) {
+		} catch (IOException ignore) {
 			formattedText = message;
 		}
 		return formattedText;
