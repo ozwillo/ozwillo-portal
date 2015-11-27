@@ -57,7 +57,7 @@ application:
 # (to allow live switching of feature flags)
   devmode: false
   production: true
-  notificationsEnabled: false
+  notificationsEnabled: true
 
 web:
   home: https://www.ozwillo-dev.eu
