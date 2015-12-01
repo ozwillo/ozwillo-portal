@@ -35,8 +35,8 @@ public class RatingService {
 
 	public void rate(String appType, String appId, double score) {
 
-		if (score < 0 || score > 4) {
-			throw new IllegalArgumentException("Scores must be between 0 and 4");
+		if (score < 0 || score > 5) {
+			throw new IllegalArgumentException("Scores must be between 0 and 5");
 		}
 
 		CatalogEntryType type = CatalogEntryType.of(appType);

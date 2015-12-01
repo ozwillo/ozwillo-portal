@@ -1,9 +1,6 @@
 /** @jsx React.DOM */
 
 var AppStore = React.createClass({
-    componentDidMount: function () {
-        this.updateApps(true, true, true, true, true);
-    },
     getInitialState: function () {
         return {
             defaultApp : null,
@@ -19,9 +16,15 @@ var AppStore = React.createClass({
                 payment: {
                     paid: true,
                     free: true
-                }
+                },
+                selectedLanguage: currentLanguage,
+                geoAreaAncestorsUris: [],
+                searchText: ''
             }
         };
+    },
+    componentDidMount: function () {
+        this.updateApps();
     },
     mergeAppsWithDefaultAppFirst : function() {
         if (!this.state.defaultApp) {
@@ -32,7 +35,18 @@ var AppStore = React.createClass({
             return app;
         }.bind(this)));
     },
-    updateApps: function (target_citizens, target_publicbodies, target_companies, paid, free) {
+    updateFilter: function(category, key, value) {
+        var filter = this.state.filter;
+        if (category) {
+            var filterCategory = filter[category];
+            filterCategory[key] = value;
+        } else {
+            filter[key] = value;
+        }
+        this.setState({ filter: filter});
+        this.updateApps();
+    },
+    updateApps: function() {
         if (default_app) {
             $.ajax({
                 url: store_service + "/application/" + default_app.type + "/" + default_app.id,
@@ -50,22 +64,21 @@ var AppStore = React.createClass({
                 }.bind(this)
             });
         } else {
-            var state = this.state;
-            state.defaultApp = null;
-            this.setState(state);
+            this.setState({ defaultApp: null});
         }
         var supported_locales = [];
-        if (this.refs.sideBar.state.selectedLanguage !== 'all') {
-            supported_locales.push(this.refs.sideBar.state.selectedLanguage);
+        if (this.state.filter.selectedLanguage !== 'all') {
+            supported_locales.push(this.state.filter.selectedLanguage);
         }
-        var geoAreaAncestorsUris = this.refs.sideBar.state.geoAreaAncestorsUris;
-        var searchText = this.refs.sideBar.state.searchText;
-        var queryParams = {target_citizens: target_citizens, target_publicbodies: target_publicbodies, target_companies: target_companies,
-                free: free, paid: paid,
-                supported_locales: supported_locales,
-                geoArea_AncestorsUris: geoAreaAncestorsUris,
-                category_ids: [],
-                q: searchText}; // q being empty is ok
+        var filter = this.state.filter;
+        var queryParams = {
+            target_citizens: filter.audience.citizens, target_publicbodies: filter.audience.publicbodies, target_companies: filter.audience.companies,
+            free: filter.payment.free, paid: filter.payment.paid,
+            supported_locales: supported_locales,
+            geoArea_AncestorsUris: filter.geoAreaAncestorsUris,
+            category_ids: [],
+            q: filter.searchText  // q being empty is ok
+        };
         $.ajax({
             url: store_service + "/applications",
             data: queryParams,
@@ -76,30 +89,17 @@ var AppStore = React.createClass({
                 this.setState({
                     apps: data.apps,
                     maybeMoreApps: data.maybeMoreApps,
-                    loading: false,
-                    filter: {
-                        audience: {
-                            citizens: target_citizens,
-                            publicbodies: target_publicbodies,
-                            companies: target_companies
-                        },
-                        payment: {
-                            free: free,
-                            paid: paid
-                        }
-                    }
+                    loading: false
                 });
             }.bind(this),
             error: function (xhr, status, err) {
-                this.setState({apps: [], loading: false});
+                this.setState({ apps: [], loading: false });
                 console.error(status, err.toString());
             }.bind(this)
         });
     },
     loadMoreApps: function () {
-        var state = this.state;
-        state.loading = true;
-        this.setState(state);
+        this.setState({ loading: true });
 
         $.ajax({
             url: store_service + "/applications",
@@ -129,207 +129,165 @@ var AppStore = React.createClass({
             }.bind(this)
         });
     },
-    render: function () {
-        //if (this.state.loading) {
-        //    // loading...
-        //    return <div className="row text-center">
-        //        <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</div>
-        //}
-        //else {
-            var languagesAndAll = JSON.parse(JSON.stringify(languages));
-            languagesAndAll.unshift('all');
-            var initialSelectedLanguage = currentLanguage; // filled by PortalController from Profile's if any else 'en'
+    renderBanner: function() {
+        if (!logged_in) {
             return (
-                <div>
-                    <div className="row">
-                        <SideBar ref="sideBar"
-                            currentLanguage={initialSelectedLanguage}
-                            languages={languagesAndAll}
-                            updateApps={this.updateApps}
-                            filter={this.state.filter}
-                        />
-                        <AppList
-                            apps={this.mergeAppsWithDefaultAppFirst()}
-                        />
-                    </div>
-                    <div className="row">
-                        <LoadMore
-                            loading={this.state.loading}
-                            maybeMoreApps={this.state.maybeMoreApps}
-                            loadMoreApps={this.loadMoreApps}
-                        />
-                    </div>
-                </div>
-                );
-        //}
+                <JoinBanner />
+            )
+        }
+    },
+    render: function () {
+        var languagesAndAll = JSON.parse(JSON.stringify(languages));
+        languagesAndAll.unshift('all');
+
+        return (
+            <div>
+                <SearchAppsForm ref="searchAppsForm"
+                                languages={languagesAndAll}
+                                updateApps={this.updateApps}
+                                filter={this.state.filter}
+                                updateFilter={this.updateFilter}/>
+                <AppList apps={this.mergeAppsWithDefaultAppFirst()}/>
+                {this.renderBanner()}
+                <LoadMore
+                    loading={this.state.loading}
+                    maybeMoreApps={this.state.maybeMoreApps}
+                    loadMoreApps={this.loadMoreApps}/>
+            </div>
+        );
     }
 });
 
 
-var SideBar = React.createClass({
-    getInitialState: function () {
-        return {
-            selectedLanguage: 'en',
-            geoAreaAncestorsUris: [],
-            searchText: '',
-            }; // TODO or in top level state ??
-    },
-    componentDidMount: function () {
-        var s = this.state;
-        s.selectedLanguage = this.props.currentLanguage; // init to current language
-        this.setState(s);
-    },
-    handleLanguageClicked: function (language) {
-        var s = this.state;
-        s.selectedLanguage = language;
-        this.setState(s);
-        this.search();
+var SearchAppsForm = React.createClass({
+    handleLanguageClicked: function(event) {
+        this.props.updateFilter(null, "selectedLanguage", event.target.value);
     },
     fullTextSearchChanged: function (event) {
-        var s = this.state;
-        s.searchText = event.target.value;
-        this.setState(s);
-    },
-    search: function (event) {
-        var filter = this.props.filter;
-        this.props.updateApps(filter.audience.citizens, filter.audience.publicbodies, filter.audience.companies, filter.payment.paid, filter.payment.free); // NB. also reinits
-    },
-    searchOnEnterDown: function (event) {
-        if (event.keyCode === 13) { // Enter key
-            this.search(event);
-        }
+        this.props.updateFilter(null, "searchText", event.target.value);
     },
     onGeoChange: function (event) {
-        this.state.geoAreaAncestorsUris = event.added ? event.added.ancestors : [];
-        this.search(event);
+        this.props.updateFilter(null, "geoAreaAncestorsUris", event.added ? event.added.ancestors : []);
     },
-    change: function (category, item) {
-        return function () {
-            // check that we can indeed change the box
-            var canChange = false;
-            for (var i in this.props.filter[category]) {
-                if (i != item) {
-                    if (this.props.filter[category][i] === true) {
-                        canChange = true;
-                        break;
-                    }
-                }
-            }
-            if (!canChange) return;
-
-            var filter = this.props.filter;
-            filter[category][item] = !(filter[category][item]);
-
-            //var state = this.state;
-            //state[category][item] = !(state[category][item]);
-            //this.setState(state);
-
-            this.props.updateApps(filter.audience.citizens, filter.audience.publicbodies, filter.audience.companies, filter.payment.paid, filter.payment.free);
-        }.bind(this);
+    onAudienceChange: function(event) {
+        this.props.updateFilter("audience", event.target.name, event.target.checked);
+    },
+    onPaymentChange: function(event) {
+        this.props.updateFilter("payment", event.target.name, event.target.checked);
     },
     render: function () {
         var languageComponents = this.props.languages.map(function(language, i) {
             return (
-                <li><a onClick={this.handleLanguageClicked.bind(this, language)} href="#">{ t(language) }</a></li>
+                <option key={i} value={language}>{ t(language) }</option>
             );
-        }.bind(this)); // else TypeError: this.handleLanguageClicked is undefined ; and if no previous bind, doesn't click
-        return (
-            <div className="col-md-4 sidebar">
-                <h2>
-                    <img src={image_root + "my/app-store.png"} /> {t('ui.appstore')}</h2>
+        });
 
-                <div className="locale-filter">
-                    <span>{t('languages-supported-by-applications')}</span>
-                    <div className="btn-group">
-                        <button type="button" className="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                            <span>{ t(this.state.selectedLanguage) }</span> <span className="caret"></span>
-                        </button>
-                        <ul className="dropdown-menu" role="menu">
-                            { languageComponents }
-                        </ul>
+        return (
+            <div className="container">
+
+                <div className="row form-horizontal" id="store-search">
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label htmlFor="language"
+                                   className="col-sm-4 control-label">{t('languages-supported-by-applications')}</label>
+
+                            <div className="col-sm-8">
+                                <select id="language" className="form-control" onChange={this.handleLanguageClicked}
+                                        value={this.props.filter.selectedLanguage}>
+                                    {languageComponents}
+                                </select>
+                            </div>
+                        </div>
+
+                        {/* geo-filer - filtering by jurisdiction (geoArea) */}
+                        <div className="form-group">
+                            <label htmlFor="geoSearch" className="col-sm-4 control-label">{t('geoarea')}</label>
+
+                            <div className="col-sm-8">
+                                <GeoSingleSelect2Component className="form-control" ref="geoSearch"
+                                                           onChange={this.onGeoChange} name="geoSearch"
+                                                           urlResources={store_service + "/geographicalAreas"}
+                                                           countryFilter={ {country_uri:''} }/>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label className="col-sm-4 control-label">{t('mode')}</label>
+
+                            <div className="col-sm-8">
+                                <label className="checkbox-inline">
+                                    <input type="checkbox" name="free" checked={this.props.filter.payment.free}
+                                           onChange={this.onPaymentChange}/>{t('free')}
+                                </label>
+                                <label className="checkbox-inline">
+                                    <input type="checkbox" name="paid" checked={this.props.filter.payment.paid}
+                                           onChange={this.onPaymentChange}/>{t('paid')}
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="col-md-6">
+                        <div className="form-group">
+                            <label htmlFor="fulltext" className="col-sm-4 control-label">{t('keywords')}</label>
+
+                            <div className="col-sm-8">
+                                <input type="text" id="fulltext" className="form-control"
+                                       onChange={this.fullTextSearchChanged}
+                                       placeholder={t('keywords')} name="fullTextSearch"/>
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <label className="col-sm-4 control-label">{t('audience')}</label>
+
+                            <div className="col-sm-8">
+                                <div className="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="citizens"
+                                               checked={this.props.filter.audience.citizens}
+                                               onChange={this.onAudienceChange}/>{t('citizens')}
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="publicbodies"
+                                               checked={this.props.filter.audience.publicbodies}
+                                               onChange={this.onAudienceChange}/>{t('publicbodies')}
+                                    </label>
+                                </div>
+                                <div className="checkbox">
+                                    <label>
+                                        <input type="checkbox" name="companies"
+                                               checked={this.props.filter.audience.companies}
+                                               onChange={this.onAudienceChange}/>{t('companies')}
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
-
-                {/* geo-filer - filtering by jurisdiction (geoArea) */}
-                <div>
-                <label htmlFor="geoSearch" className="">{t('look-for-an-application')}</label>
-                </div>
-                <div className="col-lg-13">
-                   <div>
-                       <GeoSingleSelect2Component className="form-control" ref="geoSearch" onChange={this.onGeoChange} name="geoSearch"
-                            urlResources={store_service + "/geographicalAreas"} countryFilter={ {country_uri:''} } />
-                   </div>
-                   <div className="input-group">
-                      <input type="text" className="form-control" onChange={this.fullTextSearchChanged} onKeyDown={this.searchOnEnterDown} placeholder={t('keywords')} name="fullTextSearch"/>
-                       <span className="input-group-btn">
-                          <button className="btn btn-default" type="button" onClick={this.search}><img className="btn-search" src="/img/icon/btn-search.png"/></button>
-                       </span>
-                   </div>
-                </div>
-
-                <div className="checkbox">
-                    <label>
-                        <input type="checkbox" checked={this.props.filter.audience.citizens} onChange={this.change('audience', 'citizens')}/>{t('citizens')}
-                    </label>
-                </div>
-                <div className="checkbox">
-                    <label>
-                        <input type="checkbox" checked={this.props.filter.audience.publicbodies} onChange={this.change('audience', 'publicbodies')}/>{t('publicbodies')}
-                    </label>
-                </div>
-                <div className="checkbox">
-                    <label>
-                        <input type="checkbox" checked={this.props.filter.audience.companies} onChange={this.change('audience', 'companies')} />{t('companies')}
-                    </label>
-                </div>
-                <div></div>
-
-                <div className="checkbox">
-                    <label>
-                        <input type="checkbox" checked={this.props.filter.payment.free} onChange={this.change('payment', 'free')} />{t('free')}
-                    </label>
-                </div>
-                <div className="checkbox">
-                    <label>
-                        <input type="checkbox" checked={this.props.filter.payment.paid} onChange={this.change('payment', 'paid')} />{t('paid')}
-                    </label>
-                </div>
             </div>
-            );
-    },
-    renderOldLanguageDropdown: function () {
-        return (
-                <div className="">
-                <ul className="nav navbar-nav">
-                <li className=""><label htmlFor="searchLocale" className="">{t('languages-supported-by-applications')}</label></li>
-                <li className="dropdown dropdown-lang search-locale" name="searchLocale">
-                    <a style={{  color: '#636884', fontSize: '18px' }} href="#" className="dropdown-toggle" data-toggle="dropdown">
-                        <span>{ t(this.state.selectedLanguage) }</span>
-                        <i className="caret"></i></a>
-                    <ul className="dropdown-menu">
-                        { languageComponents }
-                    </ul>
-                </li>
-                </ul>
-                </div>
-            );
+        );
     }
 });
 
 var AppList = React.createClass({
-    render: function () {
+    render: function() {
         var apps = this.props.apps.map(function (app) {
             return (
                 <App key={app.id} app={app} />
-                );
-        }.bind(this));
-
+            );
+        });
 
         return (
-            <div className="col-md-8 app-store-result">
-            {apps}
+            <div className="container-fluid">
+                <div className="row" id="store-apps">
+                    <div className="col-md-12">
+                        <div className="row clearfix">
+                            {apps}
+                        </div>
+                    </div>
+                </div>
             </div>
-            );
+        );
     }
 });
 
@@ -345,14 +303,18 @@ var LoadMore = React.createClass({
         } else if (this.props.maybeMoreApps) {
             loading = (
                 <div className="text-center">
-                    <button className="btn btn-primary" onClick={this.props.loadMoreApps}>Load more</button>
+                    <button className="btn btn-lg oz-btn-loadmore" onClick={this.props.loadMoreApps}>{t('load-more')}</button>
                 </div>
             );
         }
 
         return (
-            <div className="col-md-8 col-md-offset-4">
-            {loading}
+            <div className="container-fluid">
+                <div className="row" id="store-loadmore">
+                    <div className="col-md-12">
+                        {loading}
+                    </div>
+                </div>
             </div>
         );
 
@@ -377,22 +339,26 @@ var App = React.createClass({
                     <i className="triangle fa fa-institution"></i>
                 </div>
             </div> : null;
-        return (
-            <div>
-                <AppModal ref="appmodal" app={this.props.app}/>
-                <div className="hit text-center" onClick={this.openApp}>
 
-                    {pubServiceIndicator}
+        return (
+            <div className="col-md-3 col-sm-6 col-xs-12">
+                <AppModal ref="appmodal" app={this.props.app}/>
+                <div className="logo">
                     <img src={this.props.app.icon} />
-                    <p className="appname">{this.props.app.name}</p>
-                    <div className="caption">
-                        <p>{this.props.app.provider}</p>
-                        <p className="appdescription">{this.props.app.description}</p>
+                </div>
+                <div className="app">
+                    <div className="description" onClick={this.openApp}>
+                        {pubServiceIndicator}
+                        <div className="app-header">
+                            <span className="app-name">{this.props.app.name}</span>
+                            <p className="app-provider">{this.props.app.provider}</p>
+                        </div>
+                        <p className="app-description">{this.props.app.description}</p>
+                        <Indicator status={indicatorStatus} />
                     </div>
-                    <Indicator status={indicatorStatus} />
                 </div>
             </div>
-            );
+        );
     }
 });
 
@@ -400,31 +366,76 @@ var Indicator = React.createClass({
     render: function () {
         var btns;
         var status = this.props.status;
-        if (status == "installed") {
+        if (status === "installed") {
             btns = [
-                <button key="indicator_button" className="btn btn-indicator btn-indicator-installed">{t('installed')}</button>,
-                <button key="indicator_icon" className="btn btn-indicator btn-indicator-installed-icon">
+                <button type="button" key="indicator_button" className="btn btn-lg btn-installed">{t('installed')}</button>,
+                <button type="button" key="indicator_icon" className="btn btn-lg btn-installed-indicator">
                     <i className="fa fa-check"></i>
                 </button>
             ];
-        } else if (status == "free") {
+        } else if (status === "free") {
             btns = [
-                <button key="indication_button" className="btn btn-indicator btn-indicator-available">{t('free')}</button>
+                <button type="button" key="indicator_button" className="btn btn-lg btn-free">{t('free')}</button>,
+                <button type="button" key="indicator_icon" className="btn btn-lg btn-free-indicator">
+                    <i className="fa fa-gift"></i>
+                </button>
             ];
         } else {
             btns = [
-                <button key="indicator_button" className="btn btn-indicator btn-indicator-available">{t('paid')}</button>,
-                <button key="indicator_icon" className="btn btn-indicator btn-indicator-available-icon">
+                <button type="button" key="indicator_button" className="btn btn-lg btn-buy">{t('paid')}</button>,
+                <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
                     <i className="fa fa-eur"></i>
                 </button>
             ];
         }
 
         return (
-            <div className="btn-group indicator">
-            {btns}
+            <div className="app-status text-center">
+                {btns}
             </div>
-            );
+        );
+    }
+});
+
+var JoinBanner = React.createClass({
+    getInitialState: function() {
+        return {
+            visible: true
+        }
+    },
+    hideAd: function() {
+        this.setState({ visible: false });
+    },
+    render: function() {
+        // FIXME : remove this hard-coded part of the URL
+        var joinUsLink = webHome + "/" + currentLanguage + "/oz/co-construire";
+        var divClassName = this.state.visible ? "container-fluid" : "container-fluid hidden";
+
+        return (
+            <div className={divClassName}>
+                <div className="row" id="store-ad">
+                    <div className="col-md-6">
+                        <h2>
+                            {t('ad.title.part1')} <strong>{t('ad.title.part2')}</strong> ?
+                        </h2>
+                        <p className="ozwillo-desc">
+                            {t('ad.description')}
+                        </p>
+                        <a className="btn btn-default-inverse btn-lg join" href={joinUsLink}>
+                            {t('ad.joinUs')}&nbsp;
+                            <img src={image_root + "../img/new/arrow-white.png"} />
+                        </a>
+                    </div>
+
+                    <div className="col-md-6">
+                        <img src={image_root + "new/appli-catalogue.png"} className="img-responsive" />
+                        <img src={image_root + "new/cross.png"} className="close-ad" data-toggle="tooltip" data-placement="bottom"
+                             title={t('ui.close')} onClick={this.hideAd} />
+                    </div>
+
+                </div>
+            </div>
+        );
     }
 });
 

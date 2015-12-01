@@ -12,7 +12,9 @@
 
 var UserPicker = React.createClass({
   getInitialState: function() {
-    return {users:[]};
+    return {
+      users:[]
+    };
   },
   init: function() {
     var cpt = this;
@@ -41,17 +43,15 @@ var UserPicker = React.createClass({
       users.push(user);
       this.setState({users:users});
     }
-
   },
   render: function() {
-    var removeUser = this.removeUser;
     var usersList = this.state.users.map(function(user) {
-      return <User key={user.userid} user={user} remove={removeUser} />;
-    });
+      return <User key={user.userid} user={user} remove={this.removeUser} />;
+    }.bind(this));
 
     return (
       <div>
-        <table className="table">
+        <table className="table table-striped table-responsive">
           <thead>
             <tr>
               <th>{t('name')}</th>
@@ -63,7 +63,7 @@ var UserPicker = React.createClass({
           </tbody>
         </table>
         <div className="row">
-            <div className="col-sm-10 col-sm-offset-1">
+            <div className="col-sm-10">
                 <Typeahead onSelect={this.addUser} source={this.props.source} placeholder={t('settings-add-a-user')}/>
             </div>
         </div>
@@ -80,7 +80,7 @@ var User = React.createClass({
     return (
       <tr>
         <td>{this.props.user.fullname}</td>
-        <td><button className="btn btn-default" onClick={this.remove}><i className="fa fa-minus-circle"></i></button></td>
+        <td><button className="btn oz-btn-danger" onClick={this.remove}><i className="fa fa-trash"></i></button></td>
       </tr>
     );
   }

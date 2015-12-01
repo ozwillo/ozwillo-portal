@@ -26,9 +26,11 @@ var SearchOrCreateHeader = React.createClass({
     render: function() {
         return (
             <div className="row add-organization-action">
-                <a className="btn btn-success pull-right" role="button" href="#" onClick={this.props.showDialog}>
-                    {t('my.network.add-organization')}
-                </a>
+                <div className="col-md-12">
+                    <button type="button" className="btn btn-default pull-right" onClick={this.props.showDialog}>
+                        {t('my.network.add-organization')}
+                    </button>
+                </div>
             </div>
         );
     }
@@ -69,9 +71,7 @@ var OrganizationsList = React.createClass({
                 );
             });
             return (
-                <div>
-                    <div className="organizations">{orgs}</div>
-                </div>
+                <div className="organizations">{orgs}</div>
             );
         }
     }
@@ -251,12 +251,10 @@ var Organization = React.createClass({
         if (this.props.org.admin) {
             var remove = this.removeMember;
             var updateMember = this.updateMember;
-            var members = this.props.org.members.map(function (member) {
+            return this.props.org.members.map(function (member) {
                 return <Member key={member.id} member={member}
 			             remove={remove} updateMember={updateMember}/>
             });
-
-            return members;
         } else {
             return this.props.org.members.map(function (member) {
                 return <ReadOnlyMember key={member.id} member={member} />
@@ -265,14 +263,11 @@ var Organization = React.createClass({
     },
     renderPendingMemberships: function() {  //Pending Membership
         if (this.props.org.admin) {
-	    var removeInvitation = this.removeInvitation;
-	    var pendingMemberships = this.props.org.pendingMemberships.map(
-	        function (pMember) {
+	        var removeInvitation = this.removeInvitation;
+            return this.props.org.pendingMemberships.map(function (pMember) {
 	            return <PendingMembership key={pMember.id} pMember={pMember}
                         removeInvitation={removeInvitation}  />
             });
-
-            return pendingMemberships;
         }
     },
     render: function() {
@@ -301,7 +296,7 @@ var Organization = React.createClass({
             
             if (this.props.org.admin) {
                 buttons.push(
-                    <a key="confirmUntrash" className="btn btn-danger" onClick={this.confirmUntrash}>{t('ui.cancel')}...</a>
+                    <button type="button" key="confirmUntrash" className="btn btn-danger btn-sm pull-right" onClick={this.confirmUntrash}>{t('ui.cancel')}</button>
                 );
                 
                 var confirmUntrashTitle = t('my.network.confirm-untrash.title') + ' ' + this.props.org.name;
@@ -315,31 +310,28 @@ var Organization = React.createClass({
             
         } else {
 
-            var buttons = [
-                <a key="info" className="btn btn-primary-inverse" onClick={this.showInformation}>{t('my.network.information')}</a>
-            ];
-            var dialogs = [
+            buttons.push(
+                <button type="button" key="info" className="btn btn-default btn-sm btn-line" onClick={this.showInformation}>{t('my.network.information')}</button>
+            );
+
+            dialogs.push(
                 <LeaveDialog ref="leaveDialog" onSubmit={this.leave}/>,
                 <InformationDialog ref="infoDialog" org={this.props.org} onUpdate={this.props.reload} />
-            ];
+            );
             
 	        if (this.props.org.admin) {
+                buttons.push(
+                    <button type="button" key="invite" className="btn btn-default btn-sm btn-line" onClick={this.openInvitation}>{t('my.network.invite')}</button>
+                );
+
                 if (this.props.org.members.filter(function (m) {
                     return m.admin;
                 }).length != 1) {
                     // admins can leave only if there will still be another admin
                     buttons.push(
-                        <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('my.network.leave')}</a>
+                        <button type="button" key="leave" className="btn btn-warning btn-sm btn-line" onClick={this.confirmLeave}>{t('my.network.leave')}</button>
                     );
                 }
-
-                buttons.push(
-                    <a key="invite" className="btn btn-success-inverse" onClick={this.openInvitation}>{t('my.network.invite')}</a>
-                );
-
-                buttons.push(
-                    <a key="confirmTrash" className="btn btn-danger" onClick={this.confirmTrash}>{t('ui.delete')}...</a>
-                );
 
                 dialogs.push(
                     <InviteDialog ref="inviteDialog"
@@ -350,10 +342,14 @@ var Organization = React.createClass({
                     errors={this.state.invite.errors}/>
                 );
 
+                buttons.push(
+                    <button type="button" key="confirmTrash" className="btn btn-danger btn-sm" onClick={this.confirmTrash}>{t('ui.delete')}</button>
+                );
+
                 var confirmTrashTitle = t('my.network.confirm-trash.title') + ' ' + this.props.org.name;
                 dialogs.push(
                     <Modal ref="confirmTrashDialog" title={confirmTrashTitle} successHandler={this.trash}
-                                     buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                           buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} saveButtonClass="oz-btn-danger" >
                         {t('my.network.confirm-trash.body')}
                     </Modal>
                 );
@@ -362,66 +358,56 @@ var Organization = React.createClass({
 	        } else {
 	            // non-admins can leave at any time
 	            buttons.push(
-	                <a key="leave" className="btn btn-warning-inverse" onClick={this.confirmLeave}>{t('my.network.leave')}</a>
+	                <button type="button" key="leave" className="btn btn-warning btn-sm" onClick={this.confirmLeave}>{t('my.network.leave')}</button>
 	            );
 	        }
         }
 
         return (
-            <div className="standard-form">
+            <div className="organization">
                 {dialogs}
-                <div className="row form-table-header">
-                    <div className="col-sm-6"><span title={this.props.org.id}>{this.props.org.name}</span></div>
+                <div className="row organization-header">
                     <div className="col-sm-6">
-                        {buttons}
+                        <h4 title={this.props.org.id}>{this.props.org.name}</h4>
+                    </div>
+                    <div className="col-sm-6">
+                        <div className="pull-right">
+                            {buttons}
+                        </div>
                     </div>
                 </div>
                 {membersList}
                 {pendingMembershipList}
             </div>
-            );
+        );
     }
 });
 
-// Pending Membership
 var PendingMembership = React.createClass({
     getInitialState: function() {
         return {pMember: this.props.pMember};
     },
-    renderUserTypeInvitation: function() {
-        var admin = this.state.pMember.admin;
-
-        return admin ? t('my.network.admin') : t('my.network.user');
-
-    },
     removeMembershipInvitation: function (event) {
         event.preventDefault();
         this.props.removeInvitation(this.state.pMember);
-
     },
     render: function() {
         var pMember = this.state.pMember;
-        //var adminStatus = this.renderUserTypeInvitation();
-
-        var actions = (
-            <div className="col-sm-2 col-sm-offset-1">
-                <a className="lnk remove" href="#"  onClick={this.removeMembershipInvitation} >
-                    <i className="fa fa-trash"></i>{t('ui.delete')}</a>
-            </div>
-        );
-
 
         return (
-            <div key={pMember.id} className="row form-table-row-italics">
-                <div className="col-sm-4">{pMember.email}</div>
-                <div className="col-sm-4">{t('my.network.organization.pending-invitation') }</div>
-                {actions}
+            <div key={pMember.id} className="row organization-pending-member-row">
+                <div className="col-sm-3">{pMember.email}</div>
+                <div className="col-sm-3">{t('my.network.organization.pending-invitation') }</div>
+                <div className="col-sm-6">
+                    <span className="pull-right action-icon" onClick={this.removeMembershipInvitation}>
+                        <i className="fa fa-trash"></i>
+                    </span>
+                </div>
             </div>
-       );
+        );
     }
 });
 
-// Organization members
 var Member = React.createClass({
     getInitialState: function() {
         return {edit:false, member: this.props.member};
@@ -441,6 +427,11 @@ var Member = React.createClass({
         this.props.updateMember(this.state.member);
         this.toggleEdit(null);
     },
+    changeUserRole: function(event) {
+        var member = this.state.member;
+        member.admin = event.target.value === 'admin';
+        this.setState({ member: member});
+    },
     renderAdmin: function() {
         var admin = this.state.member.admin;
         var edit = this.state.edit;
@@ -450,40 +441,35 @@ var Member = React.createClass({
         } else {
             return (
                 <div>
-                    <input className="switch" type="checkbox" checked={admin} onChange={function () {
-                        var state = this.state;
-                        state.member.admin = !admin;
-                        this.setState(state);
-                    }.bind(this)}></input>
-                    <label>{admin ? t('my.network.admin') : t('my.network.user')}</label>
+                    <select name="role-switch" onChange={this.changeUserRole} value={admin ? 'admin' : 'user'}>
+                        <option value="admin">{t('my.network.admin')}</option>
+                        <option value="user">{t('my.network.user')}</option>
+                    </select>
                 </div>
-                );
+            );
         }
     },
     render: function() {
         var member = this.state.member;
-        var remove = this.props.remove;
-        var toggleEdit = this.toggleEdit;
-        var save = this.save;
 
         var actions = null;
         if (! member.self) {
             if (! this.state.edit) {
                 actions = (
-                    <div className="col-sm-4 col-sm-offset-1">
-                        <a className="lnk edit" href="#" onClick={toggleEdit}>
-                            <i className="fa fa-pencil"></i>{t('ui.edit')}</a>
-                        <a className="lnk remove" href="#"  onClick={remove(member)}>
-                            <i className="fa fa-trash"></i>{t('ui.remove')}</a>
+                    <div className="col-sm-6">
+                        <span className="pull-right action-icon" onClick={this.props.remove(member)}>
+                            <i className="fa fa-trash"></i>
+                        </span>
+                        <span className="pull-right btn-line action-icon" onClick={this.toggleEdit}>
+                            <i className="fa fa-pencil"></i>
+                        </span>
                     </div>
                     );
             } else {
                 actions = (
-                    <div className="col-sm-4 col-sm-offset-1">
-                        <a className="lnk accept" href="#" onClick={save}>
-                            <i className="fa fa-check"></i>{t('ui.save')}</a>
-                        <a className="lnk cancel" href="#" onClick={toggleEdit}>
-                            <i className="fa fa-times"></i>{t('ui.cancel')}</a>
+                    <div className="col-sm-6">
+                        <button type="button" className="btn oz-btn-cancel btn-xs pull-right" onClick={this.toggleEdit}>{t('ui.cancel')}</button>
+                        <button type="button" className="btn oz-btn-save btn-xs btn-line pull-right" onClick={this.save}>{t('ui.save')}</button>
                     </div>
                     );
             }
@@ -492,19 +478,19 @@ var Member = React.createClass({
         var adminStatus = this.renderAdmin();
 
         return (
-            <div key={member.id} className="row form-table-row">
+            <div key={member.id} className="row organization-member-row">
                 <div className="col-sm-3">{member.name}</div>
                 <div className="col-sm-3">{adminStatus}</div>
-                    {actions}
+                {actions}
             </div>
-            );
+        );
     }
 });
 
 var ReadOnlyMember = React.createClass({
     render: function () {
         return (
-            <div key={this.props.member.id} className="row form-table-row">
+            <div key={this.props.member.id} className="row organization-member-row">
                 <div className="col-sm-3">{this.props.member.name}</div>
                 <div className="col-sm-3">{this.props.member.self ? t('my.network.user') : t('my.network.admin')}</div>
             </div>
@@ -529,13 +515,14 @@ var InviteDialog = React.createClass({
     render: function() {
         if (this.props.admin) {
             var inviteButtonLabels = {"save": t('my.network.invite'), "cancel": t('ui.cancel')};
-            var labelClassName = ($.inArray("email", this.props.errors) == -1 ? 'col-sm-4' : 'col-sm-4 error');
-            var generalError = ($.inArray("general", this.props.errors) != -1 ? <p className="alert alert-danger" role="alert">{t('ui.general-error')}</p> : null)
+            var formGroupClass = $.inArray("email", this.props.errors) !== -1 ? 'form-group has-error' : 'form-group';
+            var generalError = ($.inArray("general", this.props.errors) != -1 ? <div className="alert alert-danger" role="alert">{t('ui.general-error')}</div> : null);
+
             return (
                 <Modal ref="modal" title={t('my.network.invite')} successHandler={this.props.onSubmit} buttonLabels={inviteButtonLabels}>
                     <form className="form-horizontal" onSubmit={this.props.onSubmit}>
-                        <div className="form-group">
-                            <label htmlFor="email" className={labelClassName}>{t('my.network.email')}</label>
+                        <div className={formGroupClass}>
+                            <label htmlFor="email" className="col-sm-4 control-label required">{t('my.network.email')} * </label>
                             <div className="col-sm-8">
                                 <input className="form-control" id="email" type="text" value={this.props.email} onChange={this.props.onChange} placeholder="name@domain.eu"/>
                             </div>
@@ -543,7 +530,7 @@ var InviteDialog = React.createClass({
                         {generalError}
                     </form>
                 </Modal>
-                );
+            );
         } else return null;
     }
 });
@@ -558,7 +545,7 @@ var LeaveDialog = React.createClass({
     render: function() {
         var leaveButtonLabels = {'cancel': t('ui.cancel'), 'save': t('my.network.yes-i-want-to-leave')};
         return (
-            <Modal ref="modal" title={t('my.network.leave')} successHandler={this.props.onSubmit} buttonLabels={leaveButtonLabels}>
+            <Modal ref="modal" title={t('my.network.leave')} successHandler={this.props.onSubmit} buttonLabels={leaveButtonLabels} saveButtonClass="oz-btn-danger">
                 <p>{t('my.network.confirm-leave')}</p>
             </Modal>
             );
@@ -610,9 +597,6 @@ var InformationDialog = React.createClass({
     },
 
     render: function() {
-        var territoryId = (this.props.org.territory_id) ? (
-                <p>{t('ui.location')} : {this.props.org.territory_label}</p>
-        ) : '';
         var errorModal = (
             <Modal ref="modalOrgInfoError" title={t('my.network.information')} infobox={true} cancelHandler={null/*this.close()*/} >
                 {/*<div><h5>{t('error.datacore.forbidden')}</h5></div>*/}

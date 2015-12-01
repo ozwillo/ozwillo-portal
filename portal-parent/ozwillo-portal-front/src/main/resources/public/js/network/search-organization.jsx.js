@@ -23,12 +23,14 @@ var SearchOrganizationModal = React.createClass({
     },
     render: function () {
         return (
-            <div className="modal fade">
-                <div className='modal-dialog modal-lg'>
+            <div className="modal fade" tabIndex="-1" role="dialog" aria-labelledby="modalLabel">
+                <div className='modal-dialog modal-lg' role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" onClick={this.close}>&times;</button>
-                            <h3>{t('search.organization.search-organization')}</h3>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true"><img src={image_root + "new/cross.png"} /></span>
+                            </button>
+                            <h4 className="modal-title" id="modalLabel">{t('search.organization.search-organization')}</h4>
                         </div>
                         <SearchOrganizationForm ref="form"
                                                 successHandler={this.openCreateOrModify}
@@ -53,10 +55,12 @@ var SearchOrganizationForm = React.createClass({
         this.setState({ country: country, country_uri: country_uri });
     },
     resetSearchVals: function() {
-        this.refs.legal_name.getDOMNode().value = '';
-        this.refs.tax_reg_num.getDOMNode().value = '';
-        this.refs.sector_type_PUBLIC_BODY.getDOMNode().checked = false;
-        this.refs.sector_type_COMPANY.getDOMNode().checked = false;
+        if (this.state.country) {
+            this.refs.legal_name.getDOMNode().value = '';
+            this.refs.tax_reg_num.getDOMNode().value = '';
+            this.refs.sector_type_PUBLIC_BODY.getDOMNode().checked = false;
+            this.refs.sector_type_COMPANY.getDOMNode().checked = false;
+        }
         this.refs.country.getUserCountry();
         this.setState({ errors: [] });
     },
@@ -105,33 +109,26 @@ var SearchOrganizationForm = React.createClass({
             this.setState({ errors: errors });
         }
     },
-    renderLabel: function(htmlFor, class_name, label){
-        var cn = ($.inArray(class_name, this.state.errors) != -1 ? 'col-sm-3 control-label error' : 'col-sm-3 control-label');
+    renderLabel: function(htmlFor, label){
         return (
-            <label htmlFor={htmlFor} className={cn}>{label}
-                <label className="error">&nbsp;*</label>
-            </label>
+            <label htmlFor={htmlFor} className="col-sm-3 control-label required">{label} *</label>
         );
     },
     renderSectorType: function () {
         if (this.state.country) {
-            var sectorTypeClassName = 'col-sm-3 control-label';
-            sectorTypeClassName = ($.inArray('sector_type', this.state.errors) != -1 ? sectorTypeClassName + ' error' : sectorTypeClassName);
+            var formGroupClass = ($.inArray('sector_type', this.state.errors) != -1) ? 'form-group has-error' : 'form-group';
 
             return (
-                <div className="form-group">
-                    <label htmlFor="organization-sector-type"
-                           className={sectorTypeClassName}>{t('search.organization.sector-type')}
-                        <label className="error">&nbsp;*</label>
-                    </label>
+                <div className={formGroupClass}>
+                    <label className="col-sm-3 control-label required">{t('search.organization.sector-type')} * </label>
                     <div className="col-sm-8">
                         <label className="radio-inline col-sm-3">
-                            <input type="radio" value="PUBLIC_BODY" ref="sector_type_PUBLIC_BODY">
+                            <input type="radio" name="sector_type" value="PUBLIC_BODY" ref="sector_type_PUBLIC_BODY">
                                 {t('search.organization.sector-type.PUBLIC_BODY')}
                             </input>
                         </label>
                         <label className="radio-inline col-sm-3">
-                            <input type="radio" value="COMPANY" ref="sector_type_COMPANY">
+                            <input type="radio" name="sector_type" value="COMPANY" ref="sector_type_COMPANY">
                                 {t('search.organization.sector-type.COMPANY')}
                             </input>
                         </label>
@@ -142,9 +139,10 @@ var SearchOrganizationForm = React.createClass({
     },
     renderLegalName: function() {
         if (this.state.country) {
+            var formGroupClass = ($.inArray('legal_name', this.state.errors) != -1) ? 'form-group has-error' : 'form-group';
             return (
-                <div className="form-group">
-                    {this.renderLabel("organization-name", 'legal_name', t('search.organization.legal-name'))}
+                <div className={formGroupClass}>
+                    {this.renderLabel("legal_name", t('search.organization.legal-name'))}
                     <div className="col-sm-8">
                         <input type="text" id="legal_name" className="form-control" maxLength="100" ref="legal_name" />
                     </div>
@@ -163,11 +161,12 @@ var SearchOrganizationForm = React.createClass({
                 case 'Türkiye'  : taxRegNumLabel = t('search.organization.business-id.tr'); break;
                 default         : taxRegNumLabel = t('search.organization.business-id.en'); break;
             }
+            var formGroupClass = ($.inArray('tax_reg_num', this.state.errors) != -1) ? 'form-group has-error' : 'form-group';
             return (
-                <div className="form-group">
-                    {this.renderLabel("organization-business-id", 'tax_reg_num', taxRegNumLabel)}
+                <div className={formGroupClass}>
+                    {this.renderLabel("tax_reg_num", taxRegNumLabel)}
                     <div className="col-sm-8">
-                        <input type="text" className="form-control" maxLength="20" ref="tax_reg_num"/>
+                        <input type="text" id="tax_reg_num" className="form-control" maxLength="20" ref="tax_reg_num"/>
                     </div>
                 </div>
             )
@@ -176,11 +175,18 @@ var SearchOrganizationForm = React.createClass({
     renderGeneralErrorMessage: function() {
         if ($.inArray('general', this.state.errors) != -1) {
             return (
-                <label className="error">{t('search.organization.cannot-be-used')}</label>
+                <div className="alert alert-danger">{t('search.organization.cannot-be-used')}</div>
             )
         } else if ($.inArray('technical', this.state.errors) != -1) {
             return (
-                <label className="error">{t('search.organization.technical-problem')}</label>
+                <div className="alert alert-danger">{t('search.organization.technical-problem')}</div>
+            )
+        }
+    },
+    renderSearchButton: function() {
+        if (this.state.country) {
+            return (
+                <button type="submit" key="success" className="btn btn-default-inverse" onClick={this.searchOrganization}>{t('ui.search')}</button>
             )
         }
     },
@@ -191,8 +197,8 @@ var SearchOrganizationForm = React.createClass({
                     <form onSubmit={this.searchOrganization} className="form-horizontal">
                         <div className="form-group">
                             <div className="form-group">
-                                {this.renderLabel("organization-country-name", 'country', t('search.organization.country'))}
-                                <div className="col-sm-5">
+                                {this.renderLabel("country", t('search.organization.country'))}
+                                <div className="col-sm-8">
                                     <CountrySelect className="form-control"
                                                    ref="country"
                                                    url={store_service + "/dc-countries"}
@@ -207,8 +213,8 @@ var SearchOrganizationForm = React.createClass({
                     {this.renderGeneralErrorMessage()}
                 </div>
                 <div className="modal-footer">
-                    <button key="cancel" className="btn btn-default" onClick={this.props.cancelHandler}>{t('ui.cancel')}</button>
-                    <button key="success" className="btn btn-primary" onClick={this.searchOrganization}>{t('ui.search')}</button>
+                    <button type="button" key="cancel" className="btn oz-btn-cancel" onClick={this.props.cancelHandler}>{t('ui.cancel')}</button>
+                    {this.renderSearchButton()}
                 </div>
             </div>
         );
@@ -289,7 +295,7 @@ var CountrySelect = React.createClass({
 
         // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-based function decodeURIComponent()
         return (
-            <select className="btn btn-default dropdown-toggle" ref="country"
+            <select className="form-control" id="country" ref="country"
                     value={this.state.country_uri} onChange={this.handleCountryChange} >
                 {options}
             </select>

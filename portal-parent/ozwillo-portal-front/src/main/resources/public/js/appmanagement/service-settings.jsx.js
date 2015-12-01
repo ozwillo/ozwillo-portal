@@ -19,7 +19,6 @@ var Service = React.createClass({
         this.setState(state);
     },
     saveService: function() {
-
         $.ajax({
             url: apps_service + "/service/" + this.props.service.service.id,
             type: 'post',
@@ -40,8 +39,6 @@ var Service = React.createClass({
                 console.error(apps_service + "/service/" + this.props.service.service.id, status, err.toString());
             }.bind(this)
         });
-
-
     },
     reloadService: function() {
         $.ajax({
@@ -99,12 +96,12 @@ var Service = React.createClass({
             }.bind(this)
         });
     },
-    queryUsers: function(query, callback) {
+    queryUsers: function(query, syncCallback, asyncCallback) {
         $.ajax({
             url: apps_service + "/users/instance/" + this.props.instance + "?app_admin=true&q=" + query, // also app_admin !app_user users
             dataType:"json",
             type:'get',
-            success:callback,
+            success:asyncCallback,
             error: function(xhr, status, err) {
                 console.error(apps_service + "/users/instance/" + this.props.instance + "?q=" + query, status, err.toString())
             }.bind(this)
@@ -114,19 +111,25 @@ var Service = React.createClass({
         $("a.tip", this.getDOMNode()).tooltip();
     },
     render: function () {
-        var links = [
-            <button onClick={this.settings} className="btn btn-default tip" disabled={this.props.status === 'STOPPED'}
-                data-toggle="tooltip" data-placement="top" title={t('settings')}><i className="fa fa-cog"></i></button>
-        ];
-        if (! this.state.saved_service.service.visible) {
+        var links = [];
+        if (this.props.status !== 'STOPPED') {
             links.push(
-                <button onClick={this.pushToDash} className="btn btn-default tip" disabled={this.props.status === 'STOPPED'}
-                    data-toggle="tooltip" data-placement="top" title={t('users')}><i className="fa fa-home"></i></button>
+                <span className="pull-right action-icon" onClick={this.settings}>
+                    <i className="fa fa-cog fa-lg"></i>
+                </span>
+            );
+        }
+
+        if (!this.state.saved_service.service.visible && this.props.status !== 'STOPPED') {
+            links.push(
+                <span className="pull-right btn-line action-icon" onClick={this.pushToDash}>
+                    <i className="fa fa-home fa-lg"></i>
+                </span>
             );
         }
 
         return (
-            <div className="row form-table-row">
+            <div className="row authority-app-services">
                 <div className="col-sm-10">{this.state.saved_service.service.name}</div>
                 <div className="col-sm-2">{links}</div>
                 <ServiceSettings ref="settings" service={this.state.service} errors={this.state.field_errors} update={this.updateServiceLocally} save={this.saveService}/>
@@ -135,27 +138,23 @@ var Service = React.createClass({
                     <UserPicker ref="users" users={this.loadUsers} source={this.queryUsers} />
                 </Modal>
             </div>
-            );
+        );
     }
 });
 
 
 var FormField = React.createClass({
     render: function() {
-        var className;
-        if (this.props.error) {
-            className = "control-label col-sm-2 error";
-        } else {
-            className = "control-label col-sm-2";
-        }
+        var className = this.props.error ? "form-group has-error" : "form-group";
+
         return (
-            <div className="form-group">
-                <label htmlFor={this.props.name} className={className}>{t(this.props.name)}</label>
-                <div className="col-sm-10">
-                {this.props.children}
+            <div className={className}>
+                <label htmlFor={this.props.name} className="control-label col-sm-3">{t(this.props.name)}</label>
+                <div className="col-sm-9">
+                    {this.props.children}
                 </div>
             </div>
-            );
+        );
     }
 });
 
@@ -196,30 +195,26 @@ var ServiceSettings = React.createClass({
         this.state.service.iconUrl = servedImageUrlData; // not required, inited by server to the Kernel service's
         this.setState(state);
     },
-    /*clearIconImage: function() {
-        this.props.update('icon', '');
-    },*/
-
     render: function() {
-        var iconClassName = "control-label col-sm-2";
+        var divIconClassName = "form-group";
         if ($.inArray("icon", this.props.errors) != -1) {
-            iconClassName = iconClassName + " error";
+            divIconClassName = divIconClassName + " has-error";
         }
 
         var visibility = null;
         if (!this.props.service.service.restricted) {
             visibility = (
                 <div className="form-group">
-                    <div className="col-sm-10 col-sm-offset-2">
+                    <label htmlFor="published" className="control-label col-sm-3">{this.props.service.service.visible ? t('published') : t('notpublished')}</label>
+                    <div className="col-sm-9">
                         <input className="switch" type="checkbox" id="published" checked={this.props.service.service.visible} onChange={this.handleChange('visible', true)} />
-                        <label htmlFor="published">{this.props.service.service.visible ? t('published') : t('notpublished')}</label>
                     </div>
                 </div>
             );
         } else {
             visibility = (
                 <div className="form-group">
-                    <div className="col-sm-10 col-sm-offset-2">
+                    <div className="col-sm-9 col-sm-offset-3">
                         <p>{t('restricted-service')}</p>
                     </div>
                 </div>
@@ -230,50 +225,48 @@ var ServiceSettings = React.createClass({
             <Modal title={this.props.service.name} ref="modal" successHandler={this.props.save} large={true}>
                 <form className="form-horizontal"  role="form">
                     <FormField name="name" error={$.inArray("name", this.props.errors) != -1}>
-                        <input type="text" name="name" id="name" className="form-control" value={this.props.service.service.name} onChange={this.handleChange("name")}></input>
+                        <input type="text" name="name" id="name" className="form-control" value={this.props.service.service.name}
+                               onChange={this.handleChange("name")}></input>
                     </FormField>
                     <FormField name="description" error={$.inArray("description", this.props.errors) != -1}>
                         <textarea name="description" id="description" className="form-control" value={this.props.service.service.description}
                             onChange={this.handleChange("description")}></textarea>
                     </FormField>
 
-                    <div className="form-group">
-                        <label htmlFor="icon" className={iconClassName}>{t('icon')}</label>
-                        <div className="controls col-sm-1">
+                    <div className={divIconClassName}>
+                        <label htmlFor="icon" className="control-label col-sm-3">{t('icon')}</label>
+                        <div className="col-sm-1">
                             <img src={this.state.refreshedIconUrl} />
                         </div>
-                        <div className="controls col-sm-9">
-                            <input name="icon" type="text" id="icon" className="form-control" value={this.props.service.service.icon} onChange={this.handleChange('icon')}/>
+                        <div className="col-sm-8">
+                            <input name="icon" type="text" id="icon" className="form-control" value={this.props.service.service.icon}
+                                   onChange={this.handleChange('icon')}/>
                         </div>
-                        {/* NO clearIcon feature yet, because can't get back the service original icon once overwritten
-                        LATER separate kernelService.defaultIcon from kernelService.icon ?
-                        <div className="controls col-sm-3">
-                            <button key="clearIcon" className="btn btn-default" onClick={this.clearIconImage}>{t('clearIcon')}</button>
-                        </div>*/}
-                        <div className="controls col-sm-9">
+                    </div>
+                    <div className="form-group">
+                        <div className="col-sm-9 col-sm-offset-3">
                             <div className="form-control btn btn-default btn-upload">
                                 <label>{t('upload')}</label>
-                                <FileUploadInput className="upload" uploadUrl={"/media/objectIcon/" + this.props.service.service.id} success={this.updateUploadedIcon} />
+                                <FileUploadInput className="upload" uploadUrl={"/media/objectIcon/" + this.props.service.service.id}
+                                                 success={this.updateUploadedIcon} />
                             </div>
                         </div>
                     </div>
-                    {/*value={this.props.service.service.geographical_areas}*/}
+
                     <FormField name="geographical-area-of-interest" error={$.inArray("description", this.props.errors) != -1}>
-                        <GeoSingleSelect2Component className="form-control" ref="geoSearch" name="geoAreaOfInterest" key={this.props.service.service.geographical_areas}
+                        <GeoSingleSelect2Component className="form-control" ref="geoSearch" name="geoAreaOfInterest"
+                            key={this.props.service.service.geographical_areas}
                             urlResources={store_service + "/geographicalAreas"}
-                            onChange={this.handleChange("geographical_areas")}   countryFilter={ {country_uri:''} } 
+                            onChange={this.handleChange("geographical_areas")}
+                            countryFilter={ {country_uri:''} }
                             placeholder={ !this.props.service.service.geographical_areas || this.props.service.service.geographical_areas.length === 0 ? ' '
                                 : decodeURIComponent(this.props.service.service.geographical_areas[0])
-                                        .substring(this.props.service.service.geographical_areas[0].lastIndexOf("/")+1)
-                            }
-                        />
-
+                                        .substring(this.props.service.service.geographical_areas[0].lastIndexOf("/")+1) } />
                      </FormField>
 
                     {visibility}
                 </form>
             </Modal>
-            );
-
+        );
     }
 });

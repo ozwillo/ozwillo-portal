@@ -73,17 +73,17 @@
         <validation-api.version>1.1.0.Final</validation-api.version>
 
         <!-- webjars -->
-        <bootstrap.version>3.1.1</bootstrap.version>
-        <font-awesome.version>4.2.0</font-awesome.version>
-        <html5shiv.version>3.7.0</html5shiv.version>
+        <bootstrap.version>3.3.6</bootstrap.version>
+        <font-awesome.version>4.5.0</font-awesome.version>
         <jquery-ui.version>1.10.4</jquery-ui.version>
-        <jquery.version>1.11.0</jquery.version>
+        <jquery.version>2.1.4</jquery.version>
         <momentjs.version>2.9.0</momentjs.version>
         <react.version>0.12.2</react.version>
-        <respond.version>1.4.2</respond.version>
         <select2.version>3.5.2</select2.version>
+        <select2-bootstrap-css.version>1.4.6</select2-bootstrap-css.version>
         <showdown.version>0.3.1</showdown.version>
-        <typeaheadjs.version>0.10.4</typeaheadjs.version>
+        <bootstrap-star-rating.version>3.5.4</bootstrap-star-rating.version>
+        <typeaheadjs.version>0.11.1</typeaheadjs.version>
 
         <!-- Hosting -->
         <memcached-session-manager.version>1.8.2</memcached-session-manager.version>
@@ -271,18 +271,8 @@
             </dependency>
             <dependency>
                 <groupId>org.webjars</groupId>
-                <artifactId>respond</artifactId>
-                <version>${respond.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>html5shiv</artifactId>
-                <version>${html5shiv.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.webjars</groupId>
-                <artifactId>typeaheadjs</artifactId>
-                <version>${typeaheadjs.version}</version>
+                <artifactId>momentjs</artifactId>
+                <version>${momentjs.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.webjars</groupId>
@@ -291,24 +281,29 @@
             </dependency>
             <dependency>
                 <groupId>org.webjars</groupId>
+                <artifactId>select2</artifactId>
+                <version>${select2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>select2-bootstrap-css</artifactId>
+                <version>${select2-bootstrap-css.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
                 <artifactId>showdown</artifactId>
                 <version>${showdown.version}</version>
             </dependency>
-	         <dependency>
-	             <groupId>org.webjars</groupId>
-	             <artifactId>select2</artifactId>
-                <version>${select2.version}</version>
-	         </dependency>
-	         <dependency>
-	             <groupId>org.webjars</groupId>
-	             <artifactId>select2-bootstrap-css</artifactId>
-	             <version>1.4.6</version>
-	         </dependency>
-	         <dependency>
-	             <groupId>org.webjars</groupId>
-	             <artifactId>momentjs</artifactId>
-	             <version>${momentjs.version}</version>
-	         </dependency>
+            <dependency>
+                <groupId>org.webjars.bower</groupId>
+                <artifactId>bootstrap-star-rating</artifactId>
+                <version>${bootstrap-star-rating.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.webjars</groupId>
+                <artifactId>typeaheadjs</artifactId>
+                <version>${typeaheadjs.version}</version>
+            </dependency>
 
             <!-- Force the use of Tomcat 8 to support Servlet 3.1 -->
             <dependency>

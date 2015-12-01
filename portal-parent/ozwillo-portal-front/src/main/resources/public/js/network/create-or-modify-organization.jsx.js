@@ -35,12 +35,14 @@ var CreateOrModifyOrganizationModal = React.createClass({
         var modalSubTitle = t('my.network.organization.step') + " " + this.state.step + " / 2";
 
         return (
-            <div className="modal fade">
-                <div className='modal-dialog modal-lg'>
+            <div className="modal fade" tabIndex="-1" role="dialog" aria-labelledby="modalLabel">
+                <div className='modal-dialog modal-lg' role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" onClick={this.close}>&times;</button>
-                            <h3>{modalTitle}</h3>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
+                                <span aria-hidden="true"><img src={image_root + "new/cross.png"} /></span>
+                            </button>
+                            <h3 className="modal-title" id="modalLabel">{modalTitle}</h3>
                             <h4>{modalSubTitle}</h4>
                         </div>
                         <CreateOrModifyOrganizationForm ref="form"
@@ -126,7 +128,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
     renderCreateOrUpdateError: function () {
         if (this.state.createOrUpdateError.code !== '') {
             return (
-                <label className="error">{this.state.createOrUpdateError.message} ({this.state.createOrUpdateError.code})</label>
+                <div className="alert alert-danger">{this.state.createOrUpdateError.message} ({this.state.createOrUpdateError.code})</div>
             )
         }
     },
@@ -162,13 +164,13 @@ var Button = React.createClass({
     renderStepSwitcherButton: function () {
         if (this.props.activeTab === 1) {
             return (
-                <button key="next" className="control btn btn-primary-inverse" onClick={this.props.onNext}>
+                <button type="button" key="next" className="control btn btn-default-inverse" onClick={this.props.onNext}>
                     {t('ui.next')}
                 </button>
             )
         } else {
             return (
-                <button key="prev" className="control btn btn-primary-inverse" onClick={this.props.onPrev}>
+                <button type="button" key="prev" className="control btn btn-default-inverse" onClick={this.props.onPrev}>
                     {t('ui.previous')}
                 </button>
             )
@@ -178,13 +180,13 @@ var Button = React.createClass({
         if (this.props.activeTab === 2) {
             if (this.props.inModification) {
                 return (
-                    <button key="success" className="btn btn-primary" onClick={this.props.onCreate}>
+                    <button type="submit" key="success" className="btn oz-btn-save" onClick={this.props.onCreate}>
                         {t('ui.edit')}
                     </button>
                 )
             } else {
                 return (
-                    <button key="success" className="btn btn-primary" onClick={this.props.onCreate}>
+                    <button type="submit" key="success" className="btn oz-btn-save" onClick={this.props.onCreate}>
                         {t('ui.create')}
                     </button>
                 )
@@ -194,7 +196,7 @@ var Button = React.createClass({
     render: function() {
         return (
             <div>
-                <button key="cancel" className="btn btn-default" onClick={this.props.onCancel}>
+                <button type="button" key="cancel" className="btn oz-btn-cancel" onClick={this.props.onCancel}>
                     {t('ui.cancel')}
                 </button>
                 {this.renderStepSwitcherButton()}
@@ -213,20 +215,20 @@ var Field = React.createClass({
         isRequired: React.PropTypes.bool
     },
     renderLabel: function(htmlFor, class_name, label, isRequired) {
-        var cn = isRequired ? <label className='error'>&nbsp;*</label> : '';
         return (
-            <label htmlFor={htmlFor} className={class_name}>{label} {cn}</label>
+            <label htmlFor={htmlFor} className={class_name}>{label} {isRequired ? '*' : ''} </label>
         );
     },
     render: function() {
         var labelClassName = this.props.labelClassName ? this.props.labelClassName : "control-label col-sm-3";
-        if (this.props.error) {
-            labelClassName = labelClassName + " error";
+        if (this.props.isRequired) {
+            labelClassName = labelClassName + " required";
         }
         var divClassName = this.props.divClassName ? this.props.divClassName : "col-sm-7";
+        var formDivClassName = this.props.error ? "form-group has-error" : "form-group";
 
         return (
-            <div className="form-group">
+            <div className={formDivClassName}>
                 {this.renderLabel(this.props.name, labelClassName, t('my.network.organization.' + this.props.name), this.props.isRequired)}
                 <div className={divClassName}>
                     {this.props.children}
@@ -281,6 +283,7 @@ var Tab1 = React.createClass({
         this.setState({ organization: organization });
     },
     validateFields: function() {
+        // FIXME : as input changes are store in state, better check errors in state rather than refs
         var errors = [];
         if (!this.props.organization.inModification && !this.props.fromStore) {
             if (this.refs.contact_lastname.getDOMNode().value.trim() === '')
@@ -318,7 +321,7 @@ var Tab1 = React.createClass({
     renderGeneralErrorMessage: function() {
         if ($.inArray('validation', this.state.errors) != -1) {
             return (
-                <label className="error">{t('my.network.organization.invalid_fields')}</label>
+                <div className="alert alert-danger">{t('my.network.organization.invalid_fields')}</div>
             )
         }
     },
@@ -477,7 +480,7 @@ var Tab2 = React.createClass({
             return (
                 <Field name="jurisdiction" error={$.inArray("jurisdiction", this.props.errors) != -1} isRequired={true}>
                     <GeoSingleSelect2Component ref="jurisdiction" className="form-control" name="jurisdiction"
-                                               key={this.state.organization.jurisdiction}
+                                               key="jurisdiction"
                                                urlResources={store_service + "/geographicalAreas"}
                                                countryFilter={ {country_uri: this.props.organization.country_uri} }
                                                onChange={this.handleInputChange}
@@ -490,7 +493,7 @@ var Tab2 = React.createClass({
     renderGeneralErrorMessage: function() {
         if ($.inArray('validation', this.state.errors) != -1) {
             return (
-                <label className="error">{t('my.network.organization.invalid_fields')}</label>
+                <div className="alert alert-danger">{t('my.network.organization.invalid_fields')}</div>
             )
         }
     },
@@ -507,31 +510,31 @@ var Tab2 = React.createClass({
                         <div className="col-sm-15">
                             <fieldset>
                                 <legend>{t('my.network.organization.additional_information')}</legend>
-                                <Field name="legal_name" error={$.inArray("legal_name", this.props.errors) != -1} isRequired={true}>
+                                <Field name="legal_name" error={$.inArray("legal_name", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="legal_name" id="legal_name" type="text"
                                            value={this.state.organization.legal_name} onChange={this.handleInputChange}
                                            disabled={this.state.organization.inModification || this.state.organization.exist} />
                                 </Field>
-                                <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.props.errors) != -1} isRequired={true}>
+                                <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="tax_reg_num" id="tax_reg_num" type="text"
                                            value={this.state.organization.tax_reg_num} disabled={true} />
                                 </Field>
-                                <Field name="in_activity" error={$.inArray("in_activity", this.props.errors) != -1} isRequired={false}>
+                                <Field name="in_activity" error={$.inArray("in_activity", this.state.errors) != -1} isRequired={false}>
                                     <input id="in_activity" type="checkbox" checked={this.state.organization.in_activity}
                                            onChange={this.handleInputChange} />
                                 </Field>
-                                <Field name="alt_name" error={$.inArray("alt_name", this.props.errors) != -1} isRequired={false}>
+                                <Field name="alt_name" error={$.inArray("alt_name", this.state.errors) != -1} isRequired={false}>
                                     <input className="form-control" ref="alt_name" id="alt_name" type="text"
                                            value={this.state.organization.alt_name} onChange={this.handleInputChange} />
                                 </Field>
-                                <Field name="org_type" error={$.inArray("org_type", this.props.errors) != -1} isRequired={false}>
+                                <Field name="org_type" error={$.inArray("org_type", this.state.errors) != -1} isRequired={false}>
                                     <input className="form-control" ref="org_type" id="org_type" type="text"
                                            value={this.state.organization.org_type} onChange={this.handleInputChange}
                                            placeholder={t('my.network.organization.org_type.placeholder')} />
                                 </Field>
                                 <Field name={taxRegNumLabels.tax_reg_activity_label} class_name_div='col-sm-3' isRequired={false}>
                                     <GeoSingleSelect2Component ref="tax_reg_activity" className="form-control" name="tax_reg_activity"
-                                                               key={this.props.organization.tax_reg_activity_uri}
+                                                               key="tax_reg_activity_uri"
                                                                urlResources={store_service + "/dc-taxRegActivity"}
                                                                countryFilter={ {country_uri: this.props.organization.country_uri} }
                                                                onChange={this.handleInputChange}
@@ -540,15 +543,15 @@ var Tab2 = React.createClass({
                                 </Field>
                                 {this.renderTaxRegOfficialId(taxRegNumLabels.tax_reg_official_id_label)}
                                 {this.renderJurisdiction()}
-                                <Field name="phone_number" error={$.inArray("phone_number", this.props.errors) != -1} isRequired={false}>
+                                <Field name="phone_number" error={$.inArray("phone_number", this.state.errors) != -1} isRequired={false}>
                                     <input className="form-control" ref="phone_number" id="phone_number" type="text"
                                            value={this.state.organization.phone_number} onChange={this.handleInputChange} />
                                 </Field>
-                                <Field name="web_site" error={$.inArray("web_site", this.props.errors) != -1} isRequired={false}>
+                                <Field name="web_site" error={$.inArray("web_site", this.state.errors) != -1} isRequired={false}>
                                     <input className="form-control" ref="web_site" id="web_site" type="text"
                                            value={this.state.organization.web_site} onChange={this.handleInputChange} />
                                 </Field>
-                                <Field name="email" error={$.inArray("email", this.props.errors) != -1} isRequired={false}>
+                                <Field name="email" error={$.inArray("email", this.state.errors) != -1} isRequired={false}>
                                     <input className="form-control" ref="email" id="email" type="text"
                                            value={this.state.organization.email} onChange={this.handleInputChange} />
                                 </Field>

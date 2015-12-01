@@ -126,30 +126,8 @@ abstract public class PortalController {
 	}
 
 	@ModelAttribute("sitemap")
-	public List<List<SiteMapEntry>> siteMap() {
-		List<SiteMapEntry> siteMap = navigationService.getSiteMap();
-
-		if (siteMap == null || siteMap.isEmpty()) {
-			return Collections.emptyList();
-		}
-
-		int colLength = 4;
-		List<List<SiteMapEntry>> result = new ArrayList<>();
-		List<SiteMapEntry> current = new ArrayList<>(colLength);
-		for (SiteMapEntry entry : siteMap) {
-			current.add(entry);
-
-			if (current.size() == colLength) {
-				result.add(current);
-				current = new ArrayList<>(colLength);
-			}
-		}
-		if (current.size() != 0) {
-			result.add(current);
-		}
-
-
-		return result;
+	public List<SiteMapEntry> siteMap() {
+		return navigationService.getSiteMap();
 	}
 
 	@ModelAttribute("sitemapheader")

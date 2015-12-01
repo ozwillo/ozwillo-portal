@@ -22,7 +22,7 @@ public final class i18nMessages {
 
 	private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
 			"loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
-			"something_went_wrong_title", "error_detail_title", "search", "next", "previous");
+			"something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome");
 
 	private static final List<String> searchOrganization = Arrays.asList("search-organization", "title","country","legal-name", "business-id.fr", "business-id.it",
 			"business-id.es", "business-id.bg", "business-id.tr", "business-id.en", "sector-type", "sector-type.PUBLIC_BODY","sector-type.COMPANY",
@@ -38,10 +38,13 @@ public final class i18nMessages {
 			"street_and_number","additional_address_field","po_box","city","zip", "cedex","country", "invalid_fields", "step",
 			"additional_information");
 
-	private static final List<String> storekeys = Arrays.asList("citizens", "publicbodies", "companies", "free", "paid",
-			"languages-supported-by-applications", "look-for-an-application", "keywords","installed", "tos", "privacy", "by",
+	private static final List<String> storekeys = Arrays.asList("audience", "mode", "citizens", "publicbodies", "companies", "free", "paid",
+			"languages-supported-by-applications", "geoarea", "keywords","installed", "tos", "privacy", "by",
 			"agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid",
-			"for_myself", "on_behalf_of", "create-new-org", "modify-org","buying", "sorry", "could-not-install-app", "already-rated", "launch");
+			"for_myself", "on_behalf_of", "create-new-org", "modify-org","buying", "sorry", "could-not-install-app", "already-rated", "launch", "load-more",
+			"rating.half-star", "rating.one-star", "rating.one-half-star", "rating.two-stars", "rating.two-half-stars", "rating.three-stars",
+			"rating.three-half-stars", "rating.four-stars", "rating.four-half-stars", "rating.five-stars", "rating.clear-button-title", "rating.clear-caption",
+			"install.orgType.title", "ad.description", "ad.title.part1", "ad.title.part2", "ad.joinUs");
 
 	private static final List<String> storeInstallkeys = Arrays.asList("type.ORG", "type.PERSONAL", "success-msg-1", "success-msg-2", "success-msg-3",
 			"success-msg-4");

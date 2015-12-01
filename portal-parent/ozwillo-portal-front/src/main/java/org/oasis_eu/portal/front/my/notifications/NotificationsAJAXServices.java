@@ -3,12 +3,16 @@ package org.oasis_eu.portal.front.my.notifications;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
+import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
 import org.oasis_eu.portal.services.PortalNotificationService;
+import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -20,7 +24,7 @@ import javax.servlet.http.HttpServletRequest;
  * Date: 8/14/14
  */
 @RestController
-@RequestMapping("/my/api")
+@RequestMapping("/my/api/notifications")
 public class NotificationsAJAXServices extends BaseAJAXServices{
 
 	@Autowired
@@ -33,7 +37,17 @@ public class NotificationsAJAXServices extends BaseAJAXServices{
 	private boolean notificationsEnabled;
 
 
-	@RequestMapping(method = RequestMethod.GET, value="/notifications")
+	@RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
+	public UserNotificationResponse getNotifications(@RequestParam(value = "status", required = false, defaultValue = "UNREAD") NotificationStatus status) {
+		return notificationService.getNotifications(status);
+	}
+
+	@RequestMapping(value = "/{notificationId}", method = RequestMethod.DELETE)
+	public void archive(@PathVariable String notificationId) {
+		notificationService.archive(notificationId);
+	}
+
+	@RequestMapping(method = RequestMethod.GET, value="summary")
 	@ResponseBody
 	public NotificationData getNotificationData(HttpServletRequest request) {
 		int count = notificationService.countNotifications();

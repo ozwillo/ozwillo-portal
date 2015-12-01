@@ -1,105 +1,44 @@
 <!doctype html>
 <html>
-<head data-th-replace="includes/header(title=#{ui.appstore},page='appstore')">
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>DUMMY Ozwillo</title>
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet"/>
-    <link href="../../public/css/main.css" rel="stylesheet"/>
-    <link href="../../public/css/appstore.css" rel="stylesheet"/>
-
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <style>
-        @font-face {
-            font-family: 'Dunkin';
-            src: url('../../public/fonts/Dunkin.eot?') format('eot'),
-            url('../../public/fonts/Dunkin.woff') format('woff'),
-            url('../../public/fonts/Dunkin.ttf') format('truetype'),
-            url('../../public/fonts/Dunkin.svg#Dunkin') format('svg');
-        }
-
-        @font-face {
-            font-family: 'DIN';
-            src: url('../../public/fonts/DIN.eot?') format('eot'),
-            url('../../public/fonts/DIN.woff') format('woff'),
-            url('../../public/fonts/DIN.ttf') format('truetype'),
-            url('../../public/fonts/DIN.svg#DIN') format('svg');
-        }
-
-        @font-face {
-            font-family: 'DINAlternate-Light';
-            src: url('../../public/fonts/DINAlternate-Light.eot?') format('eot'),
-            url('../../public/fonts/DINAlternate-Light.woff') format('woff'),
-            url('../../public/fonts/DINAlternate-Light.ttf') format('truetype'),
-            url('../../public/fonts/DINAlternate-Light.svg#DIN') format('svg');
-        }
-
-        b.caret {
-            border: none;
-            height: 15px;
-            width: 15px;
-            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret.png");
-        }
-
-        b.caret.inverse {
-            border: none;
-            height: 15px;
-            width: 15px;
-            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret-inverse.png");
-        }
-
-        .rating-static {
-            width: 80px;
-            height: 20px;
-            display: block;
-            background-image: url('../../public/img/icons/rating-static.png');
-        }
-    </style>
-
-
-</head>
+<head data-th-replace="includes/header(title=#{ui.appstore},page='appstore')"></head>
 <body>
 
-<div class="wrapper">
-    <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation"
-         data-th-replace="|includes/${user == null ? 'navbar' : 'my-navigation'}::nav|">
-        <div class="navbar-header">
-            <div class="my-oasis" data="null">
-                <img id="logo" src="../../public/img/my/my-oasis.png"
-                     alt="My OASIS"/>
-                <a href="#"><span class="badge badge-notifications">0</span></a>
+<div data-th-replace="includes/my-header-content::header"></div>
+
+<div data-th-replace="|includes/${user == null ? 'navigation' : 'my-navigation'}::nav|"></div>
+
+<div class="oz-body page-row page-row-expanded">
+
+    <div class="container-fluid">
+        <div class="row" id="store-banner">
+            <div class="col-md-12">
+                <h1 class="text-center">
+                    <img data-th-src="@{/img/new/store.png}"/>
+                    <span data-th-text="#{ui.appstore}">Catalogue</span>
+                </h1>
             </div>
         </div>
-
-        Header
     </div>
 
-    <div class="container main-content" id="store">
+    <div class="oz-body-content" id="store">
         <div class="text-center"><i class="fa fa-spinner fa-spin"></i><span data-th-text="#{ui.loading}"></span></div>
     </div>
 
     <div class="push"></div>
+
 </div>
-<th-block data-th-replace="includes/footer">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-</th-block>
-<script src="../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
-<script src="http://fb.me/react-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/react.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/webjars/react/0.12.2/react.min.js}" data-th-if="${!devmode}"></script>/*/-->
-<script src="http://fb.me/JSXTransformer-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/JSXTransformer.js}"
-        data-th-if="${devmode}"></script>
+
+<div data-th-replace="includes/footer"></div>
+
+<div data-th-replace="includes/scripts"></div>
+
+<script data-th-src="@{/webjars/select2/3.5.2/select2.min.js}" type="text/javascript"></script>
 
 <script data-th-src="@{/webjars/showdown/0.3.1/src/showdown.js}"></script>
 <!-- BEWARE table.js is NOT minified in webjar and doesn't work with minified showdown (/webjars/showdown/0.3.1/compressed/showdown.js) -->
 <script data-th-src="@{/webjars/showdown/0.3.1/src/extensions/table.js}"></script>
 
+<script type="text/javascript" data-th-src="@{/webjars/bootstrap-star-rating/3.5.4/js/star-rating.min.js}"></script>
 
 <script data-th-inline="javascript" type="text/javascript">
     var network_service = /*[[@{/my/api/network}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
@@ -109,18 +48,8 @@
     var default_app = /*[[${defaultApp}]]*/ {type: "service", id: "ck"};
     var logged_in = /*[[${user != null}]]*/ false;
     var languages = /*[[${localeLanguages}]]*/ ['en'];
+    var webHome = /*[[${webHome}]]*/ 'http://localhost:8080';
 </script>
-
-<script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
-
-<script type="text/jsx" src="../../public/js/util/portal-util-react.jsx.js"
-        data-th-src="@{/js/util/portal-util-react.jsx.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/js/util/portal-util-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
-
-<script type="text/jsx" src="../../public/js/util/bootstrap-react.jsx.js"
-        data-th-src="@{/js/util/bootstrap-react.jsx.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/js/util/bootstrap-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
-
 
 <script type="text/jsx" src="../../public/js/network/create-or-modify-organization.jsx.js" data-th-src="@{/js/network/create-or-modify-organization.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/network/create-or-modify-organization.min.js}" data-th-if="${!devmode}"></script>/*/-->
@@ -128,15 +57,10 @@
 <!--/*/<script type="text/javascript" data-th-src="@{/js/util/fileuploadinput.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/network/search-organization.jsx.js" data-th-src="@{/js/network/search-organization.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/network/search-organization.min.js}" data-th-if="${!devmode}"></script>/*/-->
-
 <script type="text/jsx" src="../../public/js/store/store-install-app.jsx.js" data-th-src="@{/js/store/store-install-app.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/store/store-install-app.min.js}" data-th-if="${!devmode}"></script>/*/-->
-
 <script type="text/jsx" src="../../public/js/store/store.jsx.js" data-th-src="@{/js/store/store.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/store/store.min.js}" data-th-if="${!devmode}"></script>/*/-->
-
-
-<script type="text/javascript" data-th-src="@{/js/my.js}" src="../../public/js/my.js"></script>
 
 </body>
 </html>

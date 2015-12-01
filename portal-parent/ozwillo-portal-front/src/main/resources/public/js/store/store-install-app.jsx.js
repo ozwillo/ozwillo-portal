@@ -273,8 +273,10 @@ var AppModal = React.createClass({
                 />);
     },
     renderAppDescription: function(){
-       return (<AppDescriptionComponent app={this.props.app} stateApp={this.state.app}
-                     rateApp={this.rateApp} onInstallButton={this.displayInstallForm} error={this.state.error}/>);
+       return (
+           <AppDescriptionComponent app={this.props.app} stateApp={this.state.app}
+                     rateApp={this.rateApp} onInstallButton={this.displayInstallForm} error={this.state.error}/>
+       );
     },
     renderSucessfulInstallationForm: function(){
         return (<div>
@@ -304,13 +306,17 @@ var AppModal = React.createClass({
     render: function () {
         var title = this.props.app.name;
         var content = null;
-        if (this.state.buying){                content = this.renderBuying();
+        if (this.state.buying){
+            content = this.renderBuying();
         } else if (this.state.createOrg){
             content = this.renderCreateNewOrganization();
             title = (!this.state.selectedOrg.exist ? t('create-new-org') : t('modify-org')) + " " + this.state.selectedOrg.legal_name;
-        } else if (this.state.installing){     content = this.renderInstallingForm();
-        } else if (this.state.isInstalled){    content = this.renderSucessfulInstallationForm();
-        } else {                               content = this.renderAppDescription();
+        } else if (this.state.installing){
+            content = this.renderInstallingForm();
+        } else if (this.state.isInstalled){
+            content = this.renderSucessfulInstallationForm();
+        } else {
+            content = this.renderAppDescription();
         }
 
         return (
@@ -329,96 +335,113 @@ var AppModal = React.createClass({
 var converter = new Showdown.converter({extensions: ['table']});
 
 /** PROPS: app{}, stateApp{}, rateApp(), onInstallButton(), errors[] */
-var AppDescriptionComponent =  React.createClass({
-        render: function () {
-            var stateApp = this.props.stateApp;
+var AppDescriptionComponent = React.createClass({
+    render: function () {
+        var stateApp = this.props.stateApp;
 
-            var carousel = (stateApp.screenshots && stateApp.screenshots.length > 0)
-                ? ( <div className="row">
-                        <Carousel images={stateApp.screenshots} />
-                    </div> )
-                : null;
+        var carousel = (stateApp.screenshots && stateApp.screenshots.length > 0)
+            ? ( <div className="row">
+            <Carousel images={stateApp.screenshots}/>
+        </div> )
+            : null;
 
-            var error = (this.props.error)
-                ? ( <div className="alert alert-danger alert-dismissible" role="alert">
-                        <button type="button" className="close" data-dismiss="alert">
-                            <span aria-hidden="true">&times;</span>
-                            <span className="sr-only">{t('ui.close')}</span>
-                        </button>
-                        <strong>{t('sorry')}</strong> {t('could-not-install-app')}
-                    </div> )
-                : null;
+        var error = (this.props.error)
+            ? ( <div className="alert alert-danger alert-dismissible" role="alert">
+            <button type="button" className="close" data-dismiss="alert">
+                <span aria-hidden="true">&times;</span>
+                <span className="sr-only">{t('ui.close')}</span>
+            </button>
+            <strong>{t('sorry')}</strong> {t('could-not-install-app')}
+        </div> )
+            : null;
 
-            var rateInfo = null;
-            if (logged_in && !stateApp.rateable) { rateInfo =  (<p>{t('already-rated')}</p>); }
+        var rateInfo = null;
+        if (logged_in && !stateApp.rateable) {
+            rateInfo = (<p>{t('already-rated')}</p>);
+        }
 
-            var description = converter.makeHtml(stateApp.longdescription);
+        var description = converter.makeHtml(stateApp.longdescription);
 
-            var launchOrInstallButton;
-            if (this.props.app.type == "service" && this.props.app.installed) {
-               if (this.props.stateApp && this.props.stateApp.serviceUrl) {
-                       launchOrInstallButton = <a className="btn btn-primary" href={this.props.stateApp.serviceUrl} target="_new">{t('launch')}</a>;
-                   /*} else {
-                       launchOrInstallButton = (<label >{t('installed')}</label>);
-                   }*/
-               } else {
-                    launchOrInstallButton = (<label > <i className="fa fa-spinner fa-spin"></i> </label> );
-               }
-            }else{
-                var installButton = !logged_in
-                    ? (<a className="btn btn-primary-inverse"
-                         href={store_root + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{t('install')}</a>)
-                    : (<button className="btn btn-primary" onClick={this.props.onInstallButton} >{t('install')}</button>);
-                launchOrInstallButton = installButton
+        var launchOrInstallButton;
+        if (this.props.app.type == "service" && this.props.app.installed) {
+            if (this.props.stateApp && this.props.stateApp.serviceUrl) {
+                launchOrInstallButton = <a className="btn oz-btn-save btn-lg pull-right" href={this.props.stateApp.serviceUrl}
+                                           target="_new">{t('launch')}</a>;
+            } else {
+                launchOrInstallButton = (<label > <i className="fa fa-spinner fa-spin"></i> </label> );
             }
+        } else {
+            launchOrInstallButton = !logged_in
+                ? (<a className="btn oz-btn-save btn-lg pull-right"
+                      href={store_root + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{t('install')}</a>)
+                : (<button type="button" className="btn oz-btn-save btn-lg pull-right" onClick={this.props.onInstallButton}>{t('install')}</button>)
+        }
 
 
-            return (
-                <div>
-                    <div className="row">
-                        <div className="col-sm-1">
-                            <img src={this.props.app.icon} alt={this.props.app.name} />
-                        </div>
-                        <div className="col-sm-7">
-                            <div>
-                                <p className="appname">{this.props.app.name}</p>
-                                <p>{t('by')} {this.props.app.provider}</p>
-                            </div>
-                        </div>
-                        <div className="col-sm-4 center-container install-application">
-                            {launchOrInstallButton}
+        return (
+            <div className="store-app-card">
+                <div className="row">
+                    <div className="col-sm-1">
+                        <img src={this.props.app.icon} alt={this.props.app.name}/>
+                    </div>
+                    <div className="col-sm-7">
+                        <div>
+                            <p>{t('by')} {this.props.app.provider}</p>
+                            <Rating rating={stateApp.rating} rateable={stateApp.rateable} rate={this.props.rateApp}/>
+                            {rateInfo}
                         </div>
                     </div>
-                    <div className="row">
-                        <Rating rating={stateApp.rating} rateable={stateApp.rateable} rate={this.props.rateApp} />
-                        {rateInfo}
+                    <div className="col-sm-4">
+                        {launchOrInstallButton}
                     </div>
-                    {error}
-                    {carousel}
-                    <div className="row">
-                        <div className="col-md-6 app-description" dangerouslySetInnerHTML={{__html: description}}></div>
-                        <div className="col-md-6">
+                </div>
+                {error}
+                {carousel}
+                <div className="row">
+                    <div className="col-sm-12">
+                        <div className="app-description" dangerouslySetInnerHTML={{__html: description}}></div>
+                    </div>
+                </div>
+                <div className="row">
+                    <div className="col-sm-12">
+                        <div className="app-tos">
                             <p>{t('agree-to-tos')}</p>
-                            <p><a href={stateApp.tos} target="_new">{t('tos')}</a></p>
-                            <p><a href={stateApp.policy} target="_new">{t('privacy')}</a></p>
+                            <p>
+                                <a href={stateApp.tos} target="_new">{t('tos')}</a>
+                            </p>
+                            <p>
+                                <a href={stateApp.policy} target="_new">{t('privacy')}</a>
+                            </p>
                         </div>
                     </div>
                 </div>
-                );
-        }
+            </div>
+        );
+    }
 });
 
 // INSTALLATION PROCESS
 
 /** PROPS: app{}, errors[], url, orgs[], continueInstallProcess() */
 var InstallForm =  React.createClass({
-    getInitialState: function(){
+    getInitialState: function() {
         this.getProfileInfo();
-        return ( {installType: 'PERSONAL',  errors: [],
-                  installData: {
-                     contact: {contact_name:'', contact_lastname:'', contact_email:''},
-                     address:{exist:false, street_and_number:'', additional_address_field:'', city:'', zip:'', country_uri:'', cedex:'', po_box:''}
-                  }
+        return ({
+            installType: 'PERSONAL',
+            installData: {
+                contact: { contact_name: '', contact_lastname: '', contact_email: ''},
+                address: {
+                    exist: false,
+                    street_and_number: '',
+                    additional_address_field: '',
+                    city: '',
+                    zip: '',
+                    country_uri: '',
+                    cedex: '',
+                    po_box: ''
+                }
+            },
+            errors: []
         })
     },
     getProfileInfo: function(){
@@ -453,8 +476,7 @@ var InstallForm =  React.createClass({
     getInstallData: function(){return this.state.installData},
     getOrgSearchData: function(){ return this.refs.setOrgComponent.getOrgSearchData()},
     isOnlyForCitizens: function () {
-        return (  this.props.app.target_citizens
-                     && !(this.props.app.target_companies) && !(this.props.app.target_publicbodies) );
+        return this.props.app.target_citizens && !this.props.app.target_companies && !this.props.app.target_publicbodies;
     },
     hasCitizens: function () { return this.props.app.target_citizens; },
     hasOrganizations: function () { return (this.props.app.target_companies) || (this.props.app.target_publicbodies); },
@@ -468,36 +490,38 @@ var InstallForm =  React.createClass({
         var installType = this.getInstallType();
 
         var personal = !installTypeRestrictions.personal ? null
-                     : (<div className='radio col-sm-offset-2'>  <label>
-                            <input type="radio" value="PERSONAL" checked={installType == 'PERSONAL'}
-                                 onChange={this.toggleType}>{t('install.org.type.PERSONAL')}</input>
-                        </label>  </div>
+                     : (<div className='radio col-sm-offset-3 col-sm-8'>
+                            <label>
+                                <input type="radio" value="PERSONAL" checked={installType == 'PERSONAL'}
+                                     onChange={this.toggleType}>{t('install.org.type.PERSONAL')}</input>
+                            </label>
+                        </div>
                        );
 
 
         var org = !installTypeRestrictions.org ? null
-                : (<div className='radio col-sm-offset-2'>  <label>
-                       <input type="radio" value="ORG" checked={installType == 'ORG'}
-                            onChange={this.toggleType}>{t('install.org.type.ORG')}</input>
-                   </label>  </div>
+                : (<div className='radio col-sm-offset-3 col-sm-8'>
+                        <label>
+                            <input type="radio" value="ORG" checked={installType == 'ORG'}
+                                onChange={this.toggleType}>{t('install.org.type.ORG')}</input>
+                        </label>
+                   </div>
                   );
 
-        var sectorTypeClassName = 'col-sm-3 control-label ';
-        sectorTypeClassName = ($.inArray('sector_type', this.props.errors) != -1 ? sectorTypeClassName+' error' : sectorTypeClassName);
-
         return (
-            <div className="form-group">
-                {/*<label htmlFor="install-type" className={sectorTypeClassName}>{t('install.personal.type')}</label>*/}
-                {personal}
-                {org}
+            <div>
+                <h4>{t('install.orgType.title')}</h4>
+                <div className="form-group">
+                    {personal}
+                    {org}
+                </div>
             </div>
         );
     },
-    renderLabel: function(htmlFor, class_name, label){
-        var cn = ($.inArray(class_name, this.state.errors) != -1 ? 'col-sm-3 control-label error' : 'col-sm-3 control-label');
-        return (<label htmlFor={htmlFor} className={cn}>{label}
-                   <label className={'error'}>{'*'}</label>
-                </label>);
+    renderLabel: function(htmlFor, class_name, label, isRequired) {
+        return (
+            <label htmlFor={htmlFor} className={class_name}>{label} {isRequired ? '*' : ''} </label>
+        );
     },
     changeInputContact: function (fieldname) {
          return function (event) {
@@ -523,7 +547,7 @@ var InstallForm =  React.createClass({
         if (!contact.contact_email    || contact.contact_email.trim() == '')      { errs.push('email'); }
 
         this.setState({errors: errs});
-        if (errs.length > 0) {return false;}else{return true;}
+        return errs.length <= 0;
     },
     validateAddress: function(){
         var errs = this.state.errors;
@@ -554,7 +578,7 @@ var InstallForm =  React.createClass({
                 {this.renderInstallType()}
                 <h4>{t('search.contact.title')}</h4>
                 <ContactSearchFormControl renderLabel={this.renderLabel} orgSearchData={this.state.installData.contact}
-                    changeInput={this.changeInputContact} />
+                    changeInput={this.changeInputContact} errors={this.state.errors} />
 
                 { (installType === 'PERSONAL') || (this.props.app.type === "service")
                     ? (<div>
@@ -577,22 +601,34 @@ var InstallForm =  React.createClass({
 
 var ContactSearchFormControl = React.createClass({
     render: function() {
+        var formDivClassName = this.props.error ? "form-group has-error" : "form-group";
+
         return (
-            <div className="form-group">
-                <div className="form-group">
-                    {this.props.renderLabel("contact-name", 'name', t('search.contact.name'))}
-                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_name}
-                                                     onChange={this.props.changeInput('contact_name')} maxLength={100}  placeholder={t('search.contact.name')}/></div>
+
+            <div>
+                <div className={formDivClassName}>
+                    {this.props.renderLabel("contact-name", 'control-label col-sm-3 required', t('search.contact.name'), true)}
+                    <div className="col-sm-8">
+                        <input type="text" id="contact-name" className="form-control" value={this.props.orgSearchData.contact_name}
+                               onChange={this.props.changeInput('contact_name')} maxLength={100}
+                               placeholder={t('search.contact.name')}/>
+                    </div>
                 </div>
                 <div className="form-group">
-                    {this.props.renderLabel("contact-lastname", 'lastname', t('search.contact.lastname'))}
-                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_lastname}
-                                                     onChange={this.props.changeInput('contact_lastname')} maxLength={100} placeholder={t('search.contact.lastname')}/></div>
+                    {this.props.renderLabel("contact-lastname", 'control-label col-sm-3 required', t('search.contact.lastname'), true)}
+                    <div className="col-sm-8">
+                        <input type="text" id="contact-lastname" className="form-control" value={this.props.orgSearchData.contact_lastname}
+                               onChange={this.props.changeInput('contact_lastname')} maxLength={100}
+                               placeholder={t('search.contact.lastname')}/>
+                    </div>
                 </div>
                 <div className="form-group">
-                    {this.props.renderLabel("contact-email", 'email', t('search.contact.email'))}
-                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.contact_email}
-                                                     onChange={this.props.changeInput('contact_email')} maxLength={100} placeholder={t('search.contact.email')}/></div>
+                    {this.props.renderLabel("contact-email", 'control-label col-sm-3 required', t('search.contact.email'), true)}
+                    <div className="col-sm-8">
+                        <input type="text" id="contact-email" className="form-control" value={this.props.orgSearchData.contact_email}
+                               onChange={this.props.changeInput('contact_email')} maxLength={100}
+                               placeholder={t('search.contact.email')}/>
+                    </div>
                 </div>
             </div>
         )
@@ -623,14 +659,15 @@ var OrganizationSearchFormControl = React.createClass({
             );
         }
 
-        var sectorTypeClassName = 'col-sm-3 control-label';
-        sectorTypeClassName = ($.inArray('sector_type', this.props.errors) != -1 ? sectorTypeClassName+' error' : sectorTypeClassName);
+        var formGroupClass = ($.inArray('sector_type', this.props.errors) != -1) ? 'form-group has-error' : 'form-group';
 
         return (
-            <div className="form-group">
-                <label htmlFor="organization-sector-type" className={sectorTypeClassName}>{t('search.organization.sector-type')}</label>
-                {public_body}
-                {company}
+            <div className={formGroupClass}>
+                <label htmlFor="organization-sector-type" className="col-sm-3 control-label required">{t('search.organization.sector-type')} *</label>
+                <div className="col-sm-8">
+                    {public_body}
+                    {company}
+                </div>
             </div>
         );
     },
@@ -650,26 +687,31 @@ var OrganizationSearchFormControl = React.createClass({
         }
 
         return (
-            <div className="form-group">
+            <div>
                 {this.renderType()}
-                <div className="form-group">
-                    {this.props.renderLabel("organization-country-name", 'country', t('search.organization.country'))}
-                    <div className="col-sm-5">
-                        <CountrySelect ref="orgCountrySelect" className="form-control" url={store_service + "/dc-countries"} defLabel={this.props.orgSearchData.country}
-                                       onChange={this.props.changeInput('country')} />
+                <div className={($.inArray('country', this.props.errors) != -1) ? 'form-group has-error' : 'form-group'}>
+                    {this.props.renderLabel("country", t('search.organization.country'), true)}
+                    <div className="col-sm-8">
+                        <CountrySelect ref="orgCountrySelect" className="form-control"
+                                       url={store_service + "/dc-countries"} defLabel={this.props.orgSearchData.country}
+                                       onChange={this.props.changeInput('country')}/>
                     </div>
                 </div>
-                <div className="form-group">
-                    {this.props.renderLabel("organization-name", 'legal_name', t('search.organization.legal-name'))}
-                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.legal_name}
-                                                     onChange={this.props.changeInput('legal_name')} maxLength={100}
-                                                     placeholder={t('search.organization.legal-name')}/></div>
+                <div className={($.inArray('legal_name', this.props.errors) != -1) ? 'form-group has-error' : 'form-group'}>
+                    {this.props.renderLabel("legal_name", t('search.organization.legal-name'), true)}
+                    <div className="col-sm-8">
+                        <input type="text" id="legal_name" className="form-control"
+                               value={this.props.orgSearchData.legal_name}
+                               onChange={this.props.changeInput('legal_name')} maxLength={100}
+                               placeholder={t('search.organization.legal-name')}/></div>
                 </div>
-                <div className="form-group">
-                    {this.props.renderLabel("organization-business-id", 'tax_reg_num', label_regNum)}
-                    <div className="col-sm-8"><input type="text" className="form-control" value={this.props.orgSearchData.tax_reg_num}
-                                                     onChange={this.props.changeInput('tax_reg_num')} maxLength={20}
-                                                     placeholder={t(label_regNum)}/></div>
+                <div className={($.inArray('tax_reg_num', this.props.errors) != -1) ? 'form-group has-error' : 'form-group'}>
+                    {this.props.renderLabel("tax_reg_num", label_regNum, true)}
+                    <div className="col-sm-8">
+                        <input type="text" id="tax_reg_num" className="form-control"
+                               value={this.props.orgSearchData.tax_reg_num}
+                               onChange={this.props.changeInput('tax_reg_num')} maxLength={20}
+                               placeholder={t(label_regNum)}/></div>
                 </div>
             </div>
         )
@@ -810,7 +852,7 @@ var CountrySelect = React.createClass({
         // assuming data is an array of {name: "foo", value: "bar"}
         for (var i = 0; i < data.length; i++) {
             var option = data[i];
-            this.state.options.push( <option className="action-select-option" key={i} value={option.value}>{option.label}</option> );
+            this.state.options.push( <option key={i} value={option.value}>{option.label}</option> );
         }
         this.setState(this.state);
         this.forceUpdate();
@@ -819,7 +861,7 @@ var CountrySelect = React.createClass({
         if (!label || label !== "") {
             for (var i = 0; i < this.state.countries.length; i++) {
                 if (this.state.countries[i].label === label) {
-                    return this.state.countries[i].value; break;
+                    return this.state.countries[i].value;
                 }
             }
         }
@@ -833,8 +875,9 @@ var CountrySelect = React.createClass({
             this.props.value = (this.getValue(label)); // decodeURIComponent()
         }
         // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-base fonctuion decodeURIComponent()
-        return ( <select className="btn btn-default dropdown-toggle" onChange={this.onChange}
-                         value={this.props.value} disabled={this.props.disabled}>
+        return (
+            <select className="form-control" id="country" onChange={this.onChange}
+                    value={this.props.value} disabled={this.props.disabled}>
                 {this.state.options}
             </select>
         );
@@ -842,12 +885,21 @@ var CountrySelect = React.createClass({
 });
 
 /** PROPS: app{}, orgs[], url, isOnlyForCitizens() */
-SetOrganizationComponent = React.createClass({
-    getInitialState: function() { return {
-                 orgSearchData: {contact_name: '', contact_lastname: '', contact_email: '', sector_type : '', country: 'France',
-                       legal_name: '', tax_reg_num: '', typeInstallOrg: 'NEW-ORGS', selectedOrgId:''}, errors: []
-    }},
-    getOrgSearchData: function(){ return this.state.orgSearchData},
+var SetOrganizationComponent = React.createClass({
+    getInitialState: function () {
+        return {
+            orgSearchData: {
+                contact_name: '', contact_lastname: '', contact_email: '',
+                typeInstallOrg: 'NEW-ORGS',
+                sector_type: '', country: 'France', legal_name: '', tax_reg_num: '',
+                selectedOrgId: ''
+            },
+            errors: []
+        }
+    },
+    getOrgSearchData: function() {
+        return this.state.orgSearchData
+    },
     orgTypeRestriction: function () {
         return {
             company: this.props.app.target_companies,
@@ -862,7 +914,9 @@ SetOrganizationComponent = React.createClass({
                org[fieldname] = event.target.selectedOptions[0].label;
             }else if(fieldname === "tax_reg_num" ){
                org[fieldname] = ''+event.target.value.replace(/\s+/g, ''); /*Remove whitespace avoiding setting undefined*/
-            }else{ org[fieldname] = event.target.value; }
+            }else{
+                org[fieldname] = event.target.value;
+            }
             this.setState({orgSearchData: org, errors:[]});
         }.bind(this);
     },
@@ -870,7 +924,7 @@ SetOrganizationComponent = React.createClass({
         var org = this.state.orgSearchData;
         org.typeInstallOrg = event.target.value;
         this.setState({orgSearchData: org, errors:[]});
-  },
+    },
     toggleSectorType: function (event) {
         var org = this.state.orgSearchData;
         org.sector_type = event.target.value;
@@ -879,10 +933,17 @@ SetOrganizationComponent = React.createClass({
     renderOrganizations: function(){
         var opts = [];
         this.props.orgs.map(function (org) {
-             opts.push(<option key={org.id} className="action-select-option" value={org.id}>{org.name}</option>);
-        }.bind(this));
+             opts.push(<option key={org.id} value={org.id}>{org.name}</option>);
+        });
 
-        return (<select className="btn btn-default dropdown-toggle" onChange={this.onChangeOrgInput('selectedOrgId')}>{opts}</select>);
+        return (
+            <div className="form-group">
+                {this.renderLabel('organization', t('search.organization.title'), true)}
+                <div className="col-sm-8">
+                    <select id="organization" className="col-sm-8 form-control" onChange={this.onChangeOrgInput('selectedOrgId')}>{opts}</select>
+                </div>
+            </div>
+        );
     },
     validate: function(){
        var state = this.state;
@@ -899,38 +960,53 @@ SetOrganizationComponent = React.createClass({
 
        state.errors = errors;
        this.setState(state);
-       if (state.errors.length > 0) { return false; } else {return true;}
+       return state.errors.length <= 0;
     },
-    renderLabel: function(htmlFor, class_name, label){
-        var cn = ($.inArray(class_name, this.state.errors) != -1 ? 'col-sm-3 control-label error' : 'col-sm-3 control-label');
-        return (<label htmlFor={htmlFor} className={cn}>{label}
-                   <label className={'error'}>{'*'}</label>
-                </label>);
+    renderLabel: function(htmlFor, label, isRequired) {
+        var labelClass = isRequired ? 'col-sm-3 control-label required' : 'col-sm-3 control-label';
+        return (
+            <label htmlFor={htmlFor} className={labelClass}>{label} {isRequired ? '*' : ''}</label>
+        );
     },
+    render: function() {
+        return (
+            <div>
+                <div className="form-group">
+                    <div className="col-sm-offset-3 col-sm-8">
 
-    render: function(){
-            return (<div className="form-group">
-                       { (!this.props.isOnlyForCitizens() && this.props.orgs && this.props.orgs.length >0 )
+                        <div className="radio">
+                            <label>
+                                <input type="radio" value="NEW-ORGS"
+                                       checked={this.state.orgSearchData.typeInstallOrg == 'NEW-ORGS'}
+                                       onChange={this.toggleInstallOrgType}/>{t('search.organization.selection.new')}
+                            </label>
+                        </div>
+                        { (!this.props.isOnlyForCitizens() && this.props.orgs && this.props.orgs.length > 0 )
                             ?
-                               <div className="radio col-sm-offset-2">
-                                  <label>
-                                     <input type="radio" value="EXISTING-ORGS" checked={this.state.orgSearchData.typeInstallOrg == 'EXISTING-ORGS'}
-                                        onChange={this.toggleInstallOrgType}/>{t('search.organization.selection.existing')} &nbsp;&nbsp;&nbsp;
-                                  </label>
-                                  { this.renderOrganizations()}
-                               </div>
+                            <div className="radio">
+                                <label>
+                                    <input type="radio" value="EXISTING-ORGS"
+                                           checked={this.state.orgSearchData.typeInstallOrg == 'EXISTING-ORGS'}
+                                           onChange={this.toggleInstallOrgType}/>{t('search.organization.selection.existing')}
+                                </label>
+                            </div>
                             : ''
-                       }
-                       <div className="radio col-sm-offset-2">
-                           <label>
-                               <input type="radio" value="NEW-ORGS" checked={this.state.orgSearchData.typeInstallOrg == 'NEW-ORGS'}
-                                   onChange={this.toggleInstallOrgType} />{t('search.organization.selection.new')}
-                           </label>
-                           <OrganizationSearchFormControl errors={this.state.errors} renderLabel={this.renderLabel} typeRestriction={this.orgTypeRestriction()}
-                                orgSearchData={this.state.orgSearchData} changeInput={this.onChangeOrgInput} toggleType={this.toggleSectorType}/>
-                       </div>
+                        }
                     </div>
-            );
+                </div>
+
+                { this.state.orgSearchData.typeInstallOrg === 'EXISTING-ORGS' ?
+                    this.renderOrganizations() : '' }
+
+                { this.state.orgSearchData.typeInstallOrg === 'NEW-ORGS' ?
+                    <OrganizationSearchFormControl errors={this.state.errors}
+                                                   renderLabel={this.renderLabel}
+                                                   typeRestriction={this.orgTypeRestriction()}
+                                                   orgSearchData={this.state.orgSearchData}
+                                                   changeInput={this.onChangeOrgInput}
+                                                   toggleType={this.toggleSectorType}/> : '' }
+            </div>
+        );
     }
 });
 //END NEW INSTALL PROCESS
@@ -967,59 +1043,56 @@ var Carousel = React.createClass({
         }
 
         return (
-            <div className="carousel">
-                {back}
-                <img src={this.props.images[this.state.index]} alt={this.state.index}/>
-                {forward}
+            <div className="col-md-12">
+                <div className="app-screenshots">
+                    {back}
+                    <img src={this.props.images[this.state.index]} alt={this.state.index}/>
+                    {forward}
+                </div>
             </div>
-            );
+        );
     }
 });
 
 /** PROPS: rate(), rating, rateable, */
 var Rating = React.createClass({
     getInitialState: function () { return {}; },
-    startEditing: function () {
-        if (this.props.rateable) {
-            this.setState({editing: true, rating: 0});
-        }
+    componentDidMount: function() {
+        $("#input-app-rating").rating({
+            min: 0,
+            max: 5,
+            step: 0.5,
+            readonly: !this.props.rateable,
+            value: this.props.rating,
+            starCaptions: {
+                0.5: t('rating.half-star'),
+                1: t('rating.one-star'),
+                1.5: t('rating.one-half-star'),
+                2: t('rating.two-stars'),
+                2.5: t('rating.two-half-stars'),
+                3: t('rating.three-stars'),
+                3.5: t('rating.three-half-stars'),
+                4: t('rating.four-stars'),
+                4.5: t('rating.four-half-stars'),
+                5: t('rating.five-stars')
+            },
+            clearButtonTitle: t('rating.clear-button-title'),
+            clearCaption: t('rating.clear-caption')
+        });
+
+        $('#input-app-rating').on('rating.change', function(event, value, caption) {
+            this.props.rate(value);
+        }.bind(this));
     },
-    stopEditing: function () {
-        this.setState({editing: false, rating: 0});
-    },
-    rate: function () {
-        if (this.props.rateable) {
-            this.props.rate(this.state.rating);
-        }
-    },
-    mouseMove: function (event) {
-        if (this.state.editing) {
-            var rect = this.getDOMNode().getBoundingClientRect();
-            var x = Math.floor(8 * (event.clientX - rect.left) / (rect.width)) / 2;
-            if (rect.right - event.clientX < 5) {
-                // the last 5 pixels are a cheat for the max grade
-                x = 4;
-            }
-            this.setState({editing: true, rating: x});
-        }
+    componentWillReceiveProps: function(nextProps) {
+        $('#input-app-rating').rating('refresh', { readonly: !nextProps.rateable });
+        $('#input-app-rating').rating('update', nextProps.rating);
     },
     render: function () {
-        var className;
-        var rating;
-        if (this.state.editing) {
-            rating = this.state.rating;
-        } else {
-            rating = this.props.rating;
-        }
-        var rt = rating < 1 ? "0" + (rating * 10) : (rating * 10);
-        className = "rating-static rating-" + rt;
         return (
-            <div className={className}
-                onMouseEnter={this.startEditing}
-                onMouseLeave={this.stopEditing}
-                onMouseMove={this.mouseMove}
-                onClick={this.rate}>
-            </div>
+            <span className="rate">
+                <input id="input-app-rating" type="number" data-size="xs" />
+            </span>
         );
     }
 });

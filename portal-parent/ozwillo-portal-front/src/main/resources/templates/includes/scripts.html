@@ -1,0 +1,52 @@
+<script data-th-src="@{/webjars/jquery/2.1.4/jquery.min.js}" type="text/javascript" ></script>
+<script data-th-src="@{/webjars/bootstrap/3.3.6/js/bootstrap.min.js}" type="text/javascript"></script>
+
+<script src="../../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
+
+<script type="text/javascript" data-th-src="@{/webjars/react/0.12.2/react.min.js}"></script>
+<script data-th-src="@{/webjars/react/0.12.2/JSXTransformer.js}" data-th-if="${devmode}"></script>
+
+<script type="text/jsx" src="../../public/js/util/portal-util-react.jsx.js" data-th-src="@{/js/util/portal-util-react.jsx.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/util/portal-util-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
+<script type="text/jsx" src="../../public/js/util/bootstrap-react.jsx.js" data-th-src="@{/js/util/bootstrap-react.jsx.js}" data-th-if="${devmode}"></script>
+<!--/*/<script type="text/javascript" data-th-src="@{/js/util/bootstrap-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
+<script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
+<script type="text/javascript" data-th-src="@{/js/my.js}" src="../../public/js/my.js"></script>
+
+<div data-th-if="${production}">
+    <!-- pingdom -->
+    <script>
+        var _prum = [
+            ['id', '54d88b12abe53d0e766aa318'],
+            ['mark', 'firstbyte', (new Date()).getTime()]
+        ];
+        (function() {
+            var s = document.getElementsByTagName('script')[0]
+                    , p = document.createElement('script');
+            p.async = 'async';
+            p.src = '//rum-static.pingdom.net/prum.min.js';
+            s.parentNode.insertBefore(p, s);
+        })();
+    </script>
+    <!-- pingdom -->
+
+    <!-- Piwik -->
+    <script type="text/javascript">
+        var _paq = _paq || [];
+        _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
+        _paq.push(["setCookieDomain", "*.portal.ozwillo.com"]);
+        _paq.push(["setDomains", ["*.portal.ozwillo.com"]]);
+        _paq.push(['trackPageView']);
+        _paq.push(['enableLinkTracking']);
+        (function() {
+            var u="//oasis.piwikpro.com/";
+            _paq.push(['setTrackerUrl', u+'piwik.php']);
+            _paq.push(['setSiteId', 69]);
+            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
+            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
+        })();
+    </script>
+    <noscript><p><img src="//oasis.piwikpro.com/piwik.php?idsite=69" style="border:0;" alt="" /></p></noscript>
+    <!-- End Piwik Code -->
+
+</div>

@@ -1,33 +1,36 @@
-<head>
+<head lang="${currentLanguage}">
     <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="_csrf" data-th-content="${_csrf.token}" content="csrf token"/>
     <meta name="_csrf_header" data-th-content="${_csrf.headerName}" content="X-CSRF-TOKEN"/>
 
     <title data-th-text="${title}">Page Title</title>
-    <link data-th-href="@{/webjars/bootstrap/3.1.1/css/bootstrap.min.css}" rel="stylesheet"/>
-    <link data-th-href="@{/webjars/select2/3.5.2/select2.css}" rel="stylesheet"/><!-- LATER minify -->
-    <link data-th-href="@{/webjars/select2-bootstrap-css/1.4.6/select2-bootstrap.css}" rel="stylesheet"/><!-- LATER minify -->
-    <link data-th-href="@{/webjars/font-awesome/4.2.0/css/font-awesome.min.css}" rel="stylesheet"/>
-    <link data-th-href="@{/webjars/jquery-ui/1.10.4/themes/base/minified/jquery-ui.min.css}" rel="stylesheet"/>
-    <link data-th-href="@{/css/main.css}" rel="stylesheet"/>
-    <link data-th-if="${page} != null" data-th-href="@{'/css/' + ${page} + '.css'}" rel="stylesheet"/>
-    <!--[if lt IE 9]>
-    <script data-th-src="@{/webjars/html5shiv/3.7.0/html5shiv.min.js}"
-            src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script data-th-src="@{/webjars/respond/1.4.2/dest/respond.min.js}"
-            src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
 
+    <link data-th-href="@{/webjars/bootstrap/3.3.6/css/bootstrap.min.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/font-awesome/4.5.0/css/font-awesome.min.css}" rel="stylesheet" />
+    <!-- FIXME : only include in store page -->
+    <link data-th-href="@{/webjars/bootstrap-star-rating/3.5.4/css/star-rating.min.css}" media="all" rel="stylesheet" />
+    <link data-th-href="@{/css/specific.css}" rel="stylesheet" />
+    <!-- FIXME : only include in pages that need them -->
+    <link data-th-href="@{/webjars/jquery-ui/1.10.4/themes/base/minified/jquery-ui.min.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/jquery-ui/1.10.4/themes/base/minified/jquery.ui.datepicker.min.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/select2/3.5.2/select2.css}" rel="stylesheet" />
+    <link data-th-href="@{/webjars/select2/3.5.2/select2-bootstrap.css}" rel="stylesheet" />
+    <!-- end FIXME -->
 
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon-precomposed" sizes="144x144" data-th-href="@{/img/new/apple-touch-icon-144-precomposed.png}" />
+    <link rel="apple-touch-icon-precomposed" sizes="114x114" data-th-href="@{/img/new/apple-touch-icon-114-precomposed.png}" />
+    <link rel="apple-touch-icon-precomposed" sizes="72x72" data-th-href="@{/img/new/apple-touch-icon-72-precomposed.png}" />
+    <link rel="apple-touch-icon-precomposed" sizes="57x57" data-th-href="@{/img/new/apple-touch-icon-57-precomposed.png}" />
+    <link rel="shortcut icon" data-th-href="@{/img/new/favicon.png}" />
 
     <script data-th-inline="javascript" type="text/javascript">
         var messages = /*[[${i18n}]]*/ {};
         var devmode = /*[[${devmode}]]*/ false;
         var notificationsEnabled = /*[[${notificationsEnabled}]]*/ true;
         var currentLanguage = /*[[${currentLocaleLanguage}]]*/ 'en';
-        <!--var sitemapheader = /*[[${sitemapheader}]]*/ {};  not required at the moment, it's used directly in navbar.html & my-navigation.html -->
     </script>
 
 </head>

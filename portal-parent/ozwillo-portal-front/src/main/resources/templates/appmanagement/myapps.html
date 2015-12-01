@@ -1,163 +1,51 @@
 <!DOCTYPE html>
 <html>
-<head data-th-replace="includes/header(title=#{my.appsmanagement},page='apps-management')">
-    <meta charset="utf-8"/>
-    <meta http-equiv="X-UA-Compatible" content="IE=Edge"/>
-    <meta name="viewport" content="width=device-width, initial-scale=1"/>
-    <title>DUMMY Ozwillo</title>
-    <link href="http://netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
-    <link href="http://netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css" rel="stylesheet"/>
-    <link href="../../public/css/main.css" rel="stylesheet"/>
-    <link href="../../public/css/apps-management.css" rel="stylesheet"/>
-    <!--[if lt IE 9]>
-    <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-    <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-    <![endif]-->
-
-    <style>
-        @font-face {
-            font-family: 'Dunkin';
-            src: url('../../public/fonts/Dunkin.eot?') format('eot'),
-            url('../../public/fonts/Dunkin.woff') format('woff'),
-            url('../../public/fonts/Dunkin.ttf') format('truetype'),
-            url('../../public/fonts/Dunkin.svg#Dunkin') format('svg');
-        }
-
-        @font-face {
-            font-family: 'DIN';
-            src: url('../../public/fonts/DIN.eot?') format('eot'),
-            url('../../public/fonts/DIN.woff') format('woff'),
-            url('../../public/fonts/DIN.ttf') format('truetype'),
-            url('../../public/fonts/DIN.svg#DIN') format('svg');
-        }
-
-        @font-face {
-            font-family: 'DINAlternate-Light';
-            src: url('../../public/fonts/DINAlternate-Light.eot?') format('eot'),
-            url('../../public/fonts/DINAlternate-Light.woff') format('woff'),
-            url('../../public/fonts/DINAlternate-Light.ttf') format('truetype'),
-            url('../../public/fonts/DINAlternate-Light.svg#DIN') format('svg');
-        }
-
-
-
-        b.caret {
-            border: none;
-            height: 15px;
-            width: 15px;
-            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret.png");
-        }
-
-        b.caret.inverse {
-            border: none;
-            height: 15px;
-            width: 15px;
-            background: url("../../../../../../oasis-portal-core/src/main/resources/public/img/icon/caret-inverse.png");
-        }
-
-    </style>
-</head>
+<head data-th-replace="includes/header(title=#{my.appsmanagement},page='apps-management')"></head>
 
 <body>
-<div class="wrapper">
-    <div class="navbar navbar-fixed-top my-oasis-navbar" role="navigation" th:replace="includes/my-navigation :: nav">
-        <div class="navbar-header">
+<div data-th-replace="includes/my-header-content::header"></div>
 
-            <div class="my-oasis">
-                <img id="logo" th:src="@{/img/my/my-oasis.png}" src="../../public/img/my/my-oasis.png"
-                     alt="My OASIS"/>
-                    <span class="badge badge-notifications" th:if="${notificationsCount != 0}"
-                          th:text="${notificationsCount}">4</span>
+<div data-th-replace="includes/my-navigation :: nav"></div>
+
+<div class="oz-body page-row page-row-expanded">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">
+                    <img data-th-src="@{/img/new/appsmanagement.png}" src="../../public/img/new/appsmanagement.png"/>
+                    <span data-th-text="#{my.apps.title}">Apps management</span>
+                </h1>
             </div>
         </div>
-        <ul class="nav navbar-nav oasis-nav" th:remove="all-but-first">
-            <li class="active" th:each="item : ${navigation}" th:class="${item.active ? 'active':''}">
-                <a href="#" th:href="@{'/my/' + ${item.id}}" th:class="${item.active?'':'nav-link'}">
-                    <img th:if="${!item.active}" th:src="@{'/img/my/' + ${item.id} + '-gray.png'}"
-                         src="../../public/img/my/dashboard-gray.png" alt="Dashboard" th:alt="#{'my.' + ${item.id}}"
-                         class="gray"/>
-                    <img th:src="@{'/img/my/' + ${item.id} + '.png'}" src="../../public/img/my/dashboard.png"
-                         alt="Dashboard"
-                         th:alt="#{'my.' + ${item.id}}" th:class="${item.active?'':'purple'}"/>
-                    <span th:text="#{'my.' + ${item.id}}">Dashboard</span>
-                </a>
-                <th:block th:if="${item.active}">
-                    <div class="arrow-border"></div>
-                    <div class="arrow"></div>
-                </th:block>
-            </li>
-            <li>
-                <a href="#" class="nav-link">
-                    <img class="gray" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile-gray.png"
-                         alt="Profile"/>
-                    <img class="purple" th:src="@{/img/my/profile-gray.png}" src="../../public/img/my/profile.png"
-                         alt="Profile"/>
-                    <span>Profile</span>
-                </a>
-
-                <div class="arrow-border"></div>
-                <div class="arrow"></div>
-            </li>
-            <li>
-                <a href="#" class="nav-link">
-                    <img class="gray" th:src="@{/img/my/network-gray.png}" src="../../public/img/my/network-gray.png"
-                         alt="Network"/>
-                    <img class="purple" th:src="@{/img/my/network.png}" src="../../public/img/my/network.png"
-                         alt="Network"/>
-                    <span>Network</span>
-                </a>
-            </li>
-            <li>
-                <a href="#" class="nav-link">
-                    <img class="gray" th:src="@{/img/my/apps-management-gray.png}"
-                         src="../../public/img/my/appsmanagement-gray.png" alt="Apps Management"/>
-                    <img class="purple" th:src="@{/img/my/apps-management.png}"
-                         src="../../public/img/my/appsmanagement.png"
-                         alt="Apps Management"/>
-                    <span>My Apps</span>
-                </a>
-            </li>
-        </ul>
-
-
     </div>
 
-    <div class="container">
-        <h2 data-th-text="#{my.apps.title}">Apps management</h2>
+    <div class="oz-body-content">
+        <div class="container" id="myapps">
+            <div class="text-center"><i class="fa fa-spinner fa-spin"></i><span data-th-text="#{ui.loading}"></span></div>
+        </div>
     </div>
-
-    <div id="myapps"></div>
 
     <div class="push"></div>
 </div>
-<th:block data-th-replace="includes/footer">
 
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.4/jquery-ui.min.js"></script>
-    <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
+<div data-th-replace="includes/footer"></div>
 
-</th:block>
+<div data-th-replace="includes/scripts"></div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.9.0/moment-with-locales.min.js" data-th-src="@{/webjars/momentjs/2.9.0/min/moment-with-locales.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/webjars/momentjs/2.9.0/min/moment-with-locales.min.js}" data-th-if="${!devmode}"></script>/*/-->
+<script type="text/javascript" data-th-src="@{/webjars/momentjs/2.9.0/min/moment-with-locales.min.js}"></script>
+<script type="text/javascript" data-th-src="@{/webjars/select2/3.5.2/select2.min.js}"></script>
 
-<script data-th-src="@{/js/csrf.js}"></script>
-<script src="//cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js" data-th-src="@{/webjars/typeaheadjs/0.10.4/typeahead.bundle.min.js}"></script>
-<script src="http://fb.me/react-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/react.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/webjars/react/0.12.2/react.min.js}" data-th-if="${!devmode}"></script>/*/-->
-<script src="http://fb.me/JSXTransformer-0.12.2.js" data-th-src="@{/webjars/react/0.12.2/JSXTransformer.js}" data-th-if="${devmode}"></script>
+<script src="../../public/js/csrf.js" data-th-src="@{/js/csrf.js}"></script>
+<script data-th-src="@{/webjars/typeaheadjs/0.11.1/typeahead.bundle.min.js}"></script>
 
 <script data-th-inline="javascript" type="text/javascript">
     var apps_service = /*[[@{/my/api/myapps}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
     var store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
+    var image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
     moment.locale(currentLanguage);
 </script>
 
-<script type="text/javascript" data-th-src="@{/js/util/message.js}" src="../../public/js/util/message.js"></script>
-<script type="text/jsx" src="../../public/js/util/bootstrap-react.jsx.js" data-th-src="@{/js/util/bootstrap-react.jsx.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/js/util/bootstrap-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
-<script type="text/jsx" src="../../public/js/util/portal-util-react.jsx.js" data-th-src="@{/js/util/portal-util-react.jsx.js}" data-th-if="${devmode}"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/js/util/portal-util-react.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/util/userpicker.jsx.js" data-th-src="@{/js/util/userpicker.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/util/userpicker.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/util/fileuploadinput.jsx.js" data-th-src="@{/js/util/fileuploadinput.jsx.js}" data-th-if="${devmode}"></script>
@@ -166,9 +54,6 @@
 <!--/*/<script type="text/javascript" data-th-src="@{/js/appmanagement/service-settings.min.js}" data-th-if="${!devmode}"></script>/*/-->
 <script type="text/jsx" src="../../public/js/appmanagement/myapps.jsx.js" data-th-src="@{/js/appmanagement/myapps.jsx.js}" data-th-if="${devmode}"></script>
 <!--/*/<script type="text/javascript" data-th-src="@{/js/appmanagement/myapps.min.js}" data-th-if="${!devmode}"></script>/*/-->
-
-
-<script type="text/javascript" data-th-src="@{/js/my.js}" src="../../public/js/my.js"></script>
 
 </body>
 </html>

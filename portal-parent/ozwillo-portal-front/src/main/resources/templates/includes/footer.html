@@ -1,83 +1,52 @@
-<footer>
-    <div class="sitemap">
-        <div class="container">
-            <div class="row">
-                <div class="col-sm-6 col-xs-12 text-center">
-                    <img src="/img/logo-xl.png" alt="Ozwillo"/>
-                    <p class="footer-tagline">
-                        <span data-th-text="#{footer.tagline}">Digital commons creator</span>
-                    </p>
-                    <p>
-                        <a href="https://www.ozwillo.com/en/oz/projects">
-                            <img src="/img/icons/CIP.png" alt="CIP" title="Competitiveness and Innovation Framework Programme"/>
-                        </a>
-                        <a href="https://www.ozwillo.com/en/oz/projects">
-                            <img src="/img/icons/EU.png" alt="EU" title="European funded OASIS project"/>
-                        </a>
-                        <a href="https://www.ozwillo.com/en/oz/projects">
-                            <img src="/img/icons/PIA.png" alt="PIA" title="Programme d'investissements d'avenir"/>
-                        </a>
-                        <a href="https://www.ozwillo.com/en/oz/projects">
-                            <img src="/img/icons/FR.png" alt="FR"/>
-                        </a>
-                    </p>
-                </div>
-                <div class="col-sm-2 col-xs-4" data-th-each="col: ${sitemap}">
-                    <ul>
-                        <li data-th-each="entry: ${col}"><a data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
-                        </li>
-                    </ul>
+<footer class="page-row">
+    <div class="container-fluid">
+        <div class="row clearfix footer">
+            <div class="col-md-12 column footer-top-block">
+                <div class="row clearfix">
+                    <div class="col-md-3 column">
+                        <div class="footer-logo">
+                            <img data-th-src="@{/img/new/logo-footer.png}" src="../../public/img/new/logo-footer.png"/>
+                        </div>
+                    </div>
+                    <div class="col-md-9 column">
+                        <div class="pull-right top">
+                            <div data-th-each="entry: ${sitemap}" data-th-remove="tag">
+                                <a class="footer-link" data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+
+            <div class="col-md-12 column">
+                <div class="row clearfix">
+                    <div class="col-md-3 column">
+                        <div class="logo-twitter">
+                            <a href="https://twitter.com/ozwillo">
+                                <img data-th-src="@{/img/new/twitter.jpg}" src="../../public/img/new/twitter.jpg"/>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="col-md-9 column">
+                        <div class="pull-right top">
+                            <a href="https://www.ozwillo.com/en/oz/projects">
+                                <img data-th-src="@{/img/new/cip.jpg}" src="../../public/img/new/cip.jpg"/>
+                            </a>
+                            <a href="https://www.ozwillo.com/en/oz/projects">
+                                <img data-th-src="@{/img/new/eu.jpg}" src="../../public/img/new/eu.jpg"/>
+                            </a>
+                            <a href="https://www.ozwillo.com/en/oz/projects">
+                                <img data-th-src="@{/img/new/investir.jpg}" src="../../public/img/new/investir.jpg"/>
+                            </a>
+                            <a href="https://www.ozwillo.com/en/oz/projects">
+                                <img data-th-src="@{/img/new/RP.jpg}" src="../../public/img/new/RP.jpg"/>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 </footer>
-
-
-<script data-th-src="@{/webjars/jquery/1.11.0/jquery.min.js}" src="/webjars/jquery/1.11.0/jquery.min.js"></script>
-<script data-th-src="@{/webjars/jquery-ui/1.10.4/ui/minified/jquery-ui.min.js}"
-        src="//code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-<script data-th-src="@{/webjars/bootstrap/3.1.1/js/bootstrap.min.js}"
-        src="/webjars/bootstrap/3.1.1/js/bootstrap.min.js"></script>
-<script data-th-src="@{/webjars/select2/3.5.2/select2.js}" data-th-if="${devmode}"
-        src="/webjars/select2/3.5.2/select2.min.js"></script>
-<!--/*/<script type="text/javascript" data-th-src="@{/webjars/select2/3.5.2/select2.min.js}" data-th-if="${!devmode}"></script>/*/-->
-
-<th:block data-th-if="${production}">
-    <!-- pingdom -->
-    <script>
-        var _prum = [
-            ['id', '54d88b12abe53d0e766aa318'],
-            ['mark', 'firstbyte', (new Date()).getTime()]
-        ];
-        (function() {
-            var s = document.getElementsByTagName('script')[0]
-                , p = document.createElement('script');
-            p.async = 'async';
-            p.src = '//rum-static.pingdom.net/prum.min.js';
-            s.parentNode.insertBefore(p, s);
-        })();
-    </script>
-    <!-- pingdom -->
-
-    <!-- Piwik -->
-    <script type="text/javascript">
-        var _paq = _paq || [];
-        _paq.push(["setDocumentTitle", document.domain + "/" + document.title]);
-        _paq.push(["setCookieDomain", "*.portal.ozwillo.com"]);
-        _paq.push(["setDomains", ["*.portal.ozwillo.com"]]);
-        _paq.push(['trackPageView']);
-        _paq.push(['enableLinkTracking']);
-        (function() {
-            var u="//oasis.piwikpro.com/";
-            _paq.push(['setTrackerUrl', u+'piwik.php']);
-            _paq.push(['setSiteId', 69]);
-            var d=document, g=d.createElement('script'), s=d.getElementsByTagName('script')[0];
-            g.type='text/javascript'; g.async=true; g.defer=true; g.src=u+'piwik.js'; s.parentNode.insertBefore(g,s);
-        })();
-    </script>
-    <noscript><p><img src="//oasis.piwikpro.com/piwik.php?idsite=69" style="border:0;" alt="" /></p></noscript>
-    <!-- End Piwik Code -->
-
-
-</th:block>

@@ -5,7 +5,7 @@ import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormLayoutMode;
-import org.oasis_eu.portal.model.FormWidgetDropdown;
+import org.oasis_eu.portal.model.FormWidgetSelect;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.service.UserAccountService;
@@ -114,7 +114,7 @@ public class MyProfileController extends PortalController {
 
 
 		initProfileModel(model);
-		return "my-profile";
+		return "profile/my-profile";
 	}
 
 	@RequestMapping(method = RequestMethod.GET, value = "/fragment/layout/{id}")
@@ -124,7 +124,7 @@ public class MyProfileController extends PortalController {
 		initProfileModel(model);
 		model.addAttribute("layout", myProfileState.getLayout(layoutId));
 		
-		return "includes/my-profile-fragments :: layout";
+		return "profile/my-profile-fragments :: layout";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/mode")
@@ -138,7 +138,7 @@ public class MyProfileController extends PortalController {
 		model.addAttribute("layout", formLayout);
 
 //		return "redirect:/my/profile/fragment/layout/" + layoutId;
-		return "includes/my-profile-fragments::layout";
+		return "profile/my-profile-fragments::layout";
 	}
 
 	@RequestMapping(method = RequestMethod.POST, value = "/save/{layoutId}")
@@ -163,7 +163,7 @@ public class MyProfileController extends PortalController {
 				initProfileModel(model);
 				model.addAttribute("layout", myProfileState.getLayout(layoutId));
 //				return "includes/my-profile-fragments :: layout";
-				return "my-profile";
+				return "profile/my-profile";
 			}
 		}
 
@@ -185,9 +185,9 @@ public class MyProfileController extends PortalController {
 				myNavigationService.getNavigation("profile"));
 		model.addAttribute("layouts", myProfileState.getLayouts());
 		
-		FormWidgetDropdown localeDropDown = (FormWidgetDropdown) myProfileState.getLayout("account").getWidget("locale");
+		FormWidgetSelect localeSelect = (FormWidgetSelect) myProfileState.getLayout("account").getWidget("locale");
 		for(Languages language : languages()) {
-			localeDropDown.addOption(language.getLocale().getLanguage(), "language.name."+language.getLocale().getLanguage());
+			localeSelect.addOption(language.getLocale().getLanguage(), "language.name."+language.getLocale().getLanguage());
 		}
 	}
 

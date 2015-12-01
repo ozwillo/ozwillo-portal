@@ -1,18 +1,5 @@
 $(document).ready(function () {
 
-
-    $("a.nav-link").hover(
-        function () {
-            var image_purple = $(this).find("img.purple");
-            image_purple.fadeIn(250);
-        },
-        function () {
-            var image_purple = $(this).find("img.purple");
-            image_purple.fadeOut(250);
-        }
-    );
-
-    var nextNotificationTimeoutId;
     var getNotificationsCount = function () {
 
         $.ajax({
@@ -21,23 +8,16 @@ $(document).ready(function () {
             global: false,
             success: function (notifData) {
                 var element = $(".my-oasis span.badge.badge-notifications");
-                if (notifData.notificationsCount > 0) {
-                    element.html(notifData.notificationsCount);
-                    element.show();
+                element.html(notifData.notificationsCount);
+                element.attr("data-content", notifData.notificationsMessage);
 
-                    element.data("popover", null).popover({
-                                placement:"bottom",
-                                trigger:"hover",
-                                container:"body",
-                                content:notifData.notificationsMessage
-                    });
-
-                    element.attr("data-content", notifData.notificationsMessage);
-
-                } else {
-                    element.hide();
-                }
-                nextNotificationTimeoutId = setTimeout(getNotificationsCount , 2000);
+                $('.my-oasis p.welcome').attr('title', notifData.notificationsMessage);
+                $('.my-oasis p.welcome').tooltip({
+                    placement: "bottom",
+                    container: "body",
+                    content: notifData.notificationsMessage
+                });
+                nextNotificationTimeoutId = setTimeout(getNotificationsCount , 60000);
             },
             error: function(xhr, status, err) {
                 if ($.inArray(xhr.status, [401]) > -1) {
@@ -54,8 +34,6 @@ $(document).ready(function () {
             getNotificationsCount();
         }
     }
-  	
-
 })
 .ajaxError(
 	function(e, xhr, settings, exception) {
@@ -74,10 +52,8 @@ $(document).ready(function () {
             if (xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong"))
                 err_detail = err_detail + " " +xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong");
 
-            var divError = createDivError(title, err_message, err_detail);
-
             if ( devmode || ( (xstat / 100) !== 5 )){
-                openErrorDialog(divError, 3500);
+                openErrorDialog(title, err_message, err_detail);
             }
         }
 
@@ -92,66 +68,17 @@ $(document).ready(function () {
                 + xhr.responseText + " "
                 + xhr.getResponseHeader("X-Oasis-Portal-Kernel-SomethingWentWrong");
 
-        var divError = createDivError(title, err_msg, err_detail);
-
-        openErrorDialog(divError, 3500);
+        openErrorDialog(title, err_msg, err_detail);
 	}
 });
 
 
 // Functions
 
-function createDivError(title, err_msg, details){
-    var error = jQuery("<div id='dialog-error' />" );
-    error.attr('title', title);
-    error.text(err_msg);
-    error.append(jQuery("<br />" ));
-    error.append(details);
-
-    return error;
-}
-
-function openErrorDialog(divError, timeOut){
-        $("body").append(divError);
-        divError.show();
-
-        var dlg_width = 250;
-        var dlg_height = 200;
-
-		var dlg_offset_x = $("#navbar-collapse").width() - dlg_width + 200;
-		var dlg_margin_top = $("#navbar-collapse").outerHeight(true); // includeMargins=true
-		var dlg_margin_bottom = $("footer").outerHeight(true); // includeMargins=true
-
-		var $dlg = $('#dialog-error').dialog({
-			autoOpen: false,
-			width: dlg_width,
-			height: dlg_height,
-			resizable: false,
-			show: 'fade',
-			hide: 'fade',
-			dialogClass: 'no-close',
-			//modal: true,  // blocks the page
-			open: function(event, ui) {
-				setTimeout(function(){ $(".ui-dialog-content").dialog().dialog("close");}, timeOut);
-			},
-			position: [dlg_offset_x, dlg_margin_top]
-		});
-
-		$(window).bind('scroll', function(evt){
-			var scrollTop = $(window).scrollTop();
-			var bottom = $(document).height() - scrollTop;
-			$dlg.dialog("option", {"position": [
-				dlg_offset_x,
-				((dlg_margin_top - scrollTop > 0)
-					? dlg_margin_top - scrollTop
-					: ( (bottom - dlg_height > dlg_margin_bottom)
-						? 0
-						: bottom - dlg_height - dlg_margin_bottom
-					)
-				)
-			]});
-		});
-
-		$dlg.dialog('open');
-
+function openErrorDialog(title, err_msg, err_detail) {
+    var errorContainer = $('#error-container');
+    errorContainer.removeClass('hidden');
+    var errorMsg = $('#error-message');
+    errorMsg.text(err_msg + '\n' + err_detail);
+    errorMsg.attr('title', title);
 }

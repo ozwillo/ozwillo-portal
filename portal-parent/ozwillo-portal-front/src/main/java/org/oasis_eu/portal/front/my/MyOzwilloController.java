@@ -48,8 +48,8 @@ public class MyOzwilloController extends PortalController {
 	private MessageSource messageSource;
 
 	private static List<String> i18keys = Arrays.asList("create", "switch-dash", "confirm-delete-dash",
-			"confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long");
-	private static List<String> generickeys = Arrays.asList("yes", "save", "cancel", "close", "loading", "go",
+			"confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name");
+	private static List<String> generickeys = Arrays.asList("yes", "confirm", "save", "cancel", "close", "loading", "go",
 			"general-error", "edit", "add", "remove", "something_went_wrong_msg", "something_went_wrong_title",
 			"error_detail_title");
 

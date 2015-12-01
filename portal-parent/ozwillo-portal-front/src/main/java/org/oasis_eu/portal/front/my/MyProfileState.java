@@ -14,10 +14,10 @@ import org.oasis_eu.portal.model.AvatarWidget;
 import org.oasis_eu.portal.model.FormLayout;
 import org.oasis_eu.portal.model.FormWidget;
 import org.oasis_eu.portal.model.FormWidgetDate;
-import org.oasis_eu.portal.model.FormWidgetDropdown;
 import org.oasis_eu.portal.model.FormWidgetHidden;
+import org.oasis_eu.portal.model.FormWidgetSelect;
 import org.oasis_eu.portal.model.FormWidgetText;
-import org.oasis_eu.portal.model.FormWidgetUrlButton;
+import org.oasis_eu.portal.model.FormWidgetPassword;
 import org.oasis_eu.portal.services.NameDefaults;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -108,8 +108,8 @@ public class MyProfileState {
 		accountFormLayout.appendWidget(new FormWidgetText("nickname", "my.profile.personal.nickname"));
 		accountFormLayout.appendWidget(new AvatarWidget("pictureUrl", "my.profile.account.avatar", getAvailableAvatars()));
 		accountFormLayout.appendWidget(new FormWidgetText("email", "my.profile.account.email"));
-		accountFormLayout.appendWidget(new FormWidgetUrlButton("password", "my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
-		accountFormLayout.appendWidget(new FormWidgetDropdown("locale", "my.profile.account.language", uiLocales -> {
+		accountFormLayout.appendWidget(new FormWidgetPassword("password", "my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
+		accountFormLayout.appendWidget(new FormWidgetSelect("locale", "my.profile.account.language", uiLocales -> {
 					Languages keyLanguages = nameDefaults.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
 					return (keyLanguages != null) ? keyLanguages.getLanguage() : null;
 				}));
@@ -120,7 +120,7 @@ public class MyProfileState {
 		idFormLayout.appendWidget(new FormWidgetText("givenName", "my.profile.personal.firstname"));
 		idFormLayout.appendWidget(new FormWidgetText("familyName", "my.profile.personal.lastname"));
 		idFormLayout.appendWidget(new FormWidgetDate("birthdate", "my.profile.personal.birthdate"));
-		idFormLayout.appendWidget(new FormWidgetDropdown("gender","my.profile.personal.gender")
+		idFormLayout.appendWidget(new FormWidgetSelect("gender","my.profile.personal.gender")
 			.addOption("female", "my.profile.personal.gender.female")
 			.addOption("male", "my.profile.personal.gender.male"));
 		idFormLayout.appendWidget(new FormWidgetText("phoneNumber", "my.profile.personal.phonenumber"));

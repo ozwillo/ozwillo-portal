@@ -24,38 +24,38 @@ var MyApps = React.createClass({
     },
     render: function () {
         if (this.state.loading) {
-            return <p className="text-center">
-                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>;
+            return (
+                <p className="text-center">
+                    <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
+                </p>
+            );
         }
         var auths = this.state.authorities.map(function (auth) {
             return (
                 <Authority name={auth.name} key={auth.id} id={auth.id} isPersonal={auth.type === 'INDIVIDUAL'}/>
-                );
+            );
         });
         return (
-            <div className="container panel-group">
-                {auths}
-            </div>
-            );
+            <div className="authorities">{auths}</div>
+        );
     }
 });
 
 var Authority = React.createClass({
 
     render: function () {
-        var content = <InstanceList id={this.props.id} name={this.props.name} authority={this.props.id}/>;
         var title = this.props.isPersonal ?
             (<span>{t('apps-for-personal-use')}</span>) : (<span>{t('apps-for-organization')} {this.props.name}</span>);
 
         return (
-            <div className="panel panel-default">
-                <div className="panel-heading">
-                    <h4 className="panel-title">
-                        {title}
-                    </h4>
+            <div className="authority">
+                <div className="row authority-header">
+                    <div className="col-sm-12">
+                        <h2>{title}</h2>
+                    </div>
                 </div>
-                <div ref="content">
-                    {content}
+                <div ref="content" className="row">
+                    <InstanceList id={this.props.id} name={this.props.name} authority={this.props.id}/>
                 </div>
             </div>
         );
@@ -89,38 +89,45 @@ var InstanceList = React.createClass({
             }.bind(this)
         });
     },
-    componentDidUpdate: function () {
-        $(this.getDOMNode()).toggle("blind");
-    },
     render: function () {
         if (this.state.loading) {
-            return <p className="text-center">
-                <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}</p>;
+            return (
+                <p className="text-center">
+                    <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
+                </p>
+            );
         }
 
         var instances = this.state.instances;
-        var authority = this.props.authority;
-        var reload = this.reloadInstances;
         var result = instances.length != 0 ? instances.map(function (instance) {
-            return <Instance key={instance.id} id={instance.id} instance={instance} authority={authority} reload={reload}/>;
-        }) : (
-            <div className="text-center">
+            return <Instance key={instance.id} id={instance.id} instance={instance} authority={this.props.authority}
+                             reload={this.reloadInstances}/>;
+        }.bind(this)) : (
+            <p className="text-center authority-noapp">
                 <span>{t('none')} </span>
-                <b>{this.props.name}</b>
-            </div>
-            );
+                <strong>{this.props.name}</strong>
+            </p>
+        );
 
         return (
-            <div className="panel collapse">
+            <div className="col-sm-12 authority-body">
                 {result}
             </div>
-            );
+        );
     }
 });
 
 var Instance = React.createClass({
     getInitialState: function() {
         return {};
+    },
+    componentDidMount: function () {
+        $("a.tip", this.getDOMNode()).tooltip();
+    },
+    componentDidUpdate: function () {
+        if (typeof this.state.errorMessage === 'string') {
+            this.refs.errorDialog.open();
+        }
     },
     manageUsers: function (event) {
         event.preventDefault();
@@ -155,24 +162,16 @@ var Instance = React.createClass({
             }.bind(this)
         });
     },
-    queryUsers: function (query, callback) {
+    queryUsers: function (query, syncCallback, asyncCallback) {
         $.ajax({
             url: apps_service + "/users/network/" + this.props.authority + "?q=" + query,
             dataType: 'json',
             method: 'get',
-            success: callback,
+            success: asyncCallback,
             error: function (xhr, status, err) {
                 console.error(apps_service + "/users/network/" + this.props.authority + "?q=" + query, status, err.toString());
             }.bind(this)
         });
-    },
-    componentDidMount: function () {
-        $("a.tip", this.getDOMNode()).tooltip();
-    },
-    componentDidUpdate: function () {
-        if (typeof this.state.errorMessage === 'string') {
-            this.refs.errorDialog.open();
-        }
     },
     confirmTrash: function (event) {
         event.preventDefault();
@@ -221,12 +220,12 @@ var Instance = React.createClass({
         var applicationInstanceStatus = this.props.instance.applicationInstance.status;
         
         var manageUsersButton = null;
-        if (this.props.authority.slice(0, 'INDIVIDUAL:') !== 'INDIVIDUAL:') { // don't display it for personal organizations
+        if (this.props.authority.slice(0, 'INDIVIDUAL:') !== 'INDIVIDUAL:' && applicationInstanceStatus !== 'STOPPED') { // don't display it for personal organizations
             manageUsersButton = (
-                <button className="tip btn btn-default pull-right" disabled={applicationInstanceStatus === 'STOPPED'}
+                <button type="button" className="tip btn btn-default-inverse pull-right"
                         onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
-                    <li className="fa fa-user"></li>
-                </button>        
+                    <i className="fa fa-user"></i>
+                </button>
             );
         }
         
@@ -241,10 +240,10 @@ var Instance = React.createClass({
             var byDeleteRequesterOnDate = t('by') + " " + this.props.instance.status_change_requester_label
                   + " (" + moment(this.props.instance.applicationInstance.status_changed) + ")";
             buttons.push(
-                <a className="btn btn-danger pull-right" href="#" onClick={this.confirmUntrash}>{t('ui.cancel')}...</a>
+                <button type="button" className="btn oz-btn-danger pull-right" onClick={this.confirmUntrash}>{t('ui.cancel')}</button>
             );
             buttons.push(
-                <span key="untrashTtl" className="pull-right" style={{'color':'red', 'fontStyle':'Italic', 'marginLeft':'5px', 'marginRight':'5px'}} title={byDeleteRequesterOnDate}>
+                <span key="untrashTtl" style={{'color':'red', 'fontStyle':'Italic', 'marginLeft':'5px', 'marginRight':'5px'}} title={byDeleteRequesterOnDate}>
                     {t('will-be-deleted')} {moment(this.props.instance.deletion_planned).fromNow()}
                 </span>
             );
@@ -256,18 +255,19 @@ var Instance = React.createClass({
             );
         } else {
             buttons.push(
-                <a className="btn btn-danger pull-right" href="#" onClick={this.confirmTrash}>{t('ui.delete')}...</a>
+                <button type="button" className="btn oz-btn-danger btn-line pull-right" onClick={this.confirmTrash}>{t('ui.delete')}</button>
             );
             var confirmTrashTitle = t('confirm-trash.title') + ' ' + this.props.instance.name;
             dialogs.push(
-                <Modal ref="confirmTrash" title={confirmTrashTitle} successHandler={this.trash} buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} >
+                <Modal ref="confirmTrash" title={confirmTrashTitle} successHandler={this.trash}
+                       buttonLabels={{ 'cancel': t('ui.cancel'), 'save': t('ui.confirm') }} saveButtonClass="oz-btn-danger">
                     {t('confirm-trash.body')}
                 </Modal>
             );
         }
 
         return (
-            <div className="panel panel-instance">
+            <div>
                 <Modal ref="errorDialog" infobox={true} onClose={this.props.reload} buttonLabels={{'ok': t('ui.close')}} title={t('ui.unexpected_error')}>
                     {this.state.errorMessage}
                 </Modal>
@@ -276,22 +276,26 @@ var Instance = React.createClass({
                 </Modal>
                 {dialogs}
 
-                <div className="panel-heading">
-                    <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
-                    <span className="appname">{this.props.instance.name}</span>
-                    {manageUsersButton}
-                    {buttons}
-                </div>
-                <div className="panel-body">
-                    <div className="standard-form">
-                        <div className="row form-table-header">
-                            <div className="col-sm-10">{t('services')}</div>
+                <div className="row authority-app">
+                    <div className="col-sm-8">
+                        <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
+                        <h3>{this.props.instance.name}</h3>
+                    </div>
+                    <div className="col-sm-4">
+                        <div className="pull-right">
+                            {manageUsersButton}
+                            {buttons}
                         </div>
-                        {services}
                     </div>
                 </div>
+                <div className="row authority-app-services-title">
+                    <div className="col-sm-12">
+                        <h4>{t('services')}</h4>
+                    </div>
+                </div>
+                {services}
             </div>
-            );
+        );
     }
 });
 
