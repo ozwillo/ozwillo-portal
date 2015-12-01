@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.google.common.base.Strings;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
@@ -47,20 +48,20 @@ public class OrganizationService {
 
 
 	/** Search an organization in DC and Kernel to validate its modification */
-	public DCOrganization findOrganization(String country, String country_uri,String sector, String legalName, String regNumber)
+	public DCOrganization findOrganization(String country, String countryUri, String sector, String legalName, String regNumber)
 	{
 		String localLang = RequestContextUtils.getLocale(request).getLanguage();
 		String dcSectorType = DCOrganizationType.getDCOrganizationType(sector).name();
-		DCOrganization dcOrganization = organizationDAO.searchOrganization(localLang, country_uri, dcSectorType, legalName, regNumber);
+		DCOrganization dcOrganization = organizationDAO.searchOrganization(localLang, countryUri, dcSectorType, legalName, regNumber);
 
 		if(dcOrganization == null || !dcOrganization.isExist()){ // Organization doesn't exist in DC
 			logger.info("Organization doesn't exist in DC. Letting user create one with given entries.");
 			// set an empty DCOrganization to be filled by user then Create Organization in Kernel when creating
 
-			String type = organizationDAO.generateResourceType(dcSectorType, country_uri, regNumber);
+			String type = organizationDAO.generateResourceType(dcSectorType, countryUri, regNumber);
 			String baseUri = dcBaseUri.trim(); //"http://data.ozwillo.com/dc/type";
-			String iri = organizationDAO.getCountryAcronym(country_uri).toUpperCase()+"/"+regNumber;
-			UIOrganization uiOrganization = networkService.searchOrganizationByDCId(baseUri+"/"+type+"/"+iri);
+			String iri = organizationDAO.getCountryAcronym(countryUri).toUpperCase()+ '/' +regNumber;
+			UIOrganization uiOrganization = networkService.searchOrganizationByDCId(baseUri+ '/' +type+ '/' +iri);
 			if(uiOrganization != null){
 				logger.debug("It already exist in kernel, so cant be re-created.");
 				return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
@@ -70,7 +71,7 @@ public class OrganizationService {
 			dcOrganization.setLegal_name(legalName);
 			dcOrganization.setTax_reg_num(regNumber);
 			dcOrganization.setSector_type(sector);
-			dcOrganization.setCountry_uri(country_uri);
+			dcOrganization.setCountry_uri(countryUri);
 			dcOrganization.setCountry(country);
 			return dcOrganization;
 
@@ -80,7 +81,7 @@ public class OrganizationService {
 				logger.info("Organization found in DC but not in KERNEL, so modification by the user is allowed.");
 				//Set the sector type supported by the UI
 				dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
-				dcOrganization.setCountry_uri(country_uri);
+				dcOrganization.setCountry_uri(countryUri);
 				dcOrganization.setCountry(country);
 				return dcOrganization; // there is no owner for the data, so can be modified(in DC) & created (in kernel)
 			}else{
@@ -90,8 +91,8 @@ public class OrganizationService {
 		}
 	}
 
-	public DCOrganization findOrganizationById(String dc_id){
-		DCOrganization dcOrganization = organizationDAO.searchOrganizationById(dc_id, RequestContextUtils.getLocale(request).getLanguage());
+	public DCOrganization findOrganizationById(String dcId){
+		DCOrganization dcOrganization = organizationDAO.searchOrganizationById(dcId, RequestContextUtils.getLocale(request).getLanguage());
 		if(dcOrganization != null){
 			dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
 
@@ -113,12 +114,14 @@ public class OrganizationService {
 		DCResource dcResource = organizationDAO.create(dcOrganization);
 		updateUserInfo(dcOrganization);
 		if(dcResource != null && !dcOrganization.isExist()){
-			UIOrganization uiOrganization = checkAndCreateKernelOrganization(dcOrganization);
+			UIOrganization uiOrganization = createOrUpdateKernelOrganization(dcOrganization);
 			if(uiOrganization == null){ // if null, then the organization exists in kernel.
-				logger.error("Kernel Organization had been created since you've started filling in the form.");
-				throw new WrongQueryException();
+				String message = String.format("Kernel Organization (%s) had been created since you've started filling in the form.",
+						dcOrganization.getAlt_name());
+				logger.error(message);
+				throw new WrongQueryException(message);
 			}
-			logger.debug("The organization exists in kernel : " + uiOrganization.toString());
+			logger.debug("The organization exists in kernel : " + uiOrganization);
 			return uiOrganization;
 		}
 		return null;
@@ -126,41 +129,46 @@ public class OrganizationService {
 
 	/** Update organization in DC and create data in kernel */
 	public UIOrganization update(DCOrganization dcOrganization) {
-		if(dcOrganization.getLang() == null || dcOrganization.getLang().isEmpty()){dcOrganization.setLang(RequestContextUtils.getLocale(request).getLanguage());}
+		if(Strings.isNullOrEmpty(dcOrganization.getLang())){
+			dcOrganization.setLang(RequestContextUtils.getLocale(request).getLanguage());
+		}
 		updateUserInfo(dcOrganization);
+
 		if(Integer.parseInt(dcOrganization.getVersion()) >= 0){
-			UIOrganization uiOrganization = checkAndCreateKernelOrganization(dcOrganization);
-			if(uiOrganization != null){ // if null, then the organization exists in kernel.
-				//If not null, the organization was created in Kernel, then update data rights in DC.
+			UIOrganization uiOrganization = createOrUpdateKernelOrganization(dcOrganization);
+
+			if(uiOrganization != null){ // the organization was created or updated in Kernel, then update data rights in DC.
 				DCResource dcResource = organizationDAO.setDCIdOrganization(new DCResource(), dcOrganization.getSector_type(),
 						dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
 				dcResource.setVersion(Integer.parseInt(dcOrganization.getVersion()));
+
 				if(organizationDAO.changeDCOrganizationRights(dcResource,  uiOrganization.getId())){
 					//If rights have changed, then the version has increased in DC, so we increase it here as well.
-					dcOrganization.setVersion((Integer.parseInt(dcOrganization.getVersion())+1)+"");
+					dcOrganization.setVersion(String.valueOf(Integer.parseInt(dcOrganization.getVersion()) + 1));
 					// now it can (by right) update an DC Organization
 					organizationDAO.update(dcOrganization);
 				}
 			}else{ // Not updated
-				logger.error("Kernel Organization had been created since you've started filling in the form.");
-				throw new IllegalArgumentException();
+				String message = String.format("Kernel Organization (%s) had been edited since you've started filling in the form.",
+						dcOrganization.getAlt_name());
+				logger.error(message);
+				throw new IllegalArgumentException(message);
 			}
 			return uiOrganization;
 		}
 		return null;
 	}
 
-
 	/** Check and create kernel organization */
-	private UIOrganization checkAndCreateKernelOrganization(DCOrganization dcOrganization) {
+	private UIOrganization createOrUpdateKernelOrganization(DCOrganization dcOrganization) {
 		URI territoryId = null;
-		URI dcId = null;
+		URI dcId;
 
 		//Translate Kernel SectorType (company/public_body) into DC SectorType (Public/Private)
 		OrganizationType sectorType = OrganizationType.getOrganizationType(dcOrganization.getSector_type());
 
 		try {
-			if(sectorType.equals(OrganizationType.PUBLIC_BODY)){
+			if(sectorType == OrganizationType.PUBLIC_BODY){
 				territoryId = new URI(dcOrganization.getJurisdiction_uri());
 			}
 			dcId = new URI(dcOrganization.getId());
@@ -188,7 +196,6 @@ public class OrganizationService {
 			networkService.updateOrganizationInfo(searchKOrganization);
 			return searchKOrganization; //this is to return a value so it can continue and update data in DC
 		}
-
 		return null;
 	}
 
@@ -203,18 +210,20 @@ public class OrganizationService {
 
 		//Only if has changes will update
 		if(dcOrganization.getContact_name() != null && !givenName.equals(dcOrganization.getContact_name())){
-			userInfo.setGivenName(dcOrganization.getContact_name()); isChangefound = true;
+			userInfo.setGivenName(dcOrganization.getContact_name());
+			isChangefound = true;
 		}
 		if(dcOrganization.getContact_lastName() != null && !familyName.equals(dcOrganization.getContact_lastName()) ){
-			userInfo.setFamilyName(dcOrganization.getContact_lastName()); isChangefound = true;
+			userInfo.setFamilyName(dcOrganization.getContact_lastName());
+			isChangefound = true;
 		}
 		if(dcOrganization.getContact_email() != null && !email.equals(dcOrganization.getContact_email()) ){
-			userInfo.setEmail(dcOrganization.getContact_email()); isChangefound = true;
+			userInfo.setEmail(dcOrganization.getContact_email());
+			isChangefound = true;
 		}
 		if (isChangefound){
 			logger.info("Updating user information: {}", userInfo); //TODO LATTER add toString() to UserInfo
 			userAccountService.saveUserAccount(new UserAccount(userInfo));
 		}
 	}
-
 }
