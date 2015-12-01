@@ -10,7 +10,8 @@ pushd $MAVEN_ROOT
 # getting project version and computing next one :
 # see http://stackoverflow.com/questions/3545292/how-to-get-maven-project-version-to-the-bash-command-line
 # getting version ex. 1.10-SNAPSHOT :
-VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | sed -n -e '/^\[.*\]/ !{ /^[0-9]/ { p; q } }'`
+VERSION=`mvn org.apache.maven.plugins:maven-help-plugin:2.1.1:evaluate -Dexpression=project.version | grep -v '\['`
+
 # NB. if this plugin is not yet there, is rather "Downloaded: https://..."
 # so it must be retried (but using -o is worse since it prevents downloading)
 # Advances the last number of the given version string by one.

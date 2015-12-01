@@ -1,4 +1,3 @@
-#! /usr/bin/python3
 # Compile JSX & minify javascript
 # Usage of compiled / minified JS is turned on with the "devmode" flag in the Portal
 # Note that this requires Node and the following two NPM modules:
