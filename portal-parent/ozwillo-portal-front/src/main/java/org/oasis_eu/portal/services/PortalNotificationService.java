@@ -177,7 +177,7 @@ public class PortalNotificationService {
 					if (Strings.isNullOrEmpty(n.getActionLabel())) {
 						notif.setActionText(messageSource.getMessage("notif.manage", new Object[0], locale));
 					} else {
-						notif.setActionText(n.getActionLabel());
+						notif.setActionText(n.getActionLabel(locale));
 					}
 
 					notif.setStatus(n.getStatus());
