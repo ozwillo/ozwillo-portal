@@ -296,7 +296,7 @@ var Organization = React.createClass({
             
             if (this.props.org.admin) {
                 buttons.push(
-                    <button type="button" key="confirmUntrash" className="btn btn-danger btn-sm pull-right" onClick={this.confirmUntrash}>{t('ui.cancel')}</button>
+                    <button type="button" key="confirmUntrash" className="btn oz-btn-danger btn-sm pull-right" onClick={this.confirmUntrash}>{t('ui.cancel')}</button>
                 );
                 
                 var confirmUntrashTitle = t('my.network.confirm-untrash.title') + ' ' + this.props.org.name;
@@ -343,7 +343,7 @@ var Organization = React.createClass({
                 );
 
                 buttons.push(
-                    <button type="button" key="confirmTrash" className="btn btn-danger btn-sm" onClick={this.confirmTrash}>{t('ui.delete')}</button>
+                    <button type="button" key="confirmTrash" className="btn oz-btn-danger btn-sm" onClick={this.confirmTrash}>{t('ui.delete')}</button>
                 );
 
                 var confirmTrashTitle = t('my.network.confirm-trash.title') + ' ' + this.props.org.name;
