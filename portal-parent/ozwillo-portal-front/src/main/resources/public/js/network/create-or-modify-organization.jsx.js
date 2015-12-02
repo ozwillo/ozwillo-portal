@@ -21,7 +21,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
     onStepChange: function(stepId) {
         this.setState({ step: stepId });
     },
-    close: function(event) {
+    close: function() {
         $(this.getDOMNode()).modal('hide');
     },
     closeAfterSuccess: function() {
@@ -512,8 +512,7 @@ var Tab2 = React.createClass({
                                 <legend>{t('my.network.organization.additional_information')}</legend>
                                 <Field name="legal_name" error={$.inArray("legal_name", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="legal_name" id="legal_name" type="text"
-                                           value={this.state.organization.legal_name} onChange={this.handleInputChange}
-                                           disabled={this.state.organization.inModification || this.state.organization.exist} />
+                                           value={this.state.organization.legal_name} onChange={this.handleInputChange} />
                                 </Field>
                                 <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="tax_reg_num" id="tax_reg_num" type="text"
