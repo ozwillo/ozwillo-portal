@@ -513,13 +513,6 @@ label.required {
     padding-bottom: 0 !important;
 }
 
-#store-banner {
-    background: url("../../img/new/store-banner.jpg");
-    background-repeat: no-repeat;
-    background-size: cover;
-    min-height: 300px;
-}
-
 #store-search {
     margin-top: 30px;
 }
