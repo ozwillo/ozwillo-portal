@@ -7,9 +7,6 @@ var SearchOrganizationModal = React.createClass({
             $("input#legal_name", this).focus();
         });
     },
-    componentWillUnmount: function () {
-        $(this.getDOMNode()).off('hidden');
-    },
     close: function (event) {
         $(this.getDOMNode()).modal('hide');
     },
@@ -18,8 +15,10 @@ var SearchOrganizationModal = React.createClass({
         this.refs.form.resetSearchVals();
     },
     openCreateOrModify: function(organization) {
+        $(this.getDOMNode()).on("hidden.bs.modal", function() {
+            this.props.successHandler(organization);
+        }.bind(this));
         this.close();
-        this.props.successHandler(organization);
     },
     render: function () {
         return (

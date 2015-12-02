@@ -8,10 +8,9 @@ var CreateOrModifyOrganizationModal = React.createClass({
         };
     },
     componentDidMount: function() {
-        // TODO only effective when adding an organization
-        // TODO make it work in modification mode and deal with current step
+        // TODO : only effective at the first opening
         $(this.getDOMNode()).on("shown.bs.modal", function() {
-            $("input#contact_lastname", this).focus();
+            $("input:first", this).focus();
         });
     },
     open: function(organization) {
