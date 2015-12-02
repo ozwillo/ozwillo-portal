@@ -82,12 +82,12 @@
   <menu>
     <locale>bg</locale>
     <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/bg/store" img_src="/images/ui/apps-on.png">Catalog</item>
+    <item type="catalog" href="https://portal.ozwillo.com/bg/store" img_src="/images/ui/apps-on.png">Каталог</item>
     <item type="opendata" href="https://opendata.ozwillo.com/bg/" img_src="/images/ui/data-on.png">данни</item>
     <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=bg">Вход</item>
     <item type="locale-switch"/>
     <submenu href="/bg/oz/discover">
-      <title>Discover</title>
+      <title>Изучаване</title>
       <item href="/bg/oz/discover">Изучаване на платформата</item>
       <item href="/bg/oz/novini">Новини</item>
       <item href="/bg/oz/suvmestna-sgrada">Съвместно изграждане</item>
@@ -98,12 +98,12 @@
   <menu>
     <locale>tr</locale>
     <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/tr/store" img_src="/images/ui/apps-on.png">Catalog</item>
+    <item type="catalog" href="https://portal.ozwillo.com/tr/store" img_src="/images/ui/apps-on.png">Katalog</item>
     <item type="opendata" href="https://opendata.ozwillo.com/tr/" img_src="/images/ui/data-on.png">Veri</item>
     <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=tr">Giriş</item>
     <item type="locale-switch"/>
     <submenu href="/tr/oz/kesfedin">
-      <title>Kesfedin</title>
+      <title>Keşfedin</title>
       <item href="/tr/oz/kesfedin">Platformu Keşfetmek</item>
       <item href="/tr/oz/haberler">Haberler</item>
       <item href="/tr/oz/birlikte-insa-etmek">Birlikte inşa etmek</item>
