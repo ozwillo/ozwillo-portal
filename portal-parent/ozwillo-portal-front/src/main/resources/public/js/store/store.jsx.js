@@ -270,54 +270,60 @@ var SearchAppsForm = React.createClass({
 });
 
 var AppList = React.createClass({
-    render: function() {
-        var apps = this.props.apps.map(function (app) {
+    renderApps: function() {
+        return this.props.apps.map(function (app) {
             return (
-                <App key={app.id} app={app} />
+                <App key={app.id} app={app}/>
             );
         });
-
-        return (
-            <div className="container-fluid">
-                <div className="row" id="store-apps">
-                    <div className="col-md-12">
-                        <div className="row clearfix">
-                            {apps}
+    },
+    render: function() {
+        if (this.props.apps.length === 0)
+            return (<div></div>);
+        else
+            return (
+                <div className="container-fluid">
+                    <div className="row" id="store-apps">
+                        <div className="col-md-12">
+                            <div className="row clearfix">
+                                {this.renderApps()}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
-        );
+            );
     }
 });
 
 var LoadMore = React.createClass({
-    render: function () {
-        var loading = null;
+    renderLoading: function() {
         if (this.props.loading) {
-            loading = (
+            return (
                 <div className="text-center">
                     <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
                 </div>
             );
         } else if (this.props.maybeMoreApps) {
-            loading = (
+            return (
                 <div className="text-center">
                     <button className="btn btn-lg oz-btn-loadmore" onClick={this.props.loadMoreApps}>{t('load-more')}</button>
                 </div>
             );
         }
-
-        return (
-            <div className="container-fluid">
-                <div className="row" id="store-loadmore">
-                    <div className="col-md-12">
-                        {loading}
+    },
+    render: function () {
+        if (!this.props.loading && !this.props.maybeMoreApps)
+            return (<div></div>);
+        else
+            return (
+                <div className="container-fluid">
+                    <div className="row" id="store-loadmore">
+                        <div className="col-md-12">
+                            {this.renderLoading()}
+                        </div>
                     </div>
                 </div>
-            </div>
-        );
-
+            );
     }
 });
 
