@@ -621,19 +621,19 @@ label.required {
     margin-bottom: 15px;
 }
 
-#store-apps .app .description .app-status .btn-free {
+#store-apps .app .description .app-status .btn-buy {
     background-color: #e91659;
 }
 
-#store-apps .app .description .app-status .btn-free-indicator {
+#store-apps .app .description .app-status .btn-buy-indicator {
     background-color: #ce124f;
 }
 
-#store-apps .app .description .app-status .btn-buy {
+#store-apps .app .description .app-status .btn-free {
     background-color: #f8ba03;
 }
 
-#store-apps .app .description .app-status .btn-buy-indicator {
+#store-apps .app .description .app-status .btn-free-indicator {
     background-color: #f69b04;
 }
 
