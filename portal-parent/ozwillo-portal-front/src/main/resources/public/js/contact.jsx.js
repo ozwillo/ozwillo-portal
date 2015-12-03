@@ -145,11 +145,11 @@ var ContactForm = React.createClass({
     },
     render: function () {
         var motiveOptions = [
-            { value: "Question", label: t('contact.form.motive.question')},
-            { value: "Feedback", label: t('contact.form.motive.feedback')},
-            { value: "Problem_With_Application", label: t('contact.form.motive.application-problem')},
-            { value: "Other_Problem", label: t('contact.form.motive.other-problem')},
-            { value: "Other", label: t('contact.form.motive.other')}
+            { value: "contact.form.motive.question", label: t('contact.form.motive.question')},
+            { value: "contact.form.motive.feedback", label: t('contact.form.motive.feedback')},
+            { value: "contact.form.motive.application-problem", label: t('contact.form.motive.application-problem')},
+            { value: "contact.form.motive.other-problem", label: t('contact.form.motive.other-problem')},
+            { value: "contact.form.motive.other", label: t('contact.form.motive.other')}
         ];
         return (
             <div>
