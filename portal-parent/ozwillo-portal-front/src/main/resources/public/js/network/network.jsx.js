@@ -617,7 +617,7 @@ var InformationDialog = React.createClass({
                    <h4><span title={this.props.org.id}>{this.props.org.name}</span></h4>
                    <p>{t('my.network.organization-type.' + this.props.org.type)}</p>
                    {territoryId}
-                   <p><i>{'No other information is available.'}</i></p>
+                   <p><i>{t('my.network.no-information-available')}</i></p>
                 </Modal>
                 );
         }
