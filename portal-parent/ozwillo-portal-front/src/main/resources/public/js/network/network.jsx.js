@@ -589,6 +589,8 @@ var InformationDialog = React.createClass({
                   console.error(status, err.toString());
                }.bind(this)
            });
+       }else {
+           this.refs.modalModifyKAndDCOrg.open();
        }
     },
     createOrModifOrg: function(event){
