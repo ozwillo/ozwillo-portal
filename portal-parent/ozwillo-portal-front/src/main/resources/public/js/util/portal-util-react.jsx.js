@@ -123,6 +123,12 @@ var GeoSelect2Mixin = {
             formatResult: function(result, container, query, escapeMarkup) {
                 return this.formatResultWithTooltip(result, container, query, escapeMarkup);
             },
+            formatNoMatches: function() {
+                return t('ui.no-matches-found');
+            },
+            formatSearching: function() {
+                return t('ui.searching');
+            },
             tooltip : function (area) { // extended select2 option
                 return area.uri;
             },
