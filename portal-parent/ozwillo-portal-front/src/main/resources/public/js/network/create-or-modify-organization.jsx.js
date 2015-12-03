@@ -32,7 +32,6 @@ var CreateOrModifyOrganizationModal = React.createClass({
         var modalTitle = (this.state.organization.exist ? t('my.network.modify-org') : t('my.network.create-org'))
             + " " + this.state.organization.legal_name;
         var modalSubTitle = t('my.network.organization.step') + " " + this.state.step + " / 2";
-
         return (
             <div className="modal fade" tabIndex="-1" role="dialog" aria-labelledby="modalLabel">
                 <div className='modal-dialog modal-lg' role="document">
@@ -50,7 +49,9 @@ var CreateOrModifyOrganizationModal = React.createClass({
                                                         organization={this.state.organization}
                                                         step={this.state.step}
                                                         onStepChange={this.onStepChange}
-                                                        fromStore={false} />
+                                                        fromStore={false}
+                                                        org={this.props.org}
+                        />
                     </div>
                 </div>
             </div>
@@ -133,7 +134,6 @@ var CreateOrModifyOrganizationForm = React.createClass({
     },
     render: function () {
         var organization = this.props.organization;
-
         return (
             <div>
                 <div className="modal-body">
@@ -141,7 +141,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
                         <div className="form-horizontal">
                             <Tab1 id="1" ref="tab1" organization={organization} currentTab={this.props.step}
                                   fromStore={this.props.fromStore} />
-                            <Tab2 id="2" ref="tab2" organization={organization} currentTab={this.props.step} />
+                            <Tab2 id="2" ref="tab2" organization={organization} currentTab={this.props.step} org={this.props.org}/>
                         </div>
                         {this.renderCreateOrUpdateError()}
                     </form>
@@ -501,6 +501,7 @@ var Tab2 = React.createClass({
         var taxRegNumLabels = this.getTaxRegLabels();
         var tax_reg_activity_uri_placeholder = !this.state.organization.tax_reg_activity_uri ? ' '
             : this.state.organization.tax_reg_activity_uri.substring(this.state.organization.tax_reg_activity_uri.lastIndexOf("/") + 1);
+        var not_admin = !this.props.org.admin;
 
         return (
             <div id="tab2" className={className}>
@@ -511,7 +512,8 @@ var Tab2 = React.createClass({
                                 <legend>{t('my.network.organization.additional_information')}</legend>
                                 <Field name="legal_name" error={$.inArray("legal_name", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="legal_name" id="legal_name" type="text"
-                                           value={this.state.organization.legal_name} onChange={this.handleInputChange} />
+                                           value={this.state.organization.legal_name} onChange={this.handleInputChange}
+                                           disabled={not_admin} />
                                 </Field>
                                 <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="tax_reg_num" id="tax_reg_num" type="text"

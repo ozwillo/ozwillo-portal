@@ -14,7 +14,6 @@ var MyNetwork = React.createClass({
         return (
                 <div>
                     <SearchOrganizationModal ref="searchOrgDialog" successHandler={this.openCreateOrgDialog} />
-                    <CreateOrModifyOrganizationModal ref="createOrgDialog" successHandler={this.reload} />
                     <SearchOrCreateHeader showDialog={this.openSearchOrgDialog}/>
                     <OrganizationsList ref="orgs"/>
                 </div>
@@ -606,7 +605,7 @@ var InformationDialog = React.createClass({
         var modal = undefined;
         if(this.state.organization){
             modal = (
-                <CreateOrModifyOrganizationModal ref="modalModifyKAndDCOrg" successHandler={this.props.onUpdate} />
+                <CreateOrModifyOrganizationModal ref="modalModifyKAndDCOrg" successHandler={this.props.onUpdate} org={this.props.org} />
             );
         }else{
            {/* This part is to show a short message to users of very old organizations that doesnt exist in DC */}
