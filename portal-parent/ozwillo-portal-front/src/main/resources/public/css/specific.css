@@ -64,7 +64,8 @@ h4 {
 }
 
 .navbar-auth .navbar-nav>li>a:hover,
-.navbar-auth .navbar-nav>li>a.focus {
+.navbar-auth .navbar-nav>li>a.focus,
+.navbar-auth .navbar-nav>li>a:focus {
     color: #fff;
 }
 
