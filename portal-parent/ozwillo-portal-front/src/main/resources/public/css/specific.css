@@ -358,7 +358,7 @@ label.required {
     width: 120px;
     padding-top: 10px;
     border-radius: 5px;
-    text-align:center
+    text-align:center;
 }
 
 #dashboard div.appzone div.app.pending img {
@@ -383,12 +383,30 @@ label.required {
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         text-overflow: ellipsis;
+        overflow: hidden;
     }
     #dashboard div.appzone div.app p:after {
         display: none;
     }
 }
 
+#dashboard div.appzone.delete-app {
+    width: 140px;
+}
+
+#dashboard div.appzone.delete-app div.app {
+    margin-left: 20px;
+}
+
+#dashboard div.appzone div.app div.action-icon {
+    height: 64px;
+    width: 64px;
+    margin: auto;
+}
+
+#dashboard div.appzone div.app div.action-icon a {
+    color: #fff;
+}
 /* my profile page */
 
 #profile h2 {

@@ -345,7 +345,7 @@ var Dashboard = React.createClass({
         return (
             <div className="row">
                 <div className="col-md-12">
-                    <SideBar
+                    <DashList
                         loading={this.state.loadingDashboards}
                         dashboards={this.state.dashboards}
                         currentDash={this.state.dash}
@@ -353,24 +353,23 @@ var Dashboard = React.createClass({
                         draggingPending={this.state.draggingPending}
                         switchToDashboard={this.switchToDashboard}
                         moveToDash={this.moveToDash}
-                        deleteApp={this.deleteApp}
-                        deletePending={this.deletePending}
                         renameDash={this.renameDash}
                         removeDash={this.removeDash}
-                        createDash={this.createDash}
-                        />
+                        createDash={this.createDash} />
                     <Desktop
                         dash={this.state.dash}
                         loading={this.state.loadingApps}
                         apps={this.state.apps}
                         pendingApps={this.state.pendingApps}
+                        deleteApp={this.deleteApp}
+                        deletePending={this.deletePending}
                         startDrag={this.startDrag}
                         startDragPending={this.startDragPending}
                         endDrag={this.endDrag}
                         endDragPending={this.endDragPending}
                         dragging={this.state.dragging}
-                        dropCallback={this.reorderApps}
-                        />
+                        draggingPending={this.state.draggingPending}
+                        dropCallback={this.reorderApps} />
                 </div>
             </div>
         );
@@ -378,7 +377,7 @@ var Dashboard = React.createClass({
 });
 
 
-var SideBar = React.createClass({
+var DashList = React.createClass({
     render: function () {
         if (this.props.loading) {
             return (
@@ -500,12 +499,12 @@ var DashActions = React.createClass({
                 <i className="fa fa-pencil" onClick={this.props.edit}></i>
             );
         } else {
-            var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
+            var buttonLabels = {"save": t('ui.confirm'), "cancel": t('ui.cancel')};
             return (
                 <span>
-                    <Modal title={t('confirm-delete-dash')} successHandler={this.remove}
+                    <Modal title={t('my.confirm-delete-dash')} successHandler={this.remove}
                            buttonLabels={buttonLabels} saveButtonClass="oz-btn-danger" ref="modal">
-                        <span>{t('confirm-delete-dash-long')}</span>
+                        <span>{t('my.confirm-delete-dash-long')}</span>
                     </Modal>
 
                     <i className="fa fa-pencil" onClick={this.props.edit}></i>
@@ -612,9 +611,6 @@ var DeleteApp = React.createClass({
 
         this.setState({over: true, app: app, pending: this.props.draggingPending});
         this.refs.modal.open();
-
-        //this.props.delete(app);
-        //this.setState({over: false});
     },
     removeApp: function () {
         var app = this.state.app;
@@ -625,37 +621,31 @@ var DeleteApp = React.createClass({
         }
         this.refs.modal.close();
         this.setState(this.getInitialState());
-
-
     },
     cancel: function () {
         this.setState(this.getInitialState());
     },
     render: function () {
-        if (this.props.dragging || this.props.draggingPending || this.state.app) {
-            var className = "delete-app" + (this.state.over ? " over" : "");
-            var buttonLabels = {"save": t('ui.yes'), "cancel": t('ui.cancel')};
-            return (
-                <div
-                    className={className}
-                    onDragOver={this.over(true)}
-                    onDragLeave={this.over(false)}
-                    onDrop={this.drop}
-                    >
-                    <Modal title={t('confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel}
-                           buttonLabels={buttonLabels} ref="modal">
-                        <p>
-                            {t('confirm-remove-app-long')}
-                        </p>
-                    </Modal>
-                        <span>
-                            <i className="fa fa-trash"></i>
-                        </span>
-                </div>
-            );
-        } else return null;
-    }
+        var className = "delete-app appzone" + (this.state.over ? " over" : "");
+        var buttonLabels = {"save": t('ui.confirm'), "cancel": t('ui.cancel')};
 
+        return (
+            <div className={className}
+                onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop} >
+                <Modal title={t('my.confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel}
+                       buttonLabels={buttonLabels} ref="modal">
+                    <p>{t('my.confirm-remove-app-long')}</p>
+                </Modal>
+                <div className="app">
+                    <div className="action-icon">
+                        <span title={t('my.drop-to-remove')}>
+                            <i className="fa fa-trash fa-3x fa-border"></i>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        );
+    }
 });
 
 var Desktop = React.createClass({
@@ -667,7 +657,7 @@ var Desktop = React.createClass({
         if (this.props.loading) {
             return (
                 <div className="row">
-                    <div className="col-sm-12 desktop">
+                    <div className="col-sm-12 text-center">
                         <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
                     </div>
                 </div>
@@ -704,8 +694,15 @@ var Desktop = React.createClass({
                 <AddNew
                     key="last"
                     dragging={this.props.dragging}
-                    dropCallback={this.props.dropCallback}
-                    />
+                    dropCallback={this.props.dropCallback} />
+            );
+
+            icons.push(
+                <DeleteApp
+                    dragging={this.props.dragging}
+                    draggingPending={this.props.draggingPending}
+                    delete={this.props.deleteApp}
+                    deletePending={this.props.deletePending} />
             );
 
             return (
@@ -736,10 +733,11 @@ var AddNew = React.createClass({
             <div className="appzone">
                 <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback("last")}/>
                 <div className="app">
-                    <a href={store_root} className="add-more" draggable="false">
-                        <img src={image_root + "new/add.png"}/>
-                    </a>
-                    <p className="legend">{t('ui.add')}</p>
+                    <div className="action-icon">
+                        <a href={store_root} title={t('my.click-to-add')} draggable="false">
+                            <i className="fa fa-plus fa-3x fa-border"></i>
+                        </a>
+                    </div>
                 </div>
             </div>
         );

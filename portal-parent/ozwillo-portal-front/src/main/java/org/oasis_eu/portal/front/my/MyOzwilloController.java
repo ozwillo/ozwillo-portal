@@ -56,6 +56,7 @@ public class MyOzwilloController extends PortalController {
 		i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
 		i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
+		i18n.putAll(i18nMessages.getI18nDashboardKeys(locale, messageSource));
 
 		return i18n;
 	}

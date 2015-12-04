@@ -22,7 +22,10 @@ public final class i18nMessages {
 	private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
 			"loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
 			"something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
-			"no-matches-found");
+			"no-matches-found", "yes");
+
+	private static final List<String> dashboardKeys = Arrays.asList("create", "confirm-delete-dash", "confirm-delete-dash-long", "confirm-remove-app",
+			"confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
 
 	private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",
 			"form.motive", "form.motive.question", "form.motive.feedback", "form.motive.application-problem",
@@ -78,6 +81,8 @@ public final class i18nMessages {
 				k -> messageSource.getMessage("my.network." + k, new Object[]{}, locale))));
 		i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k,
 				k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
+		i18n.putAll(dashboardKeys.stream().collect(Collectors.toMap(k -> "my." + k,
+				k -> messageSource.getMessage("my." + k, new Object[]{}, locale))));
 		i18n.putAll(contactKeys.stream().collect(Collectors.toMap(k -> "contact." + k,
 				k -> messageSource.getMessage("contact." + k, new Object[]{}, locale))));
 		i18n.putAll(searchOrganization.stream().collect(Collectors.toMap(k -> "search.organization." + k,
@@ -113,6 +118,13 @@ public final class i18nMessages {
 				k -> messageSource.getMessage("contact." + k, new Object[]{}, locale))));
 		// because there is some magic done with keys prefixes, manually add footer.contact key
 		i18n.put("footer.contact", messageSource.getMessage("footer.contact", new Object[]{}, locale));
+		return i18n;
+	}
+
+	public static Map<String, String> getI18nDashboardKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+		Map<String, String> i18n = new HashMap<>();
+		i18n.putAll(dashboardKeys.stream().collect(Collectors.toMap(k -> "my." + k,
+				k -> messageSource.getMessage("my." + k, new Object[]{}, locale))));
 		return i18n;
 	}
 
