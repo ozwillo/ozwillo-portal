@@ -581,7 +581,7 @@ var InformationDialog = React.createClass({
                success: function (data) {
                   if(data){
                       data.inModification = true;
-                      this.setState({ organization: data });
+                      this.setState({ DCOrganization: data });
                       this.refs.modalModifyKAndDCOrg.open(data);
                   }
                }.bind(this),
@@ -605,7 +605,7 @@ var InformationDialog = React.createClass({
             </Modal>
         );
         var modal = undefined;
-        if(this.state.organization){
+        if(this.state.DCOrganization){
             modal = (
                 <CreateOrModifyOrganizationModal ref="modalModifyKAndDCOrg" successHandler={this.props.onUpdate} org={this.props.org} />
             );
