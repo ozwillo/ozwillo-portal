@@ -387,7 +387,7 @@ var AppDescriptionComponent = React.createClass({
                     <div className="col-sm-7">
                         <div>
                             <p>{t('by')} {this.props.app.provider}</p>
-                            <Rating rating={stateApp.rating} rateable={stateApp.rateable} rate={this.props.rateApp}/>
+                            <Rating rating={stateApp.rating} appId={this.props.app.id} rateable={stateApp.rateable} rate={this.props.rateApp}/>
                             {rateInfo}
                         </div>
                     </div>
@@ -1058,12 +1058,14 @@ var Carousel = React.createClass({
 var Rating = React.createClass({
     getInitialState: function () { return {}; },
     componentDidMount: function() {
-        $("#input-app-rating").rating({
+        var inputId = "#input-app-rating-" + this.props.appId;
+        $(inputId).rating({
             min: 0,
             max: 5,
             step: 0.5,
             readonly: !this.props.rateable,
             value: this.props.rating,
+            showClear: false,
             starCaptions: {
                 0.5: t('rating.half-star'),
                 1: t('rating.one-star'),
@@ -1075,23 +1077,24 @@ var Rating = React.createClass({
                 4: t('rating.four-stars'),
                 4.5: t('rating.four-half-stars'),
                 5: t('rating.five-stars')
-            },
-            clearButtonTitle: t('rating.clear-button-title'),
-            clearCaption: t('rating.clear-caption')
+            }
         });
 
-        $('#input-app-rating').on('rating.change', function(event, value, caption) {
+        $(inputId).on('rating.change', function(event, value, caption) {
             this.props.rate(value);
         }.bind(this));
     },
     componentWillReceiveProps: function(nextProps) {
-        $('#input-app-rating').rating('refresh', { readonly: !nextProps.rateable });
-        $('#input-app-rating').rating('update', nextProps.rating);
+        var inputId = "#input-app-rating-" + nextProps.appId;
+        $(inputId).rating('refresh', { readonly: !nextProps.rateable });
+        $(inputId).rating('update', nextProps.rating);
     },
     render: function () {
+        var inputId = "input-app-rating-" + this.props.appId;
+
         return (
             <span className="rate">
-                <input id="input-app-rating" type="number" data-size="xs" />
+                <input id={inputId} type="number" data-size="xs" />
             </span>
         );
     }
