@@ -14,6 +14,7 @@ var MyNetwork = React.createClass({
         return (
                 <div>
                     <SearchOrganizationModal ref="searchOrgDialog" successHandler={this.openCreateOrgDialog} />
+                    <CreateOrModifyOrganizationModal ref="createOrgDialog" successHandler={this.reload} />
                     <SearchOrCreateHeader showDialog={this.openSearchOrgDialog}/>
                     <OrganizationsList ref="orgs"/>
                 </div>

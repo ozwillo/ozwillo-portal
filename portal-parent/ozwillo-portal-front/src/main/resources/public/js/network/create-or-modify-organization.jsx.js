@@ -500,7 +500,7 @@ var Tab2 = React.createClass({
         var taxRegNumLabels = this.getTaxRegLabels();
         var tax_reg_activity_uri_placeholder = !this.state.DCOrganization.tax_reg_activity_uri ? ' '
             : this.state.DCOrganization.tax_reg_activity_uri.substring(this.state.DCOrganization.tax_reg_activity_uri.lastIndexOf("/") + 1);
-        var not_admin = !this.props.org.admin;
+        var not_admin = this.props.org ? !this.props.org.admin : false;
 
         return (
             <div id="tab2" className={className}>
