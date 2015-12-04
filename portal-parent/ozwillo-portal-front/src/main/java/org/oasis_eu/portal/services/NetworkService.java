@@ -442,10 +442,22 @@ public class NetworkService {
 		if(org != null){
 			UIOrganization result = new UIOrganization();
 			fillUIOrganization(result, org);
+			result.setAdmin(isOrgAdmin(org.getId()));
 			return result;
 		}
 
 		return null;
+	}
+
+	private boolean isOrgAdmin(String organizationId){
+		UserInfo user = userInfoService.currentUser();
+		List<OrgMembership> orgAdmins = userDirectory.getAdminsOfOrganization(organizationId);
+		for (OrgMembership admin : orgAdmins){
+			if (admin.getAccountId().equals(user.getUserId())){
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public UIOrganization createOrganization(String name, String type, URI territoryId, URI dcId) {

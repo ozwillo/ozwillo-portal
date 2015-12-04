@@ -186,7 +186,8 @@ public class OrganizationService {
 			if(createdKOrg != null && createdKOrg.getId() != null ){
 				return createdKOrg;
 			}
-		}else{
+		}
+		if (searchKOrganization.isAdmin()){
 			// TODO LATER fillUiOrgFromDcOrg(searchKOrganization, dcOrganization) ?
 			// NB. actually ONLY territory_id can change (not legal name nor type, so it should be the same)
 			searchKOrganization.setName(dcOrganization.getLegal_name());
@@ -194,11 +195,11 @@ public class OrganizationService {
 			searchKOrganization.setTerritoryId(territoryId);
 			// update existing org in Kernel
 			networkService.updateOrganizationInfo(searchKOrganization);
-			return searchKOrganization; //this is to return a value so it can continue and update data in DC
+		}else{
+			logger.debug("Not admin of organisation {}, so can't update it in Kernel.",searchKOrganization.getName());
 		}
-		return null;
+		return searchKOrganization; //this is to return a value so it can continue and update data in DC
 	}
-
 
 	private void updateUserInfo(DCOrganization dcOrganization) {
 		UserInfo userInfo = userInfoService.currentUser();
