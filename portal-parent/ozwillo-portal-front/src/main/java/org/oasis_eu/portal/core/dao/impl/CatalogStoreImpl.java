@@ -66,7 +66,7 @@ public class CatalogStoreImpl implements CatalogStore {
 	@Value("${kernel.portal_endpoints.apps:}")
 	private String appsEndpoint;
 
-	@Value("${application.store.load_size:20}")
+	@Value("${application.store.load_size:24}")
 	private int loadSize;
 
 	/** to get locale */

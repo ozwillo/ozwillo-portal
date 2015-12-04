@@ -18,7 +18,7 @@ application:
   baseImageUrl: ${application.url}/media
   defaultIconUrl: ${application.url}/img/noicon.png
   store:
-    load_size: 20
+    load_size: 24
     # don't enable it until applications have filled the supported_locales field
     # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
     addCurrentToSupportedLocalesIfNone: false
