@@ -125,6 +125,10 @@ var CreateOrModifyOrganizationForm = React.createClass({
             }.bind(this)
         });
     },
+    onCancel: function(){
+        this.props.cancelHandler();
+        this.setState({ createOrUpdateError: {code: '', message: ''}});
+    },
     renderCreateOrUpdateError: function () {
         if (this.state.createOrUpdateError.code !== '') {
             return (
@@ -149,7 +153,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
                     <Button activeTab={this.props.step}
                             onNext={this.onNextTab}
                             onPrev={this.onPrevTab}
-                            onCancel={this.props.cancelHandler}
+                            onCancel={this.onCancel}
                             onCreate={this.onCreate}
                             inModification={DCOrganization.inModification} />
                 </div>
