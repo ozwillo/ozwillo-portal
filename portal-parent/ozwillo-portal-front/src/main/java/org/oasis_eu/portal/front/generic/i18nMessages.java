@@ -50,7 +50,7 @@ public final class i18nMessages {
 			"agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid",
 			"for_myself", "on_behalf_of", "create-new-org", "modify-org","buying", "sorry", "could-not-install-app", "already-rated", "launch", "load-more",
 			"rating.half-star", "rating.one-star", "rating.one-half-star", "rating.two-stars", "rating.two-half-stars", "rating.three-stars",
-			"rating.three-half-stars", "rating.four-stars", "rating.four-half-stars", "rating.five-stars", "rating.clear-button-title", "rating.clear-caption",
+			"rating.three-half-stars", "rating.four-stars", "rating.four-half-stars", "rating.five-stars",
 			"install.orgType.title", "ad.description", "ad.title.part1", "ad.title.part2", "ad.joinUs");
 
 	private static final List<String> storeInstallkeys = Arrays.asList("type.ORG", "type.PERSONAL", "success-msg-1", "success-msg-2", "success-msg-3",
