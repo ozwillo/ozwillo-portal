@@ -90,6 +90,17 @@ var NotificationTable = React.createClass({
                 return currentSort.dir;
             }
         }
+
+        if (typeof a[currentSort.prop] == "undefined"){
+            return -currentSort.dir;
+        }
+        if (typeof b[currentSort.prop] == "undefined"){
+            return currentSort.dir;
+        }
+
+        // In all other case, a basic and hazardous comparaison
+        return  (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
+
     },
     filterByStatus: function (event) {
         event.preventDefault();
