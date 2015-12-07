@@ -11,10 +11,13 @@ public class FormWidgetText extends FormWidget implements Serializable {
 	public FormWidgetText(String id, String label) {
 		super(id, label);
 	}
+
+	public FormWidgetText(String id, String label, boolean readOnly) {
+		super(id, label, null, readOnly);
+	}
 	
 	@Override
 	public String getType() {
 		return "text";
 	}
-
 }

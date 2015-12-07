@@ -20,7 +20,7 @@
                                data-th-text="#{${widget.label}}">First name :</label>
 
                         <div class="col-sm-9" data-th-if="${'text'.equals(widget.type)}"
-                             data-th-include="profile/my-profile-fragments :: text-widget (${widget.id}, ${modelObject.__${widget.id}__}, ${layout.mode})">
+                             data-th-include="profile/my-profile-fragments :: text-widget (${widget.id}, ${modelObject.__${widget.id}__}, ${widget.readOnly}, ${layout.mode})">
                             ?
                         </div>
                         <div class="col-sm-9" data-th-if="${'hidden'.equals(widget.type)}"
@@ -76,9 +76,9 @@
 
 </div>
 
-<div data-th-fragment="text-widget (id, value, mode)">
+<div data-th-fragment="text-widget (id, value, readOnly, mode)">
     <span data-th-if="${'VIEW'.equals(mode.toString())}" class="form-value" data-th-text="${value}">?</span>
-    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-field="*{__${id}__}" />
+    <input data-th-if="${'EDIT'.equals(mode.toString())}" type="text" class="form-control" data-th-field="*{__${id}__}" th:disabled="${readOnly}" />
     <!-- data-th-errorClass="form-control has-error" -->
     <span data-th-if="${#fields.hasErrors('__${id}__')}" data-th-errors="*{__${id}__}">Incorrect value</span>
 </div>

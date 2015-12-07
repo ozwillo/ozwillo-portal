@@ -107,7 +107,7 @@ public class MyProfileState {
 		accountFormLayout.setOrder(1);
 		accountFormLayout.appendWidget(new FormWidgetText("nickname", "my.profile.personal.nickname"));
 		accountFormLayout.appendWidget(new AvatarWidget("pictureUrl", "my.profile.account.avatar", getAvailableAvatars()));
-		accountFormLayout.appendWidget(new FormWidgetText("email", "my.profile.account.email"));
+		accountFormLayout.appendWidget(new FormWidgetText("email", "my.profile.account.email", true));
 		accountFormLayout.appendWidget(new FormWidgetPassword("password", "my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
 		accountFormLayout.appendWidget(new FormWidgetSelect("locale", "my.profile.account.language", uiLocales -> {
 					Languages keyLanguages = nameDefaults.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html

@@ -10,16 +10,23 @@ public abstract class FormWidget implements Comparable<FormWidget> {
 	
 	private String label;
 
+	private boolean readOnly;
+
 	private int order = DEFAULT_ORDER;
 	
 	public FormWidget(String id, String label) {
 		this(id, label, null);
 	}
-	
+
 	public FormWidget(String id, String label, String value) {
+		this(id, label, value, false);
+	}
+
+	public FormWidget(String id, String label, String value, boolean readOnly) {
 		this.id = id;
 		this.label = label;
 		this.value = value;
+		this.readOnly = readOnly;
 	}
 	
 	public abstract String getType();
@@ -46,6 +53,14 @@ public abstract class FormWidget implements Comparable<FormWidget> {
 	
 	public void setOrder(int order) {
 		this.order = order;
+	}
+
+	public boolean isReadOnly() {
+		return readOnly;
+	}
+
+	public void setReadOnly(boolean readOnly) {
+		this.readOnly = readOnly;
 	}
 
 	@Override
