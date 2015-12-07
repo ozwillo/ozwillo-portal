@@ -80,7 +80,7 @@ var NotificationTable = React.createClass({
     sortElement: function(a,b){
         var currentSort = this.state.currentSort;
 
-        if (typeof a[currentSort.prop] == typeof a[currentSort.prop]) {
+        if (typeof a[currentSort.prop] == typeof b[currentSort.prop]) {
             if (typeof a[currentSort.prop] == "number") {
                 return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
             }
