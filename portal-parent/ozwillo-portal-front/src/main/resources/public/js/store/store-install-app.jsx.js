@@ -15,7 +15,6 @@ var default_org_data = {
         jurisdiction: '',
         phone_number: '',
         web_site: '',
-        email: '',
         street_and_number: '',
         additional_address_field: '',
         po_box: '',
@@ -191,8 +190,6 @@ var AppModal = React.createClass({
            var orgSearchData = this.refs.instalForm.getOrgSearchData();
            orgSearchData.contact_name     = installData.contact.contact_name;
            orgSearchData.contact_lastname = installData.contact.contact_lastname;
-           orgSearchData.contact_email    = installData.contact.contact_email;
-           //orgSearchData.country = orgSearchData.country_uri;
 
            state.selectedOrg.typeInstallOrg = orgSearchData.typeInstallOrg;
 
@@ -235,7 +232,6 @@ var AppModal = React.createClass({
             var orgSearchData = this.refs.instalForm.state.installData.address;//this.refs.addressComponent.props.addressContainer;
             orgSearchData.contact_name     = installData.contact.contact_name;
             orgSearchData.contact_lastname = installData.contact.contact_lastname;
-            orgSearchData.contact_email    = installData.contact.contact_email;
 
             // call method to update data user while calling the Installation Process
             this.doInstallApp(null, orgSearchData);
@@ -429,7 +425,7 @@ var InstallForm =  React.createClass({
         return ({
             installType: 'PERSONAL',
             installData: {
-                contact: { contact_name: '', contact_lastname: '', contact_email: ''},
+                contact: { contact_name: '', contact_lastname: ''},
                 address: {
                     exist: false,
                     street_and_number: '',
@@ -453,7 +449,6 @@ var InstallForm =  React.createClass({
                     var state = this.state;
                     state.installData.contact.contact_name =      data.user_name;
                     state.installData.contact.contact_lastname =  data.user_lastname;
-                    state.installData.contact.contact_email =     data.user_email;
                     if(data.address){
                        state.installData.address.street_and_number = data.address.street_address;
                        state.installData.address.city =              data.address.locality;
@@ -544,7 +539,6 @@ var InstallForm =  React.createClass({
         var contact = this.state.installData.contact;
         if (!contact.contact_name     || contact.contact_name.trim() == '')       { errs.push('name'); }
         if (!contact.contact_lastname || contact.contact_lastname.trim() == '')   { errs.push('lastname'); }
-        if (!contact.contact_email    || contact.contact_email.trim() == '')      { errs.push('email'); }
 
         this.setState({errors: errs});
         return errs.length <= 0;
@@ -620,14 +614,6 @@ var ContactSearchFormControl = React.createClass({
                         <input type="text" id="contact-lastname" className="form-control" value={this.props.orgSearchData.contact_lastname}
                                onChange={this.props.changeInput('contact_lastname')} maxLength={100}
                                placeholder={t('search.contact.lastname')}/>
-                    </div>
-                </div>
-                <div className="form-group">
-                    {this.props.renderLabel("contact-email", 'control-label col-sm-3 required', t('search.contact.email'), true)}
-                    <div className="col-sm-8">
-                        <input type="text" id="contact-email" className="form-control" value={this.props.orgSearchData.contact_email}
-                               onChange={this.props.changeInput('contact_email')} maxLength={100}
-                               placeholder={t('search.contact.email')}/>
                     </div>
                 </div>
             </div>
@@ -889,7 +875,7 @@ var SetOrganizationComponent = React.createClass({
     getInitialState: function () {
         return {
             orgSearchData: {
-                contact_name: '', contact_lastname: '', contact_email: '',
+                contact_name: '', contact_lastname: '',
                 typeInstallOrg: 'NEW-ORGS',
                 sector_type: '', country: 'France', legal_name: '', tax_reg_num: '',
                 selectedOrgId: ''
