@@ -130,7 +130,7 @@ public class MongoConfiguration extends AbstractMongoConfiguration {
 		MongoClient client;
 
 		MongoClientOptions.Builder builder = MongoClientOptions.builder();
-		builder.acceptableLatencyDifference(persistenceProperties.acceptableLatencyDifference);
+		builder.localThreshold(persistenceProperties.acceptableLatencyDifference);
 		builder.connectTimeout(persistenceProperties.connectTimeout);
 
 		if (serverAddresses.size() > 1) {
