@@ -275,6 +275,7 @@ var Tab1 = React.createClass({
             organization.city_uri = event.target.value;
             if (event.added)
                 organization.city = event.added.name;
+                organization.zip = event.added.postalCode;
         } else {
             organization[event.target.id] = event.target.value;
         }
