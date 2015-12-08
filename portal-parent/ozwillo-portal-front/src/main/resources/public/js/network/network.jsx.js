@@ -582,7 +582,7 @@ var InformationDialog = React.createClass({
                success: function (data) {
                   if(data){
                       data.inModification = true;
-                      this.setState({ organization: data });
+                      this.setState({ DCOrganization: data });
                       this.refs.modalModifyKAndDCOrg.open(data);
                   }
                }.bind(this),
@@ -590,6 +590,8 @@ var InformationDialog = React.createClass({
                   console.error(status, err.toString());
                }.bind(this)
            });
+       }else {
+           this.refs.modalModifyKAndDCOrg.open();
        }
     },
     createOrModifOrg: function(event){
@@ -604,9 +606,9 @@ var InformationDialog = React.createClass({
             </Modal>
         );
         var modal = undefined;
-        if(this.state.organization){
+        if(this.state.DCOrganization){
             modal = (
-                <CreateOrModifyOrganizationModal ref="modalModifyKAndDCOrg" successHandler={this.props.onUpdate} />
+                <CreateOrModifyOrganizationModal ref="modalModifyKAndDCOrg" successHandler={this.props.onUpdate} org={this.props.org} />
             );
         }else{
            {/* This part is to show a short message to users of very old organizations that doesnt exist in DC */}
