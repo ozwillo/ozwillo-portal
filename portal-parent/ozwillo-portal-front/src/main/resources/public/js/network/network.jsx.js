@@ -27,7 +27,7 @@ var SearchOrCreateHeader = React.createClass({
         return (
             <div className="row add-organization-action">
                 <div className="col-md-12">
-                    <button type="button" className="btn btn-default pull-right" onClick={this.props.showDialog}>
+                    <button type="button" className="btn oz-btn-save pull-right" onClick={this.props.showDialog}>
                         {t('my.network.add-organization')}
                     </button>
                 </div>
