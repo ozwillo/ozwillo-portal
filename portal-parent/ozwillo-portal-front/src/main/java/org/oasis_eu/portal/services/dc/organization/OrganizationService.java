@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services.dc.organization;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -89,6 +90,11 @@ public class OrganizationService {
 				return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
 			}
 		}
+	}
+
+	public List<DCOrganization> findOrganizations(String country_uri, String query) {
+		String lang = RequestContextUtils.getLocale(request).getLanguage();
+		return organizationDAO.searchOrganizations(lang, country_uri, query);
 	}
 
 	public DCOrganization findOrganizationById(String dcId){

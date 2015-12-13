@@ -74,6 +74,24 @@ public class DCOrganizationService {
 		return dcOrganization;
 	}
 
+	public List<DCOrganization> searchOrganizations(String lang, String country_uri, String query) {
+		String model = dcOrgModel.trim();
+		String project = dcOrgProjectName.trim();
+
+		DCQueryParameters params = new DCQueryParameters()
+			.and(dcOrgSearchLegalName.trim(), DCOperator.FULLTEXT, query)
+			//.and("odisp:name.v", DCOperator.FULLTEXT, query)
+			.and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri); /* country is encoded as a dc-resource, it should be sent also as it was fetched */
+
+		logger.info("Searching organizations in DC using parameters : {}, {} and {}", query, country_uri, model);
+		long queryStart = System.currentTimeMillis();
+		List<DCResource> resources = datacore.findResources(project, model, params, 0, 10);
+		long queryEnd = System.currentTimeMillis();
+		logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd-queryStart);
+
+		return resources.stream().map(resource -> toDCOrganization(resource, lang)).collect(Collectors.toList());
+	}
+
 	private DCResource fetchDCOrganizationResource(String country_uri, String sector, String legalName, String regNumber, String lang) {
 		String model = dcOrgModel.trim();
 		String project = dcOrgProjectName.trim();
