@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.front.my.network;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
+import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 import java.util.List;
@@ -20,6 +21,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -107,6 +110,24 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 		logger.debug("Searching for organization {} from {} of type {}", legal_name, country+"["+country_uri+"]", sector_type);
 
 		return organizationService.findOrganization(country,country_uri, sector_type, legal_name, tax_reg_num);
+	}
+
+	@RequestMapping(value = "/search-organizations", method = GET)
+	public List<DCOrganization> searchOrganizations(
+			@RequestParam(required=true) String country_uri,
+			@RequestParam(required=true) String query) {
+		logger.debug("Searching for organization matching {} in country {}", query, country_uri);
+
+		return organizationService.findOrganizations(country_uri, query);
+	}
+
+	@RequestMapping(value = "/kernel-organization", method = HEAD)
+	public ResponseEntity<String> checkKernelOrganization(@RequestParam(required=true) String dc_id) {
+		logger.debug("Checking existence of organization {} in kernel", dc_id);
+		if (networkService.searchOrganizationByDCId(dc_id) == null)
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+		else
+			return new ResponseEntity<>(HttpStatus.FOUND);
 	}
 
 	@RequestMapping(value = "/search-organization-by-id", method = GET)

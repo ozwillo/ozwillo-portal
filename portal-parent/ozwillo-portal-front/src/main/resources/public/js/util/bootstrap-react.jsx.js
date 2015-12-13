@@ -191,24 +191,39 @@ var ModalWithForm = React.createClass({
  *  - onSelect: a callback that is called when an item is selected
  */
 var Typeahead = React.createClass({
+    propTypes: {
+        source: React.PropTypes.func.isRequired,
+        onSelect: React.PropTypes.func.isRequired,
+        onChange: React.PropTypes.func,
+        display: React.PropTypes.string.isRequired,
+        suggestionTemplate: React.PropTypes.func.isRequired,
+        fieldId: React.PropTypes.string.isRequired,
+        placeholder: React.PropTypes.string
+    },
     componentDidMount: function () {
 
         $(this.getDOMNode()).typeahead({
             minLength: 3,
-            highlight: true
+            highlight: true,
+            hint: false,
+            autoselect: false
         }, {
             source: this.props.source,
-            display: 'fullname'
-        }).on("typeahead:selected", function (event, selected) {
-            if (this.props.onSelect != undefined) {
-                this.props.onSelect(selected);
+            display: this.props.display,
+            templates: {
+                suggestion: this.props.suggestionTemplate
             }
-            $(this.getDOMNode()).typeahead('val', '');
-        }.bind(this));
+        }).on("typeahead:selected", function (event, selected) {
+            this.props.onSelect(selected, $(this.getDOMNode()));
+        }.bind(this))
+    },
+    reset: function() {
+        $(this.getDOMNode()).typeahead('val', '');
     },
     render: function () {
         return (
-            <input className="form-control typeahead" type="text" size="30" placeholder={this.props.placeholder}></input>
+            <input className="form-control typeahead" onChange={this.props.onChange} id={this.props.fieldId} type="text"
+                   size="30" placeholder={this.props.placeholder} autoComplete="off" ></input>
         );
     }
 });

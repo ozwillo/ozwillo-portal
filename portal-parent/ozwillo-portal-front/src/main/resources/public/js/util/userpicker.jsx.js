@@ -37,12 +37,16 @@ var UserPicker = React.createClass({
   getSelectedUsers: function() {
     return this.state.users;
   },
-  addUser: function(user){
+  renderSuggestionTemplate: function(data) {
+    return '<div>' + data.fullname + '</div>';
+  },
+  addUser: function(user, typeaheadRef){
     if (this.state.users.filter(function(u){ return u.userid == user.userid;}).length == 0) {
       var users = this.state.users;
       users.push(user);
       this.setState({users:users});
     }
+    typeaheadRef.typeahead('val', '');
   },
   render: function() {
     var usersList = this.state.users.map(function(user) {
@@ -64,7 +68,9 @@ var UserPicker = React.createClass({
         </table>
         <div className="row">
             <div className="col-sm-10">
-                <Typeahead onSelect={this.addUser} source={this.props.source} placeholder={t('settings-add-a-user')}/>
+                <Typeahead onSelect={this.addUser} source={this.props.source} placeholder={t('settings-add-a-user')}
+                    display="fullname" suggestionTemplate={this.renderSuggestionTemplate}
+                    fieldId="search-user" />
             </div>
         </div>
       </div>

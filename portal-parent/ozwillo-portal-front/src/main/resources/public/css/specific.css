@@ -281,6 +281,7 @@ label.required {
     display: block;
     padding: 3px 20px;
     border: 1px solid #ccc;
+    background-color: #fff;
 }
 
 .tt-suggestion.tt-cursor, .tt-suggestion:hover {
@@ -294,6 +295,11 @@ label.required {
 
 .tt-suggestion p {
     margin: 0;
+}
+
+.tt-suggestion p.complementary-info {
+    font-style: italic;
+    font-weight: 200;
 }
 
 /* BUSINESS STYLES */
@@ -475,6 +481,13 @@ label.required {
 
 .add-organization-action {
     margin-bottom: 1em;
+}
+
+#mynetwork .twitter-typeahead,
+#mynetwork .tt-hint,
+#mynetwork .tt-input,
+#mynetwork .tt-menu {
+    width: 100%;
 }
 
 /* my apps page */
