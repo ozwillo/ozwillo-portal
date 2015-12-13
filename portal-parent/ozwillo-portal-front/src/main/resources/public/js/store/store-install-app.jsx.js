@@ -579,15 +579,19 @@ var InstallForm =  React.createClass({
                           <h4>{t('search.contact.address.title')}</h4>
                           <AddressComponent ref='addressComponent' errors={this.state.errors} addressContainer={this.state.installData.address}
                                 changeInput={this.changeInputAddress} />
+                          <div className="next">
+                              <button className="btn btn-primary pull-right" onClick={this.validateAndContinue}>{t('ui.next')}</button>
+                          </div>
                        </div>)
                     : (<div>
                            <h4>{t('search.organization.title')}</h4>
                            <SetOrganizationComponent ref='setOrgComponent' url={this.props.url} app={this.props.app} orgs={this.props.orgs}
                                 isOnlyForCitizens={this.isOnlyForCitizens} onChangeSelectedOrg={this.onChangeSelectedOrg}/>
+                           <div className="next">
+                               <button className="btn btn-primary pull-right" onClick={this.validateAndContinue}>{t('ui.next')}</button>
+                           </div>
                        </div>)
                 }
-
-                <a className="btn btn-primary pull-right" onClick={this.validateAndContinue}>{t('ui.next')}</a>
             </div>
         );
     }
@@ -774,8 +778,10 @@ var AddressComponent = React.createClass({
 /* PROPS: name, className, class_name_div, error, isRequired, (children)*/
 var Field = React.createClass({
     renderLabel: function(htmlFor, class_name, label, isRequired){
-        var cn = isRequired ? <label className={'error'}>{'*'}</label> : ''
-        return (<label htmlFor={htmlFor} className={class_name}>{label} {cn}</label>);
+        var cn = isRequired ? class_name + ' required' : class_name;
+        return (
+            <label htmlFor={htmlFor} className={cn}>{label} {isRequired ? '*' : ''}</label>
+        );
     },
     render: function() {
         var className = "control-label col-sm-3";

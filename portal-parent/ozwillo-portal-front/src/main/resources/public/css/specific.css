@@ -704,6 +704,10 @@ label.required {
     background-color: #2e7d32;
 }
 
+#store-apps .oz-simple-modal .next {
+    overflow: auto;
+}
+
 #store-loadmore {
     padding: 30px 0 30px 0;
     background-color: #fff;
