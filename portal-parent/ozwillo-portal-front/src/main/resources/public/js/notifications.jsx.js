@@ -46,14 +46,7 @@ var NotificationTable = React.createClass({
                 var s = this.state;
                 var notifs = data.notifications;
 
-                var currentSort = s.currentSort;
-                s.n = notifs.sort(function (a, b) {
-                    if (typeof a[currentSort.prop] == "number") {
-                        return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
-                    } else {
-                        return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
-                    }
-                });
+                s.n = notifs.sort(this.sortElement);
                 s.apps = data.apps;
                 this.setState(s);
             }.bind(this),
@@ -77,18 +70,37 @@ var NotificationTable = React.createClass({
             currentSort.prop = criterion;
             currentSort.dir = sortDirection;
 
-            var n = component.state.n.sort(function (a, b) {
-                if (typeof a[currentSort.prop] == "number") {
-                    return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
-                } else {
-                    return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
-                }
-            });
+            var n = component.state.n.sort(this.sortElement);
             var state = component.state;
             state.n = n;
             state.currentSort = currentSort;
             component.setState(state);
-        };
+        }.bind(this);
+    },
+    sortElement: function(a,b){
+        var currentSort = this.state.currentSort;
+
+        if (typeof a[currentSort.prop] == typeof b[currentSort.prop]) {
+            if (typeof a[currentSort.prop] == "number") {
+                return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
+            }
+            if (typeof a[currentSort.prop] == "string") {
+                return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
+            } else {
+                return currentSort.dir;
+            }
+        }
+
+        if (typeof a[currentSort.prop] == "undefined"){
+            return -currentSort.dir;
+        }
+        if (typeof b[currentSort.prop] == "undefined"){
+            return currentSort.dir;
+        }
+
+        // In all other case, a basic and hazardous comparaison
+        return  (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
+
     },
     filterByStatus: function (event) {
         event.preventDefault();
