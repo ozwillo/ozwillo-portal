@@ -46,6 +46,21 @@ var AppStore = React.createClass({
         this.setState({ filter: filter});
         this.updateApps();
     },
+    getSearchFilters: function() {
+        var supported_locales = [];
+        if (this.state.filter.selectedLanguage !== 'all') {
+            supported_locales.push(this.state.filter.selectedLanguage);
+        }
+        var filter = this.state.filter;
+        return {
+            target_citizens: filter.audience.citizens, target_publicbodies: filter.audience.publicbodies, target_companies: filter.audience.companies,
+            free: filter.payment.free, paid: filter.payment.paid,
+            supported_locales: supported_locales,
+            geoArea_AncestorsUris: filter.geoAreaAncestorsUris,
+            category_ids: [],
+            q: filter.searchText  // q being empty is ok
+        };
+    },
     updateApps: function() {
         if (default_app) {
             $.ajax({
@@ -66,22 +81,10 @@ var AppStore = React.createClass({
         } else {
             this.setState({ defaultApp: null});
         }
-        var supported_locales = [];
-        if (this.state.filter.selectedLanguage !== 'all') {
-            supported_locales.push(this.state.filter.selectedLanguage);
-        }
-        var filter = this.state.filter;
-        var queryParams = {
-            target_citizens: filter.audience.citizens, target_publicbodies: filter.audience.publicbodies, target_companies: filter.audience.companies,
-            free: filter.payment.free, paid: filter.payment.paid,
-            supported_locales: supported_locales,
-            geoArea_AncestorsUris: filter.geoAreaAncestorsUris,
-            category_ids: [],
-            q: filter.searchText  // q being empty is ok
-        };
+
         $.ajax({
             url: store_service + "/applications",
-            data: queryParams,
+            data: this.getSearchFilters(),
             traditional: true, // else geographical_areas%5B%5D=http... see http://stackoverflow.com/questions/6011284/problem-with-brackets-in-jquery-form-data-when-sending-data-as-json
             type: 'get',
             dataType: 'json',
@@ -101,16 +104,11 @@ var AppStore = React.createClass({
     loadMoreApps: function () {
         this.setState({ loading: true });
 
+        var searchFilters = this.getSearchFilters();
+        searchFilters.last = this.state.apps.length;
         $.ajax({
             url: store_service + "/applications",
-            data: {
-                last: this.state.apps.length,
-                target_citizens: this.state.filter.audience.citizens,
-                target_publicbodies: this.state.filter.audience.publicbodies,
-                target_companies: this.state.filter.audience.companies,
-                free: this.state.filter.payment.free,
-                paid: this.state.filter.payment.paid
-            },
+            data: searchFilters,
             type: 'get',
             dataType: 'json',
             success: function (data) {
