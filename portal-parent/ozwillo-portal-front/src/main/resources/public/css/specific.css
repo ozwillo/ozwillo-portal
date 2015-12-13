@@ -50,7 +50,8 @@ h4 {
 }
 
 .oz-header .welcome .badge {
-    background: red;
+    background: #c92828;
+    color: #fefefe;
 }
 
 .navbar-auth {
@@ -210,15 +211,19 @@ label.required {
 }
 
 .oz-btn-save {
-    background-color: #009688;
-    color: #fff;
-    border: 1px solid #009688;
-}
-
-.oz-btn-save.focus, .oz-btn-save:focus, .oz-btn-save:hover {
     background-color: #00796b;
     color: #fff;
     border: 1px solid #00796b;
+}
+
+.oz-btn-save.focus, .oz-btn-save:focus, .oz-btn-save:hover {
+    background-color: #004D40;
+    color: #fff;
+    border: 1px solid #004D40;
+}
+
+.btn-warning {
+    color: #360036;
 }
 
 .oz-btn-danger {
@@ -450,6 +455,7 @@ label.required {
 #profile #account form a {
     font-size: 16px;
     text-decoration: underline;
+    color: #add8e6;
 }
 
 #profile #legal {
@@ -627,14 +633,14 @@ label.required {
 }
 
 #store-apps .app .description .app-provider {
-    color: #848285;
+    color: #545454;
     font-size: 15px;
     text-align: center;
     display: block;
 }
 
 #store-apps .app .description .app-description {
-    color: #848285;
+    color: #545454;
     font-size: 15px;
     margin: 0 40px 28px 40px;
     text-align: center;
