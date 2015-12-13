@@ -79,7 +79,7 @@ rest:
   revertToApacheHttpComponentsClient: false
 
 kernel:
-  base_uri: http://kernel.ozwillo-dev.eu
+  base_uri: https://kernel.ozwillo-dev.eu
   alt_uri: ${kernel.base_uri}
   auth:
     issuer: ${kernel.base_uri}/
