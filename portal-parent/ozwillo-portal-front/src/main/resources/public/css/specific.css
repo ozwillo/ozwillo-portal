@@ -532,11 +532,21 @@ label.required {
     color: #333;
 }
 
-#myapps .authority-body .authority-app, #myapps .authority-body .authority-noapp, #myapps .authority-body .authority-app-services-title {
+#myapps .authority-body .authority-app {
+    border-bottom: 1px solid #CCC;
+}
+
+#myapps .authority-body .authority-app:last-child {
+    border-bottom: none;
+}
+
+#myapps .authority-body .authority-app-title,
+#myapps .authority-body .authority-noapp,
+#myapps .authority-body .authority-app-services-title {
     margin-top: 10px;
 }
 
-#myapps .authority-app h3 {
+#myapps .authority-app-title h3 {
     display: inline;
     margin-left: 10px;
 }

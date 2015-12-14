@@ -267,7 +267,7 @@ var Instance = React.createClass({
         }
 
         return (
-            <div>
+            <div className="authority-app">
                 <Modal ref="errorDialog" infobox={true} onClose={this.props.reload} buttonLabels={{'ok': t('ui.close')}} title={t('ui.unexpected_error')}>
                     {this.state.errorMessage}
                 </Modal>
@@ -276,7 +276,7 @@ var Instance = React.createClass({
                 </Modal>
                 {dialogs}
 
-                <div className="row authority-app">
+                <div className="row authority-app-title">
                     <div className="col-sm-8">
                         <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
                         <h3>{this.props.instance.name}</h3>
