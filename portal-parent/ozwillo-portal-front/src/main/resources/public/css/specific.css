@@ -468,17 +468,19 @@ label.required {
 .organization {
     background-color: white;
     border: 1px solid #6f438e;
-    padding: 10px 20px;
     margin-bottom: 1em;
 }
 
 .organization-header {
-    padding: 5px;
+    padding: 10px 20px;
+    margin: 0;
     border-bottom: 1px solid #6f438e;
+    background-color: #ECEFF1;
 }
 
 .organization-member-row {
-    padding: 5px;
+    padding: 5px 15px;
+    margin: 0 10px 0 10px;
     border-bottom: 1px solid #CCC;
     line-height: 30px;
     color: #333;
@@ -490,7 +492,8 @@ label.required {
 
 .organization-pending-member-row {
     font-style: italic;
-    padding: 5px;
+    padding: 5px 15px;
+    margin: 0 10px 0 10px;
     border-bottom: 1px solid #CCC;
     line-height: 30px;
     color: #333;
