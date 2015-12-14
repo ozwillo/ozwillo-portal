@@ -412,7 +412,7 @@ var JoinBanner = React.createClass({
     },
     render: function() {
         // FIXME : remove this hard-coded part of the URL
-        var joinUsLink = webHome + "/" + currentLanguage + "/oz/co-construire";
+        var joinUsLink = webHome + "/" + currentLanguage + "/co-construire";
         var divClassName = this.state.visible ? "container-fluid" : "container-fluid hidden";
 
         return (
