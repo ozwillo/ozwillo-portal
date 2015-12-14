@@ -518,6 +518,10 @@ var Tab2 = React.createClass({
                                     <input className="form-control" ref="tax_reg_num" id="tax_reg_num" type="text"
                                            value={this.state.organization.tax_reg_num} disabled={true} />
                                 </Field>
+                                <Field name="sector_type" isRequired={true}>
+                                    <input className="form-control" ref="sector_type" id="sector_type" type="text"
+                                           value={t('my.network.organization.sector_type.' + this.state.organization.sector_type)} disabled={true} />
+                                </Field>
                                 <Field name="in_activity" error={$.inArray("in_activity", this.state.errors) != -1} isRequired={false}>
                                     <input id="in_activity" type="checkbox" checked={this.state.organization.in_activity}
                                            onChange={this.handleInputChange} />
