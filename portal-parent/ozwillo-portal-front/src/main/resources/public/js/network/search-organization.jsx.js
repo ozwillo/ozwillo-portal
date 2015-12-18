@@ -180,7 +180,7 @@ var SearchOrganizationForm = React.createClass({
                                        onChange={this.onTaxRegNumChange} />
                             <SectorType inError={$.inArray('sector_type', this.state.errors) != -1}
                                         display={!this.state.exist_in_kernel && this.state.country}
-                                        static={this.state.exist_in_dc}
+                                        static={this.state.exist_in_dc && this.state.selected_organization.sector_type !== null}
                                         value={this.state.selected_organization ? this.state.selected_organization.sector_type : this.state.sector_type}
                                         onChange={this.onSectorTypeChange}/>
                         </div>
