@@ -70,7 +70,7 @@ public class HttpImageDownloader implements ImageDownloader {
 				}
 			}
 		} catch (Exception e) {
-			logger.error("Cannot load icon from url: {}", iconUrl);
+			logger.error("Cannot load icon from url: {}", iconUrl, e.getMessage());
 			return null;
 		}
 	}
