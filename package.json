@@ -1,0 +1,68 @@
+{
+  "name": "ozwillo-portal-frontend",
+  "version": "1.43.0-SNAPSHOT",
+  "description": "Ozwillo portal frontend",
+  "private": true,
+  "scripts": {
+    "start": "webpack-dev-server",
+    "lint": "eslint src/main/resources/public/jsx",
+    "build": "NODE_ENV=production webpack --progress",
+    "stats": "webpack --profile --json > stats.json"
+  },
+  "keywords": [
+    "Ozwillo"
+  ],
+  "author": "Benoit Orihuela",
+  "license": "AGPL-3.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ozwillo/ozwillo-portal.git"
+  },
+  "engines": {
+    "node": ">=5.5.0"
+  },
+  "devDependencies": {
+    "autoprefixer": "^6.2.3",
+    "babel-core": "^6.0.20",
+    "babel-eslint": "^4.1.8",
+    "babel-loader": "^6.0.1",
+    "babel-preset-es2015": "^6.0.15",
+    "babel-preset-react": "^6.0.15",
+    "bootstrap-loader": "^1.0.3",
+    "clean-webpack-plugin": "^0.1.8",
+    "css-loader": "^0.23.1",
+    "eslint": "^2.2.0",
+    "eslint-plugin-babel": "^3.1.0",
+    "eslint-plugin-react": "^3.16.1",
+    "extract-text-webpack-plugin": "^1.0.1",
+    "file-loader": "^0.8.5",
+    "font-awesome-webpack": "0.0.4",
+    "imports-loader": "^0.6.5",
+    "less": "^2.5.3",
+    "node-sass": "^3.4.2",
+    "postcss-loader": "^0.8.0",
+    "react-hot-loader": "^1.3.0",
+    "resolve-url-loader": "^1.4.3",
+    "sass-loader": "^3.1.2",
+    "script-loader": "^0.6.1",
+    "style-loader": "^0.13.0",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.12.2",
+    "webpack-dev-server": "^1.12.1",
+    "webpack-merge": "^0.7.3"
+  },
+  "dependencies": {
+    "bootstrap-datepicker": "^1.6.0",
+    "bootstrap-sass": "^3.3.6",
+    "debounce": "^1.0.0",
+    "font-awesome": "^4.5.0",
+    "jquery": "^2.2.0",
+    "moment": "^2.11.1",
+    "react": "^0.14.7",
+    "react-autosuggest": "^3.5.0",
+    "react-dom": "^0.14.7",
+    "react-rating": "^0.2.0",
+    "select2": "^4.0.1",
+    "showdown": "^1.3.0"
+  }
+}

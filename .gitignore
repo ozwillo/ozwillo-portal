@@ -7,8 +7,10 @@
 *~
 .~*#
 
-# Maven
-target/
+# Gradle
+.gradle
+.gradletasknamecache
+build/
 
 # Eclipse
 .settings/
@@ -18,9 +20,14 @@ target/
 # IDEA
 .idea/
 *.iml
+ozwillo-portal.ipr
+ozwillo-portal.iws
 
 # Mac OS
 .DS_Store
 
 # react.js
 **/src/.module-cache/
+
+# Node
+node_modules/

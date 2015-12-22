@@ -1,0 +1,58 @@
+<!doctype html>
+<html data-th-attr="lang=${currentLocaleLanguage}">
+<head data-th-replace="includes/header(title=#{my.profile.title},page='my')"></head>
+<body>
+
+<div data-th-replace="includes/my-header-content::header"></div>
+
+<div data-th-replace="includes/my-navigation :: nav"></div>
+
+<div class="oz-body page-row page-row-expanded">
+
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-12">
+                <h1 class="text-center">
+                    <img data-th-src="@{/img/new/account.png}" src="../../public/img/new/account.png"/>
+                    <span data-th-text="#{my.profile.title}">Mon profil</span>
+                </h1>
+            </div>
+        </div>
+    </div>
+
+    <div class="oz-body-content" id="profile">
+        <div id="layouts" class="container" data-th-data="${currentLanguage.locale}">
+            <div data-th-each="layout : ${layouts}">
+                <div data-th-include="profile/my-profile-fragments :: layout(${layout})"></div>
+            </div>
+        </div>
+
+        <div class="container" id="legal">
+            <div class="row">
+                <div class="col-sm-10 col-sm-offset-1 text-center">
+                    <p data-th-text="#{my.profile.disclaimer.line1}">Disclaimer line 1</p>
+                    <p data-th-text="#{my.profile.disclaimer.line2}">Disclaimer line 2</p>
+                    <p data-th-text="#{my.profile.disclaimer.line3}">Disclaimer line 3</p>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="push"></div>
+
+</div>
+
+<div data-th-replace="includes/footer"></div>
+
+<div data-th-replace="includes/scripts"></div>
+
+<script data-th-inline="javascript" type="text/javascript">
+    var store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
+</script>
+
+<script type="text/javascript" data-th-src="@{/build/profile.bundle.js}"></script>
+<script type="text/javascript" data-th-src="@{/build/contact.bundle.js}"></script>
+
+</body>
+</html>
