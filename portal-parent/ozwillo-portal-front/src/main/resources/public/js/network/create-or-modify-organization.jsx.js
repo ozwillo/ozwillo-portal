@@ -537,7 +537,7 @@ var Tab2 = React.createClass({
                                 </Field>
                                 <Field name={taxRegNumLabels.tax_reg_activity_label} class_name_div='col-sm-3' isRequired={false}>
                                     <GeoSingleSelect2Component ref="tax_reg_activity" className="form-control" name="tax_reg_activity"
-                                                               key="tax_reg_activity_uri"
+                                                               key={this.state.organization.tax_reg_activity_uri}
                                                                urlResources={store_service + "/dc-taxRegActivity"}
                                                                countryFilter={ {country_uri: this.props.organization.country_uri} }
                                                                onChange={this.handleInputChange}
