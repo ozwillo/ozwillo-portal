@@ -586,7 +586,7 @@ var InstallForm =  React.createClass({
                     : (<div>
                            <h4>{t('search.organization.title')}</h4>
                            <SetOrganizationComponent ref='setOrgComponent' url={this.props.url} app={this.props.app} orgs={this.props.orgs}
-                                isOnlyForCitizens={this.isOnlyForCitizens} onChangeSelectedOrg={this.onChangeSelectedOrg}/>
+                                isOnlyForCitizens={this.isOnlyForCitizens} />
                            <div className="next">
                                <button className="btn btn-primary pull-right" onClick={this.validateAndContinue}>{t('ui.next')}</button>
                            </div>
@@ -924,15 +924,21 @@ var SetOrganizationComponent = React.createClass({
     },
     renderOrganizations: function(){
         var opts = [];
+        opts.push(<option key={-1} value=""></option>);
         this.props.orgs.map(function (org) {
              opts.push(<option key={org.id} value={org.id}>{org.name}</option>);
         });
 
+        var formGroupClass = ($.inArray('typeInstallOrg', this.state.errors) != -1) ? 'form-group has-error' : 'form-group';
+
         return (
-            <div className="form-group">
+            <div className={formGroupClass}>
                 {this.renderLabel('organization', t('search.organization.title'), true)}
                 <div className="col-sm-8">
-                    <select id="organization" className="col-sm-8 form-control" onChange={this.onChangeOrgInput('selectedOrgId')}>{opts}</select>
+                    <select id="organization" className="col-sm-8 form-control" onChange={this.onChangeOrgInput('selectedOrgId')}
+                        value={this.state.orgSearchData.selectedOrgId} >
+                        {opts}
+                    </select>
                 </div>
             </div>
         );
