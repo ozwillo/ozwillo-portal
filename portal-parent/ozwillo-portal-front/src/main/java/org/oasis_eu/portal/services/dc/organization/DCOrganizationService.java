@@ -284,6 +284,11 @@ public class DCOrganizationService {
 
 		DCOrganizationType dcOrganizationType = DCOrganizationType.getDCOrganizationType(fromOrg.getSector_type());
 		toRes.set("org:sector", (dcOrganizationType != null) ? dcOrganizationType.name() : "");
+		// only set org:country for :
+		//   - newly created organizations (it is an immutable field)
+		//   - previously created organizations without this field (see https://github.com/ozwillo/ozwillo-portal/issues/363)
+		if (toRes.getAsString("org:country") == null || toRes.getAsString("org:country").isEmpty())
+			toRes.set("org:country", fromOrg.getCountry_uri());
 
 		toRes.set("org:status", fromOrg.isIn_activity() ? dcOrgStatusActive : dcOrgStatusInactive);
 		toRes.setMappedList("org:altName", valueAsDCList(fromOrg.getAlt_name(), fromOrg.getLang())); //list
@@ -291,7 +296,7 @@ public class DCOrganizationService {
 		toRes.set("org:regNumber", fromOrg.getTax_reg_num());
 		toRes.set("orgpu:officialId", fromOrg.getTax_reg_official_id()); /* Only for Public organizations*/
 		toRes.set("org:activity", fromOrg.getTax_reg_activity_uri());
-		if(dcOrganizationType.equals(DCOrganizationType.Public)){
+		if(dcOrganizationType == DCOrganizationType.Public){
 			toRes.set("orgpu:jurisdiction", fromOrg.getJurisdiction_uri()); /* Only for Public organizations*/
 		}
 		toRes.set("org:phoneNumber", fromOrg.getPhone_number());
@@ -323,8 +328,7 @@ public class DCOrganizationService {
 		return legalNameLst;
 	}
 	private DCResource toNewDCResource(DCOrganization dcOrganization){
-		DCResource dcResource = new DCResource();
-		mergeDCOrgToDCResources(dcOrganization, dcResource);
+		DCResource dcResource = mergeDCOrgToDCResources(dcOrganization, new DCResource());
 
 		dcResource = setDCIdOrganization(dcResource, dcOrganization.getSector_type(), dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
 
