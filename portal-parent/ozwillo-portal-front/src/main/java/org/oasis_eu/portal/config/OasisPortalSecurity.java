@@ -13,7 +13,6 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 /**
  * User: schambon
@@ -46,8 +45,8 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
 		if (noauthdevmode && devmode) {
 			// don't configure any security
 		} else {
-			http
-				.logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(logoutHandler()).and()
+		http
+				.logout().logoutSuccessHandler(logoutHandler()).and()
 				.exceptionHandling().authenticationEntryPoint(authenticationEntryPoint()).and()
 				.authorizeRequests()
 				.antMatchers("/my/**").authenticated()
