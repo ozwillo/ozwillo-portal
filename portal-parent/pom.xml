@@ -7,7 +7,7 @@
     <groupId>org.ozwillo</groupId>
     <artifactId>ozwillo-portal-parent</artifactId>
     <packaging>pom</packaging>
-    <version>1.40-SNAPSHOT</version>
+    <version>1.40</version>
 
 
     <!-- =================== -->
@@ -64,7 +64,7 @@
         <logback.version>1.1.2</logback.version>
         <markdown4j.version>2.2-cj-1.0</markdown4j.version>
         <mongo-java-driver.version>2.13.1</mongo-java-driver.version>
-        <ozwillo.java-spring-integration.version>1.21</ozwillo.java-spring-integration.version>
+        <ozwillo.java-spring-integration.version>1.22</ozwillo.java-spring-integration.version>
         <slf4j.version>1.7.5</slf4j.version>
         <spring-boot.version>1.0.2.RELEASE</spring-boot.version>
         <springdata-mongodb.version>1.5.4.RELEASE</springdata-mongodb.version>
