@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.core.dao;
 
 import org.oasis_eu.portal.core.model.ace.ACE;
+import org.oasis_eu.portal.model.appsmanagement.User;
 
 import java.util.List;
 
@@ -23,5 +24,5 @@ public interface InstanceACLStore {
 	 * @param instanceId
 	 * @param userIds
 	 */
-	void saveACL(String instanceId, List<String> userIds);
+	void saveACL(String instanceId, List<User> userIds);
 }

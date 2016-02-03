@@ -131,47 +131,7 @@ var Instance = React.createClass({
     },
     manageUsers: function (event) {
         event.preventDefault();
-        this.refs.users.init();
         this.refs.manageUsers.open();
-    },
-    saveUsers: function () {
-        this.refs.manageUsers.close();
-        $.ajax({
-            url: apps_service + "/users/instance/" + this.props.id,
-            dataType: 'json',
-            contentType: 'application/json',
-            type: 'post',
-            data: JSON.stringify(this.refs.users.getSelectedUsers()),
-            error: function (xhr, status, err) {
-                console.error(apps_service + "/users/instance/" + this.props.id, status, err.toString());
-            }.bind(this)
-        });
-    },
-    loadUsers: function (callback, error) {
-        $.ajax({
-            url: apps_service + "/users/instance/" + this.props.id + "?app_admin=false", // only users that
-            // are app_user (so not those that are !app_user app_admin)
-            dataType: 'json',
-            method: 'get',
-            success: callback,
-            error: function (xhr, status, err) {
-                console.error(apps_service + "/users/instance/" + this.props.id, status, err.toString());
-                if (error != undefined) {
-                    error();
-                }
-            }.bind(this)
-        });
-    },
-    queryUsers: function (query, syncCallback, asyncCallback) {
-        $.ajax({
-            url: apps_service + "/users/network/" + this.props.authority + "?q=" + query,
-            dataType: 'json',
-            method: 'get',
-            success: asyncCallback,
-            error: function (xhr, status, err) {
-                console.error(apps_service + "/users/network/" + this.props.authority + "?q=" + query, status, err.toString());
-            }.bind(this)
-        });
     },
     confirmTrash: function (event) {
         event.preventDefault();
@@ -271,9 +231,7 @@ var Instance = React.createClass({
                 <Modal ref="errorDialog" infobox={true} onClose={this.props.reload} buttonLabels={{'ok': t('ui.close')}} title={t('ui.unexpected_error')}>
                     {this.state.errorMessage}
                 </Modal>
-                <Modal ref="manageUsers" title={t('manage_users')} successHandler={this.saveUsers} >
-                    <UserPicker ref="users" users={this.loadUsers} source={this.queryUsers}/>
-                </Modal>
+                <ApplicationUsersManagement ref="manageUsers" instanceId={this.props.id} authority={this.props.authority} />
                 {dialogs}
 
                 <div className="row authority-app-title">

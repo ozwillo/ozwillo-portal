@@ -26,6 +26,8 @@ public class ACE {
 	private String userId;
 	@JsonProperty("user_name")
 	private String userName;
+	@JsonProperty("email")
+	private String email;
 	@JsonProperty("creator_id")
 	private String creatorId;
 	@JsonProperty("creator_name")
@@ -86,6 +88,14 @@ public class ACE {
 
 	public void setUserName(String userName) {
 		this.userName = userName;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
 	}
 
 	public String getCreatorId() {

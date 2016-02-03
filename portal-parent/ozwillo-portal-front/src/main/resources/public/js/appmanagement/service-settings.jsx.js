@@ -66,46 +66,7 @@ var Service = React.createClass({
     },
     pushToDash: function (event) {
         event.preventDefault(); // else scrolltop jumps to top #178
-        this.refs.users.init();
         this.refs.pushToDash.open();
-    },
-    savePushToDash: function () {
-        this.refs.pushToDash.close();
-        $.ajax({
-            url: apps_service + "/users/service/" + this.props.service.service.id,
-            dataType: 'json',
-            contentType: 'application/json',
-            type: 'post',
-            data: JSON.stringify(this.refs.users.getSelectedUsers()),
-            error: function (xhr, status, err) {
-                console.error(apps_service + "/users/service/" + this.props.service.service.id, status, err.toString());
-            }.bind(this)
-        });
-    },
-    loadUsers: function(callback, error) {
-        $.ajax({
-            url: apps_service + "/users/service/" + this.props.service.service.id,
-            dataType:'json',
-            type:'get',
-            success:callback,
-            error: function(xhr, status, err) {
-                console.error(apps_service + "/users/service/" + this.props.service.service.id, status, err.toString());
-                if (error != undefined) {
-                    error();
-                }
-            }.bind(this)
-        });
-    },
-    queryUsers: function(query, syncCallback, asyncCallback) {
-        $.ajax({
-            url: apps_service + "/users/instance/" + this.props.instance + "?app_admin=true&q=" + query, // also app_admin !app_user users
-            dataType:"json",
-            type:'get',
-            success:asyncCallback,
-            error: function(xhr, status, err) {
-                console.error(apps_service + "/users/instance/" + this.props.instance + "?q=" + query, status, err.toString())
-            }.bind(this)
-        })
     },
     componentDidMount: function() {
         $("a.tip", this.getDOMNode()).tooltip();
@@ -133,10 +94,7 @@ var Service = React.createClass({
                 <div className="col-sm-10">{this.state.saved_service.service.name}</div>
                 <div className="col-sm-2">{links}</div>
                 <ServiceSettings ref="settings" service={this.state.service} errors={this.state.field_errors} update={this.updateServiceLocally} save={this.saveService}/>
-                <Modal title={t('users')} ref="pushToDash" successHandler={this.savePushToDash}>
-                    <div>{t('push-to-dashboard-existing-user')}</div>
-                    <UserPicker ref="users" users={this.loadUsers} source={this.queryUsers} />
-                </Modal>
+                <DashboardUsersManagement ref="pushToDash" serviceId={this.props.service.service.id} instanceId={this.props.instance} />
             </div>
         );
     }

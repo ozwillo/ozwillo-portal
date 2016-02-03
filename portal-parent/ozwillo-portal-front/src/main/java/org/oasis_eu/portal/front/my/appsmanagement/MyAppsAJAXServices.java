@@ -25,9 +25,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -86,7 +84,9 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	public List<User> getUsersForInstance(@PathVariable String instanceId,
 										  @RequestParam(required = false) String q,
 										  @RequestParam(value="app_admin", required = false, defaultValue="true") boolean appAdmin) {
-		List<User> appUsers = appManagementService.getAppUsers(instanceId, appAdmin);
+		List<User> appUsers = appManagementService.getAppUsers(instanceId, appAdmin).stream()
+				.sorted()
+				.collect(Collectors.toList());
 		logger.debug("Found appusers: {} for instance {}", appUsers, instanceId);
 		if (q == null) {
 			return appUsers;
@@ -105,7 +105,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 
 	@RequestMapping(value = "/users/instance/{instanceId}", method = RequestMethod.POST)
 	public Map<String,String> setUsersForInstance(@PathVariable String instanceId, @RequestBody List<User> users) {
-		appManagementService.saveAppUsers(instanceId, users.stream().map(User::getUserid).collect(Collectors.toList()));
+		appManagementService.saveAppUsers(instanceId, users);
 		Map<String, String> result = new HashMap<>();
 		result.put("result", "OK");
 		return result;
@@ -118,6 +118,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 		return networkService.getUsersOfOrganization(aId)
 				.stream()
 				.filter(u -> u.getFullname().toLowerCase().contains(q.toLowerCase()))
+				.sorted()
 				.collect(Collectors.toList());
 	}
 
@@ -128,7 +129,9 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	 */
 	@RequestMapping(value = "/users/service/{serviceId}", method = RequestMethod.GET)
 	public List<User> getUsersForService(@PathVariable String serviceId) {
-		return appManagementService.getSubscribedUsersOfService(serviceId);
+		return appManagementService.getSubscribedUsersOfService(serviceId).stream()
+				.sorted()
+				.collect(Collectors.toList());
 	}
 
 	/**

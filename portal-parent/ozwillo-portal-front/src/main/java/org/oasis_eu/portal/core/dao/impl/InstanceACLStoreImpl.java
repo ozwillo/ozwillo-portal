@@ -2,6 +2,7 @@ package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.InstanceACLStore;
 import org.oasis_eu.portal.core.model.ace.ACE;
+import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,15 +49,18 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 	}
 
 	@Override
-	public void saveACL(String instanceId, List<String> newUsers) {
+	public void saveACL(String instanceId, List<User> users) {
 		List<ACE> existingACL = getACL(instanceId);
+		List<String> newUsersIds = users.stream().map(User::getUserid).collect(Collectors.toList());
 
 		// NB. ACLs that are app_admin !app_user are filtered out because NOT handled here
 		// (Kernel deduces them from app orga admins)
 
+		// TODO : deal those who have not yet accepted email invitation (need to know what the kernel is sending back before)
+
 		// delete the excess ACEs
 		existingACL.stream()
-				.filter(ace -> !newUsers.contains(ace.getUserId()))
+				.filter(ace -> !newUsersIds.contains(ace.getUserId()))
 				.filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (and entry_uri null anyway so couldn't delete)
 				.forEach(ace -> {
 					logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
@@ -68,11 +72,11 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 				.filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (else can't make an app_admin become app_user)
 				.map(ACE::getUserId).collect(Collectors.toSet());
 
-		newUsers.stream()
-				.filter(userid -> !currentUsers.contains(userid)) // only on not existing users (NB. can be already app_admin)
-				.forEach(userid -> {
-					logger.debug("Creating ACE for user {}", userid);
-					kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<>(ace(userid, instanceId)), ACE.class, user(), instanceId);
+		users.stream()
+				.filter(user -> !currentUsers.contains(user.getUserid())) // only on not existing users (NB. can be already app_admin)
+				.forEach(user -> {
+					logger.debug("Creating ACE for user {} - {}", user.getUserid(), user.getEmail());
+					kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<>(ace(user.getUserid(), user.getEmail(), instanceId)), ACE.class, user(), instanceId);
 				});
 
 	}
@@ -83,9 +87,10 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 		return headers;
 	}
 
-	private ACE ace(String userId, String instanceId) {
+	private ACE ace(String userId, String email, String instanceId) {
 		ACE ace = new ACE();
 		ace.setUserId(userId);
+		ace.setEmail(email);
 		ace.setInstanceId(instanceId);
 		ace.setAppUser(true); // #157 (but overwritten by Kernel anyway)
 		//ace.setAppAdmin(appAdmin); // #157 LATER when there'll be app admins managed by orga admins (for now the same)
