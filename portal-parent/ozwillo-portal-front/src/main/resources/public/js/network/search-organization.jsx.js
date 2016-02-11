@@ -91,7 +91,14 @@ var SearchOrganizationForm = React.createClass({
         this.setState({ tax_reg_num: event.target.value });
     },
     onSectorTypeChange: function(event) {
-        this.setState({ sector_type: event.target.value });
+        if (this.state.selected_organization) {
+            var selected_organization = this.state.selected_organization;
+            selected_organization.sector_type = event.target.value;
+            selected_organization.is_new_sector_type = true;
+            this.setState({ selected_organization: selected_organization });
+        } else {
+            this.setState({ sector_type: event.target.value });
+        }
     },
     searchOrganization: function (event) {
         if (event) { event.preventDefault(); }
@@ -132,7 +139,12 @@ var SearchOrganizationForm = React.createClass({
         }
     },
     onNextStep: function() {
-        this.props.successHandler(this.state.selected_organization);
+        // called when organization has been found in DC and not in kernel (so we allow going to next step of creation process)
+        // BUT some organizations do not have a sector type
+        if (this.state.selected_organization.sector_type)
+            this.props.successHandler(this.state.selected_organization);
+        else
+            this.setState({ errors: ['sector_type'] });
     },
     renderGeneralErrorMessage: function() {
         if ($.inArray('general', this.state.errors) != -1) {
@@ -180,7 +192,7 @@ var SearchOrganizationForm = React.createClass({
                                        onChange={this.onTaxRegNumChange} />
                             <SectorType inError={$.inArray('sector_type', this.state.errors) != -1}
                                         display={!this.state.exist_in_kernel && this.state.country}
-                                        static={this.state.exist_in_dc && this.state.selected_organization.sector_type !== null}
+                                        static={this.state.exist_in_dc && this.state.selected_organization.sector_type !== null && !this.state.selected_organization.is_new_sector_type}
                                         value={this.state.selected_organization ? this.state.selected_organization.sector_type : this.state.sector_type}
                                         onChange={this.onSectorTypeChange}/>
                         </div>
