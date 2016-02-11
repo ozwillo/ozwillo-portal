@@ -198,12 +198,14 @@ var Typeahead = React.createClass({
         display: React.PropTypes.string.isRequired,
         suggestionTemplate: React.PropTypes.func.isRequired,
         fieldId: React.PropTypes.string.isRequired,
-        placeholder: React.PropTypes.string
+        placeholder: React.PropTypes.string,
+        minLength: React.PropTypes.number
     },
     componentDidMount: function () {
 
+        var minLength = this.props.minLength !== undefined ? this.props.minLength : 3;
         $(this.getDOMNode()).typeahead({
-            minLength: 3,
+            minLength: minLength,
             highlight: true,
             hint: false,
             autoselect: false
@@ -212,7 +214,8 @@ var Typeahead = React.createClass({
             display: this.props.display,
             templates: {
                 suggestion: this.props.suggestionTemplate
-            }
+            },
+            limit: 10
         }).on("typeahead:selected", function (event, selected) {
             this.props.onSelect(selected, $(this.getDOMNode()));
         }.bind(this))
@@ -223,7 +226,7 @@ var Typeahead = React.createClass({
     render: function () {
         return (
             <input className="form-control typeahead" onChange={this.props.onChange} id={this.props.fieldId} type="text"
-                   size="30" placeholder={this.props.placeholder} autoComplete="off" ></input>
+                   size="40" placeholder={this.props.placeholder} autoComplete="off" ></input>
         );
     }
 });

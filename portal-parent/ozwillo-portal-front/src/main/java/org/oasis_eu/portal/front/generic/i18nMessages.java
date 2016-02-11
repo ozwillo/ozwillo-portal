@@ -62,8 +62,10 @@ public final class i18nMessages {
 			"organization-type.COMPANY", "create");
 
 	private static final List<String> myApps = Arrays.asList(
-			"none", "manage_users", "users", "push-to-dashboard-existing-user", "settings", "name", "actions",
-			"settings-add-a-user", "description", "icon", "upload", "published", "notpublished", "services",
+			"none", "manage_users", "users", "settings", "name", "status", "actions",
+			"settings-add-a-user", "setting-add-from-organization", "settings-invite-by-email", "settings-invite-by-email-title",
+			"settings.status.new", "settings.status.member",
+			"description", "icon", "upload", "published", "notpublished", "services",
 			"restricted-service", "geographical-area-of-interest",
 			"by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
 			"apps-for-organization", "apps-for-personal-use");

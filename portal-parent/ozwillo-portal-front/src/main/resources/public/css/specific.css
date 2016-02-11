@@ -540,6 +540,12 @@ label.required {
     border-bottom: none;
 }
 
+#myapps .authority-body .authority-app div.users-table {
+    max-height : 300px;
+    overflow-y : auto;
+    margin-top: 1em;
+}
+
 #myapps .authority-body .authority-app-title,
 #myapps .authority-body .authority-noapp,
 #myapps .authority-body .authority-app-services-title {

@@ -233,12 +233,12 @@ public class PortalAppManagementService {
 				.collect(Collectors.toList());
 	}
 
-	public void saveAppUsers(String instanceId, List<String> userIds) {
+	public void saveAppUsers(String instanceId, List<User> users) {
 		if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(instanceId).getProviderId())) {
 			throw new AccessDeniedException("Unauthorized access");
 		}
 
-		instanceACLStore.saveACL(instanceId, userIds);
+		instanceACLStore.saveACL(instanceId, users);
 	}
 
 	/**
