@@ -37,7 +37,7 @@ var User = React.createClass({
     },
     displayStatus: function(user) {
         if (user.status === 'new_from_organization' || user.status === 'new_from_email')
-            return t('settings.status.new');
+            return t('settings.status.to-validate');
         else
             return t('settings.status.member');
     },
