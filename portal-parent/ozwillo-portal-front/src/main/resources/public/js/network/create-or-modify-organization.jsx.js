@@ -505,8 +505,7 @@ var Tab2 = React.createClass({
                     <div className="row">
                         <div className="col-sm-15">
                             <fieldset>
-                                <legend>{t('my.network.organization.' +
-                                    'dditional_information')}</legend>
+                                <legend>{t('my.network.organization.additional_information')}</legend>
                                 <Field name="legal_name" error={$.inArray("legal_name", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="legal_name" id="legal_name" type="text"
                                            value={this.state.organization.legal_name} onChange={this.handleInputChange} />
