@@ -361,10 +361,6 @@ var Tab1 = React.createClass({
                                     <input className="form-control" ref="street_and_number" id="street_and_number" type="text"
                                            value={this.state.organization.street_and_number} onChange={this.handleInputChange} />
                                 </Field>
-                                <Field name="additional_address_field" error={$.inArray("additional_address_field", this.state.errors) != -1} isRequired={false}>
-                                    <input className="form-control" ref="additional_address_field" id="additional_address_field" type="text"
-                                           value={this.state.organization.additional_address_field} onChange={this.handleInputChange} />
-                                </Field>
                                 <Field name="po_box" error={$.inArray("po_box", this.state.errors) != -1} isRequired={false}>
                                     <input className="form-control" ref="po_box" id="po_box" type="text"
                                            value={this.state.organization.po_box} onChange={this.handleInputChange} />
@@ -509,7 +505,8 @@ var Tab2 = React.createClass({
                     <div className="row">
                         <div className="col-sm-15">
                             <fieldset>
-                                <legend>{t('my.network.organization.additional_information')}</legend>
+                                <legend>{t('my.network.organization.' +
+                                    'dditional_information')}</legend>
                                 <Field name="legal_name" error={$.inArray("legal_name", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="legal_name" id="legal_name" type="text"
                                            value={this.state.organization.legal_name} onChange={this.handleInputChange} />

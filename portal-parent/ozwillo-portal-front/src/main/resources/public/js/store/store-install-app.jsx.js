@@ -16,7 +16,6 @@ var default_org_data = {
         phone_number: '',
         web_site: '',
         street_and_number: '',
-        additional_address_field: '',
         po_box: '',
         city: '',
         city_uri: '',
@@ -429,7 +428,6 @@ var InstallForm =  React.createClass({
                 address: {
                     exist: false,
                     street_and_number: '',
-                    additional_address_field: '',
                     city: '',
                     zip: '',
                     country_uri: '',
@@ -739,10 +737,6 @@ var AddressComponent = React.createClass({
                        isRequired={( addressType == 'ORG')} >
                     <input className="form-control" id="street_and_number" type="text" value={address.street_and_number}
                            onChange={this.changeInput('street_and_number')} />
-                </Field>
-                <Field name="additional_address_field">
-                    <input className="form-control" id="additional_address_field" type="text" value={address.additional_address_field}
-                           onChange={this.changeInput('additional_address_field')} />
                 </Field>
                 { ( addressType !== 'ORG') ? '' : //personal address
                     <Field name="po_box">
