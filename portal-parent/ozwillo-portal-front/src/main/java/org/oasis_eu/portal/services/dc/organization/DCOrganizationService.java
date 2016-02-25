@@ -304,7 +304,6 @@ public class DCOrganizationService {
 		toRes.set("org:email", fromOrg.getEmail());
 		// Geolocation data
 		toRes.set("adrpost:streetAndNumber", fromOrg.getStreet_and_number());
-		toRes.set("adrpost:supField", fromOrg.getAdditional_address_field());
 		toRes.set("adrpost:POBox", fromOrg.getPo_box());
 		toRes.set("adrpost:postName", fromOrg.getCity_uri());
 		toRes.set("adrpost:postCode", fromOrg.getZip());
@@ -413,7 +412,6 @@ public class DCOrganizationService {
 
 		// Geolocation data
 		String streetAndNumber = getBestI18nValue(res, language, "adrpost:streetAndNumber", null);
-		String supField =		getBestI18nValue(res, language, "adrpost:supField", null);
 		String POBox =		   getBestI18nValue(res, language, "adrpost:POBox", null);
 		String city_uri =		getBestI18nValue(res, language, "adrpost:postName", null);
 		String city =			getRemoteBestI18nValue(city_uri, dcOrgProjectName, language, "odisp:name", null);
@@ -446,7 +444,6 @@ public class DCOrganizationService {
 		dcOrg.setEmail(email);
 
 		dcOrg.setStreet_and_number(streetAndNumber);
-		dcOrg.setAdditional_address_field(supField);
 		dcOrg.setPo_box(POBox);
 		dcOrg.setCedex(cedex);
 		dcOrg.setCity_uri(city_uri);dcOrg.setCity(city);

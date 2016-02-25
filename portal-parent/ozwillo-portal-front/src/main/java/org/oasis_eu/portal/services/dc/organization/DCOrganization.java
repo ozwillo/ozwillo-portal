@@ -42,8 +42,6 @@ public class DCOrganization {
 	@JsonProperty
 	private String street_and_number;
 	@JsonProperty
-	private String additional_address_field;
-	@JsonProperty
 	private String po_box;
 	@JsonProperty
 	private String city;
@@ -215,14 +213,6 @@ public class DCOrganization {
 
 	public void setStreet_and_number(String street_and_number) {
 		this.street_and_number = street_and_number;
-	}
-
-	public String getAdditional_address_field() {
-		return additional_address_field;
-	}
-
-	public void setAdditional_address_field(String additional_address_field) {
-		this.additional_address_field = additional_address_field;
 	}
 
 	public String getPo_box() {
