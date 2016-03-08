@@ -17,8 +17,7 @@ var GeoAreaAutosuggest = React.createClass({
     getInitialState: function() {
         return {
             value: '',
-            suggestions: [],
-            isLoading: false
+            suggestions: []
         };
     },
     getDefaultProps: function() {
@@ -63,7 +62,7 @@ var GeoAreaAutosuggest = React.createClass({
     },
     render: function() {
         const inputProps = {
-            value: this.state.value,
+            value: this.state.value || this.props.initialValue,
             onChange: (event, { newValue, method }) => this.setState({ value: newValue }),
             type: 'search',
             placeholder: this.props.placeholder,
