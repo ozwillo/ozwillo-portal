@@ -103,13 +103,16 @@ var OrgUserPicker = React.createClass({
                        className="control-label col-sm-2">{t('setting-add-from-organization')}</label>
 
                 <div className="col-sm-9">
-                    <Autosuggest suggestions={this.state.suggestions}
-                                 onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                                 onSuggestionSelected={this.onSuggestionSelected}
-                                 getSuggestionValue={suggestion => suggestion.fullname}
-                                 renderSuggestion={this.renderSuggestion}
-                                 inputProps={inputProps}
-                                 shouldRenderSuggestions={input => true}/>
+                    <div className="input-group">
+                        <Autosuggest suggestions={this.state.suggestions}
+                                     onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                     onSuggestionSelected={this.onSuggestionSelected}
+                                     getSuggestionValue={suggestion => suggestion.fullname}
+                                     renderSuggestion={this.renderSuggestion}
+                                     inputProps={inputProps}
+                                     shouldRenderSuggestions={input => true}/>
+                        <span className="input-group-addon"><i className="fa fa-search"></i></span>
+                    </div>
                 </div>
             </div>
         );

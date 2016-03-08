@@ -633,13 +633,16 @@ var TaxRegActivityAutosuggest = React.createClass({
         };
 
         return (
-            <Autosuggest suggestions={this.state.suggestions}
-                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                         onSuggestionSelected={this.onSuggestionSelected}
-                         getSuggestionValue={suggestion => suggestion.name}
-                         renderSuggestion={this.renderSuggestion}
-                         inputProps={inputProps}
-                         shouldRenderSuggestions={input => input != null && input.trim().length > 1}/>
+            <div className="input-group">
+                <Autosuggest suggestions={this.state.suggestions}
+                             onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                             onSuggestionSelected={this.onSuggestionSelected}
+                             getSuggestionValue={suggestion => suggestion.name}
+                             renderSuggestion={this.renderSuggestion}
+                             inputProps={inputProps}
+                             shouldRenderSuggestions={input => input != null && input.trim().length > 1}/>
+                <span className="input-group-addon"><i className="fa fa-search"></i></span>
+            </div>
         )
     }
 });

@@ -155,11 +155,11 @@ var SearchOrganizationForm = React.createClass({
             this.setState({ errors: ['sector_type'] });
     },
     renderGeneralErrorMessage: function() {
-        if ($.inArray('general', this.state.errors) != -1) {
+        if (this.state.errors.indexOf('general') != -1) {
             return (
                 <div className="alert alert-danger">{t('search.organization.cannot-be-used')}</div>
             )
-        } else if ($.inArray('technical', this.state.errors) != -1) {
+        } else if (this.state.errors.indexOf('technical') != -1) {
             return (
                 <div className="alert alert-danger">{t('search.organization.technical-problem')}</div>
             )
@@ -369,14 +369,18 @@ var LegalName = React.createClass({
                     <label htmlFor="legal_name" className="col-sm-3 control-label required">
                         {t('search.organization.legal-name')} *
                     </label>
+
                     <div className="col-sm-8">
-                        <Autosuggest suggestions={this.state.suggestions}
-                                     onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
-                                     onSuggestionSelected={this.onSuggestionSelected}
-                                     getSuggestionValue={suggestion => suggestion.legal_name}
-                                     renderSuggestion={this.renderSuggestion}
-                                     inputProps={inputProps}
-                                     shouldRenderSuggestions={input => input.trim().length > 2} />
+                        <div className="input-group">
+                            <Autosuggest suggestions={this.state.suggestions}
+                                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                         onSuggestionSelected={this.onSuggestionSelected}
+                                         getSuggestionValue={suggestion => suggestion.legal_name}
+                                         renderSuggestion={this.renderSuggestion}
+                                         inputProps={inputProps}
+                                         shouldRenderSuggestions={input => input.trim().length > 2}/>
+                            <span className="input-group-addon"><i className="fa fa-search"></i></span>
+                        </div>
                     </div>
                 </div>
             )
