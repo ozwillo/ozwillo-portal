@@ -58,7 +58,7 @@ var SearchOrganizationForm = React.createClass({
             exist_in_dc: false,
             exist_in_kernel: false,
             selected_organization: null,
-            legal_name: null,
+            legal_name: '',
             tax_reg_num: null,
             sector_type: null
         };
@@ -74,7 +74,7 @@ var SearchOrganizationForm = React.createClass({
     onOrganizationSelected: function(organization) {
         $.ajax({
             url: network_service + "/kernel-organization",
-            dataType: "json",
+            dataType: 'json',
             data: { dc_id: organization.id },
             type: 'head',
             global: false
@@ -88,10 +88,10 @@ var SearchOrganizationForm = React.createClass({
                 this.setState({ errors: ['technical'] })
         }.bind(this));
     },
-    onOrganizationChange: function(event) {
+    onOrganizationChange: function(value) {
         this.setState({
             exist_in_dc: false, exist_in_kernel: false,
-            selected_organization: null, legal_name: event.target.value,
+            selected_organization: null, legal_name: value,
             errors: []
         });
     },
@@ -192,7 +192,8 @@ var SearchOrganizationForm = React.createClass({
                                        countryUri={this.state.country_uri}
                                        inError={$.inArray('legal_name', this.state.errors) != -1}
                                        onOrganizationSelected={this.onOrganizationSelected}
-                                       onChange={this.onOrganizationChange} />
+                                       onChange={this.onOrganizationChange}
+                                       value={this.state.legal_name} />
                             <TaxRegNum country={this.state.country}
                                        inError={$.inArray('tax_reg_num', this.state.errors) != -1}
                                        display={!this.state.exist_in_kernel && this.state.country}
@@ -310,22 +311,27 @@ var CountrySelect = React.createClass({
 });
 
 var LegalName = React.createClass({
+    propTypes: {
+        countryUri: React.PropTypes.string.isRequired,
+        value: React.PropTypes.string.isRequired,
+        inError: React.PropTypes.bool.isRequired,
+        onOrganizationSelected: React.PropTypes.func.isRequired,
+        onChange: React.PropTypes.func.isRequired
+    },
     getInitialState: function() {
         return {
-            value: '',
-            suggestions: [],
-            isLoading: false
+            suggestions: []
         };
     },
     reinitState: function() {
-        this.setState({ value: '', suggestions: [] });
+        this.setState({ suggestions: [] });
     },
     searchOrganizations: function(query) {
         if (query.trim().length < 3) return;
 
         $.ajax({
             url: network_service + "/search-organizations",
-            dataType: "json",
+            dataType: 'json',
             data: { country_uri: this.props.countryUri, query: query },
             type: 'get',
             success: function(data) {
@@ -345,19 +351,18 @@ var LegalName = React.createClass({
         )
     },
     onSuggestionsUpdateRequested: function({ value, reason }) {
-        this.setState({ value: value });
+        this.props.onChange(value);
         if (reason !== 'enter' && reason !== 'click')
             debounce(this.searchOrganizations(value), 500);
     },
     onSuggestionSelected: function(event, { suggestion, suggestionValue, method }) {
-        this.setState({ value: suggestion.legal_name });
         this.props.onOrganizationSelected(suggestion);
     },
     render: function() {
         if (this.props.countryUri) {
             const inputProps = {
-                value: this.state.value,
-                onChange: this.props.onChange,
+                value: this.props.value,
+                onChange: (event, { newValue, method }) => this.props.onChange(newValue),
                 type: 'search',
                 placeholder: '',
                 className: 'form-control'
