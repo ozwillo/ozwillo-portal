@@ -204,8 +204,8 @@ public class NetworkService {
 
 	/**
 	 * Modify Organization info and remove and update valid Org Memberships
-	 * @see updateOrganizationInfo(UIOrganization uiOrganization)
-	 * @param uiOrganization
+	 *
+	 * @see #updateOrganizationInfo(UIOrganization)
 	 */
 	public void updateOrganization(UIOrganization uiOrganization) {
 		this.updateOrganizationInfo(uiOrganization);

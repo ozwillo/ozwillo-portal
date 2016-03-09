@@ -218,6 +218,7 @@ var Field = React.createClass({
         labelClassName: React.PropTypes.string,
         divClassName: React.PropTypes.string,
         error: React.PropTypes.bool,
+        errorMsg: React.PropTypes.bool,
         isRequired: React.PropTypes.bool
     },
     renderLabel: function(htmlFor, class_name, label, isRequired) {
@@ -238,6 +239,9 @@ var Field = React.createClass({
                 {this.renderLabel(this.props.name, labelClassName, t('my.network.organization.' + this.props.name), this.props.isRequired)}
                 <div className={divClassName}>
                     {this.props.children}
+                    {renderIf(this.props.error && this.props.errorMsg)(
+                        <span className="help-block">{this.props.errorMsg}</span>
+                    )}
                 </div>
             </div>
         );
@@ -417,6 +421,33 @@ var Tab2 = React.createClass({
 
         this.setState({ organization: organization });
     },
+    handleTaxRegNumUpdated: function(event) {
+        var tax_reg_num = event.target.value;
+        $.ajax({
+            url: network_service + "/check-regnumber-availability",
+            dataType: 'json',
+            data: {
+                country_uri: this.state.organization.country_uri,
+                reg_number: tax_reg_num,
+                dc_id: this.state.organization.id
+            },
+            type: 'head',
+            global: false
+        }).done(data => {
+            var errors = this.state.errors
+            errors.splice(errors.indexOf("tax_reg_num"), 1)
+            var organization = this.state.organization
+            organization.tax_reg_num = tax_reg_num
+            this.setState({ organization: organization, errors: errors })
+        })
+        .fail((xhr, status, err) => {
+            if (xhr.status === 302)
+                this.setState({ errors : ["tax_reg_num"] })
+            else
+                this.setState({ errors : ["technical"] })
+        }
+        );
+    },
     handleTaxRegActivityChange: function(taxRegActivity) {
         var organization = this.state.organization;
         organization.tax_reg_activity_uri = taxRegActivity.uri;
@@ -430,7 +461,7 @@ var Tab2 = React.createClass({
         this.setState({ organization: organization });
     },
     validateFields: function() {
-        var errors = [];
+        var errors = this.state.errors;
         if (ReactDOM.findDOMNode(this.refs.legal_name).value.trim() === '')
             errors.push("legal_name");
         if (this.state.organization.sector_type === 'PUBLIC_BODY' &&
@@ -518,9 +549,11 @@ var Tab2 = React.createClass({
                                     <input className="form-control" ref="legal_name" id="legal_name" type="text"
                                            value={this.state.organization.legal_name} onChange={this.handleInputChange} />
                                 </Field>
-                                <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.state.errors) != -1} isRequired={true}>
+                                <Field name={taxRegNumLabels.tax_reg_num_label} error={$.inArray("tax_reg_num", this.state.errors) != -1}
+                                       errorMsg={t('my.network.organization.tax_reg_num.already_used')} isRequired={true}>
                                     <input className="form-control" ref="tax_reg_num" id="tax_reg_num" type="text"
-                                           value={this.state.organization.tax_reg_num} disabled={true} />
+                                           value={this.state.organization.tax_reg_num} onChange={this.handleInputChange}
+                                           onBlur={this.handleTaxRegNumUpdated} />
                                 </Field>
                                 <Field name="sector_type" isRequired={true}>
                                     <input className="form-control" ref="sector_type" id="sector_type" type="text"

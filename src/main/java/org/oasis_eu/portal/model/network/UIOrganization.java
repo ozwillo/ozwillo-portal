@@ -22,31 +22,40 @@ public class UIOrganization {
 	@NotNull
 	@NotEmpty
 	String id;
+
 	@JsonProperty
 	@NotNull
 	@NotEmpty
 	String name;
+
 	@JsonProperty
 	@NotNull
 	OrganizationType type;
+
 	@JsonProperty("territory_id")
 	URI territoryId;
+
 	@JsonProperty("territory_label")
 	String territoryLabel;
+
 	@JsonProperty("dc_id")
 	URI dcId;
 
 	/** optional */
 	OrganizationStatus status;
+
 	/** optional */
 	@JsonProperty("status_changed")
 	Instant statusChanged;
+
 	/** optional */
 	@JsonProperty("deletion_planned")
 	Instant deletionPlanned;
+
 	/** optional */
 	@JsonProperty("status_change_requester_id")
 	String statusChangeRequesterId;
+
 	/** optional */
 	@JsonProperty("status_change_requester_label")
 	String statusChangeRequesterLabel;

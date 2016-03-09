@@ -140,7 +140,8 @@ var OrganizationsList = React.createClass({
 var Organization = React.createClass({
     propTypes: {
         org: React.PropTypes.object.isRequired,
-        reload: React.PropTypes.func.isRequired
+        reload: React.PropTypes.func.isRequired,
+        updateOrganization: React.PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {
@@ -556,7 +557,7 @@ var InformationDialog = React.createClass({
     loadDCOrganizations: function() {
        if (this.props.org.dc_id) {
            $.ajax({
-               url: network_service + "/search-organization-by-id",
+               url: network_service + "/organization",
                type: 'get',
                contentType: 'json',
                data: {dc_id: this.props.org.dc_id},
