@@ -39,7 +39,7 @@ public final class i18nMessages {
 
 	private static final List<String> createOrModifyOrganization = Arrays.asList("profile_information", "contact_lastname", "contact_name", "contact_information", "legal_name","in_activity",
 			"alt_name","org_type", "org_type.placeholder", "tax_reg_num.bg", "tax_reg_num.es", "tax_reg_num.fr", "tax_reg_num.it", "tax_reg_num.tr",
-			"tax_reg_num.en", "tax_reg_official_id.fr","tax_reg_official_id.tr","tax_reg_activity.bg","tax_reg_activity.es","tax_reg_activity.fr",
+			"tax_reg_num.en", "tax_reg_num.already_used", "tax_reg_official_id.fr","tax_reg_official_id.tr","tax_reg_activity.bg","tax_reg_activity.es","tax_reg_activity.fr",
 			"tax_reg_activity.it","tax_reg_activity.tr","tax_reg_activity.en","jurisdiction",
 			"jurisdiction.placeholder","phone_number","web_site", "email","email.placeholder","change-icon",
 			"street_and_number","po_box","city","zip", "cedex","country", "invalid_fields", "step",

@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services.dc.organization;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import org.oasis_eu.portal.core.exception.EntityNotFoundException;
 import org.oasis_eu.portal.services.PortalSystemUserService;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
@@ -19,10 +20,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -60,18 +58,10 @@ public class DCOrganizationService {
 	@Value("${application.dcOrgSearch.useTypeAsModel:false}")
 	private boolean useTypeAsModel;
 
-	public DCOrganization searchOrganization(String lang, String country_uri, String sector, String legalName, String regNumber) {
+	public DCOrganization searchOrganization(String lang, String country_uri, String sector, String regNumber) {
 
-		DCOrganization dcOrganization = new DCOrganization();
-
-		DCResource resource = fetchDCOrganizationResource(country_uri, sector, legalName, regNumber, lang);
-		if(resource != null ){
-			dcOrganization = toDCOrganization(resource,lang);
-		}else{
-			dcOrganization = new DCOrganization();
-		}
-
-		return dcOrganization;
+		DCResource resource = fetchDCOrganizationResource(country_uri, sector, regNumber);
+		return resource != null ? toDCOrganization(resource, lang) : new DCOrganization();
 	}
 
 	public List<DCOrganization> searchOrganizations(String lang, String country_uri, String query) {
@@ -92,13 +82,11 @@ public class DCOrganizationService {
 		return resources.stream().map(resource -> toDCOrganization(resource, lang)).collect(Collectors.toList());
 	}
 
-	private DCResource fetchDCOrganizationResource(String country_uri, String sector, String legalName, String regNumber, String lang) {
+	private DCResource fetchDCOrganizationResource(String country_uri, String sector, String regNumber) {
 		String model = dcOrgModel.trim();
 		String project = dcOrgProjectName.trim();
 
 		DCQueryParameters params = new DCQueryParameters()
-					  //.and(dcOrgSearchSector.trim(), DCOperator.EQ, sector)
-					  //.and(dcOrgSearchLegalName.trim(), DCOperator.EQ, DCOperator.REGEX.getRepresentation()+legalName)
 					  .and(dcOrgSearchRegNumber.trim(), DCOperator.EQ, regNumber)
 					  .and(dcOrgSearchCountry.trim(), DCOperator.EQ, country_uri); /* country is encoded as a dc-resource, it should be sent also as it was fetched */
 
@@ -108,9 +96,7 @@ public class DCOrganizationService {
 		long queryEnd = System.currentTimeMillis();
 		logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd-queryStart);
 
-		DCResource orgResource = this.processResourcesBySectorType(resources, sector);
-
-		return orgResource;
+		return this.processResourcesBySectorType(resources, sector);
 	}
 
 	/**
@@ -145,9 +131,7 @@ public class DCOrganizationService {
 		DCQueryParameters params = new DCQueryParameters("@id", DCOperator.EQ, dc_id);
 
 		String model = dcOrgModel.trim();
-
-		logger.info("Ressource not found using parameters : {}", dc_id);
-
+		
 		long queryStart = System.currentTimeMillis();
 		List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), model, params, 0, 1);
 
@@ -155,6 +139,34 @@ public class DCOrganizationService {
 		logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd-queryStart);
 
 		return resources.isEmpty()? null : toDCOrganization(resources.get(0), language);
+	}
+
+	public Optional<DCResource> findOrganizationByCountryAndRegNumber(String countryUri, String regNumber) {
+
+		DCResult result = datacore.getResourceFromURI(dcOrgProjectName.trim(), generateDcId(countryUri, regNumber));
+		if (result.getType().equals(DCResultType.SUCCESS))
+			return Optional.of(result.getResource());
+		else
+			return Optional.empty();
+	}
+
+	public Optional<DCOrganization> findOrganizationById(String dcId, String language) {
+		DCResult result = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcId);
+		if (result.getType().equals(DCResultType.SUCCESS))
+			return Optional.of(toDCOrganization(result.getResource(), language));
+		else
+			return Optional.empty();
+	}
+
+	public List<String> getOrganizationAliases(String dcId) {
+		DCResult result = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcId);
+		if (!result.getType().equals(DCResultType.SUCCESS)) {
+			logger.error("Unable to retrieve resource {}", dcId);
+			throw new EntityNotFoundException();
+		}
+
+		DCResource orgResource = result.getResource();
+		return datacore.getResourceAliases(dcOrgProjectName.trim(), orgResource.getType(), orgResource.getIri());
 	}
 
 	/**
@@ -166,9 +178,8 @@ public class DCOrganizationService {
 	 */
 	public DCResource create(DCOrganization dcOrganization) throws ForbiddenException {
 		// re-get DC resource before creation to validate that it doesn't exist
-		DCResource dcResource = fetchDCOrganizationResource(dcOrganization.getCountry_uri(),
-				DCOrganizationType.getDCOrganizationType(dcOrganization.getSector_type()).name(),
-				dcOrganization.getLegal_name(),dcOrganization.getTax_reg_num(), dcOrganization.getLang());
+		DCResource dcResource = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcOrganization.getId()).getResource();
+
 		// if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
 		if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion()) ){ //found in DC
 			logger.debug("It exists, and there are no previous updates. Merging it from form fields, and doing a datacoreClient.updateResource()");
@@ -177,7 +188,7 @@ public class DCOrganizationService {
 			if (dcResult.getType() == DCResultType.FORBIDDEN) {
 				throw new ForbiddenException();
 			}
-			return dcResult != null ? dcResource : null;
+			return dcResource;
 		}else if (dcResource == null || dcResource.isNew()){  // still doesn't exist in DC
 			logger.debug("It doesn't exist in DC Doing a datacore.saveResource() with : {},{}", dcOrgProjectName.trim(),dcOrganization);
 			DCResult newCreatedDCRes =  datacore.saveResource(dcOrgProjectName.trim(), toNewDCResource(dcOrganization));
@@ -204,18 +215,15 @@ public class DCOrganizationService {
 
 		//get admin authentication and change organization rights
 		portalSystemUserService.runAs(
-			new Runnable() {
-				//Inner class with Runnable, its used as a function parameter (executed at parameter declaration)
-				@Override
-				public void run() {
-					DCRights dcRights = datacore.getRightsOnResource(dcOrgProjectName, dcResource).getRights();
-					dcRights.addOwners(newRights);
-					List<String> dcResultInner = datacore.setRightsOnResource(dcOrgProjectName, dcResource, dcRights).getErrorMessages();
-					dcResultErrOutter.addAll(dcResultInner);
-					if(dcResultInner != null && !dcResultInner.isEmpty()){
-						logger.error("There was an error while updating rights [{}]to resource : {}", dcRights, dcResource);
-					}
-				}}
+			() -> {
+                DCRights dcRights = datacore.getRightsOnResource(dcOrgProjectName, dcResource).getRights();
+                dcRights.addOwners(newRights);
+                List<String> dcResultInner = datacore.setRightsOnResource(dcOrgProjectName, dcResource, dcRights).getErrorMessages();
+                dcResultErrOutter.addAll(dcResultInner);
+                if(dcResultInner != null && !dcResultInner.isEmpty()){
+                    logger.error("There was an error while updating rights [{}] to resource : {}", dcRights, dcResource);
+                }
+            }
 		);
 		return dcResultErrOutter.isEmpty();
 	}
@@ -329,16 +337,16 @@ public class DCOrganizationService {
 	private DCResource toNewDCResource(DCOrganization dcOrganization){
 		DCResource dcResource = mergeDCOrgToDCResources(dcOrganization, new DCResource());
 
-		dcResource = setDCIdOrganization(dcResource, dcOrganization.getSector_type(), dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
+		dcResource = setDCIdOrganization(dcResource, dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
 
 		return dcResource;
 	}
 
-	public  DCResource setDCIdOrganization(DCResource dcResource, String type, String regNumber, String country_uri){
+	public  DCResource setDCIdOrganization(DCResource dcResource, String regNumber, String country_uri){
 		//"@id" : "http://data.ozwillo.com/dc/type/orgfr:Organization_0/FR/47952557800049",
 		String countryAcronym = getCountryAcronym(country_uri);
 		String cx = countryAcronym.toLowerCase(); //could throw NullPointerException when country is not provided
-		String orgModelType = generateResourceType(type, country_uri, regNumber);
+		String orgModelType = generateResourceType(country_uri);
 
 		dcResource.setBaseUri(dcBaseUri.trim());
 		dcResource.setType(orgModelType);
@@ -347,15 +355,13 @@ public class DCOrganizationService {
 		return dcResource;
 	}
 
-	public String generateResourceType(String type, String country_uri, String regNumber){
-		//get country acronym
+	public String generateResourceType(String country_uri) {
 		String countryAcronym = getCountryAcronym(country_uri);
 		String cx = countryAcronym.toLowerCase(); //could throw NullPointerException when country is not provided
 
-		String orgModelPrefix = "org"+cx;
+		String orgModelPrefix = "org" + cx;
 		String orgModelSuffix = dcOrgPrefixToSuffix.get(orgModelPrefix);
-		String orgModelType = orgModelPrefix + ":" + orgModelSuffix + "_0";
-		return orgModelType ;
+		return orgModelPrefix + ":" + orgModelSuffix + "_0";
 	}
 
 	public String getCountryAcronym(String country_uri){
@@ -554,4 +560,9 @@ public class DCOrganizationService {
 		return activity;
 	}
 
+	public String generateDcId(String countryUri, String regNumber) {
+		String type = generateResourceType(countryUri);
+		String iri = getCountryAcronym(countryUri).toUpperCase() + '/' + regNumber;
+		return dcBaseUri.trim() + '/' + type + '/' + iri;
+	}
 }
