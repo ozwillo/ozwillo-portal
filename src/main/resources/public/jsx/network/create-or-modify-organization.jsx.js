@@ -6,6 +6,8 @@ import ReactDOM from 'react-dom';
 import Autosuggest from 'react-autosuggest';
 var debounce = require('debounce');
 
+import renderIf from 'render-if';
+
 import t from '../util/message';
 
 import { GeoAreaAutosuggest } from '../util/geoarea-autosuggest.jsx';
@@ -134,13 +136,6 @@ var CreateOrModifyOrganizationForm = React.createClass({
             }.bind(this)
         });
     },
-    renderCreateOrUpdateError: function () {
-        if (this.state.createOrUpdateError.code !== '') {
-            return (
-                <div className="alert alert-danger">{this.state.createOrUpdateError.message} ({this.state.createOrUpdateError.code})</div>
-            )
-        }
-    },
     render: function () {
         var organization = this.props.organization;
 
@@ -153,7 +148,9 @@ var CreateOrModifyOrganizationForm = React.createClass({
                                   fromStore={this.props.fromStore} />
                             <Tab2 id="2" ref="tab2" organization={organization} currentTab={this.props.step} />
                         </div>
-                        {this.renderCreateOrUpdateError()}
+                        {renderIf(this.state.createOrUpdateError.code !== '')(
+                            <div className="alert alert-danger">{this.state.createOrUpdateError.message} ({this.state.createOrUpdateError.code})</div>
+                        )}
                     </form>
                 </div>
                 <div className="modal-footer">
