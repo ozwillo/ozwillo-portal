@@ -9,21 +9,24 @@ public class MyNavigation {
 	String id;
 	boolean active;
 
+	public MyNavigation(String id, boolean active) {
+		this.id = id;
+		this.active = active;
+	}
+
 	public String getId() {
 		return id;
 	}
 
-	public MyNavigation setId(String id) {
+	public void setId(String id) {
 		this.id = id;
-		return this;
 	}
 
 	public boolean isActive() {
 		return active;
 	}
 
-	public MyNavigation setActive(boolean active) {
+	public void setActive(boolean active) {
 		this.active = active;
-		return this;
 	}
 }

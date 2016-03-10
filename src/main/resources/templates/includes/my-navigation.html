@@ -13,11 +13,10 @@
         <div class="collapse navbar-collapse" id="ozwillo-navbar">
             <ul class="nav navbar-nav">
                 <li data-th-each="item : ${navigation}">
-                    <a href="#" class="nocache" data-th-href="@{'/my/' + ${item.id}}">
+                    <a href="#" data-th-class="${item.isActive()}? 'active' : ''" data-th-href="@{'/my/' + ${item.id}}">
                         <img data-th-src="@{'/img/new/' + ${item.id} + '.png'}"
-                             src="../../public/img/new/dashboard.png"
                              alt="" data-th-alt="#{'my.' + ${item.id}}"/>
-                        <span data-th-text="#{'my.' + ${item.id}}">Dashboard</span>
+                        <span data-th-text="#{'my.' + ${item.id}}">Menu</span>
                     </a>
                 </li>
             </ul>
