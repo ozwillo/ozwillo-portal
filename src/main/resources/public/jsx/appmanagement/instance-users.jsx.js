@@ -27,16 +27,14 @@ var ApplicationUsersManagement = React.createClass({
     loadUsers: function() {
         $.ajax({
             // only users that are app_user (so not those that are !app_user or app_admin)
-            url: apps_service + "/users/instance/" + this.props.instanceId + "?app_admin=false",
+            url: apps_service + "/users/instance/" + this.props.instanceId + "?app_admin=false&pending=true",
             dataType: 'json',
-            method: 'get',
-            success: function(data) {
-                this.setState({ users: data });
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(apps_service + "/users/instance/" + this.props.instanceId, status, err.toString());
-                this.setState({ users: []});
-            }.bind(this)
+            method: 'get'
+        })
+        .done(users => this.setState({ users: users }))
+        .fail((xhr, status, err) => {
+            console.error(apps_service + "/users/instance/" + this.props.instanceId, status, err.toString());
+            this.setState({ users: []});
         });
     },
     queryUsers: function(query, callback) {
@@ -51,28 +49,28 @@ var ApplicationUsersManagement = React.createClass({
         });
     },
     addUser: function(user) {
-        if (this.state.users.filter(function(u) { return u.userid == user.userid;}).length == 0) {
+        if (this.state.users.filter(u => u.userid === user.userid).length == 0) {
             user.status = 'new_from_organization';
             this.setState({ users: [user].concat(this.state.users) });
         }
     },
     addUsersEmail: function(usersEmail) {
         var newUsers = [];
-        usersEmail.forEach(function(email) {
-            if (this.state.users.filter(function (u) { return u.email === email; }).length == 0) {
+        usersEmail.forEach(email => {
+            if (this.state.users.filter(u => u.email === email).length == 0) {
                 newUsers.push({
                     email: email.trim(),
                     status: 'new_from_email'
                 });
             }
-        }.bind(this));
+        });
         this.setState({ users: newUsers.concat(this.state.users) });
     },
     removeUser: function(userId) {
         return function() {
             this.setState({
                 users: this.state.users.filter(function (user) {
-                    if (user.status === 'new_from_email')
+                    if (user.status === 'new_from_email' || !user.userid)
                         return user.email !== userId;
                     else
                         return user.userid != userId;

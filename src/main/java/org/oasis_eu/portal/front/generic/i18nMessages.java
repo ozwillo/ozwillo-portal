@@ -64,7 +64,7 @@ public final class i18nMessages {
 	private static final List<String> myApps = Arrays.asList(
 			"none", "manage_users", "users", "settings", "name", "status", "actions",
 			"settings-add-a-user", "setting-add-from-organization", "settings-invite-by-email", "settings-invite-by-email-title",
-			"settings.status.to-validate", "settings.status.member",
+			"settings.status.to-validate", "settings.status.pending", "settings.status.member",
 			"description", "icon", "upload", "published", "notpublished", "services",
 			"restricted-service", "geographical-area-of-interest",
 			"by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",

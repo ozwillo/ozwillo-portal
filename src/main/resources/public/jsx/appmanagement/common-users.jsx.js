@@ -5,6 +5,8 @@ import React from 'react';
 import Autosuggest from 'react-autosuggest';
 var debounce = require('debounce');
 
+var moment = require('moment');
+
 import t from '../util/message';
 
 var UsersList = React.createClass({
@@ -13,10 +15,10 @@ var UsersList = React.createClass({
         removeUser: React.PropTypes.func.isRequired
     },
     render: function() {
-        var usersList = this.props.users.map(function(user) {
-            var userId = user.status === 'new_from_email' ? user.email : user.userid;
+        var usersList = this.props.users.map(user => {
+            var userId = user.status === 'new_from_email' || !user.userid ? user.email : user.userid;
             return <User key={userId} user={user} removeUser={this.props.removeUser(userId)} />;
-        }.bind(this));
+        });
 
         return (
             <div className="users-table">
@@ -45,14 +47,17 @@ var User = React.createClass({
     displayStatus: function(user) {
         if (user.status === 'new_from_organization' || user.status === 'new_from_email')
             return t('settings.status.to-validate');
+        else if (!user.userid)
+            return t('settings.status.pending')
         else
             return t('settings.status.member');
     },
     render: function() {
+        moment.locale(currentLanguage);
         return (
             <tr>
                 <td>{this.props.user.fullname || this.props.user.email}</td>
-                <td>{this.displayStatus(this.props.user)}</td>
+                <td>{this.displayStatus(this.props.user)} <small>({moment(this.props.user.created).format('lll')})</small></td>
                 <td>
                     <button className="btn oz-btn-danger" onClick={this.props.removeUser}>
                         <i className="fa fa-trash"></i>
@@ -80,9 +85,8 @@ var OrgUserPicker = React.createClass({
         );
     },
     onSuggestionsUpdateRequested: function({ value, reason }) {
-        this.setState({ value: value });
         if (reason !== 'enter' && reason !== 'click')
-            debounce(this.props.queryUsers(value, (suggestions) => this.setState({ suggestions: suggestions })), 500);
+            debounce(this.props.queryUsers(value, (suggestions) => this.setState({suggestions: suggestions})), 500);
     },
     onSuggestionSelected: function(event, { suggestion, suggestionValue, method }) {
         this.setState({ value: '' });

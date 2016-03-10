@@ -49,9 +49,6 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	@Autowired
 	private ImageService imageService;
 
-	@Value("${application.devmode:false}")
-	private boolean devmode;
-
 	@RequestMapping("/authorities")
 	public List<Authority> getAuthorities() {
 		return networkService.getMyAuthorities(true).stream()
@@ -83,11 +80,18 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	@RequestMapping(value = "/users/instance/{instanceId}", method = RequestMethod.GET)
 	public List<User> getUsersForInstance(@PathVariable String instanceId,
 										  @RequestParam(required = false) String q,
-										  @RequestParam(value="app_admin", required = false, defaultValue="true") boolean appAdmin) {
+										  @RequestParam(value = "app_admin", required = false, defaultValue = "true") boolean appAdmin,
+										  @RequestParam(value = "pending", required = false, defaultValue = "false") boolean pending) {
 		List<User> appUsers = appManagementService.getAppUsers(instanceId, appAdmin).stream()
-				.sorted()
+				.sorted(Comparator.comparing(User::getFullname))
 				.collect(Collectors.toList());
-		logger.debug("Found appusers: {} for instance {}", appUsers, instanceId);
+		if (pending) {
+			List<User> pendingUsers = appManagementService.getPendingAppUsers(instanceId).stream()
+					.sorted(Comparator.comparing(User::getEmail))
+					.collect(Collectors.toList());
+			appUsers.addAll(pendingUsers);
+		}
+		logger.debug("Found {} appusers for instance {}", appUsers.size(), instanceId);
 		if (q == null) {
 			return appUsers;
 		}
@@ -96,7 +100,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 
 	private static boolean isMatchUser(User u, String query){
 		if (Strings.isNullOrEmpty(u.getFullname())) {
-			logger.debug("User without Fullname, user id : {}", u.getUserid());
+			logger.debug("User without fullname, user id : {}", u.getUserid());
 			// See #293 also clean kernel data
 			return false;
 		}

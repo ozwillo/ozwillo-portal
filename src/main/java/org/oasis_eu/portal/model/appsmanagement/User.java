@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.model.appsmanagement;
 
+import org.joda.time.Instant;
+
 /**
 * User: schambon
 * Date: 8/14/14
@@ -8,6 +10,7 @@ public class User implements Comparable<User> {
 	String fullname;
 	String userid;
 	String email;
+	Instant created;
 	boolean admin;
 
 	public String getFullname() {
@@ -42,21 +45,35 @@ public class User implements Comparable<User> {
 		this.email = email;
 	}
 
+	public Instant getCreated() {
+		return created;
+	}
+
+	public void setCreated(Instant created) {
+		this.created = created;
+	}
+
+	public User() {}
+
 	public User(String userid, String fullname, boolean admin) {
 		this.fullname = fullname;
 		this.userid = userid;
 		this.admin = admin;
-
 	}
+
 	public User(String userid, String email, String fullname, boolean admin) {
 		this.fullname = fullname;
 		this.userid = userid;
 		this.email = email;
 		this.admin = admin;
-
 	}
 
-	public User() {
+	public User(String userid, String email, String fullname, Instant created, boolean admin) {
+		this.fullname = fullname;
+		this.userid = userid;
+		this.email = email;
+		this.created = created;
+		this.admin = admin;
 	}
 
 	@Override

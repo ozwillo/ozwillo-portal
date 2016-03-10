@@ -49,31 +49,58 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 	}
 
 	@Override
+	public List<ACE> getPendingACL(String instanceId) {
+		List<ACE> acl = Arrays.asList(kernel.getEntityOrNull(endpoint + "/pending-acl/instance/{instanceId}",
+				ACE[].class, user(), instanceId));
+		if (logger.isDebugEnabled()) {
+			logger.debug("ACL for instance {}", instanceId);
+			acl.stream().forEach(ace -> logger.debug("- {}", ace.getEmail()));
+		}
+
+		return acl;
+	}
+
+	@Override
 	public void saveACL(String instanceId, List<User> users) {
 		List<ACE> existingACL = getACL(instanceId);
-		List<String> newUsersIds = users.stream().map(User::getUserid).collect(Collectors.toList());
+		List<ACE> existingPendingACL = getPendingACL(instanceId);
+		List<String> newUsersIds = users.stream()
+				.filter(user -> user.getUserid() != null)
+				.map(User::getUserid)
+				.collect(Collectors.toList());
+		List<String> newUsersEmails = users.stream()
+				.filter(user -> user.getEmail() != null)
+				.map(User::getEmail)
+				.collect(Collectors.toList());
 
 		// NB. ACLs that are app_admin !app_user are filtered out because NOT handled here
 		// (Kernel deduces them from app orga admins)
 
-		// TODO : deal those who have not yet accepted email invitation (need to know what the kernel is sending back before)
-
 		// delete the excess ACEs
 		existingACL.stream()
 				.filter(ace -> !newUsersIds.contains(ace.getUserId()))
-				.filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (and entry_uri null anyway so couldn't delete)
+				.filter(ACE::isAppUser) // #157 filter out when (app_admin and) not app_user (and entry_uri null anyway so couldn't delete)
 				.forEach(ace -> {
 					logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
 					kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<>(ifmatch(ace.getEntryEtag())), Void.class, user());
 				});
 
+		existingPendingACL.stream()
+				.filter(ace -> !newUsersEmails.contains(ace.getEmail()))
+				.forEach(ace -> {
+					logger.debug("Deleting pending ACE for {}", ace.getEmail());
+					kernel.exchange(ace.getPendingEntryUri(), HttpMethod.DELETE, new HttpEntity<>(ifmatch(ace.getPendingEntryEtag())), Void.class, user());
+				});
+
 		// add the new ACEs
-		Set<String> currentUsers = existingACL.stream()
-				.filter(ace -> ace.isAppUser()) // #157 filter out when (app_admin and) not app_user (else can't make an app_admin become app_user)
+		Set<String> currentUsersIds = existingACL.stream()
+				.filter(ACE::isAppUser) // #157 filter out when (app_admin and) not app_user (else can't make an app_admin become app_user)
 				.map(ACE::getUserId).collect(Collectors.toSet());
+		Set<String> currentUsersEmails = existingPendingACL.stream()
+				.map(ACE::getEmail).collect(Collectors.toSet());
 
 		users.stream()
-				.filter(user -> !currentUsers.contains(user.getUserid())) // only on not existing users (NB. can be already app_admin)
+				.filter(user -> !currentUsersIds.contains(user.getUserid()) && !currentUsersEmails.contains(user.getEmail())) // only on not existing users (NB. can be already app_admin)
 				.forEach(user -> {
 					logger.debug("Creating ACE for user {} - {}", user.getUserid(), user.getEmail());
 					kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<>(ace(user.getUserid(), user.getEmail(), instanceId)), ACE.class, user(), instanceId);

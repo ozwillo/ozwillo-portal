@@ -3,6 +3,7 @@ package org.oasis_eu.portal.core.model.ace;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.joda.time.Instant;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +21,10 @@ public class ACE {
 	private String entryUri;
 	@JsonProperty("entry_etag")
 	private String entryEtag;
+	@JsonProperty("pending_entry_uri")
+	private String pendingEntryUri;
+	@JsonProperty("pending_entry_etag")
+	private String pendingEntryEtag;
 	@JsonProperty("instance_id")
 	private String instanceId;
 	@JsonProperty("user_id")
@@ -32,6 +37,8 @@ public class ACE {
 	private String creatorId;
 	@JsonProperty("creator_name")
 	private String creatorName;
+	@JsonProperty("created")
+	private Instant created;
 	@JsonProperty("app_admin")
 	private boolean appAdmin = false; // for now Kernel deduces it from orga admin #157 Delete and re-add a service icon to my desk K#90
 	@JsonProperty("app_user")
@@ -64,6 +71,22 @@ public class ACE {
 
 	public void setEntryEtag(String entryEtag) {
 		this.entryEtag = entryEtag;
+	}
+
+	public String getPendingEntryEtag() {
+		return pendingEntryEtag;
+	}
+
+	public void setPendingEntryEtag(String pendingEntryEtag) {
+		this.pendingEntryEtag = pendingEntryEtag;
+	}
+
+	public String getPendingEntryUri() {
+		return pendingEntryUri;
+	}
+
+	public void setPendingEntryUri(String pendingEntryUri) {
+		this.pendingEntryUri = pendingEntryUri;
 	}
 
 	public String getInstanceId() {
@@ -112,6 +135,14 @@ public class ACE {
 
 	public void setCreatorName(String creatorName) {
 		this.creatorName = creatorName;
+	}
+
+	public Instant getCreated() {
+		return created;
+	}
+
+	public void setCreated(Instant created) {
+		this.created = created;
 	}
 
 	public boolean isAppAdmin() {

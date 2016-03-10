@@ -229,7 +229,14 @@ public class PortalAppManagementService {
 		return instanceACLStore.getACL(instanceId)
 				.stream()
 				.filter(ace -> ace.isAppUser() || appAdmin && ace.isAppAdmin()) // #157 Delete and re-add a service icon to my desk K#90
-				.map(ace -> new User(ace.getUserId(), ace.getUserName(), false))
+				.map(ace -> new User(ace.getUserId(), null, ace.getUserName(), ace.getCreated(), false))
+				.collect(Collectors.toList());
+	}
+
+	public List<User> getPendingAppUsers(String instanceId) {
+		return instanceACLStore.getPendingACL(instanceId)
+				.stream()
+				.map(ace -> new User(null, ace.getEmail(), null, ace.getCreated(), false))
 				.collect(Collectors.toList());
 	}
 
