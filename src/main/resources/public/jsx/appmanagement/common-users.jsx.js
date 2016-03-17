@@ -5,6 +5,8 @@ import React from 'react';
 import Autosuggest from 'react-autosuggest';
 var debounce = require('debounce');
 
+import renderIf from 'render-if';
+
 var moment = require('moment');
 
 import t from '../util/message';
@@ -45,7 +47,7 @@ var User = React.createClass({
         removeUser: React.PropTypes.func.isRequired
     },
     displayStatus: function(user) {
-        if (user.status === 'new_from_organization' || user.status === 'new_from_email')
+        if (['new_from_organization', 'new_from_email', 'new_to_push'].indexOf(user.status) !== -1)
             return t('settings.status.to-validate');
         else if (!user.userid)
             return t('settings.status.pending')
@@ -57,7 +59,10 @@ var User = React.createClass({
         return (
             <tr>
                 <td>{this.props.user.fullname || this.props.user.email}</td>
-                <td>{this.displayStatus(this.props.user)} <small>({moment(this.props.user.created).format('lll')})</small></td>
+                <td>
+                    {this.displayStatus(this.props.user)}
+                    {renderIf(this.props.user.created !== null)(<small> ({moment(this.props.user.created).format('lll')})</small>)}
+                </td>
                 <td>
                     <button className="btn oz-btn-danger" onClick={this.props.removeUser}>
                         <i className="fa fa-trash"></i>

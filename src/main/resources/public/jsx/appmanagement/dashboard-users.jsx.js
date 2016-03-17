@@ -49,7 +49,8 @@ var DashboardUsersManagement = React.createClass({
         })
     },
     addUser: function(user) {
-        if (this.state.users.filter(function(u) { return u.userid == user.userid;}).length == 0) {
+        if (this.state.users.filter(u => u.userid == user.userid).length == 0) {
+            user.status = 'new_to_push';
             this.setState({ users: [user].concat(this.state.users) });
         }
     },
