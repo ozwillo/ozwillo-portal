@@ -107,6 +107,12 @@ if(TARGET === 'build' || TARGET === 'stats') {
         },
         plugins: [
             new CleanPlugin([PATHS.build]),
+            // Setting DefinePlugin affects React library size!
+            // DefinePlugin replaces content "as is" so we need some extra quotes
+            // for the generated code to make sense
+            new webpack.DefinePlugin({
+                'process.env.NODE_ENV': '"production"'
+            }),
             new webpack.optimize.UglifyJsPlugin({
                 compress: {
                     warnings: false
