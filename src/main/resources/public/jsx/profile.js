@@ -1,8 +1,13 @@
 'use strict';
 
-// FIXME : quite ugly imports
-// import 'select2';
 import 'select2/dist/js/select2.full';
+import 'select2/dist/js/i18n/bg.js';
+import 'select2/dist/js/i18n/ca.js';
+import 'select2/dist/js/i18n/es.js';
+import 'select2/dist/js/i18n/en.js';
+import 'select2/dist/js/i18n/fr.js';
+import 'select2/dist/js/i18n/it.js';
+import 'select2/dist/js/i18n/tr.js';
 import 'select2/dist/css/select2.min.css';
 
 var moment = require('moment');

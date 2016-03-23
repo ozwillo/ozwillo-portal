@@ -7,7 +7,8 @@
 
     <title data-th-text="${title}">Page Title</title>
 
-    <link data-th-if="${production}" rel="stylesheet" data-th-href="@{/build/styles.min.css}" />
+    <link data-th-if="${production}" rel="stylesheet" data-th-href="@{/build/commons.min.css}" />
+    <link data-th-if="${production and page == 'my'}" rel="stylesheet" data-th-href="@{/build/profile.min.css}" />
 
     <!-- Fav and touch icons -->
     <link rel="apple-touch-icon" sizes="57x57" data-th-href="@{/img/favicons/apple-touch-icon-57x57.png?v=OmmGW0j2pJ}" />

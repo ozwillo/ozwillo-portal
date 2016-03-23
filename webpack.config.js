@@ -118,7 +118,9 @@ if(TARGET === 'build' || TARGET === 'stats') {
                     warnings: false
                 }
             }),
-            new ExtractTextPlugin('styles.min.css')
+            new ExtractTextPlugin('[name].min.css', {
+                allChunks: true
+            })
         ]
     });
 }
