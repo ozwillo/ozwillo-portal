@@ -29,7 +29,7 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
 	@Primary
 	public OpenIdCConfiguration openIdCConfiguration() {
 		StaticOpenIdCConfiguration configuration = new PortalOpenIdCConfiguration();
-		configuration.addSkippedPaths(Arrays.asList("/img/", "/js/", "/css/", "/status", "/api/"));
+		configuration.addSkippedPaths(Arrays.asList("/img/", "/js/", "/css/", "/status", "/api/", "/build/"));
 		return configuration;
 	}
 
