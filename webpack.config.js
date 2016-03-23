@@ -20,7 +20,7 @@ const common = {
         profile:        [path.join(PATHS.app, 'jsx/profile.js')].concat(commonEntryPointsLoadersAndServers),
         network:        [path.join(PATHS.app, 'jsx/network/network.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         myapps:         [path.join(PATHS.app, 'jsx/appmanagement/myapps.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        store:          [path.join(PATHS.app, 'jsx/store/store.jsx.js')].concat(commonEntryPointsLoadersAndServers),
+        appstore:       [path.join(PATHS.app, 'jsx/store/store.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         notifications:  [path.join(PATHS.app, 'jsx/notifications.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         contact:        [path.join(PATHS.app, 'jsx/contact.jsx.js')].concat(commonEntryPointsLoadersAndServers)
     },
@@ -80,7 +80,7 @@ if(TARGET === 'start' || !TARGET) {
             profile:        common.entry.profile.concat(devEntryPointsLoadersAndServers),
             network:        common.entry.network.concat(devEntryPointsLoadersAndServers),
             myapps:         common.entry.myapps.concat(devEntryPointsLoadersAndServers),
-            store:          common.entry.store.concat(devEntryPointsLoadersAndServers),
+            store:          common.entry.appstore.concat(devEntryPointsLoadersAndServers),
             notifications:  common.entry.notifications.concat(devEntryPointsLoadersAndServers),
             contact:        common.entry.contact.concat(devEntryPointsLoadersAndServers)
         },
