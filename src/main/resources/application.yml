@@ -1,6 +1,7 @@
 spring:
   server:
     tomcat.accesslog.enabled: true
+  output.ansi.enabled: DETECT
 
 ha:
   enabled: false
