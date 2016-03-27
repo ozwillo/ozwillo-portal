@@ -27,7 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
  */
 
 @Controller
-@RequestMapping("/my/appsmanagement")
+@RequestMapping("/my/apps")
 public class MyAppsManagementController extends PortalController {
 
 	@Autowired
@@ -39,7 +39,7 @@ public class MyAppsManagementController extends PortalController {
 
 	@ModelAttribute("navigation")
 	public List<MyNavigation> getNavigation() {
-		return navigationService.getNavigation("appsmanagement");
+		return navigationService.getNavigation("apps");
 	}
 
 	@ModelAttribute("i18n")

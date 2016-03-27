@@ -438,13 +438,13 @@ var JoinBanner = React.createClass({
                             {t('ad.joinUs')}&nbsp;
                             <img src={image_root + "../img/new/arrow-white.png"} />
                         </a>
-                        <img src={image_root + "new/cross.png"} className="close-ad visible-xs visible-sm" data-toggle="tooltip" data-placement="bottom"
+                        <img src={image_root + "cross.png"} className="close-ad visible-xs visible-sm" data-toggle="tooltip" data-placement="bottom"
                              title={t('ui.close')} onClick={this.hideAd} />
                     </div>
 
                     <div className="col-md-6 hidden-xs hidden-sm">
                         <img src={image_root + "new/appli-catalogue.png"} className="img-responsive" />
-                        <img src={image_root + "new/cross.png"} className="close-ad" data-toggle="tooltip" data-placement="bottom"
+                        <img src={image_root + "cross.png"} className="close-ad" data-toggle="tooltip" data-placement="bottom"
                              title={t('ui.close')} onClick={this.hideAd} />
                     </div>
 

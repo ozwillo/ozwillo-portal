@@ -9,7 +9,7 @@
                 <span class="icon-bar"></span>
             </button>
             <a class="navbar-brand" href="#" data-th-href="|${webHome}/${currentLanguage.locale.language}|">
-                <img data-th-src="@{/img/new/logo.png}" src="../../public/img/new/logo.png" alt="Ozwillo"/>
+                <img data-th-src="@{/img/logo-ozwillo.png}" alt="Logo Ozwillo"/>
             </a>
         </div>
 
@@ -31,23 +31,20 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store|}" class="nocache">
-                        <img data-th-src="@{/img/new/icone-catalogue-color.png}"
-                             src="../../public/img/new/icone-catalogue-color.png" alt="Apps store icon"/>
+                    <a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store|}">
+                        <img data-th-src="@{/img/store-icon-color.png}" alt="Apps store icon"/>
                         <span data-th-text="#{ui.appstore}">Apps Store</span>
                     </a>
                 </li>
                 <li>
-                    <a href="https://opendata.ozwillo.com/fr/" class="nocache">
-                        <img data-th-src="@{/img/new/data-purple.png}" src="../../public/img/new/data-purple.png"
-                             alt=""/>
+                    <a href="https://opendata.ozwillo.com/fr/">
+                        <img data-th-src="@{/img/data-icon-purple.png}" alt="Data icon"/>
                         <span data-th-text="#{ui.datastore}">Données</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login|}" class="nocache">
-                        <img data-th-src="@{/img/new/connexion-purple.png}" src="../../public/img/new/connexion-purple.png"
-                             alt=""/>
+                    <a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store/login|}">
+                        <img data-th-src="@{/img/login-icon-purple.png}" alt="Login icon"/>
                         <span data-th-text="#{ui.login}">Connexion</span>
                     </a>
                 </li>

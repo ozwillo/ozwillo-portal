@@ -34,7 +34,7 @@ var SearchOrganizationModal = React.createClass({
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><img src={image_root + "new/cross.png"} /></span>
+                                <span aria-hidden="true"><img src={image_root + "cross.png"} /></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{t('search.organization.search-organization')}</h4>
                         </div>
