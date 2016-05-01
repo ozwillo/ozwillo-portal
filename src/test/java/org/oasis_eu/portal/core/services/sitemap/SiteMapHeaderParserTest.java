@@ -6,10 +6,12 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.core.mongo.dao.sitemap.SiteMapHeaderRepository;
+import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuItem;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuSet;
 import org.oasis_eu.portal.core.services.sitemap.xml.HeaderMenuSet;
 import org.oasis_eu.portal.OasisPortal;
@@ -37,6 +39,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 @WebAppConfiguration
 @SpringApplicationConfiguration(classes = {OasisPortal.class, MockServletContext.class})
 public class SiteMapHeaderParserTest {
+
 	@Autowired
 	@Qualifier("xmlAwareRestTemplate")
 	private RestTemplate restTemplate;
@@ -56,7 +59,6 @@ public class SiteMapHeaderParserTest {
 	@Autowired
 	private SiteMapUpdater siteMapUpdater;
 
-
 	@Test
 	public void testParseHeaderSiteMap() throws Exception {
 
@@ -65,11 +67,12 @@ public class SiteMapHeaderParserTest {
 		HeaderMenuSet foo = xmlMapper.readValue(stream, HeaderMenuSet.class);
 
 		validateMenuSet(foo);
-		assertEquals("/images/ui/apps-on.png", foo.getMenuset().get(0).getItems().get(0).getImg_url());
-		assertEquals("/fr/oz/decouvrir", foo.getMenuset().get(0).getSubmenus().get(0).getUrl());
 
+		List<SiteMapMenuItem> siteMapMenuItems = foo.getMenuset().get(0).getItems();
+		assertEquals("/static/img/logo.png", siteMapMenuItems.get(0).getImgUrl());
+		assertEquals("https://portal.ozwillo.com/fr/store", siteMapMenuItems.get(4).getUrl());
+		assertEquals("/static/img/icone-catalogue-color.png", siteMapMenuItems.get(4).getImgUrl());
 	}
-
 
 	@Test
 	@DirtiesContext
@@ -82,19 +85,20 @@ public class SiteMapHeaderParserTest {
 		HeaderMenuSet foo = restTemplate.getForObject(url_header, HeaderMenuSet.class);
 
 		validateMenuSet(foo);
-		assertEquals("/images/ui/apps-on.png", foo.getMenuset().get(0).getItems().get(0).getImg_url());
-		assertEquals("/fr/oz/decouvrir", foo.getMenuset().get(0).getSubmenus().get(0).getUrl());
+
+		List<SiteMapMenuItem> siteMapMenuItems = foo.getMenuset().get(0).getItems();
+		assertEquals("/static/img/logo.png", siteMapMenuItems.get(0).getImgUrl());
+		assertEquals("https://portal.ozwillo.com/fr/store", siteMapMenuItems.get(4).getUrl());
+		assertEquals("/static/img/icone-catalogue-color.png", siteMapMenuItems.get(4).getImgUrl());
 
 		server.verify();
 	}
-
 
 	@Test
 	@DirtiesContext
 	public void testUpdateSiteMap() throws Exception {
 
 		Resource resource = resourceLoader.getResource("classpath:/xml/header.xml");
-		//Resource resource = resourceLoader.getResource("http://tempsend.com/855AFC2863/1C03/header.xml");
 		MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
 		server.expect(requestTo(url_header)).andRespond(withSuccess(resource, MediaType.APPLICATION_XML));
 
@@ -104,15 +108,9 @@ public class SiteMapHeaderParserTest {
 
 		SiteMapMenuSet sitemapHeaderFR = siteMapService.getSiteMapHeader("fr");
 		validateFRData(sitemapHeaderFR);
-		assertEquals("http://www.ozwillo-dev.eu/images/ui/apps-on.png", sitemapHeaderFR.getItems().get(0).getImg_url());
-		assertEquals("http://www.ozwillo-dev.eu/fr/oz/decouvrir", sitemapHeaderFR.getSubmenus().get(0).getSubItems().get(0).getUrl());
-		assertEquals("http://www.ozwillo-dev.eu/fr/oz/decouvrir", sitemapHeaderFR.getSubmenus().get(0).getUrl());
 
 		SiteMapMenuSet sitemapHeaderEN = siteMapService.getSiteMapHeader("en");
 		validateENData(sitemapHeaderEN);
-		assertEquals("http://www.ozwillo-dev.eu/images/ui/apps-on.png", sitemapHeaderEN.getItems().get(0).getImg_url());
-		assertEquals("http://www.ozwillo-dev.eu/en/oz/discover", sitemapHeaderEN.getSubmenus().get(0).getSubItems().get(0).getUrl());
-		assertEquals("http://www.ozwillo-dev.eu/en/oz/discover", sitemapHeaderEN.getSubmenus().get(0).getUrl());
 
 		server.verify();
 	}
@@ -121,38 +119,37 @@ public class SiteMapHeaderParserTest {
 	private void validateFRData(SiteMapMenuSet sitemapHeader){
 		assertNotNull(sitemapHeader);
 		assertNotNull(sitemapHeader.getItems().get(0));
-		assertNotNull(sitemapHeader.getSubmenus());
-		assertEquals("fr", sitemapHeader.getLanguage());
-		assertEquals(5, sitemapHeader.getItems().size());
-		assertEquals("catalog", sitemapHeader.getItems().get(1).getType());
-		assertEquals("Catalogue", sitemapHeader.getItems().get(1).getLabel());
 
-		assertNotNull(sitemapHeader.getSubmenus());
-		assertEquals("Découvrir", sitemapHeader.getSubmenus().get(0).getTitle());
-		assertEquals("Découvrir la plate-forme", sitemapHeader.getSubmenus().get(0).getSubItems().get(0).getLabel());
+		assertEquals("fr", sitemapHeader.getLanguage());
+		assertEquals(8, sitemapHeader.getItems().size());
+		assertEquals(3, sitemapHeader.getContentItems().size());
+		assertEquals("menu", sitemapHeader.getItems().get(3).getType());
+		assertEquals("Actualités", sitemapHeader.getItems().get(3).getLabel());
+
+		SiteMapMenuItem offersMenuItem = sitemapHeader.getItems().get(2);
+		assertEquals("Offres", offersMenuItem.getLabel());
+		assertEquals("submenu", offersMenuItem.getType());
+		assertEquals(3, offersMenuItem.getItems().size());
+		assertEquals("Portail", offersMenuItem.getItems().get(1).getLabel());
 	}
 
 	private void validateENData(SiteMapMenuSet sitemapHeader){
 		assertNotNull(sitemapHeader);
 		assertNotNull(sitemapHeader.getItems().get(0));
-		assertNotNull(sitemapHeader.getSubmenus().get(0));
 
 		assertEquals("en", sitemapHeader.getLanguage());
-		assertEquals(5, sitemapHeader.getItems().size());
-		assertEquals("", sitemapHeader.getItems().get(4).getLabel());
-		assertEquals("https://portal.ozwillo.com/en/store", sitemapHeader.getItems().get(1).getUrl());
-		assertEquals("catalog", sitemapHeader.getItems().get(1).getType());
-		assertEquals("Catalog", sitemapHeader.getItems().get(1).getLabel());
+		assertEquals(8, sitemapHeader.getItems().size());
+		assertEquals(3, sitemapHeader.getContentItems().size());
 
-		assertNotNull(sitemapHeader.getSubmenus());
-		assertEquals("Discover", sitemapHeader.getSubmenus().get(0).getTitle());
-		assertEquals("Discovering the Platform", sitemapHeader.getSubmenus().get(0).getSubItems().get(0).getLabel());
-
+		SiteMapMenuItem catalogMenuItem = sitemapHeader.getItems().get(4);
+		assertEquals("https://portal.ozwillo.com/en/store", catalogMenuItem.getUrl());
+		assertEquals("catalog", catalogMenuItem.getType());
+		assertEquals("Catalog", catalogMenuItem.getLabel());
 	}
 
 	private void validateMenuSet(HeaderMenuSet foo){
 
-		assertEquals(7, foo.getMenuset().size());
+		assertEquals(2, foo.getMenuset().size());
 
 		//French
 		SiteMapMenuSet sitemapHeaderFR = foo.getMenuset().get(0);
@@ -161,7 +158,5 @@ public class SiteMapHeaderParserTest {
 		// English
 		SiteMapMenuSet sitemapHeaderEN = foo.getMenuset().get(1);
 		validateENData(sitemapHeaderEN);
-
 	}
-
 }

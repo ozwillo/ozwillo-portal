@@ -14,21 +14,23 @@
         </div>
 
         <div class="collapse navbar-collapse" id="ozwillo-navbar">
+
             <ul class="nav navbar-nav">
-                <!-- Discover -->
-                <li class="dropdown" data-th-each="submenu: ${sitemapheader.submenus[0]}">
+                <li data-th-each="item: ${sitemapHeader.getContentItems()}" data-th-class="${item.isSubmenu()}? 'dropdown'">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button"
-                       aria-expanded="false" aria-haspopup="true" data-th-href="${submenu.url}">
-                        <span data-th-text="${submenu.title}">Discover</span><span class="caret"></span>
+                       aria-expanded="false" aria-haspopup="true" data-th-href="${item.url}" data-th-if="${item.isSubmenu()}">
+                        <span data-th-text="${item.label}">Discover</span><span class="caret"></span>
                     </a>
-                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                        <li role="presentation" data-th-each="entry: ${submenu.subItems}">
-                            <a href="#" role="menuitem" tabindex="-1" data-th-href="${entry.url}"
-                               data-th-text="${entry.label}">Item</a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1" data-th-if="${item.isSubmenu()}">
+                        <li role="presentation" data-th-each="entry: ${item.items}">
+                            <a role="menuitem" tabindex="-1" data-th-href="${entry.url}" data-th-text="${entry.label}">Item</a>
                         </li>
                     </ul>
+                    <a role="menuitem" tabindex="-1" data-th-href="${item.url}" data-th-text="${item.label}"
+                        data-th-if="${!item.isSubmenu()}">Item</a>
                 </li>
             </ul>
+
             <ul class="nav navbar-nav navbar-right">
                 <li>
                     <a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store|}">

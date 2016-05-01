@@ -10,7 +10,7 @@
                     </div>
                     <div class="col-md-9">
                         <div class="pull-right top">
-                            <div data-th-each="entry: ${sitemap}" data-th-remove="tag">
+                            <div data-th-each="entry: ${sitemapFooter}" data-th-remove="tag">
                                 <a class="footer-link" data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
                             </div>
                             <!-- Here, we'll insert the link that calls the contact modal in React's contact.jsx module -->

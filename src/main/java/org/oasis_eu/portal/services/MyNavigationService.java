@@ -32,12 +32,11 @@ public class MyNavigationService {
 		return pages.stream().map(id -> new MyNavigation(id, id.equals(pagename))).collect(Collectors.toList());
 	}
 
-	public List<SiteMapEntry> getSiteMap() {
+	public List<SiteMapEntry> getSiteMapFooter() {
 		return siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
 	}
 
 	public SiteMapMenuSet getSiteMapHeader() {
 		return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
 	}
-
 }
