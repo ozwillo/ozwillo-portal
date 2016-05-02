@@ -50,20 +50,12 @@ var NotificationTable = React.createClass({
             url: this.props.url,
             data: {status: this.state.filter.status},
             dataType: 'json',
-            success: function(data) {
-                var s = this.state;
-                var notifs = data.notifications;
-
-                s.n = notifs.sort(this.sortElement);
-                s.apps = data.apps;
-                this.setState(s);
-            }.bind(this),
+            success: (data) =>
+                this.setState({ apps: data.apps, n: data.notifications.sort(this.sortElement) }),
             error: function(xhr, status, err) {
                 console.error(this.props.url, status, err.toString());
             }.bind(this)
         });
-
-
     },
     sortBy: function(criterion) {
         var component = this;
@@ -180,8 +172,7 @@ var NotificationTable = React.createClass({
                                             sort={this.state.currentSort}/>
                             <SortableHeader name="appName" size="2" label="app" sortBy={this.sortBy}
                                             sort={this.state.currentSort}/>
-                            <SortableHeader name="formattedText" label="message" size="5" sortBy={this.sortBy}
-                                            sort={this.state.currentSort}/>
+                            <th className="col-sm-5">{t('message')}</th>
                             <th className="col-sm-3"></th>
                         </tr>
                         </thead>
