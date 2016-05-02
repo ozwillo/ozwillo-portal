@@ -14,6 +14,10 @@ public class SiteMapEntry implements Serializable {
 
 	@JacksonXmlProperty(localName = "href", isAttribute = true)
 	private String url = "";
+
+	@JacksonXmlProperty(localName = "row", isAttribute = true)
+	private Integer row = 0;
+
 	@JacksonXmlText
 	private String label = "";
 
@@ -23,6 +27,14 @@ public class SiteMapEntry implements Serializable {
 
 	public void setUrl(String url) {
 		this.url = url;
+	}
+
+	public Integer getRow() {
+		return row;
+	}
+
+	public void setRow(Integer row) {
+		this.row = row;
 	}
 
 	public String getLabel() {

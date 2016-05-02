@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -124,7 +125,7 @@ abstract public class PortalController {
 	}
 
 	@ModelAttribute("sitemapFooter")
-	public List<SiteMapEntry> siteMapFooter() {
+	public Map<Integer, List<SiteMapEntry>> siteMapFooter() {
 		return navigationService.getSiteMapFooter();
 	}
 

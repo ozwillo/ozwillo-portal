@@ -91,9 +91,6 @@ public class SiteMapService {
 		headerRepository.save(siteMapheadaer);
 	}
 
-
-	// Footer
-
 	@Cacheable(value = "sitemap", key = "#language")
 	public List<SiteMapEntry> getSiteMapFooter(String language) {
 		SiteMap siteMap = footerRepository.findByLanguage(language);
@@ -115,7 +112,6 @@ public class SiteMapService {
 		return entry;
 	}
 
-
 	@CacheEvict(value = "sitemap", key = "#language")
 	public void updateSiteMapFooter(String language, SiteMap siteMap) {
 		SiteMap old = footerRepository.findByLanguage(language);
@@ -128,6 +124,4 @@ public class SiteMapService {
 
 		footerRepository.save(siteMap);
 	}
-
-
 }
