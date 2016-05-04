@@ -219,7 +219,7 @@ public class PortalAppstoreService {
 		status.setCatalogEntryType(entry.getType());
 		status.setCatalogEntryId(entry.getId());
 		status.setUserId(userInfoService.currentUser().getUserId());
-		status.setInstalled(option.equals(InstallationOption.INSTALLED) ? true : false);
+		status.setInstalled(option.equals(InstallationOption.INSTALLED));
 		installedStatusRepository.save(status);
 
 		return option;
@@ -233,10 +233,9 @@ public class PortalAppstoreService {
 		} else {
 			return networkService.getMyAuthorities(true).stream()
 					.flatMap(authority -> appManagementService.getMyInstances(authority, false).stream())
-					.anyMatch(instance -> instance.getApplication().getId().equals(entry.getId()))
+					.anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
 					? InstallationOption.INSTALLED :
 						PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
-
 		}
 	}
 }

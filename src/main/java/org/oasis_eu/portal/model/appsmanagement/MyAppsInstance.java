@@ -2,7 +2,6 @@ package org.oasis_eu.portal.model.appsmanagement;
 
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.model.appstore.AppInfo;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
@@ -15,46 +14,46 @@ import java.util.List;
 public class MyAppsInstance {
 
 	ApplicationInstance applicationInstance;
-	AppInfo application;
 
 	List<MyAppsService> myAppsServices;
+
+	private String name;
+
 	String icon;
+
 	/** optional */
 	@JsonProperty("deletion_planned")
 	Instant deletionPlanned;
+
 	@JsonProperty("status_change_requester_label")
 	String statusChangeRequesterLabel;
 
+	public MyAppsInstance(ApplicationInstance applicationInstance) {
+		this.applicationInstance = applicationInstance;
+	}
 
 	public List<MyAppsService> getServices() {
 		return myAppsServices;
 	}
 
-	public MyAppsInstance setServices(List<MyAppsService> myAppsServices) {
+	public void setServices(List<MyAppsService> myAppsServices) {
 		this.myAppsServices = myAppsServices;
-		return this;
 	}
 
 	public ApplicationInstance getApplicationInstance() {
 		return applicationInstance;
 	}
 
-	public MyAppsInstance setApplicationInstance(ApplicationInstance applicationInstance) {
+	public void setApplicationInstance(ApplicationInstance applicationInstance) {
 		this.applicationInstance = applicationInstance;
-		return this;
 	}
 
-	public AppInfo getApplication() {
-		return application;
-	}
-
-	public MyAppsInstance setApplication(AppInfo application) {
-		this.application = application;
-		return this;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public String getName() {
-		return application != null ? application.getName() : "--";
+		return this.name != null ? this.name : this.applicationInstance.getDefaultName();
 	}
 
 	public void setIcon(String icon) {
@@ -84,5 +83,4 @@ public class MyAppsInstance {
 	public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
 		this.statusChangeRequesterLabel = statusChangeRequesterLabel;
 	}
-
 }

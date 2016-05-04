@@ -19,6 +19,7 @@ public class AppInfo {
 		this.description = description;
 		this.paymentOptionDescription = paymentOptionDescription;
 		this.type = type;
+		this.icon = icon;
 	}
 
 	public String getName() {

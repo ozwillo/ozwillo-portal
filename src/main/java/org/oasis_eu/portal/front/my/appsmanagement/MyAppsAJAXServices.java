@@ -23,7 +23,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -49,6 +51,9 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	@Autowired
 	private ImageService imageService;
 
+	@Autowired
+	private HttpServletRequest request;
+
 	@RequestMapping("/authorities")
 	public List<Authority> getAuthorities() {
 		return networkService.getMyAuthorities(true).stream()
@@ -61,10 +66,15 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
 	public List<MyAppsInstance> getInstances(@PathVariable String authorityId) {
 		String[] strings = authorityId.split("::");
 
-		List<MyAppsInstance> myInstances = appManagementService.getMyInstances(networkService.getAuthority(strings[0], strings[1]), true);
+		List<MyAppsInstance> myInstances =
+			appManagementService.getMyInstances(networkService.getAuthority(strings[0], strings[1]), true);
 		for (MyAppsInstance instance : myInstances) {
-			instance.setIcon(imageService.getImageForURL(instance.getApplication().getIcon(), ImageFormat.PNG_64BY64, false));
+			instance.setIcon(
+				imageService.getImageForURL(instance.getApplicationInstance().getIcon(RequestContextUtils.getLocale(request)),
+					ImageFormat.PNG_64BY64, false));
+			instance.setName(instance.getApplicationInstance().getName(RequestContextUtils.getLocale(request)));
 		}
+
 		return myInstances;
 	}
 
