@@ -2,9 +2,12 @@ package org.oasis_eu.portal.core.mongo.model.sitemap;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.data.annotation.Id;
+import org.springframework.data.annotation.Transient;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -32,10 +35,8 @@ public class SiteMapMenuSet implements Serializable {
 	@JacksonXmlProperty(localName = "item")
 	private List<SiteMapMenuItem> items = new ArrayList<>();
 
-	@JacksonXmlElementWrapper(useWrapping = false)
-	@JacksonXmlProperty(localName = "submenu")
-	private List<SiteMapSubMenuEntry> submenus = new ArrayList<>();
-
+	@Transient
+	private final List<String> contentItemsType = Arrays.asList("menu", "submenu");
 
 	public String getId() {
 		return id;
@@ -57,15 +58,11 @@ public class SiteMapMenuSet implements Serializable {
 		return items;
 	}
 
+	public List<SiteMapMenuItem> getContentItems() {
+		return items.stream().filter(item -> contentItemsType.contains(item.getType())).collect(Collectors.toList());
+	}
+
 	public void setItems(List<SiteMapMenuItem> items) {
 		this.items = items;
-	}
-
-	public List<SiteMapSubMenuEntry> getSubmenus() {
-		return submenus;
-	}
-
-	public void setSubmenus(List<SiteMapSubMenuEntry> submenus) {
-		this.submenus = submenus;
 	}
 }

@@ -1,114 +1,36 @@
 <menuset>
   <menu>
     <locale>fr</locale>
-    <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/images/ui/apps-on.png">Catalogue</item>
-    <item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/images/ui/data-on.png">Données</item>
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr">Connexion</item>
-    <item type="locale-switch"/>
-    <submenu href="/fr/oz/decouvrir">
-      <title>Découvrir</title>
-      <item href="/fr/oz/decouvrir">Découvrir la plate-forme</item>
-      <item href="/fr/oz/news">Actualités</item>
-      <item href="/fr/oz/co-construire">Co-construire</item>
-      <item href="/fr/oz/se-lancer">Se lancer</item>
-      <item href="/fr/oz/projets">Projets</item>
-    </submenu>
+    <item type="home" img_src="/static/img/logo.png"/>
+    <item type="submenu" label="Qui sommes-nous ?">
+      <item type="menu" href="/fr/association" label="L'association" />
+    </item>
+    <item type="submenu" label="Offres">
+      <item type="menu" href="/fr/offre-donnee" label="Données" />
+      <item type="menu" href="/fr/offre-portail" label="Portail" />
+      <item type="menu" href="/fr/offre-incubation" label="Incubation" />
+    </item>
+    <item type="menu" href="/fr/actualites" label="Actualités"/>
+    <item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/static/img/icone-catalogue-color.png" label="Catalogue" />
+    <item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/static/img/data-purple.png" label="Données" />
+    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr" img_src="/static/img/connexion-purple.png" label="Connexion" />
+    <item type="locale-switch" />
   </menu>
   <menu>
     <locale>en</locale>
-    <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/en/store" img_src="/images/ui/apps-on.png">Catalog</item>
-    <item type="opendata" href="https://opendata.ozwillo.com/" img_src="/images/ui/data-on.png">Data</item>
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=en">Log in</item>
-    <item type="locale-switch"/>
-    <submenu href="/en/oz/discover" >
-      <title>Discover</title>
-      <item href="/en/oz/discover">Discovering the Platform</item>
-      <item href="/en/oz/news">News</item>
-      <item href="/en/oz/co-construct">Co-construct</item>
-      <item href="/en/oz/let-s-go">Let's go</item>
-      <item href="/en/oz/projects">Projects</item>
-    </submenu>
-  </menu>
-  <menu>
-    <locale>es</locale>
-    <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/es/store" img_src="/images/ui/apps-on.png">Tienda</item>
-    <item type="opendata" href="https://opendata.ozwillo.com/es/" img_src="/images/ui/data-on.png">Datos</item>
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=es">Entrar</item>
-    <item type="locale-switch"/>
-    <submenu href="/es/oz/descubriendo">
-      <title>Descubriendo</title>
-      <item href="/es/oz/descubriendo">Descubriendo la plataforma</item>
-      <item href="/es/oz/noticias">Noticias</item>
-      <item href="/es/oz/co-construccion">Co-construcción</item>
-      <item href="/es/oz/puesta-en-marcha">Puesta en marcha</item>
-      <item href="/es/oz/proyectos">Proyectos</item>
-    </submenu>
-  </menu>
-  <menu>
-    <locale>ca</locale>
-    <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/ca/store" img_src="/images/ui/apps-on.png">Botiga</item>
-    <item type="opendata" href="https://opendata.ozwillo.com/ca/" img_src="/images/ui/data-on.png">Dades</item>
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=ca">Entrar</item>
-    <item type="locale-switch"/>
-    <submenu href="/ca/oz/descobrint">
-      <title>Descobrint</title>
-      <item href="/ca/oz/descobrint">Descobrint la plataforma</item>
-      <item href="/ca/oz/noticies">Noticies</item>
-      <item href="/ca/oz/co-construccio">Co-construcció</item>
-      <item href="/ca/oz/posada-en-marxa">Posada en marxa</item>
-      <item href="/ca/oz/projectes">Projectes</item>
-    </submenu>
-  </menu>
-  <menu>
-    <locale>it</locale>
-    <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/it/store" img_src="/images/ui/apps-on.png">Catalogo</item>
-    <item type="opendata" href="https://opendata.ozwillo.com/it/" img_src="/images/ui/data-on.png">Dati</item>
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=it">Entra</item>
-    <item type="locale-switch"/>
-    <submenu href="/it/oz/scoprire">
-      <title>Scoprire</title>
-      <item href="/it/oz/scoprire">Scoprire la Piattaforma</item>
-      <item href="/it/oz/novita">Novità</item>
-      <item href="/it/oz/collaborativamente">Costruire collaborativamente</item>
-      <item href="/it/oz/iniziare">Iniziare</item>
-      <item href="/it/oz/progetti">Progetti</item>
-    </submenu>
-  </menu>
-  <menu>
-    <locale>bg</locale>
-    <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/bg/store" img_src="/images/ui/apps-on.png">Каталог</item>
-    <item type="opendata" href="https://opendata.ozwillo.com/bg/" img_src="/images/ui/data-on.png">данни</item>
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=bg">Вход</item>
-    <item type="locale-switch"/>
-    <submenu href="/bg/oz/discover">
-      <title>Изучаване</title>
-      <item href="/bg/oz/discover">Изучаване на платформата</item>
-      <item href="/bg/oz/novini">Новини</item>
-      <item href="/bg/oz/suvmestna-sgrada">Съвместно изграждане</item>
-      <item href="/bg/oz/st-rtir-n">Стартиране</item>
-      <item href="/bg/oz/pr-ti">Проекти</item>
-    </submenu>
-  </menu>
-  <menu>
-    <locale>tr</locale>
-    <item type="home" img_src="/images/ui/apps-on.png"/>
-    <item type="catalog" href="https://portal.ozwillo.com/tr/store" img_src="/images/ui/apps-on.png">Katalog</item>
-    <item type="opendata" href="https://opendata.ozwillo.com/tr/" img_src="/images/ui/data-on.png">Veri</item>
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=tr">Giriş</item>
-    <item type="locale-switch"/>
-    <submenu href="/tr/oz/kesfedin">
-      <title>Keşfedin</title>
-      <item href="/tr/oz/kesfedin">Platformu Keşfetmek</item>
-      <item href="/tr/oz/haberler">Haberler</item>
-      <item href="/tr/oz/birlikte-insa-etmek">Birlikte inşa etmek</item>
-      <item href="/tr/oz/baslatmak">Başlatmak</item>
-      <item href="/tr/oz/projeler">Projeler</item>
-    </submenu>
+    <item type="home" img_src="/static/img/logo.png"/>
+    <item type="submenu" label="Who are we ?">
+      <item type="menu" href="/en/association" label="The association" />
+    </item>
+    <item type="submenu" label="Offers">
+      <item type="menu" href="/en/data-offer" label="Data" />
+      <item type="menu" href="/en/portal-offer" label="Portal" />
+      <item type="menu" href="/en/incubation-offer" label="Incubation" />
+    </item>
+    <item type="menu" href="/en/news" label="News"/>
+    <item type="catalog" href="https://portal.ozwillo.com/en/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
+    <item type="opendata" href="https://opendata.ozwillo.com/en/" img_src="/static/img/data-purple.png" label="Data" />
+    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=en" img_src="/static/img/connexion-purple.png" label="Log in" />
+    <item type="locale-switch" />
   </menu>
 </menuset>

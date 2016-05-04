@@ -36,7 +36,31 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringApplicationConfiguration(classes = {OasisPortal.class, MockServletContext.class})
-public class SiteMapParserTest {
+public class SiteMapFooterParserTest {
+
+	@Autowired
+	@Qualifier("xmlAwareRestTemplate")
+	private RestTemplate restTemplate;
+
+	@Value("${web.sitemap.url_footer}")
+	private String sitemapUrl;
+
+	@Autowired
+	private ResourceLoader resourceLoader;
+
+	@Autowired
+	private SiteMapRepository repository;
+
+	@Autowired
+	private SiteMapService siteMapService;
+
+	@Autowired
+	private SiteMapUpdater siteMapUpdater;
+
+	@Before
+	public void clean() {
+		repository.deleteAll();
+	}
 
 	@Test
 	public void testParseSiteMap() throws Exception {
@@ -54,16 +78,6 @@ public class SiteMapParserTest {
 		assertEquals(12, foo.getMenuset().get(1).getEntries().size());
 		assertNull(foo.getMenuset().get(1).getEntries().get(7));
 	}
-
-	@Autowired
-	@Qualifier("xmlAwareRestTemplate")
-	private RestTemplate restTemplate;
-
-	@Value("${web.sitemap.url_footer}")
-	private String sitemapUrl;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
 
 	@Test
 	@DirtiesContext
@@ -83,21 +97,6 @@ public class SiteMapParserTest {
 		assertNull(foo.getMenuset().get(1).getEntries().get(7));
 
 		server.verify();
-	}
-
-
-	@Autowired
-	private SiteMapRepository repository;
-
-	@Autowired
-	private SiteMapService siteMapService;
-
-	@Autowired
-	private SiteMapUpdater siteMapUpdater;
-
-	@Before
-	public void clean() {
-		repository.deleteAll();
 	}
 
 	@Test

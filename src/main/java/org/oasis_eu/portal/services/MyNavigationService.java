@@ -10,7 +10,9 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -32,12 +34,19 @@ public class MyNavigationService {
 		return pages.stream().map(id -> new MyNavigation(id, id.equals(pagename))).collect(Collectors.toList());
 	}
 
-	public List<SiteMapEntry> getSiteMap() {
-		return siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
+	/**
+	 * @return a map of {@link SiteMapEntry} values keyed by the row in which they have to appear
+     */
+	public Map<Integer, List<SiteMapEntry>> getSiteMapFooter() {
+		List<SiteMapEntry> siteMapEntries =
+			siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
+		if (siteMapEntries == null)
+			return Collections.emptyMap();
+
+		return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
 	}
 
 	public SiteMapMenuSet getSiteMapHeader() {
 		return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
 	}
-
 }

@@ -1,28 +1,27 @@
 <footer class="page-row">
     <div class="container-fluid">
-        <div class="row clearfix footer">
+        <div class="row footer">
             <div class="col-md-12 footer-top-block">
-                <div class="row clearfix">
-                    <div class="col-md-3">
+                <div class="row flex-row">
+                    <div class="col-md-4 col-xs-12">
                         <div class="footer-logo">
                             <img data-th-src="@{/img/logo-ozwillo-footer.png}" />
                         </div>
                     </div>
-                    <div class="col-md-9">
-                        <div class="pull-right top">
-                            <div data-th-each="entry: ${sitemap}" data-th-remove="tag">
-                                <a class="footer-link" data-th-href="${entry.url}" data-th-text="${entry.label}"></a>
-                            </div>
-                            <!-- Here, we'll insert the link that calls the contact modal in React's contact.jsx module -->
-                            <span id="contact"></span>
+                    <div data-th-each="entry,row: ${sitemapFooter}" class="col-xs-6 col-sm-3 col-md-2 text-center">
+                        <div data-th-each="sme: ${entry.getValue()}" data-th-remove="tag">
+                            <a class="footer-link" data-th-href="${sme.url}" data-th-text="${sme.label}"></a>
                         </div>
+                        <span id="contact" data-th-if="${row.index == 3}">
+                            <!-- Here, we'll insert the link that calls the contact modal in React's contact.jsx module -->
+                        </span>
                     </div>
                 </div>
             </div>
 
 
             <div class="col-md-12">
-                <div class="row clearfix">
+                <div class="row">
                     <div class="col-md-3">
                         <div class="logo-twitter">
                             <a href="https://twitter.com/ozwillo">
