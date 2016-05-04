@@ -22,7 +22,6 @@ import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
 import org.oasis_eu.portal.model.appsmanagement.User;
-import org.oasis_eu.portal.model.appstore.AppInfo;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,7 +38,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 @Service
 public class PortalAppManagementService {
 
-	private static final Logger logger = LoggerFactory.getLogger(PortalAppstoreService.class);
+	private static final Logger logger = LoggerFactory.getLogger(PortalAppManagementService.class);
 
 	@Value("${application.applicationInstanceDaysTillDeletedFromTrash:7}")
 	private int applicationInstanceDaysTillDeletedFromTrash;
@@ -95,35 +94,16 @@ public class PortalAppManagementService {
 				.map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
 				.filter(i -> i!= null)
 				.collect(Collectors.toList());
-
 	}
 
-	/**
-	 *
-	 * @param instance
-	 * @param fetchServices
-	 * @return null if can't find application : Forbidden (else #208 Catalog not displayed), deleted...
-	 */
 	private MyAppsInstance fetchInstance(ApplicationInstance instance, boolean fetchServices) {
 
-		logger.debug("Fetching instance data for {}", instance);
+		logger.debug("Fetching instance data for {}, instance id {}", instance.getDefaultName(), instance.getInstanceId());
 
-		CatalogEntry entry = catalogStore.findApplication(instance.getApplicationId());
-		if (entry == null) {
-			return null; // Forbidden (else #208 Catalog not displayed), deleted...
-		}
-		AppInfo appInfo = new AppInfo(entry.getId(),
-				entry.getName(RequestContextUtils.getLocale(request)),
-				entry.getDescription(RequestContextUtils.getLocale(request)),
-				null,
-				entry.getType(),
-				entry.getIcon(RequestContextUtils.getLocale(request)));
-
-		MyAppsInstance uiInstance = fillUIInstance(
-				new MyAppsInstance().setApplicationInstance(instance).setApplication(appInfo) );
+		MyAppsInstance uiInstance = fillUIInstance(new MyAppsInstance(instance));
 
 		if (fetchServices)
-			uiInstance = uiInstance.setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream()
+			uiInstance.setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream()
 					.map(this::fetchService).collect(Collectors.toList()));
 
 		return uiInstance;
@@ -250,8 +230,6 @@ public class PortalAppManagementService {
 
 	/**
 	 * for (un)trash
-	 * @param instance
-	 * @return
 	 */
 	public String setInstanceStatus(MyAppsInstance uiInstance) {
 		ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());

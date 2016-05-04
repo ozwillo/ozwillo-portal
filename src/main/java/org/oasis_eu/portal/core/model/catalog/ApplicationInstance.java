@@ -27,12 +27,16 @@ public class ApplicationInstance {
 
 	@JsonProperty("application_id")
 	String applicationId;
+
 	@JsonProperty("id")
 	String instanceId;
+
 	InstantiationStatus status;
+
 	/** optional */
 	@JsonProperty("status_changed")
 	Instant statusChanged;
+
 	/** optional */
 	@JsonProperty("status_change_requester_id")
 	String statusChangeRequesterId;
