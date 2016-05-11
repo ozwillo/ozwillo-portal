@@ -41,6 +41,7 @@ public class CatalogEntry implements Serializable {
 	@NotNull
 	@NotEmpty
 	private String defaultName;
+
 	@JsonProperty("description")
 	@NotNull
 	@NotEmpty

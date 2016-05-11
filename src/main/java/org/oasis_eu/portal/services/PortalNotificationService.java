@@ -98,7 +98,12 @@ public class PortalNotificationService {
 						if (instance == null) {
 							return null;
 						} else {
-							return new NotifApp(instance.getApplicationId(), catalogStore.findApplication(instance.getApplicationId()).getName(locale));
+							CatalogEntry catalogEntry = catalogStore.findApplication(instance.getApplicationId());
+							// application might have been switched to visibility:false or removed (less likely)
+							if (catalogEntry != null)
+								return new NotifApp(instance.getApplicationId(), catalogEntry.getName(locale));
+							else
+								return new NotifApp(instance.getApplicationId(), instance.getName(locale));
 						}
 					}
 					return null;

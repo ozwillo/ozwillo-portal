@@ -1,11 +1,10 @@
 package org.oasis_eu.portal.front.generic;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -125,12 +124,12 @@ abstract public class PortalController {
 		return userInfoService.currentUser(); // #186 NOT nameDefaults.complete(userInfo) which overrides ex. "en-GB fr" Kernel locale
 	}
 
-	@ModelAttribute("sitemap")
-	public List<SiteMapEntry> siteMap() {
-		return navigationService.getSiteMap();
+	@ModelAttribute("sitemapFooter")
+	public Map<Integer, List<SiteMapEntry>> siteMapFooter() {
+		return navigationService.getSiteMapFooter();
 	}
 
-	@ModelAttribute("sitemapheader")
+	@ModelAttribute("sitemapHeader")
 	public SiteMapMenuSet siteMapHeader() {
 		SiteMapMenuSet siteMap = navigationService.getSiteMapHeader();
 

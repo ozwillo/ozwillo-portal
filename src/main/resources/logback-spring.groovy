@@ -6,7 +6,7 @@ scan()
 appender("CONSOLE", ConsoleAppender) {
     encoder(PatternLayoutEncoder) {
         //pattern = "| %-5level| %d{HH:mm:ss.SSS} | %logger{36} - %msg%n"
-        pattern = "| %-5level| %d{HH:mm:ss.SSS} | %logger - %msg%n"
+        pattern = "| %highlight(%-5level) | %d{HH:mm:ss.SSS} | %logger - %msg%n"
     }
 }
 

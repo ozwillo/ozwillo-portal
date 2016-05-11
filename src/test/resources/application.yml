@@ -1,8 +1,13 @@
 spring:
-  thymeleaf:
-    cache: false
-  resources:
-    cachePeriod: 3600
+  server:
+    tomcat.accesslog.enabled: true
+  output.ansi.enabled: DETECT
+
+server:
+  compression.enabled: true
+
+# only for 64x64 pngs which should be mostly below 5000B
+multipart.max-file-size: 20KB
 
 ha:
   enabled: false
@@ -27,13 +32,15 @@ application:
     displayNameField: odisp:name
     areaModel: geo:Area_0
     nameField: geo:name
+    codePostalField: geoci:zipCode
     countryModel: geoco:Country_0
-    cityModel: geoci:City_0
+    countryModelHier: geohier:Hierarchical_0
+    cityModel: addrpostci:PostalCity_0
     countryField: geo:country
+    fallbackLanguage: en
+    findOneTokenLimit: 100
     #use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year = http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
     replication: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
-    #replication: 0 0/1 * * * ?     #Runs every minute
-    replication: 0 0 4 25 DEC SUN  # no really, don't.
     replication_test: false
   dcOrg:
     project: org
@@ -50,14 +57,11 @@ application:
 web:
   home: http://www.ozwillo-dev.eu
   sitemap:
-    url_header: http://tempsend.com/855AFC2863/1C03/header.xml
-    #url_header: https://www.ozwillo.com/header.xml
-    url_footer: https://www.ozwillo.com/footer.xml
+    url_header: http://localhost:3001/header.xml
+    url_footer: http://localhost:3001/footer.xml
     refresh: 0 0 3 ? DEC SUN
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
-  # only for 64x64 pngs which should be mostly below 2000B
-  maxUploadSize: 5000
 
 kernel:
   token:
@@ -107,3 +111,13 @@ persistence:
 cache:
   hosts:
     - 127.0.0.1
+
+mail:
+  host: changeit
+  port: 587
+  starttls: true
+  smtps: false
+  login: changeit
+  password: changeit
+  # Recipient of contact form requests sent by users
+  contact: contact@ozwillo.com

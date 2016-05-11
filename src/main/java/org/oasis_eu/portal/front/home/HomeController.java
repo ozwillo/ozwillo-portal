@@ -24,10 +24,9 @@ public class HomeController extends PortalController {
 	@RequestMapping("/")
 	public ResponseEntity<?> index(HttpServletRequest request) {
 		HttpHeaders headers = new HttpHeaders();
-		headers.add("Location", webHome + "/" + RequestContextUtils.getLocale(request).getLanguage());
+		// Let the website handle the display language based on which he knows and our browsing preferences
+		headers.add("Location", webHome);
 
-		ResponseEntity<?> response = new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
-		return response;
+		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
 	}
-
 }

@@ -808,7 +808,7 @@ var AppIcon = React.createClass({
         return (
             <div className="app" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
                  onDragEnd={this.props.endDrag}>
-                <a href={url} target="_blank" className="app-link" draggable="false">
+                <a href={url} target="_blank" rel="noopener" className="app-link" draggable="false">
                     <img src={this.props.app.icon} alt={this.props.app.name}/>
                 </a>
                 {notif}

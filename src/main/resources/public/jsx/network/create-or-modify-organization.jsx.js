@@ -51,7 +51,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><img src={image_root + "new/cross.png"} /></span>
+                                <span aria-hidden="true"><img src={image_root + "cross.png"} /></span>
                             </button>
                             <h3 className="modal-title" id="modalLabel">{modalTitle}</h3>
                             <h4>{modalSubTitle}</h4>

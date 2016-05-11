@@ -11,7 +11,6 @@ import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMap;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuItem;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuSet;
-import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapSubMenuEntry;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,55 +27,52 @@ import org.springframework.stereotype.Service;
 public class SiteMapService {
 	private static final Logger logger = LoggerFactory.getLogger(SiteMapService.class);
 
+	@SuppressWarnings("SpringJavaAutowiringInspection")
 	@Autowired
-	private SiteMapRepository repository;
+	private SiteMapRepository footerRepository;
 
+	@SuppressWarnings("SpringJavaAutowiringInspection")
 	@Autowired
 	private SiteMapHeaderRepository headerRepository;
 
 	@Value("${web.home}")
 	private String webHome;
 
-	// Header
-
 	@Cacheable(value = "sitemapheader", key = "#language")
 	public SiteMapMenuSet getSiteMapHeader(String language) {
 		SiteMapMenuSet menuset = headerRepository.findByLanguage(language);
 		if (menuset != null) {
-			menuset.getItems().forEach(si -> setHyperLinks(si) );
-			menuset.getSubmenus().forEach(sm -> setHLSubMenus(sm));
+			menuset.getItems().forEach(this::setHyperLinks);
 		}
+
 		return menuset;
-	}
-
-	private SiteMapSubMenuEntry setHLSubMenus(SiteMapSubMenuEntry submenuEntry) {
-		submenuEntry.setUrl(webHome + submenuEntry.getUrl());
-		submenuEntry.getSubItems().forEach(si -> setHyperLinks(si) );
-
-		return submenuEntry;
 	}
 
 	/**
 	 * Complete the hyperlinks with the current root url (https://www.ozwillo-dev.eu, https://www.ozwillo-preprod.eu, etc)
-	 * @param entry
+	 *
 	 * @return SiteMapMenuItem
 	 */
 	private SiteMapMenuItem setHyperLinks(SiteMapMenuItem entry) {
 		if (entry == null) return new SiteMapMenuItem();
-		if (entry.getUrl().startsWith("/") || entry.getUrl().isEmpty()){
+
+		// complete relative URLs
+		if (entry.getUrl().startsWith("/") || entry.getUrl().isEmpty()) {
 			entry.setUrl(webHome + entry.getUrl());
 		}
 
 		// get root url to compute the complete img url
 		try {
-			if ( !entry.getUrl().isEmpty() && entry.getImg_url().startsWith("/") ){
+			if (!entry.getUrl().isEmpty() && entry.getImgUrl().startsWith("/")) {
 				URL aURL = new URL(entry.getUrl());
 				String url = aURL.getProtocol() + "://" + aURL.getAuthority() ;
-				entry.setImg_url(url + entry.getImg_url());
+				entry.setImgUrl(url + entry.getImgUrl());
 			}
 		} catch (MalformedURLException e) {
 			logger.error("An error as occurred with URL {"+entry.getUrl()+"}. Error: " + e.getMessage());
 		}
+
+		entry.getItems().forEach(this::setHyperLinks);
 
 		return entry;
 	}
@@ -95,12 +91,9 @@ public class SiteMapService {
 		headerRepository.save(siteMapheadaer);
 	}
 
-
-	// Footer
-
 	@Cacheable(value = "sitemap", key = "#language")
 	public List<SiteMapEntry> getSiteMapFooter(String language) {
-		SiteMap siteMap = repository.findByLanguage(language);
+		SiteMap siteMap = footerRepository.findByLanguage(language);
 		if (siteMap != null) {
 			return siteMap.getEntries()
 					.stream()
@@ -119,19 +112,16 @@ public class SiteMapService {
 		return entry;
 	}
 
-
 	@CacheEvict(value = "sitemap", key = "#language")
 	public void updateSiteMapFooter(String language, SiteMap siteMap) {
-		SiteMap old = repository.findByLanguage(language);
+		SiteMap old = footerRepository.findByLanguage(language);
 		if (old != null) {
-			repository.delete(old.getId());
+			footerRepository.delete(old.getId());
 		}
 
 		siteMap.setLanguage(language);
 		siteMap.setId(null);
 
-		repository.save(siteMap);
+		footerRepository.save(siteMap);
 	}
-
-
 }

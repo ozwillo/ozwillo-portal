@@ -103,7 +103,7 @@ scripts:
   alert: true
   button: true
   carousel: true
-  collapse: false
+  collapse: true
   dropdown: true
   modal: true
   tooltip: true

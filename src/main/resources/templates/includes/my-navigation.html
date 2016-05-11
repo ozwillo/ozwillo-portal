@@ -14,7 +14,7 @@
             <ul class="nav navbar-nav">
                 <li data-th-each="item : ${navigation}">
                     <a href="#" data-th-class="${item.isActive()}? 'active' : ''" data-th-href="@{'/my/' + ${item.id}}">
-                        <img data-th-src="@{'/img/new/' + ${item.id} + '.png'}"
+                        <img data-th-src="@{'/img/' + ${item.id} + '.png'}"
                              alt="" data-th-alt="#{'my.' + ${item.id}}"/>
                         <span data-th-text="#{'my.' + ${item.id}}">Menu</span>
                     </a>
@@ -22,22 +22,20 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li>
-                    <a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store|}" class="nocache">
-                        <img data-th-src="@{/img/new/icone-catalogue.png}"
-                             src="../../public/img/new/icone-catalogue.png" alt=""/>
+                    <a href="#" data-th-href="@{|/${currentLanguage.locale.language}/store|}">
+                        <img data-th-src="@{/img/store-icon-white.png}" alt="Store icon"/>
                         <span data-th-text="#{ui.appstore}">Apps Store</span>
                     </a>
                 </li>
                 <li>
-                    <a href="https://opendata.ozwillo.com/fr/" class="nocache">
-                        <img data-th-src="@{/img/new/data-white.png}" src="../../public/img/new/data-white.png"
-                             alt=""/>
+                    <a href="https://opendata.ozwillo.com/fr/">
+                        <img data-th-src="@{/img/data-icon-white.png}" alt="Data icon"/>
                         <span data-th-text="#{ui.datastore}">Données</span>
                     </a>
                 </li>
                 <li>
-                    <a href="#" class="nocache redColor" data-th-href="@{/logout}">
-                        <img data-th-src="@{/img/new/close.png}" src="../../public/img/new/close.png" alt=""/>
+                    <a href="#" data-th-href="@{/logout}">
+                        <img data-th-src="@{/img/close.png}" alt="Logout icon"/>
                         <span data-th-text="#{ui.logout}">Déconnexion</span>
                     </a>
                 </li>

@@ -1,9 +1,11 @@
 package org.oasis_eu.portal.core.mongo.model.sitemap;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 /**
  * User: lucaterori
@@ -13,17 +15,20 @@ public class SiteMapMenuItem implements Serializable {
 	private static final long serialVersionUID = 5598242680668173525L;
 
 	@JacksonXmlProperty(localName = "type", isAttribute = true)
-	private String type= "";
+	private String type = "";
 
 	@JacksonXmlProperty(localName = "img_src", isAttribute = true)
-	private String img_url= "";
+	private String imgUrl = "";
 
 	@JacksonXmlProperty(localName = "href", isAttribute = true)
 	private String url = "";
 
-	@JacksonXmlText
+	@JacksonXmlProperty(localName = "label", isAttribute = true)
 	private String label = "";
 
+	@JacksonXmlElementWrapper(useWrapping = false)
+	@JacksonXmlProperty(localName = "item")
+	private List<SiteMapMenuItem> items = new ArrayList<>();
 
 	public String getType() {
 		return type;
@@ -33,12 +38,14 @@ public class SiteMapMenuItem implements Serializable {
 		this.type = type;
 	}
 
-	public String getImg_url() {
-		return img_url;
+	public boolean isSubmenu() { return "submenu".equals(this.type); }
+
+	public String getImgUrl() {
+		return imgUrl;
 	}
 
-	public void setImg_url(String img_url) {
-		this.img_url = img_url;
+	public void setImgUrl(String imgUrl) {
+		this.imgUrl = imgUrl;
 	}
 
 	public String getUrl() {
@@ -57,14 +64,23 @@ public class SiteMapMenuItem implements Serializable {
 		this.label = label;
 	}
 
+	public List<SiteMapMenuItem> getItems() {
+		return items;
+	}
+
+	public void setItems(List<SiteMapMenuItem> items) {
+		this.items = items;
+	}
+
 	@Override
 	public String toString() {
-
-		return "SiteMapMenuItem: { type: " + type
-				+ ", label : " +label
-				+ ", img_url : " + img_url
-				+ ", url : " + url
-				+ "}";
+		return "SiteMapMenuItem{" +
+			"type='" + type + '\'' +
+			", imgUrl='" + imgUrl + '\'' +
+			", url='" + url + '\'' +
+			", label='" + label + '\'' +
+			", items=" + items +
+			'}';
 	}
 
 }

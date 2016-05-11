@@ -47,11 +47,7 @@ npm install
 npm run start
 ```
 
-Only once after install, change in the https://github.com/ozwillo/ozwillo-portal/blob/master/portal-parent/ozwillo-portal-front/src/main/resources/application.yml 
-the ```web.sitemap.refresh: 0 * * * * ?``` line in order to fill MongoDB with required header & footer cached data. Once 
-it is filled (it can be seen in the logs, wait 2 minutes, so that it will have been filled twice), change it back.
-
-And finally open http://localhost:8080/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
+Open http://localhost:8080/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
 
 NB. to be used, Portal features require Kernel and Datacore servers to be deployed and configured in [application.yml](https://github.com/ozwillo/ozwillo-portal/blob/master/src/main/resources/application.yml).
 You can deploy your own, or [ask on the ML](https://github.com/ozwillo/ozwillo-issues#other-information-channels) to get access to the online Ozwillo dev environment.
