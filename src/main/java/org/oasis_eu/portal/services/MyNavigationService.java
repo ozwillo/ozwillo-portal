@@ -9,10 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -40,8 +37,9 @@ public class MyNavigationService {
 	public Map<Integer, List<SiteMapEntry>> getSiteMapFooter() {
 		List<SiteMapEntry> siteMapEntries =
 			siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
+		// until the website is translated to other supported languages, fallback to French
 		if (siteMapEntries == null)
-			return Collections.emptyMap();
+			siteMapEntries = siteMapService.getSiteMapFooter(Locale.FRENCH.getLanguage());
 
 		return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
 	}
