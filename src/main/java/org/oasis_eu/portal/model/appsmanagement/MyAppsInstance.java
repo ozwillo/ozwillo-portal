@@ -28,6 +28,9 @@ public class MyAppsInstance {
 	@JsonProperty("status_change_requester_label")
 	String statusChangeRequesterLabel;
 
+	// Default constructor is needed by Jackson to instantiate object from JSON
+	public MyAppsInstance() {}
+
 	public MyAppsInstance(ApplicationInstance applicationInstance) {
 		this.applicationInstance = applicationInstance;
 	}
