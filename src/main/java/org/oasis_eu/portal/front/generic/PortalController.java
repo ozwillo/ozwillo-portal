@@ -58,6 +58,9 @@ abstract public class PortalController {
 	@Value("${web.home}")
 	private String webHome;
 
+	@Value("${opendata.url}")
+	private String opendataUrl;
+
 	@Value("${application.devmode:false}")
 	private boolean devmode;
 
@@ -71,6 +74,11 @@ abstract public class PortalController {
 	@ModelAttribute("webHome")
 	public String getWebHome() {
 		return webHome;
+	}
+
+	@ModelAttribute("opendataUrl")
+	public String getOpendataUrl() {
+		return opendataUrl;
 	}
 
 	@ModelAttribute("devmode")

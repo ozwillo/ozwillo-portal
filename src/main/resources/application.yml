@@ -121,6 +121,8 @@ datacore:
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 
+opendata:
+  url: https://opendata-preprod.data-ozwillo.org
 
 persistence:
   mongodatabase: portal
