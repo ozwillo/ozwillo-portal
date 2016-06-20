@@ -12,6 +12,7 @@ import t from '../util/message';
 import { Modal } from '../util/bootstrap-react.jsx';
 import { SearchOrganizationModal } from './search-organization.jsx';
 import { CreateOrModifyOrganizationModal } from './create-or-modify-organization.jsx';
+import { Loading } from '../util/loading.jsx'
 
 var MyNetwork = React.createClass({
     openSearchOrgDialog: function() {
@@ -145,8 +146,37 @@ var Organization = React.createClass({
     },
     getInitialState: function() {
         return {
-            invite: { email: "", errors: [] }
+            invite: { email: "", errors: [] },
+            members: [],
+            pending_members: []
         };
+    },
+    componentDidMount: function() {
+        this.loadMembers();
+        if (this.props.org.admin)
+            this.loadPendingMembers();
+    },
+    loadMembers: function () {
+        $.ajax({
+            url: network_service + "/organization/" + this.props.org.id + "/members",
+            dataType: 'json',
+            type: 'get'
+        }).done(data => {
+            this.setState({ members: data })
+        }).fail((xhr, status, err) => {
+            console.error(status, err.toString());
+        })
+    },
+    loadPendingMembers: function () {
+        $.ajax({
+            url: network_service + "/organization/" + this.props.org.id + "/pending-members",
+            dataType: 'json',
+            type: 'get'
+        }).done(data => {
+            this.setState({ pending_members: data })
+        }).fail((xhr, status, err) => {
+            console.error(status, err.toString());
+        })
     },
     updateInvitation: function(event) {
         this.setState({ invite: { email: event.target.value, errors: [] } });
@@ -166,10 +196,9 @@ var Organization = React.createClass({
                 success: function(data) {
                     var state = this.state;
                     state.invite = {email: "", errors: []};
-                    this.refs.inviteDialog.close();
-                    this.props.reload();
                     this.setState(state);
-
+                    this.refs.inviteDialog.close();
+                    this.loadPendingMembers();
                 }.bind(this),
                 error: function(xhr, status, err) {
                     console.error(status, err.toString());
@@ -194,7 +223,7 @@ var Organization = React.createClass({
             contentType: 'application/json',
             data: JSON.stringify({id: pMember.id, email: pMember.email, etag: pMember.pending_membership_etag}),
             success: function() {
-                this.props.reload();
+                this.setState({ pending_members: this.state.pending_members.filter(pm => pm.id != pMember.id) })
             }.bind(this),
             error: function(xhr, status, err) {
                 console.error(status, err.toString());
@@ -208,6 +237,7 @@ var Organization = React.createClass({
             contentType: 'application/json',
             data: JSON.stringify({organization: this.props.org.id}),
             success: function() {
+                // TODO : do not reload all orgs just to remove one from the list
                 this.props.reload();
             }.bind(this),
             error: function(xhr, status, err) {
@@ -241,34 +271,40 @@ var Organization = React.createClass({
             if (event) {
                 event.preventDefault();
             }
-            var org = Object.assign({}, this.props.org,
-                { members: this.props.org.members.filter(m => m.id != member.id) });
-            this.props.updateOrganization(org);
+            $.ajax({
+                url: network_service + "/organization/" + this.props.org.id + "/membership/" + member.id,
+                type: 'delete'
+            }).done(() => {
+                this.setState({ members: this.state.members.filter(m => m.id != member.id) })
+            }).fail((xhr, status, err) => {
+                console.error(status, err.toString());
+            })
         }.bind(this);
     },
-    updateMember: function (updatedMmember) {
-        var members = this.props.org.members;
-        members.forEach(member => {
-            if (member.id == updatedMmember.id) {
-                member.admin = updatedMmember.admin;
-            }
-        });
-        var org = Object.assign({}, this.props.org, { members: members });
-        this.props.updateOrganization(org);
+    updateMember: function (member, admin) {
+        $.ajax({
+            url: network_service + "/organization/" + this.props.org.id + "/membership/" + member.id,
+            type: 'post',
+            data: { admin: admin }
+        }).fail((xhr, status, err) => {
+            console.error(status, err.toString());
+        })
     },
     renderMembers: function() {
-        if (this.props.org.admin) {
-            return this.props.org.members.map(member =>
+        if (this.state.members.length === 0) {
+            return <Loading className="organization-member-row"/>
+        } else if (this.props.org.admin) {
+            return this.state.members.map(member =>
                     <Member key={member.id} member={member}
                             remove={this.removeMember} updateMember={this.updateMember}/>
             );
         } else {
-            return this.props.org.members.map(member => <ReadOnlyMember key={member.id} member={member} />);
+            return this.state.members.map(member => <ReadOnlyMember key={member.id} member={member} />);
         }
     },
     renderPendingMemberships: function() {
         if (this.props.org.admin) {
-            return this.props.org.pendingMemberships.map(pMember =>
+            return this.state.pending_members.map(pMember =>
                 <PendingMembership key={pMember.id} pMember={pMember}
                         removeInvitation={this.removeInvitation}  />
             );
@@ -325,9 +361,7 @@ var Organization = React.createClass({
                     <button type="button" key="invite" className="btn btn-default btn-sm btn-line" onClick={this.openInvitation}>{t('my.network.invite')}</button>
                 );
 
-                if (this.props.org.members.filter(function (m) {
-                    return m.admin;
-                }).length != 1) {
+                if (this.state.members.length > 0 && this.state.members.filter(m => m.admin).length != 1) {
                     // admins can leave only if there will still be another admin
                     buttons.push(
                         <button type="button" key="leave" className="btn btn-warning btn-sm btn-line" onClick={this.confirmLeave}>{t('my.network.leave')}</button>
@@ -397,33 +431,29 @@ const PendingMembership = ({pMember, removeInvitation}) =>
 
 var Member = React.createClass({
     getInitialState: function() {
-        return {edit:false, member: this.props.member};
+        return {
+            edit: false,
+            admin: this.props.member.admin
+        };
     },
     toggleEdit: function (event) {
         if (event != null) {
             event.preventDefault();
         }
-        if (this.state.edit) {
-            this.setState({edit:false, member: JSON.parse(JSON.stringify(this.props.member))});
-        } else {
-            this.setState({edit:true, member: JSON.parse(JSON.stringify(this.props.member))});
-        }
+        this.setState({ edit: !this.state.edit })
     },
     save: function (event) {
         event.preventDefault();
-        this.props.updateMember(this.state.member);
+        this.props.updateMember(this.props.member, this.state.admin);
         this.toggleEdit(null);
     },
     changeUserRole: function(event) {
-        var member = this.state.member;
-        member.admin = event.target.value === 'admin';
-        this.setState({ member: member});
+        this.setState({ admin: event.target.value === 'admin' });
     },
     renderAdmin: function() {
-        var admin = this.state.member.admin;
-        var edit = this.state.edit;
+        var admin = this.state.admin;
 
-        if (!edit) {
+        if (!this.state.edit) {
             return admin ? t('my.network.admin') : t('my.network.user');
         } else {
             return (
@@ -437,7 +467,7 @@ var Member = React.createClass({
         }
     },
     render: function() {
-        var member = this.state.member;
+        var member = this.props.member;
 
         var actions = null;
         if (! member.self) {
