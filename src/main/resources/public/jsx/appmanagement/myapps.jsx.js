@@ -12,6 +12,7 @@ import ReactDOM from 'react-dom';
 import { Modal } from '../util/bootstrap-react.jsx';
 import { Service } from './service-settings.jsx';
 import { ApplicationUsersManagement } from './instance-users.jsx';
+import { Loading } from '../util/loading.jsx'
 
 var moment = require('moment');
 
@@ -39,11 +40,7 @@ var MyApps = React.createClass({
     },
     render: function () {
         if (this.state.loading) {
-            return (
-                <p className="text-center">
-                    <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
-                </p>
-            );
+            return <Loading />
         }
         var auths = this.state.authorities.map(function (auth) {
             return (

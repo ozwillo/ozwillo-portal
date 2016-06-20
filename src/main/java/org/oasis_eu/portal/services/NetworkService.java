@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -80,59 +81,26 @@ public class NetworkService {
 	}
 
 	private UIOrganization toUIOrganization(UserMembership userMembership) {
-		UIOrganization org = new UIOrganization();
 		String organizationId = userMembership.getOrganizationId();
 		if (organizationId == null) {
+			logger.warn("User membership {} has no organization", userMembership.getMembershipUri());
 			return null;
 		}
-		org.setId(organizationId);
-		String organizationName = userMembership.getOrganizationName();
-		if (organizationName == null) {
-			return null;
-		}
-		org.setName(organizationName);
-		org.setAdmin(userMembership.isAdmin());
 
 		Organization organization = organizationStore.find(organizationId);
-		if (organization != null) {
-			fillUIOrganization(org, organization);
-		} else {
+		if (organization == null) {
+			logger.warn("Unable to retrieve organization {}", organizationId);
 			return null;
 		}
 
-		if (userMembership.isAdmin()) {
-			// Add organization members :
-			org.setMembers(userDirectory.getMembershipsOfOrganization(organizationId).stream()
-					.map(this::toUIOrganizationMember)
-					// NB. self is among returned admins
-					.sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1
-							: member1.getNonNullName().compareToIgnoreCase(member2.getNonNullName()))) // #171 old accounts may not have a name before it was required
-					.collect(Collectors.toList()));
-
-			// Add pending organization membership invitation
-			org.setPendingMemberships(userDirectory
-					.getPendingOrgMembership(organizationId)
-					.stream()
-					.map(this::toUIPendingOrgMembership)
-					// NB. Organize first by admin right, then by email
-					.sorted((member1, member2) -> member1.isAdmin() ? -1 : (member2.isAdmin() ? 1 : member1.getEmail()
-							.compareToIgnoreCase(member2.getEmail()))).collect(Collectors.toList()));
-		} else {
-			// return self in first position
-			// which was missing : #159 Possibility to see who are the admins of an organization one belongs to
-			// followed by admins :
-			org.setMembers(Stream.concat(Stream.of(selfNonAdminUIOrganizationMember()),
-					userDirectory.getAdminsOfOrganization(organizationId).stream()
-							.map(this::toUIOrganizationMember))
-							// NB. self is already in first position, so ne need to sort
-							.collect(Collectors.toList())
-			);
-		}
+		UIOrganization org = fillUIOrganization(organization);
+		org.setAdmin(userMembership.isAdmin());
 
 		return org;
 	}
 
-	private void fillUIOrganization(UIOrganization uiOrg, Organization organization) {
+	private UIOrganization fillUIOrganization(Organization organization) {
+		UIOrganization uiOrg = new UIOrganization();
 		uiOrg.setId(organization.getId());
 		uiOrg.setName(organization.getName());
 		uiOrg.setType(organization.getType());
@@ -140,19 +108,17 @@ public class NetworkService {
 			uiOrg.setTerritoryId(organization.getTerritoryId());
 			uiOrg.setTerritoryLabel(String.valueOf(organization.getTerritoryId())); // TODO if any get label from cache with user locale (?????????!!!!!!!!!!!!!!!!)
 		}
-		if (organization.getDcId() != null) {
-			uiOrg.setDcId(organization.getDcId());
-		}
+		uiOrg.setDcId(organization.getDcId());
 		uiOrg.setStatus(organization.getStatus());
-		if (organization.getStatusChanged() != null) {
-			uiOrg.setStatusChanged(organization.getStatusChanged());
-		}
+		uiOrg.setStatusChanged(organization.getStatusChanged());
 		uiOrg.setDeletionPlanned(computeDeletionPlanned(organization));
 
 		if (organization.getStatusChangeRequesterId() != null) {
 			uiOrg.setStatusChangeRequesterId(organization.getStatusChangeRequesterId());
 			uiOrg.setStatusChangeRequesterLabel(getUserName(organization.getStatusChangeRequesterId(), null)); // TODO protected ?? then from membership
 		}
+
+		return uiOrg;
 	}
 
 	private Instant computeDeletionPlanned(Organization organization) {
@@ -160,14 +126,59 @@ public class NetworkService {
 				? new DateTime(organization.getStatusChanged()) // the user already has clicked on "delete".
 				: new DateTime(); // when the user will click on delete, the deletion planned date
 				// will be right even without refreshing the organization first (i.e. passing again in this method).
-		Instant deletionPlanned = possibleDeletionAskedDate.plusDays(organizationDaysTillDeletedFromTrash).toInstant();
-		return deletionPlanned;
+		return possibleDeletionAskedDate.plusDays(organizationDaysTillDeletedFromTrash).toInstant();
+	}
+
+	public List<UIOrganizationMember> getOrganizationMembers(String organizationId) {
+		UserInfo currentUser = userInfoService.currentUser();
+		List<OrgMembership> orgAdmins = userDirectory.getAdminsOfOrganization(organizationId);
+		boolean isAdmin =
+			orgAdmins.stream().anyMatch(orgMembership -> orgMembership.getAccountId().equals(currentUser.getUserId()));
+
+		if (isAdmin) {
+			// Add organization members :
+			return userDirectory.getMembershipsOfOrganization(organizationId)
+				.stream()
+				.map(this::toUIOrganizationMember)
+				// NB. self is among returned admins
+				.sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1
+					: member1.getNonNullName().compareToIgnoreCase(member2.getNonNullName()))) // #171 old accounts may not have a name before it was required
+				.collect(Collectors.toList());
+		} else {
+			// return self in first position
+			// which was missing : #159 Possibility to see who are the admins of an organization one belongs to
+			// followed by admins
+			return Stream.concat(
+					Stream.of(selfNonAdminUIOrganizationMember()),
+					orgAdmins.stream().map(this::toUIOrganizationMember))
+				// NB. self is already in first position, so ne need to sort
+				.collect(Collectors.toList());
+		}
+	}
+
+	public List<UIPendingOrganizationMember> getOrganizationPendingMembers(String organizationId) {
+		UserInfo currentUser = userInfoService.currentUser();
+		List<OrgMembership> orgAdmins = userDirectory.getAdminsOfOrganization(organizationId);
+		boolean isAdmin =
+			orgAdmins.stream().anyMatch(orgMembership -> orgMembership.getAccountId().equals(currentUser.getUserId()));
+
+		if (isAdmin) {
+			return userDirectory
+				.getPendingOrgMembership(organizationId)
+				.stream()
+				.map(this::toUIPendingOrgMembership)
+				// NB. Organize first by admin right, then by email
+				.sorted((member1, member2) -> member1.isAdmin() ? -1 : (member2.isAdmin() ? 1 : member1.getEmail()
+					.compareToIgnoreCase(member2.getEmail())))
+				.collect(Collectors.toList());
+		} else {
+			return null;
+		}
 	}
 
 	/**
 	 * Used when non admin, in order to return self in first position
 	 * which was missing : #159 Possibility to see who are the admins of an organization one belongs to
-	 * @return
 	 */
 	private UIOrganizationMember selfNonAdminUIOrganizationMember() {
 		UserInfo currentUser = userInfoService.currentUser();
@@ -188,6 +199,16 @@ public class NetworkService {
 		return member;
 	}
 
+	private UIPendingOrganizationMember toUIPendingOrgMembership(PendingOrgMembership pendingOrgMembership) {
+		UIPendingOrganizationMember pMembership = new UIPendingOrganizationMember();
+		pMembership.setId(pendingOrgMembership.getId());
+		pMembership.setEmail(pendingOrgMembership.getEmail());
+		pMembership.setAdmin(pendingOrgMembership.isAdmin());
+		pMembership.setPending_membership_etag(pendingOrgMembership.getPending_membership_etag());
+		pMembership.setPending_membership_uri(pendingOrgMembership.getPending_membership_uri());
+
+		return pMembership;
+	}
 
 	public void updateOrganizationInfo(UIOrganization uiOrganization){
 		Organization org = organizationStore.find(uiOrganization.getId());
@@ -202,35 +223,36 @@ public class NetworkService {
 		}
 	}
 
-	/**
-	 * Modify Organization info and remove and update valid Org Memberships
-	 *
-	 * @see #updateOrganizationInfo(UIOrganization)
-	 */
-	public void updateOrganization(UIOrganization uiOrganization) {
-		this.updateOrganizationInfo(uiOrganization);
+	private Optional<OrgMembership> getOrgMembership(String organizationId, String accountId) {
+		List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(organizationId);
 
-		List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(uiOrganization.getId());
-
-		// note: there can be no added users (we invite them by email directly), except for the creator user.
-
-		// NB if is only one member it could be the last one assigned (admin?), so we leave it
-		if(memberships.size()>1){
-			// find the members to remove.
-			List<OrgMembership> toBeRemoved = memberships.stream().filter(om ->
-						uiOrganization.getMembers().stream().noneMatch(member -> om.getAccountId().equals(member.getId()))
-					).collect(Collectors.toList());
-			toBeRemoved.forEach(om -> userDirectory.removeMembership(om, uiOrganization.getId()));
-
-			// then the members to change (note: we only change the "admin" flag for now)
-			List<OrgMembership> toBeChanged = memberships.stream().filter(om ->
-							uiOrganization.getMembers().stream().anyMatch(member -> om.getAccountId().equals(member.getId()) && (member.isAdmin() != om.isAdmin()))
-			).collect(Collectors.toList());
-			toBeChanged.forEach(om -> userDirectory.updateMembership(om, !om.isAdmin(), uiOrganization.getId()));
-		}
-
+		return memberships.stream()
+			.filter(orgMembership1 -> orgMembership1.getAccountId().equals(accountId))
+			.findFirst();
 	}
 
+	public void removeMember(String organizationId, String accountId) {
+		Optional<OrgMembership> orgMembership = getOrgMembership(organizationId, accountId);
+
+		if (!orgMembership.isPresent()) {
+			logger.warn("Membership of account {} was not found in organization {}", accountId, organizationId);
+			return;
+		}
+
+		userDirectory.removeMembership(orgMembership.get(), organizationId);
+	}
+
+	public void updateMember(String organizationId, String accountId, boolean admin) {
+		Optional<OrgMembership> orgMembership = getOrgMembership(organizationId, accountId);
+
+		if (!orgMembership.isPresent()) {
+			logger.warn("Membership of account {} was not found in organization {}", accountId, organizationId);
+			return;
+		}
+
+		logger.debug("Setting admin {} to account {}", admin, accountId);
+		userDirectory.updateMembership(orgMembership.get(), admin, organizationId);
+	}
 
 	public String setOrganizationStatus(UIOrganization uiOrganization) {
 		Organization org = organizationStore.find(uiOrganization.getId());
@@ -438,14 +460,7 @@ public class NetworkService {
 	public UIOrganization searchOrganizationByDCId(String dcIc) {
 		// Search for existing organization having "GET /d/org?dc_id=xx"
 		Organization org = organizationStore.findByDCID(dcIc);
-
-		if(org != null){
-			UIOrganization result = new UIOrganization();
-			fillUIOrganization(result, org);
-			return result;
-		}
-
-		return null;
+		return org != null ? fillUIOrganization(org) : null;
 	}
 
 	public UIOrganization createOrganization(String name, String type, URI territoryId, URI dcId) {
@@ -465,23 +480,9 @@ public class NetworkService {
 
 		org = organizationStore.create(org);
 
-		UIOrganization result = new UIOrganization();
-		fillUIOrganization(result, org);
+		UIOrganization result = fillUIOrganization(org);
 		result.setAdmin(true);
-		result.setMembers(Collections.emptyList());
 
 		return result;
 	}
-
-	private UIPendingOrganizationMember toUIPendingOrgMembership(PendingOrgMembership pendingOrgMembership) {
-		UIPendingOrganizationMember pMembership = new UIPendingOrganizationMember();
-		pMembership.setId(pendingOrgMembership.getId());
-		pMembership.setEmail(pendingOrgMembership.getEmail());
-		pMembership.setAdmin(pendingOrgMembership.isAdmin());
-		pMembership.setPending_membership_etag(pendingOrgMembership.getPending_membership_etag());
-		pMembership.setPending_membership_uri(pendingOrgMembership.getPending_membership_uri());
-
-		return pMembership;
-	}
-
 }

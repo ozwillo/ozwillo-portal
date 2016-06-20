@@ -1,9 +1,5 @@
 package org.oasis_eu.portal.front.my.network;
 
-import static org.springframework.web.bind.annotation.RequestMethod.GET;
-import static org.springframework.web.bind.annotation.RequestMethod.HEAD;
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
-
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +9,8 @@ import javax.validation.constraints.NotNull;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.network.UIOrganization;
+import org.oasis_eu.portal.model.network.UIOrganizationMember;
+import org.oasis_eu.portal.model.network.UIPendingOrganizationMember;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.NetworkService.UserGeneralInfo;
 import org.oasis_eu.portal.services.dc.organization.DCOrganization;
@@ -25,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.StringUtils;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +32,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+
+import static org.springframework.web.bind.annotation.RequestMethod.*;
 
 /**
  * User: schambon Date: 10/24/14
@@ -47,8 +46,10 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 
 	@Autowired
 	private NetworkService networkService;
+
 	@Autowired
 	private OrganizationService organizationService;
+
 	@Autowired
 	private DCOrganizationService dcOrganizationService;
 
@@ -59,13 +60,6 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 		logger.debug("Found organizations: {}", organizations);
 
 		return organizations;
-	}
-
-	@RequestMapping(value = "/organization/{organizationId}", method = POST)
-	public void updateOrganization(@RequestBody @Valid UIOrganization organization, Errors errors) {
-		logger.debug("Updating organization {}", organization);
-
-		networkService.updateOrganization(organization);
 	}
 
 	@RequestMapping(value = "/invite/{organizationId}", method = POST)
@@ -91,7 +85,17 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 		}
 
 		networkService.removeInvitation(organizationId, invitation.id, invitation.etag);
+	}
 
+	@RequestMapping(value = "/organization/{organizationId}/membership/{accountId}", method = DELETE)
+	public void removeMember(@PathVariable String organizationId, @PathVariable String accountId) {
+		networkService.removeMember(organizationId, accountId);
+	}
+
+	@RequestMapping(value = "/organization/{organizationId}/membership/{accountId}", method = POST)
+	public void updateMember(@PathVariable String organizationId, @PathVariable String accountId,
+							 @RequestParam String admin) {
+		networkService.updateMember(organizationId, accountId, Boolean.valueOf(admin));
 	}
 
 	@RequestMapping(value = "/leave", method = POST)
@@ -179,6 +183,15 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 		return networkService.setOrganizationStatus(organization);
 	}
 
+	@RequestMapping(value = "/organization/{organizationId}/members", method = GET)
+	public List<UIOrganizationMember> getOrganizationMembers(@PathVariable String organizationId) {
+		return networkService.getOrganizationMembers(organizationId);
+	}
+
+	@RequestMapping(value = "/organization/{organizationId}/pending-members", method = GET)
+	public List<UIPendingOrganizationMember> getOrganizationPendingMembers(@PathVariable String organizationId) {
+		return networkService.getOrganizationPendingMembers(organizationId);
+	}
 
 	public static class InvitationRequest {
 		@JsonProperty

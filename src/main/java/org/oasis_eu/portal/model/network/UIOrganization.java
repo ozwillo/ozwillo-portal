@@ -63,12 +63,6 @@ public class UIOrganization {
 	@JsonProperty
 	boolean admin;
 
-	@JsonProperty
-	List<UIOrganizationMember> members = new ArrayList<>();
-
-	@JsonProperty
-	List<UIPendingOrganizationMember> pendingMemberships = new ArrayList<>();
-
 	public String getId() {
 		return id;
 	}
@@ -99,14 +93,6 @@ public class UIOrganization {
 
 	public void setAdmin(boolean admin) {
 		this.admin = admin;
-	}
-
-	public List<UIOrganizationMember> getMembers() {
-		return members;
-	}
-
-	public void setMembers(List<UIOrganizationMember> members) {
-		this.members = members;
 	}
 
 	public URI getTerritoryId() {
@@ -173,14 +159,6 @@ public class UIOrganization {
 		this.statusChangeRequesterLabel = statusChangeRequesterLabel;
 	}
 
-	public List<UIPendingOrganizationMember> getPendingMemberships() {
-		return pendingMemberships;
-	}
-
-	public void setPendingMemberships(List<UIPendingOrganizationMember> pendingMemberships) {
-		this.pendingMemberships = pendingMemberships;
-	}
-
 	@Override
 	public String toString() {
 		return "{" +
@@ -191,8 +169,6 @@ public class UIOrganization {
 				", dcId:" + dcId +
 				", status:" + status +
 				", admin:" + admin +
-				", members:" + members +
-				", pending_memberships:" + pendingMemberships +
 				'}';
 	}
 }
