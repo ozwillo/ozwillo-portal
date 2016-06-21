@@ -61,7 +61,7 @@ public class DCOrganizationService {
 	public DCOrganization searchOrganization(String lang, String country_uri, String sector, String regNumber) {
 
 		DCResource resource = fetchDCOrganizationResource(country_uri, sector, regNumber);
-		return resource != null ? toDCOrganization(resource, lang) : new DCOrganization();
+		return resource != null ? toDCOrganization(resource, lang) : null;
 	}
 
 	public List<DCOrganization> searchOrganizations(String lang, String country_uri, String query) {

@@ -49,21 +49,31 @@ public class OrganizationService {
 	private String defaultIconUrl;
 
 
-	/** Search an organization in DC and Kernel to validate its modification */
-	public DCOrganization findOrganization(String country, String countryUri, String sector, String legalName, String regNumber)
-	{
+	/**
+	 * Search an organization in DC and Kernel to validate its creation / modification in the portal, and bootstrap
+	 * a new one if not found in DC and Kernel
+	 */
+	public DCOrganization findOrBootstrapOrganization(String country, String countryUri, String sector, String legalName,
+													  String regNumber) {
 		String localLang = RequestContextUtils.getLocale(request).getLanguage();
 		String dcSectorType = DCOrganizationType.getDCOrganizationType(sector).name();
 		DCOrganization dcOrganization = dcOrganizationService.searchOrganization(localLang, countryUri, dcSectorType, regNumber);
+		if (dcOrganization == null) {
+			// An organization who has changed of regNumber is not retrieved with a classical search
+			// So try to load it directly instead
+			Optional<DCOrganization> optOrg =
+				dcOrganizationService.findOrganizationById(dcOrganizationService.generateDcId(countryUri, regNumber), localLang);
+			if (optOrg.isPresent())
+				dcOrganization = optOrg.get();
+		}
 
-		if(dcOrganization == null || !dcOrganization.isExist()){ // Organization doesn't exist in DC
-			logger.info("Organization doesn't exist in DC. Letting user create one with given entries.");
+		if (dcOrganization == null) { // Organization doesn't exist in DC
+			logger.info("Organization doesn't exist in DC, letting user create one with given entries");
 			// set an empty DCOrganization to be filled by user then Create Organization in Kernel when creating
 
 			String dcId = dcOrganizationService.generateDcId(countryUri, regNumber);
-			UIOrganization uiOrganization = networkService.searchOrganizationByDCId(dcId);
-			if(uiOrganization != null){
-				logger.debug("It already exist in kernel, so cant be re-created.");
+			if (networkService.searchOrganizationByDCId(dcId) != null) {
+				logger.warn("It already exists in kernel (it shouldn't as it does not exist in DC !), so cant be re-created.");
 				return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
 			}
 
@@ -75,16 +85,17 @@ public class OrganizationService {
 			dcOrganization.setCountry(country);
 			return dcOrganization;
 
-		}else {
-			UIOrganization uiOrganization = networkService.searchOrganizationByDCId(dcOrganization.getId());
-			if( uiOrganization == null){ // found in DC but not in KERNEL, so modification is allowed
+		} else {
+			List<String> organizationAliases = dcOrganizationService.getOrganizationAliases(dcOrganization.getId());
+			UIOrganization uiOrganization = networkService.searchOrganizationByDCIdAndAliases(organizationAliases);
+			if (uiOrganization == null) { // found in DC but not in KERNEL, so modification is allowed
 				logger.info("Organization found in DC but not in KERNEL, so modification by the user is allowed.");
 				//Set the sector type supported by the UI
 				dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name());
 				dcOrganization.setCountry_uri(countryUri);
 				dcOrganization.setCountry(country);
 				return dcOrganization; // there is no owner for the data, so can be modified(in DC) & created (in kernel)
-			}else{
+			} else {
 				logger.debug("There is an owner for this data, so it should show a message to the user in front-end");
 				return null; // there is an owner for this data, so it should show the message to "Ask a colleague to invite you" in front-end
 			}
@@ -207,12 +218,7 @@ public class OrganizationService {
 		}
 
 		List<String> organizationAliases = dcOrganizationService.getOrganizationAliases(dcOrganization.getId());
-		UIOrganization knOrganization = null;
-		for (String organizationAlias : organizationAliases) {
-			knOrganization = networkService.searchOrganizationByDCId(organizationAlias);
-			if (knOrganization != null)
-				break;
-		}
+		UIOrganization knOrganization = networkService.searchOrganizationByDCIdAndAliases(organizationAliases);
 
 		if (knOrganization == null) {
 			// org not found in kernel

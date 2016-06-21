@@ -107,15 +107,14 @@ public class NetworkAJAXServices extends BaseAJAXServices {
 
 	@RequestMapping(value = "/search-organization", method = GET)
 	public DCOrganization searchOrganization(
-			@RequestParam(required=true) String country,
-			@RequestParam(required=true) String country_uri,
-			@RequestParam(required=true) String legal_name,
-			@RequestParam(required=true) String tax_reg_num,
-			@RequestParam(required=true) String sector_type
-	) {
-		logger.debug("Searching for organization {} from {} of type {}", legal_name, country+"["+country_uri+"]", sector_type);
+			@RequestParam String country,
+			@RequestParam String country_uri,
+			@RequestParam String legal_name,
+			@RequestParam String tax_reg_num,
+			@RequestParam String sector_type) {
+		logger.debug("Searching for organization {} from {} of type {}", legal_name, country+" ["+country_uri+"]", sector_type);
 
-		return organizationService.findOrganization(country,country_uri, sector_type, legal_name, tax_reg_num);
+		return organizationService.findOrBootstrapOrganization(country, country_uri, sector_type, legal_name, tax_reg_num);
 	}
 
 	@RequestMapping(value = "/search-organizations", method = GET)
