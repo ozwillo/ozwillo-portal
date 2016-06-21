@@ -1,6 +1,6 @@
 {
   "name": "ozwillo-portal-frontend",
-  "version": "1.45.0",
+  "version": "1.45.0-RC1",
   "description": "Ozwillo portal frontend",
   "private": true,
   "scripts": {
