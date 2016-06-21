@@ -456,11 +456,22 @@ public class NetworkService {
 				.forEach(userMembership -> userDirectory.removeMembership(userMembership, userInfoService.currentUser().getUserId()));
 	}
 
-
 	public UIOrganization searchOrganizationByDCId(String dcIc) {
 		// Search for existing organization having "GET /d/org?dc_id=xx"
 		Organization org = organizationStore.findByDCID(dcIc);
 		return org != null ? fillUIOrganization(org) : null;
+	}
+
+	public UIOrganization searchOrganizationByDCIdAndAliases(List<String> dcIds) {
+		// Search for existing organization having "GET /d/org?dc_id=xx"
+		Organization organization = null;
+		for (String dcId : dcIds) {
+			organization = organizationStore.findByDCID(dcId);
+			if (organization != null)
+				break;
+		}
+
+		return organization != null ? fillUIOrganization(organization) : null;
 	}
 
 	public UIOrganization createOrganization(String name, String type, URI territoryId, URI dcId) {
