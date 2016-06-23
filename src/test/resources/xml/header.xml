@@ -1,36 +1,170 @@
 <menuset>
-  <menu>
-    <locale>fr</locale>
-    <item type="home" img_src="/static/img/logo.png"/>
-    <item type="submenu" label="Qui sommes-nous ?">
-      <item type="menu" href="/fr/association" label="L'association" />
-    </item>
-    <item type="submenu" label="Offres">
-      <item type="menu" href="/fr/offre-donnee" label="Données" />
-      <item type="menu" href="/fr/offre-portail" label="Portail" />
-      <item type="menu" href="/fr/offre-incubation" label="Incubation" />
-    </item>
-    <item type="menu" href="/fr/actualites" label="Actualités"/>
-    <item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/static/img/icone-catalogue-color.png" label="Catalogue" />
-    <item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/static/img/data-purple.png" label="Données" />
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr" img_src="/static/img/connexion-purple.png" label="Connexion" />
-    <item type="locale-switch" />
-  </menu>
-  <menu>
-    <locale>en</locale>
-    <item type="home" img_src="/static/img/logo.png"/>
-    <item type="submenu" label="Who are we ?">
-      <item type="menu" href="/en/association" label="The association" />
-    </item>
-    <item type="submenu" label="Offers">
-      <item type="menu" href="/en/data-offer" label="Data" />
-      <item type="menu" href="/en/portal-offer" label="Portal" />
-      <item type="menu" href="/en/incubation-offer" label="Incubation" />
-    </item>
-    <item type="menu" href="/en/news" label="News"/>
-    <item type="catalog" href="https://portal.ozwillo.com/en/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
-    <item type="opendata" href="https://opendata.ozwillo.com/en/" img_src="/static/img/data-purple.png" label="Data" />
-    <item type="enter" href="https://portal.ozwillo.com/my?ui_locales=en" img_src="/static/img/connexion-purple.png" label="Log in" />
-    <item type="locale-switch" />
-  </menu>
+	<menu>
+		<locale>fr</locale>
+		<item type="home" img_src="/static/img/logo.png"/>
+		<item type="submenu" label="Qui sommes-nous ?">
+			<item type="menu" href="/fr/association" label="Association" />
+			<item type="menu" href="/fr/gouvernance" label="Gouvernance" />
+			<item type="menu" href="/fr/communaute" label="Communauté" />
+			<item type="menu" href="/fr/equipe" label="Équipe" />
+		</item>
+		<item type="submenu" label="Solutions">
+			<item type="menu" href="/fr/offre-donnees" label="Données" />
+			<item type="menu" href="/fr/offre-portail" label="Portail" />
+			<item type="menu" href="/fr/offre-projets" label="Projets" />
+		</item>
+		<item type="submenu" label="Bien commun">
+			<item type="menu" href="/fr/genese" label="Genèse" />
+			<item type="menu" href="/fr/contributions" label="Contributions" />
+		</item>
+		<item type="menu" href="/fr/actualites" label="Actualités"/>
+		<item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/static/img/icone-catalogue-color.png" label="Catalogue" />
+		<item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/static/img/data-purple.png" label="Données" />
+		<item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr" img_src="/static/img/connexion-purple.png" label="Connexion" />
+		<item type="locale-switch" />
+	</menu>
+	<menu>
+		<locale>en</locale>
+		<item type="home" img_src="/static/img/logo.png"/>
+		<item type="submenu" label="Who are we ?">
+			<item type="menu" href="/en/association" label="Association" />
+			<item type="menu" href="/en/governance" label="Governance" />
+			<item type="menu" href="/en/community" label="Community" />
+			<item type="menu" href="/en/team" label="Team" />
+		</item>
+		<item type="submenu" label="Solutions">
+			<item type="menu" href="/en/offer-data" label="Data" />
+			<item type="menu" href="/en/offer-portal" label="Portal" />
+			<item type="menu" href="/en/offer-projects" label="Projects" />
+		</item>
+		<item type="submenu" label="Commons">
+			<item type="menu" href="/en/genesis" label="Genesis" />
+			<item type="menu" href="/en/contributions" label="Contributions" />
+		</item>
+		<item type="menu" href="/en/news" label="News"/>
+		<item type="catalog" href="https://portal.ozwillo.com/en/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
+		<item type="opendata" href="https://opendata.ozwillo.com/en/" img_src="/static/img/data-purple.png" label="Data" />
+		<item type="enter" href="https://portal.ozwillo.com/my?ui_locales=en" img_src="/static/img/connexion-purple.png" label="Login" />
+		<item type="locale-switch" />
+	</menu>
+	<menu>
+		<locale>bg</locale>
+		<item type="home" img_src="/static/img/logo.png"/>
+		<item type="submenu" label="Who are we ?">
+			<item type="menu" href="/en/association" label="Association" />
+			<item type="menu" href="/en/governance" label="Governance" />
+			<item type="menu" href="/en/community" label="Community" />
+			<item type="menu" href="/en/team" label="Team" />
+		</item>
+		<item type="submenu" label="Solutions">
+			<item type="menu" href="/en/offer-data" label="Data" />
+			<item type="menu" href="/en/offer-portal" label="Portal" />
+			<item type="menu" href="/en/offer-projects" label="Projects" />
+		</item>
+		<item type="submenu" label="Commons">
+			<item type="menu" href="/en/genesis" label="Genesis" />
+			<item type="menu" href="/en/contributions" label="Contributions" />
+		</item>
+		<item type="menu" href="/en/news" label="News"/>
+		<item type="catalog" href="https://portal.ozwillo.com/en/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
+		<item type="opendata" href="https://opendata.ozwillo.com/en/" img_src="/static/img/data-purple.png" label="Data" />
+		<item type="enter" href="https://portal.ozwillo.com/my?ui_locales=en" img_src="/static/img/connexion-purple.png" label="Login" />
+		<item type="locale-switch" />
+	</menu>
+	<menu>
+		<locale>ca</locale>
+		<item type="home" img_src="/static/img/logo.png"/>
+		<item type="submenu" label="Who are we ?">
+			<item type="menu" href="/en/association" label="Association" />
+			<item type="menu" href="/en/governance" label="Governance" />
+			<item type="menu" href="/en/community" label="Community" />
+			<item type="menu" href="/en/team" label="Team" />
+		</item>
+		<item type="submenu" label="Solutions">
+			<item type="menu" href="/en/offer-data" label="Data" />
+			<item type="menu" href="/en/offer-portal" label="Portal" />
+			<item type="menu" href="/en/offer-projects" label="Projects" />
+		</item>
+		<item type="submenu" label="Commons">
+			<item type="menu" href="/en/genesis" label="Genesis" />
+			<item type="menu" href="/en/contributions" label="Contributions" />
+		</item>
+		<item type="menu" href="/en/news" label="News"/>
+		<item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
+		<item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/static/img/data-purple.png" label="Data" />
+		<item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr" img_src="/static/img/connexion-purple.png" label="Login" />
+		<item type="locale-switch" />
+	</menu>
+	<menu>
+		<locale>es</locale>
+		<item type="home" img_src="/static/img/logo.png"/>
+		<item type="submenu" label="Who are we ?">
+			<item type="menu" href="/en/association" label="Association" />
+			<item type="menu" href="/en/governance" label="Governance" />
+			<item type="menu" href="/en/community" label="Community" />
+			<item type="menu" href="/en/team" label="Team" />
+		</item>
+		<item type="submenu" label="Solutions">
+			<item type="menu" href="/en/offer-data" label="Data" />
+			<item type="menu" href="/en/offer-portal" label="Portal" />
+			<item type="menu" href="/en/offer-projects" label="Projects" />
+		</item>
+		<item type="submenu" label="Commons">
+			<item type="menu" href="/en/genesis" label="Genesis" />
+			<item type="menu" href="/en/contributions" label="Contributions" />
+		</item>
+		<item type="menu" href="/en/news" label="News"/>
+		<item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
+		<item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/static/img/data-purple.png" label="Data" />
+		<item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr" img_src="/static/img/connexion-purple.png" label="Login" />
+		<item type="locale-switch" />
+	</menu>
+	<menu>
+		<locale>it</locale>
+		<item type="home" img_src="/static/img/logo.png"/>
+		<item type="submenu" label="Who are we ?">
+			<item type="menu" href="/en/association" label="Association" />
+			<item type="menu" href="/en/governance" label="Governance" />
+			<item type="menu" href="/en/community" label="Community" />
+			<item type="menu" href="/en/team" label="Team" />
+		</item>
+		<item type="submenu" label="Solutions">
+			<item type="menu" href="/en/offer-data" label="Data" />
+			<item type="menu" href="/en/offer-portal" label="Portal" />
+			<item type="menu" href="/en/offer-projects" label="Projects" />
+		</item>
+		<item type="submenu" label="Commons">
+			<item type="menu" href="/en/genesis" label="Genesis" />
+			<item type="menu" href="/en/contributions" label="Contributions" />
+		</item>
+		<item type="menu" href="/en/news" label="News"/>
+		<item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
+		<item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/static/img/data-purple.png" label="Data" />
+		<item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr" img_src="/static/img/connexion-purple.png" label="Login" />
+		<item type="locale-switch" />
+	</menu>
+	<menu>
+		<locale>tr</locale>
+		<item type="home" img_src="/static/img/logo.png"/>
+		<item type="submenu" label="Who are we ?">
+			<item type="menu" href="/en/association" label="Association" />
+			<item type="menu" href="/en/governance" label="Governance" />
+			<item type="menu" href="/en/community" label="Community" />
+			<item type="menu" href="/en/team" label="Team" />
+		</item>
+		<item type="submenu" label="Solutions">
+			<item type="menu" href="/en/offer-data" label="Data" />
+			<item type="menu" href="/en/offer-portal" label="Portal" />
+			<item type="menu" href="/en/offer-projects" label="Projects" />
+		</item>
+		<item type="submenu" label="Commons">
+			<item type="menu" href="/en/genesis" label="Genesis" />
+			<item type="menu" href="/en/contributions" label="Contributions" />
+		</item>
+		<item type="menu" href="/en/news" label="News"/>
+		<item type="catalog" href="https://portal.ozwillo.com/fr/store" img_src="/static/img/icone-catalogue-color.png" label="Catalog" />
+		<item type="opendata" href="https://opendata.ozwillo.com/fr/" img_src="/static/img/data-purple.png" label="Data" />
+		<item type="enter" href="https://portal.ozwillo.com/my?ui_locales=fr" img_src="/static/img/connexion-purple.png" label="Login" />
+		<item type="locale-switch" />
+	</menu>
 </menuset>

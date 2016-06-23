@@ -80,7 +80,7 @@ public class RatingServiceTest {
 	@Test(expected = IllegalArgumentException.class)
 	public void testRatingTooHigh() {
 		setAuthentication("toto");
-		ratingService.rate("application", "citizenkin", 5);
+		ratingService.rate("application", "citizenkin", 6);
 	}
 
 	@Test

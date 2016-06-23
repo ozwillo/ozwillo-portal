@@ -50,6 +50,8 @@ public class ImageServiceIntegrationTest {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
 
+	@Value("${application.url}")
+	private String applicationUrl;
 
 	@Value("${persistence.mongodatabase}")
 	private String databaseName;
@@ -93,7 +95,7 @@ public class ImageServiceIntegrationTest {
 		assertEquals(1, db.getCollection("image").count());
 		assertNotNull(iconUri);
 		// test that this matches a regexp including a UUID
-		Pattern pattern = Pattern.compile("http://localhost/media/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
+		Pattern pattern = Pattern.compile(applicationUrl + "/media/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
 		Matcher matcher = pattern.matcher(iconUri);
 		assertTrue(matcher.matches());
 

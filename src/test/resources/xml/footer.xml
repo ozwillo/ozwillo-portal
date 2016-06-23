@@ -1,62 +1,114 @@
 <menuset>
-    <menu>
-        <locale>fr</locale>
-        <item href="/fr/decouvrir">Découvrir</item>
-        <item href="/fr/oz/news">Actualités</item>
-        <item href="/fr/co-construire">Co-construire</item>
-        <item href="/fr/se-lancer">Se lancer</item>
-        <item href="/fr/contact">Contact</item>
-        <item href="/fr/projets">Projets</item>
-        <item href="/fr/l-equipe-projet-oasis">L'équipe projet</item>
-        <item href="/fr/l-agenda">L'agenda</item>
-        <item href="/fr/guide-utilisateur">Guide utilisateur</item>
-        <item href="/fr/cgu">CGU</item>
-        <item href="/fr/mentions-legales-confidentialite">Mentions légales</item>
-        <item href="/fr/gouvernance">Gouvernance</item>
-    </menu>
-    <menu>
-        <locale>en</locale>
-        <item href="/en/oz/discover">Discovering</item>
-        <item href="/en/oz/news">News</item>
-        <item href="/en/oz/co-construct">Co-construct</item>
-        <item href="/en/oz/let-s-go">Let's go</item>
-        <item href="/en/contact">Contact</item>
-        <item href="/en/l-equipe-projet-oasis">Project team</item>
-        <item href="/en/oz/projects">Projects</item>
-        <item></item>
-        <item href="/en/guide-utilisateur">User guide</item>
-        <item href="/en/terms">General terms of use</item>
-        <item href="/en/legal-notices">Legal Notices</item>
-        <item href="/en/oz/co-construct">Governance</item>
-    </menu>
-    <menu>
-        <locale>it</locale>
-        <item href="/it/scoprire">Scoprire</item>
-        <item href="https://www.oasis-eu.org/en/oz/news">Novità</item>
-        <item href="https://www.oasis-eu.org/en/oz/co-construct">Costruire collaborativamente</item>
-        <item href="/it/iniziare">Iniziare</item>
-        <item href="/it/contatti">Contatti</item>
-        <item href="/it/il-team-di-progetto">Il team di progetto</item>
-        <item href="https://www.oasis-eu.org/en/oz/projects">Progetti</item>
-        <item></item>
-        <item href="/it/manuale-utente">Manuale utente</item>
-        <item href="/it/termini">Termini di utilizzo</item>
-        <item href="/it/avvisi-legali">Avvisi legali</item>
-        <item></item>
-    </menu>
-    <menu>
-        <locale>tr</locale>
-        <item href="/tr/oz">Eşfetmek</item>
-        <item href="/tr/?Itemid=221">Haberler</item>
-        <item href="/tr/?Itemid=222">Birlikte inşa etmek</item>
-        <item href="/tr/oz/baslatmak">Başlatmak</item>
-        <item href="/tr/iletism">İletişm</item>
-        <item href="/tr/proje-ekibi">Proje Ekibi</item>
-        <item href="/tr/?Itemid=224">Projeler</item>
-        <item></item>
-        <item href="/tr/kulanici-kilavuzu">Kulanıcı Kılavuzu</item>
-        <item href="/tr/sartlari">Kullanım Şartları</item>
-        <item href="/tr/yasal-uyarilar">Yasal Uyarılar</item>
-        <item></item>
-    </menu>
+  <menu>
+    <locale>fr</locale>
+    <item href="/fr/association" row="0">Association</item>
+    <item href="/fr/gouvernance" row="0">Gouvernance</item>
+    <item href="/fr/communaute" row="0">Communauté</item>
+    <item href="/fr/equipe" row="0">Équipe</item>
+    <item href="/fr/offre-donnes" row="1">Données</item>
+    <item href="/fr/offre-portail" row="1">Portail</item>
+    <item href="/fr/offre-projets" row="1">Projets</item>
+    <item href="/fr/genese" row="2">Genèse</item>
+    <item href="/fr/contributions" row="2">Contributions</item>
+    <item href="/doc" row="2">Développeurs</item>
+    <item href="/fr/actualites" row="3">Actualités</item>
+    <item href="/fr/contact" row="3">Contact</item>
+    <item href="/fr/mentions-legales" row="3">Mentions légales</item>
+  </menu>
+  <menu>
+    <locale>en</locale>
+    <item href="/en/association" row="0">Association</item>
+    <item href="/en/governance" row="0">Governance</item>
+    <item href="/en/community" row="0">Community</item>
+    <item href="/en/team" row="0">Team</item>
+    <item href="/en/offer-data" row="1">Data</item>
+    <item href="/en/offer-portal" row="1">Portal</item>
+    <item href="/en/offer-projects" row="1">Projects</item>
+    <item href="/en/genesis" row="2">Genesis</item>
+    <item href="/en/contributions" row="2">Contributions</item>
+    <item href="/doc" row="2">Developers</item>
+    <item href="/en/news" row="3">News</item>
+    <item href="/en/contact" row="3">Contact</item>
+    <item href="/en/legal-notices" row="3">Legal notices</item>
+  </menu>
+  <menu>
+    <locale>bg</locale>
+    <item href="/en/association" row="0">Association</item>
+    <item href="/en/governance" row="0">Governance</item>
+    <item href="/en/community" row="0">Community</item>
+    <item href="/en/team" row="0">Team</item>
+    <item href="/en/offer-data" row="1">Data</item>
+    <item href="/en/offer-portal" row="1">Portal</item>
+    <item href="/en/offer-projects" row="1">Projects</item>
+    <item href="/en/genesis" row="2">Genesis</item>
+    <item href="/en/contributions" row="2">Contributions</item>
+    <item href="/doc" row="2">Developers</item>
+    <item href="/en/news" row="3">News</item>
+    <item href="/en/contact" row="3">Contact</item>
+    <item href="/en/legal-notices" row="3">Legal notices</item>
+  </menu>
+  <menu>
+    <locale>ca</locale>
+    <item href="/en/association" row="0">Association</item>
+    <item href="/en/governance" row="0">Governance</item>
+    <item href="/en/community" row="0">Community</item>
+    <item href="/en/team" row="0">Team</item>
+    <item href="/en/offer-data" row="1">Data</item>
+    <item href="/en/offer-portal" row="1">Portal</item>
+    <item href="/en/offer-projects" row="1">Projects</item>
+    <item href="/en/genesis" row="2">Genesis</item>
+    <item href="/en/contributions" row="2">Contributions</item>
+    <item href="/doc" row="2">Developers</item>
+    <item href="/en/news" row="3">News</item>
+    <item href="/en/contact" row="3">Contact</item>
+    <item href="/en/legal-notices" row="3">Legal notices</item>
+  </menu>
+  <menu>
+    <locale>es</locale>
+    <item href="/en/association" row="0">Association</item>
+    <item href="/en/governance" row="0">Governance</item>
+    <item href="/en/community" row="0">Community</item>
+    <item href="/en/team" row="0">Team</item>
+    <item href="/en/offer-data" row="1">Data</item>
+    <item href="/en/offer-portal" row="1">Portal</item>
+    <item href="/en/offer-projects" row="1">Projects</item>
+    <item href="/en/genesis" row="2">Genesis</item>
+    <item href="/en/contributions" row="2">Contributions</item>
+    <item href="/doc" row="2">Developers</item>
+    <item href="/en/news" row="3">News</item>
+    <item href="/en/contact" row="3">Contact</item>
+    <item href="/en/legal-notices" row="3">Legal notices</item>
+  </menu>
+  <menu>
+    <locale>it</locale>
+    <item href="/en/association" row="0">Association</item>
+    <item href="/en/governance" row="0">Governance</item>
+    <item href="/en/community" row="0">Community</item>
+    <item href="/en/team" row="0">Team</item>
+    <item href="/en/offer-data" row="1">Data</item>
+    <item href="/en/offer-portal" row="1">Portal</item>
+    <item href="/en/offer-projects" row="1">Projects</item>
+    <item href="/en/genesis" row="2">Genesis</item>
+    <item href="/en/contributions" row="2">Contributions</item>
+    <item href="/doc" row="2">Developers</item>
+    <item href="/en/news" row="3">News</item>
+    <item href="/en/contact" row="3">Contact</item>
+    <item href="/en/legal-notices" row="3">Legal notices</item>
+  </menu>
+  <menu>
+    <locale>tr</locale>
+    <item href="/en/association" row="0">Association</item>
+    <item href="/en/governance" row="0">Governance</item>
+    <item href="/en/community" row="0">Community</item>
+    <item href="/en/team" row="0">Team</item>
+    <item href="/en/offer-data" row="1">Data</item>
+    <item href="/en/offer-portal" row="1">Portal</item>
+    <item href="/en/offer-projects" row="1">Projects</item>
+    <item href="/en/genesis" row="2">Genesis</item>
+    <item href="/en/contributions" row="2">Contributions</item>
+    <item href="/doc" row="2">Developers</item>
+    <item href="/en/news" row="3">News</item>
+    <item href="/en/contact" row="3">Contact</item>
+    <item href="/en/legal-notices" row="3">Legal notices</item>
+  </menu>
 </menuset>

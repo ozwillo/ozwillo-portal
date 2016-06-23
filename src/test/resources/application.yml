@@ -57,8 +57,8 @@ application:
 web:
   home: http://www.ozwillo-dev.eu
   sitemap:
-    url_header: http://localhost:3001/header.xml
-    url_footer: http://localhost:3001/footer.xml
+    url_header: https://www.ozwillo.com/header.xml
+    url_footer: https://www.ozwillo.com/footer.xml
     refresh: 0 0 3 ? DEC SUN
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
@@ -100,6 +100,8 @@ datacore:
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 
+opendata:
+  url: https://opendata-preprod.data-ozwillo.org
 
 persistence:
   mongohosts:

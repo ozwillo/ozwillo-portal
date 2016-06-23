@@ -44,7 +44,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringApplicationConfiguration(classes = {OasisPortal.class})
 public class ImageControllerTest {
 
-	public static final String ICON_URL = "http://www.citizenkin.com/icon/one.png";
+	private static final String ICON_URL = "http://www.citizenkin.com/icon/one.png";
+
 	@Autowired
 	private WebApplicationContext webApplicationContext;
 
@@ -53,6 +54,9 @@ public class ImageControllerTest {
 
 	@Value("${persistence.mongodatabase}")
 	private String databaseName;
+
+	@Value("${application.url}")
+	private String applicationUrl;
 
 	@Autowired
 	private Mongo mongo;
@@ -83,8 +87,7 @@ public class ImageControllerTest {
 		// First the root controller will download the icon
 		ImageDownloader imageDownloader = mock(ImageDownloader.class);
 		byte[] bytes = load("images/64.png");
-		when(imageDownloader.download(ICON_URL))
-				.thenReturn(bytes);
+		when(imageDownloader.download(ICON_URL)).thenReturn(bytes);
 
 		ReflectionTestUtils.setField(imageService, "imageDownloader", imageDownloader);
 
@@ -94,7 +97,7 @@ public class ImageControllerTest {
 		verify(imageDownloader).download(anyString());
 
 		// strip out the protocol and host
-		iconUri = iconUri.substring("http://localhost".length());
+		iconUri = iconUri.substring(applicationUrl.length());
 
 		Map<String, String> values = new HashMap<>();
 

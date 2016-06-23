@@ -64,14 +64,23 @@ public class SiteMapHeaderParserTest {
 
 		InputStream stream = getClass().getClassLoader().getResourceAsStream("xml/header.xml");
 		XmlMapper xmlMapper = new XmlMapper();
-		HeaderMenuSet foo = xmlMapper.readValue(stream, HeaderMenuSet.class);
+		HeaderMenuSet header = xmlMapper.readValue(stream, HeaderMenuSet.class);
 
-		validateMenuSet(foo);
+		validateMenuSet(header);
 
-		List<SiteMapMenuItem> siteMapMenuItems = foo.getMenuset().get(0).getItems();
+		List<SiteMapMenuItem> siteMapMenuItems = header.getMenuset().get(0).getItems();
 		assertEquals("/static/img/logo.png", siteMapMenuItems.get(0).getImgUrl());
-		assertEquals("https://portal.ozwillo.com/fr/store", siteMapMenuItems.get(4).getUrl());
-		assertEquals("/static/img/icone-catalogue-color.png", siteMapMenuItems.get(4).getImgUrl());
+
+		SiteMapMenuItem catalogMenuItem = siteMapMenuItems.get(5);
+		assertEquals("https://portal.ozwillo.com/fr/store", catalogMenuItem.getUrl());
+		assertEquals("/static/img/icone-catalogue-color.png", catalogMenuItem.getImgUrl());
+		assertEquals("Catalogue", catalogMenuItem.getLabel());
+
+		assertEquals(3, siteMapMenuItems.get(2).getItems().size());
+		SiteMapMenuItem offerDataMenuItem = siteMapMenuItems.get(2).getItems().get(0);
+		assertEquals("/fr/offre-donnees", offerDataMenuItem.getUrl());
+		assertEquals("menu", offerDataMenuItem.getType());
+		assertEquals("Données", offerDataMenuItem.getLabel());
 	}
 
 	@Test
@@ -88,8 +97,8 @@ public class SiteMapHeaderParserTest {
 
 		List<SiteMapMenuItem> siteMapMenuItems = foo.getMenuset().get(0).getItems();
 		assertEquals("/static/img/logo.png", siteMapMenuItems.get(0).getImgUrl());
-		assertEquals("https://portal.ozwillo.com/fr/store", siteMapMenuItems.get(4).getUrl());
-		assertEquals("/static/img/icone-catalogue-color.png", siteMapMenuItems.get(4).getImgUrl());
+		assertEquals("https://portal.ozwillo.com/fr/store", siteMapMenuItems.get(5).getUrl());
+		assertEquals("/static/img/icone-catalogue-color.png", siteMapMenuItems.get(5).getImgUrl());
 
 		server.verify();
 	}
@@ -121,13 +130,13 @@ public class SiteMapHeaderParserTest {
 		assertNotNull(sitemapHeader.getItems().get(0));
 
 		assertEquals("fr", sitemapHeader.getLanguage());
-		assertEquals(8, sitemapHeader.getItems().size());
-		assertEquals(3, sitemapHeader.getContentItems().size());
-		assertEquals("menu", sitemapHeader.getItems().get(3).getType());
-		assertEquals("Actualités", sitemapHeader.getItems().get(3).getLabel());
+		assertEquals(9, sitemapHeader.getItems().size());
+		assertEquals(4, sitemapHeader.getContentItems().size());
+		assertEquals("menu", sitemapHeader.getItems().get(4).getType());
+		assertEquals("Actualités", sitemapHeader.getItems().get(4).getLabel());
 
 		SiteMapMenuItem offersMenuItem = sitemapHeader.getItems().get(2);
-		assertEquals("Offres", offersMenuItem.getLabel());
+		assertEquals("Solutions", offersMenuItem.getLabel());
 		assertEquals("submenu", offersMenuItem.getType());
 		assertEquals(3, offersMenuItem.getItems().size());
 		assertEquals("Portail", offersMenuItem.getItems().get(1).getLabel());
@@ -138,25 +147,25 @@ public class SiteMapHeaderParserTest {
 		assertNotNull(sitemapHeader.getItems().get(0));
 
 		assertEquals("en", sitemapHeader.getLanguage());
-		assertEquals(8, sitemapHeader.getItems().size());
-		assertEquals(3, sitemapHeader.getContentItems().size());
+		assertEquals(9, sitemapHeader.getItems().size());
+		assertEquals(4, sitemapHeader.getContentItems().size());
 
-		SiteMapMenuItem catalogMenuItem = sitemapHeader.getItems().get(4);
+		SiteMapMenuItem catalogMenuItem = sitemapHeader.getItems().get(5);
 		assertEquals("https://portal.ozwillo.com/en/store", catalogMenuItem.getUrl());
 		assertEquals("catalog", catalogMenuItem.getType());
 		assertEquals("Catalog", catalogMenuItem.getLabel());
 	}
 
-	private void validateMenuSet(HeaderMenuSet foo){
+	private void validateMenuSet(HeaderMenuSet header){
 
-		assertEquals(2, foo.getMenuset().size());
+		assertEquals(7, header.getMenuset().size());
 
 		//French
-		SiteMapMenuSet sitemapHeaderFR = foo.getMenuset().get(0);
+		SiteMapMenuSet sitemapHeaderFR = header.getMenuset().get(0);
 		validateFRData(sitemapHeaderFR);
 
 		// English
-		SiteMapMenuSet sitemapHeaderEN = foo.getMenuset().get(1);
+		SiteMapMenuSet sitemapHeaderEN = header.getMenuset().get(1);
 		validateENData(sitemapHeaderEN);
 	}
 }
