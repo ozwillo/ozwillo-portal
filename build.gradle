@@ -101,5 +101,5 @@ task frontBundle(type: NpmTask) {
     args = ['run', 'build']
 }
 
-check.dependsOn(npmInstall)
-processResources.dependsOn(frontBundle)
+assemble.dependsOn(frontBundle)
+frontBundle.dependsOn(npmInstall)
