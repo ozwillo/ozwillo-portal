@@ -1,0 +1,3 @@
+[submodule "ozwillo-java-spring-integration"]
+	path = lib/ozwillo-java-spring-integration
+	url = https://github.com/ozwillo/ozwillo-java-spring-integration.git

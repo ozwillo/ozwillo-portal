@@ -55,7 +55,7 @@ dependencies {
     compile('org.apache.httpcomponents:httpcore')
     compile('org.thymeleaf.extras:thymeleaf-extras-conditionalcomments')
 
-    compile('org.ozwillo:ozwillo-java-spring-integration:1.24')
+    compile project('lib:ozwillo-java-spring-integration')
 
     /* Our specific dependencies */
     compile('com.google.guava:guava:19.0')
@@ -101,4 +101,5 @@ task frontBundle(type: NpmTask) {
     args = ['run', 'build']
 }
 
+check.dependsOn(npmInstall)
 processResources.dependsOn(frontBundle)
