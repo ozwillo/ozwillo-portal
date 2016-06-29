@@ -49,66 +49,66 @@
   </menu>
   <menu>
     <locale>ca</locale>
-    <item href="/en/association" row="0">Association</item>
-    <item href="/en/governance" row="0">Governance</item>
-    <item href="/en/community" row="0">Community</item>
-    <item href="/en/team" row="0">Team</item>
-    <item href="/en/offer-data" row="1">Data</item>
-    <item href="/en/offer-portal" row="1">Portal</item>
-    <item href="/en/offer-projects" row="1">Projects</item>
-    <item href="/en/genesis" row="2">Genesis</item>
-    <item href="/en/contributions" row="2">Contributions</item>
-    <item href="/doc" row="2">Developers</item>
-    <item href="/en/news" row="3">News</item>
-    <item href="/en/contact" row="3">Contact</item>
-    <item href="/en/legal-notices" row="3">Legal notices</item>
+    <item href="/ca/associacio" row="0">Associació</item>
+    <item href="/ca/governanca" row="0">Governança</item>
+    <item href="/ca/comunitat" row="0">Comunitat</item>
+    <item href="/ca/equip" row="0">Equip</item>
+    <item href="/ca/dades-proposades" row="1">Dades</item>
+    <item href="/ca/portal-proposat" row="1">Portal</item>
+    <item href="/ca/projectes-proposats" row="1">Projectes</item>
+    <item href="/ca/genesis" row="2">Gènesis</item>
+    <item href="/ca/contribucions" row="2">Contribucions</item>
+    <item href="/doc" row="2">Desenvolupadors</item>
+    <item href="/ca/noticies" row="3">Noticies</item>
+    <item href="/ca/contacte" row="3">Contacte</item>
+    <item href="/ca/avis-legal" row="3">Avís legal</item>
   </menu>
   <menu>
     <locale>es</locale>
-    <item href="/en/association" row="0">Association</item>
-    <item href="/en/governance" row="0">Governance</item>
-    <item href="/en/community" row="0">Community</item>
-    <item href="/en/team" row="0">Team</item>
-    <item href="/en/offer-data" row="1">Data</item>
-    <item href="/en/offer-portal" row="1">Portal</item>
-    <item href="/en/offer-projects" row="1">Projects</item>
-    <item href="/en/genesis" row="2">Genesis</item>
-    <item href="/en/contributions" row="2">Contributions</item>
-    <item href="/doc" row="2">Developers</item>
-    <item href="/en/news" row="3">News</item>
-    <item href="/en/contact" row="3">Contact</item>
-    <item href="/en/legal-notices" row="3">Legal notices</item>
+    <item href="/es/asociacion" row="0">Asociación</item>
+    <item href="/es/gobernanza" row="0">Gobernanza</item>
+    <item href="/es/comunidad" row="0">Comunidad</item>
+    <item href="/es/equipo" row="0">Equipo</item>
+    <item href="/es/datos-propuestos" row="1">Datos</item>
+    <item href="/es/portal-propuestos" row="1">Portal</item>
+    <item href="/es/proyectos-propuestos" row="1">Proyectos</item>
+    <item href="/es/genesis" row="2">Génesis</item>
+    <item href="/es/contribuciones" row="2">Contribuciones</item>
+    <item href="/doc" row="2">Desarrolladores</item>
+    <item href="/es/noticias" row="3">Noticias</item>
+    <item href="/es/contacto" row="3">Contacto</item>
+    <item href="/es/aviso-legal" row="3">Aviso legal</item>
   </menu>
   <menu>
     <locale>it</locale>
-    <item href="/en/association" row="0">Association</item>
-    <item href="/en/governance" row="0">Governance</item>
-    <item href="/en/community" row="0">Community</item>
-    <item href="/en/team" row="0">Team</item>
-    <item href="/en/offer-data" row="1">Data</item>
-    <item href="/en/offer-portal" row="1">Portal</item>
-    <item href="/en/offer-projects" row="1">Projects</item>
-    <item href="/en/genesis" row="2">Genesis</item>
-    <item href="/en/contributions" row="2">Contributions</item>
-    <item href="/doc" row="2">Developers</item>
-    <item href="/en/news" row="3">News</item>
-    <item href="/en/contact" row="3">Contact</item>
-    <item href="/en/legal-notices" row="3">Legal notices</item>
+    <item href="/it/associatione" row="0">Associazione</item>
+    <item href="/it/governance" row="0">Governance</item>
+    <item href="/it/comunita" row="0">Comunità</item>
+    <item href="/it/team" row="0">Team</item>
+    <item href="/it/offerta-dati" row="1">Dati</item>
+    <item href="/it/offerta-portale" row="1">Portale</item>
+    <item href="/it/offerta-progetto" row="1">Progetti</item>
+    <item href="/it/genesi" row="2">Genesi</item>
+    <item href="/it/contributi" row="2">Contributi</item>
+    <item href="/doc" row="2">Sviluppatori</item>
+    <item href="/it/notizie" row="3">Notizie</item>
+    <item href="/it/contatto" row="3">Contatto</item>
+    <item href="/it/note-legali" row="3">Note legali</item>
   </menu>
   <menu>
     <locale>tr</locale>
-    <item href="/en/association" row="0">Association</item>
-    <item href="/en/governance" row="0">Governance</item>
-    <item href="/en/community" row="0">Community</item>
-    <item href="/en/team" row="0">Team</item>
-    <item href="/en/offer-data" row="1">Data</item>
-    <item href="/en/offer-portal" row="1">Portal</item>
-    <item href="/en/offer-projects" row="1">Projects</item>
-    <item href="/en/genesis" row="2">Genesis</item>
-    <item href="/en/contributions" row="2">Contributions</item>
-    <item href="/doc" row="2">Developers</item>
-    <item href="/en/news" row="3">News</item>
-    <item href="/en/contact" row="3">Contact</item>
-    <item href="/en/legal-notices" row="3">Legal notices</item>
+    <item href="/tr/dernek" row="0">Dernek</item>
+    <item href="/tr/yonetisim" row="0">Yönetişim</item>
+    <item href="/tr/topluluk" row="0">Topluluk</item>
+    <item href="/tr/ekip" row="0">Ekip</item>
+    <item href="/tr/veri-teklifi" row="1">Veriler</item>
+    <item href="/tr/portal-teklifi" row="1">Portal</item>
+    <item href="/tr/proje-teklifi" row="1">Projeler</item>
+    <item href="/tr/olusum" row="2">Oluşum</item>
+    <item href="/tr/katkilar" row="2">Katkılar</item>
+    <item href="/doc" row="2">Geliştiriciler</item>
+    <item href="/tr/haberler" row="3">Haberler</item>
+    <item href="/tr/iletisim" row="3">İletişim</item>
+    <item href="/tr/yasal-uyarilar" row="3">Yasal uyarılar</item>
   </menu>
 </menuset>
