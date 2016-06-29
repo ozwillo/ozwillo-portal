@@ -91,13 +91,12 @@ public class GeographicalDAO {
 
 		area.setNameTokens(tokenizer.tokenize(name));
 
-		try {
-			List<String>  ancestors = r.getAsStringList("oanc:ancestors");
+		List<String> ancestors = r.getAsStringList("oanc:ancestors");
+		if (ancestors.isEmpty()) {
+			logger.warn("The key 'oanc:ancestors' doesn't exist in the fetched resource {}", r.getUri());
+		} else {
 			area.setAncestors(ancestors);
-		} catch (NullPointerException e) {
-			logger.warn("The key 'oanc:ancestors' doesn't exist in the fetched resource.");
 		}
-
 
 		return area;
 	}

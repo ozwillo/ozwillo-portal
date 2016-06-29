@@ -345,51 +345,35 @@ public class DCOrganizationService {
 	public  DCResource setDCIdOrganization(DCResource dcResource, String regNumber, String country_uri){
 		//"@id" : "http://data.ozwillo.com/dc/type/orgfr:Organization_0/FR/47952557800049",
 		String countryAcronym = getCountryAcronym(country_uri);
-		String cx = countryAcronym.toLowerCase(); //could throw NullPointerException when country is not provided
 		String orgModelType = generateResourceType(country_uri);
 
 		dcResource.setBaseUri(dcBaseUri.trim());
 		dcResource.setType(orgModelType);
-		dcResource.setIri(cx.toUpperCase() // country acronym has no characters requiring encoding
+		dcResource.setIri(countryAcronym.toUpperCase() // country acronym has no characters requiring encoding
 				+"/"+DCResource.encodeUriPathSegment(regNumber));
 		return dcResource;
 	}
 
 	public String generateResourceType(String country_uri) {
 		String countryAcronym = getCountryAcronym(country_uri);
-		String cx = countryAcronym.toLowerCase(); //could throw NullPointerException when country is not provided
 
-		String orgModelPrefix = "org" + cx;
-		String orgModelSuffix = dcOrgPrefixToSuffix.get(orgModelPrefix);
-		return orgModelPrefix + ":" + orgModelSuffix + "_0";
+		return "org" + countryAcronym + ":Organisation_0";
 	}
 
+	/**
+	 * @return the country acronym in lower case (fr, en, ...) of the given country URI or an empty string if unable to extract it
+     */
 	public String getCountryAcronym(String country_uri){
 		//Assumes that all the country have the abbreviation at the end of URL : http://data.ozwillo.com/dc/type/geocotr:%C3%9Clke_0/TR
 		if(country_uri != null && !country_uri.isEmpty()){
-			return country_uri.substring(country_uri.length() - 2);
+			return country_uri.substring(country_uri.length() - 2).toLowerCase();
 		}
-		return null;
-	}
 
-	private static final Map<String, String> dcOrgPrefixToSuffix = new ImmutableMap.Builder<String, String>()
-			//.put("org", "Organisation") //org:Organisation_0 when there is no country defined (but it neve should happen)
-			.put("orgfr", "Organisation")
-			.put("orgbg", "Организация")
-			.put("orgit", "Organizzazione")
-			.put("orgtr", "Organizasyon")
-			.put("orges", "Organización")
-			.build();
+		return "";
+	}
 
 	private static final String dcOrgStatusActive = "Normal Activity";
 	private static final String dcOrgStatusInactive = "Inactive";
-	private static final List<String> dcOrgStatusInactiveList = new ImmutableList.Builder<String>()
-			.add(dcOrgStatusInactive) // translation of portal's "false"
-			// original list of inactive statuses :
-			.add("Insolvent")
-			.add("Bankrupt")
-			.add("In Receivership")
-			.build();
 
 	public DCOrganization toDCOrganization(DCResource res, String language) {
 

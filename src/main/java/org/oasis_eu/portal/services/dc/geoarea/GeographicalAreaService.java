@@ -21,8 +21,6 @@ public class GeographicalAreaService {
 	
 	@Value("${application.geoarea.countryModel:geoco:Country_0}")
 	private String countryModel;
-	@Value("${application.geoarea.countryModelHier:geohier:Hierarchical_0}")
-	private String countryModelHier;
 	@Value("${application.geoarea.cityModel:geoci:City_0}")
 	private String cityModel;
 	
@@ -31,9 +29,6 @@ public class GeographicalAreaService {
 	
 	@Autowired
 	private Tokenizer tokenizer;
-	
-	@Autowired
-	private GeographicalDAO geographicalDAO;
 	
 	/** to get the current locale */
 	@Autowired
@@ -67,18 +62,16 @@ public class GeographicalAreaService {
 	
 	/**
 	 * @param q
-	 * @param start
-	 * @param limit ex. 11 then return 10
 	 * @return
 	 */
-	public List<GeographicalArea> findCountries(String q, int start, int limit) {
+	public List<GeographicalArea> findCountries(String q) {
 		//return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
 		String[] queryTerms = null;
 		if(q != null && !q.isEmpty()){
 			List<String> termsLst = tokenizer.tokenize(q).stream().collect(Collectors.toList());
 			queryTerms = termsLst.toArray(new String[termsLst.size()]);
 		}
-		return cache.findOneToken(null, new String[]{countryModel, countryModelHier}, RequestContextUtils.getLocale(request).getLanguage(), queryTerms)
+		return cache.findOneToken(null, new String[]{countryModel}, RequestContextUtils.getLocale(request).getLanguage(), queryTerms)
 				   .collect(Collectors.toList());
 	}
 }

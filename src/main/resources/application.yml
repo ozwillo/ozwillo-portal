@@ -28,13 +28,12 @@ application:
     # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
     addCurrentToSupportedLocalesIfNone: false
   geoarea:
-    project: geo
+    project: geo_2
     displayNameField: odisp:name
     areaModel: geo:Area_0
     nameField: geo:name
     codePostalField: geoci:zipCode
     countryModel: geoco:Country_0
-    countryModelHier: geohier:Hierarchical_0
     cityModel: addrpostci:PostalCity_0
     countryField: geo:country
     fallbackLanguage: en
@@ -43,8 +42,8 @@ application:
     # examples http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
     replication: 0 0 1 1/5 * ?    #Runs at 1am every 5 days every month, starting on the first day of the month
   dcOrg:
-    project: org
-    orgModel: org:Organization_0
+    project: org_2
+    orgModel: org:Organisation_0
     baseUri: http://data.ozwillo.com/dc/type
   dcOrgSearch:
     sector: org:sector
