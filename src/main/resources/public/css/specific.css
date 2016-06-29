@@ -317,7 +317,7 @@ label.required {
 
 .react-autosuggest__suggestions-container {
     list-style-type: none;
-    z-index: 2;
+    z-index: 100;
     padding-left: 0;
     margin-top: 34px;
     position: absolute;
@@ -328,6 +328,7 @@ label.required {
     padding: 3px 20px;
     border: 1px solid #ccc;
     background-color: #fff;
+    color: #6e418e;
     cursor: pointer;
 }
 
@@ -628,7 +629,7 @@ div.organization .organization-pending-member-row {
     background: url("../img/cercle.png");
     position: absolute;
     top: 25px;
-    z-index: 999;
+    z-index: 99;
     width: 164px !important;
     height: 164px !important;
     display: block;
