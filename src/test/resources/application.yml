@@ -34,7 +34,6 @@ application:
     nameField: geo:name
     codePostalField: geoci:zipCode
     countryModel: geoco:Country_0
-    countryModelHier: geohier:Hierarchical_0
     cityModel: addrpostci:PostalCity_0
     countryField: geo:country
     fallbackLanguage: en
@@ -44,7 +43,7 @@ application:
     replication_test: false
   dcOrg:
     project: org
-    orgModel: org:Organization_0
+    orgModel: org:Organisation_0
     baseUri: http://data.ozwillo.com/dc/type
   dcOrgSearch:
     sector: org:sector
