@@ -178,7 +178,9 @@ public class DCOrganizationService {
 	 */
 	public DCResource create(DCOrganization dcOrganization) throws ForbiddenException {
 		// re-get DC resource before creation to validate that it doesn't exist
-		DCResource dcResource = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcOrganization.getId()).getResource();
+		String dcId = dcOrganization.getId() != null ? dcOrganization.getId() :
+			generateDcId(dcOrganization.getCountry_uri(), dcOrganization.getTax_reg_num());
+		DCResource dcResource = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcId).getResource();
 
 		// if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
 		if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion()) ){ //found in DC
