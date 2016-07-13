@@ -89,6 +89,7 @@ bootRun {
 springBoot {
     // exclude Spring Boot Devtools from the fat jar
     excludeDevtools = true
+    executable = true
 }
 
 configure(tasks.processResources) {
