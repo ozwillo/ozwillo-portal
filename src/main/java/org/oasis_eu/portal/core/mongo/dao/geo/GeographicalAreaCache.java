@@ -3,11 +3,7 @@ package org.oasis_eu.portal.core.mongo.dao.geo;
 import static org.springframework.data.mongodb.core.query.Criteria.where;
 import static org.springframework.data.mongodb.core.query.Query.query;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -33,6 +29,7 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.RestClientException;
 
@@ -42,6 +39,8 @@ import com.mongodb.DB;
 import com.mongodb.DBCollection;
 import com.mongodb.DBObject;
 import com.mongodb.Mongo;
+
+import javax.annotation.PostConstruct;
 
 /**
  * TODO move generic & org stuff outside, better Service vs DAO archi
@@ -71,7 +70,7 @@ public class GeographicalAreaCache {
 	private MappingMongoConverter mappingMongoConverter;
 
 	@Autowired
-	GeographicalDAO geographicalDAO;
+	private GeographicalDAO geographicalDAO;
 
 	@Value("${persistence.mongodatabase:portal}")
 	private String mongoDatabaseName;
@@ -276,6 +275,21 @@ public class GeographicalAreaCache {
 		);
 	}
 
+	@PostConstruct
+	public void initGeoCache() {
+		ThreadPoolTaskScheduler threadPoolTaskScheduler = new ThreadPoolTaskScheduler();
+		threadPoolTaskScheduler.setPoolSize(1);
+		threadPoolTaskScheduler.afterPropertiesSet();
+		threadPoolTaskScheduler.schedule(() -> {
+			DB db = mongo.getDB(mongoDatabaseName);
+			DBCollection collection = db.getCollection("geographical_area");
+			if (collection.count() == 0) {
+				logger.info("Geo area cache is empty, initializing it");
+				replicate();
+			}
+		}, new Date());
+	}
+
 	@Scheduled(cron = "${application.geoarea.replication}")
 	public void replicate() {
 
@@ -292,15 +306,12 @@ public class GeographicalAreaCache {
         // 1. fetch all the resources from the data core and insert them with status "incoming" in the cache
         try {
             //Since there is not admin user connected, is necessary to get its admin authorization object in order to send the request
-            portalSystemUserService.runAs(new Runnable() {
-                @Override
-                public void run() {
-                    String lastDCIdFetched = null;
-                    do {
-                        logger.debug("Fetching batches of areas");
-                        lastDCIdFetched = fetchBatches(collection, loadedUris, lastDCIdFetched);
-                    } while (lastDCIdFetched != null);
-                }
+            portalSystemUserService.runAs(() -> {
+                String lastDCIdFetched = null;
+                do {
+                    logger.debug("Fetching batches of areas");
+                    lastDCIdFetched = fetchBatches(collection, loadedUris, lastDCIdFetched);
+                } while (lastDCIdFetched != null);
             });
 
 
