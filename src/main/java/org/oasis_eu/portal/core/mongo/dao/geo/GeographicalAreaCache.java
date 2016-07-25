@@ -180,11 +180,9 @@ public class GeographicalAreaCache {
 
 	/**
 	 * Search in local DB, filtering the results using the parameters
+	 *
 	 * @param countryUri URI of DC country Resource, therefore already encoded
-	 * @param modelType
-	 * @param lang
 	 * @param nameTokens null to list all ex. geoco:Country_0
-	 * @return Stream GeographicalArea
 	 */
 	public Stream<GeographicalArea> findOneToken(String countryUri, String[] modelTypes, String lang, String[] nameTokens) {
 	   // looking for exact token matches first :
