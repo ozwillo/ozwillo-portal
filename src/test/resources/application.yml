@@ -79,7 +79,6 @@ kernel:
   user_directory_endpoint: ${kernel.base_uri}/d
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
-  application_id: 8b0e62e5-e3af-45de-8834-0d7d8a3f6139
   client_id: portal
   client_secret: changeit
   scopes_to_require: openid profile email address
