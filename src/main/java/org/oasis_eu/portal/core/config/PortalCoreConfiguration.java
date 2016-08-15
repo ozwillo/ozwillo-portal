@@ -148,7 +148,7 @@ public class PortalCoreConfiguration extends CachingConfigurerSupport {
 				);
 	}
 
-	public MapConfig getMapConfig(String name) {
+	private MapConfig getMapConfig(String name) {
 		MapConfig config = new MapConfig();
 		config.setName(name);
 		config.setEvictionPolicy(EvictionPolicy.LRU);

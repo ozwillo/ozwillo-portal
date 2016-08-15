@@ -139,13 +139,6 @@ var AppStore = React.createClass({
             }.bind(this)
         });
     },
-    renderBanner: function() {
-        if (!logged_in) {
-            return (
-                <JoinBanner />
-            )
-        }
-    },
     render: function () {
         var languagesAndAll = JSON.parse(JSON.stringify(languages));
         languagesAndAll.unshift('all');
@@ -158,7 +151,6 @@ var AppStore = React.createClass({
                                 filter={this.state.filter}
                                 updateFilter={this.updateFilter}/>
                 <AppList apps={this.mergeAppsWithDefaultAppFirst()}/>
-                {this.renderBanner()}
                 <LoadMore
                     loading={this.state.loading}
                     maybeMoreApps={this.state.maybeMoreApps}
@@ -405,50 +397,6 @@ var Indicator = React.createClass({
         return (
             <div className="app-status text-center">
                 {btns}
-            </div>
-        );
-    }
-});
-
-var JoinBanner = React.createClass({
-    getInitialState: function() {
-        return {
-            visible: true
-        }
-    },
-    hideAd: function() {
-        this.setState({ visible: false });
-    },
-    render: function() {
-        // FIXME : remove this hard-coded part of the URL
-        var joinUsLink = webHome + "/" + currentLanguage + "/co-construire";
-        var divClassName = this.state.visible ? "container-fluid" : "container-fluid hidden";
-
-        return (
-            <div className={divClassName}>
-                <div className="row" id="store-ad">
-                    <div className="col-md-6">
-                        <h2>
-                            {t('ad.title.part1')} <strong>{t('ad.title.part2')}</strong> ?
-                        </h2>
-                        <p className="ozwillo-desc">
-                            {t('ad.description')}
-                        </p>
-                        <a className="btn btn-default-inverse btn-lg join" href={joinUsLink}>
-                            {t('ad.joinUs')}&nbsp;
-                            <img src={image_root + "arrow-white.png"} />
-                        </a>
-                        <img src={image_root + "cross.png"} className="close-ad visible-xs visible-sm" data-toggle="tooltip" data-placement="bottom"
-                             title={t('ui.close')} onClick={this.hideAd} />
-                    </div>
-
-                    <div className="col-md-6 hidden-xs hidden-sm">
-                        <img src={image_root + "appli-catalogue.png"} className="img-responsive" />
-                        <img src={image_root + "cross.png"} className="close-ad" data-toggle="tooltip" data-placement="bottom"
-                             title={t('ui.close')} onClick={this.hideAd} />
-                    </div>
-
-                </div>
             </div>
         );
     }

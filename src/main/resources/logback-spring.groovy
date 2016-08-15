@@ -1,6 +1,3 @@
-import ch.qos.logback.classic.encoder.PatternLayoutEncoder
-import ch.qos.logback.core.ConsoleAppender
-
 scan()
 
 appender("CONSOLE", ConsoleAppender) {
@@ -10,16 +7,17 @@ appender("CONSOLE", ConsoleAppender) {
     }
 }
 
-//Portal
-logger("org.oasis_eu", DEBUG)
-logger("org.oasis_eu.portal.main", DEBUG)
+// Portal
+logger("org.oasis_eu", INFO)
 logger("org.oasis_eu.portal.config.OasisLocaleResolver", DEBUG)
-logger("org.oasis_eu.portal.front.my.network", DEBUG) // ONLY in dev mode
+logger("org.oasis_eu.portal.main", INFO)
+logger("org.oasis_eu.portal.services", DEBUG)
 
-//Integration - kernel
+// Integration - kernel
+logger("org.oasis_eu.spring", INFO)
 logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", INFO) // ERROR, WARN (prod), INFO (preprod, dev), DEBUG
 logger("kernelLogging.logFullErrorResponses", INFO) // DEBUG logs any response, INFO only error ones
-logger("kernelLogging.logRequestTimings", DEBUG)
+logger("kernelLogging.logRequestTimings", INFO)
 logger("org.oasis_eu.spring.kernel.security.OasisAuthenticationFilter", INFO)
 
 root(WARN, ["CONSOLE"])

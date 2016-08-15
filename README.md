@@ -12,14 +12,6 @@ Building requires **Java 8**.
 
 ## Installation
 
-* Before building the project, you need to clone and install the [Spring integration package](https://github.com/ozwillo/ozwillo-java-spring-integration) :
-
-```
-git clone git@github.com:ozwillo/ozwillo-java-spring-integration.git
-cd ozwillo-java-spring-integration
-./gradlew install
-```
-
 * After cloning this repository, install the npm packages
 
 ```

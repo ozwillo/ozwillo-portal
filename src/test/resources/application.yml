@@ -57,8 +57,8 @@ application:
 web:
   home: http://www.ozwillo-dev.eu
   sitemap:
-    url_header: http://localhost:3001/header.xml
-    url_footer: http://localhost:3001/footer.xml
+    url_header: https://www.ozwillo.com/header.xml
+    url_footer: https://www.ozwillo.com/footer.xml
     refresh: 0 0 3 ? DEC SUN
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
@@ -79,7 +79,6 @@ kernel:
   user_directory_endpoint: ${kernel.base_uri}/d
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
-  application_id: 8b0e62e5-e3af-45de-8834-0d7d8a3f6139
   client_id: portal
   client_secret: changeit
   scopes_to_require: openid profile email address
@@ -100,6 +99,8 @@ datacore:
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 
+opendata:
+  url: https://opendata-preprod.data-ozwillo.org
 
 persistence:
   mongohosts:
