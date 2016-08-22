@@ -4,6 +4,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -104,7 +105,13 @@ public class OrganizationService {
 
 	public List<DCOrganization> findOrganizations(String country_uri, String query) {
 		String lang = RequestContextUtils.getLocale(request).getLanguage();
-		return dcOrganizationService.searchOrganizations(lang, country_uri, query);
+		List<DCOrganization> organizations =
+			dcOrganizationService.searchOrganizations(lang, country_uri, query);
+		// transform DC representation of sector to UI ones before returning organizations
+		// otherwise, public sector organizations won't be correctly managed during creation
+		organizations.forEach(dcOrganization ->
+			dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name()));
+		return organizations;
 	}
 
 	public DCOrganization getOrganization(String dcId) {
