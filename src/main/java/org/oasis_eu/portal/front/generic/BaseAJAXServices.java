@@ -26,7 +26,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 public abstract class BaseAJAXServices {
 
 	@Autowired
-	private MessageSource messageSource;
+	protected MessageSource messageSource;
 
 	public String getErrorMessage(String key, HttpServletRequest request) {
 		Locale locale = RequestContextUtils.getLocale(request);
@@ -78,7 +78,7 @@ public abstract class BaseAJAXServices {
 	@ExceptionHandler(ForbiddenException.class)
 	@ResponseStatus(HttpStatus.FORBIDDEN)
 	@ResponseBody
-	public String hande403(HttpServletRequest request, ForbiddenException fex) throws IOException {
+	public String handle403(HttpServletRequest request, ForbiddenException fex) throws IOException {
 		if (fex.getTranslatedBusinessMessage() == null || fex.getTranslatedBusinessMessage().isEmpty()) {
 			String translatedBusinessMessage = getErrorMessage("action-forbidden", request);
 			fex.setTranslatedBusinessMessage(translatedBusinessMessage);

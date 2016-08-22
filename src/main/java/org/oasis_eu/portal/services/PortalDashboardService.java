@@ -25,7 +25,6 @@ import org.oasis_eu.portal.core.mongo.model.my.HiddenPendingApps;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.spring.kernel.model.UserInfo;
@@ -74,7 +73,7 @@ public class PortalDashboardService {
 	@Autowired
 	private ImageService imageService;
 
-	public UserContext getPrimaryUserContext() {
+	UserContext getPrimaryUserContext() {
 		return getUserContexts().stream().filter(UserContext::isPrimary).findFirst().get();
 	}
 
@@ -89,7 +88,7 @@ public class PortalDashboardService {
 		Set<String> configured = ctxs
 				.stream()
 				.flatMap(c -> c.getSubscriptions().stream())
-				.map(us -> us.getId())
+				.map(UserSubscription::getId)
 				.collect(Collectors.toSet());
 
 		return allSubscriptions
@@ -97,18 +96,6 @@ public class PortalDashboardService {
 				.filter(s -> s.getId() != null)
 				.filter(s -> ! configured.contains(s.getId()))
 				.collect(Collectors.toList());
-
-	}
-
-	public List<String> getServicesIds(String userContextId) {
-
-		UserContext context = getDash().getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
-		if (context == null) {
-			return Collections.emptyList();
-		} else {
-			return context.getSubscriptions().stream().map(us -> us.getServiceId()).collect(Collectors.toList());
-		}
-
 	}
 
 	public List<DashboardApp> getMainDashboardApps() {
@@ -120,7 +107,7 @@ public class PortalDashboardService {
 
 		UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
 		if (userContext == null) {
-			logger.info("Cannot get apps for non-existing dashboard {}, user={}", userContextId, userInfoHelper.currentUser().getUserId());
+			logger.warn("Cannot get apps for non-existing dashboard {}, user={}", userContextId, userInfoHelper.currentUser().getUserId());
 			return Collections.emptyList();
 		}
 
@@ -131,16 +118,15 @@ public class PortalDashboardService {
 		List<DashboardApp> apps = userContext.getSubscriptions()
 				.stream()
 				.filter(us -> subscriptionById.containsKey(us.getId()))
-				.map(us -> toDashboardApp(subscriptionById.get(us.getId()), null))
+				.map(us -> toDashboardApp(subscriptionById.get(us.getId())))
 				.filter(app -> app != null)
 				.collect(Collectors.toList());
 
 		apps.addAll(orphanSubscriptions(actualSubscriptions)
 						.stream()
-						.map(sub -> toDashboardApp(sub, null))
+						.map(this::toDashboardApp)
 						.filter(app -> app != null)
-						.collect(Collectors.toList())
-		);
+						.collect(Collectors.toList()));
 
 		// update the dashboard
 		userContext.setSubscriptions(apps.stream().map(this::toUserSubscription).collect(Collectors.toList()));
@@ -149,7 +135,7 @@ public class PortalDashboardService {
 		return apps;
 	}
 
-	private DashboardApp toDashboardApp(Subscription sub, List<AppNotificationData> appNotificationCounts) {
+	private DashboardApp toDashboardApp(Subscription sub) {
 		try {
 			CatalogEntry service = catalogStore.findService(sub.getServiceId());
 			if (service == null) {

@@ -1,10 +1,7 @@
 package org.oasis_eu.portal.services;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
@@ -14,7 +11,6 @@ import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.model.dashboard.AppNotificationData;
 import org.oasis_eu.portal.model.notifications.NotifApp;
 import org.oasis_eu.portal.model.notifications.UserNotification;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
@@ -67,83 +63,54 @@ public class PortalNotificationService {
 		if (!notificationsEnabled) {
 			return 0;
 		}
-		// TODO: GET from kernel (not yet implemented at 18/June/2015) the actual count of {status: READ, UNREAD, ALL} message.
-		// NB. In case the user has +300 notifications, it will be fetch ALL the notification content each time,
+		// TODO NB. In case the user has +300 notifications, it will be fetch ALL the notification content each time,
 		// this to be filtered and counted at the end, which implies use of unnecessary networking/processing tasks
 		return (int) notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
 				.stream()
-				.filter(n -> n.getStatus().equals(NotificationStatus.UNREAD))
 				.count();
 	}
 
-	public UserNotificationResponse getNotifications(Locale locale, NotificationStatus status) {
+	public UserNotificationResponse getNotifications(NotificationStatus status) {
+		return getNotifications(RequestContextUtils.getLocale(request), status);
+	}
+
+	private UserNotificationResponse getNotifications(Locale locale, NotificationStatus status) {
 		if (!notificationsEnabled) {
 			return new UserNotificationResponse();
 		}
-		List<InboundNotification> notifications = notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.ANY);
 
-		List<NotifApp> notifApps = notifications
-				.stream()
-				.map(n -> {
-					if (n.getServiceId() != null) {
-						CatalogEntry service = catalogStore.findService(n.getServiceId());
-						if (service == null) {
-							return null;
-						} else {
-							return new NotifApp(service.getId(), service.getName(locale));
-						}
-					}
-					if (n.getInstanceId() != null) {
-						ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
-						if (instance == null) {
-							return null;
-						} else {
-							CatalogEntry catalogEntry = catalogStore.findApplication(instance.getApplicationId());
-							// application might have been switched to visibility:false or removed (less likely)
-							if (catalogEntry != null)
-								return new NotifApp(instance.getApplicationId(), catalogEntry.getName(locale));
-							else
-								return new NotifApp(instance.getApplicationId(), instance.getName(locale));
-						}
-					}
-					return null;
-				})
-				.filter(napp -> napp != null)
-				.distinct()
-				.collect(Collectors.toList());
-
+		List<InboundNotification> notifications =
+			notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.ANY);
 
 		List<UserNotification> notifs = extractNotifications(locale, status, notifications);
+
+		List<NotifApp> notifApps = notifs.stream()
+			.filter(userNotification -> userNotification.getApplicationId() != null)
+			.map(userNotification -> new NotifApp(userNotification.getApplicationId(), userNotification.getAppName()))
+			.distinct()
+			.sorted()
+			.collect(Collectors.toList());
 
 		return new UserNotificationResponse(notifs, notifApps);
 	}
 
-	/**
-	 * Specifically get unread notifications only (don't query the kernel for other stuff)
-	 *
-	 * @return
-	 */
-	public List<UserNotification> getUnreadNotifications() {
-		return extractNotifications(RequestContextUtils.getLocale(request),
-				NotificationStatus.UNREAD, notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD));
-	}
-
-	public List<UserNotification> extractNotifications(Locale locale, NotificationStatus status, List<InboundNotification> notifications) {
+	private List<UserNotification> extractNotifications(Locale locale, NotificationStatus status, List<InboundNotification> notifications) {
 		return notifications
 				.stream()
 				.filter(n -> NotificationStatus.ANY.equals(status) || status.equals(n.getStatus()))
 				.map(n -> {
 					UserNotification notif = new UserNotification();
-					CatalogEntry service = null;
+					CatalogEntry catalogEntry = null;
 
 					if (n.getServiceId() != null) {
-						service = catalogStore.findService(n.getServiceId());
-						if (service == null) {
+						catalogEntry = catalogStore.findService(n.getServiceId());
+						if (catalogEntry == null) {
 							return null; // skip deleted service, probable (?) companion case to #179 Bug with notifications referring destroyed app instances
 							// TODO LATER keep service but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
 						}
-						notif.setAppName(service.getName(locale));
-						notif.setServiceId(service.getId());
+						notif.setAppName(catalogEntry.getName(locale));
+						notif.setServiceId(n.getServiceId());
+						notif.setApplicationId(catalogEntry.getId());
 
 					} else if (n.getInstanceId() != null) {
 						ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
@@ -159,12 +126,12 @@ public class PortalNotificationService {
 							}
 						} else {
 							CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
-							notif.setAppName(application != null ? application.getName(locale) : "");
-							notif.setServiceId(application != null ? application.getId() : "");
+							notif.setAppName(application.getName(locale));
+							notif.setServiceId(n.getInstanceId());
+							notif.setApplicationId(application.getId());
 						}
 					}
 
-					//notif.setDate( n.getTime() == null ? new Instant() : n.getTime()); // TODO workaround, but kernel should always provide a date
 					notif.setDate(n.getTime());
 					notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
 
@@ -172,8 +139,8 @@ public class PortalNotificationService {
 					notif.setId(n.getId());
 
 					if (Strings.isNullOrEmpty(n.getActionUri())) {
-						if (service != null) {
-							notif.setUrl(service.getNotificationUrl());
+						if (catalogEntry != null) {
+							notif.setUrl(catalogEntry.getNotificationUrl());
 						}
 					} else {
 						notif.setUrl(n.getActionUri());
@@ -195,31 +162,20 @@ public class PortalNotificationService {
 				.collect(Collectors.toList());
 	}
 
-	// TODO: Method is Not used, verify if is required, otherwise remove it
-	public List<AppNotificationData> getAppNotificationCounts(List<String> serviceIds) {
-		List<UserNotification> userNotifications = getUnreadNotifications();
-
-
-		/*
-		Equivalent SQL:
-		SELECT serviceId, count(*) FROM userNotifications WHERE serviceId IN serviceIds GROUP BY serviceId
-		(then bump into a List<AppNotificationData>)
-		 */
-		return userNotifications.stream()
-				.filter(un -> serviceIds.contains(un.getServiceId()))
-				.collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)))
-				.entrySet().stream()
-				.map(entry -> new AppNotificationData(entry.getKey(), entry.getValue()))
-				.collect(Collectors.toList());
-	}
-
-
 	public Map<String, Integer> getAppNotificationCounts() {
 
-		return getUnreadNotifications().stream()
-				.filter(notif -> notif.getServiceId() != null)
-				.collect(Collectors.groupingBy(notif -> notif.getServiceId(), Collectors.reducing(0, n -> 1, Integer::sum)));
+		List<InboundNotification> inboundNotifications =
+			notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+				.stream()
+				.filter(inboundNotification -> inboundNotification.getServiceId() != null || inboundNotification.getInstanceId() != null)
+				.collect(Collectors.toList());
 
+		List<UserNotification> userNotifications = extractNotifications(RequestContextUtils.getLocale(request),
+			NotificationStatus.UNREAD, inboundNotifications);
+
+		return userNotifications.stream()
+				.filter(userNotification -> !Strings.isNullOrEmpty(userNotification.getServiceId()))
+				.collect(Collectors.groupingBy(UserNotification::getServiceId, Collectors.reducing(0, n -> 1, Integer::sum)));
 	}
 
 	private static String getFormattedText(InboundNotification notification, Locale locale) {
@@ -234,16 +190,11 @@ public class PortalNotificationService {
 		return formattedText;
 	}
 
-	public UserNotificationResponse getNotifications(NotificationStatus status) {
-		return getNotifications(RequestContextUtils.getLocale(request), status);
-	}
-
 	public void archive(String notificationId) {
 		if (!notificationsEnabled) {
 			return;
 		}
-		notificationService.setMessageStatus(userInfoHelper.currentUser().getUserId(), Arrays.asList(notificationId), NotificationStatus.READ);
+		notificationService.setMessageStatus(userInfoHelper.currentUser().getUserId(),
+			Collections.singletonList(notificationId), NotificationStatus.READ);
 	}
-
-
 }

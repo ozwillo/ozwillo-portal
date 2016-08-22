@@ -25,52 +25,40 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/my/api/notifications")
-public class NotificationsAJAXServices extends BaseAJAXServices{
+public class NotificationsAJAXServices extends BaseAJAXServices {
 
 	@Autowired
-	private PortalNotificationService notificationService;
-
-	@Autowired
-	private MessageSource messageSource;
-
-	@Value("${application.notificationsEnabled:true}")
-	private boolean notificationsEnabled;
-
+	private PortalNotificationService portalNotificationService;
 
 	@RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
 	public UserNotificationResponse getNotifications(@RequestParam(value = "status", required = false, defaultValue = "UNREAD") NotificationStatus status) {
-		return notificationService.getNotifications(status);
+		return portalNotificationService.getNotifications(status);
 	}
 
 	@RequestMapping(value = "/{notificationId}", method = RequestMethod.DELETE)
 	public void archive(@PathVariable String notificationId) {
-		notificationService.archive(notificationId);
+		portalNotificationService.archive(notificationId);
 	}
 
-	@RequestMapping(method = RequestMethod.GET, value="summary")
+	@RequestMapping(value = "summary", method = RequestMethod.GET)
 	@ResponseBody
 	public NotificationData getNotificationData(HttpServletRequest request) {
-		int count = notificationService.countNotifications();
-		return new NotificationData(count).setNotificationsMessage(messageSource.getMessage("my.n_notifications", new Object[]{Integer.valueOf(count)}, RequestContextUtils.getLocale(request)));
+		int count = portalNotificationService.countNotifications();
+		return new NotificationData(count, messageSource.getMessage("my.n_notifications", new Object[]{Integer.valueOf(count)}, RequestContextUtils.getLocale(request)));
 	}
-
 
 	private static class NotificationData {
 		int notificationsCount;
 		String notificationsMessage = "";
 
-		public NotificationData(int notificationsCount) {
+		NotificationData(int notificationsCount, String notificationsMessage) {
 			this.notificationsCount = notificationsCount;
+			this.notificationsMessage = notificationsMessage;
 		}
 
 		@SuppressWarnings("unused")
 		public String getNotificationsMessage() {
 			return notificationsMessage;
-		}
-
-		public NotificationData setNotificationsMessage(String notificationsMessage) {
-			this.notificationsMessage = notificationsMessage;
-			return this;
 		}
 
 		@JsonProperty("notificationsCount")

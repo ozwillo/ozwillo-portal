@@ -8,15 +8,16 @@ import org.oasis_eu.spring.kernel.model.NotificationStatus;
  * Date: 6/13/14
  */
 public class UserNotification {
-	String appName;
-	String formattedText;
-	Instant date;
-	String dateText;
-	String id;
-	String url;
-	String actionText;
-	String serviceId;
-	NotificationStatus status;
+	private String appName;
+	private String formattedText;
+	private Instant date;
+	private String dateText;
+	private String id;
+	private String url;
+	private String actionText;
+	private String serviceId;
+	private String applicationId;
+	private NotificationStatus status;
 
 	public String getAppName() {
 		return appName;
@@ -80,6 +81,14 @@ public class UserNotification {
 
 	public void setServiceId(String serviceId) {
 		this.serviceId = serviceId;
+	}
+
+	public String getApplicationId() {
+		return applicationId;
+	}
+
+	public void setApplicationId(String applicationId) {
+		this.applicationId = applicationId;
 	}
 
 	public NotificationStatus getStatus() {

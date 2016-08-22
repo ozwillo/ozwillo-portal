@@ -4,7 +4,7 @@ package org.oasis_eu.portal.model.notifications;
  * User: schambon
  * Date: 4/15/15
  */
-public class NotifApp {
+public class NotifApp implements Comparable<NotifApp> {
 	private String id;
 	private String name;
 
@@ -36,13 +36,16 @@ public class NotifApp {
 
 		NotifApp notifApp = (NotifApp) o;
 
-		if (!id.equals(notifApp.id)) return false;
-
-		return true;
+		return id.equals(notifApp.id);
 	}
 
 	@Override
 	public int hashCode() {
 		return id.hashCode();
+	}
+
+	@Override
+	public int compareTo(NotifApp o) {
+		return name.compareTo(o.getName());
 	}
 }
