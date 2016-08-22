@@ -9,20 +9,20 @@ import java.util.List;
  * Date: 10/29/14
  */
 public class ApplicationDetails {
-	@JsonProperty
-	double rating;
-	@JsonProperty
-	boolean rateable = true;
-	@JsonProperty
-	String policy;
-	@JsonProperty
-	String tos;
-	@JsonProperty
-	String longdescription;
-	@JsonProperty
-	List<String> screenshots;
+    @JsonProperty
+    double rating;
+    @JsonProperty
+    boolean rateable = true;
+    @JsonProperty
+    String policy;
+    @JsonProperty
+    String tos;
+    @JsonProperty
+    String longdescription;
+    @JsonProperty
+    List<String> screenshots;
 
-	@JsonProperty
-	String serviceUrl;
+    @JsonProperty
+    String serviceUrl;
 
 }

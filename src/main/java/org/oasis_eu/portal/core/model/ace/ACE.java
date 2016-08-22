@@ -14,150 +14,150 @@ import org.slf4j.LoggerFactory;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ACE {
 
-	private static final Logger logger = LoggerFactory.getLogger(ACE.class);
+    private static final Logger logger = LoggerFactory.getLogger(ACE.class);
 
-	private String id;
-	@JsonProperty("entry_uri")
-	private String entryUri;
-	@JsonProperty("entry_etag")
-	private String entryEtag;
-	@JsonProperty("pending_entry_uri")
-	private String pendingEntryUri;
-	@JsonProperty("pending_entry_etag")
-	private String pendingEntryEtag;
-	@JsonProperty("instance_id")
-	private String instanceId;
-	@JsonProperty("user_id")
-	private String userId;
-	@JsonProperty("user_name")
-	private String userName;
-	@JsonProperty("email")
-	private String email;
-	@JsonProperty("creator_id")
-	private String creatorId;
-	@JsonProperty("creator_name")
-	private String creatorName;
-	@JsonProperty("created")
-	private Instant created;
-	@JsonProperty("app_admin")
-	private boolean appAdmin = false; // for now Kernel deduces it from orga admin #157 Delete and re-add a service icon to my desk K#90
-	@JsonProperty("app_user")
-	private boolean appUser = false; // #157 Delete and re-add a service icon to my desk K#90
+    private String id;
+    @JsonProperty("entry_uri")
+    private String entryUri;
+    @JsonProperty("entry_etag")
+    private String entryEtag;
+    @JsonProperty("pending_entry_uri")
+    private String pendingEntryUri;
+    @JsonProperty("pending_entry_etag")
+    private String pendingEntryEtag;
+    @JsonProperty("instance_id")
+    private String instanceId;
+    @JsonProperty("user_id")
+    private String userId;
+    @JsonProperty("user_name")
+    private String userName;
+    @JsonProperty("email")
+    private String email;
+    @JsonProperty("creator_id")
+    private String creatorId;
+    @JsonProperty("creator_name")
+    private String creatorName;
+    @JsonProperty("created")
+    private Instant created;
+    @JsonProperty("app_admin")
+    private boolean appAdmin = false; // for now Kernel deduces it from orga admin #157 Delete and re-add a service icon to my desk K#90
+    @JsonProperty("app_user")
+    private boolean appUser = false; // #157 Delete and re-add a service icon to my desk K#90
 
-	@JsonAnySetter
-	public void anySetter(String key, String value) {
-		logger.debug("Unmarshalling ACE, discarding unknown key {} with value {}", key, value);
-	}
+    @JsonAnySetter
+    public void anySetter(String key, String value) {
+        logger.debug("Unmarshalling ACE, discarding unknown key {} with value {}", key, value);
+    }
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getEntryUri() {
-		return entryUri;
-	}
+    public String getEntryUri() {
+        return entryUri;
+    }
 
-	public void setEntryUri(String entryUri) {
-		this.entryUri = entryUri;
-	}
+    public void setEntryUri(String entryUri) {
+        this.entryUri = entryUri;
+    }
 
-	public String getEntryEtag() {
-		return entryEtag;
-	}
+    public String getEntryEtag() {
+        return entryEtag;
+    }
 
-	public void setEntryEtag(String entryEtag) {
-		this.entryEtag = entryEtag;
-	}
+    public void setEntryEtag(String entryEtag) {
+        this.entryEtag = entryEtag;
+    }
 
-	public String getPendingEntryEtag() {
-		return pendingEntryEtag;
-	}
+    public String getPendingEntryEtag() {
+        return pendingEntryEtag;
+    }
 
-	public void setPendingEntryEtag(String pendingEntryEtag) {
-		this.pendingEntryEtag = pendingEntryEtag;
-	}
+    public void setPendingEntryEtag(String pendingEntryEtag) {
+        this.pendingEntryEtag = pendingEntryEtag;
+    }
 
-	public String getPendingEntryUri() {
-		return pendingEntryUri;
-	}
+    public String getPendingEntryUri() {
+        return pendingEntryUri;
+    }
 
-	public void setPendingEntryUri(String pendingEntryUri) {
-		this.pendingEntryUri = pendingEntryUri;
-	}
+    public void setPendingEntryUri(String pendingEntryUri) {
+        this.pendingEntryUri = pendingEntryUri;
+    }
 
-	public String getInstanceId() {
-		return instanceId;
-	}
+    public String getInstanceId() {
+        return instanceId;
+    }
 
-	public void setInstanceId(String instanceId) {
-		this.instanceId = instanceId;
-	}
+    public void setInstanceId(String instanceId) {
+        this.instanceId = instanceId;
+    }
 
-	public String getUserId() {
-		return userId;
-	}
+    public String getUserId() {
+        return userId;
+    }
 
-	public void setUserId(String userId) {
-		this.userId = userId;
-	}
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
 
-	public String getUserName() {
-		return userName;
-	}
+    public String getUserName() {
+        return userName;
+    }
 
-	public void setUserName(String userName) {
-		this.userName = userName;
-	}
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
 
-	public String getEmail() {
-		return email;
-	}
+    public String getEmail() {
+        return email;
+    }
 
-	public void setEmail(String email) {
-		this.email = email;
-	}
+    public void setEmail(String email) {
+        this.email = email;
+    }
 
-	public String getCreatorId() {
-		return creatorId;
-	}
+    public String getCreatorId() {
+        return creatorId;
+    }
 
-	public void setCreatorId(String creatorId) {
-		this.creatorId = creatorId;
-	}
+    public void setCreatorId(String creatorId) {
+        this.creatorId = creatorId;
+    }
 
-	public String getCreatorName() {
-		return creatorName;
-	}
+    public String getCreatorName() {
+        return creatorName;
+    }
 
-	public void setCreatorName(String creatorName) {
-		this.creatorName = creatorName;
-	}
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
 
-	public Instant getCreated() {
-		return created;
-	}
+    public Instant getCreated() {
+        return created;
+    }
 
-	public void setCreated(Instant created) {
-		this.created = created;
-	}
+    public void setCreated(Instant created) {
+        this.created = created;
+    }
 
-	public boolean isAppAdmin() {
-		return appAdmin;
-	}
+    public boolean isAppAdmin() {
+        return appAdmin;
+    }
 
-	public void setAppAdmin(boolean appAdmin) {
-		this.appAdmin = appAdmin;
-	}
+    public void setAppAdmin(boolean appAdmin) {
+        this.appAdmin = appAdmin;
+    }
 
-	public boolean isAppUser() {
-		return appUser;
-	}
+    public boolean isAppUser() {
+        return appUser;
+    }
 
-	public void setAppUser(boolean appUser) {
-		this.appUser = appUser;
-	}
+    public void setAppUser(boolean appUser) {
+        this.appUser = appUser;
+    }
 }

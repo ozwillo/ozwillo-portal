@@ -13,15 +13,15 @@ import java.util.List;
  */
 @JacksonXmlRootElement(localName = "menuset")
 public class Footer {
-	@JacksonXmlElementWrapper(useWrapping = false)
-	@JacksonXmlProperty(localName = "menu")
-	private List<SiteMap> menuset;
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "menu")
+    private List<SiteMap> menuset;
 
-	public List<SiteMap> getMenuset() {
-		return menuset;
-	}
+    public List<SiteMap> getMenuset() {
+        return menuset;
+    }
 
-	public void setMenuset(List<SiteMap> menuset) {
-		this.menuset = menuset;
-	}
+    public void setMenuset(List<SiteMap> menuset) {
+        this.menuset = menuset;
+    }
 }

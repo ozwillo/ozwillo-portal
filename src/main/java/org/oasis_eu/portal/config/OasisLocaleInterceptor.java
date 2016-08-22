@@ -13,35 +13,34 @@ import javax.servlet.http.HttpServletResponse;
 
 /**
  * Updates the cookie locale to match the user profile.
- * 
- * @author mkalam-alami
  *
+ * @author mkalam-alami
  */
 public class OasisLocaleInterceptor extends HandlerInterceptorAdapter {
 
-	@Override
-	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-			throws ServletException {
+    @Override
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
+        throws ServletException {
 
-		Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-		if (authentication instanceof OpenIdCAuthentication) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof OpenIdCAuthentication) {
 
-			// nop - now we should have a correct locale in the session
+            // nop - now we should have a correct locale in the session
 
-		} else {
-			// a bit hacky, basically if we're not logged in we look for the first path element to tell us the locale
-			String path = request.getServletPath();
-			if (path.contains("/")) {
-				String[] split = path.split("/");
-				if (split.length > 0) {
-					Languages foundLanguage = Languages.getByLanguageTag(split[1]);
-					if (foundLanguage != null) {
-						RequestContextUtils.getLocaleResolver(request).setLocale(request, response, foundLanguage.getLocale());
-					}
-				}
-			}
-		}
-		return true;
-	}
-	
+        } else {
+            // a bit hacky, basically if we're not logged in we look for the first path element to tell us the locale
+            String path = request.getServletPath();
+            if (path.contains("/")) {
+                String[] split = path.split("/");
+                if (split.length > 0) {
+                    Languages foundLanguage = Languages.getByLanguageTag(split[1]);
+                    if (foundLanguage != null) {
+                        RequestContextUtils.getLocaleResolver(request).setLocale(request, response, foundLanguage.getLocale());
+                    }
+                }
+            }
+        }
+        return true;
+    }
+
 }

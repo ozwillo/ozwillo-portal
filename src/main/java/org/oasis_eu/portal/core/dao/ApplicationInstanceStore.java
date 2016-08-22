@@ -10,9 +10,9 @@ import java.util.List;
  */
 public interface ApplicationInstanceStore {
 
-	List<ApplicationInstance> findByUserId(String userId);
+    List<ApplicationInstance> findByUserId(String userId);
 
-	List<ApplicationInstance> findByOrganizationId(String organizationId);
+    List<ApplicationInstance> findByOrganizationId(String organizationId);
 
-	List<ApplicationInstance> findPendingInstances(String userId);
+    List<ApplicationInstance> findPendingInstances(String userId);
 }

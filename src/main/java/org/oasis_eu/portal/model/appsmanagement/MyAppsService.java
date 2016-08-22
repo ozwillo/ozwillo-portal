@@ -8,46 +8,46 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
  */
 public class MyAppsService {
 
-	private CatalogEntry service;
-	private SubscriptionStatus subscriptionStatus;
+    private CatalogEntry service;
+    private SubscriptionStatus subscriptionStatus;
 
-	private String name;
+    private String name;
 
-	private String iconUrl;
+    private String iconUrl;
 
-	public CatalogEntry getService() {
-		return service;
-	}
+    public CatalogEntry getService() {
+        return service;
+    }
 
-	public MyAppsService setService(CatalogEntry service) {
-		this.service = service;
-		return this;
-	}
+    public MyAppsService setService(CatalogEntry service) {
+        this.service = service;
+        return this;
+    }
 
-	public SubscriptionStatus getSubscriptionStatus() {
-		return subscriptionStatus;
-	}
+    public SubscriptionStatus getSubscriptionStatus() {
+        return subscriptionStatus;
+    }
 
-	public MyAppsService setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
-		this.subscriptionStatus = subscriptionStatus;
-		return this;
-	}
+    public MyAppsService setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
+        this.subscriptionStatus = subscriptionStatus;
+        return this;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public MyAppsService setName(String name) {
-		this.name = name;
-		return this;
-	}
+    public MyAppsService setName(String name) {
+        this.name = name;
+        return this;
+    }
 
-	public String getIconUrl() {
-		return iconUrl;
-	}
+    public String getIconUrl() {
+        return iconUrl;
+    }
 
-	public MyAppsService setIconUrl(String iconUrl) {
-		this.iconUrl = iconUrl;
-		return this;
-	}
+    public MyAppsService setIconUrl(String iconUrl) {
+        this.iconUrl = iconUrl;
+        return this;
+    }
 }

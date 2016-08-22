@@ -31,108 +31,108 @@ import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 @Component
 public class SubscriptionStoreImpl implements SubscriptionStore {
 
-	private static final Logger logger = LoggerFactory.getLogger(SubscriptionStoreImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(SubscriptionStoreImpl.class);
 
-	@Autowired
-	private Kernel kernel;
+    @Autowired
+    private Kernel kernel;
 
-	@Value("${kernel.portal_endpoints.subscriptions}") // .../apps/subscriptions
-	private String endpoint;
+    @Value("${kernel.portal_endpoints.subscriptions}") // .../apps/subscriptions
+    private String endpoint;
 
-	@Autowired
-	private InstalledStatusRepository installedStatusRepository;
+    @Autowired
+    private InstalledStatusRepository installedStatusRepository;
 
-	@Override
-	@Cacheable("subscriptions")
-	public List<Subscription> findByUserId(String userId) {
+    @Override
+    @Cacheable("subscriptions")
+    public List<Subscription> findByUserId(String userId) {
 
-		ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null,
-					Subscription[].class, user(), userId);
+        ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null,
+            Subscription[].class, user(), userId);
 
-		Subscription[] subscriptions = kernel.getBodyOrNull(response, Subscription[].class, endpoint + "/user/{user_id}", userId);
+        Subscription[] subscriptions = kernel.getBodyOrNull(response, Subscription[].class, endpoint + "/user/{user_id}", userId);
 
-		if (logger.isDebugEnabled()) {
-			logger.debug("--> " + response.getStatusCode()); // supplementary, subscription-specific log
-			if (subscriptions != null) {
-				for (Subscription s : subscriptions) {
-					logger.debug("Subscribed: {}", s);
-				}
-			}
-		}
+        if (logger.isDebugEnabled()) {
+            logger.debug("--> " + response.getStatusCode()); // supplementary, subscription-specific log
+            if (subscriptions != null) {
+                for (Subscription s : subscriptions) {
+                    logger.debug("Subscribed: {}", s);
+                }
+            }
+        }
 
-		return Arrays.asList(subscriptions);
-	}
+        return Arrays.asList(subscriptions);
+    }
 
-	@Override
-	public void create(String userId, Subscription subscription) throws WrongQueryException{
-		logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
+    @Override
+    public void create(String userId, Subscription subscription) throws WrongQueryException {
+        logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
 
-		InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
-				CatalogEntryType.SERVICE, subscription.getServiceId(), userId);
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
+            CatalogEntryType.SERVICE, subscription.getServiceId(), userId);
 
-		if (status != null) {
-			installedStatusRepository.delete(status);
-		}
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
 
-		String uri = endpoint + "/user/{user_id}";
-		ResponseEntity<Void> kernelResp = kernel.exchange(uri, HttpMethod.POST,
-				new HttpEntity<>(subscription), Void.class, user(), userId);
-		// validate response body
-		kernel.getBodyUnlessClientError(kernelResp, Void.class, uri); // TODO test
-	}
-
-
-	@Override
-	public List<Subscription> findByServiceId(String serviceId) {
-		return Arrays.asList(kernel.getEntityOrException(endpoint + "/service/{service_id}", Subscription[].class, user(), serviceId));
-	}
-
-	@Override
-	public void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType) {
-
-		logger.debug("Unsubscribing user {} from service {}", userId, serviceId);
-
-		InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.SERVICE, serviceId, userId);
-		if (status != null) {
-			installedStatusRepository.delete(status);
-		}
-
-		List<Subscription> subs = findByServiceId(serviceId); // and NOT findByUserId() else 403 Forbidden for an other user than oneself even if admin
-		subs.stream()
-				.filter(s -> s.getSubscriptionType().equals(subscriptionType)
-						&& s.getUserId().equals(userId)) // NB. s.getServiceId() is obligatorily right (even if it is actually null !)
-				.forEach(s -> { // forEach... but there should only be one...
-					HttpHeaders headers = new HttpHeaders();
-					headers.add("If-Match", s.getSubscriptionEtag());
-
-					kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<>(headers),
-							Void.class, user(), s.getId());
-				});
-
-	}
+        String uri = endpoint + "/user/{user_id}";
+        ResponseEntity<Void> kernelResp = kernel.exchange(uri, HttpMethod.POST,
+            new HttpEntity<>(subscription), Void.class, user(), userId);
+        // validate response body
+        kernel.getBodyUnlessClientError(kernelResp, Void.class, uri); // TODO test
+    }
 
 
-	@Override
-	public void unsubscribe(String subscriptionId) throws WrongQueryException{
+    @Override
+    public List<Subscription> findByServiceId(String serviceId) {
+        return Arrays.asList(kernel.getEntityOrException(endpoint + "/service/{service_id}", Subscription[].class, user(), serviceId));
+    }
 
-		String uri = endpoint + "/subscription/{subscription_id}";
-		ResponseEntity<Subscription> response = kernel.exchange(uri, HttpMethod.GET, null, Subscription.class, user(), subscriptionId);
+    @Override
+    public void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType) {
 
-		Subscription subscription = kernel.getBodyUnlessClientError(response, Subscription.class, uri, subscriptionId);
+        logger.debug("Unsubscribing user {} from service {}", userId, serviceId);
 
-		InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
-				CatalogEntryType.SERVICE, subscription.getServiceId(), subscription.getUserId());
-		if (status != null) {
-			installedStatusRepository.delete(status);
-		}
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.SERVICE, serviceId, userId);
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
 
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("If-Match", response.getHeaders().getETag());
+        List<Subscription> subs = findByServiceId(serviceId); // and NOT findByUserId() else 403 Forbidden for an other user than oneself even if admin
+        subs.stream()
+            .filter(s -> s.getSubscriptionType().equals(subscriptionType)
+                && s.getUserId().equals(userId)) // NB. s.getServiceId() is obligatorily right (even if it is actually null !)
+            .forEach(s -> { // forEach... but there should only be one...
+                HttpHeaders headers = new HttpHeaders();
+                headers.add("If-Match", s.getSubscriptionEtag());
 
-		ResponseEntity<Subscription> kernelResp = kernel.exchange(uri, HttpMethod.DELETE, new HttpEntity<>(headers),
-				Subscription.class, user(), subscriptionId);
-		// validate response body
-		kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri); // TODO test
-	}
+                kernel.exchange(endpoint + "/subscription/{subscription_id}", HttpMethod.DELETE, new HttpEntity<>(headers),
+                    Void.class, user(), s.getId());
+            });
+
+    }
+
+
+    @Override
+    public void unsubscribe(String subscriptionId) throws WrongQueryException {
+
+        String uri = endpoint + "/subscription/{subscription_id}";
+        ResponseEntity<Subscription> response = kernel.exchange(uri, HttpMethod.GET, null, Subscription.class, user(), subscriptionId);
+
+        Subscription subscription = kernel.getBodyUnlessClientError(response, Subscription.class, uri, subscriptionId);
+
+        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
+            CatalogEntryType.SERVICE, subscription.getServiceId(), subscription.getUserId());
+        if (status != null) {
+            installedStatusRepository.delete(status);
+        }
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("If-Match", response.getHeaders().getETag());
+
+        ResponseEntity<Subscription> kernelResp = kernel.exchange(uri, HttpMethod.DELETE, new HttpEntity<>(headers),
+            Subscription.class, user(), subscriptionId);
+        // validate response body
+        kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri); // TODO test
+    }
 
 }

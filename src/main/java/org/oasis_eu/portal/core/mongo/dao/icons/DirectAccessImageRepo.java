@@ -18,24 +18,24 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DirectAccessImageRepo {
-	@Autowired
-	private Mongo mongo;
+    @Autowired
+    private Mongo mongo;
 
-	@Value("${persistence.mongodatabase}")
-	private String databaseName;
+    @Value("${persistence.mongodatabase}")
+    private String databaseName;
 
-	public String getHashForIcon(String id) {
+    public String getHashForIcon(String id) {
 
-		DBCollection icons = mongo.getDB(databaseName).getCollection("image");
+        DBCollection icons = mongo.getDB(databaseName).getCollection("image");
 
-		DBObject query = new BasicDBObject("_id", id);
-		DBObject projection = new BasicDBObject("hash", 1);
+        DBObject query = new BasicDBObject("_id", id);
+        DBObject projection = new BasicDBObject("hash", 1);
 
-		DBObject hashDoc = icons.findOne(query, projection);
+        DBObject hashDoc = icons.findOne(query, projection);
 
-		return hashDoc != null ? (String) hashDoc.get("hash") : null;
+        return hashDoc != null ? (String) hashDoc.get("hash") : null;
 
-	}
+    }
 
 }
 

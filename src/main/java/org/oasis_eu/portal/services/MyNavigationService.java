@@ -22,31 +22,31 @@ import java.util.stream.Collectors;
 @Service
 public class MyNavigationService {
 
-	@Autowired
-	private SiteMapService siteMapService;
+    @Autowired
+    private SiteMapService siteMapService;
 
-	@Autowired
-	private HttpServletRequest httpRequest;
+    @Autowired
+    private HttpServletRequest httpRequest;
 
-	private List<String> pages = Arrays.asList("dashboard", "profile", "network", "apps");
+    private List<String> pages = Arrays.asList("dashboard", "profile", "network", "apps");
 
-	public List<MyNavigation> getNavigation(String pagename) {
-		return pages.stream().map(id -> new MyNavigation(id, id.equals(pagename))).collect(Collectors.toList());
-	}
+    public List<MyNavigation> getNavigation(String pagename) {
+        return pages.stream().map(id -> new MyNavigation(id, id.equals(pagename))).collect(Collectors.toList());
+    }
 
-	/**
-	 * @return a map of {@link SiteMapEntry} values keyed by the row in which they have to appear
+    /**
+     * @return a map of {@link SiteMapEntry} values keyed by the row in which they have to appear
      */
-	public Map<Integer, List<SiteMapEntry>> getSiteMapFooter() {
-		List<SiteMapEntry> siteMapEntries =
-			siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
-		if (siteMapEntries == null)
-			return Collections.emptyMap();
+    public Map<Integer, List<SiteMapEntry>> getSiteMapFooter() {
+        List<SiteMapEntry> siteMapEntries =
+            siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
+        if (siteMapEntries == null)
+            return Collections.emptyMap();
 
-		return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
-	}
+        return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
+    }
 
-	public SiteMapMenuSet getSiteMapHeader() {
-		return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
-	}
+    public SiteMapMenuSet getSiteMapHeader() {
+        return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
+    }
 }

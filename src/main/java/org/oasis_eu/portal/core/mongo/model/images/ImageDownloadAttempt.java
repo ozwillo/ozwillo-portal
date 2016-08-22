@@ -12,36 +12,36 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Document(collection = "image_download_attempt")
 public class ImageDownloadAttempt {
 
-	@Id
-	private String id;
+    @Id
+    private String id;
 
-	@Indexed(unique = true)
-	private String url;
+    @Indexed(unique = true)
+    private String url;
 
-	//	@Indexed(expireAfterSeconds = 900)
-	private DateTime time;
+    //	@Indexed(expireAfterSeconds = 900)
+    private DateTime time;
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public DateTime getTime() {
-		return time;
-	}
+    public DateTime getTime() {
+        return time;
+    }
 
-	public void setTime(DateTime time) {
-		this.time = time;
-	}
+    public void setTime(DateTime time) {
+        this.time = time;
+    }
 
-	public String getUrl() {
-		return url;
-	}
+    public String getUrl() {
+        return url;
+    }
 
-	public void setUrl(String url) {
-		this.url = url;
-	}
+    public void setUrl(String url) {
+        this.url = url;
+    }
 }
