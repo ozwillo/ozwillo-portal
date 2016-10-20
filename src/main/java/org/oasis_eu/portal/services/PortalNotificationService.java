@@ -81,7 +81,7 @@ public class PortalNotificationService {
         }
 
         List<InboundNotification> notifications =
-            notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.ANY);
+            notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), status);
 
         List<UserNotification> notifs = extractNotifications(locale, status, notifications);
 
