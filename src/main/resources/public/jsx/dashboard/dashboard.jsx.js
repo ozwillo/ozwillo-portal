@@ -50,7 +50,7 @@ var Dashboard = React.createClass({
                 }.bind(this)
             });
         }
-        window.setTimeout(this.checkNotifications, 60000);
+        window.setTimeout(this.checkNotifications, 10000);
     },
     initNotificationsCheck: function () {
         if (this.notificationsChecked) {
@@ -61,8 +61,6 @@ var Dashboard = React.createClass({
         }
     },
     componentDidMount: function () {
-        this.initNotificationsCheck();
-
         $.ajax({
             url: dash_service + "/dashboards",
             type: 'get',
@@ -81,6 +79,7 @@ var Dashboard = React.createClass({
             dataType: 'json',
             success: function (data) {
                 this.setState({ apps: data, loadingApps: false });
+                this.initNotificationsCheck();
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error("Error", status, err);
@@ -189,20 +188,14 @@ var Dashboard = React.createClass({
     },
     switchToDashboard: function (dash) {
         return function () {
-            var state = this.state;
-            state.dash = dash;
-            state.loadingApps = true;
-            state.pendingApps = null;
-            this.setState(state);
+            this.setState({ dash: dash, loadingApps: true, pendingApps: null });
 
             $.ajax({
                 url: dash_service + "/apps/" + dash.id,
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
-                    state.apps = data;
-                    state.loadingApps = false;
-                    this.setState(state);
+                    this.setState({ apps: data, loadingApps: false });
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error("Error", status, err);
