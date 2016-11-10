@@ -20,7 +20,7 @@ apply plugin: 'spring-boot'
 
 jar {
     baseName = 'ozwillo-portal'
-    version = '1.45.0-RC1'
+    version = '1.47.0'
 }
 
 sourceCompatibility = 1.8
