@@ -212,19 +212,15 @@ var AppModal = React.createClass({
                    contentType: 'json',
                    data: orgSearchData,
                    success: function (data) {
-                      // Verify that the received object is actually the one we requested (a brand new one)
-                      // after the server validated that it doesn't exist in Datacore / Kernel
-                      if(data && !data.exist
-                              && (data.sector_type === orgSearchData.sector_type)
-                              && (data.tax_reg_num === orgSearchData.tax_reg_num)
-                              && (data.legal_name  === orgSearchData.legal_name)){
+                      // If we received data, it means organization can be declared in the portail
+                      if (data) {
                          state.installing = false;
                          state.createOrg = true;
                          state.selectedOrg = data;
                          state.selectedOrg.inModification = false;
                          state.errors = [];
                          this.setState(state);
-                      }else{
+                      } else {
                          this.refs.modalError.open();
                          this.setState(state);
                       }
