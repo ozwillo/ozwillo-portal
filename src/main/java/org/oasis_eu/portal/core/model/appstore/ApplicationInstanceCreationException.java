@@ -6,31 +6,31 @@ package org.oasis_eu.portal.core.model.appstore;
  */
 public class ApplicationInstanceCreationException extends RuntimeException {
 
-	private String applicationId;
-	private ApplicationInstantiationRequest requested;
-	private ApplicationInstanceErrorType type;
+    private String applicationId;
+    private ApplicationInstantiationRequest requested;
+    private ApplicationInstanceErrorType type;
 
-	public ApplicationInstanceCreationException(String appId, ApplicationInstantiationRequest requested, ApplicationInstanceErrorType type) {
-		this.applicationId = appId;
-		this.requested = requested;
-		this.type = type;
-	}
+    public ApplicationInstanceCreationException(String appId, ApplicationInstantiationRequest requested, ApplicationInstanceErrorType type) {
+        this.applicationId = appId;
+        this.requested = requested;
+        this.type = type;
+    }
 
-	public ApplicationInstantiationRequest getRequested() {
-		return requested;
-	}
+    public ApplicationInstantiationRequest getRequested() {
+        return requested;
+    }
 
-	public String getApplicationId() {
-		return applicationId;
-	}
+    public String getApplicationId() {
+        return applicationId;
+    }
 
-	public ApplicationInstanceErrorType getType() {
-		return type;
-	}
+    public ApplicationInstanceErrorType getType() {
+        return type;
+    }
 
 
-	public static enum ApplicationInstanceErrorType {
-		TECHNICAL_ERROR,
-		INVALID_REQUEST
-	}
+    public static enum ApplicationInstanceErrorType {
+        TECHNICAL_ERROR,
+        INVALID_REQUEST
+    }
 }

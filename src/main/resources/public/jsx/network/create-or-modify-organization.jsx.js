@@ -462,6 +462,10 @@ var Tab2 = React.createClass({
     },
     validateFields: function() {
         var errors = this.state.errors;
+        // reset errors to avoid duplicates or obsolete ones (not really elegant ...)
+        errors.splice(errors.indexOf("legal_name"), 1)
+        errors.splice(errors.indexOf("jurisdiction"), 1)
+
         if (ReactDOM.findDOMNode(this.refs.legal_name).value.trim() === '')
             errors.push("legal_name");
         if (this.state.organization.sector_type === 'PUBLIC_BODY' &&

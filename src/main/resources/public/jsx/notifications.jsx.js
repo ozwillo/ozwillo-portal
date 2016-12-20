@@ -36,7 +36,7 @@ var NotificationTable = React.createClass({
                 dir: -1
             },
             filter: {
-                app: null,
+                appId: null,
                 status: "UNREAD"
             }
         };
@@ -116,7 +116,7 @@ var NotificationTable = React.createClass({
         if (appId == "all") {
             appId = null;
         }
-        state.filter.app = appId;
+        state.filter.appId = appId;
         this.setState(state);
     },
     removeNotif: function(id) {
@@ -138,21 +138,12 @@ var NotificationTable = React.createClass({
     },
     render: function () {
         var callback = this.removeNotif;
-        var appId = this.state.filter.app;
+        var appId = this.state.filter.appId;
         var status = this.state.filter.status;
         var notificationNodes = this.state.n
-            .filter(function (notif) {
-                if (appId == null) {
-                    return true;
-                } else {
-                    return notif.serviceId == appId;
-                }
-            })
-            .map(function (notif) {
-                return (
-                    <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={callback}/>
-                );
-            });
+            .filter(notif => appId == null || notif.applicationId == appId)
+            .map(notif => <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={callback}/>
+            );
 
         if (notificationNodes.length == 0) {
             notificationNodes = <tr><td className="message" colSpan="4">{t('no-notification')}</td></tr>;

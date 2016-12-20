@@ -23,43 +23,43 @@ import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 @Service
 public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
 
-	private static final Logger logger = LoggerFactory.getLogger(ApplicationInstanceStoreImpl.class);
+    private static final Logger logger = LoggerFactory.getLogger(ApplicationInstanceStoreImpl.class);
 
-	@Autowired
-	private Kernel kernel;
+    @Autowired
+    private Kernel kernel;
 
-	@Value("${kernel.portal_endpoints.apps:}")
-	private String appsEndpoint;
+    @Value("${kernel.portal_endpoints.apps:}")
+    private String appsEndpoint;
 
-	@Override
-	@Cacheable("user-instances")
-	public List<ApplicationInstance> findByUserId(String userId) {
-		return Arrays.asList(kernel.getEntityOrNull(appsEndpoint + "/instance/user/{user_id}",
-				ApplicationInstance[].class, user(), userId));
+    @Override
+    @Cacheable("user-instances")
+    public List<ApplicationInstance> findByUserId(String userId) {
+        return Arrays.asList(kernel.getEntityOrNull(appsEndpoint + "/instance/user/{user_id}",
+            ApplicationInstance[].class, user(), userId));
 
-	}
+    }
 
-	@Override
-	@Cacheable("org-instances")
-	public List<ApplicationInstance> findByOrganizationId(String organizationId) {
-		ApplicationInstance[] appInstanceArray = kernel.getEntityOrException(appsEndpoint + "/instance/organization/{organization_id}",
-				ApplicationInstance[].class, user(), organizationId);
-		return Arrays.asList(appInstanceArray);
-	}
+    @Override
+    @Cacheable("org-instances")
+    public List<ApplicationInstance> findByOrganizationId(String organizationId) {
+        ApplicationInstance[] appInstanceArray = kernel.getEntityOrException(appsEndpoint + "/instance/organization/{organization_id}",
+            ApplicationInstance[].class, user(), organizationId);
+        return Arrays.asList(appInstanceArray);
+    }
 
-	// NOT cacheable - we want to call the kernel all the time for that
-	@Override
-	public List<ApplicationInstance> findPendingInstances(String userId) {
-		String uriString = UriComponentsBuilder.fromHttpUrl(appsEndpoint)
-				.path("/instance/user/{user_id}")
-				.queryParam("include_orgs", true)
-				.queryParam("status", "PENDING")
-				.build()
-				.expand(userId)
-				.toUriString();
+    // NOT cacheable - we want to call the kernel all the time for that
+    @Override
+    public List<ApplicationInstance> findPendingInstances(String userId) {
+        String uriString = UriComponentsBuilder.fromHttpUrl(appsEndpoint)
+            .path("/instance/user/{user_id}")
+            .queryParam("include_orgs", true)
+            .queryParam("status", "PENDING")
+            .build()
+            .expand(userId)
+            .toUriString();
 
-		List<ApplicationInstance> appInstancesList = Arrays.asList(kernel.getEntityOrNull(uriString,  ApplicationInstance[].class, user()));
-		logger.debug("Found {} pending instances", appInstancesList.size());
-		return appInstancesList;
-	}
+        List<ApplicationInstance> appInstancesList = Arrays.asList(kernel.getEntityOrNull(uriString, ApplicationInstance[].class, user()));
+        logger.debug("Found {} pending instances", appInstancesList.size());
+        return appInstancesList;
+    }
 }

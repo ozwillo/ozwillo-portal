@@ -11,25 +11,27 @@ import java.util.List;
  */
 public interface SubscriptionStore {
 
-	void create(String userId, Subscription object);
+    void create(String userId, Subscription object);
 
 
-	/**
-	 * Used by Dashboard, but NOT pushToDashboard because Kernel returns 403 Forbidden
-	 * for an other user than oneself (even if admin)
-	 * @param userId
-	 * @return
-	 */
-	public List<Subscription> findByUserId(String userId);
+    /**
+     * Used by Dashboard, but NOT pushToDashboard because Kernel returns 403 Forbidden
+     * for an other user than oneself (even if admin)
+     *
+     * @param userId
+     * @return
+     */
+    public List<Subscription> findByUserId(String userId);
 
-	/**
-	 * Used by push to dashboard by an (for now orga) admin
-	 * @param serviceId
-	 * @return
-	 */
-	public List<Subscription> findByServiceId(String serviceId);
+    /**
+     * Used by push to dashboard by an (for now orga) admin
+     *
+     * @param serviceId
+     * @return
+     */
+    public List<Subscription> findByServiceId(String serviceId);
 
-	public void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType);
+    public void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType);
 
-	public void unsubscribe(String subscriptionId);
+    public void unsubscribe(String subscriptionId);
 }

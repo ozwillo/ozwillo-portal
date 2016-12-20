@@ -6,8 +6,8 @@ package org.oasis_eu.portal.model.appsmanagement;
  */
 public enum SubscriptionStatus {
 
-	SUBSCRIBED,
-	OTHER_SUBSCRIBED,
-	NOT_SUBSCRIBED
+    SUBSCRIBED,
+    OTHER_SUBSCRIBED,
+    NOT_SUBSCRIBED
 
 }

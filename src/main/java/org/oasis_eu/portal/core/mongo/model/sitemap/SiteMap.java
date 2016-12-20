@@ -1,15 +1,14 @@
 package org.oasis_eu.portal.core.mongo.model.sitemap;
 
-import java.util.ArrayList;
-import java.util.List;
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * User: schambon
@@ -18,39 +17,39 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 @Document(collection = "sitemap")
 public class SiteMap {
 
-	@Id
-	@JsonIgnore
-	private String id;
+    @Id
+    @JsonIgnore
+    private String id;
 
-	@Indexed(unique = true)
-	@JacksonXmlProperty(localName = "locale")
-	private String language;
+    @Indexed(unique = true)
+    @JacksonXmlProperty(localName = "locale")
+    private String language;
 
-	@JacksonXmlElementWrapper(useWrapping = false)
-	@JacksonXmlProperty(localName = "item")
-	private List<SiteMapEntry> entries = new ArrayList<>();
+    @JacksonXmlElementWrapper(useWrapping = false)
+    @JacksonXmlProperty(localName = "item")
+    private List<SiteMapEntry> entries = new ArrayList<>();
 
-	public String getId() {
-		return id;
-	}
+    public String getId() {
+        return id;
+    }
 
-	public void setId(String id) {
-		this.id = id;
-	}
+    public void setId(String id) {
+        this.id = id;
+    }
 
-	public String getLanguage() {
-		return language;
-	}
+    public String getLanguage() {
+        return language;
+    }
 
-	public void setLanguage(String language) {
-		this.language = language;
-	}
+    public void setLanguage(String language) {
+        this.language = language;
+    }
 
-	public List<SiteMapEntry> getEntries() {
-		return entries;
-	}
+    public List<SiteMapEntry> getEntries() {
+        return entries;
+    }
 
-	public void setEntries(List<SiteMapEntry> entries) {
-		this.entries = entries;
-	}
+    public void setEntries(List<SiteMapEntry> entries) {
+        this.entries = entries;
+    }
 }

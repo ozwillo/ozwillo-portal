@@ -9,5 +9,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface SiteMapRepository extends MongoRepository<SiteMap, String> {
 
-	SiteMap findByLanguage(String language);
+    SiteMap findByLanguage(String language);
 }

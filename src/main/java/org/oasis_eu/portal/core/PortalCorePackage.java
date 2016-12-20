@@ -6,6 +6,6 @@ package org.oasis_eu.portal.core;
  * Date: 5/30/14
  */
 public final class PortalCorePackage {
-	private PortalCorePackage() {
-	}
+    private PortalCorePackage() {
+    }
 }

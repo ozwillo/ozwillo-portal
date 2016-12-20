@@ -8,5 +8,5 @@ import java.util.Locale;
  */
 public class PortalConstants {
 
-	public static final Locale PORTAL_DEFAULT_LOCALE = Locale.ENGLISH;
+    public static final Locale PORTAL_DEFAULT_LOCALE = Locale.ENGLISH;
 }

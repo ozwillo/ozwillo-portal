@@ -1,9 +1,8 @@
 package org.oasis_eu.portal.model.appsmanagement;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
 
@@ -13,77 +12,80 @@ import java.util.List;
  */
 public class MyAppsInstance {
 
-	ApplicationInstance applicationInstance;
+    ApplicationInstance applicationInstance;
 
-	List<MyAppsService> myAppsServices;
+    List<MyAppsService> myAppsServices;
 
-	private String name;
+    private String name;
 
-	String icon;
+    String icon;
 
-	/** optional */
-	@JsonProperty("deletion_planned")
-	Instant deletionPlanned;
+    /**
+     * optional
+     */
+    @JsonProperty("deletion_planned")
+    Instant deletionPlanned;
 
-	@JsonProperty("status_change_requester_label")
-	String statusChangeRequesterLabel;
+    @JsonProperty("status_change_requester_label")
+    String statusChangeRequesterLabel;
 
-	// Default constructor is needed by Jackson to instantiate object from JSON
-	public MyAppsInstance() {}
+    // Default constructor is needed by Jackson to instantiate object from JSON
+    public MyAppsInstance() {
+    }
 
-	public MyAppsInstance(ApplicationInstance applicationInstance) {
-		this.applicationInstance = applicationInstance;
-	}
+    public MyAppsInstance(ApplicationInstance applicationInstance) {
+        this.applicationInstance = applicationInstance;
+    }
 
-	public List<MyAppsService> getServices() {
-		return myAppsServices;
-	}
+    public List<MyAppsService> getServices() {
+        return myAppsServices;
+    }
 
-	public void setServices(List<MyAppsService> myAppsServices) {
-		this.myAppsServices = myAppsServices;
-	}
+    public void setServices(List<MyAppsService> myAppsServices) {
+        this.myAppsServices = myAppsServices;
+    }
 
-	public ApplicationInstance getApplicationInstance() {
-		return applicationInstance;
-	}
+    public ApplicationInstance getApplicationInstance() {
+        return applicationInstance;
+    }
 
-	public void setApplicationInstance(ApplicationInstance applicationInstance) {
-		this.applicationInstance = applicationInstance;
-	}
+    public void setApplicationInstance(ApplicationInstance applicationInstance) {
+        this.applicationInstance = applicationInstance;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return this.name != null ? this.name : this.applicationInstance.getDefaultName();
-	}
+    public String getName() {
+        return this.name != null ? this.name : this.applicationInstance.getDefaultName();
+    }
 
-	public void setIcon(String icon) {
-		this.icon = icon;
-	}
+    public void setIcon(String icon) {
+        this.icon = icon;
+    }
 
-	public String getIcon() {
-		return icon;
-	}
+    public String getIcon() {
+        return icon;
+    }
 
-	public String getId() {
-		return applicationInstance.getInstanceId();
-	}
+    public String getId() {
+        return applicationInstance.getInstanceId();
+    }
 
-	public Instant getDeletionPlanned() {
-		return deletionPlanned;
-	}
+    public Instant getDeletionPlanned() {
+        return deletionPlanned;
+    }
 
-	public void setDeletionPlanned(Instant deletionPlanned) {
-		this.deletionPlanned = deletionPlanned;
-	}
+    public void setDeletionPlanned(Instant deletionPlanned) {
+        this.deletionPlanned = deletionPlanned;
+    }
 
-	public String getStatusChangeRequesterLabel() {
-		return statusChangeRequesterLabel;
-	}
+    public String getStatusChangeRequesterLabel() {
+        return statusChangeRequesterLabel;
+    }
 
-	public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
-		this.statusChangeRequesterLabel = statusChangeRequesterLabel;
-	}
+    public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
+        this.statusChangeRequesterLabel = statusChangeRequesterLabel;
+    }
 }

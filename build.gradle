@@ -20,7 +20,7 @@ apply plugin: 'spring-boot'
 
 jar {
     baseName = 'ozwillo-portal'
-    version = '1.46.0'
+    version = '1.47.0'
 }
 
 sourceCompatibility = 1.8
@@ -106,5 +106,5 @@ task frontBundle(type: NpmTask) {
     args = ['run', 'build']
 }
 
-assemble.dependsOn(frontBundle)
+processResources.dependsOn(frontBundle)
 frontBundle.dependsOn(npmInstall)

@@ -6,8 +6,8 @@ package org.oasis_eu.portal.model.appstore;
  */
 public enum AcquisitionStatus {
 
-	INSTALLED,
-	PENDING,
-	AVAILABLE;
+    INSTALLED,
+    PENDING,
+    AVAILABLE;
 
 }

@@ -4,6 +4,7 @@ const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const autoprefixer = require('autoprefixer');
+const DashboardPlugin = require('webpack-dashboard/plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
@@ -85,7 +86,8 @@ if(TARGET === 'start' || !TARGET) {
             contact:        common.entry.contact.concat(devEntryPointsLoadersAndServers)
         },
         plugins: [
-            new webpack.HotModuleReplacementPlugin()
+            new webpack.HotModuleReplacementPlugin(),
+            new DashboardPlugin()
         ],
         module: {
             loaders: [

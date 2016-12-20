@@ -33,9 +33,9 @@ var Dashboard = React.createClass({
                 dataType: 'json',
                 success: function (appNotifs) {
 
-                    var state = this.state;
-                    for (var i = 0; i < state.apps.length; i++) {
-                        var app = state.apps[i];
+                    var apps = this.state.apps;
+                    for (var i = 0; i < apps.length; i++) {
+                        var app = apps[i];
 
                         if (appNotifs[app.serviceId]) {
                             app.notificationCount = appNotifs[app.serviceId];
@@ -43,14 +43,14 @@ var Dashboard = React.createClass({
                             app.notificationCount = 0;
                         }
                     }
-                    this.setState(state);
+                    this.setState({ apps: apps });
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.log("Cannot check notifications", status, err);
                 }.bind(this)
             });
         }
-        window.setTimeout(this.checkNotifications, 60000);
+        window.setTimeout(this.checkNotifications, 10000);
     },
     initNotificationsCheck: function () {
         if (this.notificationsChecked) {
@@ -61,17 +61,12 @@ var Dashboard = React.createClass({
         }
     },
     componentDidMount: function () {
-        this.initNotificationsCheck();
-
         $.ajax({
             url: dash_service + "/dashboards",
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                this.state.dashboards = data;
-                this.state.dash = data[0];
-                this.state.loadingDashboards = false;
-                this.setState(this.state);
+                this.setState({ dashboards: data, dash: data[0], loadingDashboards: false });
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error("Error", status, err);
@@ -83,9 +78,8 @@ var Dashboard = React.createClass({
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                this.state.apps = data;
-                this.state.loadingApps = false;
-                this.setState(this.state);
+                this.setState({ apps: data, loadingApps: false });
+                this.initNotificationsCheck();
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error("Error", status, err);
@@ -97,8 +91,7 @@ var Dashboard = React.createClass({
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                this.state.pendingApps = data;
-                this.setState(this.state);
+                this.setState({ pendingApps: data });
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error("Error", status, err);
@@ -195,20 +188,14 @@ var Dashboard = React.createClass({
     },
     switchToDashboard: function (dash) {
         return function () {
-            var state = this.state;
-            state.dash = dash;
-            state.loadingApps = true;
-            state.pendingApps = null;
-            this.setState(state);
+            this.setState({ dash: dash, loadingApps: true, pendingApps: null });
 
             $.ajax({
                 url: dash_service + "/apps/" + dash.id,
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
-                    state.apps = data;
-                    state.loadingApps = false;
-                    this.setState(state);
+                    this.setState({ apps: data, loadingApps: false });
                 }.bind(this),
                 error: function (xhr, status, err) {
                     console.error("Error", status, err);

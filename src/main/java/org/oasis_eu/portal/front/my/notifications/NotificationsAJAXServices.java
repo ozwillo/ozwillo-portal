@@ -1,20 +1,12 @@
 package org.oasis_eu.portal.front.my.notifications;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,57 +17,45 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/my/api/notifications")
-public class NotificationsAJAXServices extends BaseAJAXServices{
+public class NotificationsAJAXServices extends BaseAJAXServices {
 
-	@Autowired
-	private PortalNotificationService notificationService;
+    @Autowired
+    private PortalNotificationService portalNotificationService;
 
-	@Autowired
-	private MessageSource messageSource;
+    @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
+    public UserNotificationResponse getNotifications(@RequestParam(value = "status", required = false, defaultValue = "UNREAD") NotificationStatus status) {
+        return portalNotificationService.getNotifications(status);
+    }
 
-	@Value("${application.notificationsEnabled:true}")
-	private boolean notificationsEnabled;
+    @RequestMapping(value = "/{notificationId}", method = RequestMethod.DELETE)
+    public void archive(@PathVariable String notificationId) {
+        portalNotificationService.archive(notificationId);
+    }
 
+    @RequestMapping(value = "summary", method = RequestMethod.GET)
+    @ResponseBody
+    public NotificationData getNotificationData(HttpServletRequest request) {
+        int count = portalNotificationService.countNotifications();
+        return new NotificationData(count, messageSource.getMessage("my.n_notifications", new Object[]{Integer.valueOf(count)}, RequestContextUtils.getLocale(request)));
+    }
 
-	@RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
-	public UserNotificationResponse getNotifications(@RequestParam(value = "status", required = false, defaultValue = "UNREAD") NotificationStatus status) {
-		return notificationService.getNotifications(status);
-	}
+    private static class NotificationData {
+        int notificationsCount;
+        String notificationsMessage = "";
 
-	@RequestMapping(value = "/{notificationId}", method = RequestMethod.DELETE)
-	public void archive(@PathVariable String notificationId) {
-		notificationService.archive(notificationId);
-	}
+        NotificationData(int notificationsCount, String notificationsMessage) {
+            this.notificationsCount = notificationsCount;
+            this.notificationsMessage = notificationsMessage;
+        }
 
-	@RequestMapping(method = RequestMethod.GET, value="summary")
-	@ResponseBody
-	public NotificationData getNotificationData(HttpServletRequest request) {
-		int count = notificationService.countNotifications();
-		return new NotificationData(count).setNotificationsMessage(messageSource.getMessage("my.n_notifications", new Object[]{Integer.valueOf(count)}, RequestContextUtils.getLocale(request)));
-	}
+        @SuppressWarnings("unused")
+        public String getNotificationsMessage() {
+            return notificationsMessage;
+        }
 
-
-	private static class NotificationData {
-		int notificationsCount;
-		String notificationsMessage = "";
-
-		public NotificationData(int notificationsCount) {
-			this.notificationsCount = notificationsCount;
-		}
-
-		@SuppressWarnings("unused")
-		public String getNotificationsMessage() {
-			return notificationsMessage;
-		}
-
-		public NotificationData setNotificationsMessage(String notificationsMessage) {
-			this.notificationsMessage = notificationsMessage;
-			return this;
-		}
-
-		@JsonProperty("notificationsCount")
-		public int getNotificationsCount() {
-			return notificationsCount;
-		}
-	}
+        @JsonProperty("notificationsCount")
+        public int getNotificationsCount() {
+            return notificationsCount;
+        }
+    }
 }
