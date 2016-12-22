@@ -104,7 +104,13 @@ configure(tasks.processResources) {
 
 task frontBundle(type: NpmTask) {
     args = ['run', 'build']
+    doLast {
+        copy {
+            from "${sourceSets.main.resources.srcDirs[0]}/public/build"
+            into "${sourceSets.main.output.resourcesDir}/public/build"
+        }
+    }
 }
 
-processResources.dependsOn(frontBundle)
+jar.dependsOn(frontBundle)
 frontBundle.dependsOn(npmInstall)
