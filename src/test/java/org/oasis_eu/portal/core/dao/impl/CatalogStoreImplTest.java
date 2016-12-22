@@ -11,7 +11,7 @@ import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 import org.oasis_eu.spring.config.KernelConfiguration;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
@@ -36,7 +36,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes = CatalogStoreImplTest.class)
+@SpringBootTest(classes = CatalogStoreImplTest.class)
 @ComponentScan(basePackages = "org.oasis_eu.portal")
 @Import(KernelConfiguration.class)
 public class CatalogStoreImplTest {

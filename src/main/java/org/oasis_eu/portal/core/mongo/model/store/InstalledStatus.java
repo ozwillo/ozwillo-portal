@@ -5,6 +5,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 /**
@@ -26,8 +27,8 @@ public class InstalledStatus {
 
     private boolean installed;
 
-    //	@Indexed(expireAfterSeconds = 86400)
     // 24-hour validity so app install status will be recomputed at least once a day
+    @Indexed(expireAfterSeconds = 86400)
     private DateTime computed = DateTime.now();
 
     public String getId() {

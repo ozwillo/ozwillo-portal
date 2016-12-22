@@ -7,8 +7,7 @@ import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.OasisPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.IntegrationTest;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -27,8 +26,7 @@ import static org.junit.Assert.assertNotEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes = {OasisPortal.class})
-@IntegrationTest
+@SpringBootTest(classes = {OasisPortal.class}, webEnvironment = SpringBootTest.WebEnvironment.NONE)
 public class GeographicalAreaReplicationTest {
 
 	@Autowired

@@ -3,7 +3,7 @@ package org.oasis_eu.portal.core.config;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.joda.JodaModule;
-import com.fasterxml.jackson.datatype.jsr310.JSR310Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.hazelcast.config.*;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
@@ -63,9 +63,12 @@ public class PortalCoreConfiguration extends CachingConfigurerSupport {
     public ObjectMapper objectMapper() {
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JodaModule());
-        mapper.registerModule(new JSR310Module());
+        mapper.registerModule(new JavaTimeModule());
 
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+        // TODO : add {@link com.fasterxml.jackson.databind.SerializationFeature#WRITE_DATES_WITH_ZONE_ID} if needed
+        //        to have same default as with previous Jsr310Moduel
+
         return mapper;
     }
 

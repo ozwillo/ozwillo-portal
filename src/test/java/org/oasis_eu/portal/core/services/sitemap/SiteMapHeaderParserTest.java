@@ -18,7 +18,7 @@ import org.oasis_eu.portal.OasisPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.MediaType;
@@ -37,7 +37,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes = {OasisPortal.class, MockServletContext.class})
+@SpringBootTest(classes = {OasisPortal.class, MockServletContext.class})
 public class SiteMapHeaderParserTest {
 
 	@Autowired
