@@ -4,19 +4,20 @@ buildscript {
     }
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "com.moowork.gradle:gradle-node-plugin:1.0.1"
     }
-}
-
-plugins {
-    id "com.moowork.node" version "0.11"
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'com.moowork.node'
 
 jar {
     baseName = 'ozwillo-portal'
@@ -27,8 +28,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 node {
-    version = '5.5.0'
-    npmVersion = '3.3.12'
+    version = '7.2.1'
+    yarnVersion = '0.18.0'
     download = true
 }
 
@@ -77,7 +78,7 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
+    gradleVersion = '3.2.1'
 }
 
 bootRun {
@@ -102,7 +103,7 @@ configure(tasks.processResources) {
     exclude 'public/css/'
 }
 
-task frontBundle(type: NpmTask) {
+task frontBundle(type: YarnTask) {
     args = ['run', 'build']
     doLast {
         copy {
@@ -113,4 +114,4 @@ task frontBundle(type: NpmTask) {
 }
 
 jar.dependsOn(frontBundle)
-frontBundle.dependsOn(npmInstall)
+frontBundle.dependsOn(yarn_install)
