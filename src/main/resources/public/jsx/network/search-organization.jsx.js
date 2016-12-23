@@ -350,10 +350,13 @@ var LegalName = React.createClass({
             </div>
         )
     },
-    onSuggestionsUpdateRequested: function({ value, reason }) {
+    onSuggestionsFetchRequested: function({ value, reason }) {
         this.props.onChange(value);
         if (reason !== 'enter' && reason !== 'click')
             debounce(this.searchOrganizations(value), 500);
+    },
+    onSuggestionsClearRequested: function() {
+        this.setState({ suggestions: [] })
     },
     onSuggestionSelected: function(event, { suggestion, suggestionValue, method }) {
         this.props.onOrganizationSelected(suggestion);
@@ -378,7 +381,8 @@ var LegalName = React.createClass({
                     <div className="col-sm-8">
                         <div className="input-group">
                             <Autosuggest suggestions={this.state.suggestions}
-                                         onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                                         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                                          onSuggestionSelected={this.onSuggestionSelected}
                                          getSuggestionValue={suggestion => suggestion.legal_name}
                                          renderSuggestion={this.renderSuggestion}
