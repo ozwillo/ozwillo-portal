@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.front.my;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.oasis_eu.portal.core.controller.Languages;
+import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.model.FormLayout;
@@ -14,7 +14,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
@@ -33,8 +32,8 @@ import java.util.*;
 /**
  * @author mkalamalami
  */
-@Controller
-@RequestMapping("/my/profile")
+//@Controller
+//@RequestMapping("/my/profile")
 public class MyProfileController extends PortalController {
 
     @SuppressWarnings("unused")
