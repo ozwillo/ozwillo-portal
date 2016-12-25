@@ -20,7 +20,7 @@
     "url": "https://github.com/ozwillo/ozwillo-portal.git"
   },
   "engines": {
-    "node": ">=5.5.0"
+    "node": ">=7.2.1"
   },
   "devDependencies": {
     "autoprefixer": "^6.2.3",
