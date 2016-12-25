@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.mongo.dao.geo;
 
 import com.mongodb.*;
-import org.oasis_eu.portal.core.controller.Languages;
+import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.core.services.search.Tokenizer;

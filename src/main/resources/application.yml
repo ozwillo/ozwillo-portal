@@ -69,6 +69,7 @@ web:
   sitemap:
       url_header: https://www.ozwillo.com/header.xml
       url_footer: https://www.ozwillo.com/footer.xml
+      #refresh: 0 0/5 * * * *
       refresh: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar
@@ -87,13 +88,14 @@ kernel:
     token_endpoint: ${kernel.base_uri}/a/token
     keys_endpoint: ${kernel.base_uri}/a/keys
     userinfo_endpoint: ${kernel.base_uri}/a/userinfo
-    profile_endpoint: ${kernel.base_uri}/d/user
     password_change_endpoint: ${kernel.alt_uri}/a/password
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.alt_uri}/a/logout
     callback_uri: ${application.url}/callback
     home_uri: ${application.url}/my
-  user_directory_endpoint: ${kernel.base_uri}/d
+  user_profile_endpoint: ${kernel.base_uri}/d/user
+  user_membership_endpoint: ${kernel.base_uri}/d
+  organization_endpoint: ${kernel.base_uri}/d/org
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: portal

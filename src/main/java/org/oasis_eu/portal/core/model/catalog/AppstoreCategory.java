@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.model.catalog;
 
-import org.oasis_eu.portal.core.constants.PortalConstants;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
+import org.oasis_eu.portal.model.OasisLocales;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,9 +40,9 @@ public class AppstoreCategory extends GenericEntity {
         String name = names.get(locale.getLanguage());
         if (name == null) {
             logger.warn("Cannot findApplication translation for category {} in language {}", id, locale.getLanguage());
-            name = names.get(PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
+            name = names.get(OasisLocales.getDefaultLocale().getLanguage());
             if (name == null) {
-                logger.error("Cannot findApplication translation for category {} in default language ({})", id, PortalConstants.PORTAL_DEFAULT_LOCALE.getLanguage());
+                logger.error("Cannot findApplication translation for category {} in default language ({})", id, OasisLocales.getDefaultLocale().getLanguage());
             }
         }
 

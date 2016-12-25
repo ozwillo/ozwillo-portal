@@ -32,7 +32,7 @@ class GeoAreaAutosuggest extends Component {
             this.setState({ value: nextProps.initialValue })
     }
     searchCities(query) {
-        if (query.trim().length < 3) return;
+        if (this.props.countryUri === undefined) return;
 
         $.ajax({
             url: store_service + this.props.endpoint,
@@ -58,10 +58,20 @@ class GeoAreaAutosuggest extends Component {
         this.setState({ value: suggestion.name });
         this.props.onChange(suggestion);
     }
+    onChange(event, { newValue, method }) {
+        if (method === "type" && newValue === '') {
+            this.props.onChange(null)
+        } else {
+            this.setState({ value: newValue })
+        }
+    }
     render() {
+        if (this.state.value === undefined) {
+            this.state.value = ''
+        }
         const inputProps = {
             value: this.state.value,
-            onChange: (event, { newValue, method }) => this.setState({ value: newValue }),
+            onChange: this.onChange.bind(this),
             type: 'search',
             placeholder: this.props.placeholder,
             className: 'form-control'
