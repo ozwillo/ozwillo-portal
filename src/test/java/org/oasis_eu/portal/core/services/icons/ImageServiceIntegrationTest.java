@@ -1,13 +1,10 @@
 package org.oasis_eu.portal.core.services.icons;
 
 import com.google.common.io.ByteStreams;
-import com.mongodb.DB;
 import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.core.config.MongoConfiguration;
 import org.oasis_eu.portal.core.mongo.dao.icons.ImageDownloadAttemptRepository;
 import org.oasis_eu.portal.core.mongo.dao.icons.ImageRepository;
 import org.oasis_eu.portal.core.mongo.model.images.Image;
@@ -17,8 +14,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
@@ -40,7 +37,6 @@ import static org.mockito.Mockito.*;
 @WebAppConfiguration
 @SpringBootTest(classes = {ImageServiceIntegrationTest.class})
 @ComponentScan(basePackages = "org.oasis_eu.portal")
-@Import(MongoConfiguration.class)
 public class ImageServiceIntegrationTest {
 
 	private DBCollection blacklist;
@@ -60,9 +56,7 @@ public class ImageServiceIntegrationTest {
 	private ImageService imageService;
 
 	@Autowired
-	private Mongo mongo;
-
-	private DB db;
+	private MongoTemplate mongoTemplate;
 
 	@Autowired
 	private ImageRepository imageRepository;
@@ -72,9 +66,7 @@ public class ImageServiceIntegrationTest {
 
 	@Before
 	public void clean() throws UnknownHostException {
-		db = mongo.getDB(databaseName);
-
-		blacklist = db.getCollection("image_download_attempt");
+		blacklist = mongoTemplate.getCollection("image_download_attempt");
 
 		imageRepository.deleteAll();
 		imageDownloadAttemptRepository.deleteAll();
@@ -92,7 +84,7 @@ public class ImageServiceIntegrationTest {
 		ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
 
 		String iconUri = imageService.getImageForURL("http://www.citizenkin.com/icon/one.png", ImageFormat.PNG_64BY64, false);
-		assertEquals(1, db.getCollection("image").count());
+		assertEquals(1, mongoTemplate.getCollection("image").count());
 		assertNotNull(iconUri);
 		// test that this matches a regexp including a UUID
 		Pattern pattern = Pattern.compile(applicationUrl + "/media/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
