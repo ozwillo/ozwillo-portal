@@ -194,7 +194,8 @@ var Instance = React.createClass({
         var applicationInstanceStatus = this.props.instance.applicationInstance.status;
         
         var manageUsersButton = null;
-        if (this.props.authority.slice(0, 'INDIVIDUAL:') !== 'INDIVIDUAL:' && applicationInstanceStatus !== 'STOPPED') { // don't display it for personal organizations
+        // don't display « manage users » button for personal organizations or stopped instances
+        if (this.props.authority.startsWith('ORGANIZATION') && applicationInstanceStatus !== 'STOPPED') {
             manageUsersButton = (
                 <button key={this.props.id + '-manageUsers'} type="button" className="tip btn btn-default-inverse pull-right"
                         onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
