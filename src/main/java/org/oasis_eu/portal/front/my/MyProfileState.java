@@ -13,10 +13,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -74,8 +71,8 @@ public class MyProfileState {
         try {
             String avatarPattern = "classpath:public" + avatarPath + "*";
             Resource[] avatarResources = applicationContext.getResources(avatarPattern);
-            availableAvatars = Arrays.asList(avatarResources).stream()
-                .filter(avatarResource -> avatarResource.exists()) // else happens ? LATER check file extension of p.getFileName().toString()
+            availableAvatars = Arrays.stream(avatarResources)
+                .filter(Resource::exists) // else happens ? LATER check file extension of p.getFileName().toString()
                 .map(avatarResource -> {
                     try {
                         String urlString = avatarResource.getURL().toString();
@@ -85,7 +82,7 @@ public class MyProfileState {
                         return null;
                     } // finally { stream.close(); // ideally...
                 })
-                .filter(avatarResource -> avatarResource != null) // in case IOException above
+                .filter(Objects::nonNull) // in case IOException above
                 .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e); // don't start if fails

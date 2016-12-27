@@ -70,7 +70,7 @@ public final class i18nMessages {
         "apps-for-organization", "apps-for-personal-use");
 
     private static final List<String> profilekeys = Arrays.asList("errormsg.formatNoMatches", "errormsg.formatAjaxError",
-        "title.account", "personal.nickname", "account.email", "account.language", "account.language.en",
+        "title.account", "personal.nickname", "account.email", "account.changepassword", "account.language", "account.language.en",
         "account.language.fr", "account.language.it", "account.language.es", "account.language.ca",
         "account.language.bg", "account.language.tr");
 

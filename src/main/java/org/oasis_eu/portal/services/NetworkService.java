@@ -10,14 +10,15 @@ import org.oasis_eu.portal.model.appsmanagement.User;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.model.network.UIOrganizationMember;
 import org.oasis_eu.portal.model.network.UIPendingOrganizationMember;
+import org.oasis_eu.portal.services.kernel.UserMembershipService;
+import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.*;
-import org.oasis_eu.spring.kernel.model.directory.OrgMembership;
-import org.oasis_eu.spring.kernel.model.directory.PendingOrgMembership;
-import org.oasis_eu.spring.kernel.model.directory.UserMembership;
+import org.oasis_eu.portal.model.kernel.OrgMembership;
+import org.oasis_eu.portal.model.kernel.PendingOrgMembership;
+import org.oasis_eu.portal.model.kernel.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
-import org.oasis_eu.spring.kernel.service.UserDirectory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -52,13 +53,16 @@ public class NetworkService {
     private UserInfoService userInfoService;
 
     @Autowired
+    private UserProfileService userProfileService;
+
+    @Autowired
     private HttpServletRequest request;
 
     @Autowired
     private MessageSource messageSource;
 
     @Autowired
-    private UserDirectory userDirectory;
+    private UserMembershipService userMembershipService;
 
     @Autowired
     private OrganizationStore organizationStore;
@@ -66,7 +70,7 @@ public class NetworkService {
     public List<UIOrganization> getMyOrganizations() {
         String userId = userInfoService.currentUser().getUserId();
 
-        return userDirectory.getMembershipsOfUser(userId)
+        return userMembershipService.getMembershipsOfUser(userId)
             .stream()
             .map(this::toUIOrganization)
             .filter(o -> o != null)
@@ -124,13 +128,13 @@ public class NetworkService {
 
     public List<UIOrganizationMember> getOrganizationMembers(String organizationId) {
         UserInfo currentUser = userInfoService.currentUser();
-        List<OrgMembership> orgAdmins = userDirectory.getAdminsOfOrganization(organizationId);
+        List<OrgMembership> orgAdmins = userMembershipService.getAdminsOfOrganization(organizationId);
         boolean isAdmin =
             orgAdmins.stream().anyMatch(orgMembership -> orgMembership.getAccountId().equals(currentUser.getUserId()));
 
         if (isAdmin) {
             // Add organization members :
-            return userDirectory.getMembershipsOfOrganization(organizationId)
+            return userMembershipService.getMembershipsOfOrganization(organizationId)
                 .stream()
                 .map(this::toUIOrganizationMember)
                 // NB. self is among returned admins
@@ -151,12 +155,12 @@ public class NetworkService {
 
     public List<UIPendingOrganizationMember> getOrganizationPendingMembers(String organizationId) {
         UserInfo currentUser = userInfoService.currentUser();
-        List<OrgMembership> orgAdmins = userDirectory.getAdminsOfOrganization(organizationId);
+        List<OrgMembership> orgAdmins = userMembershipService.getAdminsOfOrganization(organizationId);
         boolean isAdmin =
             orgAdmins.stream().anyMatch(orgMembership -> orgMembership.getAccountId().equals(currentUser.getUserId()));
 
         if (isAdmin) {
-            return userDirectory
+            return userMembershipService
                 .getPendingOrgMembership(organizationId)
                 .stream()
                 .map(this::toUIPendingOrgMembership)
@@ -217,7 +221,7 @@ public class NetworkService {
     }
 
     private Optional<OrgMembership> getOrgMembership(String organizationId, String accountId) {
-        List<OrgMembership> memberships = userDirectory.getMembershipsOfOrganization(organizationId);
+        List<OrgMembership> memberships = userMembershipService.getMembershipsOfOrganization(organizationId);
 
         return memberships.stream()
             .filter(orgMembership1 -> orgMembership1.getAccountId().equals(accountId))
@@ -232,7 +236,7 @@ public class NetworkService {
             return;
         }
 
-        userDirectory.removeMembership(orgMembership.get(), organizationId);
+        userMembershipService.removeMembership(orgMembership.get(), organizationId);
     }
 
     public void updateMember(String organizationId, String accountId, boolean admin) {
@@ -244,7 +248,7 @@ public class NetworkService {
         }
 
         logger.debug("Setting admin {} to account {}", admin, accountId);
-        userDirectory.updateMembership(orgMembership.get(), admin, organizationId);
+        userMembershipService.updateMembership(orgMembership.get(), admin, organizationId);
     }
 
     public String setOrganizationStatus(UIOrganization uiOrganization) {
@@ -309,7 +313,7 @@ public class NetworkService {
             authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
         }
 
-        authorities.addAll(userDirectory.getMembershipsOfUser(userId)
+        authorities.addAll(userMembershipService.getMembershipsOfUser(userId)
             .stream()
             .filter(UserMembership::isAdmin)
             .map(this::toAuthority)
@@ -335,7 +339,7 @@ public class NetworkService {
 
             case ORGANIZATION:
                 // note: at the risk of being a bit slow, we're checking that the user has membership of this org
-                UserMembership um = userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId())
+                UserMembership um = userMembershipService.getMembershipsOfUser(userInfoService.currentUser().getUserId())
                     .stream()
                     .filter(m -> m.getOrganizationId().equals(authorityId))
                     .findFirst()
@@ -352,7 +356,7 @@ public class NetworkService {
     }
 
     public List<User> getUsersOfOrganization(String organizationId) {
-        return userDirectory.getMembershipsOfOrganization(organizationId)
+        return userMembershipService.getMembershipsOfOrganization(organizationId)
             .stream()
             .map(m -> new User(m.getAccountId(), getUserName(m.getAccountId(), m.getAccountName()), m.isAdmin()))
             .sorted((u1, u2) -> {
@@ -368,20 +372,12 @@ public class NetworkService {
     /**
      * reused by PortalAppManagementService for instance trash mode
      *
-     * @param accountId
-     * @param accountName
-     * @return
      */
     public String getUserName(String accountId, String accountName) {
         if (accountName != null) {
             return accountName;
         } else {
-            UserAccount userAccount = userDirectory.findUserAccount(accountId);
-            if (userAccount.getNickname() != null) return userAccount.getNickname();
-            if (userAccount.getName() != null) return userAccount.getName();
-            if (userAccount.getGivenName() != null && userAccount.getFamilyName() != null)
-                return String.format("%s %s", userAccount.getGivenName(), userAccount.getFamilyName());
-            return userAccount.getEmail() != null ? userAccount.getEmail() : accountId;
+            return userProfileService.findUserProfile(accountId).getDisplayName();
         }
     }
 
@@ -393,7 +389,7 @@ public class NetworkService {
      * @return Boolean : True if is organization administrator, False otherwise.
      */
     public boolean userIsAdmin(String organizationId) {
-        return userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
+        return userMembershipService.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
             .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin());
     }
 
@@ -412,7 +408,7 @@ public class NetworkService {
         }
 
         try {
-            userDirectory.createMembership(email, organizationId);
+            userMembershipService.createMembership(email, organizationId);
         } catch (WrongQueryException wqex) {
             if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
                 // Translated msg. see issue #201
@@ -433,7 +429,7 @@ public class NetworkService {
         }
 
         try {
-            userDirectory.removePendingMembership(id, eTag);
+            userMembershipService.removePendingMembership(id, eTag);
         } catch (WrongQueryException wqex) {
             if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
                 String translatedBusinessMessage = messageSource.getMessage("error.msg.data-conflict",
@@ -448,14 +444,14 @@ public class NetworkService {
     public void leave(String organizationId) {
         // prevent the last admin from deleting themselves
         if (userIsAdmin(organizationId)) {
-            if (userDirectory.getMembershipsOfOrganization(organizationId).stream().filter(OrgMembership::isAdmin).count() == 1) {
+            if (userMembershipService.getMembershipsOfOrganization(organizationId).stream().filter(OrgMembership::isAdmin).count() == 1) {
                 throw new ForbiddenException();
             }
         }
 
-        userDirectory.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
+        userMembershipService.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
             .filter(membership -> membership.getOrganizationId().equals(organizationId))
-            .forEach(userMembership -> userDirectory.removeMembership(userMembership, userInfoService.currentUser().getUserId()));
+            .forEach(userMembership -> userMembershipService.removeMembership(userMembership, userInfoService.currentUser().getUserId()));
     }
 
     public UIOrganization searchOrganizationByDCId(String dcIc) {
