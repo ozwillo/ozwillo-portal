@@ -27,8 +27,8 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 node {
-    version = '5.5.0'
-    npmVersion = '3.3.12'
+    version = '7.4.0'
+    npmVersion = '4.0.5'
     download = true
 }
 
