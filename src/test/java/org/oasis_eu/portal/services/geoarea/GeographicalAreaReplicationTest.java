@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringBootTest(classes = {OasisPortal.class}, webEnvironment = SpringBootTest.WebEnvironment.NONE)
+@SpringBootTest(classes = {OasisPortal.class}, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class GeographicalAreaReplicationTest {
 
 	@Autowired

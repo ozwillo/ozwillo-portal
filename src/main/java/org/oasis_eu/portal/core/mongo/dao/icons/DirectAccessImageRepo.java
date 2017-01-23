@@ -24,8 +24,17 @@ public class DirectAccessImageRepo {
     public String getHashForIcon(String id) {
 
         Query query = new Query(where("_id").is(id));
-        query.fields().include("hash");
-        return mongoTemplate.findOne(query, String.class, "image");
+        query.fields().include("hash").exclude("_id");
+        HashResult hashResult = mongoTemplate.findOne(query, HashResult.class, "image");
+        return hashResult != null ? hashResult.getHash() : null;
+    }
+
+    private class HashResult {
+        String hash;
+
+        String getHash() {
+            return hash;
+        }
     }
 }
 
