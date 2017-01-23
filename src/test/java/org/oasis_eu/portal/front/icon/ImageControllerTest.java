@@ -2,7 +2,6 @@ package org.oasis_eu.portal.front.icon;
 
 import com.google.common.io.ByteStreams;
 import com.mongodb.DBCollection;
-import com.mongodb.Mongo;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -15,7 +14,8 @@ import org.oasis_eu.portal.OasisPortal;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -41,7 +41,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes = {OasisPortal.class})
+@SpringBootTest(classes = {OasisPortal.class})
 public class ImageControllerTest {
 
 	private static final String ICON_URL = "http://www.citizenkin.com/icon/one.png";
@@ -59,14 +59,14 @@ public class ImageControllerTest {
 	private String applicationUrl;
 
 	@Autowired
-	private Mongo mongo;
+	private MongoTemplate mongoTemplate;
 
 	private MockMvc mockMvc;
 	private DBCollection collection;
 
 	@Before
 	public void setup() throws UnknownHostException {
-		collection = mongo.getDB(databaseName).getCollection("image");
+		collection = mongoTemplate.getCollection("image");
 		collection.drop();
 
 		mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();

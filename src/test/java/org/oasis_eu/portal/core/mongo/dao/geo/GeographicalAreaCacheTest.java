@@ -13,7 +13,7 @@ import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatu
 import org.oasis_eu.portal.core.services.search.Tokenizer;
 import org.oasis_eu.portal.OasisPortal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.mock.web.MockServletContext;
@@ -22,7 +22,7 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes = {OasisPortal.class, MockServletContext.class})
+@SpringBootTest(classes = {OasisPortal.class, MockServletContext.class})
 public class GeographicalAreaCacheTest {
 
 	@Autowired

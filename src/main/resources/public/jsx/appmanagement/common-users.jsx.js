@@ -89,9 +89,12 @@ var OrgUserPicker = React.createClass({
             <div>{suggestion.fullname}</div>
         );
     },
-    onSuggestionsUpdateRequested: function({ value, reason }) {
+    onSuggestionsFetchRequested: function({ value, reason }) {
         if (reason !== 'enter' && reason !== 'click')
             debounce(this.props.queryUsers(value, (suggestions) => this.setState({suggestions: suggestions})), 500);
+    },
+    onSuggestionsClearRequested: function() {
+        this.setState({ suggestions: [] })
     },
     onSuggestionSelected: function(event, { suggestion, suggestionValue, method }) {
         this.setState({ value: '' });
@@ -114,7 +117,8 @@ var OrgUserPicker = React.createClass({
                 <div className="col-sm-9">
                     <div className="input-group">
                         <Autosuggest suggestions={this.state.suggestions}
-                                     onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                                     onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                                      onSuggestionSelected={this.onSuggestionSelected}
                                      getSuggestionValue={suggestion => suggestion.fullname}
                                      renderSuggestion={this.renderSuggestion}

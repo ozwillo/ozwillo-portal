@@ -1,22 +1,23 @@
 buildscript {
     ext {
-        springBootVersion = '1.3.3.RELEASE'
+        springBootVersion = '1.4.2.RELEASE'
     }
     repositories {
         mavenCentral()
+        maven {
+            url "https://plugins.gradle.org/m2/"
+        }
     }
     dependencies {
         classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+        classpath "com.moowork.gradle:gradle-node-plugin:1.0.1"
     }
-}
-
-plugins {
-    id "com.moowork.node" version "0.11"
 }
 
 apply plugin: 'java'
 apply plugin: 'idea'
-apply plugin: 'spring-boot'
+apply plugin: 'org.springframework.boot'
+apply plugin: 'com.moowork.node'
 
 jar {
     baseName = 'ozwillo-portal'
@@ -28,7 +29,7 @@ targetCompatibility = 1.8
 
 node {
     version = '7.4.0'
-    npmVersion = '4.0.5'
+    yarnVersion = '0.18.0'
     download = true
 }
 
@@ -58,7 +59,6 @@ dependencies {
     compile project('lib:ozwillo-java-spring-integration')
 
     /* Our specific dependencies */
-    compile('com.google.guava:guava:19.0')
     compile('de.javakaffee.msm:memcached-session-manager:1.8.3')
     compile('de.javakaffee.msm:memcached-session-manager-tc8:1.8.3')
     compile('org.apache.tika:tika-core:1.11')
@@ -78,7 +78,7 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '2.14'
+    gradleVersion = '3.2.1'
 }
 
 bootRun {
@@ -103,9 +103,15 @@ configure(tasks.processResources) {
     exclude 'public/css/'
 }
 
-task frontBundle(type: NpmTask) {
+task frontBundle(type: YarnTask) {
     args = ['run', 'build']
+    doLast {
+        copy {
+            from "${sourceSets.main.resources.srcDirs[0]}/public/build"
+            into "${sourceSets.main.output.resourcesDir}/public/build"
+        }
+    }
 }
 
-processResources.dependsOn(frontBundle)
-frontBundle.dependsOn(npmInstall)
+jar.dependsOn(frontBundle)
+frontBundle.dependsOn(yarn_install)

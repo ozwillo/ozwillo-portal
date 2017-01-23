@@ -8,7 +8,7 @@ import org.oasis_eu.portal.OasisPortal;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthProvider;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
@@ -33,7 +33,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes={OasisPortal.class})
+@SpringBootTest(classes={OasisPortal.class})
 @DirtiesContext
 public class TestTokenRefresh {
 

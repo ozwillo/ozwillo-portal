@@ -53,7 +53,7 @@ const common = {
             /* to ensure jQuery is loaded before Bootstrap */
             { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
             /* loader for JSX / ES6 */
-            { test: /\.jsx?$/, loaders: ['react-hot', 'babel?cacheDirectory,presets[]=react,presets[]=es2015'], include: path.join(PATHS.app, 'jsx')}
+            { test: /\.jsx?$/, loaders: ['react-hot', 'babel?cacheDirectory,presets[]=react,presets[]=es2015,presets[]=stage-0'], include: path.join(PATHS.app, 'jsx')}
         ]
     },
     postcss: [ autoprefixer ],

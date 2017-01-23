@@ -47,13 +47,13 @@ public class HttpImageDownloader implements ImageDownloader {
                     // (that is then cached by the portal) is unclear.
                     Header[] headers = response.getHeaders("Content-Length");
                     if (headers == null || headers.length == 0) {
-                        logger.error("Icon URL {} specifies an unknown content-length; not downloading and providing default icon instead.", iconUrl);
+                        logger.warn("Icon URL {} specifies an unknown content-length; not downloading and providing default icon instead.", iconUrl);
                         return null;
                     }
 
                     int length = Integer.parseInt(headers[0].getValue());
                     if (length > MAX_RESOURCE_SIZE) {
-                        logger.error("Icon URL {} points to a document with a very large content-length: {}; not downloading and providing default icon instead.", iconUrl, length);
+                        logger.warn("Icon URL {} points to a document with a very large content-length: {}; not downloading and providing default icon instead.", iconUrl, length);
                         return null;
                     }
 
@@ -62,15 +62,14 @@ public class HttpImageDownloader implements ImageDownloader {
 
                     HttpEntity entity = response.getEntity();
                     entity.writeTo(bos);
-                    byte[] iconBytes = bos.toByteArray();
-                    return iconBytes;
+                    return bos.toByteArray();
                 } else {
-                    logger.error("Icon URL {} does not yield a 200 OK response ({} {})", iconUrl, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
+                    logger.warn("Icon URL {} does not yield a 200 OK response ({} {})", iconUrl, response.getStatusLine().getStatusCode(), response.getStatusLine().getReasonPhrase());
                     return null;
                 }
             }
         } catch (Exception e) {
-            logger.error("Cannot load icon from url: {} - {}", iconUrl, e.getMessage());
+            logger.warn("Cannot load icon from url: {} - {}", iconUrl, e.getMessage());
             return null;
         }
     }

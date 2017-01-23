@@ -1,12 +1,11 @@
 package org.oasis_eu.portal.core.mongo.dao.icons;
 
-import com.mongodb.BasicDBObject;
-import com.mongodb.DBCollection;
-import com.mongodb.DBObject;
-import com.mongodb.Mongo;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Component;
+
+import static org.springframework.data.mongodb.core.query.Criteria.where;
 
 /**
  * Use MongoDB's Java driver directly to get the hash of the icon.
@@ -18,24 +17,15 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public class DirectAccessImageRepo {
-    @Autowired
-    private Mongo mongo;
 
-    @Value("${persistence.mongodatabase}")
-    private String databaseName;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
     public String getHashForIcon(String id) {
 
-        DBCollection icons = mongo.getDB(databaseName).getCollection("image");
-
-        DBObject query = new BasicDBObject("_id", id);
-        DBObject projection = new BasicDBObject("hash", 1);
-
-        DBObject hashDoc = icons.findOne(query, projection);
-
-        return hashDoc != null ? (String) hashDoc.get("hash") : null;
-
+        Query query = new Query(where("_id").is(id));
+        query.fields().include("hash");
+        return mongoTemplate.findOne(query, String.class, "image");
     }
-
 }
 
