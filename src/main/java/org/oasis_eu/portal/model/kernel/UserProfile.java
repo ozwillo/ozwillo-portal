@@ -2,6 +2,7 @@ package org.oasis_eu.portal.model.kernel;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.spring.kernel.model.Address;
 import org.oasis_eu.spring.kernel.model.BaseUserInfo;
 
 import java.io.Serializable;
@@ -10,7 +11,7 @@ import java.time.Instant;
 /**
  * Data holder for the info returned by the Ozwillo kernel's user directory endpoint.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonInclude(JsonInclude.Include.ALWAYS)
 public class UserProfile extends BaseUserInfo implements Serializable {
     private static final long serialVersionUID = 5630983084892826427L;
 
@@ -69,10 +70,12 @@ public class UserProfile extends BaseUserInfo implements Serializable {
     public void setEmailVerified(boolean emailVerified) {
         this.emailVerified = emailVerified;
     }
-    
+
+    /*
     public String getStreetAddress() {
         return this.getAddress() != null ? this.getAddress().getStreetAddress() : null;
     }
+
 
     public String getLocality() {
         return this.getAddress() != null ? this.getAddress().getLocality() : null;
@@ -89,7 +92,7 @@ public class UserProfile extends BaseUserInfo implements Serializable {
     public String getCountry() {
         return this.getAddress() != null ? this.getAddress().getCountry() : null;
     }
-    
+    */
     public Instant getUpdateInstant() {
         return this.getUpdatedAt()!= null ? Instant.ofEpochSecond(this.getUpdatedAt()) : null;
     }
