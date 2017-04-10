@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.mongo.dao.geo;
 
 import com.mongodb.*;
-import org.oasis_eu.portal.core.controller.Languages;
+import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.core.services.search.Tokenizer;
@@ -54,19 +54,13 @@ public class GeographicalAreaCache {
     private DatacoreClient datacore;
 
     @Autowired
-    private MongoTemplate template;
-
-    @Autowired
-    private Mongo mongo;
+    private MongoTemplate mongoTemplate;
 
     @Autowired
     private MappingMongoConverter mappingMongoConverter;
 
     @Autowired
     private GeographicalDAO geographicalDAO;
-
-    @Value("${persistence.mongodatabase:portal}")
-    private String mongoDatabaseName;
 
     @Value("${application.geoarea.replication_batch_size:100}")
     private int batchSize = 100;
@@ -191,7 +185,7 @@ public class GeographicalAreaCache {
         // looking for exact token matches first :
         // (otherwise Saint-Lô is hidden behind a lot of ex. Saint-Lormel)
         Query exactQuery = buildQuery(countryUri, modelTypes, lang, nameTokens, "$");
-        List<GeographicalArea> foundExactAreas = template.find(exactQuery, GeographicalArea.class);
+        List<GeographicalArea> foundExactAreas = mongoTemplate.find(exactQuery, GeographicalArea.class);
         if (foundExactAreas.size() == findOneTokenLimit) {
             // should not happen
             logger.warn("Hit findOneTokenLimit (so probably missing some results) on query " + exactQuery);
@@ -199,7 +193,7 @@ public class GeographicalAreaCache {
 
         // actuall fulltext search next :
         Query query = buildQuery(countryUri, modelTypes, lang, nameTokens, "");
-        List<GeographicalArea> foundAreas = template.find(query, GeographicalArea.class);
+        List<GeographicalArea> foundAreas = mongoTemplate.find(query, GeographicalArea.class);
         if (foundAreas.size() == findOneTokenLimit) {
             // should not happen
             logger.warn("Hit findOneTokenLimit (so probably missing some results) on query " + query);
@@ -258,18 +252,18 @@ public class GeographicalAreaCache {
     }
 
     public void save(GeographicalArea area) {
-        template.save(area);
+        mongoTemplate.save(area);
     }
 
     public int deleteByStatus(GeographicalAreaReplicationStatus status) {
-        return template.remove(query(where("status").is(status)), GeographicalArea.class).getN();
+        return mongoTemplate.remove(query(where("status").is(status)), GeographicalArea.class).getN();
     }
 
     /**
      * Switch all "Incoming" entries to "Online"
      */
     public void switchToOnline() {
-        template.updateMulti(
+        mongoTemplate.updateMulti(
             query(where("status").is(GeographicalAreaReplicationStatus.INCOMING)),
             Update.update("status", GeographicalAreaReplicationStatus.ONLINE),
             GeographicalArea.class
@@ -282,9 +276,7 @@ public class GeographicalAreaCache {
         threadPoolTaskScheduler.setPoolSize(1);
         threadPoolTaskScheduler.afterPropertiesSet();
         threadPoolTaskScheduler.schedule(() -> {
-            DB db = mongo.getDB(mongoDatabaseName);
-            DBCollection collection = db.getCollection("geographical_area");
-            if (collection.count() == 0) {
+            if (mongoTemplate.getCollection("geographical_area").count() == 0) {
                 logger.info("Geo area cache is empty, initializing it");
                 replicate();
             }
@@ -296,8 +288,7 @@ public class GeographicalAreaCache {
 
         logger.info("Starting replication of geographical data from data core");
 
-        DB db = mongo.getDB(mongoDatabaseName);
-        DBCollection collection = db.getCollection("geographical_area");
+        DBCollection collection = mongoTemplate.getCollection("geographical_area");
 
         Set<String> loadedUris = new HashSet<>();
 

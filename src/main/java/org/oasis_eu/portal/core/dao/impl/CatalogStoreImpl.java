@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.dao.impl;
 
 import com.fasterxml.jackson.annotation.*;
-import org.oasis_eu.portal.core.constants.OasisLocales;
+import org.oasis_eu.portal.model.OasisLocales;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
@@ -203,7 +203,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
         // kinda hacky, but we'll change that when the UI fully supports l10n
         // TODO can name & description be updated ? then which behaviour outside current locale ???
-        for (Locale locale : OasisLocales.values()) {
+        for (Locale locale : OasisLocales.locales()) {
             kernelService.set("name#" + locale.getLanguage(), service.getDefaultName());
             kernelService.set("description#" + locale.getLanguage(), service.getDefaultDescription());
             kernelService.set("icon#" + locale.getLanguage(), service.getDefaultIcon());

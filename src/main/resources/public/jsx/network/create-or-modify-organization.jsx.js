@@ -218,7 +218,7 @@ var Field = React.createClass({
         labelClassName: React.PropTypes.string,
         divClassName: React.PropTypes.string,
         error: React.PropTypes.bool,
-        errorMsg: React.PropTypes.bool,
+        errorMsg: React.PropTypes.string,
         isRequired: React.PropTypes.bool
     },
     renderLabel: function(htmlFor, class_name, label, isRequired) {
@@ -648,10 +648,13 @@ var TaxRegActivityAutosuggest = React.createClass({
             </div>
         )
     },
-    onSuggestionsUpdateRequested: function({ value, reason }) {
+    onSuggestionsFetchRequested: function({ value, reason }) {
         this.setState({ value: value });
         if (reason !== 'enter' && reason !== 'click')
             debounce(this.searchTaxRegActivities(value), 500);
+    },
+    onSuggestionsClearRequested: function() {
+        this.setState({ suggestions: [] })
     },
     onSuggestionSelected: function(event, { suggestion, suggestionValue, method }) {
         this.setState({ value: suggestion.name });
@@ -669,7 +672,8 @@ var TaxRegActivityAutosuggest = React.createClass({
         return (
             <div className="input-group">
                 <Autosuggest suggestions={this.state.suggestions}
-                             onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                              onSuggestionSelected={this.onSuggestionSelected}
                              getSuggestionValue={suggestion => suggestion.name}
                              renderSuggestion={this.renderSuggestion}

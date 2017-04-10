@@ -1,13 +1,13 @@
 spring:
-  server:
-    tomcat.accesslog.enabled: true
   output.ansi.enabled: DETECT
+  # only for 64x64 pngs which should be mostly below 5000B
+  http.multipart.max-file-size: 20KB
+  # mandatory since 1.4 even if we do not use it directly
+  session.store-type: none
 
 server:
   compression.enabled: true
-
-# only for 64x64 pngs which should be mostly below 5000B
-multipart.max-file-size: 20KB
+  tomcat.accesslog.enabled: true
 
 ha:
   enabled: false
@@ -87,13 +87,14 @@ kernel:
     token_endpoint: ${kernel.base_uri}/a/token
     keys_endpoint: ${kernel.base_uri}/a/keys
     userinfo_endpoint: ${kernel.base_uri}/a/userinfo
-    profile_endpoint: ${kernel.base_uri}/d/user
     password_change_endpoint: ${kernel.alt_uri}/a/password
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.alt_uri}/a/logout
     callback_uri: ${application.url}/callback
     home_uri: ${application.url}/my
-  user_directory_endpoint: ${kernel.base_uri}/d
+  user_profile_endpoint: ${kernel.base_uri}/d/user
+  user_membership_endpoint: ${kernel.base_uri}/d
+  organization_endpoint: ${kernel.base_uri}/d/org
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: portal
@@ -124,13 +125,10 @@ datacore:
 opendata:
   url: https://opendata-preprod.data-ozwillo.org
 
-persistence:
-  mongodatabase: portal
-  mongohosts:
-    - localhost
-#  login: portal
-#  password: portal
-
+# URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
+# In prod, replace journal=true by w=majority&readPreference=primaryPreferred
+# TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
+spring.data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
 
 cache:
   hosts:

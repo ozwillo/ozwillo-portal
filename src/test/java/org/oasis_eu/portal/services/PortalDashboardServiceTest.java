@@ -10,7 +10,7 @@ import org.oasis_eu.portal.OasisPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.core.context.SecurityContext;
@@ -28,7 +28,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringApplicationConfiguration(classes = {OasisPortal.class, MockServletContext.class})
+@SpringBootTest(classes = {OasisPortal.class, MockServletContext.class})
 public class PortalDashboardServiceTest {
 
 	// well-known "alice" user id
