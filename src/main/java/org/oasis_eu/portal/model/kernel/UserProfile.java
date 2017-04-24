@@ -71,28 +71,6 @@ public class UserProfile extends BaseUserInfo implements Serializable {
         this.emailVerified = emailVerified;
     }
 
-    /*
-    public String getStreetAddress() {
-        return this.getAddress() != null ? this.getAddress().getStreetAddress() : null;
-    }
-
-
-    public String getLocality() {
-        return this.getAddress() != null ? this.getAddress().getLocality() : null;
-    }
-
-    public String getRegion() {
-        return this.getAddress() != null ? this.getAddress().getRegion():null;
-    }
-
-    public String getPostalCode() {
-        return this.getAddress()!=null ? this.getAddress().getPostalCode() : null;
-    }
-
-    public String getCountry() {
-        return this.getAddress() != null ? this.getAddress().getCountry() : null;
-    }
-    */
     public Instant getUpdateInstant() {
         return this.getUpdatedAt()!= null ? Instant.ofEpochSecond(this.getUpdatedAt()) : null;
     }

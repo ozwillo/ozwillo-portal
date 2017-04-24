@@ -927,3 +927,8 @@ div.organization .organization-pending-member-row {
     top: 25px;
     cursor: pointer;
 }
+
+/* Account */
+.text-align-middle {
+    padding-top:0.5em;
+}

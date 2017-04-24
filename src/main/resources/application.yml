@@ -69,6 +69,7 @@ web:
   sitemap:
       url_header: https://www.ozwillo.com/header.xml
       url_footer: https://www.ozwillo.com/footer.xml
+      #refresh: 0 0/5 * * * *
       refresh: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
   # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
   avatarPath: img/my/avatar

@@ -74,7 +74,7 @@ public final class i18nMessages {
         "account.language.fr", "account.language.it", "account.language.es", "account.language.ca",
         "account.language.bg", "account.language.tr", "account.password", "personal.address", "personal.identity", "personal.firstname", "personal.lastname",
         "personal.birthdate", "personal.phonenumber", "personal.gender", "personal.gender.male", "personal.gender.female", "personal.postalcode",
-        "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename");
+        "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
 
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");

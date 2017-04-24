@@ -45,14 +45,14 @@ InputText.propTypes = {
     disabled: React.PropTypes.bool
 }
 
-const Select = ({ name, value, label, onChange, children, labelClassName, divClassName, error, errorMsg, isRequired, emptyValue }) =>
+const Select = ({ name, value, label, onChange, children, labelClassName, divClassName, error, errorMsg, isRequired }) =>
     <div className={error ? 'form-group has-error' : 'form-group'}>
         <label htmlFor={name} className={isRequired ? labelClassName + ' required' : labelClassName}>
             {label} {isRequired ? '* ' : ' '}
         </label>
         <div className={divClassName}>
             <select name={name} value={value} onChange={onChange} className="form-control">
-                {renderIf(emptyValue)(
+                {renderIf(!isRequired)(
                     <option key="" value=""></option>
                 )}
                 {children}
@@ -70,7 +70,6 @@ Select.propTypes = {
     error: React.PropTypes.bool,
     errorMsg: React.PropTypes.string,
     isRequired: React.PropTypes.bool,
-    emptyValue: React.PropTypes.bool
 }
 
 Select.defaultProps = {
@@ -79,15 +78,16 @@ Select.defaultProps = {
     emptyValue: true
 }
 
-const SubmitButton = ({ label }) =>
+const SubmitButton = ({ label, className }) =>
     <div className="form-group">
         <div className="col-sm-9 col-sm-offset-3">
-            <button type="submit" className="btn oz-btn-save">{label}</button>
+            <button type="submit" className={className + ' btn oz-btn-save'}>{label}</button>
         </div>
     </div>
 
 SubmitButton.propTypes = {
-    label: React.PropTypes.string.isRequired
+    label: React.PropTypes.string.isRequired,
+    className: React.PropTypes.string
 }
 
 
@@ -101,6 +101,9 @@ const InputDatePicker = ({ label, labelClassName, divClassName, name, startDate,
                         dateFormat="DD/MM/YYYY"
                         onChange={onChange}
                         dropdownMode={dropdownMode}
+                        peekNextMonth
+                        showMonthDropdown
+                        showYearDropdown
                         className="form-control" name={name} />
         </div>
     </div>
@@ -119,98 +122,56 @@ InputDatePicker.propTypes = {
 InputDatePicker.defaultProps = {
     divClassName: 'col-sm-7',
     labelClassName: 'control-label col-sm-3',
-    dropdownMode: 'scroll'
+    dropdownMode: 'select'
 }
 
+class CountrySelector extends React.Component {
+    constructor(props) {
+        super(props)
+        this.state = {
+            countries: []
+        }
+    }
 
-var CountrySelect = React.createClass({
-    propTypes: {
+    propTypes = {
+        value: React.PropTypes.string,
         url: React.PropTypes.string.isRequired,
-        onCountryChange: React.PropTypes.func.isRequired,
-        countryUri: React.PropTypes.string
-    },
-    getInitialState: function() {
-        return { countries: [] }
-    },
-    handleCountryChange: function(event) {
-        var country_uri = event.target.value;
-        var country = event.target.selectedOptions[0].label;
-        this.props.onCountryChange(country, country_uri);
-    },
-    componentWillMount: function() {
-        this.initUserCountry();
-    },
-    // TODO port the next two functions with promises
-    initUserCountry: function() {
+        onChange: React.PropTypes.func.isRequired,
+        label: React.PropTypes.string
+    }
+
+    componentWillMount () {
         // get countries from DC
         $.ajax({
             url: this.props.url,
             type: 'get',
             dataType: 'json',
-            data: {q: ' '},
-            success: function (data) {
-                var areas = data.areas.filter(function (n) {
-                    return n !== null;
-                });
-                var options = [{value: '', label: ''}];
-                for (var i = 0; i < areas.length; i++) {
-                    options.push({value: areas[i].uri, label: areas[i].name})
-                }
-                this.setState({ countries: options });
-                this.getUserCountry();
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(status, err.toString());
-            }.bind(this)
-        });
-    },
-    getUserCountry: function() {
-        $.ajax({
-            url: network_service + '/general-user-info',
-            type: 'get',
-            contentType: 'json',
-            success: function (data) {
-                // Address is an optional field in user's profile
-                if (data.address) {
-                    // Try to match country with countries loaded from the DC
-                    this.props.onCountryChange(data.address.country, this.getValue(data.address.country));
-                }
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error(status, err.toString());
-            }.bind(this)
-        });
-    },
-    getValue: function(label) {
-        if (!label || label !== "") {
-            for (var i = 0; i < this.state.countries.length; i++) {
-                if (this.state.countries[i].label === label) {
-                    return this.state.countries[i].value;
-                }
+            data: {q: ' '}
+        })
+        .done(data => {
+
+            let options = data.areas
+                .filter(n => n !== null)
+                .map((area, key) => Object.assign({}, {key:key ,value: area.uri, label: area.name}))
+
+            this.setState({ countries: options });
+        })
+        .fail((xhr, status, err) => {
+                this.setState({ error : "Unable to retrieve countries info" + err.toString() })
             }
-        }
-        return null;
-    },
-    render: function() {
-        var options = this.state.countries.map(function(country, index) {
-            return <option key={index} value={country.value}>{country.label}</option>;
-        });
-
-        // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-based function decodeURIComponent()
-        return (
-            <div className="form-group">
-                <label htmlFor="country" className="col-sm-3 control-label required">
-                    {t('search.organization.country')} *
-                </label>
-                <div className="col-sm-8">
-                    <select className="form-control" id="country"
-                            value={this.props.countryUri} onChange={this.handleCountryChange}>
-                        {options}
-                    </select>
-                </div>
-            </div>
-        );
+        )
     }
-});
+    render() {
+        return (
+            <Select name="country" value={this.props.value}
+                    onChange={this.props.onChange}
+                    label={this.props.label}>
+                {this.state.countries.map(option =>
+                    <option key={option.key} value={option.value}>{option.label}</option>)
+                }
+            </Select>
+        )
+    }
+}
 
-module.exports = { Form, InputText, Select, SubmitButton, InputDatePicker }
+module.exports = { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector}
