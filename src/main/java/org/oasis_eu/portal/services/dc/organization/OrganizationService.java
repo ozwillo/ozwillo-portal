@@ -256,7 +256,6 @@ public class OrganizationService {
 
         String givenName = userProfile.getGivenName() != null ? userProfile.getGivenName() : "";
         String familyName = userProfile.getFamilyName() != null ? userProfile.getFamilyName() : "";
-        String email = userProfile.getEmail() != null ? userProfile.getEmail() : "";
 
         //Only if has changes will update
         if (dcOrganization.getContact_name() != null && !givenName.equals(dcOrganization.getContact_name())) {
@@ -265,10 +264,6 @@ public class OrganizationService {
         }
         if (dcOrganization.getContact_lastName() != null && !familyName.equals(dcOrganization.getContact_lastName())) {
             userProfile.setFamilyName(dcOrganization.getContact_lastName());
-            isChangefound = true;
-        }
-        if (dcOrganization.getContact_email() != null && !email.equals(dcOrganization.getContact_email())) {
-            userProfile.setEmail(dcOrganization.getContact_email());
             isChangefound = true;
         }
         if (isChangefound) {

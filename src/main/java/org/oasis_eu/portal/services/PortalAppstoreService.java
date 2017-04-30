@@ -176,10 +176,9 @@ public class PortalAppstoreService {
         UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         if ((name != null || lastName != null || email != null)
             && (!name.isEmpty() || !lastName.isEmpty() || !email.isEmpty())
-            && (!userProfile.getGivenName().equals(name) || !userProfile.getFamilyName().equals(lastName) || !userProfile.getEmail().equals(email))) {
+            && (!userProfile.getGivenName().equals(name) || !userProfile.getFamilyName().equals(lastName))) {
             userProfile.setGivenName(name);
             userProfile.setFamilyName(lastName);
-            userProfile.setEmail(email);
             proceedUpdate = true;
         }
 
