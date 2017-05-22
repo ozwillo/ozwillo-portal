@@ -11,7 +11,7 @@ import java.time.Instant;
 /**
  * Data holder for the info returned by the Ozwillo kernel's user directory endpoint.
  */
-@JsonInclude(JsonInclude.Include.ALWAYS)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class UserProfile extends BaseUserInfo implements Serializable {
     private static final long serialVersionUID = 5630983084892826427L;
 

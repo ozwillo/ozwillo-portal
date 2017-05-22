@@ -29,7 +29,8 @@ const InputText = ({ name, value, label, onChange, labelClassName, divClassName,
 InputText.defaultProps = {
     divClassName: 'col-sm-7',
     labelClassName: 'control-label col-sm-3',
-    disabled: false
+    disabled: false,
+    value: ''
 }
 
 InputText.propTypes = {
@@ -75,7 +76,8 @@ Select.propTypes = {
 Select.defaultProps = {
     divClassName: 'col-sm-7',
     labelClassName: 'control-label col-sm-3',
-    emptyValue: true
+    emptyValue: true,
+    value: ''
 }
 
 const SubmitButton = ({ label, className }) =>
@@ -98,7 +100,6 @@ const InputDatePicker = ({ label, labelClassName, divClassName, name, startDate,
         </label>
         <div className={divClassName}>
             <DatePicker selected={startDate}
-                        dateFormat="DD/MM/YYYY"
                         onChange={onChange}
                         dropdownMode={dropdownMode}
                         peekNextMonth

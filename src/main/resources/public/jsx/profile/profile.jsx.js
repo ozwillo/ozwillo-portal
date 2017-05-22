@@ -74,10 +74,6 @@ class Profile extends React.Component {
         }.bind(this))
     }
     render() {
-        let address = this.state.userProfile.address
-        if (address === null) {
-            address = undefined
-        }
         return (
             <div>
                 <Form id="account" onSubmit={this.onSubmit.bind(this)}>
@@ -92,9 +88,10 @@ class Profile extends React.Component {
                                      />
                     <IdentityAccount userProfile={this.state.userProfile}
                                      onValueChange={this.onValueChange.bind(this)} />
-                    <AddressAccount address={address}
-                                    onValueChange={this.onValueChange.bind(this)}
-                                     />
+                    {renderIf(this.state.userProfile.address) (
+                        <AddressAccount address={this.state.userProfile.address}
+                                        onValueChange={this.onValueChange.bind(this)} />
+                    )}
                 </Form>
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} />
 
@@ -183,14 +180,6 @@ class AddressAccount extends React.Component {
         address: React.PropTypes.object,
         onValueChange: React.PropTypes.func.isRequired,
     }
-    static defaultProps = {
-        address: {
-            country: '',
-            locality: '',
-            postal_code: '',
-            street_address: ''
-        }
-    }
     handleChange(locality) {
         if(locality !== null) {
             this.props.onValueChange('address.locality', locality.name)
@@ -202,8 +191,6 @@ class AddressAccount extends React.Component {
         }
     }
     render () {
-        if (this.props.address.postal_code === undefined) this.props.address.postal_code = ''
-        if (this.props.address.street_address === undefined) this.props.address.street_address = ''
         return (
             <div className="row">
                 <div className="col-sm-12">
@@ -308,5 +295,3 @@ class GenderSelector extends React.Component {
 
 
 ReactDOM.render(<Profile />, document.getElementById("profile"));
-
-module.exports = { Profile }
