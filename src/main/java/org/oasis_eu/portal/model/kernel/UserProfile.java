@@ -24,28 +24,6 @@ public class UserProfile extends BaseUserInfo implements Serializable {
     @JsonProperty("created_at")
     private Long createdAt;
 
-    public static UserProfile from(UserProfile in) {
-        UserProfile out = new UserProfile();
-        out.setName(in.getName());
-        out.setNickname(in.getNickname());
-        out.setLocale(in.getLocale());
-        out.setEmail(in.getEmail());
-        out.setEmailVerified(in.isEmailVerified());
-        out.setUserId(in.getUserId());
-        out.setAddress(in.getAddress()); // mmm, it'd be better to deepclone, but let's not worry too much right now (we'll fix it when we see weird bugs)
-        out.setBirthdate(in.getBirthdate());
-        out.setFamilyName(in.getFamilyName());
-        out.setGivenName(in.getGivenName());
-        out.setGender(in.getGender());
-        out.setPhoneNumber(in.getPhoneNumber());
-        out.setPhoneNumberVerified(in.isPhoneNumberVerified() != null ? in.isPhoneNumberVerified() : false);
-        out.setPictureUrl(in.getPictureUrl());
-        out.setUpdatedAt(in.getUpdatedAt());
-        out.setZoneInfo(in.getZoneInfo());
-
-        return out;
-    }
-
     public String getUserId() {
         return userId;
     }
