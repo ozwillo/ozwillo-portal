@@ -192,10 +192,18 @@ class AddressAccount extends React.Component {
         }
     }
     handleChange(locality) {
-        this.props.onValueChange('address.locality', locality.name)
-        this.props.onValueChange('address.postal_code', locality.postalCode)
+        if(locality !== null) {
+            this.props.onValueChange('address.locality', locality.name)
+            this.props.onValueChange('address.postal_code', locality.postalCode)
+        }
+        else {
+            this.props.onValueChange('address.locality', '')
+            this.props.onValueChange('address.postal_code', '')
+        }
     }
     render () {
+        if (this.props.address.postal_code === undefined) this.props.address.postal_code = ''
+        if (this.props.address.street_address === undefined) this.props.address.street_address = ''
         return (
             <div className="row">
                 <div className="col-sm-12">
@@ -218,7 +226,8 @@ class AddressAccount extends React.Component {
 
                 <InputText name="address.postal_code" value={this.props.address.postal_code}
                            label={t('my.profile.personal.postalcode')}
-                           onChange={e => this.props.onValueChange('address.postal_code', e.target.value)} />
+                           onChange={e => this.props.onValueChange('address.postal_code', e.target.value)}
+                           disabled={true} />
 
                 <InputText name="address.street_address" value={this.props.address.street_address}
                            label={t('my.profile.personal.streetaddress')}

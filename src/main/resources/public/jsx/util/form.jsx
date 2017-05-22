@@ -133,7 +133,7 @@ class CountrySelector extends React.Component {
         }
     }
 
-    propTypes = {
+    static propTypes = {
         value: React.PropTypes.string,
         url: React.PropTypes.string.isRequired,
         onChange: React.PropTypes.func.isRequired,
