@@ -15,12 +15,11 @@ import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.appstore.AppstoreHit;
 import org.oasis_eu.portal.model.appstore.InstallationOption;
+import org.oasis_eu.portal.model.kernel.UserProfile;
 import org.oasis_eu.portal.services.dc.geoarea.GeographicalAreaService;
+import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.model.Organization;
-import org.oasis_eu.spring.kernel.model.UserAccount;
-import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
-import org.oasis_eu.spring.kernel.service.UserAccountService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +55,9 @@ public class PortalAppstoreService {
 
     @Autowired
     private UserInfoService userInfoService;
+
     @Autowired
-    private UserAccountService userAccountService;
+    private UserProfileService userProfileService;
 
     @Autowired
     private ImageService imageService;
@@ -173,29 +173,28 @@ public class PortalAppstoreService {
 
     public void updateUserInfo(String name, String lastName, String email, String street, String zip, String city, String country) {
         boolean proceedUpdate = false;
-        UserInfo userInfo = userInfoService.currentUser();
+        UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         if ((name != null || lastName != null || email != null)
             && (!name.isEmpty() || !lastName.isEmpty() || !email.isEmpty())
-            && (!userInfo.getGivenName().equals(name) || !userInfo.getFamilyName().equals(lastName) || !userInfo.getEmail().equals(email))) {
-            userInfo.setGivenName(name);
-            userInfo.setFamilyName(lastName);
-            userInfo.setEmail(email);
+            && (!userProfile.getGivenName().equals(name) || !userProfile.getFamilyName().equals(lastName))) {
+            userProfile.setGivenName(name);
+            userProfile.setFamilyName(lastName);
             proceedUpdate = true;
         }
 
         if ((zip != null && city != null && country != null)
             && (!zip.isEmpty() && !city.isEmpty() && !country.isEmpty())) { // not always as a required value
-            org.oasis_eu.spring.kernel.model.Address address = userInfo.getAddress();
+            org.oasis_eu.spring.kernel.model.Address address = userProfile.getAddress();
             address.setStreetAddress(street);
             address.setPostalCode(zip);
             address.setLocality(city);
             address.setCountry(country);
-            userInfo.setAddress(address);
+            userProfile.setAddress(address);
             proceedUpdate = true;
         }
 
         if (proceedUpdate && userInfoService.isAuthenticated()) {
-            userAccountService.saveUserAccount(new UserAccount(userInfo));
+            userProfileService.saveUserProfile(userProfile);
         }
     }
 

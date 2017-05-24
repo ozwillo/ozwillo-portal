@@ -86,6 +86,9 @@ public class CatalogEntry implements Serializable {
     @JsonProperty("visible")
     private boolean visible = false;
 
+    @JsonProperty("visibility")
+    private String visibility;
+
     @JsonProperty("redirect_uris")
     private List<String> redirectUris;
 
@@ -106,6 +109,9 @@ public class CatalogEntry implements Serializable {
 
     @JsonProperty("restricted")
     private Boolean restricted = false;
+
+    @JsonProperty("access_control")
+    private String accessControl;
 
 
     public String getId() {
@@ -272,6 +278,9 @@ public class CatalogEntry implements Serializable {
         this.visible = visible;
     }
 
+    public String getVisibility() { return visibility; }
+    public void setVisibility(String visibility) { this.visibility = visibility; }
+
     public String getProviderId() {
         return providerId;
     }
@@ -368,4 +377,7 @@ public class CatalogEntry implements Serializable {
     public void setRestricted(Boolean restricted) {
         this.restricted = restricted;
     }
+
+    public String getAccessControl() { return  accessControl; }
+    public void setAccessControl(String accessControl) { this.accessControl = accessControl; }
 }
