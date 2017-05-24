@@ -2,15 +2,15 @@ package org.oasis_eu.portal.services.dc.organization;
 
 import com.google.common.base.Strings;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.model.kernel.UserProfile;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
+import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
-import org.oasis_eu.spring.kernel.model.UserAccount;
 import org.oasis_eu.spring.kernel.model.UserInfo;
-import org.oasis_eu.spring.kernel.service.UserAccountService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -36,7 +36,7 @@ public class OrganizationService {
     @Autowired
     private UserInfoService userInfoService;
     @Autowired
-    private UserAccountService userAccountService;
+    private UserProfileService userProfileService;
     @Autowired
     private HttpServletRequest request;
     @Autowired
@@ -251,29 +251,29 @@ public class OrganizationService {
     }
 
     private void updateUserInfo(DCOrganization dcOrganization) {
-        UserInfo userInfo = userInfoService.currentUser();
+        UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         boolean isChangefound = false;
 
-        String givenName = userInfo.getGivenName() != null ? userInfo.getGivenName() : "";
-        String familyName = userInfo.getFamilyName() != null ? userInfo.getFamilyName() : "";
-        String email = userInfo.getEmail() != null ? userInfo.getEmail() : "";
+        String givenName = userProfile.getGivenName() != null ? userProfile.getGivenName() : "";
+        String familyName = userProfile.getFamilyName() != null ? userProfile.getFamilyName() : "";
+        String email = userProfile.getEmail() != null ? userProfile.getEmail() : "";
 
         //Only if has changes will update
         if (dcOrganization.getContact_name() != null && !givenName.equals(dcOrganization.getContact_name())) {
-            userInfo.setGivenName(dcOrganization.getContact_name());
+            userProfile.setGivenName(dcOrganization.getContact_name());
             isChangefound = true;
         }
         if (dcOrganization.getContact_lastName() != null && !familyName.equals(dcOrganization.getContact_lastName())) {
-            userInfo.setFamilyName(dcOrganization.getContact_lastName());
+            userProfile.setFamilyName(dcOrganization.getContact_lastName());
             isChangefound = true;
         }
         if (dcOrganization.getContact_email() != null && !email.equals(dcOrganization.getContact_email())) {
-            userInfo.setEmail(dcOrganization.getContact_email());
+            userProfile.setEmail(dcOrganization.getContact_email());
             isChangefound = true;
         }
         if (isChangefound) {
-            logger.info("Updating user information: {}", userInfo); //TODO LATTER add toString() to UserInfo
-            userAccountService.saveUserAccount(new UserAccount(userInfo));
+            logger.info("Updating user information: {}", userProfile); //TODO LATTER add toString() to UserInfo
+            userProfileService.saveUserProfile(userProfile);
         }
     }
 }

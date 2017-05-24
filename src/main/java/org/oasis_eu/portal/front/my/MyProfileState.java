@@ -1,8 +1,8 @@
 package org.oasis_eu.portal.front.my;
 
-import org.oasis_eu.portal.core.controller.Languages;
+import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.model.*;
-import org.oasis_eu.portal.services.NameDefaults;
+import org.oasis_eu.portal.services.LocaleService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,10 +13,7 @@ import org.springframework.stereotype.Controller;
 
 import javax.annotation.PostConstruct;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -59,7 +56,7 @@ public class MyProfileState {
      * to best display an unknown locale
      */
     @Autowired
-    private NameDefaults nameDefaults;
+    private LocaleService localeService;
 
     @PostConstruct
     public void reset() {
@@ -74,8 +71,8 @@ public class MyProfileState {
         try {
             String avatarPattern = "classpath:public" + avatarPath + "*";
             Resource[] avatarResources = applicationContext.getResources(avatarPattern);
-            availableAvatars = Arrays.asList(avatarResources).stream()
-                .filter(avatarResource -> avatarResource.exists()) // else happens ? LATER check file extension of p.getFileName().toString()
+            availableAvatars = Arrays.stream(avatarResources)
+                .filter(Resource::exists) // else happens ? LATER check file extension of p.getFileName().toString()
                 .map(avatarResource -> {
                     try {
                         String urlString = avatarResource.getURL().toString();
@@ -85,7 +82,7 @@ public class MyProfileState {
                         return null;
                     } // finally { stream.close(); // ideally...
                 })
-                .filter(avatarResource -> avatarResource != null) // in case IOException above
+                .filter(Objects::nonNull) // in case IOException above
                 .collect(Collectors.toList());
         } catch (IOException e) {
             throw new RuntimeException(e); // don't start if fails
@@ -104,7 +101,7 @@ public class MyProfileState {
         accountFormLayout.appendWidget(new FormWidgetText("email", "my.profile.account.email", true));
         accountFormLayout.appendWidget(new FormWidgetPassword("password", "my.profile.account.password", "my.profile.account.changepassword", passwordChangeEndpoint));
         accountFormLayout.appendWidget(new FormWidgetSelect("locale", "my.profile.account.language", uiLocales -> {
-            Languages keyLanguages = nameDefaults.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
+            Languages keyLanguages = localeService.getBestLanguage(uiLocales); // including "en-GB fr" http://docs.oracle.com/javase/tutorial/i18n/locale/create.html
             return (keyLanguages != null) ? keyLanguages.getLanguage() : null;
         }));
         layouts.put(accountFormLayout.getId(), accountFormLayout);

@@ -1,9 +1,10 @@
 package org.oasis_eu.portal.front.generic;
 
-import org.oasis_eu.portal.core.constants.OasisLocales;
-import org.oasis_eu.portal.core.controller.Languages;
+import org.oasis_eu.portal.model.OasisLocales;
+import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuSet;
+import org.oasis_eu.portal.services.LocaleService;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
@@ -53,6 +54,8 @@ abstract public class PortalController {
     @Autowired
     private MyNavigationService navigationService;
 
+    @Autowired
+    private LocaleService localeService;
 
     @Value("${web.home}")
     private String webHome;
@@ -107,7 +110,7 @@ abstract public class PortalController {
 
     private Locale currentLocale() {
         if (user() != null && user().getLocale() != null) { // if user logged and locale set
-            return user().getBestLocale(OasisLocales.values()); // null if unknown but not null
+            return localeService.getBestLocale(Locale.forLanguageTag(user().getLocale()), OasisLocales.locales()); // null if unknown but not null
         }
         // else if not logged (or logout filter), or logged user locale not set
         return RequestContextUtils.getLocale(request);
