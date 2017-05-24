@@ -86,12 +86,7 @@ var Service = React.createClass({
             links.push(
                 <span key={this.props.service.service.id + '-settings'} className="pull-right action-icon" onClick={this.settings}>
                     <i className="fa fa-cog fa-lg"></i>
-                </span>
-            );
-        }
-
-        if (!this.state.saved_service.service.visible && this.props.status !== 'STOPPED') {
-            links.push(
+                </span>,
                 <span key={this.props.service.service.id + '-pushToDash'} className="pull-right btn-line action-icon" onClick={this.pushToDash}>
                     <i className="fa fa-home fa-lg"></i>
                 </span>

@@ -63,6 +63,7 @@
     "moment": "^2.11.1",
     "react": "^15.4.1",
     "react-autosuggest": "^7.0.2",
+    "react-datepicker": "^0.46.0",
     "react-dom": "^15.4.1",
     "react-rating": "^0.6.3",
     "render-if": "^0.1.0",

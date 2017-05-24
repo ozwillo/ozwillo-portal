@@ -16,6 +16,7 @@ import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
 import org.oasis_eu.portal.model.appsmanagement.User;
+import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -62,6 +63,9 @@ public class PortalAppManagementService {
 
     @Autowired
     private NetworkService networkService;
+
+    @Autowired
+    private UserProfileService userProfileService;
 
     public List<MyAppsInstance> getMyInstances(Authority authority, boolean fetchServices) {
 
@@ -116,7 +120,7 @@ public class PortalAppManagementService {
             uiInstance.setDeletionPlanned(deletionPlanned);
         }
         if (instance.getStatusChangeRequesterId() != null) {
-            uiInstance.setStatusChangeRequesterLabel(networkService.getUserName(instance.getStatusChangeRequesterId(), null)); // TODO protected ?? then from membership
+            uiInstance.setStatusChangeRequesterLabel(userProfileService.findUserProfile(instance.getStatusChangeRequesterId()).getDisplayName()); // TODO protected ?? then from membership
         }
         return uiInstance;
     }
