@@ -214,7 +214,8 @@ public class CatalogStoreImpl implements CatalogStore {
         kernelService.supported_locales = service.getSupportedLocales();
         kernelService.geographical_areas = service.getGeographicalAreas();
         kernelService.restricted_areas = service.getRestrictedAreas();
-        kernelService.visible = service.isVisible();
+        kernelService.visibility = service.getVisibility();
+        kernelService.accessControl = service.getAccessControl();
 
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", etag);
@@ -272,6 +273,8 @@ public class CatalogStoreImpl implements CatalogStore {
             {
                 add("modified");
                 add("type");
+                add("visible");
+                add("restricted");
             }
         };
 
@@ -284,7 +287,9 @@ public class CatalogStoreImpl implements CatalogStore {
         @JsonProperty("target_audience")
         List<Audience> audience;
         List<String> category_ids;
-        boolean visible;
+        String visibility;
+        @JsonProperty("access_control")
+        String accessControl;
         String local_id;
         String instance_id;
         String service_uri;
@@ -404,13 +409,13 @@ public class CatalogStoreImpl implements CatalogStore {
             this.restricted_areas = restricted_areas;
         }
 
-        public boolean isVisible() {
-            return visible;
-        }
+        public String getVisibility() { return visibility; }
 
-        public void setVisible(boolean visible) {
-            this.visible = visible;
-        }
+        public void setVisibility(String visibility) { this.visibility = visibility; }
+
+        public String getAccessControl() { return accessControl; }
+
+        public void setAccessControl(String accessControl) { this.accessControl = accessControl; }
 
         public String getLocal_id() {
             return local_id;

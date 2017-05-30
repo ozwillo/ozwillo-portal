@@ -55,7 +55,7 @@ var Service = React.createClass({
             type: 'get',
             dataType: 'json',
             success: function(data) {
-                var s = this.state;
+                let s = this.state;
                 s.saved_service = data;
                 s.field_errors = [];
                 this.setState(s);
@@ -67,7 +67,7 @@ var Service = React.createClass({
     },
     settings: function (event) {
         event.preventDefault(); // else scrolltop jumps to top #178
-        var s = this.state;
+        let s = this.state;
         s.service = JSON.parse(JSON.stringify(s.saved_service));    // create a deep copy of the structure
         s.field_errors = [];
         this.setState(s);
@@ -85,15 +85,10 @@ var Service = React.createClass({
         if (this.props.status !== 'STOPPED') {
             links.push(
                 <span key={this.props.service.service.id + '-settings'} className="pull-right action-icon" onClick={this.settings}>
-                    <i className="fa fa-cog fa-lg"></i>
-                </span>
-            );
-        }
-
-        if (!this.state.saved_service.service.visible && this.props.status !== 'STOPPED') {
-            links.push(
+                    <i className="fa fa-cog fa-lg"/>
+                </span>,
                 <span key={this.props.service.service.id + '-pushToDash'} className="pull-right btn-line action-icon" onClick={this.pushToDash}>
-                    <i className="fa fa-home fa-lg"></i>
+                    <i className="fa fa-home fa-lg"/>
                 </span>
             );
         }
@@ -110,9 +105,9 @@ var Service = React.createClass({
 });
 
 
-var FormField = React.createClass({
+let FormField = React.createClass({
     render: function() {
-        var className = this.props.error ? "form-group has-error" : "form-group";
+        const className = this.props.error ? "form-group has-error" : "form-group";
 
         return (
             <div className={className}>
@@ -125,7 +120,7 @@ var FormField = React.createClass({
     }
 });
 
-var ServiceSettings = React.createClass({
+let ServiceSettings = React.createClass({
     getInitialState: function() {
         return {
             service: this.props.service,
@@ -135,7 +130,11 @@ var ServiceSettings = React.createClass({
     handleChange: function(field, checkbox) {
         return function(event) {
             if (checkbox) {
-                this.props.update(field, event.target.checked);
+                if (event.target.checked) {
+                    this.props.update(field, "VISIBLE");
+                } else {
+                    this.props.update(field, "HIDDEN");
+                }
             }else if(field === 'geographical_areas'){
                 this.props.update(field, event.val); // added.name/uri
             } else {
@@ -165,7 +164,7 @@ var ServiceSettings = React.createClass({
         this.props.update('icon', servedImageUrlData);
         this.props.update('iconUrl', servedImageUrlData); // used to display icon in modal ; NOT using virtual URL
         // for uploaded icon display :
-        var state = this.state;
+        let state = this.state;
         //var virtualIconUrl = '/media/' + this.props.service.service.id + '/icon.png';
         this.state.refreshedIconUrl = servedImageUrlData + '#' + new Date().getTime(); // refreshes (actually
         // not required because different filenames, but could be if stayed the same ex. citizenkin.png or icon.png)
@@ -174,18 +173,18 @@ var ServiceSettings = React.createClass({
         this.setState(state);
     },
     render: function() {
-        var divIconClassName = "form-group";
-        if ($.inArray("icon", this.props.errors) != -1) {
+        let divIconClassName = "form-group";
+        if (this.props.errors.indexOf("icon") !== -1) {
             divIconClassName = divIconClassName + " has-error";
         }
 
-        var visibility = null;
-        if (!this.props.service.service.restricted) {
+        let visibility = null;
+        if (this.props.service.service.visibility !== "NEVER_VISIBLE") {
             visibility = (
                 <div className="form-group">
-                    <label htmlFor="published" className="control-label col-sm-3">{this.props.service.service.visible ? t('published') : t('notpublished')}</label>
+                    <label htmlFor={"published-" + this.props.service.service.id} className="control-label col-sm-3">{this.props.service.service.visibility === "VISIBLE" ? t('published') : t('notpublished')}</label>
                     <div className="col-sm-9">
-                        <input className="switch" type="checkbox" id="published" checked={this.props.service.service.visible} onChange={this.handleChange('visible', true)} />
+                        <input className="switch" type="checkbox" id={"published-" + this.props.service.service.id} checked={this.props.service.service.visibility === "VISIBLE"} onChange={this.handleChange('visibility', true)} />
                     </div>
                 </div>
             );
@@ -202,13 +201,13 @@ var ServiceSettings = React.createClass({
         return (
             <Modal title={this.props.service.name} ref="modal" successHandler={this.props.save} large={true}>
                 <form className="form-horizontal"  role="form">
-                    <FormField name="name" error={$.inArray("name", this.props.errors) != -1}>
+                    <FormField name="name" error={this.props.errors.indexOf("name") !== -1}>
                         <input type="text" name="name" id="name" className="form-control" value={this.props.service.service.name}
-                               onChange={this.handleChange("name")}></input>
+                               onChange={this.handleChange("name")} />
                     </FormField>
-                    <FormField name="description" error={$.inArray("description", this.props.errors) != -1}>
+                    <FormField name="description" error={this.props.errors.indexOf("description") !== -1}>
                         <textarea name="description" id="description" className="form-control" value={this.props.service.service.description}
-                            onChange={this.handleChange("description")}></textarea>
+                            onChange={this.handleChange("description")} />
                     </FormField>
 
                     <div className={divIconClassName}>
@@ -231,7 +230,7 @@ var ServiceSettings = React.createClass({
                         </div>
                     </div>
 
-                    <FormField name="geographical-area-of-interest" error={$.inArray("description", this.props.errors) != -1}>
+                    <FormField name="geographical-area-of-interest" error={this.props.errors.indexOf("description") !== -1}>
                         <GeoAreaAutosuggest countryUri=""
                             endpoint="/geographicalAreas"
                             onChange={this.handleGeoAreaChange}
