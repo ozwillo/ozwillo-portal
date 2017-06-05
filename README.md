@@ -25,6 +25,36 @@ nvm install 5.6.0 (or nvm use 5.6.0 if you already have Node 5.6.0 installed)
 npm install
 ```
 
+* Configure your application's environment
+  * In build.gradle "dev" is define as default environment
+  `````environment SPRING_PROFILES_ACTIVE: environment.SPRING_PROFILES_ACTIVE ?: "dev"`````
+  * Create an application-{environment}.yml file
+  * Configure your own properties in your application-{environment}.yml
+  
+  Here is an example of properties you have to change in your application-{environment}.yml:
+````yaml
+application:
+  dcOrg:
+    project: org
+  devmode: true | false
+  production: true | false
+
+web:
+  home: https://www.ozwillo.com
+
+kernel:
+  base_uri: https://kernel.ozwillo.com
+  client_secret: changeit
+
+datacore:
+  url: https://data.ozwillo.com
+  systemAdminUser:
+    refreshToken: changeit
+    nonce: changeit
+
+spring.data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
+````
+
 ## Running the portal
 
 * Run Spring Boot
