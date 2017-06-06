@@ -69,7 +69,13 @@ public final class i18nMessages {
         "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
         "apps-for-organization", "apps-for-personal-use");
 
-    private static final List<String> profilekeys = Arrays.asList("errormsg.formatNoMatches", "errormsg.formatAjaxError");
+    private static final List<String> profilekeys = Arrays.asList("errormsg.formatNoMatches", "errormsg.formatAjaxError",
+        "title.account", "personal.nickname", "account.email", "account.changepassword", "account.language", "account.language.en",
+        "account.language.fr", "account.language.it", "account.language.es", "account.language.ca",
+        "account.language.bg", "account.language.tr", "account.password", "personal.address", "personal.identity", "personal.firstname", "personal.lastname",
+        "personal.birthdate", "personal.phonenumber", "personal.gender", "personal.gender.male", "personal.gender.female", "personal.postalcode",
+        "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
+
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 

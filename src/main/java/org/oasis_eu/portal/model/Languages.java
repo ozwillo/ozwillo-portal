@@ -1,6 +1,4 @@
-package org.oasis_eu.portal.core.controller;
-
-import org.oasis_eu.portal.core.constants.OasisLocales;
+package org.oasis_eu.portal.model;
 
 import java.util.Locale;
 
@@ -19,24 +17,23 @@ public enum Languages {
     TURKISH("Türkçe", OasisLocales.TURKISH);
 
     private String name;
-    private Locale locale;
+    private OasisLocales locale;
 
-    private Languages(String name, Locale locale) {
+    Languages(String name, OasisLocales locale) {
         this.name = name;
         this.locale = locale;
     }
 
     public String getName() {
         return name;
-
     }
 
     public String getLanguage() {
-        return locale.getLanguage();
+        return locale.getLocale().getLanguage();
     }
 
     public Locale getLocale() {
-        return locale;
+        return locale.getLocale();
     }
 
     public static Languages getByLocale(Locale locale) {
