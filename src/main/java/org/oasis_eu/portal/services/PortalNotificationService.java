@@ -6,6 +6,7 @@ import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.model.notifications.NotifApp;
 import org.oasis_eu.portal.model.notifications.UserNotification;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
@@ -101,17 +102,17 @@ public class PortalNotificationService {
             .filter(n -> NotificationStatus.ANY.equals(status) || status.equals(n.getStatus()))
             .map(n -> {
                 UserNotification notif = new UserNotification();
-                CatalogEntry catalogEntry = null;
+                ServiceEntry serviceEntry = null;
 
                 if (n.getServiceId() != null) {
-                    catalogEntry = catalogStore.findService(n.getServiceId());
-                    if (catalogEntry == null) {
+                    serviceEntry = catalogStore.findService(n.getServiceId());
+                    if (serviceEntry == null) {
                         return null; // skip deleted service, probable (?) companion case to #179 Bug with notifications referring destroyed app instances
                         // TODO LATER keep service but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
                     }
-                    notif.setAppName(catalogEntry.getName(locale));
+                    notif.setAppName(serviceEntry.getName(locale));
                     notif.setServiceId(n.getServiceId());
-                    notif.setApplicationId(catalogEntry.getId());
+                    notif.setApplicationId(serviceEntry.getId());
 
                 } else if (n.getInstanceId() != null) {
                     ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
@@ -140,8 +141,8 @@ public class PortalNotificationService {
                 notif.setId(n.getId());
 
                 if (Strings.isNullOrEmpty(n.getActionUri())) {
-                    if (catalogEntry != null) {
-                        notif.setUrl(catalogEntry.getNotificationUrl());
+                    if (serviceEntry != null) {
+                        notif.setUrl(serviceEntry.getNotificationUrl());
                     }
                 } else {
                     notif.setUrl(n.getActionUri());

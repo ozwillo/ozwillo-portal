@@ -182,9 +182,13 @@ let ServiceSettings = React.createClass({
         if (this.props.service.service.visibility !== "NEVER_VISIBLE") {
             visibility = (
                 <div className="form-group">
-                    <label htmlFor={"published-" + this.props.service.service.id} className="control-label col-sm-3">{this.props.service.service.visibility === "VISIBLE" ? t('published') : t('notpublished')}</label>
+                    <label htmlFor={"published-" + this.props.service.service.id} className="control-label col-sm-3">
+                        {t('published')}
+                    </label>
                     <div className="col-sm-9">
-                        <input className="switch" type="checkbox" id={"published-" + this.props.service.service.id} checked={this.props.service.service.visibility === "VISIBLE"} onChange={this.handleChange('visibility', true)} />
+                        <input className="switch" type="checkbox" id={"published-" + this.props.service.service.id}
+                               checked={this.props.service.service.visibility === "VISIBLE"}
+                               onChange={this.handleChange('visibility', true)} />
                     </div>
                 </div>
             );

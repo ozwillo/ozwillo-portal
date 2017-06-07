@@ -8,6 +8,7 @@ import org.oasis_eu.portal.core.dao.InstanceACLStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
@@ -133,7 +134,7 @@ public class PortalAppManagementService {
         return new MyAppsService()
             .setService(service)
             .setName(service.getName(RequestContextUtils.getLocale(request)))
-            .setIconUrl(imageService.getImageForURL(service.getDefaultIcon(), ImageFormat.PNG_64BY64, false));
+            .setIconUrl(imageService.getImageForURL(service.getIcon(), ImageFormat.PNG_64BY64, false));
     }
 
     public MyAppsService getService(String serviceId) {
@@ -142,14 +143,13 @@ public class PortalAppManagementService {
 
     }
 
-    public CatalogEntry updateService(String serviceId, CatalogEntry entry) {
-        CatalogEntry catalogEntry = catalogStore.findService(serviceId);
-        ApplicationInstance appInstance = catalogStore.findApplicationInstance(catalogEntry.getInstanceId());
+    public void updateService(String serviceId, ServiceEntry serviceEntry) {
+        ApplicationInstance appInstance = catalogStore.findApplicationInstance(serviceEntry.getInstanceId());
         if (!networkService.userIsAdminOrPersonalAppInstance(appInstance)) {
             // let it with the default forbidden error message
             throw new ForbiddenException();
         }
-        return catalogStore.fetchAndUpdateService(serviceId, entry);
+        catalogStore.updateService(serviceId, serviceEntry);
     }
 
     /**

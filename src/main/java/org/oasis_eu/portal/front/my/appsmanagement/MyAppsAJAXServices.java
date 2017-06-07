@@ -2,7 +2,7 @@ package org.oasis_eu.portal.front.my.appsmanagement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
@@ -170,7 +170,8 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
     }
 
     @RequestMapping(value = "/service/{serviceId}", method = RequestMethod.POST)
-    public SaveServiceResponse saveService(@PathVariable String serviceId, @RequestBody @Valid CatalogEntry entry, Errors errors) {
+    public SaveServiceResponse saveService(@PathVariable String serviceId, @RequestBody @Valid ServiceEntry serviceEntry,
+                                           Errors errors) {
         SaveServiceResponse response = new SaveServiceResponse();
         if (errors.hasErrors()) {
             response.errors = errors.getFieldErrors().stream().map(fieldError -> {
@@ -183,7 +184,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
             }).collect(Collectors.toList());
             response.success = false;
         } else {
-            appManagementService.updateService(serviceId, entry); // let it explode on a WrongQueryException
+            appManagementService.updateService(serviceId, serviceEntry); // let it explode on a WrongQueryException
 
             response.success = true;
         }

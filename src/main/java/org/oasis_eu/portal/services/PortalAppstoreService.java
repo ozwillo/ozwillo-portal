@@ -115,12 +115,12 @@ public class PortalAppstoreService {
 
         String providerId = catalogEntry.getProviderId();
         if (providerId == null) {
-            logger.warn("Catalog entry {} - {} has null provider id", catalogEntry.getId(), catalogEntry.getDefaultName());
+            logger.warn("Catalog entry {} - {} has null provider id", catalogEntry.getId(), catalogEntry.getName());
             return "";
         }
         Organization organization = organizationStore.find(providerId);
         if (organization == null) {
-            logger.warn("Catalog entry {} - {} has a provider id ({}) that does not correspond to any known organization", catalogEntry.getId(), catalogEntry.getDefaultName(), providerId);
+            logger.warn("Catalog entry {} - {} has a provider id ({}) that does not correspond to any known organization", catalogEntry.getId(), catalogEntry.getName(), providerId);
             return "";
         }
         return organization.getName();

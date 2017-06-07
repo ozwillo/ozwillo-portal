@@ -1,11 +1,8 @@
 package org.oasis_eu.portal.core.dao;
 
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.core.model.catalog.*;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance.InstantiationStatus;
-import org.oasis_eu.portal.core.model.catalog.Audience;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.PaymentOption;
 
 import java.util.List;
 import java.util.Locale;
@@ -18,9 +15,9 @@ public interface CatalogStore {
 
     CatalogEntry findApplication(String id);
 
-    CatalogEntry findService(String id);
+    ServiceEntry findService(String id);
 
-    List<CatalogEntry> findServicesOfInstance(String instanceId);
+    List<ServiceEntry> findServicesOfInstance(String instanceId);
 
     /**
      * @param instanceId
@@ -34,7 +31,7 @@ public interface CatalogStore {
 
     void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
 
-    CatalogEntry fetchAndUpdateService(String serviceId, CatalogEntry service);
+    ServiceEntry updateService(String serviceId, ServiceEntry service);
 
     /**
      * for trash mode
