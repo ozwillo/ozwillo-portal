@@ -4,6 +4,19 @@ spring:
   http.multipart.max-file-size: 20KB
   # mandatory since 1.4 even if we do not use it directly
   session.store-type: none
+  # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
+  # In prod, replace journal=true by w=majority&readPreference=primaryPreferred
+  # TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
+  data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
+  mail:
+    host: smtp.mydomain.eu
+    port: 25
+    protocol: smtp
+    tls: true | false
+    properties:
+      mail.smtp:
+        auth: true | false
+        starttls.enable: true | false
 
 server:
   compression.enabled: true
@@ -65,7 +78,7 @@ application:
   notificationsEnabled: true
 
 web:
-  home: https://www.ozwillo-dev.eu
+  home: https://www.ozwillo.com
   sitemap:
       url_header: https://www.ozwillo.com/header.xml
       url_footer: https://www.ozwillo.com/footer.xml
@@ -126,22 +139,12 @@ datacore:
 opendata:
   url: https://opendata-preprod.data-ozwillo.org
 
-# URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
-# In prod, replace journal=true by w=majority&readPreference=primaryPreferred
-# TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
-spring.data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
+mail:
+  contact:
+    from: Contact Ozwillo <contact@mydomain.eu>
+    to: contact@mydomain.eu
 
 cache:
   hosts:
     - 192.168.56.1
     - 192.168.56.102
-
-mail:
-  host: changeit
-  port: 587
-  starttls: true
-  smtps: false
-  login: changeit
-  password: changeit
-  # Recipient of contact form requests sent by users
-  contact: contact@ozwillo.com
