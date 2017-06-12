@@ -26,18 +26,14 @@ npm install
 ```
 
 * Configure your application's environment
-  * In build.gradle "dev" is define as default environment
-  `````environment SPRING_PROFILES_ACTIVE: environment.SPRING_PROFILES_ACTIVE ?: "dev"`````
-  * Create an application-{environment}.yml file
-  * Configure your own properties in your application-{environment}.yml
+  * Create an src/main/resources/application-dev.yml file (dev is the default profile)
+  * Configure your own properties in it :
   
-  Here is an example of properties you have to change in your application-{environment}.yml:
+  Here is an example of properties you have to change in it :
 ````yaml
 application:
-  dcOrg:
-    project: org
-  devmode: true | false
-  production: true | false
+  devmode: true
+  production: false
 
 web:
   home: https://www.ozwillo.com
