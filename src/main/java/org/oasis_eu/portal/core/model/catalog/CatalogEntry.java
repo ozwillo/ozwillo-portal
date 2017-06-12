@@ -4,8 +4,6 @@ import com.fasterxml.jackson.annotation.*;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -16,45 +14,30 @@ import java.util.*;
  * Date: 6/16/14
  */
 @JsonInclude(JsonInclude.Include.NON_NULL)
-@Document(collection = "cached_service")
 public class CatalogEntry implements Serializable {
     private static final long serialVersionUID = -2141845252496796600L;
 
     private static final Logger logger = LoggerFactory.getLogger(CatalogEntry.class);
 
-    @Id
-    private String id;
-
     private CatalogEntryType type;
 
-    @JsonProperty("name")
+    private String id;
+
     @NotNull
     @NotEmpty
-    private String defaultName;
+    private String name;
 
-    @JsonProperty("description")
     @NotNull
     @NotEmpty
-    private String defaultDescription;
-
-    private Map<String, String> localizedNames = new HashMap<>();
-    private Map<String, String> localizedDescriptions = new HashMap<>();
-    private Map<String, String> localizedIcons = new HashMap<>();
+    private String description;
 
     /* NOO accept empty for clearing up icon i.e. getting back the default one from Kernel */
-    @JsonProperty("icon")
     @NotNull
     @NotEmpty
-    private String defaultIcon;
+    private String icon;
 
-    @JsonProperty("service_uri")
-    private String url;
-
-    @JsonProperty("notification_uri")
-    private String notificationUrl;
-
-    @JsonIgnore
-    private List<AppstoreCategory> categories = new ArrayList<>();
+    @JsonProperty("provider_id")
+    private String providerId;
 
     @JsonProperty("payment_option")
     private PaymentOption paymentOption;
@@ -65,6 +48,9 @@ public class CatalogEntry implements Serializable {
     @JsonProperty("category_ids")
     private List<String> categoryIds = new ArrayList<>();
 
+    @JsonIgnore
+    private List<AppstoreCategory> categories = new ArrayList<>();
+
     @JsonProperty("supported_locales")
     private List<String> supportedLocales; // ULocale
 
@@ -74,25 +60,10 @@ public class CatalogEntry implements Serializable {
     @JsonProperty("restricted_areas")
     private Set<String> restrictedAreas = new HashSet<>(); // URI
 
-    @JsonProperty("provider_id")
-    private String providerId;
+    private Map<String, String> localizedNames = new HashMap<>();
+    private Map<String, String> localizedDescriptions = new HashMap<>();
+    private Map<String, String> localizedIcons = new HashMap<>();
 
-    @JsonProperty("instance_id")
-    private String instanceId;
-
-    /**
-     * App store publication status
-     */
-    @JsonProperty("visible")
-    private boolean visible = false;
-
-    @JsonProperty("redirect_uris")
-    private List<String> redirectUris;
-
-    @JsonProperty("post_logout_redirect_uris")
-    private List<String> postLogoutRedirectUris;
-
-    @JsonProperty("contacts")
     private List<String> contacts;
 
     @JsonProperty("screenshot_uris")
@@ -103,10 +74,6 @@ public class CatalogEntry implements Serializable {
 
     @JsonProperty("policy_uri")
     private String policyUri;
-
-    @JsonProperty("restricted")
-    private Boolean restricted = false;
-
 
     public String getId() {
         return id;
@@ -124,12 +91,12 @@ public class CatalogEntry implements Serializable {
         this.type = type;
     }
 
-    public String getDefaultName() {
-        return defaultName;
+    public String getName() {
+        return name;
     }
 
-    public void setDefaultName(String defaultName) {
-        this.defaultName = defaultName;
+    public void setName(String name) {
+        this.name = name;
     }
 
     @JsonIgnore
@@ -137,12 +104,12 @@ public class CatalogEntry implements Serializable {
         this.localizedNames = localizedNames;
     }
 
-    public String getDefaultDescription() {
-        return defaultDescription;
+    public String getDescription() {
+        return description;
     }
 
-    public void setDefaultDescription(String defaultDescription) {
-        this.defaultDescription = defaultDescription;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 
@@ -184,12 +151,12 @@ public class CatalogEntry implements Serializable {
         return result;
     }
 
-    public String getDefaultIcon() {
-        return defaultIcon;
+    public String getIcon() {
+        return icon;
     }
 
-    public void setDefaultIcon(String defaultIcon) {
-        this.defaultIcon = defaultIcon;
+    public void setIcon(String icon) {
+        this.icon = icon;
     }
 
     public List<AppstoreCategory> getCategories() {
@@ -232,22 +199,6 @@ public class CatalogEntry implements Serializable {
         this.restrictedAreas = restrictedAreas;
     }
 
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getNotificationUrl() {
-        return notificationUrl;
-    }
-
-    public void setNotificationUrl(String notificationUrl) {
-        this.notificationUrl = notificationUrl;
-    }
-
     public PaymentOption getPaymentOption() {
         return paymentOption;
     }
@@ -264,14 +215,6 @@ public class CatalogEntry implements Serializable {
         this.targetAudience = targetAudience;
     }
 
-    public boolean isVisible() {
-        return visible;
-    }
-
-    public void setVisible(boolean visible) {
-        this.visible = visible;
-    }
-
     public String getProviderId() {
         return providerId;
     }
@@ -284,7 +227,7 @@ public class CatalogEntry implements Serializable {
         if (localizedNames.containsKey(locale.getLanguage())) {
             return localizedNames.get(locale.getLanguage());
         } else {
-            return defaultName;
+            return name;
         }
     }
 
@@ -292,7 +235,7 @@ public class CatalogEntry implements Serializable {
         if (localizedDescriptions.containsKey(locale.getLanguage())) {
             return localizedDescriptions.get(locale.getLanguage());
         } else {
-            return defaultDescription != null ? defaultDescription : "";
+            return description != null ? description : "";
         }
     }
 
@@ -300,24 +243,8 @@ public class CatalogEntry implements Serializable {
         if (localizedIcons.containsKey(locale.getLanguage())) {
             return localizedIcons.get(locale.getLanguage());
         } else {
-            return defaultIcon;
+            return icon;
         }
-    }
-
-    public void setRedirectUris(List<String> redirectUris) {
-        this.redirectUris = redirectUris;
-    }
-
-    public void setPostLogoutRedirectUris(List<String> postLogoutRedirectUris) {
-        this.postLogoutRedirectUris = postLogoutRedirectUris;
-    }
-
-    public String getInstanceId() {
-        return instanceId;
-    }
-
-    public void setInstanceId(String instanceId) {
-        this.instanceId = instanceId;
     }
 
     public List<String> getContacts() {
@@ -357,15 +284,8 @@ public class CatalogEntry implements Serializable {
         return "CatalogEntry{" +
             "id='" + id + '\'' +
             ", type=" + type +
-            ", defaultName='" + defaultName +
+            ", name='" + name +
             '}';
     }
 
-    public Boolean getRestricted() {
-        return restricted;
-    }
-
-    public void setRestricted(Boolean restricted) {
-        this.restricted = restricted;
-    }
 }
