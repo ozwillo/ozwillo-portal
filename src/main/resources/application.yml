@@ -12,7 +12,6 @@ spring:
     host: smtp.mydomain.eu
     port: 25
     protocol: smtp
-    tls: true | false
     properties:
       mail.smtp:
         auth: true | false
@@ -91,7 +90,7 @@ rest:
   revertToApacheHttpComponentsClient: false
 
 kernel:
-  base_uri: https://kernel.ozwillo-dev.eu
+  base_uri: https://kernel.ozwillo.com
   alt_uri: ${kernel.base_uri}
   auth:
     issuer: ${kernel.base_uri}/
@@ -120,8 +119,8 @@ kernel:
     apps: ${kernel.base_uri}/apps
 
 datacore:
-  #url: http://localhost:8080
-  url: https://plnm-dev-dc             # dev, requires (MUST) set the IP in /etc/hosts, and installing gen'd cert :
+  url: https://data.ozwillo.com
+  # dev requires (MUST) set the IP in /etc/hosts, and installing gen'd cert :
   # go to https://data.ozwillo-dev.eu, right click on lock, export certificate to plnm-dev-dc.cer,
   # then import it and check :
   # sudo keytool -import -alias plnm-dev-dc -keystore /usr/lib/jvm/jdk1.8.xx/jre/lib/security/cacerts -file plnm-dev-dc.cer
@@ -135,7 +134,7 @@ datacore:
     nonce: changeit      #Set it when getting the refreshToken
 
 opendata:
-  url: https://opendata-preprod.data-ozwillo.org
+  url: https://opendata.ozwillo.com
 
 mail:
   contact:
