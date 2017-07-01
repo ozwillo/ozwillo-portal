@@ -2,7 +2,6 @@ package org.oasis_eu.portal.services.dc.geoarea;
 
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.services.search.Tokenizer;
-import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,9 +26,6 @@ import java.util.Map;
 public class GeographicalDAO {
 
     private static final Logger logger = LoggerFactory.getLogger(GeographicalDAO.class);
-
-    @Autowired
-    private DatacoreClient datacore;
 
     /**
      * geo_0/1... can also be used to use a version not yet published (i.e. made visible in geo)
@@ -113,18 +109,17 @@ public class GeographicalDAO {
         String value = null;
         @SuppressWarnings("unchecked")
         List<Map<String, String>> valueMaps = (List<Map<String, String>>) r.get(i18nField);
-        //logger.debug("valueMaps: " + valueMaps.toString());
         for (Map<String, String> valueMap : valueMaps) {
-            String l = valueMap.get("@language"); // TODO Q why ?? @language only in application/json+ld, otherwise l
+            String l = valueMap.get("l") != null ? valueMap.get("l") : valueMap.get("@language");
             if (l == null) {
                 continue; /* shouldn't happen */
             }
             if (l.equals(language)) {
-                value = valueMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
+                value = valueMap.get("v") != null ? valueMap.get("v") : valueMap.get("@value");
                 break; // can't find better
             }
             if (value == null) {
-                value = valueMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
+                value = valueMap.get("v") != null ? valueMap.get("v") : valueMap.get("@value");
             }
             //TODO LATER: Create a full body DC interceptor to test request/response to DATACORE (similar to KernelLoggingInterceptor)
         }
@@ -133,8 +128,6 @@ public class GeographicalDAO {
 
     /**
      * TODO move to generic (-integration ? DCResource ??)
-     *
-     * @param nameField2
      */
     private String getBestI18nValue(DCResource resource,
         String language, String fieldName, String altFieldName) {
