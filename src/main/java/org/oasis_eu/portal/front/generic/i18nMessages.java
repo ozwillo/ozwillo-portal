@@ -67,7 +67,7 @@ public final class i18nMessages {
         "description", "icon", "upload", "published", "services",
         "restricted-service", "geographical-area-of-interest",
         "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
-        "apps-for-organization", "apps-for-personal-use");
+        "apps-for-organization", "apps-for-personal-use", "pending-install");
 
     private static final List<String> profilekeys = Arrays.asList("errormsg.formatNoMatches", "errormsg.formatAjaxError",
         "title.account", "personal.nickname", "account.email", "account.changepassword", "account.language", "account.language.en",
