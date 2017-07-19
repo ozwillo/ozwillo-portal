@@ -145,3 +145,7 @@ cache:
   hosts:
     - 192.168.56.1
     - 192.168.56.102
+
+captcha:
+  url: https://www.google.com/recaptcha/api/siteverify
+  secret: changeit #The shared key between portal and google reCAPTCHA

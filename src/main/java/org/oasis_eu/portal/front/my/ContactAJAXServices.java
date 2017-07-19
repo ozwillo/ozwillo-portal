@@ -11,16 +11,22 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 
 @RestController
@@ -44,41 +50,67 @@ public class ContactAJAXServices extends BaseAJAXServices {
     @Value("${mail.contact.to}")
     private String mailContactTo;
 
+    @Value("${captcha.secret}")
+    private String captchaSecret;
+
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-    public void send(@RequestBody @Valid ContactRequest contactRequest, Locale locale) throws MessagingException {
+    public ResponseEntity<String> send(@RequestBody @Valid ContactRequest contactRequest, Locale locale) throws MessagingException {
         logger.debug("send {}'s contact type with subject {}, body {}", contactRequest.motive, contactRequest.subject, contactRequest.body);
 
-        SimpleMailMessage message = new SimpleMailMessage();
+        HttpHeaders headers = new HttpHeaders();
+        RestTemplate rest = new RestTemplate();
+        headers.add("Content-Type", "application/json");
+        headers.add("Accept", "*/*");
+        HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
+        UriComponents uriComponents =
+                UriComponentsBuilder.newInstance()
+                        .scheme("https")
+                        .host("www.google.com")
+                        .path("/recaptcha/api/siteverify")
+                        .queryParam("secret", captchaSecret)
+                        .queryParam("response", contactRequest.captchaToken)
+                        .build()
+                        .encode();
+        ResponseEntity<CaptchaResponse> responseEntity = rest.exchange(uriComponents.toUri(), HttpMethod.POST, requestEntity, CaptchaResponse.class);
 
-        UserInfo userInfo = userInfoService.currentUser();
-        String userEmail = userInfo.getEmail();
+        CaptchaResponse captchaResponse = responseEntity.getBody();
+        logger.debug("Verification of recaptcha is '{}', the hostname of the site where the reCAPTCHA was solved {}", captchaResponse.success, captchaResponse.hostname);
 
-        message.setTo(mailContactTo);
-        message.setFrom(mailContactFrom);
-        message.setReplyTo(userEmail);
-        if (contactRequest.copyToSender) {
-            message.setCc(userEmail);
+        if(captchaResponse.success) {
+            SimpleMailMessage message = new SimpleMailMessage();
+
+            UserInfo userInfo = userInfoService.currentUser();
+            String userEmail = userInfo.getEmail();
+
+            message.setTo(mailContactTo);
+            message.setFrom(mailContactFrom);
+            message.setReplyTo(userEmail);
+            if (contactRequest.copyToSender) {
+                message.setCc(userEmail);
+            }
+
+            String motive = messageSource.getMessage(contactRequest.motive, new Object[]{}, locale);
+            String subject = String.format("[%s] %s", motive, contactRequest.subject);
+            message.setSubject(subject);
+
+            String requesterLabel = messageSource.getMessage("contact.form.requester", new Object[]{}, locale);
+            String bodyLabel = messageSource.getMessage("contact.form.body", new Object[]{}, locale);
+            String userName;
+            if (!Strings.isNullOrEmpty(userInfo.getGivenName()) || !Strings.isNullOrEmpty(userInfo.getFamilyName()))
+                userName = userInfo.getNickname()
+                        + " (" + Strings.nullToEmpty(userInfo.getGivenName()) + " " + Strings.nullToEmpty(userInfo.getFamilyName()) + ")";
+            else
+                userName = userInfo.getNickname();
+            StringBuilder bodyBuilder = new StringBuilder()
+                    .append(requesterLabel).append(" : ").append(userName).append("\n\n")
+                    .append(bodyLabel).append(" : ").append("\n\n").append(contactRequest.body);
+
+            message.setText(String.valueOf(bodyBuilder));
+
+            this.mailSender.send(message);
+            return new ResponseEntity<>(HttpStatus.OK);
         }
-
-        String motive = messageSource.getMessage(contactRequest.motive, new Object[]{}, locale);
-        String subject = String.format("[%s] %s", motive, contactRequest.subject);
-        message.setSubject(subject);
-
-        String requesterLabel = messageSource.getMessage("contact.form.requester", new Object[]{}, locale);
-        String bodyLabel = messageSource.getMessage("contact.form.body", new Object[]{}, locale);
-        String userName;
-        if (!Strings.isNullOrEmpty(userInfo.getGivenName()) || !Strings.isNullOrEmpty(userInfo.getFamilyName()))
-            userName = userInfo.getNickname()
-                + " (" + Strings.nullToEmpty(userInfo.getGivenName()) + " " + Strings.nullToEmpty(userInfo.getFamilyName()) + ")";
-        else
-            userName = userInfo.getNickname();
-        StringBuilder bodyBuilder = new StringBuilder()
-            .append(requesterLabel).append(" : ").append(userName).append("\n\n")
-            .append(bodyLabel).append(" : ").append("\n\n").append(contactRequest.body);
-
-        message.setText(String.valueOf(bodyBuilder));
-
-        this.mailSender.send(message);
+        return new ResponseEntity<>(HttpStatus.FORBIDDEN);
     }
 
     public static class ContactRequest {
@@ -98,6 +130,31 @@ public class ContactAJAXServices extends BaseAJAXServices {
         String body;
 
         @JsonProperty
+        @NotNull
+        @NotEmpty
+        String captchaToken;
+
+        @JsonProperty
         boolean copyToSender;
+    }
+
+    public static class CaptchaResponse {
+        @JsonProperty
+        @NotNull
+        @NotEmpty
+        boolean success;
+
+        @JsonProperty
+        @NotNull
+        @NotEmpty
+        Date challenge_ts;
+
+        @JsonProperty
+        @NotNull
+        @NotEmpty
+        String hostname;
+
+        @JsonProperty("error-codes")
+        ArrayList errorCodes;
     }
 }
