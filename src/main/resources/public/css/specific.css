@@ -593,6 +593,10 @@ div.organization .organization-pending-member-row {
     margin-top: 10px;
 }
 
+#myapps .authority-app-noservices {
+    margin-bottom: 10px;
+}
+
 #myapps .authority-app-title h3 {
     display: inline;
     margin-left: 10px;
