@@ -149,3 +149,4 @@ cache:
 captcha:
   url: https://www.google.com/recaptcha/api/siteverify
   secret: changeit #The shared key between portal and google reCAPTCHA
+  sitekey: changeit

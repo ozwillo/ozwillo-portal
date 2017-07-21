@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.*;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -53,6 +54,12 @@ public class ContactAJAXServices extends BaseAJAXServices {
     @Value("${captcha.secret}")
     private String captchaSecret;
 
+    @Value("${captcha.sitekey}")
+    private String sitekey;
+
+    @Value("${captcha.url}")
+    private String captchaUrl;
+
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     public ResponseEntity<String> send(@RequestBody @Valid ContactRequest contactRequest, Locale locale) throws MessagingException {
         logger.debug("send {}'s contact type with subject {}, body {}", contactRequest.motive, contactRequest.subject, contactRequest.body);
@@ -64,9 +71,7 @@ public class ContactAJAXServices extends BaseAJAXServices {
         HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
         UriComponents uriComponents =
                 UriComponentsBuilder.newInstance()
-                        .scheme("https")
-                        .host("www.google.com")
-                        .path("/recaptcha/api/siteverify")
+                        .fromUriString(captchaUrl)
                         .queryParam("secret", captchaSecret)
                         .queryParam("response", contactRequest.captchaToken)
                         .build()
@@ -111,6 +116,15 @@ public class ContactAJAXServices extends BaseAJAXServices {
             return new ResponseEntity<>(HttpStatus.OK);
         }
         return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+    }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/captchasitekey")
+    public ResponseEntity<String> notifications() {
+        if(StringUtils.isEmpty(sitekey)) {
+            logger.info("Captcha sitekey is empty, you must add it to the config file");
+            return new ResponseEntity<String>(" Captcha sitekey is empty", HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(sitekey, HttpStatus.OK);
     }
 
     public static class ContactRequest {

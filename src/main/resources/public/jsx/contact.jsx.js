@@ -72,7 +72,8 @@ var ContactForm = React.createClass({
                 body: '',
                 copyToSender: false
             },
-            captchaToken: ''
+            captchaToken: '',
+            sitekey: ''
         };
     },
     resetFormValues: function() {
@@ -85,6 +86,22 @@ var ContactForm = React.createClass({
                 copyToSender: false
             },
             captchaToken: ''
+        });
+    },
+    componentDidMount() {
+        this.getCaptchaSiteKey();
+    },
+    getCaptchaSiteKey() {
+        $.ajax({
+            url: contact_service + '/captchasitekey',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+                this.setState({ sitekey: data });
+            }.bind(this),
+            error: function () {
+                this.setState({ errors: ['technical'] });
+            }.bind(this)
         });
     },
     captchaVerifyCallback: function(token) {
@@ -186,7 +203,7 @@ var ContactForm = React.createClass({
                             <ContactCheckboxField onChange={this.handleChange} renderLabel={this.renderLabel}
                                                   name="copyToSender" labelName="copy-to-sender" value={this.state.fields.copyToSender}
                                                   errors={this.state.errors} />
-                            <ContactCaptcha     sitekey="6LexYCkUAAAAADTNXhV0ZkY7eYJrHnOxvOBTERCw"
+                            <ContactCaptcha     sitekey={this.state.sitekey}
                                                 callback={this.captchaVerifyCallback}
                                                 expiredCallback={this.captchaExpiredCallback}
                                                 locale={document.documentElement.lang}
