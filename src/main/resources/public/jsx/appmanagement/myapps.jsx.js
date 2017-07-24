@@ -111,11 +111,7 @@ var InstanceList = React.createClass({
         }
 
         var instances = this.state.instances;
-        var result = instances.length != 0 ? instances.sort(function (instance){
-            if(instance.applicationInstance.status === 'PENDING') return 0;
-            else return -1;
-        })
-        .map(function (instance) {
+        var result = instances.length != 0 ? instances.map(function (instance) {
             return <Instance key={instance.id} id={instance.id} instance={instance} authority={this.props.authority}
                              reload={this.reloadInstances}/>;
         }.bind(this)) : (
