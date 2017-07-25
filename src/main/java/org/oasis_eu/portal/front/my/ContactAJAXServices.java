@@ -69,8 +69,7 @@ public class ContactAJAXServices extends BaseAJAXServices {
         headers.add("Content-Type", "application/json");
         headers.add("Accept", "*/*");
         HttpEntity<String> requestEntity = new HttpEntity<String>("", headers);
-        UriComponents uriComponents =
-                UriComponentsBuilder.newInstance()
+        UriComponents uriComponents = UriComponentsBuilder
                         .fromUriString(captchaUrl)
                         .queryParam("secret", captchaSecret)
                         .queryParam("response", contactRequest.captchaToken)
