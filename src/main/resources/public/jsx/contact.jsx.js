@@ -6,6 +6,7 @@ import t from './util/message';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import Recaptcha from 'react-grecaptcha';
 
 var ContactLink = React.createClass({
     onClick: function(event) {
@@ -70,7 +71,9 @@ var ContactForm = React.createClass({
                 subject: '',
                 body: '',
                 copyToSender: false
-            }
+            },
+            captchaToken: '',
+            sitekey: ''
         };
     },
     resetFormValues: function() {
@@ -81,8 +84,31 @@ var ContactForm = React.createClass({
                 subject: '',
                 body: '',
                 copyToSender: false
-            }
+            },
+            captchaToken: ''
         });
+    },
+    componentDidMount() {
+        this.getCaptchaSiteKey();
+    },
+    getCaptchaSiteKey() {
+        $.ajax({
+            url: contact_service + '/captchasitekey',
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (data) {
+                this.setState({ sitekey: data });
+            }.bind(this),
+            error: function () {
+                this.setState({ errors: ['technical'] });
+            }.bind(this)
+        });
+    },
+    captchaVerifyCallback: function(token) {
+        this.setState({ captchaToken: token });
+    },
+    captchaExpiredCallback: function() {
+        this.setState({ captchaToken: '' });
     },
     closeModal: function(){
         this.props.cancelHandler();
@@ -101,6 +127,7 @@ var ContactForm = React.createClass({
         if (!this.state.fields.motive) { errors.push("motive"); }
         if (!this.state.fields.subject) { errors.push("subject"); }
         if (!this.state.fields.body) { errors.push("body"); }
+        if (!this.state.captchaToken) { errors.push("captcha"); }
 
         if (errors.length == 0) {
             this.setState({sending: true});
@@ -113,7 +140,8 @@ var ContactForm = React.createClass({
                     motive: this.state.fields.motive,
                     subject: this.state.fields.subject,
                     body: this.state.fields.body,
-                    copyToSender: this.state.fields.copyToSender
+                    copyToSender: this.state.fields.copyToSender,
+                    captchaToken: this.state.captchaToken
                 }),
                 success: function (data) {
                     if (!data.error) {
@@ -175,6 +203,13 @@ var ContactForm = React.createClass({
                             <ContactCheckboxField onChange={this.handleChange} renderLabel={this.renderLabel}
                                                   name="copyToSender" labelName="copy-to-sender" value={this.state.fields.copyToSender}
                                                   errors={this.state.errors} />
+                            <ContactCaptcha     sitekey={this.state.sitekey}
+                                                callback={this.captchaVerifyCallback}
+                                                expiredCallback={this.captchaExpiredCallback}
+                                                locale={document.documentElement.lang}
+                                                renderLabel={this.renderLabel}
+                                                name="captcha"
+                                                errors={this.state.errors}/>
                         </div>
                     </form>
                     {this.renderSendingResult()}
@@ -269,6 +304,31 @@ var ContactCheckboxField = React.createClass({
         );
     }
 });
+
+const ContactCaptcha = ({ sitekey, callback, expiredCallback, locale, renderLabel, name, errors }) => {
+    const divClassName = ($.inArray(name, errors) != -1 ? 'form-group has-error' : 'form-group');
+    return(
+        <div className={divClassName}>
+            {renderLabel(name, name, t('contact.form.' + name))}
+            <div className="col-sm-8">
+                <Recaptcha  sitekey={ sitekey }
+                            callback={ callback }
+                            expiredCallback={ expiredCallback }
+                            locale={ locale } />
+            </div>
+        </div>
+    )
+}
+
+ContactCaptcha.propTypes = {
+    sitekey: React.PropTypes.string.isRequired,
+    callback: React.PropTypes.func.isRequired,
+    expiredCallback: React.PropTypes.func.isRequired,
+    locale: React.PropTypes.string.isRequired,
+    renderLabel: React.PropTypes.func.isRequired,
+    name: React.PropTypes.string.isRequired,
+    errors: React.PropTypes.array.isRequired
+}
 
 var Buttons = React.createClass({
     renderCancelButton: function() {
