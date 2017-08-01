@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
-import org.oasis_eu.portal.services.MailService;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -16,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 
 import javax.mail.MessagingException;
 import javax.validation.Valid;
@@ -29,7 +30,7 @@ public class ContactAJAXServices extends BaseAJAXServices {
     private static final Logger logger = LoggerFactory.getLogger(ContactAJAXServices.class);
 
     @Autowired
-    private MailService mailService;
+    private MailSender mailSender;
 
     @Autowired
     private UserInfoService userInfoService;
@@ -37,23 +38,31 @@ public class ContactAJAXServices extends BaseAJAXServices {
     @Autowired
     private MessageSource messageSource;
 
-    @Value("${mail.contact}")
-    private String mailContact;
+    @Value("${mail.contact.from}")
+    private String mailContactFrom;
+
+    @Value("${mail.contact.to}")
+    private String mailContactTo;
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
     public void send(@RequestBody @Valid ContactRequest contactRequest, Locale locale) throws MessagingException {
         logger.debug("send {}'s contact type with subject {}, body {}", contactRequest.motive, contactRequest.subject, contactRequest.body);
 
-        UserInfo userInfo = userInfoService.currentUser();
+        SimpleMailMessage message = new SimpleMailMessage();
 
+        UserInfo userInfo = userInfoService.currentUser();
         String userEmail = userInfo.getEmail();
-        String carbonCopy = null;
+
+        message.setTo(mailContactTo);
+        message.setFrom(mailContactFrom);
+        message.setReplyTo(userEmail);
         if (contactRequest.copyToSender) {
-            carbonCopy = userEmail;
+            message.setCc(userEmail);
         }
 
         String motive = messageSource.getMessage(contactRequest.motive, new Object[]{}, locale);
         String subject = String.format("[%s] %s", motive, contactRequest.subject);
+        message.setSubject(subject);
 
         String requesterLabel = messageSource.getMessage("contact.form.requester", new Object[]{}, locale);
         String bodyLabel = messageSource.getMessage("contact.form.body", new Object[]{}, locale);
@@ -67,7 +76,9 @@ public class ContactAJAXServices extends BaseAJAXServices {
             .append(requesterLabel).append(" : ").append(userName).append("\n\n")
             .append(bodyLabel).append(" : ").append("\n\n").append(contactRequest.body);
 
-        mailService.sendMail(mailContact, carbonCopy, userEmail, subject, bodyBuilder.toString());
+        message.setText(String.valueOf(bodyBuilder));
+
+        this.mailSender.send(message);
     }
 
     public static class ContactRequest {

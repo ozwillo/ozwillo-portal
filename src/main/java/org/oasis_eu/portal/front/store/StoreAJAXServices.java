@@ -255,8 +255,6 @@ public class StoreAJAXServices extends BaseAJAXServices {
                 .filter(uri -> !imageService.isDefaultIcon(uri)).collect(Collectors.toList());
         }
 
-        applicationDetails.serviceUrl = hit.getCatalogEntry().getUrl();
-
         return applicationDetails;
     }
 

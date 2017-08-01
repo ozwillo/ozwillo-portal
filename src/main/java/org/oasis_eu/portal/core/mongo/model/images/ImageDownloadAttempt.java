@@ -18,7 +18,6 @@ public class ImageDownloadAttempt {
     @Indexed(unique = true)
     private String url;
 
-    //	@Indexed(expireAfterSeconds = 900)
     private DateTime time;
 
     public String getId() {

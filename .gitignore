@@ -11,6 +11,7 @@
 .gradle
 .gradletasknamecache
 build/
+/src/main/resources/application-*.yml
 
 # Eclipse
 .settings/

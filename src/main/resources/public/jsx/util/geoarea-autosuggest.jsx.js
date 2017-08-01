@@ -1,35 +1,38 @@
-'use strict';
-
-import React from 'react';
-import ReactDOM from 'react-dom';
-
+import React, {Component} from 'react';
 import Autosuggest from 'react-autosuggest';
+
 var debounce = require('debounce');
 
-var GeoAreaAutosuggest = React.createClass({
-    propTypes: {
+const renderSuggestion = suggestion => (
+    <div>
+        <p className="main-info">{suggestion.name}</p>
+    </div>
+)
+
+class GeoAreaAutosuggest extends Component {
+    static propTypes = {
         placeholder: React.PropTypes.string,
         initialValue: React.PropTypes.string,
         endpoint: React.PropTypes.string,
         countryUri: React.PropTypes.string,
         onChange: React.PropTypes.func.isRequired
-    },
-    getInitialState: function() {
-        return {
-            value: '',
-            suggestions: []
-        };
-    },
-    getDefaultProps: function() {
-        return {
-            placeholder: ''
-        }
-    },
-    componentDidMount: function() {
-        this.setState({ value: this.props.initialValue });
-    },
-    searchCities: function(query) {
-        if (query.trim().length < 3) return;
+    }
+    static defaultProps = {
+        placeholder: ''
+    }
+    state = {
+        value: '',
+        suggestions: []
+    }
+    componentDidMount() {
+        this.setState({ value: this.props.initialValue || '' });
+    }
+    componentWillReceiveProps(nextProps) {
+        if (this.props.initialValue !== nextProps.initialValue)
+            this.setState({ value: nextProps.initialValue })
+    }
+    searchCities(query) {
+        if (this.props.countryUri === undefined) return;
 
         $.ajax({
             url: store_service + this.props.endpoint,
@@ -43,27 +46,32 @@ var GeoAreaAutosuggest = React.createClass({
                 console.error("Error while searching for cities with query " + query, status, err.toString())
             }
         })
-    },
-    renderSuggestion: function(data) {
-        return (
-            <div>
-                <p className="main-info">{data.name}</p>
-            </div>
-        )
-    },
-    onSuggestionsUpdateRequested: function({ value, reason }) {
+    }
+    onSuggestionsFetchRequested = ({ value }) => {
         this.setState({ value: value });
-        if (reason !== 'enter' && reason !== 'click')
-            debounce(this.searchCities(value), 500);
-    },
-    onSuggestionSelected: function(event, { suggestion, suggestionValue, method }) {
+        this.searchCities(value);
+    }
+    onSuggestionsClearRequested = () => {
+        this.setState({ suggestions: [] })
+    }
+    onSuggestionSelected = (event, { suggestion, suggestionValue, sectionIndex, method }) => {
         this.setState({ value: suggestion.name });
         this.props.onChange(suggestion);
-    },
-    render: function() {
+    }
+    onChange(event, { newValue, method }) {
+        if (method === "type" && newValue === '') {
+            this.props.onChange(null)
+        } else {
+            this.setState({ value: newValue })
+        }
+    }
+    render() {
+        if (this.state.value === undefined) {
+            this.state.value = ''
+        }
         const inputProps = {
-            value: this.state.value || this.props.initialValue,
-            onChange: (event, { newValue, method }) => this.setState({ value: newValue }),
+            value: this.state.value,
+            onChange: this.onChange.bind(this),
             type: 'search',
             placeholder: this.props.placeholder,
             className: 'form-control'
@@ -72,16 +80,17 @@ var GeoAreaAutosuggest = React.createClass({
         return (
             <div className="input-group">
                 <Autosuggest suggestions={this.state.suggestions}
-                             onSuggestionsUpdateRequested={this.onSuggestionsUpdateRequested}
+                             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                              onSuggestionSelected={this.onSuggestionSelected}
                              getSuggestionValue={suggestion => suggestion.name}
-                             renderSuggestion={this.renderSuggestion}
+                             renderSuggestion={renderSuggestion}
                              inputProps={inputProps}
                              shouldRenderSuggestions={input => input != null && input.trim().length > 2}/>
                 <span className="input-group-addon"><i className="fa fa-search"></i></span>
             </div>
         )
     }
-});
+};
 
 module.exports = { GeoAreaAutosuggest };

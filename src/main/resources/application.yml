@@ -1,13 +1,25 @@
 spring:
-  server:
-    tomcat.accesslog.enabled: true
   output.ansi.enabled: DETECT
+  # only for 64x64 pngs which should be mostly below 5000B
+  http.multipart.max-file-size: 20KB
+  # mandatory since 1.4 even if we do not use it directly
+  session.store-type: none
+  # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
+  # In prod, replace journal=true by w=majority&readPreference=primaryPreferred
+  # TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
+  data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
+  mail:
+    host: smtp.mydomain.eu
+    port: 25
+    protocol: smtp
+    properties:
+      mail.smtp:
+        auth: true | false
+        starttls.enable: true | false
 
 server:
   compression.enabled: true
-
-# only for 64x64 pngs which should be mostly below 5000B
-multipart.max-file-size: 20KB
+  tomcat.accesslog.enabled: true
 
 ha:
   enabled: false
@@ -65,13 +77,12 @@ application:
   notificationsEnabled: true
 
 web:
-  home: https://www.ozwillo-dev.eu
+  home: https://www.ozwillo.com
   sitemap:
       url_header: https://www.ozwillo.com/header.xml
       url_footer: https://www.ozwillo.com/footer.xml
+      #refresh: 0 0/5 * * * *
       refresh: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
-  # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
-  avatarPath: img/my/avatar
 
 rest:
   # by default uses mere HttpURLConnection, better : https://jira.spring.io/browse/ANDROID-54 http://stackoverflow.com/questions/25698072/simpleclienthttprequestfactory-vs-httpcomponentsclienthttprequestfactory-for-htt
@@ -79,7 +90,7 @@ rest:
   revertToApacheHttpComponentsClient: false
 
 kernel:
-  base_uri: https://kernel.ozwillo-dev.eu
+  base_uri: https://kernel.ozwillo.com
   alt_uri: ${kernel.base_uri}
   auth:
     issuer: ${kernel.base_uri}/
@@ -87,13 +98,14 @@ kernel:
     token_endpoint: ${kernel.base_uri}/a/token
     keys_endpoint: ${kernel.base_uri}/a/keys
     userinfo_endpoint: ${kernel.base_uri}/a/userinfo
-    profile_endpoint: ${kernel.base_uri}/d/user
     password_change_endpoint: ${kernel.alt_uri}/a/password
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.alt_uri}/a/logout
     callback_uri: ${application.url}/callback
     home_uri: ${application.url}/my
-  user_directory_endpoint: ${kernel.base_uri}/d
+  user_profile_endpoint: ${kernel.base_uri}/d/user
+  user_membership_endpoint: ${kernel.base_uri}/d
+  organization_endpoint: ${kernel.base_uri}/d/org
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: portal
@@ -107,8 +119,8 @@ kernel:
     apps: ${kernel.base_uri}/apps
 
 datacore:
-  #url: http://localhost:8080
-  url: https://plnm-dev-dc             # dev, requires (MUST) set the IP in /etc/hosts, and installing gen'd cert :
+  url: https://data.ozwillo.com
+  # dev requires (MUST) set the IP in /etc/hosts, and installing gen'd cert :
   # go to https://data.ozwillo-dev.eu, right click on lock, export certificate to plnm-dev-dc.cer,
   # then import it and check :
   # sudo keytool -import -alias plnm-dev-dc -keystore /usr/lib/jvm/jdk1.8.xx/jre/lib/security/cacerts -file plnm-dev-dc.cer
@@ -122,27 +134,14 @@ datacore:
     nonce: changeit      #Set it when getting the refreshToken
 
 opendata:
-  url: https://opendata-preprod.data-ozwillo.org
+  url: https://opendata.ozwillo.com
 
-persistence:
-  mongodatabase: portal
-  mongohosts:
-    - localhost
-#  login: portal
-#  password: portal
-
+mail:
+  contact:
+    from: Contact Ozwillo <contact@mydomain.eu>
+    to: contact@mydomain.eu
 
 cache:
   hosts:
     - 192.168.56.1
     - 192.168.56.102
-
-mail:
-  host: changeit
-  port: 587
-  starttls: true
-  smtps: false
-  login: changeit
-  password: changeit
-  # Recipient of contact form requests sent by users
-  contact: contact@ozwillo.com

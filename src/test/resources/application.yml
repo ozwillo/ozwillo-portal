@@ -60,8 +60,6 @@ web:
     url_header: https://www.ozwillo.com/header.xml
     url_footer: https://www.ozwillo.com/footer.xml
     refresh: 0 0 3 ? DEC SUN
-  # avatar file names below img/my/avatar/ (walking File tree wouldn't work in jar) :
-  avatarPath: img/my/avatar
 
 kernel:
   token:
@@ -76,7 +74,9 @@ kernel:
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.base_uri}/a/logout
     callback_uri: ${application.url}/login
-  user_directory_endpoint: ${kernel.base_uri}/d
+  user_profile_endpoint: ${kernel.base_uri}/d/user
+  user_membership_endpoint: ${kernel.base_uri}/d
+  organization_endpoint: ${kernel.base_uri}/d/org
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
   client_id: portal

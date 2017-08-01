@@ -6,6 +6,7 @@ import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
 import org.oasis_eu.portal.core.mongo.dao.my.HiddenPendingAppsRepository;
@@ -131,7 +132,7 @@ public class PortalDashboardService {
 
     private DashboardApp toDashboardApp(Subscription sub) {
         try {
-            CatalogEntry service = catalogStore.findService(sub.getServiceId());
+            ServiceEntry service = catalogStore.findService(sub.getServiceId());
             if (service == null) {
                 return null;
             }

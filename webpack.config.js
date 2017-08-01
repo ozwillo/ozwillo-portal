@@ -18,7 +18,7 @@ const devEntryPointsLoadersAndServers = ['webpack-dev-server/client?http://local
 const common = {
     entry: {
         dashboard:      [path.join(PATHS.app, 'jsx/dashboard/dashboard.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        profile:        [path.join(PATHS.app, 'jsx/profile.js')].concat(commonEntryPointsLoadersAndServers),
+        profile:        [path.join(PATHS.app, 'jsx/profile/profile.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         network:        [path.join(PATHS.app, 'jsx/network/network.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         myapps:         [path.join(PATHS.app, 'jsx/appmanagement/myapps.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         appstore:       [path.join(PATHS.app, 'jsx/store/store.jsx.js')].concat(commonEntryPointsLoadersAndServers),
@@ -53,7 +53,7 @@ const common = {
             /* to ensure jQuery is loaded before Bootstrap */
             { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
             /* loader for JSX / ES6 */
-            { test: /\.jsx?$/, loaders: ['react-hot', 'babel?cacheDirectory,presets[]=react,presets[]=es2015'], include: path.join(PATHS.app, 'jsx')}
+            { test: /\.jsx?$/, loaders: ['react-hot', 'babel?cacheDirectory,presets[]=react,presets[]=es2015,presets[]=stage-0'], include: path.join(PATHS.app, 'jsx')}
         ]
     },
     postcss: [ autoprefixer ],
