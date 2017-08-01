@@ -59,8 +59,8 @@ dependencies {
     compile project('lib:ozwillo-java-spring-integration')
 
     /* Our specific dependencies */
-    compile('de.javakaffee.msm:memcached-session-manager:1.8.3')
-    compile('de.javakaffee.msm:memcached-session-manager-tc8:1.8.3')
+    compile('de.javakaffee.msm:memcached-session-manager:1.9.5')
+    compile('de.javakaffee.msm:memcached-session-manager-tc8:1.9.5')
     compile('org.apache.tika:tika-core:1.11')
     // java.mail API replacement (Apache 2.0 License)
     compile('org.apache.geronimo.javamail:geronimo-javamail_1.4_mail:1.8.4')

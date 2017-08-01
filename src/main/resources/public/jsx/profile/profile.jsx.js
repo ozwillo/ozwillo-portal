@@ -49,7 +49,7 @@ class Profile extends React.Component {
             const splittedField = field.split('.')
 
             let parentObject = undefined
-            if (fields[splittedField[0]] === null) {
+            if (fields[splittedField[0]] === undefined) {
                 parentObject = {}
                 fields[splittedField[0]] = parentObject
             } else {
@@ -88,10 +88,9 @@ class Profile extends React.Component {
                                      />
                     <IdentityAccount userProfile={this.state.userProfile}
                                      onValueChange={this.onValueChange.bind(this)} />
-                    {renderIf(this.state.userProfile.address) (
-                        <AddressAccount address={this.state.userProfile.address}
-                                        onValueChange={this.onValueChange.bind(this)} />
-                    )}
+                    <AddressAccount address={this.state.userProfile.address}
+                                    onValueChange={this.onValueChange.bind(this)} />
+                    <SubmitButton label={t('ui.save')} className="btn-lg" />
                 </Form>
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} />
 
@@ -180,6 +179,9 @@ class AddressAccount extends React.Component {
         address: React.PropTypes.object,
         onValueChange: React.PropTypes.func.isRequired,
     }
+    static defaultProps = {
+        address: {}
+    }
     handleChange(locality) {
         if(locality !== null) {
             this.props.onValueChange('address.locality', locality.name)
@@ -219,7 +221,6 @@ class AddressAccount extends React.Component {
                 <InputText name="address.street_address" value={this.props.address.street_address}
                            label={t('my.profile.personal.streetaddress')}
                            onChange={e => this.props.onValueChange('address.street_address', e.target.value)} />
-                <SubmitButton label={t('ui.save')} className="btn-lg" />
             </div>
         )
     }
