@@ -23,6 +23,7 @@ build/
 *.iml
 ozwillo-portal.ipr
 ozwillo-portal.iws
+out/
 
 # Mac OS
 .DS_Store
@@ -32,3 +33,4 @@ ozwillo-portal.iws
 
 # Node
 node_modules/
+
