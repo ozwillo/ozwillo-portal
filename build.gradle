@@ -56,7 +56,7 @@ dependencies {
     compile('org.apache.httpcomponents:httpcore')
     compile('org.thymeleaf.extras:thymeleaf-extras-conditionalcomments')
 
-    compile project('lib:ozwillo-java-spring-integration')
+    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.3')
 
     /* Our specific dependencies */
     compile('de.javakaffee.msm:memcached-session-manager:1.9.5')
