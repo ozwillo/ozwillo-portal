@@ -1,13 +1,20 @@
 spring:
-  server:
-    tomcat.accesslog.enabled: true
   output.ansi.enabled: DETECT
+  # only for 64x64 pngs which should be mostly below 5000B
+  http.multipart.max-file-size: 20KB
+  data.mongodb.uri: mongodb://localhost/portal_test
+  mail:
+    host: smtp.mydomain.eu
+    port: 25
+    protocol: smtp
+    properties:
+      mail.smtp:
+        auth: false
+        starttls.enable: true
 
 server:
   compression.enabled: true
-
-# only for 64x64 pngs which should be mostly below 5000B
-multipart.max-file-size: 20KB
+  tomcat.accesslog.enabled: true
 
 ha:
   enabled: false
@@ -102,23 +109,16 @@ datacore:
 opendata:
   url: https://opendata-preprod.data-ozwillo.org
 
-persistence:
-  mongohosts:
-   - localhost
-  mongodatabase: portal_test
-  #login: portal
-  #password: portal
+mail:
+  contact:
+    from: Contact Ozwillo <contact@mydomain.eu>
+    to: contact@mydomain.eu
 
 cache:
   hosts:
     - 127.0.0.1
 
-mail:
-  host: changeit
-  port: 587
-  starttls: true
-  smtps: false
-  login: changeit
-  password: changeit
-  # Recipient of contact form requests sent by users
-  contact: contact@ozwillo.com
+captcha:
+  url: https://www.google.com/recaptcha/api/siteverify
+  secret: changeit #The shared key between portal and google reCAPTCHA
+  sitekey: changeit

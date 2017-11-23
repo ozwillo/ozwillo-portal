@@ -52,9 +52,6 @@ public class ImageControllerTest {
 	@Autowired
 	private ImageService imageService;
 
-	@Value("${persistence.mongodatabase}")
-	private String databaseName;
-
 	@Value("${application.url}")
 	private String applicationUrl;
 
