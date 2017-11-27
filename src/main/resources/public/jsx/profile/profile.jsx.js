@@ -6,8 +6,9 @@ import renderIf from "render-if";
 import "../csrf";
 import "../my";
 import t from "../util/message";
+import FranceConnectForm from './france-connect-form';
 
-import {Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector} from "../util/form";
+import {Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector} from "../util/form";
 import {GeoAreaAutosuggest} from "../util/geoarea-autosuggest.jsx";
 
 const moment = require('moment');
@@ -33,9 +34,9 @@ class Profile extends React.Component {
             url: profile_service
         })
         .done(data => {
-                this.setState({ userProfile: data.userProfile, languages: data.languages, passwordChangeEndpoint: data.passwordChangeEndpoint })
-            }
-        )
+            console.log(data.userProfile);
+            this.setState({ userProfile: data.userProfile, languages: data.languages, passwordChangeEndpoint: data.passwordChangeEndpoint });
+        })
         .fail((xhr, status, err) => {
             this.setState({ error : "Unable to retrieve profile info" })
         })
@@ -93,7 +94,7 @@ class Profile extends React.Component {
                     <SubmitButton label={t('ui.save')} className="btn-lg" />
                 </Form>
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} />
-
+                <FranceConnectForm isSubscribe={!!this.state.userProfile.franceconnect_sub}/>
             </div>
         )
     }
@@ -269,30 +270,5 @@ class LanguageSelector extends React.Component {
         )
     }
 }
-
-
-class GenderSelector extends React.Component {
-    static propTypes = {
-        value: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
-    }
-
-    render() {
-        const genders = ['male','female']
-        return (
-            <Select name="gender" value={this.props.value}
-                    label={t('my.profile.personal.gender')}
-                    onChange={this.props.onChange}>
-                {
-                    genders.map(option =>
-                        <option key={option} value={option}>{t('my.profile.personal.gender.' + option)}</option>
-                    )
-                }
-            </Select>
-        )
-    }
-}
-
-
 
 ReactDOM.render(<Profile />, document.getElementById("profile"));

@@ -17,6 +17,8 @@ public class UserProfile extends BaseUserInfo implements Serializable {
 
     @JsonProperty("id")
     private String userId;
+    @JsonProperty("franceconnect_sub")
+    private String franceConnectSub;
     @JsonProperty("email_address")
     private String email;
     @JsonProperty("email_verified")
@@ -59,6 +61,14 @@ public class UserProfile extends BaseUserInfo implements Serializable {
 
     public void setCreatedAt(Long createdAt) {
         this.createdAt = createdAt;
+    }
+
+    public String getFranceConnectSub() {
+        return franceConnectSub;
+    }
+
+    public void setFranceConnectSub(String franceConnectSub) {
+        this.franceConnectSub = franceConnectSub;
     }
 
     public String getDisplayName() {
