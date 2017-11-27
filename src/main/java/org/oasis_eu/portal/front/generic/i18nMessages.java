@@ -77,6 +77,7 @@ public final class i18nMessages {
         "personal.birthdate", "personal.phonenumber", "personal.gender", "personal.gender.male", "personal.gender.female", "personal.postalcode",
         "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
 
+    private static final List<String> franceconnectKeys = Arrays.asList("form.synchronise", "form.desynchronize");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 
@@ -177,5 +178,9 @@ public final class i18nMessages {
 
     public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_franceconnectKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (franceconnectKeys.stream().collect(Collectors.toMap(k -> "franceconnect." +k, k -> messageSource.getMessage("franceconnect." + k, new Object[0], locale))));
     }
 }

@@ -1,6 +1,6 @@
 import React from 'react';
 import "../csrf";
-
+import t from "../util/message";
 import { SubmitButton } from "../util/form";
 
 
@@ -20,8 +20,8 @@ class FranceConnectForm extends React.Component {
 
             {
                this.props.isSubscribe &&
-               <a href="https://accounts.ozwillo-dev.eu/a/franceconnect/unlink">
-                   Disconnect from FranceConnect
+               <a href="https://accounts.ozwillo-dev.eu/a/franceconnect/unlink" className="btn btn-lg oz-btn-danger">
+                   {t("franceconnect.form.desynchronize")}
                </a>
 
             }
@@ -29,8 +29,8 @@ class FranceConnectForm extends React.Component {
             {
                 !this.props.isSubscribe &&
                 <fieldset>
-                    <input type="hidden" name="continue" value="/my/profile" />
-                    <SubmitButton label="Send !"/>
+                    <input type="hidden" name="continue" value="http://localhost:3000/my/profile" />
+                    <SubmitButton label={t("franceconnect.form.synchronise")} className="btn btn-lg btn-warning"/>
                 </fieldset>
             }
         </form>;

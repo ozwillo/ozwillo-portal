@@ -44,6 +44,7 @@ public class ProfileController extends PortalController {
         i18n.putAll(i18nMessages.getI18n_profilekeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_franceconnectKeys(locale, messageSource));
 
         return i18n;
     }
