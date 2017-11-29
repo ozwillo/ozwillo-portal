@@ -96,7 +96,7 @@ class Profile extends React.Component {
                 </Form>
 
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} />
-                <FranceConnectBtn isSubscribe={!!this.state.userProfile.franceconnect_sub}/>
+                <FranceConnectBtn userProfile={this.state.userProfile}/>
             </div>
         )
     }
