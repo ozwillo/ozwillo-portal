@@ -1,0 +1,33 @@
+
+.synchronize-fc-profile > form legend {
+    color: white;
+    margin: 0;
+    border: none;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+.synchronize-fc-profile > form .row {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0;
+}
+
+.synchronize-fc-profile > form .row .item > input{
+    margin: 0 10px;
+}
+
+.synchronize-fc-profile > form .row .item  {
+    width: 100%;
+    height: 100%;
+    margin: 0 10px;
+    font-size: 1.5em;
+    cursor: pointer;
+    border: solid 1px #FFF;
+    border-radius: 5px
+}
+
+.synchronize-fc-profile .row.submit {
+    justify-content: flex-end;
+    margin: 5px 0;
+}

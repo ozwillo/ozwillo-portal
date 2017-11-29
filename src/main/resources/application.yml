@@ -103,6 +103,7 @@ kernel:
     logout_endpoint: ${kernel.alt_uri}/a/logout
     callback_uri: ${application.url}/callback
     home_uri: ${application.url}/my
+  france_connect_endpoint: ${kernel.base_uri}/a/franceconnect
   user_profile_endpoint: ${kernel.base_uri}/d/user
   user_membership_endpoint: ${kernel.base_uri}/d
   organization_endpoint: ${kernel.base_uri}/d/org

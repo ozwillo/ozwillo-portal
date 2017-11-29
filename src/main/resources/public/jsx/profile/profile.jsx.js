@@ -6,7 +6,8 @@ import renderIf from "render-if";
 import "../csrf";
 import "../my";
 import t from "../util/message";
-import FranceConnectForm from './france-connect-form';
+
+import FranceConnectBtn from './france-connect-btn';
 
 import {Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector} from "../util/form";
 import {GeoAreaAutosuggest} from "../util/geoarea-autosuggest.jsx";
@@ -23,7 +24,7 @@ class Profile extends React.Component {
             middle_name: '',
             family_name: '',
             phone_number: '',
-            gender: '',
+            gender: ''
         },
         genders: [],
         languages: [],
@@ -93,8 +94,9 @@ class Profile extends React.Component {
                                     onValueChange={this.onValueChange.bind(this)} />
                     <SubmitButton label={t('ui.save')} className="btn-lg" />
                 </Form>
+
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} />
-                <FranceConnectForm isSubscribe={!!this.state.userProfile.franceconnect_sub}/>
+                <FranceConnectBtn isSubscribe={!!this.state.userProfile.franceconnect_sub}/>
             </div>
         )
     }

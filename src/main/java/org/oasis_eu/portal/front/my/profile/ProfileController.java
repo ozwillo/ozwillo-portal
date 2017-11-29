@@ -56,4 +56,12 @@ public class ProfileController extends PortalController {
         }
         return "profile/my-profile";
     }
+
+    @RequestMapping(method = RequestMethod.GET, value = "/franceconnect")
+    public String synchronizeProfileToFranceConnect() throws ExecutionException {
+        if (requiresLogout()) {
+            return "redirect:/logout";
+        }
+        return "profile/my-synchronize-fc-profile";
+    }
 }

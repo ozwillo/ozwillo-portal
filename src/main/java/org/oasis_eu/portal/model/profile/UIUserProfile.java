@@ -7,11 +7,11 @@ import java.util.List;
 public class UIUserProfile {
 
     private UserProfile userProfile;
+    private UserProfile franceConnectProfile;
     private List<String> languages;
     private String passwordChangeEndpoint;
 
-    public UIUserProfile() {
-    }
+    public UIUserProfile() { }
 
     public UIUserProfile(UserProfile userProfile, List<String> languages, String passwordChangeEndpoint) {
         this.userProfile = userProfile;
@@ -19,8 +19,19 @@ public class UIUserProfile {
         this.passwordChangeEndpoint = passwordChangeEndpoint;
     }
 
+    public UIUserProfile(UserProfile userProfile, UserProfile franceConnectProfile, List<String> languages, String passwordChangeEndpoint) {
+        this.userProfile = userProfile;
+        this.franceConnectProfile = franceConnectProfile;
+        this.languages = languages;
+        this.passwordChangeEndpoint = passwordChangeEndpoint;
+    }
+
     public UserProfile getUserProfile() {
         return userProfile;
+    }
+
+    public UserProfile getFranceConnectProfile() {
+        return franceConnectProfile;
     }
 
     public List<String> getLanguages() {
