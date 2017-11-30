@@ -23,7 +23,6 @@ class FranceConnectForm extends React.Component {
                <a href="https://accounts.ozwillo-dev.eu/a/franceconnect/unlink" className="btn btn-lg oz-btn-danger">
                    {t("franceconnect.form.desynchronize")}
                </a>
-
             }
 
             {

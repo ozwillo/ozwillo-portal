@@ -17,17 +17,33 @@
     margin: 0 10px;
 }
 
-.synchronize-fc-profile > form .row .item  {
+.synchronize-fc-profile > form .row .title.item {
+    margin: auto;
+    font-size: 1.8em;
+}
+
+.synchronize-fc-profile > form .row label.item  {
     width: 100%;
     height: 100%;
     margin: 0 10px;
     font-size: 1.5em;
     cursor: pointer;
     border: solid 1px #FFF;
-    border-radius: 5px
+    padding: 5px;
 }
 
 .synchronize-fc-profile .row.submit {
     justify-content: flex-end;
     margin: 5px 0;
+}
+
+.synchronize-fc-profile {
+    display: flex;
+    flex-direction: column;
+}
+
+.spinner {
+    font-size: 3em;
+    color: white;
+    margin: auto;
 }

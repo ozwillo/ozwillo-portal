@@ -76,6 +76,7 @@ class Profile extends React.Component {
         }.bind(this))
     }
     render() {
+        const userProfile = this.state.userProfile;
         return (
             <div>
                 <Form id="account" onSubmit={this.onSubmit.bind(this)}>
@@ -85,18 +86,18 @@ class Profile extends React.Component {
                             {t('my.profile.account.update')}
                         </div>
                     )}
-                    <ProfileAccount userProfile={this.state.userProfile} languages={this.state.languages}
+                    <ProfileAccount userProfile={userProfile} languages={this.state.languages}
                                     onValueChange={this.onValueChange.bind(this)}
                                      />
-                    <IdentityAccount userProfile={this.state.userProfile}
+                    <IdentityAccount userProfile={userProfile}
                                      onValueChange={this.onValueChange.bind(this)} />
-                    <AddressAccount address={this.state.userProfile.address}
+                    <AddressAccount address={userProfile.address}
                                     onValueChange={this.onValueChange.bind(this)} />
                     <SubmitButton label={t('ui.save')} className="btn-lg" />
                 </Form>
 
-                <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} />
-                <FranceConnectBtn userProfile={this.state.userProfile}/>
+                <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} passwordExist={userProfile.email_verified} />
+                <FranceConnectBtn userProfile={userProfile}/>
             </div>
         )
     }
@@ -231,7 +232,8 @@ class AddressAccount extends React.Component {
 
 class PasswordAccount extends React.Component {
     static propTypes = {
-        passwordChangeEndpoint: React.PropTypes.string.isRequired
+        passwordChangeEndpoint: React.PropTypes.string.isRequired,
+        passwordExist: React.PropTypes.boolean
     }
     render() {
         return (
@@ -240,19 +242,20 @@ class PasswordAccount extends React.Component {
                     <h2>{t('my.profile.account.password')}</h2>
                 </div>
                 <div className="col-sm-12">
-                    <PasswordLink passwordChangeEndpoint={this.props.passwordChangeEndpoint} />
+                    <div className="form-group">
+                        <div className="col-sm-9 col-sm-offset-3">
+                            <a className="change-password btn btn-lg btn-warning" href={this.props.passwordChangeEndpoint}>
+                                { this.props.passwordExist && t('my.profile.account.changepassword')}
+                                { !this.props.passwordExist && t('my.profile.account.createpassword')}
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
     }
 }
 
-const PasswordLink = ({ passwordChangeEndpoint }) =>
-    <div className="form-group">
-        <div className="col-sm-9 col-sm-offset-3">
-            <a className="change-password btn btn-lg btn-warning" href={passwordChangeEndpoint}>{t('my.profile.account.changepassword')}</a>
-        </div>
-    </div>
 
 class LanguageSelector extends React.Component {
     static propTypes = {

@@ -47,8 +47,8 @@ public class ProfileAJAXServices extends BaseAJAXServices {
 
     @GetMapping("/franceconnect")
     public UIUserProfile userFranceConnectInfo() {
-        UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         UserProfile franceConnectProfile = franceConnectService.getFranceConnectInfo();
+        UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         List<String> languages = OasisLocales.locales().stream().map(Locale::getLanguage).collect(Collectors.toList());
         return new UIUserProfile(userProfile, franceConnectProfile, languages, passwordChangeEndpoint);
     }

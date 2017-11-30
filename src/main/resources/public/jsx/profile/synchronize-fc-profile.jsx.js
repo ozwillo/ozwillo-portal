@@ -11,6 +11,17 @@ import {
     InputText
 } from "../util/form";
 
+
+const languageData = {
+    'given_name': 'my.profile.personal.firstname',
+    'middle_name': 'my.profile.personal.middlename',
+    'family_name': 'my.profile.personal.lastname',
+    'birthdate': 'my.profile.personal.birthdate',
+    'gender': 'my.profile.personal.gender',
+    'phone_number': 'my.profile.personal.phonenumber',
+    'address': 'my.profile.personal.address'
+};
+
 /**
  * This class is used to update user's information with data from FranceConnect
  */
@@ -20,21 +31,8 @@ class SynchronizeFCProfile extends React.Component {
         super(props);
 
         this.state = {
-            userProfile: {
-                given_name: 'toto',
-                family_name: 'toto',
-                email_address: 'tata@tata',
-                gender: 'toto',
-                phone_number: '0000000000'
-            },
-            franceConnectProfile: {
-                nickname: '',
-                given_name: 'tata',
-                family_name: 'tata',
-                email_address: 'tata@tata',
-                gender: 'tata',
-                phone_number: '1111111111'
-            }
+            userProfile: null,
+            franceConnectProfile: null
         };
 
         //bind functions
@@ -48,10 +46,25 @@ class SynchronizeFCProfile extends React.Component {
         })
         .done(data => {
             console.log(data);
-            this.setState({ 
-                userProfile: data.userProfile,
-                franceConnectProfile: data.franceConnectProfile
+            //Search different data between user profile and franceConnect
+            const franceConnectProfile = {};
+            Object.keys(data.franceConnectProfile).forEach((field) => {
+                if(data.userProfile[field] !== data.franceConnectProfile[field] &&
+                    field !== "displayName"){
+                    franceConnectProfile[field] = data.franceConnectProfile[field];
+                }
             });
+
+            if(!Object.keys(franceConnectProfile).length){
+                //No data to update
+                window.location.assign('/my/profile');
+            }
+
+            this.setState({
+                userProfile: data.userProfile,
+                franceConnectProfile
+            });
+
         })
         .fail((xhr, status, err) => {
             console.error(err);
@@ -87,11 +100,17 @@ class SynchronizeFCProfile extends React.Component {
 
     render() {
         const userProfile = this.state.userProfile;
-        const franceConnectProfile = this.state.franceConnectProfile;
+        const franceConnectProfile = this.state.franceConnectProfile
+
+        if(!userProfile){
+            return <section className="synchronize-fc-profile">
+                <i className="fa fa-spinner fa-spin spinner"></i>
+            </section>
+        }
 
         return <section className="synchronize-fc-profile">
             <form ref="form" onSubmit={this.save}>
-                <fieldset>
+                {/*<fieldset>
                     <legend>{t('my.profile.personal.firstname')}</legend>
                     <div className="row">
                         <label className="item">
@@ -164,7 +183,30 @@ class SynchronizeFCProfile extends React.Component {
                             {franceConnectProfile.phone_number}
                         </label>
                     </div>
-                </fieldset>
+                </fieldset>*/}
+                <div className="row">
+                    <p className="item title">Votre profile</p>
+                    <p className="item title">FranceConnect</p>
+                </div>
+
+                {
+                    Object.keys(this.state.franceConnectProfile).map((item) => {
+                        return <fieldset key={item}>
+                            <legend>{t(languageData[item])}</legend>
+                            <div className="row">
+                                <label className="item">
+                                    <input id={item} type="radio" name={item} value={userProfile[item]}/>
+                                    {userProfile[item]}
+                                </label>
+
+                                <label className="item">
+                                    <input id={item} type="radio" name={item} value={franceConnectProfile[item]}/>
+                                    {franceConnectProfile[item]}
+                                </label>
+                            </div>
+                        </fieldset>
+                    })
+                }
 
                 <div className="row submit">
                     <input type="submit" value="save" className="btn oz-btn-save"/>
