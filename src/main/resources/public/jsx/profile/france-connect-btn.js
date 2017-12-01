@@ -31,7 +31,7 @@ class FranceConnectBtn extends React.Component {
             {
                 userProfile.franceconnect_sub && !userProfile.email_verified &&
                 <a href="https://accounts.ozwillo-dev.eu/a/password" className="btn btn-lg btn-warning">
-                    {t("franceconnect.form.desynchronize")}
+                    {t("franceconnect.form.desynchronize-without-pwd")}
                 </a>
             }
 
