@@ -45,7 +45,6 @@ class SynchronizeFCProfile extends React.Component {
             url: franceconnect_service
         })
         .done(data => {
-            console.log(data);
             //Search different data between user profile and franceConnect
             const franceConnectProfile = {};
             Object.keys(data.franceConnectProfile).forEach((field) => {
@@ -80,7 +79,6 @@ class SynchronizeFCProfile extends React.Component {
         const jsonData = Object.assign({}, this.state.userProfile);
 
         for(let pair of formData.entries()){
-            console.log(pair[0], ' ', pair[1]);
             jsonData[pair[0]] = pair[1];
         }
 
@@ -110,80 +108,6 @@ class SynchronizeFCProfile extends React.Component {
 
         return <section className="synchronize-fc-profile">
             <form ref="form" onSubmit={this.save}>
-                {/*<fieldset>
-                    <legend>{t('my.profile.personal.firstname')}</legend>
-                    <div className="row">
-                        <label className="item">
-                            <input id="givenName" type="radio" name="given_name" value={userProfile.given_name}/>
-                            {userProfile.given_name}
-                        </label>
-                        <label className="item">
-                            <input id="givenName" type="radio" name="given_name" value={franceConnectProfile.given_name}/>
-                            {franceConnectProfile.given_name}
-                        </label>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-                    <legend>{t('my.profile.personal.lastname')}</legend>
-                    <div className="row">
-                        <label className="item">
-                            <input id="familyName" type="radio" name="family_name" value={userProfile.family_name}/>
-                            {userProfile.family_name}
-                        </label>
-
-                        <label className="item">
-                            <input id="familyName" type="radio" name="family_name" value={franceConnectProfile.family_name}/>
-                            {franceConnectProfile.family_name}
-                        </label>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-                    <legend>{t('my.profile.account.email')}</legend>
-                    <div className="row">
-                        <label className="item">
-                            <input id="email_address" type="radio" name="email_address" value={userProfile.email_address}/>
-                            {userProfile.email_address}
-                        </label>
-
-                        <label className="item">
-                            <input id="email_address" type="radio" name="email_address" value={franceConnectProfile.email_address}/>
-                            {franceConnectProfile.email_address}
-                        </label>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-                    <legend>{t('my.profile.personal.gender')}</legend>
-                    <div className="row">
-                        <label className="item">
-                            <input id="gender" type="radio" name="gender" value={userProfile.gender}/>
-                            {userProfile.gender}
-                        </label>
-
-
-                        <label className="item">
-                            <input id="gender" type="radio" name="gender" value={franceConnectProfile.gender}/>
-                            {franceConnectProfile.gender}
-                        </label>
-                    </div>
-                </fieldset>
-
-                <fieldset>
-                    <legend>{t('my.profile.personal.phonenumber')}</legend>
-                    <div className="row">
-                        <label className="item">
-                            <input id="phone_number" type="radio" name="phone_number" value={userProfile.phone_number}/>
-                            {userProfile.phone_number}
-                        </label>
-
-                        <label className="item">
-                            <input id="phone_number" type="radio" name="phone_number" value={franceConnectProfile.phone_number}/>
-                            {franceConnectProfile.phone_number}
-                        </label>
-                    </div>
-                </fieldset>*/}
                 <div className="row">
                     <p className="item title">Votre profile</p>
                     <p className="item title">FranceConnect</p>

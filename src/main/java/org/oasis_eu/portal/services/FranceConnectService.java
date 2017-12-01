@@ -17,22 +17,17 @@ public class FranceConnectService {
     @Autowired
     private Kernel kernel;
 
-    @Value("${kernel.france_connect_endpoint}")
-    private String franceConnectEndPoint;
-
-    @Value("${kernel.user_profile_endpoint}")
+    @Value("${kernel.france_connect.userinfo_endpoint}")
     private String userProfileEndpoint;
 
     public UserProfile getFranceConnectInfo() {
         HttpHeaders headers = new HttpHeaders();
         headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
 
-        //String uriString = franceConnectEndPoint + "/userinfo";
-        String uriString = "https://kernel.ozwillo-dev.eu/a/franceconnect/userinfo";
-        ResponseEntity<UserProfile> kernelResp = kernel.exchange(uriString, HttpMethod.GET, new HttpEntity<>(headers),
+        ResponseEntity<UserProfile> kernelResp = kernel.exchange(userProfileEndpoint, HttpMethod.GET, new HttpEntity<>(headers),
                 UserProfile.class, user());
 
-        UserProfile userProfile = kernel.getBodyUnlessClientError(kernelResp, UserProfile.class, uriString);
+        UserProfile userProfile = kernel.getBodyUnlessClientError(kernelResp, UserProfile.class, userProfileEndpoint);
         return  userProfile;
     }
 

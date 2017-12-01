@@ -29,14 +29,15 @@ class Profile extends React.Component {
         genders: [],
         languages: [],
         passwordChangeEndpoint: '',
+        unlinkFranceConnectEndpoint: '',
+        linkFranceConnectEndpoint: ''
     }
     componentDidMount() {
         $.ajax({
             url: profile_service
         })
         .done(data => {
-            console.log(data.userProfile);
-            this.setState({ userProfile: data.userProfile, languages: data.languages, passwordChangeEndpoint: data.passwordChangeEndpoint });
+            this.setState(data);
         })
         .fail((xhr, status, err) => {
             this.setState({ error : "Unable to retrieve profile info" })
@@ -96,8 +97,11 @@ class Profile extends React.Component {
                     <SubmitButton label={t('ui.save')} className="btn-lg" />
                 </Form>
 
-                <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} passwordExist={userProfile.email_verified} />
-                <FranceConnectBtn userProfile={userProfile}/>
+                <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} passwordExist={!!userProfile.email_verified} />
+                <FranceConnectBtn passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                                  linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
+                                  unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
+                                  userProfile={userProfile}/>
             </div>
         )
     }
@@ -233,7 +237,7 @@ class AddressAccount extends React.Component {
 class PasswordAccount extends React.Component {
     static propTypes = {
         passwordChangeEndpoint: React.PropTypes.string.isRequired,
-        passwordExist: React.PropTypes.boolean
+        passwordExist: React.PropTypes.bool
     }
     render() {
         return (

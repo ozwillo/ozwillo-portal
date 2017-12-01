@@ -31,11 +31,18 @@ public class ProfileAJAXServices extends BaseAJAXServices {
     @Value("${kernel.auth.password_change_endpoint:''}")
     private String passwordChangeEndpoint;
 
+    @Value("${kernel.france_connect.link_endpoint:''}")
+    private String linkFranceConnectEndpoint;
+
+    @Value("${kernel.france_connect.unlink_endpoint:''}")
+    private String unlinkFranceConnectEndpoint;
+
     @RequestMapping(method = RequestMethod.GET, value = "")
     public UIUserProfile userInfos() {
         UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         List<String> languages = OasisLocales.locales().stream().map(Locale::getLanguage).collect(Collectors.toList());
-        return new UIUserProfile(userProfile, languages, passwordChangeEndpoint);
+        return new UIUserProfile(userProfile, languages, passwordChangeEndpoint,
+                linkFranceConnectEndpoint, unlinkFranceConnectEndpoint);
     }
 
     @RequestMapping(method = RequestMethod.POST)
@@ -50,6 +57,6 @@ public class ProfileAJAXServices extends BaseAJAXServices {
         UserProfile franceConnectProfile = franceConnectService.getFranceConnectInfo();
         UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         List<String> languages = OasisLocales.locales().stream().map(Locale::getLanguage).collect(Collectors.toList());
-        return new UIUserProfile(userProfile, franceConnectProfile, languages, passwordChangeEndpoint);
+        return new UIUserProfile(userProfile, franceConnectProfile, languages);
     }
 }
