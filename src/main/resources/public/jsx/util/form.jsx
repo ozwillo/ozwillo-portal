@@ -1,6 +1,7 @@
 import React from "react";
 import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
+import t from "./message";
 import 'react-datepicker/dist/react-datepicker.css';
 
 const Form = ({ id, onSubmit, children }) =>
@@ -175,4 +176,26 @@ class CountrySelector extends React.Component {
     }
 }
 
-module.exports = { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector}
+class GenderSelector extends React.Component {
+    static propTypes = {
+        value: React.PropTypes.string,
+        onChange: React.PropTypes.func.isRequired
+    }
+
+    render() {
+        const genders = ['male','female']
+        return (
+            <Select name="gender" value={this.props.value}
+                    label={t('my.profile.personal.gender')}
+                    onChange={this.props.onChange}>
+                {
+                    genders.map(option =>
+                        <option key={option} value={option}>{t('my.profile.personal.gender.' + option)}</option>
+                    )
+                }
+            </Select>
+        )
+    }
+}
+
+module.exports = { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector }

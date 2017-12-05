@@ -71,12 +71,14 @@ public final class i18nMessages {
         "apps-for-organization", "apps-for-personal-use", "pending-install");
 
     private static final List<String> profilekeys = Arrays.asList("errormsg.formatNoMatches", "errormsg.formatAjaxError",
-        "title.account", "personal.nickname", "account.email", "account.changepassword", "account.language", "account.language.en",
+        "title.account", "personal.nickname", "account.email", "account.changepassword", "account.createpassword", "account.language", "account.language.en",
         "account.language.fr", "account.language.it", "account.language.es", "account.language.ca",
         "account.language.bg", "account.language.tr", "account.password", "personal.address", "personal.identity", "personal.firstname", "personal.lastname",
         "personal.birthdate", "personal.phonenumber", "personal.gender", "personal.gender.male", "personal.gender.female", "personal.postalcode",
         "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
 
+    private static final List<String> franceconnectKeys = Arrays.asList("name", "form.your-profile", "form.synchronise", "form.desynchronize",
+            "form.desynchronize-without-pwd");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 
@@ -177,5 +179,9 @@ public final class i18nMessages {
 
     public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_franceconnectKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (franceconnectKeys.stream().collect(Collectors.toMap(k -> "franceconnect." +k, k -> messageSource.getMessage("franceconnect." + k, new Object[0], locale))));
     }
 }
