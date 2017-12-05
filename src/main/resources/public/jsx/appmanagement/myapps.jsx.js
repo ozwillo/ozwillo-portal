@@ -192,10 +192,11 @@ var Instance = React.createClass({
         moment.locale(currentLanguage);
 
         var applicationInstanceStatus = this.props.instance.applicationInstance.status;
+        const isPending = applicationInstanceStatus === 'PENDING' ? true : false;
         
         var manageUsersButton = null;
         // don't display « manage users » button for personal organizations or stopped instances
-        if (this.props.authority.startsWith('ORGANIZATION') && applicationInstanceStatus !== 'STOPPED') {
+        if (this.props.authority.startsWith('ORGANIZATION') && applicationInstanceStatus === 'RUNNING') {
             manageUsersButton = (
                 <button key={this.props.id + '-manageUsers'} type="button" className="tip btn btn-default-inverse pull-right"
                         onClick={this.manageUsers} data-toggle="tooltip" data-placement="bottom" title={t('manage_users')}>
@@ -228,7 +229,7 @@ var Instance = React.createClass({
                     {t('confirm-untrash.body')}
                 </Modal>
             );
-        } else {
+        } else if (!isPending) {
             buttons.push(
                 <button key={this.props.id + '-trash'} type="button" className="btn oz-btn-danger btn-line pull-right" onClick={this.confirmTrash}>{t('ui.delete')}</button>
             );
@@ -249,23 +250,30 @@ var Instance = React.createClass({
                 <ApplicationUsersManagement ref="manageUsers" instanceId={this.props.id} authority={this.props.authority} />
                 {dialogs}
 
-                <div className="row authority-app-title">
+                <div className="row authority-app-title authority-app-noservices">
                     <div className="col-sm-8">
                         <img height="32" width="32" alt={this.props.instance.name} src={this.props.instance.icon}></img>
                         <h3>{this.props.instance.name}</h3>
+                        {(applicationInstanceStatus === 'PENDING') &&
+                            <i> - { t('pending-install') }</i>
+                        }
                     </div>
-                    <div className="col-sm-4">
-                        <div className="pull-right">
-                            {manageUsersButton}
-                            {buttons}
+                    { !isPending ?
+                        <div className="col-sm-4">
+                            <div className="pull-right">
+                                {manageUsersButton}
+                                {buttons}
+                            </div>
+                        </div>
+                    : '' }
+                </div>
+                { !isPending ?
+                    <div className="row authority-app-services-title">
+                        <div className="col-sm-12">
+                            <h4> {t('services')} </h4>
                         </div>
                     </div>
-                </div>
-                <div className="row authority-app-services-title">
-                    <div className="col-sm-12">
-                        <h4>{t('services')}</h4>
-                    </div>
-                </div>
+                : '' }
                 {services}
             </div>
         );

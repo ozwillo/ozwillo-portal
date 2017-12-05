@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -85,7 +86,7 @@ public class PortalAppManagementService {
     private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority, boolean fetchServices) {
         return applicationInstanceStore.findByUserId(personalAuthority.getId())
             .stream()
-            .filter(instance -> !ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
+            .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed())
             .map(i -> fetchInstance(i, fetchServices))
             .filter(i -> i != null) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .collect(Collectors.toList());
@@ -94,7 +95,7 @@ public class PortalAppManagementService {
     private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority, boolean fetchServices) {
         return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
             .stream()
-            .filter(instance -> !ApplicationInstance.InstantiationStatus.PENDING.equals(instance.getStatus()))
+            .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed())
             .map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .filter(i -> i != null)
             .collect(Collectors.toList());

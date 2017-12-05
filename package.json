@@ -65,6 +65,7 @@
     "react-autosuggest": "^7.0.2",
     "react-datepicker": "^0.46.0",
     "react-dom": "^15.4.1",
+    "react-grecaptcha": "^1.1.7",
     "react-rating": "^0.6.3",
     "render-if": "^0.1.0",
     "select2": "^4.0.2",

@@ -28,7 +28,8 @@ public final class i18nMessages {
 
     private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",
         "form.motive", "form.motive.question", "form.motive.feedback", "form.motive.application-problem",
-        "form.motive.other-problem", "form.motive.other", "form.subject", "form.body", "form-sent", "technical-problem");
+        "form.motive.other-problem", "form.motive.other", "form.subject", "form.body", "form-sent", "technical-problem",
+        "form.captcha");
 
     private static final List<String> searchOrganization = Arrays.asList("search-organization", "title", "country", "legal-name", "business-id.fr", "business-id.it",
         "business-id.es", "business-id.bg", "business-id.tr", "business-id.en", "sector-type", "sector-type.PUBLIC_BODY", "sector-type.COMPANY",
@@ -67,15 +68,17 @@ public final class i18nMessages {
         "description", "icon", "upload", "published", "services",
         "restricted-service", "geographical-area-of-interest",
         "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
-        "apps-for-organization", "apps-for-personal-use");
+        "apps-for-organization", "apps-for-personal-use", "pending-install");
 
     private static final List<String> profilekeys = Arrays.asList("errormsg.formatNoMatches", "errormsg.formatAjaxError",
-        "title.account", "personal.nickname", "account.email", "account.changepassword", "account.language", "account.language.en",
+        "title.account", "personal.nickname", "account.email", "account.changepassword", "account.createpassword", "account.language", "account.language.en",
         "account.language.fr", "account.language.it", "account.language.es", "account.language.ca",
         "account.language.bg", "account.language.tr", "account.password", "personal.address", "personal.identity", "personal.firstname", "personal.lastname",
         "personal.birthdate", "personal.phonenumber", "personal.gender", "personal.gender.male", "personal.gender.female", "personal.postalcode",
         "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
 
+    private static final List<String> franceconnectKeys = Arrays.asList("name", "form.your-profile", "form.synchronise", "form.desynchronize",
+            "form.desynchronize-without-pwd");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 
@@ -176,5 +179,9 @@ public final class i18nMessages {
 
     public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_franceconnectKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (franceconnectKeys.stream().collect(Collectors.toMap(k -> "franceconnect." +k, k -> messageSource.getMessage("franceconnect." + k, new Object[0], locale))));
     }
 }

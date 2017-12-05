@@ -2,6 +2,9 @@
 
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,700);
 
+/* Pages */
+@import "./synchronize-fc-profile.css";
+
 /* styles needed to have a responsive fixed footer
      while having main content (with page-row-expanded class) taking up all available space */
 
@@ -591,6 +594,10 @@ div.organization .organization-pending-member-row {
 #myapps .authority-body .authority-noapp,
 #myapps .authority-body .authority-app-services-title {
     margin-top: 10px;
+}
+
+#myapps .authority-app-noservices {
+    margin-bottom: 10px;
 }
 
 #myapps .authority-app-title h3 {

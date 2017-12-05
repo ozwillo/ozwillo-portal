@@ -7,7 +7,9 @@ import "../csrf";
 import "../my";
 import t from "../util/message";
 
-import {Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector} from "../util/form";
+import FranceConnectBtn from './france-connect-btn';
+
+import {Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector} from "../util/form";
 import {GeoAreaAutosuggest} from "../util/geoarea-autosuggest.jsx";
 
 const moment = require('moment');
@@ -22,20 +24,21 @@ class Profile extends React.Component {
             middle_name: '',
             family_name: '',
             phone_number: '',
-            gender: '',
+            gender: ''
         },
         genders: [],
         languages: [],
         passwordChangeEndpoint: '',
+        unlinkFranceConnectEndpoint: '',
+        linkFranceConnectEndpoint: ''
     }
     componentDidMount() {
         $.ajax({
             url: profile_service
         })
         .done(data => {
-                this.setState({ userProfile: data.userProfile, languages: data.languages, passwordChangeEndpoint: data.passwordChangeEndpoint })
-            }
-        )
+            this.setState(data);
+        })
         .fail((xhr, status, err) => {
             this.setState({ error : "Unable to retrieve profile info" })
         })
@@ -74,6 +77,7 @@ class Profile extends React.Component {
         }.bind(this))
     }
     render() {
+        const userProfile = this.state.userProfile;
         return (
             <div>
                 <Form id="account" onSubmit={this.onSubmit.bind(this)}>
@@ -83,17 +87,21 @@ class Profile extends React.Component {
                             {t('my.profile.account.update')}
                         </div>
                     )}
-                    <ProfileAccount userProfile={this.state.userProfile} languages={this.state.languages}
+                    <ProfileAccount userProfile={userProfile} languages={this.state.languages}
                                     onValueChange={this.onValueChange.bind(this)}
                                      />
-                    <IdentityAccount userProfile={this.state.userProfile}
+                    <IdentityAccount userProfile={userProfile}
                                      onValueChange={this.onValueChange.bind(this)} />
-                    <AddressAccount address={this.state.userProfile.address}
+                    <AddressAccount address={userProfile.address}
                                     onValueChange={this.onValueChange.bind(this)} />
                     <SubmitButton label={t('ui.save')} className="btn-lg" />
                 </Form>
-                <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} />
 
+                <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} passwordExist={!!userProfile.email_verified} />
+                <FranceConnectBtn passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                                  linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
+                                  unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
+                                  userProfile={userProfile}/>
             </div>
         )
     }
@@ -228,7 +236,8 @@ class AddressAccount extends React.Component {
 
 class PasswordAccount extends React.Component {
     static propTypes = {
-        passwordChangeEndpoint: React.PropTypes.string.isRequired
+        passwordChangeEndpoint: React.PropTypes.string.isRequired,
+        passwordExist: React.PropTypes.bool
     }
     render() {
         return (
@@ -237,19 +246,20 @@ class PasswordAccount extends React.Component {
                     <h2>{t('my.profile.account.password')}</h2>
                 </div>
                 <div className="col-sm-12">
-                    <PasswordLink passwordChangeEndpoint={this.props.passwordChangeEndpoint} />
+                    <div className="form-group">
+                        <div className="col-sm-9 col-sm-offset-3">
+                            <a className="change-password btn btn-lg btn-warning" href={this.props.passwordChangeEndpoint}>
+                                { this.props.passwordExist && t('my.profile.account.changepassword')}
+                                { !this.props.passwordExist && t('my.profile.account.createpassword')}
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </div>
         )
     }
 }
 
-const PasswordLink = ({ passwordChangeEndpoint }) =>
-    <div className="form-group">
-        <div className="col-sm-9 col-sm-offset-3">
-            <a className="change-password btn btn-lg btn-warning" href={passwordChangeEndpoint}>{t('my.profile.account.changepassword')}</a>
-        </div>
-    </div>
 
 class LanguageSelector extends React.Component {
     static propTypes = {
@@ -269,30 +279,5 @@ class LanguageSelector extends React.Component {
         )
     }
 }
-
-
-class GenderSelector extends React.Component {
-    static propTypes = {
-        value: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
-    }
-
-    render() {
-        const genders = ['male','female']
-        return (
-            <Select name="gender" value={this.props.value}
-                    label={t('my.profile.personal.gender')}
-                    onChange={this.props.onChange}>
-                {
-                    genders.map(option =>
-                        <option key={option} value={option}>{t('my.profile.personal.gender.' + option)}</option>
-                    )
-                }
-            </Select>
-        )
-    }
-}
-
-
 
 ReactDOM.render(<Profile />, document.getElementById("profile"));
