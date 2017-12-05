@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import "../csrf";
 import t from "../util/message";
 import { SubmitButton } from "../util/form";
@@ -6,11 +7,11 @@ import { SubmitButton } from "../util/form";
 
 class FranceConnectBtn extends React.Component {
 
-    static PropTypes = {
-        userProfile: React.PropTypes.object.isRequired,
-        passwordChangeEndpoint: React.PropTypes.string,
-        unlinkFranceConnectEndpoint: React.PropTypes.string,
-        linkFranceConnectEndpoint: React.PropTypes.string
+    static propTypes = {
+        userProfile: PropTypes.object.isRequired,
+        passwordChangeEndpoint: PropTypes.string,
+        unlinkFranceConnectEndpoint: PropTypes.string,
+        linkFranceConnectEndpoint: PropTypes.string
     };
 
     render() {

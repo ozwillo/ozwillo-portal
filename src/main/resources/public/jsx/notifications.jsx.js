@@ -6,6 +6,7 @@ import './csrf';
 import './my';
 
 import React from 'react';
+import createClass from 'create-react-class';
 import ReactDOM from 'react-dom';
 
 /** Custom translation */
@@ -26,7 +27,7 @@ function t(key) {
 
 
 
-var NotificationTable = React.createClass({
+var NotificationTable = createClass({
     getInitialState: function() {
         return {
             n: [],
@@ -178,7 +179,7 @@ var NotificationTable = React.createClass({
 
 });
 
-var SortableHeader = React.createClass({
+var SortableHeader = createClass({
     render: function () {
         var className = "col-sm-" + this.props.size + " sortable color";
         var sortIcon = <i className="fa fa-sort"></i>;
@@ -197,7 +198,7 @@ var SortableHeader = React.createClass({
 
 });
 
-var NotificationHeader = React.createClass({
+var NotificationHeader = createClass({
     render: function () {
         return (
             <div className="pull-right">
@@ -218,7 +219,7 @@ var NotificationHeader = React.createClass({
     }
 });
 
-var AppFilter = React.createClass({
+var AppFilter = createClass({
     render: function () {
         var options = this.props.apps.map(function (app) {
             return <option key={app.id} value={app.id}>{app.name}</option>;
@@ -232,7 +233,7 @@ var AppFilter = React.createClass({
     }
 });
 
-var Notification = React.createClass({
+var Notification = createClass({
     displayName: "Notification",
     removeNotif: function () {
         this.props.onRemoveNotif(this.props.notif.id);

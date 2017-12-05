@@ -3,7 +3,6 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 const DashboardPlugin = require('webpack-dashboard/plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
@@ -44,27 +43,45 @@ const common = {
         new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(bg|ca|en|es|fr|it|tr)$/)
     ],
     // we have no .jsx for now but planned to rename from .jsx.js to .jsx
-    resolve: { extensions: [ '', '.js', '.jsx' ] },
+    resolve: { extensions: [ '.js', '.jsx' ] },
     module: {
         loaders: [
-            { test: /\.png$/, loader: "url-loader?limit=10000" },
-            /* loaders for Font Awesome */
-            { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
-            { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },
-            /* to ensure jQuery is loaded before Bootstrap */
-            { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
-            /* loader for JSX / ES6 */
-            { test: /\.jsx?$/, loaders: ['react-hot', 'babel?cacheDirectory,presets[]=react,presets[]=es2015,presets[]=stage-0'], include: path.join(PATHS.app, 'jsx')}
+            /* bootstrap-sass-loader */
+            { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports-loader?$=jquery' },
+
+            /* loaders for urls */
+            { test: /\.png$/, loader: "url-loader?limit=10000" }
+        ],
+        rules: [
+            // JS
+            { test: require.resolve("jquery"), use: "imports-loader?$=jquery" },
+            {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['env', 'react', 'stage-0']
+                    }
+                }
+            },
+            {
+                test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: 'fonts/',    // where the fonts will go
+                    }
+                }]
+            }
         ]
-    },
-    postcss: [ autoprefixer ],
-    debug: true
+    }
 };
 
 // Default configuration
 if(TARGET === 'start' || !TARGET) {
     module.exports = merge(common, {
-        devtool: 'eval-source-map',
         devServer: {
             publicPath: common.output.publicPath,
             contentBase: '/build',
@@ -77,37 +94,47 @@ if(TARGET === 'start' || !TARGET) {
                 "*": "http://localhost:8080"
             }
         },
+        devtool: 'source-map',
         entry: {
-            dashboard:      common.entry.dashboard.concat(devEntryPointsLoadersAndServers),
-            profile:        common.entry.profile.concat(devEntryPointsLoadersAndServers),
-            network:        common.entry.network.concat(devEntryPointsLoadersAndServers),
-            myapps:         common.entry.myapps.concat(devEntryPointsLoadersAndServers),
-            store:          common.entry.appstore.concat(devEntryPointsLoadersAndServers),
-            notifications:  common.entry.notifications.concat(devEntryPointsLoadersAndServers),
-            contact:        common.entry.contact.concat(devEntryPointsLoadersAndServers)
+            dashboard:      devEntryPointsLoadersAndServers,
+            profile:        devEntryPointsLoadersAndServers,
+            network:        devEntryPointsLoadersAndServers,
+            myapps:         devEntryPointsLoadersAndServers,
+            store:          devEntryPointsLoadersAndServers,
+            notifications:  devEntryPointsLoadersAndServers,
+            contact:        devEntryPointsLoadersAndServers
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
             new DashboardPlugin()
         ],
         module: {
-            loaders: [
-                {test: /\.css$/, loaders: ['style', 'css', 'postcss']},
-                /* loaders for Bootstrap */
-                {test: /\.scss$/, loaders: ['style', 'css', 'postcss', 'sass']}
+            rules: [
+                // CSS
+                {
+                    test: /\.css$/,
+                    use: [{
+                        loader: "style-loader", // creates style nodes from JS strings
+                        options: { sourceMap: true }
+                    }, {
+                        loader: "css-loader", // translates CSS into CommonJS
+                        options: { url: false }
+                    }]
+                },
+                // SASS
+                {
+                    test: /\.sass$/,
+                    use: [{
+                        loader: "sass-loader", // compiles Sass to CSS
+                        options: { sourceMap: true }
+                    }]
+                }
             ]
         }
     });
 }
 if(TARGET === 'build' || TARGET === 'stats') {
     module.exports = merge(common, {
-        module: {
-            loaders: [
-                {test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css!postcss')},
-                /* loaders for Bootstrap */
-                {test: /\.scss$/, loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')}
-            ]
-        },
         plugins: [
             new CleanPlugin([PATHS.build]),
             // Setting DefinePlugin affects React library size!
@@ -121,10 +148,31 @@ if(TARGET === 'build' || TARGET === 'stats') {
                     warnings: false
                 }
             }),
-            new ExtractTextPlugin('[name].min.css', {
-                allChunks: true
-            })
-        ]
+            new ExtractTextPlugin('style.css')
+        ],
+        module: {
+            rules: [
+                // CSS
+                {
+                    test: /\.css$/,
+                    use: [{
+                        loader: "style-loader", // creates style nodes from JS strings
+                        options: { sourceMap: false }
+                    }, {
+                        loader: "css-loader", // translates CSS into CommonJS
+                        options: { url: false }
+                    }]
+                },
+                // SASS
+                {
+                    test: /\.sass$/,
+                    use: [{
+                        loader: "sass-loader", // compiles Sass to CSS
+                        options: { sourceMap: false }
+                    }]
+                }
+            ]
+        }
     });
 }
 

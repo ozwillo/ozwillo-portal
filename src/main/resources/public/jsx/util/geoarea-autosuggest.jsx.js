@@ -1,4 +1,5 @@
-import React, {Component} from 'react';
+import React, {Component} from 'react'
+import PropTypes from 'prop-types';
 import Autosuggest from 'react-autosuggest';
 
 var debounce = require('debounce');
@@ -7,23 +8,23 @@ const renderSuggestion = suggestion => (
     <div>
         <p className="main-info">{suggestion.name}</p>
     </div>
-)
+);
 
 class GeoAreaAutosuggest extends Component {
     static propTypes = {
-        placeholder: React.PropTypes.string,
-        initialValue: React.PropTypes.string,
-        endpoint: React.PropTypes.string,
-        countryUri: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
-    }
+        placeholder: PropTypes.string,
+        initialValue: PropTypes.string,
+        endpoint: PropTypes.string,
+        countryUri: PropTypes.string,
+        onChange: PropTypes.func.isRequired
+    };
     static defaultProps = {
         placeholder: ''
-    }
+    };
     state = {
         value: '',
         suggestions: []
-    }
+    };
     componentDidMount() {
         this.setState({ value: this.props.initialValue || '' });
     }
@@ -91,6 +92,6 @@ class GeoAreaAutosuggest extends Component {
             </div>
         )
     }
-};
+}
 
 module.exports = { GeoAreaAutosuggest };

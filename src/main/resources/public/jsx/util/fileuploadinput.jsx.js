@@ -1,6 +1,7 @@
 import React from 'react';
+import createClass from 'create-react-class';
 
-var FileUploadInput = React.createClass({
+var FileUploadInput = createClass({
     handleSubmit: function() {
         var formData = new FormData();
         // also fills "filename" etc. in multipart Boundary line

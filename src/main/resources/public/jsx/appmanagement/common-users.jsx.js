@@ -1,6 +1,8 @@
 'use strict';
 
 import React from 'react';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import Autosuggest from 'react-autosuggest';
 var debounce = require('debounce');
@@ -11,10 +13,10 @@ var moment = require('moment');
 
 import t from '../util/message';
 
-var UsersList = React.createClass({
+var UsersList = createClass({
     propTypes: {
-        users: React.PropTypes.array.isRequired,
-        removeUser: React.PropTypes.func.isRequired
+        users: PropTypes.array.isRequired,
+        removeUser: PropTypes.func.isRequired
     },
     render: function() {
         var usersList = this.props.users.map(user => {
@@ -41,10 +43,10 @@ var UsersList = React.createClass({
     }
 });
 
-var User = React.createClass({
+var User = createClass({
     propTypes: {
-        user: React.PropTypes.object.isRequired,
-        removeUser: React.PropTypes.func.isRequired
+        user: PropTypes.object.isRequired,
+        removeUser: PropTypes.func.isRequired
     },
     displayStatus: function(user) {
         if (['new_from_organization', 'new_from_email', 'new_to_push'].indexOf(user.status) !== -1)
@@ -73,10 +75,10 @@ var User = React.createClass({
     }
 });
 
-var OrgUserPicker = React.createClass({
+var OrgUserPicker = createClass({
     propTypes: {
-        addUser: React.PropTypes.func.isRequired,
-        queryUsers: React.PropTypes.func.isRequired
+        addUser: PropTypes.func.isRequired,
+        queryUsers: PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {

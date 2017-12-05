@@ -6,9 +6,11 @@ import t from './util/message';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 import Recaptcha from 'react-grecaptcha';
 
-var ContactLink = React.createClass({
+var ContactLink = createClass({
     onClick: function(event) {
         this.refs.contactModal.open();
     },
@@ -24,21 +26,21 @@ var ContactLink = React.createClass({
     }
 });
 
-var ContactModal = React.createClass({
+var ContactModal = createClass({
     componentDidMount: function () {
-        $(ReactDOM.findDOMNode(this)).modal({show: false});
-        $(ReactDOM.findDOMNode(this)).on("shown.bs.modal", function() {
+        $(ReactDOM.findDOMNode()).modal({show: false});
+        $(ReactDOM.findDOMNode()).on("shown.bs.modal", function() {
             $("input#motive", this).focus();
         });
     },
     componentWillUnmount: function () {
-        $(ReactDOM.findDOMNode(this)).off('hidden');
+        $(ReactDOM.findDOMNode()).off('hidden');
     },
     close: function (event) {
-        $(ReactDOM.findDOMNode(this)).modal('hide');
+        $(ReactDOM.findDOMNode()).modal('hide');
     },
     open: function () {
-        $(ReactDOM.findDOMNode(this)).modal('show');
+        $(ReactDOM.findDOMNode()).modal('show');
         this.refs.contactForm.resetFormValues();
     },
     render: function () {
@@ -60,7 +62,7 @@ var ContactModal = React.createClass({
     }
 });
 
-var ContactForm = React.createClass({
+var ContactForm = createClass({
     getInitialState: function () {
         return {
             errors: [],
@@ -224,7 +226,7 @@ var ContactForm = React.createClass({
     }
 });
 
-var ContactSelectField = React.createClass({
+var ContactSelectField = createClass({
     handleChange: function(event) {
         this.props.onChange(this.props.name, event.target.value);
     },
@@ -248,7 +250,7 @@ var ContactSelectField = React.createClass({
     }
 });
 
-var ContactTextInputField = React.createClass({
+var ContactTextInputField = createClass({
     handleChange: function(event) {
         this.props.onChange(this.props.name, event.target.value);
     },
@@ -267,7 +269,7 @@ var ContactTextInputField = React.createClass({
     }
 });
 
-var ContactTextareaField = React.createClass({
+var ContactTextareaField = createClass({
     handleChange: function(event) {
         this.props.onChange(this.props.name, event.target.value);
     },
@@ -286,7 +288,7 @@ var ContactTextareaField = React.createClass({
     }
 });
 
-var ContactCheckboxField = React.createClass({
+var ContactCheckboxField = createClass({
     handleChange: function(event) {
         this.props.onChange(this.props.name, event.target.checked);
     },
@@ -321,16 +323,16 @@ const ContactCaptcha = ({ sitekey, callback, expiredCallback, locale, renderLabe
 }
 
 ContactCaptcha.propTypes = {
-    sitekey: React.PropTypes.string.isRequired,
-    callback: React.PropTypes.func.isRequired,
-    expiredCallback: React.PropTypes.func.isRequired,
-    locale: React.PropTypes.string.isRequired,
-    renderLabel: React.PropTypes.func.isRequired,
-    name: React.PropTypes.string.isRequired,
-    errors: React.PropTypes.array.isRequired
+    sitekey: PropTypes.string.isRequired,
+    callback: PropTypes.func.isRequired,
+    expiredCallback: PropTypes.func.isRequired,
+    locale: PropTypes.string.isRequired,
+    renderLabel: PropTypes.func.isRequired,
+    name: PropTypes.string.isRequired,
+    errors: PropTypes.array.isRequired
 }
 
-var Buttons = React.createClass({
+var Buttons = createClass({
     renderCancelButton: function() {
         if (!this.props.formSent)
             return <button type="button" key="cancel" className="btn oz-btn-cancel" onClick={this.props.cancelHandler}>{t('ui.cancel')}</button>

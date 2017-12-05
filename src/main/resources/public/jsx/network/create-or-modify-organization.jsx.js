@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import Autosuggest from 'react-autosuggest';
 var debounce = require('debounce');
@@ -12,7 +14,7 @@ import t from '../util/message';
 
 import { GeoAreaAutosuggest } from '../util/geoarea-autosuggest.jsx';
 
-var CreateOrModifyOrganizationModal = React.createClass({
+var CreateOrModifyOrganizationModal = createClass({
     getInitialState: function () {
         return {
             organization: {},
@@ -70,7 +72,7 @@ var CreateOrModifyOrganizationModal = React.createClass({
     }
 });
 
-var CreateOrModifyOrganizationForm = React.createClass({
+var CreateOrModifyOrganizationForm = createClass({
     getInitialState: function () {
         return {
             createOrUpdateError: { code: '', message: ''}
@@ -166,7 +168,7 @@ var CreateOrModifyOrganizationForm = React.createClass({
     }
 });
 
-var Button = React.createClass({
+var Button = createClass({
     renderStepSwitcherButton: function () {
         if (this.props.activeTab === 1) {
             return (
@@ -212,14 +214,14 @@ var Button = React.createClass({
     }
 });
 
-var Field = React.createClass({
+var Field = createClass({
     propTypes: {
-        name: React.PropTypes.string.isRequired,
-        labelClassName: React.PropTypes.string,
-        divClassName: React.PropTypes.string,
-        error: React.PropTypes.bool,
-        errorMsg: React.PropTypes.string,
-        isRequired: React.PropTypes.bool
+        name: PropTypes.string.isRequired,
+        labelClassName: PropTypes.string,
+        divClassName: PropTypes.string,
+        error: PropTypes.bool,
+        errorMsg: PropTypes.string,
+        isRequired: PropTypes.bool
     },
     renderLabel: function(htmlFor, class_name, label, isRequired) {
         return (
@@ -248,7 +250,7 @@ var Field = React.createClass({
     }
 });
 
-var Tab1 = React.createClass({
+var Tab1 = createClass({
     getInitialState: function() {
         return {
             organization: {},
@@ -401,7 +403,7 @@ var Tab1 = React.createClass({
     }
 });
 
-var Tab2 = React.createClass({
+var Tab2 = createClass({
     getInitialState: function() {
         return {
             organization: {},
@@ -605,12 +607,12 @@ var Tab2 = React.createClass({
     }
 });
 
-var TaxRegActivityAutosuggest = React.createClass({
+var TaxRegActivityAutosuggest = createClass({
     propTypes: {
-        initialValue: React.PropTypes.string,
-        placeholder: React.PropTypes.string,
-        countryUri: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        initialValue: PropTypes.string,
+        placeholder: PropTypes.string,
+        countryUri: PropTypes.string,
+        onChange: PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {

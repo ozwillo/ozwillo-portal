@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 var moment = require('moment');
 
@@ -14,7 +16,7 @@ import { SearchOrganizationModal } from './search-organization.jsx';
 import { CreateOrModifyOrganizationModal } from './create-or-modify-organization.jsx';
 import { Loading } from '../util/loading.jsx'
 
-var MyNetwork = React.createClass({
+var MyNetwork = createClass({
     openSearchOrgDialog: function() {
         this.refs.searchOrgDialog.open();
     },
@@ -46,7 +48,7 @@ const SearchOrCreateHeader = ({ showDialog }) =>
         </div>
     </div>;
 
-var OrganizationsList = React.createClass({
+var OrganizationsList = createClass({
     getInitialState: function() {
         return {
             loading: true,
@@ -138,11 +140,11 @@ var OrganizationsList = React.createClass({
     }
 });
 
-var Organization = React.createClass({
+var Organization = createClass({
     propTypes: {
-        org: React.PropTypes.object.isRequired,
-        reload: React.PropTypes.func.isRequired,
-        updateOrganization: React.PropTypes.func.isRequired
+        org: PropTypes.object.isRequired,
+        reload: PropTypes.func.isRequired,
+        updateOrganization: PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {
@@ -429,7 +431,7 @@ const PendingMembership = ({pMember, removeInvitation}) =>
         </div>
     </div>;
 
-var Member = React.createClass({
+var Member = createClass({
     getInitialState: function() {
         return {
             edit: false,
@@ -510,7 +512,7 @@ const ReadOnlyMember = ({ member }) =>
         <div className="col-sm-3">{member.self ? t('my.network.user') : t('my.network.admin')}</div>
     </div>;
 
-var InviteDialog = React.createClass({
+var InviteDialog = createClass({
     open: function() {
         this.refs.modal.open();
     },
@@ -547,7 +549,7 @@ var InviteDialog = React.createClass({
     }
 });
 
-var LeaveDialog = React.createClass({
+var LeaveDialog = createClass({
     open: function() {
         this.refs.modal.open();
     },
@@ -564,7 +566,7 @@ var LeaveDialog = React.createClass({
     }
 });
 
-var InformationDialog = React.createClass({
+var InformationDialog = createClass({
     getInitialState: function() {
         return {organization: undefined};
     },

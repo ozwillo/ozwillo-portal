@@ -2,6 +2,7 @@
 
 import React from "react";
 import ReactDOM from "react-dom";
+import PropTypes from "prop-types";
 import renderIf from "render-if";
 import "../csrf";
 import "../my";
@@ -109,9 +110,9 @@ class Profile extends React.Component {
 
 class ProfileAccount extends React.Component {
     static propTypes = {
-        userProfile: React.PropTypes.object.isRequired,
-        languages: React.PropTypes.array.isRequired,
-        onValueChange: React.PropTypes.func.isRequired,
+        userProfile: PropTypes.object.isRequired,
+        languages: PropTypes.array.isRequired,
+        onValueChange: PropTypes.func.isRequired,
     }
     render() {
         return (
@@ -139,8 +140,8 @@ class ProfileAccount extends React.Component {
 
 class IdentityAccount extends React.Component {
     static propTypes = {
-        userProfile: React.PropTypes.object.isRequired,
-        onValueChange: React.PropTypes.func.isRequired,
+        userProfile: PropTypes.object.isRequired,
+        onValueChange: PropTypes.func.isRequired,
     }
 
     handleChange(date) {
@@ -184,8 +185,8 @@ class IdentityAccount extends React.Component {
 
 class AddressAccount extends React.Component {
     static propTypes = {
-        address: React.PropTypes.object,
-        onValueChange: React.PropTypes.func.isRequired,
+        address: PropTypes.object,
+        onValueChange: PropTypes.func.isRequired,
     }
     static defaultProps = {
         address: {}
@@ -236,8 +237,8 @@ class AddressAccount extends React.Component {
 
 class PasswordAccount extends React.Component {
     static propTypes = {
-        passwordChangeEndpoint: React.PropTypes.string.isRequired,
-        passwordExist: React.PropTypes.bool
+        passwordChangeEndpoint: PropTypes.string.isRequired,
+        passwordExist: PropTypes.bool
     }
     render() {
         return (
@@ -263,9 +264,9 @@ class PasswordAccount extends React.Component {
 
 class LanguageSelector extends React.Component {
     static propTypes = {
-        value: React.PropTypes.string,
-        languages: React.PropTypes.array.isRequired,
-        onChange: React.PropTypes.func.isRequired
+        value: PropTypes.string,
+        languages: PropTypes.array.isRequired,
+        onChange: PropTypes.func.isRequired
     }
     render() {
         return (

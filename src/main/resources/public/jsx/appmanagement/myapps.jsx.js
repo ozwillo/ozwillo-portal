@@ -8,6 +8,7 @@ import t from '../util/message';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
 
 import { Modal } from '../util/bootstrap-react.jsx';
 import { Service } from './service-settings.jsx';
@@ -16,7 +17,7 @@ import { Loading } from '../util/loading.jsx'
 
 var moment = require('moment');
 
-var MyApps = React.createClass({
+var MyApps = createClass({
     getInitialState: function () {
         return {
             loading: true,
@@ -53,7 +54,7 @@ var MyApps = React.createClass({
     }
 });
 
-var Authority = React.createClass({
+var Authority = createClass({
 
     render: function () {
         var title = this.props.isPersonal ?
@@ -74,7 +75,7 @@ var Authority = React.createClass({
     }
 });
 
-var InstanceList = React.createClass({
+var InstanceList = createClass({
     getInitialState: function () {
         return {
             loading: true,
@@ -129,7 +130,7 @@ var InstanceList = React.createClass({
     }
 });
 
-var Instance = React.createClass({
+var Instance = createClass({
     getInitialState: function() {
         return {};
     },

@@ -1,4 +1,5 @@
 import React from "react";
+import PropTypes from 'prop-types';
 import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
 import t from "./message";
@@ -10,8 +11,8 @@ const Form = ({ id, onSubmit, children }) =>
     </form>
 
 Form.propTypes = {
-    id: React.PropTypes.string.isRequired,
-    onSubmit: React.PropTypes.func.isRequired
+    id: PropTypes.string.isRequired,
+    onSubmit: PropTypes.func.isRequired
 }
 
 const InputText = ({ name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled }) =>
@@ -35,16 +36,16 @@ InputText.defaultProps = {
 }
 
 InputText.propTypes = {
-    name: React.PropTypes.string.isRequired,
-    value: React.PropTypes.string,
-    label: React.PropTypes.string.isRequired,
-    onChange: React.PropTypes.func.isRequired,
-    labelClassName: React.PropTypes.string,
-    divClassName: React.PropTypes.string,
-    error: React.PropTypes.bool,
-    errorMsg: React.PropTypes.string,
-    isRequired: React.PropTypes.bool,
-    disabled: React.PropTypes.bool
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    label: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    labelClassName: PropTypes.string,
+    divClassName: PropTypes.string,
+    error: PropTypes.bool,
+    errorMsg: PropTypes.string,
+    isRequired: PropTypes.bool,
+    disabled: PropTypes.bool
 }
 
 const Select = ({ name, value, label, onChange, children, labelClassName, divClassName, error, errorMsg, isRequired }) =>
@@ -63,15 +64,15 @@ const Select = ({ name, value, label, onChange, children, labelClassName, divCla
     </div>
 
 Select.propTypes = {
-    name: React.PropTypes.string.isRequired,
-    value: React.PropTypes.string,
-    label: React.PropTypes.string.isRequired,
-    onChange: React.PropTypes.func.isRequired,
-    labelClassName: React.PropTypes.string,
-    divClassName: React.PropTypes.string,
-    error: React.PropTypes.bool,
-    errorMsg: React.PropTypes.string,
-    isRequired: React.PropTypes.bool,
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    label: PropTypes.string.isRequired,
+    onChange: PropTypes.func.isRequired,
+    labelClassName: PropTypes.string,
+    divClassName: PropTypes.string,
+    error: PropTypes.bool,
+    errorMsg: PropTypes.string,
+    isRequired: PropTypes.bool,
 }
 
 Select.defaultProps = {
@@ -89,8 +90,8 @@ const SubmitButton = ({ label, className }) =>
     </div>
 
 SubmitButton.propTypes = {
-    label: React.PropTypes.string.isRequired,
-    className: React.PropTypes.string
+    label: PropTypes.string.isRequired,
+    className: PropTypes.string
 }
 
 
@@ -111,14 +112,14 @@ const InputDatePicker = ({ label, labelClassName, divClassName, name, startDate,
     </div>
 
 InputDatePicker.propTypes = {
-    name: React.PropTypes.string.isRequired,
-    value: React.PropTypes.string,
-    dropdownMode: React.PropTypes.string,
-    label: React.PropTypes.string.isRequired,
-    startDate: React.PropTypes.object,
-    labelClassName: React.PropTypes.string,
-    divClassName: React.PropTypes.string,
-    onChange: React.PropTypes.func
+    name: PropTypes.string.isRequired,
+    value: PropTypes.string,
+    dropdownMode: PropTypes.string,
+    label: PropTypes.string.isRequired,
+    startDate: PropTypes.object,
+    labelClassName: PropTypes.string,
+    divClassName: PropTypes.string,
+    onChange: PropTypes.func
 }
 
 InputDatePicker.defaultProps = {
@@ -136,10 +137,10 @@ class CountrySelector extends React.Component {
     }
 
     static propTypes = {
-        value: React.PropTypes.string,
-        url: React.PropTypes.string.isRequired,
-        onChange: React.PropTypes.func.isRequired,
-        label: React.PropTypes.string
+        value: PropTypes.string,
+        url: PropTypes.string.isRequired,
+        onChange: PropTypes.func.isRequired,
+        label: PropTypes.string
     }
 
     componentWillMount () {
@@ -178,8 +179,8 @@ class CountrySelector extends React.Component {
 
 class GenderSelector extends React.Component {
     static propTypes = {
-        value: React.PropTypes.string,
-        onChange: React.PropTypes.func.isRequired
+        value: PropTypes.string,
+        onChange: PropTypes.func.isRequired
     }
 
     render() {

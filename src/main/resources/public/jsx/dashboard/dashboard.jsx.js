@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import '../csrf';
 import '../my';
@@ -11,7 +13,7 @@ import {ModalWithForm, Modal} from '../util/bootstrap-react.jsx';
 
 import '../../css/specific.css';
 
-var Dashboard = React.createClass({
+var Dashboard = createClass({
     notificationsChecked: false,
     getInitialState: function () {
         return {
@@ -374,7 +376,7 @@ var Dashboard = React.createClass({
 });
 
 
-var DashList = React.createClass({
+var DashList = createClass({
     render: function () {
         if (this.props.loading) {
             return (
@@ -409,7 +411,7 @@ var DashList = React.createClass({
     }
 });
 
-var DashItem = React.createClass({
+var DashItem = createClass({
     getInitialState: function () {
         return {over: false, editing: false};
     },
@@ -480,7 +482,7 @@ var DashItem = React.createClass({
     }
 });
 
-var DashActions = React.createClass({
+var DashActions = createClass({
 
     remove: function () {
         this.props.remove();
@@ -512,7 +514,7 @@ var DashActions = React.createClass({
     }
 });
 
-var EditingDash = React.createClass({
+var EditingDash = createClass({
     getInitialState: function () {
         return {val: this.props.name};
     },
@@ -548,7 +550,7 @@ var EditingDash = React.createClass({
     }
 });
 
-var CreateDashboard = React.createClass({
+var CreateDashboard = createClass({
     getInitialState: function () {
         return {
             val: '',
@@ -591,7 +593,7 @@ var CreateDashboard = React.createClass({
     }
 });
 
-var DeleteApp = React.createClass({
+var DeleteApp = createClass({
     getInitialState: function () {
         return {over: false, app: null, pending: false};
     },
@@ -645,7 +647,7 @@ var DeleteApp = React.createClass({
     }
 });
 
-var Desktop = React.createClass({
+var Desktop = createClass({
     getInitialState: function () {
         return {dragging: false};
     },
@@ -714,7 +716,7 @@ var Desktop = React.createClass({
     }
 });
 
-var AppZone = React.createClass({
+var AppZone = createClass({
     render: function () {
         return (
             <div className="appzone" title={this.props.app.name}>
@@ -725,7 +727,7 @@ var AppZone = React.createClass({
     }
 });
 
-var AddNew = React.createClass({
+var AddNew = createClass({
     render: function () {
         return (
             <div className="appzone">
@@ -742,7 +744,7 @@ var AddNew = React.createClass({
     }
 });
 
-var PendingApp = React.createClass({
+var PendingApp = createClass({
     render: function () {
         return (
             <div className="appzone">
@@ -757,7 +759,7 @@ var PendingApp = React.createClass({
     }
 });
 
-var DropZone = React.createClass({
+var DropZone = createClass({
     getInitialState: function () {
         return {over: false};
     },
@@ -782,7 +784,7 @@ var DropZone = React.createClass({
     }
 });
 
-var AppIcon = React.createClass({
+var AppIcon = createClass({
     render: function () {
         var notif = null;
         var url = this.props.app.url;

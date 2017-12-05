@@ -2,13 +2,15 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import Autosuggest from 'react-autosuggest';
 var debounce = require('debounce');
 
 import t from '../util/message';
 
-var SearchOrganizationModal = React.createClass({
+var SearchOrganizationModal = createClass({
     componentDidMount: function () {
         $(ReactDOM.findDOMNode(this)).on("shown.bs.modal", function() {
             $("input#legal_name", this).focus();
@@ -48,7 +50,7 @@ var SearchOrganizationModal = React.createClass({
     }
 });
 
-var SearchOrganizationForm = React.createClass({
+var SearchOrganizationForm = createClass({
     getInitialState: function () {
         return {
             country: '',
@@ -220,11 +222,11 @@ var SearchOrganizationForm = React.createClass({
 });
 
 // http://stackoverflow.com/questions/25793918/creating-select-elements-in-react-js
-var CountrySelect = React.createClass({
+var CountrySelect = createClass({
     propTypes: {
-        url: React.PropTypes.string.isRequired,
-        onCountryChange: React.PropTypes.func.isRequired,
-        countryUri: React.PropTypes.string
+        url: PropTypes.string.isRequired,
+        onCountryChange: PropTypes.func.isRequired,
+        countryUri: PropTypes.string
     },
     getInitialState: function() {
         return { countries: [] }
@@ -301,7 +303,7 @@ var CountrySelect = React.createClass({
                 </label>
                 <div className="col-sm-8">
                     <select className="form-control" id="country"
-                            value={this.props.countryUri} onChange={this.handleCountryChange}>
+                            value={this.props.countryUri || ''} onChange={this.handleCountryChange}>
                         {options}
                     </select>
                 </div>
@@ -310,13 +312,13 @@ var CountrySelect = React.createClass({
     }
 });
 
-var LegalName = React.createClass({
+var LegalName = createClass({
     propTypes: {
-        countryUri: React.PropTypes.string.isRequired,
-        value: React.PropTypes.string.isRequired,
-        inError: React.PropTypes.bool.isRequired,
-        onOrganizationSelected: React.PropTypes.func.isRequired,
-        onChange: React.PropTypes.func.isRequired
+        countryUri: PropTypes.string,
+        value: PropTypes.string.isRequired,
+        inError: PropTypes.bool.isRequired,
+        onOrganizationSelected: PropTypes.func.isRequired,
+        onChange: PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {
@@ -399,7 +401,7 @@ var LegalName = React.createClass({
     }
 });
 
-var TaxRegNum = React.createClass({
+var TaxRegNum = createClass({
    render: function() {
        if (this.props.display) {
            var taxRegNumLabel = '';
@@ -418,8 +420,8 @@ var TaxRegNum = React.createClass({
                        {taxRegNumLabel} *
                    </label>
                    <div className="col-sm-8">
-                       <input type="text" id="tax_reg_num" className="form-control" maxLength="20"
-                           disabled={this.props.static} value={this.props.value} onChange={this.props.onChange} />
+                       {/*<input type="text" id="tax_reg_num" className="form-control" maxLength="20"
+                           disabled={this.props.static} value={this.props.value} onChange={this.props.onChange} />*/}
                    </div>
                </div>
            )
@@ -430,7 +432,7 @@ var TaxRegNum = React.createClass({
    }
 });
 
-var SectorType = React.createClass({
+var SectorType = createClass({
    render: function() {
        if (this.props.display) {
            var formGroupClass = this.props.inError ? 'form-group has-error' : 'form-group';

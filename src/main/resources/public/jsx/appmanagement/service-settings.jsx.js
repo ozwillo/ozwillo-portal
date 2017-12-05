@@ -4,13 +4,14 @@ import t from '../util/message';
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
 
 import { GeoAreaAutosuggest } from '../util/geoarea-autosuggest.jsx.js';
 import { Modal } from '../util/bootstrap-react.jsx';
 import { FileUploadInput } from '../util/fileuploadinput.jsx';
 import { DashboardUsersManagement } from './dashboard-users.jsx';
 
-var Service = React.createClass({
+var Service = createClass({
     getInitialState: function() {
         return {
             service: this.props.service,
@@ -105,7 +106,7 @@ var Service = React.createClass({
 });
 
 
-let FormField = React.createClass({
+let FormField = createClass({
     render: function() {
         const className = this.props.error ? "form-group has-error" : "form-group";
 
@@ -120,7 +121,7 @@ let FormField = React.createClass({
     }
 });
 
-let ServiceSettings = React.createClass({
+let ServiceSettings = createClass({
     getInitialState: function() {
         return {
             service: this.props.service,

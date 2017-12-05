@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types'
 
 var Showdown = require('showdown');
 var converter = new Showdown.Converter({tables: true});
@@ -38,7 +40,7 @@ var default_org_data = {
     }, errors: [[], []], typeRestriction: ''
 };
 
-var AppModal = React.createClass({
+var AppModal = createClass({
     getInitialState: function () {
         return {
             app: { rating: 0, rateable: true, tos: '', policy: '', longdescription: '', screenshots: null },
@@ -336,7 +338,7 @@ var AppModal = React.createClass({
 });
 
 /** PROPS: app{}, stateApp{}, rateApp(), onInstallButton(), errors[] */
-var AppDescriptionComponent = React.createClass({
+var AppDescriptionComponent = createClass({
     render: function () {
         var stateApp = this.props.stateApp;
 
@@ -424,7 +426,7 @@ var AppDescriptionComponent = React.createClass({
 // INSTALLATION PROCESS
 
 /** PROPS: app{}, errors[], url, orgs[], continueInstallProcess() */
-var InstallForm =  React.createClass({
+var InstallForm =  createClass({
     getInitialState: function() {
         this.getProfileInfo();
         return ({
@@ -601,7 +603,7 @@ var InstallForm =  React.createClass({
     }
 });
 
-var ContactSearchFormControl = React.createClass({
+var ContactSearchFormControl = createClass({
     render: function() {
         var formDivClassName = this.props.error ? "form-group has-error" : "form-group";
 
@@ -629,7 +631,7 @@ var ContactSearchFormControl = React.createClass({
     }
 });
 
-var OrganizationSearchFormControl = React.createClass({
+var OrganizationSearchFormControl = createClass({
     renderType: function () {
         var restriction = this.props.typeRestriction ? this.props.typeRestriction : {company: true, public_body: true};
 
@@ -712,7 +714,7 @@ var OrganizationSearchFormControl = React.createClass({
     }
 });
 
-var AddressComponent = React.createClass({
+var AddressComponent = createClass({
     changeInput: function (fieldname, isNumericField) {
         var changeInput = this.props.changeInput;
         return function (event) {
@@ -779,7 +781,7 @@ var AddressComponent = React.createClass({
 });
 
 /* PROPS: name, className, class_name_div, error, isRequired, (children)*/
-var Field = React.createClass({
+var Field = createClass({
     renderLabel: function(htmlFor, class_name, label, isRequired){
         var cn = isRequired ? class_name + ' required' : class_name;
         return (
@@ -805,8 +807,8 @@ var Field = React.createClass({
 
 //http://stackoverflow.com/questions/25793918/creating-select-elements-in-react-js
 /** PROPS: onChange(), url */
-var CountrySelect = React.createClass({
-    propTypes: { url: React.PropTypes.string.isRequired },
+var CountrySelect = createClass({
+    propTypes: { url: PropTypes.string.isRequired },
     getInitialState: function() { return { options: [], countries: [] } },
     onChange: function(event) {this.props.onChange(event);},
     componentDidMount: function() {
@@ -874,7 +876,7 @@ var CountrySelect = React.createClass({
 });
 
 /** PROPS: app{}, orgs[], url, isOnlyForCitizens() */
-var SetOrganizationComponent = React.createClass({
+var SetOrganizationComponent = createClass({
     getInitialState: function () {
         return {
             orgSearchData: {
@@ -1007,7 +1009,7 @@ var SetOrganizationComponent = React.createClass({
 //END NEW INSTALL PROCESS
 
 /** PROPS: images */
-var Carousel = React.createClass({
+var Carousel = createClass({
     getInitialState: function () { return {index: 0}; },
     back: function () {
         var index = this.state.index;

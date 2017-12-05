@@ -2,15 +2,17 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import t from '../util/message';
 
 import { UsersList, OrgUserPicker } from './common-users.jsx';
 
-var ApplicationUsersManagement = React.createClass({
+var ApplicationUsersManagement = createClass({
     propTypes: {
-        instanceId: React.PropTypes.string.isRequired,
-        authority: React.PropTypes.string.isRequired
+        instanceId: PropTypes.string.isRequired,
+        authority: PropTypes.string.isRequired
     },
     getInitialState: function() {
         return {
@@ -121,9 +123,9 @@ var ApplicationUsersManagement = React.createClass({
     }
 });
 
-var UsersEmailSelector = React.createClass({
+var UsersEmailSelector = createClass({
     propTypes: {
-        addUsers: React.PropTypes.func.isRequired
+        addUsers: PropTypes.func.isRequired
     },
     getInitialState: function() {
         return {

@@ -1,17 +1,17 @@
 'use strict';
 
 import React from 'react';
-
-import t from '../util/message';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 var Rating = require('react-rating');
 
-var RatingWrapper = React.createClass({
+var RatingWrapper = createClass({
     propTypes: {
-        rating: React.PropTypes.number.isRequired,
-        appId: React.PropTypes.string.isRequired,
-        rateable: React.PropTypes.bool.isRequired,
-        rate: React.PropTypes.func.isRequired
+        rating: PropTypes.number.isRequired,
+        appId: PropTypes.string.isRequired,
+        rateable: PropTypes.bool.isRequired,
+        rate: PropTypes.func.isRequired
     },
     render: function () {
         var empty = React.createElement('img', {

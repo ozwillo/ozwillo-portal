@@ -2,6 +2,7 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
 
 import '../../css/specific.css';
 
@@ -12,7 +13,7 @@ import t from '../util/message';
 import { GeoAreaAutosuggest } from '../util/geoarea-autosuggest.jsx';
 import { AppModal } from './store-install-app.jsx'
 
-var AppStore = React.createClass({
+var AppStore = createClass({
     getInitialState: function () {
         return {
             defaultApp : null,
@@ -161,7 +162,7 @@ var AppStore = React.createClass({
 });
 
 
-var SearchAppsForm = React.createClass({
+var SearchAppsForm = createClass({
     handleLanguageClicked: function(event) {
         this.props.updateFilter(null, "selectedLanguage", event.target.value);
     },
@@ -268,7 +269,7 @@ var SearchAppsForm = React.createClass({
     }
 });
 
-var AppList = React.createClass({
+var AppList = createClass({
     renderApps: function() {
         return this.props.apps.map(function (app) {
             return (
@@ -294,7 +295,7 @@ var AppList = React.createClass({
     }
 });
 
-var LoadMore = React.createClass({
+var LoadMore = createClass({
     renderLoading: function() {
         if (this.props.loading) {
             return (
@@ -326,7 +327,7 @@ var LoadMore = React.createClass({
     }
 });
 
-var App = React.createClass({
+var App = createClass({
     componentDidMount: function () {
         if (this.props.app.isDefault) {
             this.openApp();
@@ -367,7 +368,7 @@ var App = React.createClass({
     }
 });
 
-var Indicator = React.createClass({
+var Indicator = createClass({
     render: function () {
         var btns;
         var status = this.props.status;

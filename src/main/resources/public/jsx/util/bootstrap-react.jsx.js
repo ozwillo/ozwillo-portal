@@ -2,6 +2,8 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import t from '../util/message';
 
@@ -20,15 +22,15 @@ import t from '../util/message';
  * Children as content.
  * Open explicitly by calling the open() method. The close() method is also available.
  */
-var Modal = React.createClass({
+var Modal = createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired,
-        successHandler: React.PropTypes.func,
-        cancelHandler: React.PropTypes.func,
-        buttonLabels: React.PropTypes.object,
-        saveButtonClass: React.PropTypes.string,
-        large: React.PropTypes.bool,
-        infobox: React.PropTypes.bool
+        title: PropTypes.string.isRequired,
+        successHandler: PropTypes.func,
+        cancelHandler: PropTypes.func,
+        buttonLabels: PropTypes.object,
+        saveButtonClass: PropTypes.string,
+        large: PropTypes.bool,
+        infobox: PropTypes.bool
     },
     componentDidMount: function () {
         $(ReactDOM.findDOMNode(this)).modal({show: false});
@@ -116,12 +118,12 @@ var Modal = React.createClass({
  * Children as form fields.
  * Open explicitly by calling the open() method. The close() method is also available.
  */
-var ModalWithForm = React.createClass({
+var ModalWithForm = createClass({
     propTypes: {
-        title: React.PropTypes.string.isRequired,
-        successHandler: React.PropTypes.func.isRequired,
-        cancelHandler: React.PropTypes.func,
-        buttonLabels: React.PropTypes.object
+        title: PropTypes.string.isRequired,
+        successHandler: PropTypes.func.isRequired,
+        cancelHandler: PropTypes.func,
+        buttonLabels: PropTypes.object
     },
     componentDidMount: function () {
         $(ReactDOM.findDOMNode(this)).modal({show: false});

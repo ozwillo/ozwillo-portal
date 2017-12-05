@@ -2,15 +2,17 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
+import createClass from 'create-react-class';
+import PropTypes from 'prop-types';
 
 import t from '../util/message';
 
 import { UsersList, OrgUserPicker } from './common-users.jsx';
 
-var DashboardUsersManagement = React.createClass({
+var DashboardUsersManagement = createClass({
     propTypes: {
-        serviceId: React.PropTypes.string.isRequired,
-        instanceId: React.PropTypes.string.isRequired
+        serviceId: PropTypes.string.isRequired,
+        instanceId: PropTypes.string.isRequired
     },
     getInitialState: function() {
         return {
