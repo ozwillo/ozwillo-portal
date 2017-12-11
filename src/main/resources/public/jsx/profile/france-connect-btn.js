@@ -26,7 +26,7 @@ class FranceConnectBtn extends React.Component {
             {
                 userProfile.franceconnect_sub && userProfile.email_verified &&
                <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-lg oz-btn-danger">
-                   {t("franceconnect.form.desynchronize")}
+                   {t("franceconnect.form.unlink")}
                </a>
 
             }
@@ -34,7 +34,7 @@ class FranceConnectBtn extends React.Component {
             {
                 userProfile.franceconnect_sub && !userProfile.email_verified &&
                 <a href={this.props.passwordChangeEndpoint} className="btn btn-lg btn-warning">
-                    {t("franceconnect.form.desynchronize-without-pwd")}
+                    {t("franceconnect.form.unlink-without-pwd")}
                 </a>
             }
 
@@ -43,7 +43,7 @@ class FranceConnectBtn extends React.Component {
                 <fieldset>
                     <input type="hidden" name="continue"
                            value={`${window.location.origin}/my/profile/franceconnect`}/>
-                    <SubmitButton label={t("franceconnect.form.synchronise")} className="btn btn-lg btn-warning"/>
+                    <SubmitButton label={t("franceconnect.form.link")} className="btn btn-lg btn-warning"/>
                 </fieldset>
             }
         </form>;

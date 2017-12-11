@@ -19,7 +19,7 @@ const common = {
     entry: {
         dashboard:      [path.join(PATHS.app, 'jsx/dashboard/dashboard.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         profile:        [path.join(PATHS.app, 'jsx/profile/profile.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        sync_fc_profile:[path.join(PATHS.app, 'jsx/profile/synchronize-fc-profile.jsx.js')].concat(commonEntryPointsLoadersAndServers),
+        link_fc_profile:[path.join(PATHS.app, 'jsx/profile/link-fc-profile.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         network:        [path.join(PATHS.app, 'jsx/network/network.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         myapps:         [path.join(PATHS.app, 'jsx/appmanagement/myapps.jsx.js')].concat(commonEntryPointsLoadersAndServers),
         appstore:       [path.join(PATHS.app, 'jsx/store/store.jsx.js')].concat(commonEntryPointsLoadersAndServers),

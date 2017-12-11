@@ -25,7 +25,7 @@ const languageData = {
 /**
  * This class is used to update user's information with data from FranceConnect
  */
-class SynchronizeFCProfile extends React.Component {
+class LinkFCProfile extends React.Component {
 
     constructor(props) {
         super(props);
@@ -101,12 +101,12 @@ class SynchronizeFCProfile extends React.Component {
         const franceConnectProfile = this.state.franceConnectProfile
 
         if(!userProfile){
-            return <section className="synchronize-fc-profile">
+            return <section className="link-fc-profile">
                 <i className="fa fa-spinner fa-spin spinner"></i>
             </section>
         }
 
-        return <section className="synchronize-fc-profile">
+        return <section className="link-fc-profile">
             <form ref="form" onSubmit={this.save}>
                 <div className="row">
                     <p className="item title">Votre profile</p>
@@ -133,11 +133,11 @@ class SynchronizeFCProfile extends React.Component {
                 }
 
                 <div className="row submit">
-                    <input type="submit" value="save" className="btn oz-btn-save"/>
+                    <input type="submit" value={t('ui.save')}  className="btn oz-btn-save"/>
                 </div>
             </form>
         </section>
     }
 }
 
-ReactDOM.render(<SynchronizeFCProfile />, document.getElementById("synchronize-fc-profile"));
+ReactDOM.render(<LinkFCProfile />, document.getElementById("link-fc-profile"));

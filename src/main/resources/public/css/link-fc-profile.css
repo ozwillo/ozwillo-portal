@@ -1,5 +1,5 @@
 
-.synchronize-fc-profile > form legend {
+.link-fc-profile > form legend {
     color: white;
     margin: 0;
     border: none;
@@ -7,22 +7,22 @@
     font-size: 0.9em;
 }
 
-.synchronize-fc-profile > form .row {
+.link-fc-profile > form .row {
     display: flex;
     flex-direction: row;
     margin: 10px 0;
 }
 
-.synchronize-fc-profile > form .row .item > input{
+.link-fc-profile > form .row .item > input{
     margin: 0 10px;
 }
 
-.synchronize-fc-profile > form .row .title.item {
+.link-fc-profile > form .row .title.item {
     margin: auto;
     font-size: 1.8em;
 }
 
-.synchronize-fc-profile > form .row label.item  {
+.link-fc-profile > form .row label.item  {
     width: 100%;
     height: 100%;
     margin: 0 10px;
@@ -32,12 +32,12 @@
     padding: 5px;
 }
 
-.synchronize-fc-profile .row.submit {
+.link-fc-profile .row.submit {
     justify-content: flex-end;
     margin: 5px 0;
 }
 
-.synchronize-fc-profile {
+.link-fc-profile {
     display: flex;
     flex-direction: column;
 }
