@@ -20,8 +20,14 @@ body {
     display: flex;
     flex-direction: row;
 }
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
 
-.flex-row.middle {
+
+.flex-row.middle,
+.flex-col.middle {
     justify-content: center;
 }
 
@@ -228,7 +234,7 @@ label.required {
     border: 1px solid #9e9e9e;
 }
 
-.oz-btn-save {
+.oz-btn-save, .oz-btn-ok {
     background-color: #00796b;
     color: #fff;
     border: 1px solid #00796b;

@@ -42,6 +42,15 @@
     flex-direction: column;
 }
 
+.link-fc-profile .error-message {
+    font-size: 1.2em;
+}
+
+.link-fc-profile .error-message > p,
+.link-fc-profile .error-message > a{
+    margin: 5px auto;
+}
+
 .spinner {
     font-size: 3em;
     color: white;

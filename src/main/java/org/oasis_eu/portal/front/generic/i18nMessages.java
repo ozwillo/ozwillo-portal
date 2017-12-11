@@ -78,7 +78,7 @@ public final class i18nMessages {
         "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
 
     private static final List<String> franceconnectKeys = Arrays.asList("name", "form.your-profile", "form.link", "form.unlink",
-            "form.unlink-without-pwd");
+            "form.unlink-without-pwd", "error.link-data");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 
