@@ -1,0 +1,52 @@
+#oz-nav.navbar-auth .navbar-nav>li>a:hover,
+#oz-nav.navbar-auth .navbar-nav>li>a.focus,
+#oz-nav.navbar-auth .navbar-nav>li>a:focus {
+    color: #fff;
+}
+
+#oz-nav.navbar-auth .navbar-nav>li>a>img,
+#oz-nav.navbar-noauth .navbar-nav>li>a>img {
+    margin-right: 5px;
+}
+
+#oz-nav.navbar-noauth {
+    margin-bottom: 0;
+    background: #fff;
+    border: none;
+}
+
+#oz-nav.navbar-noauth a {
+    text-transform: uppercase;
+    color: #6f438e !important;
+}
+
+#oz-nav.navbar-noauth #ozwillo-navbar {
+    margin-top: 10px;
+}
+
+#oz-nav.navbar-noauth .navbar-brand {
+    padding: 10px;
+}
+
+#oz-nav.navbar-noauth .navbar-brand>img {
+    max-height: 100%;
+    height: 100%;
+    width: auto;
+    margin: 0 auto;
+}
+
+#oz-nav.navbar-auth {
+    margin-bottom: 0;
+    background: #4c2d62;
+    border: none;
+}
+
+#oz-nav.navbar-auth .navbar-nav>li>a {
+    color: #fff;
+}
+
+@media (min-width: 768px) {
+    #oz-nav.navbar {
+        border-radius: 0;
+    }
+}

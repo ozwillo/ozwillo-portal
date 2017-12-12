@@ -1,0 +1,11 @@
+.datepicker.datepicker-dropdown {
+    color: #6F4388;
+    background-color: #fff;
+    font-weight: 300;
+}
+
+.datepicker.datepicker-dropdown td.day.active{
+    color: #fff;
+    background-color: #6F4388;
+    font-weight: bolder;
+}

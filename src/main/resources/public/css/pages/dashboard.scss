@@ -1,0 +1,121 @@
+#dashboard .nav-tabs {
+    border-bottom-color: #4c2d62;
+}
+
+#dashboard ul.nav.nav-tabs > li {
+    margin-right: 10px;
+}
+
+#dashboard ul.nav.nav-tabs > li > a {
+    font-size: 20px;
+    color: #fff;
+    border-radius: 0;
+    border: 1px solid #4c2d62;
+}
+
+#dashboard ul.nav.nav-tabs > li.active > a {
+    background-color: #4c2d62;
+}
+
+#dashboard ul.nav.nav-tabs > li > a:hover {
+    background-color: #fff;
+    color: #6f438e;
+    border-color: #fff;
+}
+
+#dashboard ul.nav.nav-tabs > li > a i {
+    margin-left: 5px;
+}
+
+#dashboard div.all-apps {
+    padding-left: 0;
+}
+
+#dashboard div.appzone {
+    position: relative;
+    float: left;
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+
+#dashboard div.appzone div.dropzone {
+    float: left;
+    height: 160px;
+    width: 20px;
+    transition: width 0.2s;
+    -moz-transition: width 0.2s;
+    -webkit-transition: width 0.2s;
+    -o-transition: width 0.2s;
+    -ms-transition: width 0.2s;
+}
+
+#dashboard div.appzone div.app {
+    float: left;
+    overflow: hidden;
+    height: 160px;
+    width: 120px;
+    padding-top: 10px;
+    border-radius: 5px;
+    text-align:center;
+    position:relative;
+    display:inline-block;
+}
+
+#dashboard div.appzone div.app span.badge-notifications {
+    position: absolute;
+    right:17px;
+    top:0;
+    background:red;
+    text-align: center;
+    border-radius: 30px 30px 30px 30px;
+    color:white;
+    padding:5px 8px;
+    font-size:12px;
+}
+
+#dashboard div.appzone div.app.pending img {
+    filter: grayscale(100%);
+    -webkit-filter: grayscale(50%);
+    -moz-filter: grayscale(100%);
+    -ms-filter: grayscale(100%);
+}
+
+#dashboard div.appzone div.app.pending p {
+    color: #d3d3d3;
+}
+
+#dashboard div.appzone div.app:hover {
+    background: #4c2d62;
+}
+
+#dashboard div.appzone.delete-app {
+    width: 140px;
+}
+
+#dashboard div.appzone.delete-app div.app {
+    margin-left: 20px;
+}
+
+#dashboard div.appzone div.app div.action-icon {
+    height: 64px;
+    width: 64px;
+    margin: auto;
+}
+
+#dashboard div.appzone div.app div.action-icon a {
+    color: #fff;
+}
+
+/* See non-webkit sol : http://codepen.io/anon/pen/oXxKpE?editors=110 */
+@supports (-webkit-line-clamp: 4) {
+    #dashboard div.appzone div.app p {
+        display: -webkit-box;
+        -webkit-line-clamp: 4;
+        -webkit-box-orient: vertical;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+    #dashboard div.appzone div.app p:after {
+        display: none;
+    }
+}
