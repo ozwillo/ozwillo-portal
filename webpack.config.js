@@ -14,36 +14,24 @@ const PATHS = {
 const commonEntryPointsLoadersAndServers = ['bootstrap-loader', 'font-awesome-webpack'];
 const devEntryPointsLoadersAndServers = ['webpack-dev-server/client?http://localhost:3000', 'webpack/hot/only-dev-server'];
 
+const extractCSS = new ExtractTextPlugin({ filename: 'bundle.css' });
+
 const common = {
     entry: {
-        dashboard:      [path.join(PATHS.app, 'jsx/dashboard/dashboard.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        profile:        [path.join(PATHS.app, 'jsx/profile/profile.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        sync_fc_profile:[path.join(PATHS.app, 'jsx/profile/synchronize-fc-profile.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        network:        [path.join(PATHS.app, 'jsx/network/network.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        myapps:         [path.join(PATHS.app, 'jsx/appmanagement/myapps.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        appstore:       [path.join(PATHS.app, 'jsx/store/store.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        notifications:  [path.join(PATHS.app, 'jsx/notifications.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        contact:        [path.join(PATHS.app, 'jsx/contact.jsx.js')].concat(commonEntryPointsLoadersAndServers)
+        index: [path.join(PATHS.app, 'js/main.js'), path.join(PATHS.app, 'css/index.css')].concat(commonEntryPointsLoadersAndServers)
     },
     output: {
         path: PATHS.build,
-        filename: "[name].bundle.js",
-        chunkFilename: "[id].chunk.js",
+        filename: "bundle.js",
         publicPath: '/build/'
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ["commons", "manifest"],
-            minChunks: 3
-        }),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
         }),
         new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(bg|ca|en|es|fr|it|tr)$/)
     ],
-    // we have no .jsx for now but planned to rename from .jsx.js to .jsx
-    resolve: { extensions: [ '.js', '.jsx' ] },
     module: {
         loaders: [
             /* bootstrap-sass-loader */
@@ -65,6 +53,8 @@ const common = {
                     }
                 }
             },
+
+            //Ressources
             {
                 test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
                 use: [{
@@ -96,43 +86,36 @@ if(TARGET === 'start' || !TARGET) {
         },
         devtool: 'source-map',
         entry: {
-            dashboard:      devEntryPointsLoadersAndServers,
-            profile:        devEntryPointsLoadersAndServers,
-            network:        devEntryPointsLoadersAndServers,
-            myapps:         devEntryPointsLoadersAndServers,
-            store:          devEntryPointsLoadersAndServers,
-            notifications:  devEntryPointsLoadersAndServers,
-            contact:        devEntryPointsLoadersAndServers
+            index: devEntryPointsLoadersAndServers
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
-            new DashboardPlugin()
+            new DashboardPlugin(),
+            extractCSS
         ],
         module: {
             rules: [
-                // CSS
                 {
                     test: /\.css$/,
-                    use: [{
-                        loader: "style-loader", // creates style nodes from JS strings
-                        options: { sourceMap: true }
-                    }, {
-                        loader: "css-loader", // translates CSS into CommonJS
-                        options: { url: false }
-                    }]
+                    exclude: /node_modules/,
+                    use: extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [ 'css-loader' ]
+                    })
                 },
-                // SASS
                 {
-                    test: /\.sass$/,
-                    use: [{
-                        loader: "sass-loader", // compiles Sass to CSS
-                        options: { sourceMap: true }
-                    }]
+                    test: /\.scss$/,
+                    exclude: /node_modules/,
+                    use: extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [ 'css-loader', 'sass-loader' ]
+                    })
                 }
             ]
         }
     });
 }
+
 if(TARGET === 'build' || TARGET === 'stats') {
     module.exports = merge(common, {
         plugins: [
@@ -148,28 +131,37 @@ if(TARGET === 'build' || TARGET === 'stats') {
                     warnings: false
                 }
             }),
-            new ExtractTextPlugin('style.css')
+            extractCSS
         ],
         module: {
             rules: [
-                // CSS
                 {
                     test: /\.css$/,
-                    use: [{
-                        loader: "style-loader", // creates style nodes from JS strings
-                        options: { sourceMap: false }
-                    }, {
-                        loader: "css-loader", // translates CSS into CommonJS
-                        options: { url: false }
-                    }]
+                    exclude: /node_modules/,
+                    use: extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [
+                            {
+                                loader: "css-loader", // translates CSS into CommonJS
+                                options: { minimize: true }
+                            }
+                        ]
+                    })
                 },
-                // SASS
                 {
-                    test: /\.sass$/,
-                    use: [{
-                        loader: "sass-loader", // compiles Sass to CSS
-                        options: { sourceMap: false }
-                    }]
+                    test: /\.scss$/,
+                    exclude: /node_modules/,
+                    use: extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [
+                            {
+                                loader: "css-loader", // translates CSS into CommonJS
+                                options: { minimize: true }
+                            },{
+                                loader: 'sass-loader'
+                            }
+                        ]
+                    })
                 }
             ]
         }

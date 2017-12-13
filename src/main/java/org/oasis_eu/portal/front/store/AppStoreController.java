@@ -47,24 +47,8 @@ public class AppStoreController extends PortalController {
         return true;
     }
 
-    @ModelAttribute("i18n")
-    public Map<String, String> i18n(HttpServletRequest request) throws JsonProcessingException {
-        Locale locale = RequestContextUtils.getLocale(request);
-        Map<String, String> i18n = new HashMap<>();
 
-        i18n.putAll(i18nMessages.getI18n_networkkeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_languagekeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_storekeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
-
-        return i18n;
-    }
-
-
-    @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
+    /*@RequestMapping(method = RequestMethod.GET, value = {"", "/"})
     public String main(@PathVariable String lang, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
         if (requiresLogout()) {
             return "redirect:/logout";
@@ -83,7 +67,7 @@ public class AppStoreController extends PortalController {
         model.addAttribute("defaultApp", null);
 
         return "store/store";
-    }
+    }*/
 
 
     @RequestMapping(value = {"/service/{serviceId}", "/service/{serviceId}/*"}, method = RequestMethod.GET)

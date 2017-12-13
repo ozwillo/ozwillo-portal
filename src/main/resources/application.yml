@@ -130,13 +130,13 @@ datacore:
   # dev requires (MUST) set the IP in /etc/hosts, and installing gen'd cert :
   # go to https://data.ozwillo-dev.eu, right click on lock, export certificate to plnm-dev-dc.cer,
   # then import it and check :
-  # sudo keytool -import -alias plnm-dev-dc -keystore /usr/lib/jvm/jdk1.8.xx/jre/lib/security/cacerts -file plnm-dev-dc.cer
-  # keytool -list -v -keystore /usr/lib/jvm/jdk1.8.xx/jre/lib/security/cacerts
-  # On recent Mac OS, cacerts is in /Library/Java/JavaVirtualMachines/jdk1.8.0_XX.jdk/Contents/Home/jre/lib/security
+  # sudo keytool -import -alias plnm-dev-dc -keystore /usr/util/jvm/jdk1.8.xx/jre/util/security/cacerts -file plnm-dev-dc.cer
+  # keytool -list -v -keystore /usr/util/jvm/jdk1.8.xx/jre/util/security/cacerts
+  # On recent Mac OS, cacerts is in /Library/Java/JavaVirtualMachines/jdk1.8.0_XX.jdk/Contents/Home/jre/util/security
   # (or execute /usr/libexec/java_home to find where Java is installed on your MacOS system)
   #url: https://data.ozwillo-dev.eu    # dev, doesn't work with current gen'd cert
   # alt_uri ??
-  systemAdminUser:  #Get it using Node.js lib / with portal clientId
+  systemAdminUser:  #Get it using Node.js util / with portal clientId
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 

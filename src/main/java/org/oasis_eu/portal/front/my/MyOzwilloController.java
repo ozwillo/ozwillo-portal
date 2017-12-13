@@ -38,13 +38,13 @@ public class MyOzwilloController extends PortalController {
     public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
         Locale locale = RequestContextUtils.getLocale(request);
 
-        Map<String, String> i18n = new HashMap<>();
+        /*Map<String, String> i18n = new HashMap<>();
         i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18nDashboardKeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18nDashboardKeys(locale, messageSource));*/
 
-        return i18n;
+        return i18nMessages.getI18n_all(locale, messageSource);
     }
 
 
@@ -67,12 +67,12 @@ public class MyOzwilloController extends PortalController {
         return myNavigationService.getNavigation("dashboard");
     }
 
-    @RequestMapping(method = RequestMethod.GET, value = {"/", "", "/dashboard"})
+    @RequestMapping(method = RequestMethod.GET, value = {"/**"})
     public String show(Model model) {
         if (requiresLogout()) {
             return "redirect:/logout";
         }
-        return "dashboard/dashboard";
+        return "/index";
     }
 
 
