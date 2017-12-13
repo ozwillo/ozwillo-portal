@@ -3,18 +3,31 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,700);
 
 /* Components */
+@import 'components/btn.css';
+@import 'components/datepicker.css';
+@import 'components/footer.css';
 @import 'components/header.css';
+@import 'components/layout.css';
+@import 'components/modal.css';
+@import 'components/nav.css';
+@import 'components/notification.css';
+@import 'components/react-autosuggest.css';
+@import 'components/select.css';
 
 
 /* Pages */
-@import 'pages/dashboard.scss';
-
+@import 'pages/dashboard.css';
+@import 'pages/my-apps.css';
+@import 'pages/organization.css';
+@import 'pages/profile.css';
+@import 'pages/store.css';
+@import 'pages/synchronize-fc-profile.css';
 
 /* styles needed to have a responsive fixed footer
      while having main content (with page-row-expanded class) taking up all available space */
 
 html,
-body { height: 100%; }
+body, #root { height: 100%; }
 
 body {
     display: table;
@@ -43,7 +56,6 @@ label.required {
 /* page-row */
 .page-row {
     display: table-row;
-    height: 1px;
 }
 
 .page-row-expanded { height: 100%; }

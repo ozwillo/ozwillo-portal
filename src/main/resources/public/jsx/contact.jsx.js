@@ -1,6 +1,6 @@
 'use strict';
 
-import '../css/specific.css';
+import '../css/index.css';
 
 import t from './util/message';
 

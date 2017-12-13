@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
 
-import '../../css/specific.css';
+import '../../css/index.css';
 
 import '../csrf';
 import '../my';

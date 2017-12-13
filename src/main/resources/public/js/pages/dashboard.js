@@ -1,17 +1,13 @@
 'use strict';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
-import PropTypes from 'prop-types';
 
-import '../csrf';
-import '../my';
+import '../util/csrf';
+import '../util/my';
 import t from '../util/message';
 
-import {ModalWithForm, Modal} from '../util/bootstrap-react.jsx';
-
-import '../../css/index.css';
+import { ModalWithForm, Modal } from '../components/bootstrap-react';
 
 var Dashboard = createClass({
     notificationsChecked: false,
@@ -342,35 +338,37 @@ var Dashboard = createClass({
     },
     render: function () {
         return (
-            <div className="row">
-                <div className="col-md-12">
-                    <DashList
-                        loading={this.state.loadingDashboards}
-                        dashboards={this.state.dashboards}
-                        currentDash={this.state.dash}
-                        dragging={this.state.dragging}
-                        draggingPending={this.state.draggingPending}
-                        switchToDashboard={this.switchToDashboard}
-                        moveToDash={this.moveToDash}
-                        renameDash={this.renameDash}
-                        removeDash={this.removeDash}
-                        createDash={this.createDash} />
-                    <Desktop
-                        dash={this.state.dash}
-                        loading={this.state.loadingApps}
-                        apps={this.state.apps}
-                        pendingApps={this.state.pendingApps}
-                        deleteApp={this.deleteApp}
-                        deletePending={this.deletePending}
-                        startDrag={this.startDrag}
-                        startDragPending={this.startDragPending}
-                        endDrag={this.endDrag}
-                        endDragPending={this.endDragPending}
-                        dragging={this.state.dragging}
-                        draggingPending={this.state.draggingPending}
-                        dropCallback={this.reorderApps} />
+            <section className="container" id="dashboard">
+                <div className="row">
+                    <div className="col-md-12">
+                        <DashList
+                            loading={this.state.loadingDashboards}
+                            dashboards={this.state.dashboards}
+                            currentDash={this.state.dash}
+                            dragging={this.state.dragging}
+                            draggingPending={this.state.draggingPending}
+                            switchToDashboard={this.switchToDashboard}
+                            moveToDash={this.moveToDash}
+                            renameDash={this.renameDash}
+                            removeDash={this.removeDash}
+                            createDash={this.createDash} />
+                        <Desktop
+                            dash={this.state.dash}
+                            loading={this.state.loadingApps}
+                            apps={this.state.apps}
+                            pendingApps={this.state.pendingApps}
+                            deleteApp={this.deleteApp}
+                            deletePending={this.deletePending}
+                            startDrag={this.startDrag}
+                            startDragPending={this.startDragPending}
+                            endDrag={this.endDrag}
+                            endDragPending={this.endDragPending}
+                            dragging={this.state.dragging}
+                            draggingPending={this.state.draggingPending}
+                            dropCallback={this.reorderApps} />
+                    </div>
                 </div>
-            </div>
+            </section>
         );
     }
 });
@@ -397,7 +395,7 @@ var DashList = createClass({
                         moveToDash={this.props.moveToDash(dash)}
                         rename={this.props.renameDash(dash)}
                         remove={this.props.removeDash(dash)}
-                        />
+                    />
                 );
             }.bind(this));
 
@@ -453,8 +451,8 @@ var DashItem = createClass({
                 return (
                     <li className="active" role="presentation">
                         <a onClick={function (e) {
-                                e.preventDefault();
-                            }}>{this.props.dash.name}
+                            e.preventDefault();
+                        }}>{this.props.dash.name}
                             <DashActions remove={this.props.remove} edit={this.edit} primary={this.props.dash.main}/>
                         </a>
                     </li>
@@ -630,7 +628,7 @@ var DeleteApp = createClass({
 
         return (
             <div className={className}
-                onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop} >
+                 onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop} >
                 <Modal title={t('my.confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel}
                        buttonLabels={buttonLabels} ref="modal">
                     <p>{t('my.confirm-remove-app-long')}</p>
@@ -671,7 +669,7 @@ var Desktop = createClass({
                     endDrag={this.props.endDrag}
                     dragging={this.props.dragging}
                     dropCallback={this.props.dropCallback}
-                    />;
+                />;
             }.bind(this));
 
 
@@ -684,7 +682,7 @@ var Desktop = createClass({
                             app={app}
                             startDrag={this.props.startDragPending}
                             endDrag={this.props.endDragPending}
-                            />
+                        />
                     );
                 }
             }
@@ -807,9 +805,29 @@ var AppIcon = createClass({
     }
 });
 
-ReactDOM.render(
-    <Dashboard />,
-    document.getElementById("dashboard")
-);
+class DashboardWrapper extends React.Component {
 
-module.exports = { Dashboard };
+    render() {
+        return <div className="oz-body page-row page-row-expanded">
+
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-12">
+                        <h1 className="text-center">
+                            <img src="/img/apps.png" />
+                            <span>{t('my.apps.title')}</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div className="oz-body-content">
+                <Dashboard/>
+            </div>
+
+            <div className="push"></div>
+        </div>;
+    }
+}
+
+export default DashboardWrapper;
