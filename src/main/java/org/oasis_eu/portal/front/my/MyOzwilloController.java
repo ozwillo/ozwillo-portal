@@ -1,22 +1,21 @@
 package org.oasis_eu.portal.front.my;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.front.generic.i18nMessages;
-import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -28,27 +27,7 @@ public class MyOzwilloController extends PortalController {
 
     //private static final Logger logger = LoggerFactory.getLogger(MyOzwilloController.class);
 
-    @Autowired
-    private MyNavigationService myNavigationService;
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @ModelAttribute("i18n")
-    public Map<String, String> getI18n(HttpServletRequest request) throws JsonProcessingException {
-        Locale locale = RequestContextUtils.getLocale(request);
-
-        /*Map<String, String> i18n = new HashMap<>();
-        i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18nDashboardKeys(locale, messageSource));*/
-
-        return i18nMessages.getI18n_all(locale, messageSource);
-    }
-
-
-    @ModelAttribute("notif_i18n")
+    /*@ModelAttribute("model")
     public Map<String, String> getNotifI18n(HttpServletRequest request) throws JsonProcessingException {
         Locale locale = RequestContextUtils.getLocale(request);
 
@@ -60,26 +39,20 @@ public class MyOzwilloController extends PortalController {
         i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
 
         return i18n;
-    }
+    }*/
 
-    @ModelAttribute("navigation")
-    public List<MyNavigation> getNavigation() {
-        return myNavigationService.getNavigation("dashboard");
-    }
+    /*@RequestMapping(method = RequestMethod.GET, value = "/notif")
+    public String notifications(Model model, HttpServletRequest request) {
+        model.addAttribute("navigation", myNavigationService.getNavigation("notifications"));
+        return "my-notif";
+    }*/
 
-    @RequestMapping(method = RequestMethod.GET, value = {"/**"})
-    public String show(Model model) {
+    @RequestMapping(method = RequestMethod.GET, value = "*")
+    public String show() {
         if (requiresLogout()) {
             return "redirect:/logout";
         }
         return "/index";
-    }
-
-
-    @RequestMapping(method = RequestMethod.GET, value = "/notif")
-    public String notifications(Model model, HttpServletRequest request) {
-        model.addAttribute("navigation", myNavigationService.getNavigation("notifications"));
-        return "my-notif";
     }
 
 }

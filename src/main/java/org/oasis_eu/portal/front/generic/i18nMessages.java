@@ -23,7 +23,7 @@ public final class i18nMessages {
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
         "no-matches-found", "yes");
 
-    private static final List<String> dashboardKeys = Arrays.asList("create", "confirm-delete-dash", "confirm-delete-dash-long", "confirm-remove-app",
+    private static final List<String> dashboardKeys = Arrays.asList("dashboard", "create", "confirm-delete-dash", "confirm-delete-dash-long", "confirm-remove-app",
         "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
 
     private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",

@@ -1,13 +1,18 @@
 'use strict';
 
 import React from 'react';
+import PropTypes from 'prop-types';
 import createClass from 'create-react-class';
+import { connect } from 'react-redux';
 
 import '../util/csrf';
 import '../util/my';
-import t from '../util/message';
 
 import { ModalWithForm, Modal } from '../components/bootstrap-react';
+
+
+
+import { fetchDashboardConfig } from "../actions/config";
 
 var Dashboard = createClass({
     notificationsChecked: false,
@@ -379,7 +384,7 @@ var DashList = createClass({
         if (this.props.loading) {
             return (
                 <div className="text-center">
-                    <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}
                 </div>
             );
         } else {
@@ -408,6 +413,9 @@ var DashList = createClass({
         }
     }
 });
+DashList.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 var DashItem = createClass({
     getInitialState: function () {
@@ -490,18 +498,17 @@ var DashActions = createClass({
         this.refs.modal.open();
     },
     render: function () {
-
         if (this.props.primary) {
             return (
                 <i className="fa fa-pencil" onClick={this.props.edit}></i>
             );
         } else {
-            var buttonLabels = {"save": t('ui.confirm'), "cancel": t('ui.cancel')};
+            var buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
             return (
                 <span>
-                    <Modal title={t('my.confirm-delete-dash')} successHandler={this.remove}
+                    <Modal title={this.context.t('my.confirm-delete-dash')} successHandler={this.remove}
                            buttonLabels={buttonLabels} saveButtonClass="oz-btn-danger" ref="modal">
-                        <span>{t('my.confirm-delete-dash-long')}</span>
+                        <span>{this.context.t('my.confirm-delete-dash-long')}</span>
                     </Modal>
 
                     <i className="fa fa-pencil" onClick={this.props.edit}></i>
@@ -572,16 +579,16 @@ var CreateDashboard = createClass({
         }
     },
     render: function () {
-        var buttonLabels = {"save": t('ui.confirm'), "cancel": t('ui.cancel')};
+        var buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
         var formGroupClass = this.state.error ? 'form-group has-error' : 'form-group';
 
         return (
             <li>
-                <ModalWithForm title={t('create')} successHandler={this.submit} buttonLabels={buttonLabels} ref="modal">
+                <ModalWithForm title={this.context.t('create')} successHandler={this.submit} buttonLabels={buttonLabels} ref="modal">
                     <div className={formGroupClass}>
-                        <label htmlFor="dashboardName" className="col-sm-4 control-label required">{t('name')} * </label>
+                        <label htmlFor="dashboardName" className="col-sm-4 control-label required">{this.context.t('name')} * </label>
                         <div className="col-sm-8">
-                            <input type="text" id="dashboardName" className="form-control" placeholder={t('name')} onChange={this.change}/>
+                            <input type="text" id="dashboardName" className="form-control" placeholder={this.context.t('name')} onChange={this.change}/>
                         </div>
                     </div>
                 </ModalWithForm>
@@ -590,6 +597,9 @@ var CreateDashboard = createClass({
         );
     }
 });
+CreateDashboard.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 var DeleteApp = createClass({
     getInitialState: function () {
@@ -624,18 +634,18 @@ var DeleteApp = createClass({
     },
     render: function () {
         var className = "delete-app appzone" + (this.state.over ? " over" : "");
-        var buttonLabels = {"save": t('ui.confirm'), "cancel": t('ui.cancel')};
+        var buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
 
         return (
             <div className={className}
                  onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop} >
-                <Modal title={t('my.confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel}
+                <Modal title={this.context.t('my.confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel}
                        buttonLabels={buttonLabels} ref="modal">
-                    <p>{t('my.confirm-remove-app-long')}</p>
+                    <p>{this.context.t('my.confirm-remove-app-long')}</p>
                 </Modal>
                 <div className="app">
                     <div className="action-icon">
-                        <span title={t('my.drop-to-remove')}>
+                        <span title={this.context.t('my.drop-to-remove')}>
                             <i className="fa fa-trash fa-3x fa-border"></i>
                         </span>
                     </div>
@@ -644,18 +654,20 @@ var DeleteApp = createClass({
         );
     }
 });
+DeleteApp.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 var Desktop = createClass({
     getInitialState: function () {
         return {dragging: false};
     },
     render: function () {
-
         if (this.props.loading) {
             return (
                 <div className="row">
                     <div className="col-sm-12 text-center">
-                        <i className="fa fa-spinner fa-spin"></i> {t('ui.loading')}
+                        <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}
                     </div>
                 </div>
             );
@@ -713,6 +725,9 @@ var Desktop = createClass({
         }
     }
 });
+Desktop.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 var AppZone = createClass({
     render: function () {
@@ -732,7 +747,7 @@ var AddNew = createClass({
                 <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback("last")}/>
                 <div className="app">
                     <div className="action-icon">
-                        <a href={store_root} title={t('my.click-to-add')} draggable="false">
+                        <a href={store_root} title={this.context.t('my.click-to-add')} draggable="false">
                             <i className="fa fa-plus fa-3x fa-border"></i>
                         </a>
                     </div>
@@ -741,6 +756,10 @@ var AddNew = createClass({
         );
     }
 });
+AddNew.contextTypes = {
+    t: PropTypes.func.isRequired
+};
+
 
 var PendingApp = createClass({
     render: function () {
@@ -807,6 +826,10 @@ var AppIcon = createClass({
 
 class DashboardWrapper extends React.Component {
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     render() {
         return <div className="oz-body page-row page-row-expanded">
 
@@ -815,7 +838,7 @@ class DashboardWrapper extends React.Component {
                     <div className="col-md-12">
                         <h1 className="text-center">
                             <img src="/img/apps.png" />
-                            <span>{t('my.apps.title')}</span>
+                            <span>{this.context.t('my.dashboard')}</span>
                         </h1>
                     </div>
                 </div>
@@ -830,4 +853,4 @@ class DashboardWrapper extends React.Component {
     }
 }
 
-export default DashboardWrapper;
+export default connect()(DashboardWrapper);

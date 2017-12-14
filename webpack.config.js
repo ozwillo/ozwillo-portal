@@ -49,7 +49,12 @@ const common = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['env', 'react', 'stage-0']
+                        presets: ['react', 'stage-0',
+                            ["env", {
+                                "targets": {
+                                    "browsers": ["last 2 Chrome versions"]
+                                }
+                            }]]
                     }
                 }
             },

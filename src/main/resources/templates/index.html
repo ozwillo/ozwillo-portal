@@ -34,13 +34,6 @@
     <meta name="msapplication-config" content="@{/img/favicons/browserconfig.xml?v=OmmGW0j2pJ}" />
     <meta name="theme-color" content="#6f438e" />
 
-    <script data-th-inline="javascript" type="text/javascript">
-        var messages = /*[[${i18n}]]*/ {};
-        var devmode = /*[[${devmode}]]*/ false;
-        var notificationsEnabled = /*[[${notificationsEnabled}]]*/ true;
-        var currentLanguage = /*[[${currentLocaleLanguage}]]*/ 'en';
-    </script>
-
     <!-- bundle.css -->
     <link rel="stylesheet" type="text/css" href="/build/bundle.css" />
 </head>
@@ -52,14 +45,16 @@
 
     <!-- Script ! -->
     <script data-th-inline="javascript" type="text/javascript">
-        var image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
-        var contact_service = /*[[@{/my/api/contact}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
+        const messages = /*[[${i18n}]]*/ {};
+        const devmode = /*[[${devmode}]]*/ false;
+        const image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
+        const contact_service = /*[[@{/my/api/contact}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
 
         //dashboard
-        var store_root = /*[[@{|/${currentLanguage.locale.language}/store|}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/templates/store';
+        const store_root = /*[[@{|/${currentLanguage.locale.language}/store|}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/templates/store';
 
 
-        var dash_service = /*[[@{/my/api/dashboard/}]]*/ '';
+        const dash_service = /*[[@{/my/api/dashboard/}]]*/ '';
     </script>
 
     <script type="text/javascript" data-th-src="@{/build/bundle.js}"></script>
