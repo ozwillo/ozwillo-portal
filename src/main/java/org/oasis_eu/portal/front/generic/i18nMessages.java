@@ -21,10 +21,10 @@ public final class i18nMessages {
     private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
-        "no-matches-found", "yes");
+        "no-matches-found", "yes", "datastore", "logout");
 
-    private static final List<String> dashboardKeys = Arrays.asList("dashboard", "create", "confirm-delete-dash", "confirm-delete-dash-long", "confirm-remove-app",
-        "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
+    private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "network", "apps", "create", "confirm-delete-dash",
+        "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
 
     private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",
         "form.motive", "form.motive.question", "form.motive.feedback", "form.motive.application-problem",

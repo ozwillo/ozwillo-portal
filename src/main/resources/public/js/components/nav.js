@@ -1,9 +1,12 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
-import t from '../util/message';
-
 class Nav extends React.Component {
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
 
     render() {
         return <nav className="navbar navbar-default navbar-auth" id="oz-nav">
@@ -20,31 +23,56 @@ class Nav extends React.Component {
 
                 <div className="collapse navbar-collapse" id="ozwillo-navbar">
                     <ul className="nav navbar-nav">
-                        {/*<li data-th-each="item : ${navigation}">
-                            <a href="#" data-th-className="${item.isActive()}? 'active' : ''" data-th-href="@{'/my/' + ${item.id}}">
-                                <img data-th-src="@{'/img/' + ${item.id} + '.png'}"
-                                     alt="" data-th-alt="#{'my.' + ${item.id}}"/>
-                                <span data-th-text="#{'my.' + ${item.id}}">Menu</span>
-                            </a>
-                        </li>*/}
+                        <li>
+                            {/*className="${item.isActive()}? 'active' : ''"*/}
+                            <Link to="/my/">
+                                <img src="/img/dashboard.png"
+                                     alt={this.context.t('my.dashboard')}/>
+                                <span>{this.context.t('my.dashboard')}</span>
+                            </Link>
+                        </li>
+                        <li>
+                            {/*className="${item.isActive()}? 'active' : ''"*/}
+                            <Link to="/my/profile">
+                                <img src="/img/profile.png"
+                                     alt={this.context.t('my.profile')}/>
+                                <span>{this.context.t('my.profile')}</span>
+                            </Link>
+                        </li>
+                        <li>
+                            {/*className="${item.isActive()}? 'active' : ''"*/}
+                            <Link to="/my/network">
+                                <img src="/img/network.png"
+                                     alt={this.context.t('my.network')}/>
+                                <span>{this.context.t('my.network')}</span>
+                            </Link>
+                        </li>
+                        <li>
+                            {/*className="${item.isActive()}? 'active' : ''"*/}
+                            <Link to="/my/apps">
+                                <img src="/img/apps.png"
+                                     alt={this.context.t('my.apps')}/>
+                                <span>{this.context.t('my.apps')}</span>
+                            </Link>
+                        </li>
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
                         <li>
                             <a href="">
                                 <img src="/img/store-icon-white.png" alt="Store icon"/>
-                                <span>{t('ui.appstore')}</span>
+                                <span>{this.context.t('ui.appstore')}</span>
                             </a>
                         </li>
                         <li>
                             <a href="">
                                 <img src="/img/data-icon-white.png" alt="Data icon"/>
-                                <span>{t('ui.datastore')}</span>
+                                <span>{this.context.t('ui.datastore')}</span>
                             </a>
                         </li>
                         <li>
                             <a href="/logout">
                                 <img src="/img/close.png" alt="Logout icon"/>
-                                <span>{t('ui.logout')}</span>
+                                <span>{this.context.t('ui.logout')}</span>
                             </a>
                         </li>
                     </ul>
