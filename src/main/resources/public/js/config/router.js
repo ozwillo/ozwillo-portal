@@ -10,6 +10,7 @@ import Layout from '../components/layout';
 import Dashboard from '../pages/dashboard';
 import Profile from '../pages/profile';
 import Network from '../pages/network';
+import Apps from '../pages/myapps';
 
 class AppRouter extends React.Component {
     render() {
@@ -18,6 +19,7 @@ class AppRouter extends React.Component {
                 <Switch>
                     <Route path="/my/profile" component={Profile}/>
                     <Route path="/my/network" component={Network}/>
+                    <Route path="/my/apps" component={Apps}/>
                     <Route path="/(my/)?(dashboard)?" component={Dashboard}/>
                 </Switch>
             </Layout>
