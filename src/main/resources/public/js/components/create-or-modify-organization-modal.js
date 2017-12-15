@@ -352,11 +352,11 @@ var Tab1 = createClass({
                     <legend>{this.context.t('my.network.organization.profile_information')}</legend>
                     <Field name="contact_lastname" error={$.inArray("contact_lastname", this.state.errors) != -1} isRequired={true}>
                         <input className="form-control" ref="contact_lastname" id="contact_lastname" type="text"
-                               value={this.state.contact_lastname} onChange={this.handleInputChange} />
+                               value={this.state.contact_lastname || ""} onChange={this.handleInputChange} />
                     </Field>
                     <Field name="contact_name" error={$.inArray("contact_name", this.state.errors) != -1} isRequired={true}>
                         <input className="form-control" ref="contact_name" id="contact_name" type="text"
-                               value={this.state.contact_name} onChange={this.handleInputChange} />
+                               value={this.state.contact_name || ""} onChange={this.handleInputChange} />
                     </Field>
                 </fieldset>
             )
