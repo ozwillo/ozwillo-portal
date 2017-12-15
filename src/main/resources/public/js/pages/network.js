@@ -406,7 +406,12 @@ var Organization = createClass({
 
         return (
             <div className="organization">
-                {dialogs}
+                {
+                    dialogs.map((item, index) => {
+                        return React.cloneElement(item, { key: index });
+                    })
+                }
+
                 <div className="row organization-header">
                     <div className="col-sm-6">
                         <h4 title={this.props.org.id}>{this.props.org.name}</h4>
