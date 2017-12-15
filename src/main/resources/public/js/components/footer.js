@@ -1,7 +1,9 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 class Footer extends React.Component {
     render() {
+        const siteMapFooter = this.props.siteMapFooter;
         return <footer className="page-row">
             <div className="container-fluid">
                 <div className="row footer">
@@ -12,14 +14,29 @@ class Footer extends React.Component {
                                     <img src="/img/logo-ozwillo-footer.png" />
                                 </div>
                             </div>
-                           {/* <div data-th-each="entry,row: ${sitemapFooter}" className="col-xs-6 col-sm-3 col-md-2 text-center">
-                                <div data-th-each="sme: ${entry.getValue()}" data-th-remove="tag">
-                                    <a className="footer-link" data-th-href="${sme.url}" data-th-text="${sme.label}"></a>
-                                </div>
-                                <span id="contact" data-th-if="${row.index == 3}">
-                                    <!-- Here, we'll insert the link that calls the contact modal in React's contact.jsx module -->
-                                </span>
-                            </div>*/}
+                            {
+                                siteMapFooter && Object.keys(siteMapFooter).map((colKey) => {
+                                    const col = siteMapFooter[colKey];
+
+                                    return <div key={colKey} className="col-xs-6 col-sm-3 col-md-2 text-center">
+                                        {
+                                            col.map((row, index) => {
+                                                return <section key={index}>
+                                                    <div>
+                                                        <a className="footer-link" href={row.url}>{row.label}</a>
+                                                    </div>
+                                                    {
+                                                        index === 3 && <span id="contact">
+                                                            {/*Here, we'll insert the link that calls the contact modal in React's contact.jsx module*/}
+                                                        </span>
+                                                    }
+                                                </section>
+
+                                            })
+                                        }
+                                    </div>
+                                })
+                            }
                         </div>
                     </div>
 
@@ -29,23 +46,23 @@ class Footer extends React.Component {
                             <div className="col-md-3">
                                 <div className="logo-twitter">
                                     <a href="https://twitter.com/ozwillo">
-                                        <img data-th-src="@{/img/twitter.jpg}" />
+                                        <img src="/img/twitter.jpg" />
                                     </a>
                                 </div>
                             </div>
                             <div className="col-md-9">
                                 <div className="pull-right top">
                                     <a href="https://www.ozwillo.com/en/oz/projects">
-                                        <img data-th-src="@{/img/cip.jpg}" />
+                                        <img src="/img/cip.jpg" />
                                     </a>
                                     <a href="https://www.ozwillo.com/en/oz/projects">
-                                        <img data-th-src="@{/img/eu.jpg}" />
+                                        <img src="/img/eu.jpg" />
                                     </a>
                                     <a href="https://www.ozwillo.com/en/oz/projects">
-                                        <img data-th-src="@{/img/investir.jpg}" />
+                                        <img src="/img/investir.jpg" />
                                     </a>
                                     <a href="https://www.ozwillo.com/en/oz/projects">
-                                        <img data-th-src="@{/img/RP.jpg}" />
+                                        <img src="/img/RP.jpg" />
                                     </a>
                                 </div>
                             </div>
@@ -57,4 +74,10 @@ class Footer extends React.Component {
     }
 }
 
-export default Footer;
+const mapStateToProps = state => {
+    return {
+        siteMapFooter: state.config.siteMapFooter
+    }
+}
+
+export default connect(mapStateToProps)(Footer);
