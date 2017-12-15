@@ -16,16 +16,6 @@ import java.util.concurrent.ExecutionException;
 @RequestMapping("/my/profile")
 public class ProfileController extends PortalController {
 
-    @Autowired
-    private MyNavigationService myNavigationService;
-
-
-    @ModelAttribute("navigation")
-    private List<MyNavigation> getNavigation() {
-        return myNavigationService.getNavigation("profile");
-    }
-
-
     @RequestMapping(method = RequestMethod.GET, value = "/franceconnect")
     public String synchronizeProfileToFranceConnect() throws ExecutionException {
         if (requiresLogout()) {
