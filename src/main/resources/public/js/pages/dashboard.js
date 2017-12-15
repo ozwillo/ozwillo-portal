@@ -3,7 +3,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import createClass from 'create-react-class';
-import { connect } from 'react-redux';
 
 import '../util/csrf';
 import '../util/my';
@@ -837,7 +836,7 @@ class DashboardWrapper extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
-                            <img src="/img/apps.png" />
+                            <img src="/img/profile-lg.png" />
                             <span>{this.context.t('my.dashboard')}</span>
                         </h1>
                     </div>
@@ -853,4 +852,4 @@ class DashboardWrapper extends React.Component {
     }
 }
 
-export default connect()(DashboardWrapper);
+export default DashboardWrapper;
