@@ -23,8 +23,10 @@ export default (state = defaultState, action) => {
     switch(action.type) {
         case FETCH_SITE_MAP_FOOTER:
             nextState.siteMapFooter = siteMapFooter(state.siteMapFooter, action);
+            break;
         case FETCH_LANGUAGE:
             nextState.language = action.language;
+            break;
         default:
             return state;
     }
