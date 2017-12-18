@@ -47,7 +47,7 @@ public class MyOzwilloController extends PortalController {
         return "my-notif";
     }*/
 
-    @RequestMapping(method = RequestMethod.GET, value = "*")
+    @RequestMapping(method = RequestMethod.GET, value = "/**")
     public String show() {
         if (requiresLogout()) {
             return "redirect:/logout";

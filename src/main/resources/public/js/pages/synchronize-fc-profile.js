@@ -1,14 +1,11 @@
 'use strict';
 
 import React from "react";
-import ReactDOM from "react-dom";
+import { withRouter } from 'react-router';
 import "../util/csrf";
 import "../util/my";
 
-import {
-    Form,
-    InputText
-} from "../util/form";
+import PropTypes from "prop-types";
 
 
 const languageData = {
@@ -38,6 +35,10 @@ class SynchronizeFCProfile extends React.Component {
         this.save = this.save.bind(this);
     }
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     componentDidMount() {
         //Load FranceConnect data
         $.ajax({
@@ -55,7 +56,7 @@ class SynchronizeFCProfile extends React.Component {
 
             if(!Object.keys(franceConnectProfile).length){
                 //No data to update
-                window.location.assign('/my/profile');
+                this.props.history.push('/my/profile');
             }
 
             this.setState({
@@ -88,7 +89,7 @@ class SynchronizeFCProfile extends React.Component {
             contentType: 'application/json',
             data: JSON.stringify(jsonData)
         }).done(() => {
-            window.location.assign('/my/profile');
+            this.props.history.push('/my/profile');
         }).fail((xhr, status, err) => {
             console.error('Update user\'s data: ', err);
         })
@@ -115,7 +116,7 @@ class SynchronizeFCProfile extends React.Component {
                 {
                     Object.keys(this.state.franceConnectProfile).map((item) => {
                         return <fieldset key={item}>
-                            <legend>{t(languageData[item])}</legend>
+                            <legend>{this.context.t(languageData[item])}</legend>
                             <div className="row">
                                 <label className="item">
                                     <input id={item} type="radio" name={item} value={userProfile[item]}/>
@@ -138,5 +139,36 @@ class SynchronizeFCProfile extends React.Component {
         </section>
     }
 }
+const SynchronizeFCProfileWithRouter = withRouter(SynchronizeFCProfile);
 
-ReactDOM.render(<SynchronizeFCProfile />, document.getElementById("synchronize-fc-profile"));
+class SynchronizeFCProfileWrapper extends React.Component {
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
+    render() {
+        return <div className="oz-body page-row page-row-expanded">
+
+            <div className="container-fluid">
+                <div className="row">
+                    <div className="col-md-12">
+                        <h1 className="text-center">
+                            <img src="/img/profile-lg.png" />
+                            <span>{this.context.t('my.profile')}</span>
+                        </h1>
+                    </div>
+                </div>
+            </div>
+
+            <div className="oz-body-content">
+                <SynchronizeFCProfileWithRouter/>
+            </div>
+
+            <div className="push"></div>
+        </div>;
+    }
+}
+
+
+export default SynchronizeFCProfileWrapper;
