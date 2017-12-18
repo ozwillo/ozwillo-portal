@@ -12,6 +12,7 @@ import Profile from '../pages/profile';
 import SynchroniseFCProfile from '../pages/synchronize-fc-profile';
 import Network from '../pages/network';
 import Apps from '../pages/myapps';
+import Notification from '../pages/notifications';
 
 class AppRouter extends React.Component {
     render() {
@@ -22,6 +23,7 @@ class AppRouter extends React.Component {
                     <Route path="/my/profile" component={Profile}/>
                     <Route path="/my/network" component={Network}/>
                     <Route path="/my/apps" component={Apps}/>
+                    <Route path="/my/notif" component={Notification}/>
                     <Route path="/(my/)?(dashboard)?" component={Dashboard}/>
                 </Switch>
             </Layout>
