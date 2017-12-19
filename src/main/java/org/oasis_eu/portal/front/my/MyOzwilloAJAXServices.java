@@ -7,6 +7,8 @@ import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuSet;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.services.MyNavigationService;
+import org.oasis_eu.spring.kernel.model.UserInfo;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
@@ -31,8 +33,11 @@ public class MyOzwilloAJAXServices extends BaseAJAXServices {
     @Autowired
     private MyNavigationService navigationService;
 
-    @GetMapping("/config")
-    public Config getConfig(HttpServletRequest request) throws JsonProcessingException {
+    @Autowired
+    private UserInfoService userInfoService;
+
+    @GetMapping("/configAndUserInfo")
+    public ConfigAndUserInfo getConfig(HttpServletRequest request) throws JsonProcessingException {
         // trad
         Locale locale = RequestContextUtils.getLocale(request);
         Map<String, Map<String, String>> i18n = new HashMap<>();
@@ -40,11 +45,10 @@ public class MyOzwilloAJAXServices extends BaseAJAXServices {
 
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter();
 
-        return new Config(locale.getLanguage(), i18n, siteMapFooter);
+        return new ConfigAndUserInfo(locale.getLanguage(), i18n, siteMapFooter, userInfoService.currentUser());
     }
 
-
-    public static class Config {
+    public static class ConfigAndUserInfo {
         @JsonProperty
         String language;
 
@@ -54,10 +58,15 @@ public class MyOzwilloAJAXServices extends BaseAJAXServices {
         @JsonProperty
         Map<Integer, List<SiteMapEntry>> siteMapFooter;
 
-        public Config(String language, Map<String, Map<String, String>> i18n, Map<Integer, List<SiteMapEntry>> siteMapFooter) {
+        @JsonProperty
+        UserInfo userInfo;
+
+        public ConfigAndUserInfo(String language, Map<String, Map<String, String>> i18n, Map<Integer,
+                List<SiteMapEntry>> siteMapFooter, UserInfo userInfo) {
             this.language = language;
             this.i18n = i18n;
             this.siteMapFooter = siteMapFooter;
+            this.userInfo = userInfo;
         }
     }
 
