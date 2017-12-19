@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 class Header extends React.Component {
@@ -28,12 +29,13 @@ class Header extends React.Component {
 
                         <div className="col-md-4 my-oasis">
                             <p className="text-center welcome" data-toggle="tooltip" data-placement="bottom"
-                               title="Vous avez 0 notification en attente">
+                               title={ this.props.message }>
                                 <Link to="/my/notif">
                                     <span>Welcome Benoit</span>
                                     <span className="badge badge-notifications">
-                                0 <span className="sr-only">Unread notifications</span>
-                            </span>
+                                        { this.props.notificationsCount }
+                                        <span className="sr-only">{ this.props.message }</span>
+                                    </span>
                                 </Link>
                             </p>
                         </div>
@@ -45,4 +47,11 @@ class Header extends React.Component {
 
 }
 
-export default Header;
+const mapStateToProps = (state) => {
+    return {
+        notificationsCount: state.notifications.count,
+        message: state.notifications.message,
+    }
+}
+
+export default connect(mapStateToProps)(Header);

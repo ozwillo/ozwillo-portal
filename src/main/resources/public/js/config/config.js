@@ -1,3 +1,4 @@
 export default {
-    notificationInterval: 20000
+    notificationsInterval: 20000,
+    notificationsCountInterval: 60000
 };

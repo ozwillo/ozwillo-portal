@@ -6,12 +6,14 @@ import store from './util/store';
 import I18n from "redux-i18n"
 
 import App from './app';
-import I18nLoader from './components/config-loader';
+import ConfigLoader from './components/config-loader';
+import NotificationsCountLoader from './components/notifications-count-loader';
 
 ReactDOM.render(
     <Provider store={store}>
         <I18n translations={{}} initialLang="en" useReducer={true}>
-            <I18nLoader/>
+            <ConfigLoader/>
+            <NotificationsCountLoader />
             <App />
         </I18n>
     </Provider>,

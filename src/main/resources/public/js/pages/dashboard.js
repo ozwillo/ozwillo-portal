@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import createClass from 'create-react-class';
 
 import '../util/csrf';
-import '../util/my';
 
 import { ModalWithForm, Modal } from '../components/bootstrap-react';
 

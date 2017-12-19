@@ -1,21 +1,23 @@
 'use strict';
 
 import '../util/csrf';
-import '../util/my';
 
 import React from 'react';
+import PropTypes from "prop-types";
+import { connect } from 'react-redux';
 import createClass from 'create-react-class';
 
 import config from '../config/config';
-import PropTypes from "prop-types";
-const notificationInterval = config.notificationInterval;
+const notificationInterval = config.notificationsInterval;
 
+//actions
+import { fetchNotifications, deleteNotification } from "../actions/notifications";
 
 var NotificationTable = createClass({
     getInitialState: function() {
         return {
-            n: [],
-            apps: [],
+            n: this.props.notifications || [],
+            apps: this.props.apps || [],
             currentSort: {
                 prop: 'date', // date, changing to dataText to test issue #217
                 dir: -1
@@ -23,31 +25,35 @@ var NotificationTable = createClass({
             filter: {
                 appId: null,
                 status: "UNREAD"
-            }
+            },
+            intervalId: 0
         };
+    },
+    componentWillReceiveProps(nextProps){
+        this.setState({
+            n: nextProps.notifications.sort(this.sortElement),
+            apps: nextProps.apps
+        });
+    },
+    loadNotifications: function() {
+        this.props.fetchNotifications(this.state.filter.status);
     },
     componentDidMount: function() {
         this.loadNotifications();
-        setInterval(this.loadNotifications, notificationInterval);
-    },
-    loadNotifications: function() {
-        $.ajax({
-            url: notificationService,
-            data: {status: this.state.filter.status},
-            dataType: 'json',
-            success: (data) =>
-                this.setState({ apps: data.apps, n: data.notifications.sort(this.sortElement) }),
-            error: function(xhr, status, err) {
-                console.error(notificationService, status, err.toString());
-            }.bind(this)
+        const intervalId = setInterval(this.loadNotifications, notificationInterval);
+
+        this.setState({
+            intervalId
         });
     },
+    componentWillUnmount() {
+        clearInterval(this.state.intervalId);
+    },
     sortBy: function(criterion) {
-        var component = this;
-        return function() {
-            var currentSort = component.state.currentSort;
+        return () => {
+            const currentSort = this.state.currentSort;
 
-            var sortDirection = -1;
+            let sortDirection = -1;
             if (currentSort.prop == criterion) {
                 // we are already sorting by the given criterion, so let's sort inversely
                 sortDirection = currentSort.dir * -1;
@@ -55,12 +61,11 @@ var NotificationTable = createClass({
             currentSort.prop = criterion;
             currentSort.dir = sortDirection;
 
-            var n = component.state.n.sort(this.sortElement);
-            var state = component.state;
-            state.n = n;
-            state.currentSort = currentSort;
-            component.setState(state);
-        }.bind(this);
+            this.setState({
+                n: this.state.n.sort(this.sortElement),
+                currentSort
+            });
+        };
     },
     sortElement: function(a,b){
         var currentSort = this.state.currentSort;
@@ -104,25 +109,8 @@ var NotificationTable = createClass({
         state.filter.appId = appId;
         this.setState(state);
     },
-    removeNotif: function(id) {
-        var notifs = this.state.n.filter(function(n) {return n.id != id;});
-
-        this.setState({n:notifs});
-
-        $.ajax({
-            url: notificationService + "/" + id,
-            method: 'delete',
-            datatype: 'json',
-            success: function(data) {
-                // nothing much to say is there?
-            }.bind(this),
-            error: function(xhr, status, err) {
-                console.error(notificationService, status, err.toString());
-            }.bind(this)
-        });
-    },
     render: function () {
-        var callback = this.removeNotif;
+        var callback = this.props.deleteNotification;
         var appId = this.state.filter.appId;
         var status = this.state.filter.status;
         var notificationNodes = this.state.n
@@ -167,6 +155,26 @@ var NotificationTable = createClass({
 NotificationTable.contextTypes = {
     t: PropTypes.func.isRequired
 };
+
+const mapStateToProps = state => {
+    return {
+        notifications: state.notifications.notifications,
+        apps: state.notifications.apps
+    };
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchNotifications(status, sort) {
+            return dispatch(fetchNotifications(status, sort));
+        },
+        deleteNotification(id) {
+            return dispatch(deleteNotification(id));
+        }
+    };
+};
+
+const NotificationTableWithRedux = connect(mapStateToProps, mapDispatchToProps)(NotificationTable)
 
 var SortableHeader = createClass({
     render: function () {
@@ -287,7 +295,7 @@ class NotificationTableWrapper extends React.Component {
             </div>
 
             <div className="oz-body-content">
-                <NotificationTable/>
+                <NotificationTableWithRedux/>
             </div>
 
             <div className="push"></div>

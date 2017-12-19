@@ -3,7 +3,6 @@
 import React from "react";
 import { withRouter } from 'react-router';
 import "../util/csrf";
-import "../util/my";
 
 import PropTypes from "prop-types";
 

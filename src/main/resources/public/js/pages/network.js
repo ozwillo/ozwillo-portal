@@ -7,7 +7,6 @@ import PropTypes from 'prop-types';
 import moment from 'moment';
 
 import '../util/csrf';
-import '../util/my';
 
 import { Modal } from '../components/bootstrap-react';
 import SearchOrganizationModal from '../components/search-organization-modal';

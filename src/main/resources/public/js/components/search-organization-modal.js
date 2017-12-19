@@ -441,6 +441,9 @@ var TaxRegNum = createClass({
 
    }
 });
+TaxRegNum.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 var SectorType = createClass({
    render: function() {

@@ -5,7 +5,6 @@ import PropTypes from 'prop-types';
 import renderIf from 'render-if';
 import moment from 'moment';
 import '../util/csrf';
-import '../util/my';
 
 import FranceConnectBtn from '../components/france-connect-btn';
 

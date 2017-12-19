@@ -1,7 +1,6 @@
 'use strict';
 
 import '../util/csrf';
-import '../util/my';
 
 import React from 'react';
 import { connect } from 'react-redux';
