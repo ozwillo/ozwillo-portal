@@ -41,7 +41,7 @@ class SynchronizeFCProfile extends React.Component {
     componentDidMount() {
         //Load FranceConnect data
         $.ajax({
-            url: franceconnect_service
+            url: '/my/api/profile/franceconnect'
         })
         .done(data => {
             //Search different data between user profile and franceConnect
@@ -83,7 +83,7 @@ class SynchronizeFCProfile extends React.Component {
 
         //Update user's data
         $.ajax({
-            url: profile_service,
+            url: '/my/api/profile',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(jsonData)

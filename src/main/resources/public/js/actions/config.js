@@ -1,9 +1,8 @@
-export const FETCH_SITE_MAP_FOOTER = 'FETCH_SITE_MAP_FOOTER';
-export const FETCH_LANGUAGE = 'FETCH_LANGUAGE';
+export const FETCH_CONFIG = 'FETCH_CONFIG';
 
-export const fetchSiteMapFooterAction = (siteMapFooter) => {
+export const fetchConfigAction = (config) => {
     return {
-        type: FETCH_SITE_MAP_FOOTER,
-        siteMapFooter
+        type: FETCH_CONFIG,
+        config
     }
 };

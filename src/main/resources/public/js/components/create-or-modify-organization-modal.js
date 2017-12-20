@@ -50,7 +50,7 @@ export const CreateOrModifyOrganizationModal = createClass({
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><img src={image_root + "cross.png"} /></span>
+                                <span aria-hidden="true"><img src="/img/cross.png" /></span>
                             </button>
                             <h3 className="modal-title" id="modalLabel">{modalTitle}</h3>
                             <h4>{modalSubTitle}</h4>
@@ -100,7 +100,7 @@ export const CreateOrModifyOrganizationForm = createClass({
     },
     createOrganization: function(organization) {
         $.ajax({
-            url: network_service + '/create-dc-organization',
+            url: '/my/api/network/create-dc-organization',
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify(organization),
@@ -120,7 +120,7 @@ export const CreateOrModifyOrganizationForm = createClass({
     },
     updateOrganization: function(organization){
         $.ajax({
-            url: network_service + '/update-dc-organization',
+            url: '/my/api/network/update-dc-organization',
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify(organization),
@@ -267,7 +267,7 @@ var Tab1 = createClass({
     },
     componentWillMount: function() {
         $.ajax({
-            url: network_service + '/general-user-info',
+            url: '/my/api/network/general-user-info',
             type: 'get',
             contentType: 'json',
             success: function (data) {
@@ -435,7 +435,7 @@ var Tab2 = createClass({
     handleTaxRegNumUpdated: function(event) {
         var tax_reg_num = event.target.value;
         $.ajax({
-            url: network_service + "/check-regnumber-availability",
+            url: '/my/api/network/check-regnumber-availability',
             dataType: 'json',
             data: {
                 country_uri: this.state.organization.country_uri,
@@ -643,7 +643,7 @@ var TaxRegActivityAutosuggest = createClass({
         if (query.trim().length < 2) return;
 
         $.ajax({
-            url: store_service + "/dc-taxRegActivity",
+            url: "/api/store/dc-taxRegActivity",
             dataType: "json",
             data: { country_uri: this.props.countryUri, q: query },
             type: 'get',

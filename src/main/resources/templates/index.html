@@ -43,33 +43,6 @@
 
     <div class="push"></div>
 
-    <!-- Script ! -->
-    <script data-th-inline="javascript" type="text/javascript">
-        const messages = /*[[${i18n}]]*/ {};
-        const devmode = /*[[${devmode}]]*/ false;
-        const image_root = /*[[@{/img/}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/public/img/';
-        const contact_service = /*[[@{/my/api/contact}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
-
-        //Dashboard page
-        const store_root = /*[[@{|/${currentLanguage.locale.language}/store|}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/templates/store';
-        const dash_service = /*[[@{/my/api/dashboard/}]]*/ '';
-
-        //Profile page
-        const profile_service = /*[[@{/my/api/profile}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
-        const locale_service = /*[[@{/api/locale}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
-        const store_service = /*[[@{/api/store}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto/store'; // for select2
-        const franceconnect_service = "/my/api/profile/franceconnect";
-
-        //Network
-        const network_service = /*[[@{/my/api/network}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
-
-        //MyApps
-        const apps_service = /*[[@{/my/api/myapps}]]*/ '/portal-parent/oasis-portal-front/src/main/resources/_proto';
-
-        //Notifications
-        const notificationService = /*[[@{/my/api/notifications}]]*/ '../_proto/notif.json';
-    </script>
-
     <script type="text/javascript" data-th-src="@{/build/bundle.js}"></script>
 
     <div data-th-if="${production}">

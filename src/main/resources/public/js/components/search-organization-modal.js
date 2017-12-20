@@ -34,7 +34,7 @@ var SearchOrganizationModal = createClass({
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><img src={image_root + "cross.png"} /></span>
+                                <span aria-hidden="true"><img src="/img/cross.png" /></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{this.context.t('search.organization.search-organization')}</h4>
                         </div>
@@ -76,7 +76,7 @@ var SearchOrganizationForm = createClass({
     },
     onOrganizationSelected: function(organization) {
         $.ajax({
-            url: network_service + "/kernel-organization",
+            url: "◊/kernel-organization",
             dataType: 'json',
             data: { dc_id: organization.id },
             type: 'head',
@@ -125,7 +125,7 @@ var SearchOrganizationForm = createClass({
             this.setState({ searching: true });
 
             $.ajax({
-                url: network_service + '/search-organization',
+                url: '/my/api/network/search-organization',
                 type: 'get',
                 contentType: 'json',
                 data: { country: this.state.country, country_uri: this.state.country_uri, legal_name: this.state.legal_name,
@@ -188,7 +188,7 @@ var SearchOrganizationForm = createClass({
                     <form onSubmit={this.searchOrganization} className="form-horizontal">
                         <div className="form-group">
                             <CountrySelect ref="country"
-                                           url={store_service + "/dc-countries"}
+                                           url="/api/store/dc-countries"
                                            countryUri={this.state.country_uri}
                                            onCountryChange={this.onCountryChange} />
                             <LegalName ref="legal_name"
@@ -269,7 +269,7 @@ var CountrySelect = createClass({
     },
     getUserCountry: function() {
         $.ajax({
-            url: network_service + '/general-user-info',
+            url: '/my/api/network/general-user-info',
             type: 'get',
             contentType: 'json',
             success: function (data) {
@@ -339,7 +339,7 @@ var LegalName = createClass({
         if (query.trim().length < 3) return;
 
         $.ajax({
-            url: network_service + "/search-organizations",
+            url: "/my/api/network/search-organizations",
             dataType: 'json',
             data: { country_uri: this.props.countryUri, query: query },
             type: 'get',

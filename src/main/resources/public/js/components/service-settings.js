@@ -29,7 +29,7 @@ var Service = createClass({
     },
     saveService: function() {
         $.ajax({
-            url: apps_service + "/service/" + this.props.service.service.id,
+            url: `/my/api/myapps/service/${this.props.service.service.id}`,
             type: 'post',
             dataType: 'json',
             contentType: 'application/json',
@@ -45,13 +45,13 @@ var Service = createClass({
                 }
             }.bind(this),
             error: function(xhr, status, err) {
-                console.error(apps_service + "/service/" + this.props.service.service.id, status, err.toString());
+                console.error(`/my/api/myapps/service/${this.props.service.service.id}`, status, err.toString());
             }.bind(this)
         });
     },
     reloadService: function() {
         $.ajax({
-            url: apps_service + "/service/" + this.props.service.service.id,
+            url: `/my/api/myapps/service/${this.props.service.service.id}`,
             type: 'get',
             dataType: 'json',
             success: function(data) {

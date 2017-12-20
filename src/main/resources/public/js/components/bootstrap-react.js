@@ -5,7 +5,6 @@ import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
-import t from '../util/message';
 
 /**
  * Bootstrap Modal encapsulation.
@@ -14,7 +13,7 @@ import t from '../util/message';
  *  - title - String (will be shown as title)
  *  - successHandler (optional) - callback that is called on validation (not required if infobox is true)
  *  - cancelHandler (optional) - callback that is called on cancel
- *  - buttonLabels (optional) - a map of strings with keys "save", "cancel". By default will map to t('ui.save'), t('ui.cancel')
+ *  - buttonLabels (optional) - a map of strings with keys "save", "cancel". By default will map to this.context.t('ui.save'), this.context.t('ui.cancel')
  *  - saveButtonClass (optional) - a additional CSS class to apply to the "save" button (defaults to oz-btn-save)
  *  - large (optional) - if true, will use the modal-lg class on the dialog
  *  - infobox (optional) - if true, will display only a single inverted OK button (label key = 'ok') rather than save / cancel
@@ -22,7 +21,7 @@ import t from '../util/message';
  * Children as content.
  * Open explicitly by calling the open() method. The close() method is also available.
  */
-var Modal = createClass({
+const Modal = createClass({
     propTypes: {
         title: PropTypes.string.isRequired,
         successHandler: PropTypes.func,
@@ -60,7 +59,7 @@ var Modal = createClass({
             if (this.props.buttonLabels) {
                 label = this.props.buttonLabels["ok"];
             } else {
-                label = t('ui.close');
+                label = this.context.t('ui.close');
             }
             buttons = [
                 <button type="button" key="close" className="btn btn-default-inverse" onClick={this.close}>{label}</button>
@@ -71,8 +70,8 @@ var Modal = createClass({
                 cancelLabel = this.props.buttonLabels["cancel"];
                 saveLabel = this.props.buttonLabels["save"];
             } else {
-                cancelLabel = t('ui.cancel');
-                saveLabel = t('ui.save');
+                cancelLabel = this.context.t('ui.cancel');
+                saveLabel = this.context.t('ui.save');
             }
             var saveButtonClass = this.props.saveButtonClass ? "btn " + this.props.saveButtonClass : "btn oz-btn-save";
 
@@ -90,7 +89,7 @@ var Modal = createClass({
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><img src={image_root + "cross.png"} /></span>
+                                <span aria-hidden="true"><img src="/img/cross.png" /></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{this.props.title}</h4>
                         </div>
@@ -106,6 +105,9 @@ var Modal = createClass({
         );
     }
 });
+Modal.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 /**
  * Bootstrap Modal encapsulation with a form inside.
@@ -113,12 +115,12 @@ var Modal = createClass({
  *  - title - String (will be shown as title)
  *  - successHandler - callback that is called on validation
  *  - cancelHandler - callback that is called on cancel
- *  - buttonLabels (optional) - a map of strings with keys "save", "cancel". By default will map to t('ui.save'), t('ui.cancel')
+ *  - buttonLabels (optional) - a map of strings with keys "save", "cancel". By default will map to this.context.t('ui.save'), this.context.t('ui.cancel')
  *
  * Children as form fields.
  * Open explicitly by calling the open() method. The close() method is also available.
  */
-var ModalWithForm = createClass({
+const ModalWithForm = createClass({
     propTypes: {
         title: PropTypes.string.isRequired,
         successHandler: PropTypes.func.isRequired,
@@ -154,8 +156,8 @@ var ModalWithForm = createClass({
             cancelLabel = this.props.buttonLabels["cancel"];
             saveLabel = this.props.buttonLabels["save"];
         } else {
-            cancelLabel = t('ui.cancel');
-            saveLabel = t('ui.save');
+            cancelLabel = this.context.t('ui.cancel');
+            saveLabel = this.context.t('ui.save');
         }
 
         buttons = [
@@ -169,7 +171,7 @@ var ModalWithForm = createClass({
                     <div className="modal-content">
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><img src={image_root + "cross.png"} /></span>
+                                <span aria-hidden="true"><img src="/img/cross.png" /></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{this.props.title}</h4>
                         </div>
@@ -187,5 +189,8 @@ var ModalWithForm = createClass({
         );
     }
 });
+ModalWithForm.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 module.exports = { Modal, ModalWithForm };

@@ -27,24 +27,24 @@ var ApplicationUsersManagement = createClass({
     loadUsers: function() {
         $.ajax({
             // only users that are app_user (so not those that are !app_user or app_admin)
-            url: apps_service + "/users/instance/" + this.props.instanceId + "?app_admin=false&pending=true",
+            url: `my/api/myapps/users/instance/${this.props.instanceId}?app_admin=false&pending=true`,
             dataType: 'json',
             method: 'get'
         })
         .done(users => this.setState({ users: users }))
         .fail((xhr, status, err) => {
-            console.error(apps_service + "/users/instance/" + this.props.instanceId, status, err.toString());
+            console.error('/my/api/myapps/users/instance/' + this.props.instanceId, status, err.toString());
             this.setState({ users: []});
         });
     },
     queryUsers: function(query, callback) {
         $.ajax({
-            url: apps_service + "/users/network/" + this.props.authority + "?q=" + query,
+            url: `/my/api/myapps/users/network${this.props.authority}?q=${query}`,
             dataType: 'json',
             method: 'get',
             success: callback,
             error: function (xhr, status, err) {
-                console.error(apps_service + "/users/network/" + this.props.authority + "?q=" + query, status, err.toString());
+                console.error(`/my/api/myapps/users/network${this.props.authority}?q=${query}`, status, err.toString());
             }.bind(this)
         });
     },
@@ -78,15 +78,15 @@ var ApplicationUsersManagement = createClass({
             });
         }.bind(this);
     },
-    saveUsers: function () {
+    saveUsers: function () {``
         $.ajax({
-            url: apps_service + "/users/instance/" + this.props.instanceId,
+            url: `/my/api/myapps/users/instance/${this.props.instanceId}`,
             dataType: 'json',
             contentType: 'application/json',
             type: 'post',
             data: JSON.stringify(this.state.users),
             error: function (xhr, status, err) {
-                console.error(apps_service + "/users/instance/" + this.props.instanceId, status, err.toString());
+                console.error(`/my/api/myapps/users/instance/${this.props.instanceId}`, status, err.toString());
             }.bind(this)
         });
         this.close();
@@ -99,7 +99,7 @@ var ApplicationUsersManagement = createClass({
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close"
                                     onClick={this.close}>
-                                <span aria-hidden="true"><img src={image_root + "cross.png"}/></span>
+                                <span aria-hidden="true"><img src="/img/cross.png"/></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{this.context.t('manage_users')}</h4>
                         </div>

@@ -24,7 +24,7 @@ var MyApps = createClass({
     },
     componentDidMount: function () {
         $.ajax({
-            url: apps_service + "/authorities",
+            url: '/my/api/myapps/authorities',
             dataType: "json",
             success: function (data) {
                 this.setState({
@@ -93,7 +93,7 @@ var InstanceList = createClass({
         this.setState(this.getInitialState());
 
         $.ajax({
-            url: apps_service + "/instances/" + this.props.id,
+            url: `/my/api/myapps/instances/${this.props.id}`,
             dataType: "json",
             success: function (data) {
                 this.setState({
@@ -173,7 +173,7 @@ var Instance = createClass({
         var instance = this.props.instance;
         instance = { applicationInstance: { id: instance.applicationInstance.id, status: status } }; // else if the whole instance, Spring REST says "syntaxically incorrect" i.e. can't unmarshall
         $.ajax({
-            url: apps_service + "/set-status/" + this.props.id,
+            url: `/my/api/myapps/set-status/${this.props.id}`,
             //dataType: 'json', // else parsererror on return
             contentType: 'application/json',
             type: 'post',

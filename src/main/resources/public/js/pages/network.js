@@ -67,7 +67,7 @@ var OrganizationsList = createClass({
     },
     loadOrganizations: function() {
         $.ajax({
-            url: network_service + "/organizations",
+            url: '/my/api/network/organizations',
             type: 'get',
             dataType: 'json',
             success: function(data) {
@@ -80,7 +80,7 @@ var OrganizationsList = createClass({
         });
     },
     updateOrganization: function(updatedOrganization, optionalOperation) {
-        var url = network_service + "/organization/" + updatedOrganization.id;
+        var url = `/my/api/network/organization/${updatedOrganization.id}`;
         if (optionalOperation) {
             url += '/' + optionalOperation;
         }
@@ -163,7 +163,7 @@ var Organization = createClass({
     },
     loadMembers: function () {
         $.ajax({
-            url: network_service + "/organization/" + this.props.org.id + "/members",
+            url: `/my/api/network/organization/${this.props.org.id}/members`,
             dataType: 'json',
             type: 'get'
         }).done(data => {
@@ -174,7 +174,7 @@ var Organization = createClass({
     },
     loadPendingMembers: function () {
         $.ajax({
-            url: network_service + "/organization/" + this.props.org.id + "/pending-members",
+            url: `/my/api/network/organization/${this.props.org.id}/pending-members`,
             dataType: 'json',
             type: 'get'
         }).done(data => {
@@ -194,7 +194,7 @@ var Organization = createClass({
         }
         else {
             $.ajax({
-                url: network_service + "/invite/" + this.props.org.id,
+                url: `/my/api/network/invite/${this.props.org.id}`,
                 type: 'post',
                 contentType: 'application/json',
                 data: JSON.stringify({email: state.invite.email}),
@@ -223,7 +223,7 @@ var Organization = createClass({
     },
     removeInvitation: function(pMember) {
         $.ajax({
-            url: network_service + "/remove-invitation/"+ this.props.org.id,
+            url: `/my/api/network/remove-invitation/${this.props.org.id}`,
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify({id: pMember.id, email: pMember.email, etag: pMember.pending_membership_etag}),
@@ -237,7 +237,7 @@ var Organization = createClass({
     },
     leave: function() {
         $.ajax({
-            url: network_service + "/leave",
+            url: "/my/api/network/leave",
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify({organization: this.props.org.id}),
@@ -277,7 +277,7 @@ var Organization = createClass({
                 event.preventDefault();
             }
             $.ajax({
-                url: network_service + "/organization/" + this.props.org.id + "/membership/" + member.id,
+                url: `/my/api/network/organization/${this.props.org.id}/membership/${member.id}`,
                 type: 'delete'
             }).done(() => {
                 this.setState({ members: this.state.members.filter(m => m.id != member.id) })
@@ -288,7 +288,7 @@ var Organization = createClass({
     },
     updateMember: function (member, admin) {
         $.ajax({
-            url: network_service + "/organization/" + this.props.org.id + "/membership/" + member.id,
+            url: `/my/api/network/organization/${this.props.org.id}/membership/${member.id}`,
             type: 'post',
             data: { admin: admin }
         }).fail((xhr, status, err) => {
@@ -613,7 +613,7 @@ var InformationDialog = createClass({
     loadDCOrganizations: function() {
         if (this.props.org.dc_id) {
             $.ajax({
-                url: network_service + "/organization",
+                url: 'my/api/network/organization',
                 type: 'get',
                 contentType: 'json',
                 data: {dc_id: this.props.org.dc_id},

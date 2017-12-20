@@ -36,14 +36,13 @@ class Profile extends React.Component {
 
     componentDidMount() {
         $.ajax({
-            url: profile_service
+            url: '/my/api/profile'
+        }).done(data => {
+            this.setState(data);
         })
-            .done(data => {
-                this.setState(data);
-            })
-            .fail((xhr, status, err) => {
-                this.setState({ error : "Unable to retrieve profile info" })
-            })
+        .fail((xhr, status, err) => {
+            this.setState({ error : "Unable to retrieve profile info" })
+        })
 
     }
     onValueChange(field, value) {
@@ -68,7 +67,7 @@ class Profile extends React.Component {
         e.preventDefault()
 
         $.ajax({
-            url: profile_service,
+            url: '/my/api/profile',
             method: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(this.state.userProfile)
@@ -224,7 +223,7 @@ class AddressAccount extends React.Component {
                 </div>
                 <CountrySelector value={this.props.address.country}
                                  onChange={e => this.props.onValueChange('address.country', e.target.value)}
-                                 url={store_service + "/dc-countries"} label={this.context.t('my.profile.personal.country')} />
+                                 url="/api/store/dc-countries" label={this.context.t('my.profile.personal.country')} />
                 <div className='form-group'>
                     <label className="control-label col-sm-3">
                         {this.context.t('my.profile.personal.locality')}

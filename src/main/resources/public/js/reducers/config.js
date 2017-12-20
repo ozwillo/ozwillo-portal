@@ -1,34 +1,18 @@
-import { FETCH_SITE_MAP_FOOTER, FETCH_LANGUAGE } from '../actions/config';
-
-const siteMapFooter = (state = {}, action) => {
-    let nextState = Object.assign({}, state);
-    switch(action.type) {
-        case FETCH_SITE_MAP_FOOTER:
-            nextState = action.siteMapFooter;
-            break;
-        default:
-            nextState = state;
-    }
-
-    return nextState;
-};
+import { FETCH_CONFIG } from '../actions/config';
 
 const defaultState = {
     siteMapFooter: null,
-    language: 'en'
+    language: 'en',
+    kernelEndPoint: '',
+    accountEndPoint: ''
 };
 
 export default (state = defaultState, action) => {
-    const nextState = Object.assign({}, state);
     switch(action.type) {
-        case FETCH_SITE_MAP_FOOTER:
-            nextState.siteMapFooter = siteMapFooter(state.siteMapFooter, action);
-            break;
-        case FETCH_LANGUAGE:
-            nextState.language = action.language;
+        case FETCH_CONFIG:
+            return Object.assign({}, state, action.config);
             break;
         default:
             return state;
-    }
-    return nextState;
+    };
 }

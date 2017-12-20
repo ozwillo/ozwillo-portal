@@ -39,7 +39,7 @@ export const fetchNotificationsCount = () => {
 
 export const fetchNotifications = (status) => {
     return (dispatch) => {
-        return customFetch(urlBuilder(notificationService, { status }))
+        return customFetch(urlBuilder('/my/api/notifications', { status }))
             .then((res) => {
                 dispatch(fetchNotificationsAction(res.notifications, res.apps));
             });
@@ -48,7 +48,7 @@ export const fetchNotifications = (status) => {
 
 export const deleteNotification = (id) => {
     return (dispatch) => {
-        return customFetch(`${notificationService}/${id}`, {
+        return customFetch(`/my/api/notifications/${id}`, {
             method: 'DELETE'
         }).then(() => {
             dispatch(deleteNotificationAction(id));

@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import createClass from 'create-react-class';
 
@@ -29,7 +30,7 @@ var Dashboard = createClass({
     checkNotifications: function () {
         if (this.state.apps) {
             $.ajax({
-                url: dash_service + "/notifications",
+                url: "/my/api/dashboard/notifications",
                 type: 'get',
                 dataType: 'json',
                 success: function (appNotifs) {
@@ -63,7 +64,7 @@ var Dashboard = createClass({
     },
     componentDidMount: function () {
         $.ajax({
-            url: dash_service + "/dashboards",
+            url: "/my/api/dashboard/dashboards",
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -75,7 +76,7 @@ var Dashboard = createClass({
         });
 
         $.ajax({
-            url: dash_service + "/apps",
+            url: "/my/api/dashboard/apps",
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -88,7 +89,7 @@ var Dashboard = createClass({
         });
 
         $.ajax({
-            url: dash_service + "/pending-apps",
+            url: "/my/api/dashboard/pending-apps",
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -153,7 +154,7 @@ var Dashboard = createClass({
             }
 
             $.ajax({
-                url: dash_service + "/apps/" + state.dash.id,
+                url: "/my/api/dashboard/apps/" + state.dash.id,
                 type: 'put',
                 contentType: 'application/json',
                 data: JSON.stringify(state.apps),
@@ -175,7 +176,7 @@ var Dashboard = createClass({
     loadPendingApps: function () {
         var state = this.state;
         $.ajax({
-            url: dash_service + "/pending-apps",
+            url: "/my/api/dashboard/pending-apps",
             type: 'get',
             dataType: 'json',
             success: function (data) {
@@ -192,7 +193,7 @@ var Dashboard = createClass({
             this.setState({ dash: dash, loadingApps: true, pendingApps: null });
 
             $.ajax({
-                url: dash_service + "/apps/" + dash.id,
+                url: "/my/api/dashboard/apps/" + dash.id,
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
@@ -213,7 +214,7 @@ var Dashboard = createClass({
         return function (app) {
 
             $.ajax({
-                url: dash_service + "/apps/move/" + app.id + "/to/" + dash.id,
+                url: "/my/api/dashboard/apps/move/" + app.id + "/to/" + dash.id,
                 type: 'post',
                 success: function () {
                 },
@@ -243,7 +244,7 @@ var Dashboard = createClass({
 
 
         $.ajax({
-            url: dash_service + "/apps/remove/" + app.id,
+            url: "/my/api/dashboard/apps/remove/" + app.id,
             type: 'delete',
             success: function () {
             }.bind(this),
@@ -261,7 +262,7 @@ var Dashboard = createClass({
         this.setState(state);
 
         $.ajax({
-            url: dash_service + "/pending-apps/" + app.id,
+            url: "/my/api/dashboard/pending-apps/" + app.id,
             type: "delete",
             success: function () {
                 this.loadPendingApps();
@@ -278,7 +279,7 @@ var Dashboard = createClass({
         var state = this.state;
 
         $.ajax({
-            url: dash_service + "/dashboards",
+            url: "/my/api/dashboard/dashboards",
             type: 'post',
             dataType: 'json',
             data: JSON.stringify({name: name}),
@@ -305,7 +306,7 @@ var Dashboard = createClass({
             this.setState(this.state);
 
             $.ajax({
-                url: dash_service + "/dashboard/" + dash.id,
+                url: "/my/api/dashboard/dashboard/" + dash.id,
                 type: 'put',
                 contentType: 'application/json',
                 data: JSON.stringify(this.state.dashboards[idx]),
@@ -325,7 +326,7 @@ var Dashboard = createClass({
             this.setState(state);
 
             $.ajax({
-                url: dash_service + "/dashboard/" + dash.id,
+                url: "/my/api/dashboard/dashboard/" + dash.id,
                 type: 'delete',
                 success: function () {
                     this.setState(this.getInitialState());
@@ -698,7 +699,7 @@ var Desktop = createClass({
             }
 
             icons.push(
-                <AddNew
+                <AddNewWithRedux
                     key="add-new-icon"
                     dragging={this.props.dragging}
                     dropCallback={this.props.dropCallback} />
@@ -745,7 +746,7 @@ var AddNew = createClass({
                 <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback("last")}/>
                 <div className="app">
                     <div className="action-icon">
-                        <a href={store_root} title={this.context.t('my.click-to-add')} draggable="false">
+                        <a href={`/${this.props.config.language}/store`} title={this.context.t('my.click-to-add')} draggable="false">
                             <i className="fa fa-plus fa-3x fa-border"></i>
                         </a>
                     </div>
@@ -757,6 +758,9 @@ var AddNew = createClass({
 AddNew.contextTypes = {
     t: PropTypes.func.isRequired
 };
+const AddNewWithRedux = connect(state => {
+    return { config: state.config };
+})(AddNew);
 
 
 var PendingApp = createClass({

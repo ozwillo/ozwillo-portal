@@ -34,7 +34,7 @@ class GeoAreaAutosuggest extends Component {
         if (this.props.countryUri === undefined) return;
 
         $.ajax({
-            url: store_service + this.props.endpoint,
+            url: `/api/store${this.props.endpoint}`,
             dataType: "json",
             data: { country_uri: this.props.countryUri, q: query },
             type: 'get',
