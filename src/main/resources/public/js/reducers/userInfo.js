@@ -5,7 +5,7 @@ import {
 export default (state = {}, action) => {
     switch(action.type){
         case FETCH_USER_INFO:
-            return action.userInfo;
+            return action.userInfo || {};
             break;
         default:
             return state;

@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.front.my.profile;
+package org.oasis_eu.portal.front.my.services;
 
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.OasisLocales;

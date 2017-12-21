@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.front.my.notifications;
+package org.oasis_eu.portal.front.my.services;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;

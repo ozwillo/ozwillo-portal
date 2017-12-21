@@ -2,9 +2,12 @@ import { FETCH_CONFIG } from '../actions/config';
 
 const defaultState = {
     siteMapFooter: null,
+    siteMapHeader: null,
     language: 'en',
+    languages: ['en'],
     kernelEndPoint: '',
-    accountEndPoint: ''
+    accountEndPoint: '',
+    opendatEndPoint: ''
 };
 
 export default (state = defaultState, action) => {

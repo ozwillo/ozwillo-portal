@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.front.my.network;
+package org.oasis_eu.portal.front.my.services;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;

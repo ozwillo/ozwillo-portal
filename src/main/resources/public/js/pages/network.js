@@ -10,7 +10,7 @@ import '../util/csrf';
 
 import { Modal } from '../components/bootstrap-react';
 import SearchOrganizationModal from '../components/search-organization-modal';
-import { CreateOrModifyOrganizationModal } from '../components/create-or-modify-organization-modal';
+import { CreateOrModifyOrganizationModal } from '../components/create-or-modify-organization';
 import Loading from '../components/loading';
 
 var MyNetwork = createClass({

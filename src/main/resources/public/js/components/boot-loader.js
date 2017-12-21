@@ -1,13 +1,22 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 //Actions
-import { fetchConfigAndUserInfo } from "../actions/main";
+import {
+    fetchConfig,
+    fetchMyConfig
+} from "../actions/config";
 
 class BootLoader extends React.Component {
 
     componentDidMount() {
-        this.props.fetchConfigAndUserInfo();
+        if(this.props.user.sub){
+            this.props.fetchMyConfig();
+        } else {
+            this.props.fetchConfig();
+        }
+
     }
 
     render() {
@@ -16,12 +25,22 @@ class BootLoader extends React.Component {
 
 }
 
+const mapStateToProps = state => {
+    return {
+        user: state.userInfo,
+        config: state.config
+    };
+};
+
 const mapDispatchToProps = dispatch => {
     return {
-        fetchConfigAndUserInfo() {
-            return dispatch(fetchConfigAndUserInfo());
+        fetchMyConfig() {
+            return dispatch(fetchMyConfig());
+        },
+        fetchConfig() {
+            return dispatch(fetchConfig());
         }
     };
 };
 
-export default connect(null, mapDispatchToProps)(BootLoader);
+export default connect(mapStateToProps, mapDispatchToProps)(BootLoader);

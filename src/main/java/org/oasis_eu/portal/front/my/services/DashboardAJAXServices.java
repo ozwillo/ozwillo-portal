@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.front.my.dashboard;
+package org.oasis_eu.portal.front.my.services;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
