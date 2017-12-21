@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import {connect} from "react-redux";
 
 class MyNav extends React.Component {
 
@@ -58,13 +59,13 @@ class MyNav extends React.Component {
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
                         <li>
-                            <a href="">
+                            <Link to={`/${this.props.language}/store`}>
                                 <img src="/img/store-icon-white.png" alt="Store icon"/>
                                 <span>{this.context.t('ui.appstore')}</span>
-                            </a>
+                            </Link>
                         </li>
                         <li>
-                            <a href="">
+                            <a href={`${this.props.opendatEndPoint}/${this.props.language}`}>
                                 <img src="/img/data-icon-white.png" alt="Data icon"/>
                                 <span>{this.context.t('ui.datastore')}</span>
                             </a>
@@ -82,4 +83,15 @@ class MyNav extends React.Component {
     }
 }
 
-export default MyNav;
+MyNav.contextTypes = {
+    t: PropTypes.func.isRequired
+};
+
+const mapStateToProps = state => {
+    return {
+        language: state.config.language,
+        opendatEndPoint: state.config.opendatEndPoint
+    };
+};
+
+export default connect(mapStateToProps)(MyNav);
