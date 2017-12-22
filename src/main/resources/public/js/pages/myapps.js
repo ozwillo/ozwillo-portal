@@ -222,7 +222,7 @@ var Instance = createClass({
         var dialogs = [];
         if (applicationInstanceStatus === 'STOPPED') {
             var byDeleteRequesterOnDate = this.context.t('by') + " " + this.props.instance.status_change_requester_label
-                  + " (" + momenthis.context.t(this.props.instance.applicationInstance.status_changed) + ")";
+                  + " (" + moment(this.props.instance.applicationInstance.status_changed) + ")";
             buttons.push(
                 <button key={this.props.id + '-untrash'} type="button" className="btn oz-btn-danger pull-right" onClick={this.confirmUntrash}>{this.context.t('ui.cancel')}</button>
             );
