@@ -91,7 +91,6 @@ bootRun {
 springBoot {
     // exclude Spring Boot Devtools from the fat jar
     excludeDevtools = true
-
     executable = true
     embeddedLaunchScriptProperties =
             [initInfoDescription: 'Ozwillo Portal',

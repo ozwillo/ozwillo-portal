@@ -1,13 +1,7 @@
-=====================================================
-
-[Ozwillo](https://www.ozwillo.com) - Portal
-
-Copyright (c) 2013-2016 Open Wide & Ozwillo - http://www.openwide.fr - https://www.ozwillo.com
-
-=====================================================
-
 Ozwillo portal implementation
 ===========================
+
+[![Build Status](https://travis-ci.org/ozwillo/ozwillo-portal.svg?branch=develop)](https://travis-ci.org/ozwillo/ozwillo-portal)
 
 ## Prerequisites
 
@@ -90,3 +84,9 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ```
 ./gradlew assemble
 ```
+
+=====================================================
+
+Copyright (c) 2013-2016 Open Wide & Ozwillo - http://www.openwide.fr - https://www.ozwillo.com
+
+=====================================================
