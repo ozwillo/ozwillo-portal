@@ -1,10 +1,8 @@
 package org.oasis_eu.portal.front.store;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.oasis_eu.portal.config.AppStoreNavigationStatus;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.front.generic.PortalController;
-import org.oasis_eu.portal.front.generic.i18nMessages;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -47,22 +44,6 @@ public class AppStoreController extends PortalController {
         return true;
     }
 
-    @ModelAttribute("i18n")
-    public Map<String, String> i18n(HttpServletRequest request) throws JsonProcessingException {
-        Locale locale = RequestContextUtils.getLocale(request);
-        Map<String, String> i18n = new HashMap<>();
-
-        i18n.putAll(i18nMessages.getI18n_networkkeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_languagekeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_storekeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
-
-        return i18n;
-    }
-
 
     @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
     public String main(@PathVariable String lang, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
@@ -80,9 +61,9 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store";
         }
 
-        model.addAttribute("defaultApp", null);
+//        model.addAttribute("defaultApp", null);
 
-        return "store/store";
+        return "/index";
     }
 
 
@@ -93,13 +74,13 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store/service/" + serviceId;
         }
 
-        Map<String, String> defaultApp = new HashMap<>();
+        /*Map<String, String> defaultApp = new HashMap<>();
         defaultApp.put("type", "service");
         defaultApp.put("id", serviceId);
 
-        model.addAttribute("defaultApp", defaultApp);
+        model.addAttribute("defaultApp", defaultApp);*/
 
-        return "store/store";
+        return "/index";
     }
 
     @RequestMapping(value = {"/application/{applicationId}", "/application/{applicationId}/*"}, method = RequestMethod.GET)
@@ -109,13 +90,13 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store/application/" + applicationId;
         }
 
-        Map<String, String> defaultApp = new HashMap<>();
+        /*Map<String, String> defaultApp = new HashMap<>();
         defaultApp.put("type", "application");
         defaultApp.put("id", applicationId);
 
-        model.addAttribute("defaultApp", defaultApp);
+        model.addAttribute("defaultApp", defaultApp);*/
 
-        return "store/store";
+        return "/index";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/login")

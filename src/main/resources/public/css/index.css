@@ -1,0 +1,124 @@
+/* GLOBAL STYLES */
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,700);
+
+/* Components */
+@import 'components/btn.css';
+@import 'components/datepicker.css';
+@import 'components/footer.css';
+@import 'components/header.css';
+@import 'components/layout.css';
+@import 'components/modal.css';
+@import 'components/nav.css';
+@import 'components/notification.css';
+@import 'components/react-autosuggest.css';
+@import 'components/select.css';
+
+
+/* Pages */
+@import 'pages/dashboard.css';
+@import 'pages/my-apps.css';
+@import 'pages/notifications.css';
+@import 'pages/organization.css';
+@import 'pages/profile.css';
+@import 'pages/store.css';
+@import 'pages/synchronize-fc-profile.css';
+
+/* styles needed to have a responsive fixed footer
+     while having main content (with page-row-expanded class) taking up all available space */
+
+html,
+body, #root { height: 100%; }
+
+body {
+    display: table;
+    width: 100%;
+    color: #fff !important;
+}
+
+body, h1, h2 {
+    font-family: 'Roboto', sans-serif !important;
+    font-weight: 300 !important;
+}
+
+h4 {
+    font-weight: 300 !important;
+    color: #333 !important;
+}
+
+label {
+    font-weight: 300;
+}
+
+label.required {
+    font-weight: 700;
+}
+
+/* page-row */
+.page-row {
+    display: table-row;
+}
+
+.page-row-expanded { height: 100%; }
+/* END page-row */
+
+/* oz-body */
+.oz-body {
+    background: #6f438e;
+}
+
+.oz-body h1 {
+    font-size:36px;
+    margin: 30px 0 30px 0;
+    display:block;
+    vertical-align: middle;
+}
+
+.oz-body h1 span {
+    vertical-align: middle;
+}
+
+.oz-body h2 {
+    font-size:20px;
+    display:block;
+    margin-bottom: 20px;
+}
+
+.oz-body h3 {
+    font-size: 18px;
+}
+
+.oz-body div.oz-body-content {
+    padding-bottom: 30px;
+}
+/* END oz-body */
+
+/* helper */
+.top {
+    margin-top: 25px;
+}
+
+.logo-twitter {
+    width: auto;
+    height: auto;
+    margin: 25px 0 0 0;
+}
+
+.action-icon {
+    cursor: pointer;
+}
+
+.text-align-middle {
+    padding-top:0.5em;
+}
+
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+/* end helper */

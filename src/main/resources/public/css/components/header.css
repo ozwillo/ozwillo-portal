@@ -1,0 +1,18 @@
+.oz-header {
+    margin-top: 15px;
+    width: 100%;
+}
+
+.oz-header .welcome {
+    font-size: 18px;
+    margin-top: 25px;
+}
+
+.oz-header .welcome a {
+    color: #6f438e;
+}
+
+.oz-header .welcome .badge {
+    background: #c92828;
+    color: #FFF;
+}

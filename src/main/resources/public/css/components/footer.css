@@ -1,0 +1,35 @@
+.footer {
+    background: #dfcae2;
+    padding-top: 60px;
+    padding-bottom: 30px;
+}
+
+.footer-logo {
+    width: auto;
+    height: auto;
+    margin: 0 0 25px 0;
+}
+
+.footer-link {
+    color: #555344;
+    font-size: 0.9em;
+    margin: 0 0 5px 25px;
+    display: block;
+}
+
+.footer-link div.modal {
+    text-transform: none;
+    font-weight: 300;
+    font-size: 14px;
+}
+
+.footer-top-block {
+    border-bottom: 1px solid #b294c0;
+}
+
+@media (max-width: 768px) {
+    a.footer-link {
+        font-size: 1em;
+        line-height: 25px;
+    }
+}
