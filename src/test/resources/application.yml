@@ -72,6 +72,7 @@ kernel:
   token:
     expiry: 300
   base_uri: http://kernel.ozwillo-dev.eu
+  account_uri: https://accounts.ozwillo-dev.eu
   auth:
     issuer: ${kernel.base_uri}/
     auth_endpoint: ${kernel.base_uri}/a/auth
@@ -81,6 +82,12 @@ kernel:
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.base_uri}/a/logout
     callback_uri: ${application.url}/login
+  account_france_connect_uri: ${kernel.account_uri}/a/franceconnect
+  kernel_france_connect_uri: ${kernel.base_uri}/a/franceconnect
+  france_connect:
+    link_endpoint: ${kernel.account_france_connect_uri}/login
+    unlink_endpoint: ${kernel.account_france_connect_uri}/unlink
+    userinfo_endpoint: ${kernel.kernel_france_connect_uri}/userinfo
   user_profile_endpoint: ${kernel.base_uri}/d/user
   user_membership_endpoint: ${kernel.base_uri}/d
   organization_endpoint: ${kernel.base_uri}/d/org
