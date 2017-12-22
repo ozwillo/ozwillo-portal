@@ -1,0 +1,13 @@
+.modal-header .modal-title {
+    font-size: 26px;
+    color: #333;
+    margin: 0 0 20px 0;
+}
+
+.modal-content {
+    color: #333;
+}
+
+.oz-simple-modal .modal-footer {
+    border-top: none;
+}

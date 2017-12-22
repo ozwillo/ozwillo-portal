@@ -1,0 +1,299 @@
+#store {
+    padding-bottom: 0 !important;
+}
+
+#store-search {
+    margin-top: 30px;
+}
+
+#store-search .form-group label {
+    font-weight: 300;
+}
+
+#store-apps {
+    background-color: #fff;
+}
+
+#store-apps .app {
+    margin-bottom: 92px;
+    margin-top: 25px;
+    overflow: visible;
+    cursor: pointer;
+}
+
+#store-apps .logo {
+    background: url("/img/cercle.png");
+    position: absolute;
+    top: 25px;
+    z-index: 99;
+    width: 164px !important;
+    height: 164px !important;
+    display: block;
+    margin-left: -82px;
+    left: 50%;
+}
+
+@media (max-width: 990px) {
+    #store-apps .logo {
+        top: 5px;
+    }
+}
+#store-apps .logo img {
+    margin: 50px 0 0 50px;
+}
+
+#store-apps .app .description {
+    border: 1px solid #d3d2d2;
+    display: block;
+    top: 82px;
+    position: relative;
+}
+
+#store-apps .app .description .app-header {
+    height: 160px;
+    min-height: 128px;
+}
+
+#store-apps .app .description .app-name {
+    color: #4c4c4c;
+    font-size: 24px;
+    margin: 90px 0 10px 0;
+    text-align: center;
+    display: block;
+}
+
+#store-apps .app .description .app-provider {
+    color: #545454;
+    font-size: 15px;
+    text-align: center;
+    display: block;
+}
+
+#store-apps .app .description .app-description {
+    color: #545454;
+    font-size: 15px;
+    margin: 0 40px 28px 40px;
+    text-align: center;
+    display: block;
+    height: 100px;
+}
+
+#store-apps .app .description .public-service-indicator {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 40px;
+    width: 40px;
+}
+
+#store-apps .app .description .public-service-indicator > div.triangle {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 0;
+    border-top: 40px solid #5b5f84;
+    border-right: 40px solid transparent;
+}
+
+#store-apps .app .description .public-service-indicator > div.label {
+    position: absolute;
+    top: 5px;
+    left: 0;
+}
+
+#store-apps .app .description .app-status {
+    font-size: 16px;
+    color: #fff;
+    display: block;
+    border: 0;
+    margin-bottom: 15px;
+}
+
+#store-apps .app .description .app-status .btn-buy {
+    background-color: #e91659;
+}
+
+#store-apps .app .description .app-status .btn-buy-indicator {
+    background-color: #ce124f;
+}
+
+#store-apps .app .description .app-status .btn-free {
+    background-color: #f8ba03;
+}
+
+#store-apps .app .description .app-status .btn-free-indicator {
+    background-color: #f69b04;
+}
+
+#store-apps .app .description .app-status .btn-installed {
+    background-color: #43a047;
+}
+
+#store-apps .app .description .app-status .btn-installed-indicator {
+    background-color: #2e7d32;
+}
+
+#store-apps .oz-simple-modal .next {
+    overflow: auto;
+}
+
+#store-apps .icon {
+    width: 26px;
+    height: 26px;
+}
+
+#store-apps .icon-text {
+    display: inline-block;
+    width: 26px;
+    font-size: 2em;
+    background-color: white;
+}
+
+#store-loadmore {
+    padding: 30px 0 30px 0;
+    background-color: #fff;
+}
+
+#store-loadmore .oz-btn-loadmore {
+    color: #fff;
+    background: #6f438e;
+}
+
+#store div.app-screenshots {
+    position: relative;
+    width: 800px;
+    height: 451px;
+    border: 1px #5b5f84 solid;
+    margin: 24px auto;
+}
+
+@media (max-width: 991px) {
+    #store div.app-screenshots {
+        left: 0;
+        width: 100%;
+        height: auto;
+    }
+
+    #store div.app-screenshots:after {
+        padding-top: 56.25%;
+        display: block;
+        content: '';
+    }
+}
+
+#store div.app-screenshots > img {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 0;
+    max-width: 100%;
+    height: auto;
+    z-index: 1030;
+}
+
+#store div.app-screenshots a.back {
+    opacity: 0.25;
+    transition: opacity 0.5s;
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    top: 50%;
+    margin-top: -25px;
+    left: 0;
+    background-color: #999999;
+    color: #F7F7F7;
+    z-index: 1031;
+}
+
+#store div.app-screenshots a.back:hover {
+    opacity: 1;
+}
+
+#store div.app-screenshots a.back i.fa {
+    position: absolute;
+    line-height: 20px;
+    top: 15px;
+    left: 5px;
+}
+
+#store div.app-screenshots a.forward {
+    opacity: 0.25;
+    transition: opacity 0.5s;
+    position: absolute;
+    height: 50px;
+    width: 50px;
+    top: 50%;
+    right: 0;
+    margin-top: -25px;
+    background-color: #999999;
+    color: #F7F7F7;
+    z-index: 1031;
+}
+
+#store div.app-screenshots a.forward:hover {
+    opacity: 1;
+}
+
+#store div.app-screenshots a.forward i.fa {
+    position: absolute;
+    line-height: 20px;
+    top: 15px;
+    right: 5px;
+}
+
+#store .store-app-card div.app-description {
+    width: 800px;
+    margin: 25px auto 10px auto;
+    border-bottom: 1px solid #d4d2d2;
+}
+
+#store .store-app-card div.app-tos {
+    width: 800px;
+    margin: 15px auto;
+    border-bottom: 1px solid #d4d2d2;
+}
+
+#store-ad {
+    padding: 0 0 35px 35px;
+    background-color: #faf8f8;
+    min-height: 300px;
+}
+
+#store-ad h2 {
+    font-size: 45px;
+    color: #000;
+    margin: 78px 0 39px 0;
+    display: inline-block;
+}
+
+#store-ad p.ozwillo-desc {
+    font-size: 16px;
+    color: #6a6767;
+    margin: 0 0 31px 0;
+    display: inline-block;
+}
+
+#store-ad a.join {
+    font-size: 20px;
+    text-align: center;
+    line-height: 61px;
+    height: 61px;
+    width: 200px;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border-bottom: 3px solid #542d6f;
+}
+
+#store-ad a.join:hover, #store-ad a.join:focus {
+    background-color: #542d6f;
+    color: #fff;
+}
+
+#store-ad img.close-ad {
+    position: absolute;
+    right: 25px;
+    top: 25px;
+    cursor: pointer;
+}

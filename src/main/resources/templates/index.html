@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="_csrf" data-th-content="${_csrf.token}" content="csrf token"/>
+    <meta name="_csrf_header" data-th-content="${_csrf.headerName}" content="X-CSRF-TOKEN"/>
+
+    <title data-th-text="${title}">Page Title</title>
+
+    <!-- Fav and touch icons -->
+    <link rel="apple-touch-icon" sizes="57x57" data-th-href="@{/img/favicons/apple-touch-icon-57x57.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="60x60" data-th-href="@{/img/favicons/apple-touch-icon-60x60.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="72x72" data-th-href="@{/img/favicons/apple-touch-icon-72x72.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="76x76" data-th-href="@{/img/favicons/apple-touch-icon-76x76.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="114x114" data-th-href="@{/img/favicons/apple-touch-icon-114x114.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="120x120" data-th-href="@{/img/favicons/apple-touch-icon-120x120.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="144x144" data-th-href="@{/img/favicons/apple-touch-icon-144x144.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="152x152" data-th-href="@{/img/favicons/apple-touch-icon-152x152.png?v=OmmGW0j2pJ}" />
+    <link rel="apple-touch-icon" sizes="180x180" data-th-href="@{/img/favicons/apple-touch-icon-180x180.png?v=OmmGW0j2pJ}"/>
+    <link rel="icon" type="image/png" data-th-href="@{/img/favicons/favicon-32x32.png?v=OmmGW0j2pJ}" sizes="32x32" />
+    <link rel="icon" type="image/png" data-th-href="@{/img/favicons/favicon-194x194.png?v=OmmGW0j2pJ}" sizes="194x194" />
+    <link rel="icon" type="image/png" data-th-href="@{/img/favicons/favicon-96x96.png?v=OmmGW0j2pJ}" sizes="96x96" />
+    <link rel="icon" type="image/png" data-th-href="@{/img/favicons/android-chrome-192x192.png?v=OmmGW0j2pJ}" sizes="192x192" />
+    <link rel="icon" type="image/png" data-th-href="@{/img/favicons/favicon-16x16.png?v=OmmGW0j2pJ}" sizes="16x16" />
+    <link rel="manifest" data-th-href="@{/img/favicons/manifest.json?v=OmmGW0j2pJ}" />
+    <link rel="mask-icon" data-th-href="@{/img/favicons/safari-pinned-tab.svg?v=OmmGW0j2pJ}" color="#6f438e" />
+    <link rel="shortcut icon" data-th-href="@{/img/favicons/favicon.ico?v=OmmGW0j2pJ}" />
+    <meta name="apple-mobile-web-app-title" content="Ozwillo" />
+    <meta name="application-name" content="Ozwillo" />
+    <meta name="msapplication-TileColor" content="#ffffff" />
+    <meta name="msapplication-TileImage" content="@{/img/favicons/mstile-144x144.png?v=OmmGW0j2pJ}" />
+    <meta name="msapplication-config" content="@{/img/favicons/browserconfig.xml?v=OmmGW0j2pJ}" />
+    <meta name="theme-color" content="#6f438e" />
+
+    <!-- bundle.css -->
+    <link rel="stylesheet" type="text/css" href="/build/bundle.css" />
+</head>
+<body>
+
+    <div id="root" />
+
+    <div class="push"></div>
+
+    <script type="text/javascript" data-th-src="@{/build/bundle.js}"></script>
+
+    <div data-th-if="${production}">
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-71967243-2', 'auto');
+            ga('send', 'pageview');
+        </script>
+    </div>
+</body>
+</html>

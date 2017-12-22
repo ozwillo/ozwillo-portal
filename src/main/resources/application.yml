@@ -136,7 +136,7 @@ datacore:
   # (or execute /usr/libexec/java_home to find where Java is installed on your MacOS system)
   #url: https://data.ozwillo-dev.eu    # dev, doesn't work with current gen'd cert
   # alt_uri ??
-  systemAdminUser:  #Get it using Node.js lib / with portal clientId
+  systemAdminUser:  #Get it using Node.js util / with portal clientId
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 

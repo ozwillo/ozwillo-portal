@@ -21,10 +21,10 @@ public final class i18nMessages {
     private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
-        "no-matches-found", "yes");
+        "no-matches-found", "yes", "datastore", "login", "logout", "notifications");
 
-    private static final List<String> dashboardKeys = Arrays.asList("create", "confirm-delete-dash", "confirm-delete-dash-long", "confirm-remove-app",
-        "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
+    private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "network", "apps", "create", "confirm-delete-dash",
+        "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
 
     private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",
         "form.motive", "form.motive.question", "form.motive.feedback", "form.motive.application-problem",
@@ -87,29 +87,19 @@ public final class i18nMessages {
     public static Map<String, String> getI18n_all(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         Map<String, String> i18n = new HashMap<>();
 
-        i18n.putAll(i18nkeys.stream().collect(Collectors.toMap(k -> "my.network." + k,
-            k -> messageSource.getMessage("my.network." + k, new Object[]{}, locale))));
-        i18n.putAll(generickeys.stream().collect(Collectors.toMap(k -> "ui." + k,
-            k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
-        i18n.putAll(dashboardKeys.stream().collect(Collectors.toMap(k -> "my." + k,
-            k -> messageSource.getMessage("my." + k, new Object[]{}, locale))));
-        i18n.putAll(contactKeys.stream().collect(Collectors.toMap(k -> "contact." + k,
-            k -> messageSource.getMessage("contact." + k, new Object[]{}, locale))));
-        i18n.putAll(searchOrganization.stream().collect(Collectors.toMap(k -> "search.organization." + k,
-            k -> messageSource.getMessage("search.organization." + k, new Object[]{}, locale))));
-        i18n.putAll(searchContact.stream().collect(Collectors.toMap(k -> "search.contact." + k,
-            k -> messageSource.getMessage("search.contact." + k, new Object[]{}, locale))));
-        i18n.putAll(createOrModifyOrganization.stream().collect(Collectors.toMap(k -> "my.network.organization." + k,
-            k -> messageSource.getMessage("my.network.organization." + k, new Object[]{}, locale))));
-
-        i18n.putAll(networkkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.network." + k, new Object[0], locale))));
-        i18n.putAll(storekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store." + k, new Object[0], locale))));
-        i18n.putAll(storeInstallkeys.stream().collect(Collectors.toMap(k -> "install.org." + k,
-            k -> messageSource.getMessage("install.org." + k, new Object[0], locale))));
-        i18n.putAll(languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
-        i18n.putAll(myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
-        i18n.putAll(profilekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.profile." + k, new Object[0], locale))));
-        i18n.putAll(errors.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("error." + k, new Object[0], locale))));
+        i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18nDashboardKeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_networkkeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_storekeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_errors(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_myApps(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_profilekeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_languagekeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_franceconnectKeys(locale, messageSource));
 
         return i18n;
     }
