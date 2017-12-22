@@ -247,7 +247,7 @@ class PasswordAccount extends React.Component {
                 </div>
                 <div className="col-sm-12">
                     <div className="form-group">
-                        <div className="col-sm-9 col-sm-offset-3">
+                        <div className="flex-row middle">
                             <a className="change-password btn btn-lg btn-warning" href={this.props.passwordChangeEndpoint}>
                                 { this.props.passwordExist && t('my.profile.account.changepassword')}
                                 { !this.props.passwordExist && t('my.profile.account.createpassword')}

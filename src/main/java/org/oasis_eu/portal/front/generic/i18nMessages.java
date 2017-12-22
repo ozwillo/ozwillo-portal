@@ -77,8 +77,8 @@ public final class i18nMessages {
         "personal.birthdate", "personal.phonenumber", "personal.gender", "personal.gender.male", "personal.gender.female", "personal.postalcode",
         "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
 
-    private static final List<String> franceconnectKeys = Arrays.asList("name", "form.your-profile", "form.synchronise", "form.desynchronize",
-            "form.desynchronize-without-pwd");
+    private static final List<String> franceconnectKeys = Arrays.asList("name", "form.your-profile", "form.link", "form.unlink",
+            "form.unlink-without-pwd", "error.link-data");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 

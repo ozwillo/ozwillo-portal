@@ -6,11 +6,6 @@ import "../csrf";
 import "../my";
 import t from "../util/message";
 
-import {
-    Form,
-    InputText
-} from "../util/form";
-
 
 const languageData = {
     'given_name': 'my.profile.personal.firstname',
@@ -25,14 +20,15 @@ const languageData = {
 /**
  * This class is used to update user's information with data from FranceConnect
  */
-class SynchronizeFCProfile extends React.Component {
+class LinkFCProfile extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
             userProfile: null,
-            franceConnectProfile: null
+            franceConnectProfile: null,
+            error: ''
         };
 
         //bind functions
@@ -65,8 +61,10 @@ class SynchronizeFCProfile extends React.Component {
             });
 
         })
-        .fail((xhr, status, err) => {
-            console.error(err);
+        .fail(() => {
+            this.setState({
+                error: t('franceconnect.error.link-data')
+            })
         })
     }
 
@@ -100,44 +98,60 @@ class SynchronizeFCProfile extends React.Component {
         const userProfile = this.state.userProfile;
         const franceConnectProfile = this.state.franceConnectProfile
 
-        if(!userProfile){
-            return <section className="synchronize-fc-profile">
+        if(!userProfile && !this.state.error){
+            return <section className="link-fc-profile">
                 <i className="fa fa-spinner fa-spin spinner"></i>
             </section>
         }
 
-        return <section className="synchronize-fc-profile">
-            <form ref="form" onSubmit={this.save}>
-                <div className="row">
-                    <p className="item title">Votre profile</p>
-                    <p className="item title">FranceConnect</p>
+        return <section className="link-fc-profile">
+
+            {
+                !this.state.error && <form ref="form" onSubmit={this.save}>
+                    <div className="row">
+                        <p className="item title">{t('franceconnect.form.your-profile')}</p>
+                        <p className="item title">{t('franceconnect.name')}</p>
+                    </div>
+
+                    {
+                        Object.keys(this.state.franceConnectProfile).map((item) => {
+                            return <fieldset key={item}>
+                                <legend>{t(languageData[item])}</legend>
+                                <div className="row">
+                                    <label className="item">
+                                        <input id={item} type="radio" name={item} value={userProfile[item]}/>
+                                        {userProfile[item]}
+                                    </label>
+
+                                    <label className="item">
+                                        <input id={item} type="radio" name={item} value={franceConnectProfile[item]}/>
+                                        {franceConnectProfile[item]}
+                                    </label>
+                                </div>
+                            </fieldset>
+                        })
+                    }
+
+                    <div className="row submit">
+                        <input type="submit" value={t('ui.save')}  className="btn oz-btn-save"/>
+                    </div>
+                </form>
+            }
+
+            {
+                this.state.error &&
+                <div className="flex-col middle error-message">
+                    <p className="item title">
+                        {this.state.error}
+                    </p>
+                    <a href="/my/profile" className="btn oz-btn-ok">
+                        {t('ui.confirm')}
+                    </a>
                 </div>
 
-                {
-                    Object.keys(this.state.franceConnectProfile).map((item) => {
-                        return <fieldset key={item}>
-                            <legend>{t(languageData[item])}</legend>
-                            <div className="row">
-                                <label className="item">
-                                    <input id={item} type="radio" name={item} value={userProfile[item]}/>
-                                    {userProfile[item]}
-                                </label>
-
-                                <label className="item">
-                                    <input id={item} type="radio" name={item} value={franceConnectProfile[item]}/>
-                                    {franceConnectProfile[item]}
-                                </label>
-                            </div>
-                        </fieldset>
-                    })
-                }
-
-                <div className="row submit">
-                    <input type="submit" value="save" className="btn oz-btn-save"/>
-                </div>
-            </form>
+            }
         </section>
     }
 }
 
-ReactDOM.render(<SynchronizeFCProfile />, document.getElementById("synchronize-fc-profile"));
+ReactDOM.render(<LinkFCProfile />, document.getElementById("link-fc-profile"));
