@@ -25,28 +25,6 @@ import java.util.*;
 @RequestMapping("/my")
 public class MyOzwilloController extends PortalController {
 
-    //private static final Logger logger = LoggerFactory.getLogger(MyOzwilloController.class);
-
-    /*@ModelAttribute("model")
-    public Map<String, String> getNotifI18n(HttpServletRequest request) throws JsonProcessingException {
-        Locale locale = RequestContextUtils.getLocale(request);
-
-        Map<String, String> i18n = new HashMap<>();
-
-        List<String> keys = Arrays.asList("ui.notifications", "notif.date", "notif.app", "notif.message", "notif.archive", "notif.manage", "notif.no-notification", "notif.unread", "notif.read", "notif.any", "notif.all-apps");
-        i18n.putAll(keys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage(k, new Object[0], locale))));
-        i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
-
-        return i18n;
-    }*/
-
-    /*@RequestMapping(method = RequestMethod.GET, value = "/notif")
-    public String notifications(Model model, HttpServletRequest request) {
-        model.addAttribute("navigation", myNavigationService.getNavigation("notifications"));
-        return "my-notif";
-    }*/
-
     @RequestMapping(method = RequestMethod.GET, value = "/**")
     public String show() {
         if (requiresLogout()) {
