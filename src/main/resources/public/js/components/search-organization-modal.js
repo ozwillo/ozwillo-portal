@@ -76,7 +76,7 @@ var SearchOrganizationForm = createClass({
     },
     onOrganizationSelected: function(organization) {
         $.ajax({
-            url: "◊/kernel-organization",
+            url: "/my/api/network/kernel-organization",
             dataType: 'json',
             data: { dc_id: organization.id },
             type: 'head',
@@ -430,8 +430,8 @@ var TaxRegNum = createClass({
                        {taxRegNumLabel} *
                    </label>
                    <div className="col-sm-8">
-                       {/*<input type="text" id="tax_reg_num" className="form-control" maxLength="20"
-                           disabled={this.props.static} value={this.props.value} onChange={this.props.onChange} />*/}
+                       <input type="text" id="tax_reg_num" className="form-control" maxLength="20"
+                           disabled={this.props.static} value={this.props.value || ""} onChange={this.props.onChange} />
                    </div>
                </div>
            )
