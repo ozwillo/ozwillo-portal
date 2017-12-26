@@ -103,18 +103,18 @@ if(TARGET === 'start' || !TARGET) {
                 {
                     test: /\.css$/,
                     exclude: /node_modules/,
-                    use: extractCSS.extract({
+                    use: ['css-hot-loader'].concat(extractCSS.extract({
                         fallback: 'style-loader',
                         use: [ 'css-loader' ]
-                    })
+                    }))
                 },
                 {
                     test: /\.scss$/,
                     exclude: /node_modules/,
-                    use: extractCSS.extract({
+                    use: ['css-hot-loader'].concat(extractCSS.extract({
                         fallback: 'style-loader',
                         use: [ 'css-loader', 'sass-loader' ]
-                    })
+                    }))
                 }
             ]
         }
