@@ -1,10 +1,11 @@
 'use strict';
 
 import React from "react";
-import { withRouter } from 'react-router';
+import {withRouter} from 'react-router';
 import "../util/csrf";
 
 import PropTypes from "prop-types";
+import UpdateTitle from '../components/update-title';
 
 
 const languageData = {
@@ -43,30 +44,30 @@ class SynchronizeFCProfile extends React.Component {
         $.ajax({
             url: '/my/api/profile/franceconnect'
         })
-        .done(data => {
-            //Search different data between user profile and franceConnect
-            const franceConnectProfile = {};
-            Object.keys(data.franceConnectProfile).forEach((field) => {
-                if(data.userProfile[field] !== data.franceConnectProfile[field] &&
-                    field !== "displayName"){
-                    franceConnectProfile[field] = data.franceConnectProfile[field];
+            .done(data => {
+                //Search different data between user profile and franceConnect
+                const franceConnectProfile = {};
+                Object.keys(data.franceConnectProfile).forEach((field) => {
+                    if (data.userProfile[field] !== data.franceConnectProfile[field] &&
+                        field !== "displayName") {
+                        franceConnectProfile[field] = data.franceConnectProfile[field];
+                    }
+                });
+
+                if (!Object.keys(franceConnectProfile).length) {
+                    //No data to update
+                    this.props.history.push('/my/profile');
                 }
-            });
 
-            if(!Object.keys(franceConnectProfile).length){
-                //No data to update
-                this.props.history.push('/my/profile');
-            }
+                this.setState({
+                    userProfile: data.userProfile,
+                    franceConnectProfile
+                });
 
-            this.setState({
-                userProfile: data.userProfile,
-                franceConnectProfile
-            });
-
-        })
-        .fail((xhr, status, err) => {
-            console.error(err);
-        })
+            })
+            .fail((xhr, status, err) => {
+                console.error(err);
+            })
     }
 
     save(e) {
@@ -77,7 +78,7 @@ class SynchronizeFCProfile extends React.Component {
         const formData = new FormData(this.refs.form);
         const jsonData = Object.assign({}, this.state.userProfile);
 
-        for(let pair of formData.entries()){
+        for (let pair of formData.entries()) {
             jsonData[pair[0]] = pair[1];
         }
 
@@ -99,9 +100,9 @@ class SynchronizeFCProfile extends React.Component {
         const userProfile = this.state.userProfile;
         const franceConnectProfile = this.state.franceConnectProfile
 
-        if(!userProfile){
-            return <section className="synchronize-fc-profile">
-                <i className="fa fa-spinner fa-spin spinner"></i>
+        if (!userProfile) {
+            return <section className="synchronize-fc-profile loading-container">
+                <i className="fa fa-spinner fa-spin loading"/>
             </section>
         }
 
@@ -132,12 +133,13 @@ class SynchronizeFCProfile extends React.Component {
                 }
 
                 <div className="row submit">
-                    <input type="submit" value="save" className="btn oz-btn-save"/>
+                    <input type="submit" value="save" className="btn btn-submit"/>
                 </div>
             </form>
         </section>
     }
 }
+
 const SynchronizeFCProfileWithRouter = withRouter(SynchronizeFCProfile);
 
 class SynchronizeFCProfileWrapper extends React.Component {
@@ -147,24 +149,17 @@ class SynchronizeFCProfileWrapper extends React.Component {
     };
 
     render() {
-        return <div className="oz-body page-row page-row-expanded">
+        return <div className="oz-body wrapper flex-col">
 
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            <img src="/img/profile-lg.png" />
-                            <span>{this.context.t('my.profile')}</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
+            <UpdateTitle title={this.context.t('my.profile')}/>
 
-            <div className="oz-body-content">
-                <SynchronizeFCProfileWithRouter/>
-            </div>
+            <header className="title">
+                <span>{this.context.t('my.profile')}</span>
+            </header>
 
-            <div className="push"></div>
+            <SynchronizeFCProfileWithRouter/>
+
+            <div className="push"/>
         </div>;
     }
 }

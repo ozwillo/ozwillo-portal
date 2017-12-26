@@ -61,9 +61,7 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store";
         }
 
-//        model.addAttribute("defaultApp", null);
-
-        return "/index";
+        return "index";
     }
 
 
@@ -74,13 +72,7 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store/service/" + serviceId;
         }
 
-        /*Map<String, String> defaultApp = new HashMap<>();
-        defaultApp.put("type", "service");
-        defaultApp.put("id", serviceId);
-
-        model.addAttribute("defaultApp", defaultApp);*/
-
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(value = {"/application/{applicationId}", "/application/{applicationId}/*"}, method = RequestMethod.GET)
@@ -90,13 +82,7 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store/application/" + applicationId;
         }
 
-        /*Map<String, String> defaultApp = new HashMap<>();
-        defaultApp.put("type", "application");
-        defaultApp.put("id", applicationId);
-
-        model.addAttribute("defaultApp", defaultApp);*/
-
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/login")

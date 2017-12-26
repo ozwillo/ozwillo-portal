@@ -8,6 +8,7 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance.InstantiationS
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -16,11 +17,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
@@ -85,7 +85,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
         String uri = uriBuilder.build().toUriString();
 
-        List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getEntityOrNull(uri, CatalogEntry[].class, none()));
+        List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getEntityOrException(uri, CatalogEntry[].class, none()));
         if (logger.isDebugEnabled()) {
             logger.debug("Found catalog entries:");
             catalogEntries.forEach(e -> logger.debug(e.toString()));
@@ -97,19 +97,31 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     @Cacheable("applications")
     public CatalogEntry findApplication(String id) {
-        return kernel.getEntityOrNull(appsEndpoint + "/app/{id}", CatalogEntry.class, userIfExists(), id);
+        return kernel.getEntityOrException(appsEndpoint + "/app/{id}", CatalogEntry.class, userIfExists(), id);
     }
 
 
     @Override
     @Cacheable("services")
     public ServiceEntry findService(String id) {
-        return kernel.getEntityOrNull(appsEndpoint + "/service/{id}", ServiceEntry.class, userIfExists(), id);
+        ServiceEntry serviceEntry;
+
+        try {
+            serviceEntry = kernel.getEntityOrException(appsEndpoint + "/service/{id}",
+                    ServiceEntry.class, userIfExists(), id);
+        } catch(HttpClientErrorException e) {
+            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
+                throw new WrongQueryException(e.getResponseBodyAsString(), e.getStatusCode().value());
+            }
+
+            throw e;
+        }
+
+        return serviceEntry;
     }
 
     @Override
-    public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) throws ApplicationInstanceCreationException {
-
+    public ApplicationInstance instantiate(String appId, ApplicationInstantiationRequest instancePattern) throws ApplicationInstanceCreationException {
         logger.info("Application instantiation request: {}", instancePattern);
 
         InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, appId, userInfoHelper.currentUser().getUserId());
@@ -117,9 +129,12 @@ public class CatalogStoreImpl implements CatalogStore {
             installedStatusRepository.delete(status);
         }
 
+        ApplicationInstance newInstance;
         try {
-            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST,
-                new HttpEntity<>(instancePattern), String.class, user(), appId);
+            ResponseEntity<ApplicationInstance> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST,
+                new HttpEntity<>(instancePattern), ApplicationInstance.class, user(), appId);
+
+            newInstance = responseEntity.getBody();
 
             // specific error handling, TODO LATER make it more consistent with generic error handling
             if (responseEntity.getStatusCode().is4xxClientError()) {
@@ -132,6 +147,8 @@ public class CatalogStoreImpl implements CatalogStore {
             throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
         }
 
+        return newInstance;
+
     }
 
     @Override
@@ -139,23 +156,22 @@ public class CatalogStoreImpl implements CatalogStore {
     public List<ServiceEntry> findServicesOfInstance(String instanceId) {
         logger.debug("Finding services of instance {}", instanceId);
 
-        ServiceEntry[] serviceEntries = kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}/services",
+        ServiceEntry[] serviceEntries = kernel.getEntityOrException(appsEndpoint + "/instance/{instance_id}/services",
             ServiceEntry[].class, user(), instanceId);
-        if (serviceEntries != null) {
-            return Arrays.asList(serviceEntries);
-        } else {
-            logger.error("Empty services collection found for instance {}", instanceId);
-            return Collections.emptyList();
-        }
-
+        return Arrays.asList(serviceEntries);
     }
 
     @Override
     @Cacheable("instances")
     public ApplicationInstance findApplicationInstance(String instanceId) {
-        return kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
+        return kernel.getEntityOrException(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
     }
 
+    @Override
+    @Cacheable("instances")
+    public ApplicationInstance findApplicationInstanceOrNull(String instanceId) {
+        return kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
+    }
 
     @Override
     @CachePut(value = "services", key = "#result.id")
@@ -178,15 +194,20 @@ public class CatalogStoreImpl implements CatalogStore {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", etag);
 
-        ResponseEntity<ServiceEntry> kernelResp =
-                kernel.exchange(uriString, HttpMethod.PUT, new HttpEntity<>(serviceFromKernel, headers),
-                        ServiceEntry.class, user(), serviceId);
+        ResponseEntity<ServiceEntry> kernelResp;
+        try {
+             kernelResp = kernel.exchange(uriString, HttpMethod.PUT, new HttpEntity<>(serviceFromKernel, headers),
+                            ServiceEntry.class, user(), serviceId);
+        } catch(RestClientException e) {
+            throw new WrongQueryException(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        }
+
 
         return kernel.getBodyUnlessClientError(kernelResp, ServiceEntry.class, uriString);
     }
 
     @Override
-    public String setInstanceStatus(String instanceId, InstantiationStatus status) {
+    public ApplicationInstance setInstanceStatus(String instanceId, InstantiationStatus status) {
         logger.warn("Deleting instance {}", instanceId);
 
         ResponseEntity<ApplicationInstance> respAppInstance = kernel.exchange(appsEndpoint + "/instance/{instance_id}",
@@ -207,17 +228,9 @@ public class CatalogStoreImpl implements CatalogStore {
             appsEndpoint + "/instance/{instance_id}", instanceId);
 
         instance.setStatus(status);
-        ResponseEntity<String> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
-            new HttpEntity<>(instance, headers), String.class, user(), instanceId);
+        ResponseEntity<ApplicationInstance> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
+            new HttpEntity<>(instance, headers), ApplicationInstance.class, user(), instanceId);
 
-		/*  DONT CHANGE BELOW code unless updating front-end app since there is a pop up linked to this message */
-        // specific error handling, TODO LATER make it more consistent with generic error handling
-        if (resEntity.getStatusCode().is4xxClientError()) {
-            String res = resEntity.getBody();
-            if (res != null && !res.trim().isEmpty()) {
-                return res; // error message if any see #162 #163
-            }
-        }
-        return null;
+        return resEntity.getBody();
     }
 }

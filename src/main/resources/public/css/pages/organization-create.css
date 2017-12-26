@@ -1,0 +1,23 @@
+.organization-create .header .title {
+    width: 100%;
+    text-align: center;
+    font-size: 2em;
+    font-weight: bold !important;
+}
+
+.organization-create > .header {
+    margin: 10px 0;
+}
+
+.organization-create > .content {
+    width: 75%;
+    margin: 0 auto;
+    min-width: 500px;
+}
+
+.organization-create .error {
+    color: var(--alert-color);
+    text-align: center;
+    font-size: 1.2em;
+}
+

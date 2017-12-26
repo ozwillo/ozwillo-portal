@@ -13,12 +13,13 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -42,21 +43,21 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
 
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private HttpServletRequest request;
+
     @Override
     @Cacheable("subscriptions")
     public List<Subscription> findByUserId(String userId) {
 
-        ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null,
-            Subscription[].class, user(), userId);
+        Subscription[] subscriptions = kernel.getEntityOrException(endpoint + "/user/{user_id}", Subscription[].class, user(), userId);
 
-        Subscription[] subscriptions = kernel.getBodyOrNull(response, Subscription[].class, endpoint + "/user/{user_id}", userId);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("--> " + response.getStatusCode()); // supplementary, subscription-specific log
-            if (subscriptions != null) {
-                for (Subscription s : subscriptions) {
-                    logger.debug("Subscribed: {}", s);
-                }
+        if (logger.isDebugEnabled() && subscriptions != null) {
+            for (Subscription s : subscriptions) {
+                logger.debug("Subscribed: {}", s);
             }
         }
 
@@ -64,7 +65,8 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     }
 
     @Override
-    public void create(String userId, Subscription subscription) throws WrongQueryException {
+    public Subscription create(String userId, Subscription subscription) throws WrongQueryException {
+
         logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
 
         InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
@@ -74,11 +76,23 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             installedStatusRepository.delete(status);
         }
 
-        String uri = endpoint + "/user/{user_id}";
-        ResponseEntity<Void> kernelResp = kernel.exchange(uri, HttpMethod.POST,
-            new HttpEntity<>(subscription), Void.class, user(), userId);
-        // validate response body
-        kernel.getBodyUnlessClientError(kernelResp, Void.class, uri); // TODO test
+        Subscription newSub;
+        try {
+            String uri = endpoint + "/user/{user_id}";
+            ResponseEntity<Subscription> kernelResp = kernel.exchange(uri, HttpMethod.POST,
+                    new HttpEntity<>(subscription), Subscription.class, user(), userId);
+
+            // validate response body
+            newSub =  kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri);
+        } catch(RestClientException e) { //TODO: Trigger another exception like WrongQueryException to check HttpStatus
+            String translatedBusinessMessage = messageSource.getMessage("error.msg.user-is-already-subscribed",
+                    new Object[]{}, RequestContextUtils.getLocale(request));
+
+            throw new WrongQueryException(translatedBusinessMessage, HttpStatus.BAD_REQUEST.value());
+        }
+
+        return newSub;
+
     }
 
 

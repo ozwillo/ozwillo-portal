@@ -24,6 +24,11 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -115,7 +120,7 @@ public class PortalNotificationService {
                     notif.setApplicationId(serviceEntry.getId());
 
                 } else if (n.getInstanceId() != null) {
-                    ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
+                    ApplicationInstance instance = catalogStore.findApplicationInstanceOrNull(n.getInstanceId());
                     if (instance == null) {
                         // case of #179 Bug with notifications referring destroyed app instances or #206 500 on portal notification api
                         // LATER we could keep app instance with a "deleted" flag so it doesn't happen (rather than auto deleting this portal data),
@@ -135,7 +140,7 @@ public class PortalNotificationService {
                 }
 
                 notif.setDate(n.getTime());
-                notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
+                notif.setDateText(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).format(LocalDateTime.ofInstant(n.getTime(), ZoneOffset.UTC)));
 
                 notif.setFormattedText(getFormattedText(n, locale));
                 notif.setId(n.getId());

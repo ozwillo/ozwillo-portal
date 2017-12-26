@@ -3,6 +3,7 @@ package org.oasis_eu.portal.front.icon;
 import com.google.common.io.ByteStreams;
 import org.oasis_eu.portal.core.mongo.model.images.Image;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.front.generic.BaseController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +26,7 @@ import java.util.Arrays;
  */
 @Controller
 @RequestMapping(method = RequestMethod.GET, value = "/media")
-public class ImageController {
+public class ImageController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
 

@@ -1,0 +1,46 @@
+.instances-tab .sub-title {
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.instances-tab .add-instance,
+.instances-tab .search-instance {
+    margin: 30px 0;
+}
+
+.instances-tab .search {
+    margin-bottom: 20px;
+}
+
+.instances-tab .search-instance .instances-list > .instance {
+    margin: 10px 0;
+}
+
+.instances-tab .select {
+    min-width: 250px;
+}
+
+.instances-tab .service {
+    color: var(--primary-color);
+}
+
+.instances-tab .btn-submit {
+    background-color: var(--tertiary-color);
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+}
+
+.instances-tab .btn-submit {
+    background-color: var(--tertiary-color);
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+}
+
+@media (max-width: 425px) {
+    .instances-tab .oz-table .option-icon {
+        font-size: 1.6em;
+        padding: 8px 0;
+    }
+}
+

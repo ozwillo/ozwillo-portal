@@ -2,18 +2,18 @@
 
 import React from 'react';
 import PropTypes from "prop-types";
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import createClass from 'create-react-class';
 
-import GeoAreaAutosuggest from '../components/geoarea-autosuggest';
+import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import AppModal from '../components/store-install-app'
+import UpdateTitle from '../components/update-title';
 
-const default_app = null;
 
-var AppStore = createClass({
+const AppStore = createClass({
     getInitialState: function () {
         return {
-            defaultApp : null,
+            defaultApp: null,
             apps: [],
             loading: true,
             maybeMoreApps: false,
@@ -33,53 +33,17 @@ var AppStore = createClass({
             }
         };
     },
-    componentDidMount: function () {
+    componentDidMount() {
         this.updateApps();
     },
-    mergeAppsWithDefaultAppFirst : function() {
-        if (!this.state.defaultApp) {
-            return this.state.apps;
-        }
-        return $.merge([ this.state.defaultApp ], $.map(this.state.apps, function(app, i) {
-            if(app.id == this.state.defaultApp.id) return;
-            return app;
-        }.bind(this)));
-    },
-    updateFilter: function(category, key, value) {
-        var filter = this.state.filter;
-        if (category) {
-            var filterCategory = filter[category];
-            filterCategory[key] = value;
-        } else {
-            filter[key] = value;
-        }
-        this.setState({ filter: filter});
-        this.updateApps();
-    },
-    getSearchFilters: function() {
-        var supported_locales = [];
-        if (this.state.filter.selectedLanguage !== 'all') {
-            supported_locales.push(this.state.filter.selectedLanguage);
-        }
-        var filter = this.state.filter;
-        return {
-            target_citizens: filter.audience.citizens, target_publicbodies: filter.audience.publicbodies, target_companies: filter.audience.companies,
-            free: filter.payment.free, paid: filter.payment.paid,
-            supported_locales: supported_locales,
-            geoArea_AncestorsUris: filter.geoAreaAncestorsUris,
-            category_ids: [],
-            q: filter.searchText  // q being empty is ok
-        };
-    },
-    updateApps: function() {
-        if (default_app) {
+    componentWillReceiveProps: function (nextProps) {
+        if (nextProps.defaultApp && (!this.state.defaultApp || this.state.defaultApp.id != nextProps.defaultApp.id)) {
             $.ajax({
-                url: "/api/store/application/" + default_app.type + "/" + default_app.id,
+                url: "/api/store/application/" + nextProps.defaultApp.type + "/" + nextProps.defaultApp.id,
                 type: 'get',
                 dataType: 'json',
                 success: function (data) {
-                    default_app = null; // only once
-                    var state = this.state;
+                    const state = this.state;
                     state.defaultApp = data;
                     state.defaultApp.isDefault = true; // triggers opening modal
                     this.setState(state);
@@ -88,10 +52,38 @@ var AppStore = createClass({
                     console.error(status, err.toString());
                 }.bind(this)
             });
-        } else {
-            this.setState({ defaultApp: null});
         }
-
+    },
+    updateFilter: function (category, key, value) {
+        const filter = this.state.filter;
+        if (category) {
+            const filterCategory = filter[category];
+            filterCategory[key] = value;
+        } else {
+            filter[key] = value;
+        }
+        this.setState({filter: filter});
+        this.updateApps();
+    },
+    getSearchFilters: function () {
+        const supported_locales = [];
+        if (this.state.filter.selectedLanguage !== 'all') {
+            supported_locales.push(this.state.filter.selectedLanguage);
+        }
+        const filter = this.state.filter;
+        return {
+            target_citizens: filter.audience.citizens,
+            target_publicbodies: filter.audience.publicbodies,
+            target_companies: filter.audience.companies,
+            free: filter.payment.free,
+            paid: filter.payment.paid,
+            supported_locales: supported_locales,
+            geoArea_AncestorsUris: filter.geoAreaAncestorsUris,
+            category_ids: [],
+            q: filter.searchText  // q being empty is ok
+        };
+    },
+    updateApps: function () {
         $.ajax({
             url: "/api/store/applications",
             data: this.getSearchFilters(),
@@ -106,15 +98,15 @@ var AppStore = createClass({
                 });
             }.bind(this),
             error: function (xhr, status, err) {
-                this.setState({ apps: [], loading: false });
+                this.setState({apps: [], loading: false});
                 console.error(status, err.toString());
             }.bind(this)
         });
     },
     loadMoreApps: function () {
-        this.setState({ loading: true });
+        this.setState({loading: true});
 
-        var searchFilters = this.getSearchFilters();
+        const searchFilters = this.getSearchFilters();
         searchFilters.last = this.state.apps.length;
         $.ajax({
             url: "/api/store/applications",
@@ -122,7 +114,7 @@ var AppStore = createClass({
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                var state = this.state;
+                const state = this.state;
                 state.apps = state.apps.concat(data.apps);
                 state.loading = false;
                 state.maybeMoreApps = data.maybeMoreApps;
@@ -130,19 +122,30 @@ var AppStore = createClass({
             }.bind(this),
             error: function (data) {
                 // maybe not such an error, could be there's no more data to get...
-                var state = this.state;
+                const state = this.state;
                 state.loading = false;
                 state.maybeMoreApps = false;
                 this.setState(state);
             }.bind(this)
         });
     },
+    mergeAppsWithDefaultAppFirst: function () {
+        if (!this.state.defaultApp) {
+            return this.state.apps;
+        }
+
+        const apps = this.state.apps.map(app => {
+            return (app.id === this.state.defaultApp.id) ? this.state.defaultApp : app;
+        });
+
+        return apps;
+    },
     render: function () {
-        var languagesAndAll = Object.assign([], this.props.config.languages);
+        const languagesAndAll = Object.assign([], this.props.config.languages);
         languagesAndAll.unshift('all');
 
         return (
-            <div>
+            <section id="store">
                 <SearchAppsForm ref="searchAppsForm"
                                 languages={languagesAndAll}
                                 updateApps={this.updateApps}
@@ -153,10 +156,14 @@ var AppStore = createClass({
                     loading={this.state.loading}
                     maybeMoreApps={this.state.maybeMoreApps}
                     loadMoreApps={this.loadMoreApps}/>
-            </div>
+            </section>
         );
     }
 });
+AppStore.contextTypes = {
+    t: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => {
     return {
         config: state.config
@@ -165,8 +172,8 @@ const mapStateToProps = state => {
 const AppStoreWithRedux = connect(mapStateToProps)(AppStore)
 
 
-var SearchAppsForm = createClass({
-    handleLanguageClicked: function(event) {
+const SearchAppsForm = createClass({
+    handleLanguageClicked: function (event) {
         this.props.updateFilter(null, "selectedLanguage", event.target.value);
     },
     fullTextSearchChanged: function (event) {
@@ -175,20 +182,19 @@ var SearchAppsForm = createClass({
     onGeoChange: function (geoArea) {
         this.props.updateFilter(null, "geoAreaAncestorsUris", geoArea.ancestors);
     },
-    onAudienceChange: function(event) {
+    onAudienceChange: function (event) {
         this.props.updateFilter("audience", event.target.name, event.target.checked);
     },
-    onPaymentChange: function(event) {
+    onPaymentChange: function (event) {
         this.props.updateFilter("payment", event.target.name, event.target.checked);
     },
     render: function () {
-        var languageComponents = this.props.languages.map(language =>
-            <option key={language} value={language}>{ this.context.t(language) }</option>
+        const languageComponents = this.props.languages.map(language =>
+            <option key={language} value={language}>{this.context.t(`store.language.${language}`)}</option>
         );
 
         return (
-            <div className="container">
-
+            <section className="box">
                 <div className="row form-horizontal" id="store-search">
                     <div className="col-md-6">
                         <div className="form-group">
@@ -205,12 +211,14 @@ var SearchAppsForm = createClass({
 
                         {/* geo-filer - filtering by jurisdiction (geoArea) */}
                         <div className="form-group">
-                            <label htmlFor="geoSearch" className="col-sm-4 control-label">{this.context.t('geoarea')}</label>
+                            <label htmlFor="geoSearch"
+                                   className="col-sm-4 control-label">{this.context.t('geoarea')}</label>
 
                             <div className="col-sm-8">
-                                <GeoAreaAutosuggest countryUri=""
+                                <GeoAreaAutosuggest name="geoSearch"
+                                                    countryUri=""
                                                     endpoint="/geographicalAreas"
-                                                    onChange={this.onGeoChange} />
+                                                    onChange={this.onGeoChange}/>
                             </div>
                         </div>
                         <div className="form-group">
@@ -228,9 +236,10 @@ var SearchAppsForm = createClass({
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 right">
                         <div className="form-group">
-                            <label htmlFor="fulltext" className="col-sm-4 control-label">{this.context.t('keywords')}</label>
+                            <label htmlFor="fulltext"
+                                   className="col-sm-4 control-label">{this.context.t('keywords')}</label>
 
                             <div className="col-sm-8">
                                 <input type="text" id="fulltext" className="form-control"
@@ -267,7 +276,7 @@ var SearchAppsForm = createClass({
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         );
     }
 });
@@ -275,15 +284,15 @@ SearchAppsForm.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var AppList = createClass({
-    renderApps: function() {
+const AppList = createClass({
+    renderApps: function () {
         return this.props.apps.map(function (app) {
             return (
                 <App key={app.id} app={app}/>
             );
         });
     },
-    render: function() {
+    render: function () {
         if (this.props.apps.length === 0)
             return (<div></div>);
         else
@@ -301,18 +310,19 @@ var AppList = createClass({
     }
 });
 
-var LoadMore = createClass({
-    renderLoading: function() {
+const LoadMore = createClass({
+    renderLoading: function () {
         if (this.props.loading) {
             return (
                 <div className="text-center">
-                    <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
                 </div>
             );
         } else if (this.props.maybeMoreApps) {
             return (
                 <div className="text-center">
-                    <button className="btn btn-lg oz-btn-loadmore" onClick={this.props.loadMoreApps}>{this.context.t('load-more')}</button>
+                    <button className="btn btn-lg btn-default"
+                            onClick={this.props.loadMoreApps}>{this.context.t('load-more')}</button>
                 </div>
             );
         }
@@ -336,32 +346,39 @@ LoadMore.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var App = createClass({
-    componentDidMount: function () {
-        if (this.props.app.isDefault) {
+const App = createClass({
+    getInitialState: function () {
+        return {
+            isOpen: false
+        };
+    },
+    componentWillReceiveProps: function (nextProps) {
+        if (!this.state.isOpen && nextProps.app.isDefault) {
             this.openApp();
+            this.setState({ isOpen: true });
         }
     },
     openApp: function () {
-        this.refs.appmodal.open();
+        this.modal.open();
     },
     render: function () {
-        var indicatorStatus = this.props.app.installed ? "installed" : (this.props.app.paid ? "paid" : "free");
-        var pubServiceIndicator = this.props.app.public_service ?
+        const indicatorStatus = this.props.app.installed ? "installed" : (this.props.app.paid ? "paid" : "free");
+        const pubServiceIndicator = this.props.app.public_service ?
             <div className="public-service-indicator">
-                <div className="triangle"></div>
+                <div className="triangle"/>
                 <div className="label">
-                    <i className="triangle fa fa-institution"></i>
+                    <i className="triangle fas fa-university" />
                 </div>
             </div> : null;
 
         return (
-            <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12">
-                <AppModal ref="appmodal" app={this.props.app}/>
-                <div className="logo">
-                    <img src={this.props.app.icon} />
-                </div>
+            <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12 container-app">
+                <AppModal app={this.props.app} wrappedComponentRef={
+                    c => { this.modal = c && c.getWrappedInstance() }}/>
                 <div className="app">
+                    <div className="logo">
+                        <img src={this.props.app.icon}/>
+                    </div>
                     <div className="description" onClick={this.openApp}>
                         {pubServiceIndicator}
                         <div className="app-header">
@@ -369,7 +386,7 @@ var App = createClass({
                             <p className="app-provider">{this.props.app.provider}</p>
                         </div>
                         <p className="app-description">{this.props.app.description}</p>
-                        <Indicator status={indicatorStatus} />
+                        <Indicator status={indicatorStatus}/>
                     </div>
                 </div>
             </div>
@@ -377,29 +394,32 @@ var App = createClass({
     }
 });
 
-var Indicator = createClass({
+const Indicator = createClass({
     render: function () {
-        var btns;
-        var status = this.props.status;
+        let btns;
+        const status = this.props.status;
         if (status === "installed") {
             btns = [
-                <button type="button" key="indicator_button" className="btn btn-lg btn-installed">{this.context.t('installed')}</button>,
+                <button type="button" key="indicator_button"
+                        className="btn btn-lg btn-installed">{this.context.t('installed')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-installed-indicator">
-                    <i className="fa fa-check"></i>
+                    <i className="fa fa-check" />
                 </button>
             ];
         } else if (status === "free") {
             btns = [
-                <button type="button" key="indicator_button" className="btn btn-lg btn-free">{this.context.t('free')}</button>,
+                <button type="button" key="indicator_button"
+                        className="btn btn-lg btn-free">{this.context.t('free')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-free-indicator">
-                    <i className="fa fa-gift"></i>
+                    <i className="fa fa-gift" />
                 </button>
             ];
         } else {
             btns = [
-                <button type="button" key="indicator_button" className="btn btn-lg btn-buy">{this.context.t('paid')}</button>,
+                <button type="button" key="indicator_button"
+                        className="btn btn-lg btn-buy">{this.context.t('paid')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
-                    <i className="fa fa-eur"></i>
+                    <i className="fa fas fa-euro-sign" />
                 </button>
             ];
         }
@@ -415,33 +435,44 @@ Indicator.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-class AppStoreWrapper extends React.Component {
+import { withRouter } from 'react-router';
 
+class AppStoreWrapper extends React.Component {
     static contextTypes = {
         t: PropTypes.func.isRequired
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            defaultApp: null
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let defaultApp = null;
+        const urlParams = nextProps.match.params;
+
+        if (urlParams.id) {
+            defaultApp = { type: urlParams.type, id: urlParams.id }
+        }
+
+        this.setState({ defaultApp });
+    }
+
     render() {
-        return <div className="oz-body page-row page-row-expanded">
+        return <div className="oz-body wrapper">
+            <UpdateTitle title={this.context.t('ui.appstore')}/>
 
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            <img src="/img/store-lg.png" />
-                            <span>{this.context.t('ui.appstore')}</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
+            <header className="title">
+                <span>{this.context.t('ui.appstore')}</span>
+            </header>
 
-            <div className="oz-body-content" id="store">
-                <AppStoreWithRedux/>
-            </div>
-
-            <div className="push"></div>
+            <AppStoreWithRedux defaultApp={this.state.defaultApp} />
+            <div className="push"/>
         </div>;
     }
 }
 
-export default AppStoreWrapper;
+export default withRouter(AppStoreWrapper);

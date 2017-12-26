@@ -3,10 +3,13 @@ package org.oasis_eu.portal.core.model.subscription;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.Instant;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 
 /**
  * User: schambon
@@ -44,6 +47,7 @@ public class Subscription extends GenericEntity {
     @JsonProperty("creator_id")
     private String creatorId;
 
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant modified;
 
     @JsonProperty("subscription_etag")

@@ -3,9 +3,12 @@ package org.oasis_eu.portal.core.model.ace;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.Instant;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 
 /**
  * User: schambon
@@ -31,13 +34,19 @@ public class ACE {
     private String userId;
     @JsonProperty("user_name")
     private String userName;
-    @JsonProperty("email")
+
+    //TODO: standardize name of parameters. To fetch an ACL we receive a field "user_email_address" (see ACE class) but to create an ACL we need a field "email"
     private String email;
+
+    @JsonProperty("user_email_address")
+    private String userEmail;
+
     @JsonProperty("creator_id")
     private String creatorId;
     @JsonProperty("creator_name")
     private String creatorName;
     @JsonProperty("created")
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant created;
     @JsonProperty("app_admin")
     private boolean appAdmin = false; // for now Kernel deduces it from orga admin #157 Delete and re-add a service icon to my desk K#90
@@ -113,12 +122,22 @@ public class ACE {
         this.userName = userName;
     }
 
+    //TODO: standardize name of parameters. (Quick fix)
     public String getEmail() {
-        return email;
+        return (email == null || email.isEmpty()) ? email : userEmail;
     }
 
     public void setEmail(String email) {
         this.email = email;
+        this.userEmail = email;
+    }
+
+    public String getUserEmail() {
+        return getEmail();
+    }
+
+    public void setUserEmail(String userEmail) {
+        setEmail(userEmail);
     }
 
     public String getCreatorId() {
@@ -160,4 +179,5 @@ public class ACE {
     public void setAppUser(boolean appUser) {
         this.appUser = appUser;
     }
+
 }

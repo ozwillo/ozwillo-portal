@@ -36,7 +36,7 @@ public class XmlParserConverter extends AbstractHttpMessageConverter<Object> {
     }
 
     @Override
-    protected void writeInternal(Object o, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+    protected void writeInternal(Object o, HttpOutputMessage outputMessage) throws HttpMessageNotWritableException {
         throw new UnsupportedOperationException("Not implemented");
     }
 }

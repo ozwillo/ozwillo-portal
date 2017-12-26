@@ -1,0 +1,73 @@
+
+.organization-invitation-form {
+    width: 100%;
+    align-self: center;
+    color: var(--primary-color);
+}
+
+.organization-invitation-form .legend {
+    border: none;
+    font-size: 1em;
+    margin-bottom: 0;
+    color: var(--primary-color);
+    font-weight: bold;
+}
+
+.organization-invitation-form .label {
+    width: 100%;
+    text-align: left;
+    margin: auto 0;
+    font-size: 0.9em;
+    color: var(--secondary-color);
+    padding: 2px 0;
+    font-weight: normal;
+}
+
+.organization-invitation-form .field {
+    display: inline;
+    width: 230px;
+    height: auto;
+    padding: 2px 5px;
+    margin: 0 5px;
+}
+
+.organization-invitation-form input[type="checkbox"].field {
+    width: auto;
+}
+
+.organization-invitation-form .options .action-icon {
+    font-size: 1.5em;
+    color: var(--primary-color);
+}
+
+.organization-invitation-form .error,
+.organization-invitation-form .success {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    width: 100%;
+    font-size: 0.9em;
+    text-align: center;
+    color: var(--tertiary-color);
+}
+
+.organization-invitation-form .btn-submit {
+    padding: 3px 6px;
+    font-size: 0.9em;
+}
+
+.organization-invitation-form .wrapper {
+    width: 100%;
+}
+
+@media (max-width: 425px) {
+    .organization-invitation-form .field {
+        width: auto;
+    }
+
+    .organization-invitation-form .wrapper {
+        flex-wrap: wrap;
+    }
+}
+

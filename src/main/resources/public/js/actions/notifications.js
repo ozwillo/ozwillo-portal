@@ -1,4 +1,4 @@
-import customFetch, { urlBuilder } from '../util/custom-fetch';
+import customFetch, {urlBuilder} from '../util/custom-fetch';
 
 export const FETCH_NOTIFICATIONS_COUNT = 'FETCH_NOTIFICATIONS_COUNT';
 export const DELETE_NOTIFICATION = 'DELETE_NOTIFICATION';
@@ -39,7 +39,7 @@ export const fetchNotificationsCount = () => {
 
 export const fetchNotifications = (status) => {
     return (dispatch) => {
-        return customFetch(urlBuilder('/my/api/notifications', { status }))
+        return customFetch(urlBuilder('/my/api/notifications', {status}))
             .then((res) => {
                 dispatch(fetchNotificationsAction(res.notifications, res.apps));
             });

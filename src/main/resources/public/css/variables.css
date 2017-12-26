@@ -1,0 +1,44 @@
+:root {
+    --primary-color: #6f438e;
+    --secondary-color: #4c2d62;
+    --tertiary-color: #FFF;
+
+    --separator-color: #CCC;
+    --footer-color: #EEE;
+    --nav-color: #FBFBFB;
+    --bg-content-color: #f4f4f4;
+
+    /* STORE */
+    --buy-color: #ff4d37e8;
+    --buy-dark-color: rgba(150, 0, 42, 1);
+
+    --free-color: #f8ba03;
+    --free-dark-color: #f69b04;
+
+    --installed-color: #43a047;
+    --installed-dark-color: #2e7d32;
+
+    /* BUTTON */
+    --button-primary-color: #6f438e; /* Border + text */
+    --button-secondary-color: #FFF; /* background */
+    --button-tertiary-color: #4c2d62; /* background on hover */
+
+
+    /* COLOR */
+    --black-color: #4c4c4c;
+    --alert-color: #ff4d37e8;
+    --gray-color: #e4e4e4;
+
+
+    /* LOGO */
+    --logo-url: url("/img/logo-ozwillo.png");
+    --footer-logo-url: url("/img/logo-ozwillo-footer.png");
+
+    /* SCREEN SIZE
+    --sm-phone-width: 320;
+    --m-phone-width: 375;
+    --l-phone-width: 425;
+    --m-tablet-width: 768;
+    --l-laptop-width: 1024;
+     */
+}

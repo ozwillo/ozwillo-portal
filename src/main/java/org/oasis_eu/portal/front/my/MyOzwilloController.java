@@ -18,7 +18,7 @@ public class MyOzwilloController extends PortalController {
         if (requiresLogout()) {
             return "redirect:/logout";
         }
-        return "/index";
+        return "index";
     }
 
 }

@@ -1,0 +1,31 @@
+
+.instance-config-form .label {
+    color: black;
+}
+
+.instance-config-form .field.icon > img {
+    width: 64px;
+    height: 64px;
+    margin-right: 10px;
+}
+
+.instance-config-form .field.icon > input {
+    display: initial;
+    width: 100%;
+    margin: auto;
+}
+
+.instance-config-form .field .desc-field {
+    width: 100%;
+    align-self: center;
+}
+
+.instance-config-form .field .desc-field > .desc {
+    font-size: 0.9em;
+    color: var(--secondary-color);
+}
+
+.instance-config-form .btn {
+    margin: auto;
+}
+
