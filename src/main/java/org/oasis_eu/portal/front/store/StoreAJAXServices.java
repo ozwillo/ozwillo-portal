@@ -102,7 +102,7 @@ public class StoreAJAXServices extends BaseAJAXServices {
     @RequestMapping(value = "/dc-countries", method = RequestMethod.GET)
     public GeographicalAreaResponse dcCountries(@RequestParam String q) {
         int loadSize = 10;
-        List<GeographicalArea> countries = geographicalAreaService.findCountries(q, 0, loadSize + 1);
+        List<GeographicalArea> countries = geographicalAreaService.findCountries(q);
 
         return new GeographicalAreaResponse(
             countries.stream().limit(loadSize).collect(Collectors.toList()), (countries.size() == loadSize + 1));

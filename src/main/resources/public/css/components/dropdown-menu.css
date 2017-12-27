@@ -1,0 +1,31 @@
+
+
+.oz-dropdown-menu {
+    background-color: white;
+    color: #6f438e;
+}
+
+.oz-dropdown-menu  > .header {
+    display: flex;
+    flex-direction: row;
+    padding: 5px 10px;
+    align-items: center;
+
+    color: white;
+    background-color: #4c2d62;
+}
+
+.oz-dropdown-menu  > .header > .content {
+    width: 100%;
+}
+
+.oz-dropdown-menu  > .header .arrow-icon {
+    font-size: 2em;
+    cursor: pointer;
+    align-self: end;
+}
+
+
+.oz-dropdown-menu  > .content {
+
+}
