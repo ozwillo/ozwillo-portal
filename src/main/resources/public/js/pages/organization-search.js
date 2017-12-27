@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 // Components
 import DropdownMenu from '../components/dropdown-menu';
+import SideMenu from '../components/side-menu';
 
 //action
 import { fetchOrganizations } from '../actions/organization';
@@ -16,17 +17,38 @@ class OrganizationSearch extends React.Component {
         t: PropTypes.func.isRequired
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            sideMenuIsOpen: false
+        };
+
+        //bind methods
+        this.sideMenuToogle = this.sideMenuToogle.bind(this);
+    }
+
     componentDidMount() {
         this.props.fetchUserOrganizations();
     }
 
+    sideMenuToogle() {
+        this.setState({
+            sideMenuIsOpen: !this.state.sideMenuIsOpen
+        });
+    }
+
     render() {
-        return <section className="organization-search oz-body flex-col">
+        return <section className="organization-search oz-body wrapper flex-col">
+
+            <div className="flex-row reverse">
+                <button onClick={this.sideMenuToogle} className="btn icon"><i className="fa fa-bars menu-icon"/></button>
+            </div>
 
             <section>
-                <h1 className="title">
-                    {this.context.t('search')}
-                </h1>
+                <header>
+                    <h1 className="title">{this.context.t('search')}</h1>
+                </header>
 
                 <form className="search oz-form">
                     <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
@@ -35,9 +57,9 @@ class OrganizationSearch extends React.Component {
 
 
             <section>
-                <h1 className="title">
-                    {this.context.t('my organization')}
-                </h1>
+                <header>
+                    <h1 className="title">{this.context.t('my organization')}</h1>
+                </header>
 
                 <form className="search oz-form">
                     <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
@@ -61,6 +83,10 @@ class OrganizationSearch extends React.Component {
                 </ul>
             </section>
 
+
+            <SideMenu isOpen={this.state.sideMenuIsOpen} onClickBackground={this.sideMenuToogle}>
+                <h1>Menu !!!</h1>
+            </SideMenu>
         </section>;
     }
 

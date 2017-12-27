@@ -33,3 +33,9 @@
     text-decoration: none;
     color: #6f438e;
 }
+
+
+.organization-search .menu-icon {
+    font-size: 2em;
+    color: white;
+}

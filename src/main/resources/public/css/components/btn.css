@@ -2,6 +2,16 @@
     border-radius: 0 !important;
 }
 
+.btn.icon,
+.btn.icon:hover,
+.btn.icon:active,
+.btn.icon:focus {
+    background-color: transparent;
+    border: none;
+    outline: 0 !important;
+    box-shadow: none;
+}
+
 .btn.focus, .btn:focus, .btn:hover {
     color: #fff;
 }
