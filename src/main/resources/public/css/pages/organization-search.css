@@ -1,0 +1,35 @@
+
+.organization-search .title,
+.organization-search form.search {
+    margin: 20px auto;
+    text-align: center;
+}
+
+.organization-search form.search {
+    width: 100%;
+}
+
+
+.organization-search .search .field {
+    margin: auto;
+
+    width: 50%;
+    min-width: 300px;
+}
+
+.organization-search .organisations-list .item > .organization {
+    margin: auto;
+
+    width: 80%;
+    min-width: 300px;
+}
+
+.link {
+    text-decoration: none;
+    color: white;
+}
+
+.link:hover {
+    text-decoration: none;
+    color: #6f438e;
+}

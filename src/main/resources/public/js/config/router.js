@@ -17,7 +17,8 @@ import SynchroniseFCProfile from '../pages/synchronize-fc-profile';
 import Network from '../pages/network';
 import Apps from '../pages/myapps';
 import Notification from '../pages/notifications';
-import Organization from '../pages/organization';
+import OrganizationSearch from '../pages/organization-search';
+import OrganizationDesc from '../pages/organization-desc';
 import Store from '../pages/store';
 
 // Actions
@@ -33,7 +34,8 @@ class RouterWithUser extends React.Component {
                 <Route path="/my/network" component={Network}/>
                 <Route path="/my/apps" component={Apps}/>
                 <Route path="/my/notif" component={Notification}/>
-                <Route path="/my/organization" component={Organization}/>
+                <Route path="/my/organization/:id" component={OrganizationDesc}/>
+                <Route path="/my/organization" component={OrganizationSearch}/>
                 <Route path="/my/" component={Dashboard}/>
                 <Redirect to="/my/"/>
             </Switch>

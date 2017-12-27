@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 // Components
 import DropdownMenu from '../components/dropdown-menu';
@@ -9,7 +10,7 @@ import DropdownMenu from '../components/dropdown-menu';
 import { fetchOrganizations } from '../actions/organization';
 import { fetchUserOrganizations } from '../actions/organization';
 
-class Organization extends React.Component {
+class OrganizationSearch extends React.Component {
 
     static contextTypes = {
         t: PropTypes.func.isRequired
@@ -20,7 +21,7 @@ class Organization extends React.Component {
     }
 
     render() {
-        return <section className="organization oz-body flex-col">
+        return <section className="organization-search oz-body flex-col">
 
             <section>
                 <h1 className="title">
@@ -46,8 +47,12 @@ class Organization extends React.Component {
                 {
 
                     this.props.userOrganizations.map((org) => {
+                        const Header = <Link to={`/my/organization/${org.id}`} className="link">
+                            {org.name}
+                        </Link>;
+
                         return <li key={org.id} className="item">
-                            <DropdownMenu header={org.name} className="organization">
+                            <DropdownMenu header={Header} className="organization">
                                 <h1>{org.label}</h1>
                             </DropdownMenu>
                         </li>
@@ -79,4 +84,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Organization);
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizationSearch);
