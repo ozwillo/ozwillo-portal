@@ -1,11 +1,37 @@
 import React from 'react';
 import { connect } from 'react-redux';
 
+//Components
+import Tabs from '../components/tabs';
+
 //actions
 import { fetchOrganizationWithId } from "../actions/organization";
+import PropTypes from "prop-types";
+
+const tabsHeaders = {
+    services: 'Services',
+    members: 'Members',
+    admin: 'Admin'
+};
+
+const tabs = {
+    services: () => {
+        return <h1>Services</h1>
+    },
+    members: () => {
+        return <h1>Members</h1>
+    },
+    admin: () => {
+        return <h1>Admin</h1>
+    }
+};
 
 
 class OrganizationDesc extends React.Component {
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
 
     constructor(props) {
         super(props);
@@ -16,7 +42,16 @@ class OrganizationDesc extends React.Component {
     }
 
     render() {
-        return <h1>OrganizationDesc</h1>;
+        return <section className="organization-desc oz-body wrapper flex-col">
+
+            <header className="flex-row">
+                <img className="organization-logo" src="/img/appli-catalogue.png" />
+                <h1 className="title">Name of the organization</h1>
+            </header>
+
+            <Tabs headers={tabsHeaders} tabs={tabs}/>
+
+        </section>;
     }
 }
 

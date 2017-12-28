@@ -1,0 +1,23 @@
+.tabs .tabs-headers {
+    justify-content: center;
+    align-items: center;
+}
+
+.tabs .tabs-headers .header {
+    background-color: #6f438e;
+    width: 100%;
+    min-height: 30px;
+    border: 1px solid white;
+    text-align: center;
+}
+
+.tabs .tabs-headers .header.active {
+    background-color: #4c2d62;
+}
+
+.tabs .tabs-headers .headers-list {
+    padding: 0;
+}
+
+
+
