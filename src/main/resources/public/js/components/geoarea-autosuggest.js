@@ -65,11 +65,8 @@ class GeoAreaAutosuggest extends Component {
         }
     }
     render() {
-        if (this.state.value === undefined) {
-            this.state.value = ''
-        }
         const inputProps = {
-            value: this.state.value,
+            value: this.state.value || '',
             onChange: this.onChange.bind(this),
             type: 'search',
             placeholder: this.props.placeholder,
