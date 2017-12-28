@@ -1,4 +1,17 @@
 
-.organization-desc {
-
+.organization-desc .header .organization-logo {
+    font-size: 10em;
 }
+
+.organization-desc .header .title {
+    width: 100%;
+    text-align: center;
+    font-size: 1.8em;
+    font-weight: bold;
+}
+
+.organization-desc > .header,
+.organization-desc > .content {
+    margin: 10px 0;
+}
+

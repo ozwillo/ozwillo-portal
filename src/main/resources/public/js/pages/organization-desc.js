@@ -44,12 +44,13 @@ class OrganizationDesc extends React.Component {
     render() {
         return <section className="organization-desc oz-body wrapper flex-col">
 
-            <header className="flex-row">
-                <img className="organization-logo" src="/img/appli-catalogue.png" />
+            <header className="header flex-row">
+                {/*<img className="organization-logo" src="/img/appli-catalogue.png" />*/}
+                <i className="fa fa-picture-o organization-logo" />
                 <h1 className="title">Name of the organization</h1>
             </header>
 
-            <Tabs headers={tabsHeaders} tabs={tabs}/>
+            <Tabs className="content" headers={tabsHeaders} tabs={tabs}/>
 
         </section>;
     }
