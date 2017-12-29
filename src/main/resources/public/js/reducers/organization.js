@@ -5,7 +5,14 @@ import {
 
 const defaultState = {
     organizations: [],
-    current: {}
+    current: {
+        members: [],
+        services: []
+    },
+    newOrganization: {
+        members: [],
+        services: []
+    }
 };
 
 export default (state = defaultState, action) => {

@@ -8,10 +8,12 @@ const DashboardPlugin = require('webpack-dashboard/plugin');
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
     app: path.join(__dirname, 'src/main/resources/public'),
-    build: path.join(__dirname, 'src/main/resources/public/build')
+    build: path.join(__dirname, 'src/main/resources/public/build'),
+    nodeModules: path.join(__dirname, 'node_modules')
 };
 
-const commonEntryPointsLoadersAndServers = ['bootstrap-loader', 'font-awesome-webpack'];
+const commonEntryPointsLoadersAndServers = ['bootstrap-loader', 'font-awesome-webpack',
+    path.join(PATHS.nodeModules, 'react-select/dist/react-select.css')];
 const devEntryPointsLoadersAndServers = ['webpack-dev-server/client?http://localhost:3000', 'webpack/hot/only-dev-server'];
 
 const extractCSS = new ExtractTextPlugin({ filename: 'bundle.css' });
@@ -102,7 +104,6 @@ if(TARGET === 'start' || !TARGET) {
             rules: [
                 {
                     test: /\.css$/,
-                    exclude: /node_modules/,
                     use: ['css-hot-loader'].concat(extractCSS.extract({
                         fallback: 'style-loader',
                         use: [ 'css-loader' ]
@@ -110,7 +111,6 @@ if(TARGET === 'start' || !TARGET) {
                 },
                 {
                     test: /\.scss$/,
-                    exclude: /node_modules/,
                     use: ['css-hot-loader'].concat(extractCSS.extract({
                         fallback: 'style-loader',
                         use: [ 'css-loader', 'sass-loader' ]
@@ -142,7 +142,6 @@ if(TARGET === 'build' || TARGET === 'stats') {
             rules: [
                 {
                     test: /\.css$/,
-                    exclude: /node_modules/,
                     use: extractCSS.extract({
                         fallback: 'style-loader',
                         use: [
@@ -155,7 +154,6 @@ if(TARGET === 'build' || TARGET === 'stats') {
                 },
                 {
                     test: /\.scss$/,
-                    exclude: /node_modules/,
                     use: extractCSS.extract({
                         fallback: 'style-loader',
                         use: [

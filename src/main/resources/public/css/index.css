@@ -17,6 +17,8 @@
 @import 'components/side-menu.css';
 @import 'components/tabs.css';
 
+@import 'components/tabs/services-tab.css';
+
 
 /* Pages */
 @import 'pages/dashboard.css';

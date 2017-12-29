@@ -41,7 +41,7 @@ class OrganizationSearch extends React.Component {
     render() {
         return <section className="organization-search oz-body wrapper flex-col">
 
-            <div className="flex-row reverse">
+            <div className="flex-row end">
                 <button onClick={this.sideMenuToogle} className="btn icon"><i className="fa fa-bars menu-icon"/></button>
             </div>
 

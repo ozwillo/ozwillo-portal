@@ -5,12 +5,14 @@ import { i18nState } from 'redux-i18n';
 import config from './config';
 import notifications from './notifications';
 import organization from './organization';
+import service from './service';
 import userInfo from './userInfo';
 
 export default combineReducers({
     config,
     notifications,
     organization,
+    service,
     userInfo,
     i18nState
 });

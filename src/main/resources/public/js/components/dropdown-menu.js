@@ -5,7 +5,14 @@ class DropDownMenu extends React.Component {
 
     static propTypes = {
         header: PropTypes.node,
-        isOpen: PropTypes.bool
+        footer: PropTypes.node,
+        isOpen: PropTypes.bool,
+        isAvailable: PropTypes.bool
+    };
+
+    static defaultProps = {
+        isOpen: false,
+        isAvailable: true
     };
 
     constructor(props) {
@@ -27,16 +34,24 @@ class DropDownMenu extends React.Component {
     }
 
     render() {
-        const isOpen = this.state.isOpen;
+        const isOpenClassName = (!this.state.isOpen && 'hidden') || '';
+        const iconClassName = (this.state.isOpen && 'up') || 'down';
+        const isAvailableClassName = (!this.props.isAvailable && 'hidden') || '';
+
         return <section className={`oz-dropdown-menu flex-col ${this.props.className || ''}`}>
             <header className="header flex-row">
                 <div className="content">{this.props.header}</div>
-                <i className={`fa fa-chevron-${(isOpen && 'up') || 'down'} arrow-icon`} onClick={this.dropDownToggle}/>
+                <i onClick={this.dropDownToggle}
+                   className={`fa fa-chevron-${iconClassName} arrow-icon ${isAvailableClassName}` }/>
             </header>
 
-            <article className={`content flex-row ${(!isOpen && 'hidden') || ''}`}>
+            <article className={`content flex-row ${isOpenClassName} ${isAvailableClassName}`}>
                 {this.props.children}
             </article>
+
+            <footer>
+                {this.props.footer}
+            </footer>
         </section>
     }
 

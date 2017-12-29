@@ -5,10 +5,10 @@ class Tabs extends React.Component {
 
     static propTypes = {
         //Warning: Attributes of fields headers and tabs must be sames
-        //ex headers { tab1: "toto", tab2: () => <h1>Toto 2</h1> }
+        //ex headers { tab1: () => "toto", tab2: () => <h1>Toto 2</h1> }
         headers: PropTypes.object.isRequired,
 
-        //ex tabs { tab1: "content", tab2: () => <section>content</section> }
+        //ex tabs { tab1: () => "content", tab2: () => <section>content</section> }
         tabs: PropTypes.object.isRequired,
 
         //Name of attribute associate with the tab
@@ -50,9 +50,10 @@ class Tabs extends React.Component {
                 <ul className="undecorated-list flex-row headers-list">
                     {
                         Object.keys(this.props.headers).map((tabName) => {
+                            const Component = this.props.headers[tabName];
                             return <li key={tabName} onClick={this.onChangeTab} data-tab={tabName}
                                        className={`header ${(tabName === tabName && 'active') || ''}`}>
-                                {this.props.headers[tabName]}
+                                <Component/>
                             </li>
                         })
                     }

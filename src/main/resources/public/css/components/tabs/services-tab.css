@@ -1,0 +1,32 @@
+
+.services-tab .add-service,
+.services-tab .search-service {
+    margin: 15px 0;
+}
+
+.create-service-header .form,
+.create-service-header .options{
+    height: 100%;
+    align-items: center;
+}
+
+.create-service-header .form .field {
+    margin: 0 2px;
+    font-size: 1.2em;
+}
+
+.create-service-header .form .select {
+    width: 40%;
+    min-width: 200px;
+}
+
+.create-service-header .options {
+    width: 100%;
+}
+
+.create-service-header .options .add-icon {
+    color: white;
+    font-size: 1.2em;
+}
+
+
