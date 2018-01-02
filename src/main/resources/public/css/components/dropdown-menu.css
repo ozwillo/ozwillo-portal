@@ -25,12 +25,7 @@
     align-self: end;
 }
 
-
-.oz-dropdown-menu  > .content {
-
-}
-
-
+.oz-dropdown-menu  > .content,
 .oz-dropdown-menu > .footer {
     background-color: white;
     padding: 5px 10px;

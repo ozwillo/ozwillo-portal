@@ -6,20 +6,19 @@
 
 .create-service-header .form,
 .create-service-header .options,
-.create-service-footer .form,
-.create-service-footer .options {
+.create-service-footer .options,
+.create-service-content .member-list .member,
+.create-service-content .member-list .options {
     height: 100%;
     align-items: center;
 }
 
-.create-service-header .form .field,
-.create-service-footer .form .field {
+.create-service-header .form .field {
     margin: 0 2px;
     font-size: 1.2em;
 }
 
-.create-service-header .form .select ,
-.create-service-footer .form .select {
+.services-tab .select {
     min-width: 250px;
 }
 
@@ -28,16 +27,41 @@
     width: 100%;
 }
 
-.create-service-header .options .add-icon {
+
+.create-service-content .member-list .member {
+    position: relative;
+    padding: 5px 0;
+}
+
+.create-service-content .member-list .member:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #6f438e;
+}
+
+.create-service-content .member-list .member .name {
+    width: 100%;
+    margin: 0;
+}
+
+/* icons */
+.services-tab .add-icon {
     color: white;
     font-size: 1.6em;
 }
 
-.create-service-footer .options .add-icon,
-.create-service-footer .options .add-icon:hover {
+.services-tab .add-user-icon,
+.services-tab .add-user-icon:hover {
     color: #6f438e;
     font-size: 1.6em;
 }
 
-
+.services-tab .delete-icon,
+.services-tab .delete-icon:hover {
+    color: #ce1717;
+    font-size: 1.6em;
+}
 

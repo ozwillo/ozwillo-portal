@@ -47,7 +47,7 @@ class Tabs extends React.Component {
 
         return <section className={`tabs flex-col ${this.props.className || ''}`}>
             <header className="tabs-headers">
-                <ul className="undecorated-list flex-row headers-list">
+                <ul className="headers-list undecorated-list flex-row">
                     {
                         Object.keys(this.props.headers).map((tabName) => {
                             const Component = this.props.headers[tabName];

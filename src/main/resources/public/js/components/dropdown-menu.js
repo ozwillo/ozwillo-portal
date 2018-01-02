@@ -26,7 +26,6 @@ class DropDownMenu extends React.Component {
         this.dropDownToggle = this.dropDownToggle.bind(this);
     }
 
-
     dropDownToggle(){
         this.setState({
             isOpen: !this.state.isOpen
@@ -49,9 +48,12 @@ class DropDownMenu extends React.Component {
                 {this.props.children}
             </article>
 
-            <footer className="footer">
-                {this.props.footer}
-            </footer>
+            {
+                this.props.footer &&
+                <footer className="footer">
+                    {this.props.footer}
+                </footer>
+            }
         </section>
     }
 
