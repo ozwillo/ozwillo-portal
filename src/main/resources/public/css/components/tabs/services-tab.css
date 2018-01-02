@@ -5,28 +5,39 @@
 }
 
 .create-service-header .form,
-.create-service-header .options{
+.create-service-header .options,
+.create-service-footer .form,
+.create-service-footer .options {
     height: 100%;
     align-items: center;
 }
 
-.create-service-header .form .field {
+.create-service-header .form .field,
+.create-service-footer .form .field {
     margin: 0 2px;
     font-size: 1.2em;
 }
 
-.create-service-header .form .select {
-    width: 40%;
-    min-width: 200px;
+.create-service-header .form .select ,
+.create-service-footer .form .select {
+    min-width: 250px;
 }
 
-.create-service-header .options {
+.create-service-header .options,
+.create-service-footer .options {
     width: 100%;
 }
 
 .create-service-header .options .add-icon {
     color: white;
-    font-size: 1.2em;
+    font-size: 1.6em;
 }
+
+.create-service-footer .options .add-icon,
+.create-service-footer .options .add-icon:hover {
+    color: #6f438e;
+    font-size: 1.6em;
+}
+
 
 

@@ -89,8 +89,68 @@ class CreateServiceDropdownMenuHeader extends React.Component {
 
 class CreateServiceDropdownMenuFooter extends React.Component {
 
+    static propTypes = {
+        members: PropTypes.array.isRequired,
+        onAddMember: PropTypes.func.isRequired
+    };
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            selectedOption: '',
+            options: this.createOptions(this.props.members)
+        };
+
+        //bind methods
+        this.createOptions = this.createOptions.bind(this);
+        this.onOptionChange = this.onOptionChange.bind(this)
+        this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    createOptions(members) {
+        const options = [ { value: '', label: 'Members' }];
+
+        members.forEach((member) => {
+            options.push({
+                value: member.id,
+                label: `${member.firstname} ${member.lastname}`
+            });
+        });
+
+        return options;
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            options: this.createOptions(nextProps.members)
+        })
+    }
+
+    onOptionChange(selectedOption) {
+        this.setState({ selectedOption: selectedOption.value });
+    }
+
+    onSubmit(e) {
+        e.preventDefault();
+        this.props.onAddMember();
+    }
+
     render() {
         return <footer className="create-service-footer">
+            <form ref="form" className="form flex-row" onSubmit={this.onSubmit}>
+                <Select
+                    className="select"
+                    name="app"
+                    value={this.state.selectedOption}
+                    onChange={this.onOptionChange}
+                    options={this.state.options}
+                    clearable={false}/>
+
+                <div className="options flex-row end">
+                    <button className="btn icon"><i className="fa fa-user-plus add-icon"/></button>
+                </div>
+            </form>
         </footer>;
     }
 }
@@ -108,13 +168,18 @@ class CreateServiceDropdownMenu extends React.Component {
         console.log('TODO onAddService :', service);
     }
 
+    onAddMember(member) {
+        console.log('TODO onAddMember :', member);
+    }
+
     render() {
         return <DropDownMenu
             header={<CreateServiceDropdownMenuHeader
                         services={this.props.services}
                         onAddService={this.onAddService}/>}
-            footer={<CreateServiceDropdownMenuFooter />}>
-
+            footer={<CreateServiceDropdownMenuFooter
+                        members={this.props.members}
+                        onAddMember={this.onAddMember}/>}>
             <h3>Services...</h3>
         </DropDownMenu>;
     }
@@ -123,7 +188,8 @@ class CreateServiceDropdownMenu extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        services: state.service.services
+        services: state.service.services,
+        members: state.member.members
     };
 };
 

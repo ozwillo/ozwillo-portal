@@ -45,11 +45,11 @@ class DropDownMenu extends React.Component {
                    className={`fa fa-chevron-${iconClassName} arrow-icon ${isAvailableClassName}` }/>
             </header>
 
-            <article className={`content flex-row ${isOpenClassName} ${isAvailableClassName}`}>
+            <article className={`content ${isOpenClassName} ${isAvailableClassName}`}>
                 {this.props.children}
             </article>
 
-            <footer>
+            <footer className="footer">
                 {this.props.footer}
             </footer>
         </section>

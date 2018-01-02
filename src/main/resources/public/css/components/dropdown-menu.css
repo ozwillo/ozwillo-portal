@@ -15,11 +15,11 @@
     background-color: #4c2d62;
 }
 
-.oz-dropdown-menu  > .header > .content {
+.oz-dropdown-menu  > .header .content {
     width: 100%;
 }
 
-.oz-dropdown-menu  > .header .arrow-icon {
+.oz-dropdown-menu > .header .arrow-icon {
     font-size: 2em;
     cursor: pointer;
     align-self: end;
@@ -28,4 +28,10 @@
 
 .oz-dropdown-menu  > .content {
 
+}
+
+
+.oz-dropdown-menu > .footer {
+    background-color: white;
+    padding: 5px 10px;
 }
