@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 //Components
-import CreateServiceDropdownMenu from '../dropdown_menus/create-service-dropdown-menu';
+import AddServiceDropdown from '../dropdown_menus/service/add-service-dropdown';
 
 class ServicesTabHeader extends React.Component {
 
@@ -23,7 +23,7 @@ class ServicesTab extends React.Component {
 
             <section className="add-service">
                 <header>Add a service</header>
-                <CreateServiceDropdownMenu />
+                <AddServiceDropdown />
             </section>
 
             <section className="search-service">
