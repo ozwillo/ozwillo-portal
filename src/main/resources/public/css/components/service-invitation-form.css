@@ -1,0 +1,36 @@
+
+.service-invitation-form .content{
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.service-invitation-form .select,
+.service-invitation-form .new-user-fieldset {
+    width: 100%;
+}
+
+.service-invitation-form .sep-text {
+    margin: 0 10px;
+    text-transform: uppercase;
+    font-size: 0.8em;
+}
+
+.service-invitation-form .label {
+    color: #6f438e;
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.service-invitation-form .field {
+    margin: 0 5px;
+}
+
+.service-invitation-form .send-icon {
+    color: #6f438e;
+    font-size: 1.6em;
+}
+
+.service-invitation-form .new-user-fieldset {
+    align-items: center;
+}

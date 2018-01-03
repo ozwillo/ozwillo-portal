@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
 //Components
 import AddServiceDropdown from '../dropdown_menus/service/add-service-dropdown';
+import ServiceDropdown from '../dropdown_menus/service/service-dropdown';
 
 class ServicesTabHeader extends React.Component {
 
@@ -15,7 +17,7 @@ class ServicesTabHeader extends React.Component {
 class ServicesTab extends React.Component {
 
     static contextTypes = {
-        t: PropTypes.func.isRequired
+        t: PropTypes.func.isRequired,
     };
 
     render() {
@@ -31,12 +33,31 @@ class ServicesTab extends React.Component {
                 <form className="search oz-form">
                     <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
                 </form>
+
+                <ul className="services-list undecorated-list flex-col">
+                    {
+                        this.props.services.map((service) => {
+                            return <li key={service.id}>
+                                <ServiceDropdown service={service}/>
+                            </li>
+                        })
+                    }
+                </ul>
             </section>
 
         </article>;
     }
 }
+
+const mapStateToProps = state => {
+    return {
+        services: state.organization.current.services
+    };
+};
+const ServiceTabWithRedux = connect(mapStateToProps)(ServicesTab);
+
+
 export {
-    ServicesTab,
+    ServiceTabWithRedux as ServicesTab,
     ServicesTabHeader
 };

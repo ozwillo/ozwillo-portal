@@ -64,7 +64,7 @@ class AddServiceDropdownFooter extends React.Component {
         return <footer className="create-service-footer flex-row">
             <Select
                 className="select"
-                name="app"
+                name="members"
                 value={this.state.selectedOption}
                 onChange={this.onOptionChange}
                 options={this.state.options}

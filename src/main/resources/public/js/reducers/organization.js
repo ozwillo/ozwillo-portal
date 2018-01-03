@@ -7,7 +7,10 @@ const defaultState = {
     organizations: [],
     current: {
         members: [],
-        services: []
+        services: [
+            { id: 1, name: "App 1", isPublic: true, members: [] },
+            { id: 2, name: "App 2", isPublic: false, members: [] }
+        ]
     },
     newOrganization: {
         members: [],
