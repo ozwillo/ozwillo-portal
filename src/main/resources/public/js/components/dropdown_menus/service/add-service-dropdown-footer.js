@@ -61,7 +61,7 @@ class AddServiceDropdownFooter extends React.Component {
     }
 
     render() {
-        return <footer className="create-service-footer flex-row">
+        return <footer className="service-footer flex-row">
             <Select
                 className="select"
                 name="members"
@@ -73,7 +73,7 @@ class AddServiceDropdownFooter extends React.Component {
 
             <div className="options flex-row end">
                 <button className="btn icon" onClick={this.onAddMember}>
-                    <i className="fa fa-user-plus add-user-icon"/>
+                    <i className="fa fa-user-plus option-icon"/>
                 </button>
             </div>
         </footer>;

@@ -37,7 +37,7 @@ class ServicesTab extends React.Component {
                 <ul className="services-list undecorated-list flex-col">
                     {
                         this.props.services.map((service) => {
-                            return <li key={service.id}>
+                            return <li key={service.id} className="service">
                                 <ServiceDropdown service={service}/>
                             </li>
                         })

@@ -20,6 +20,8 @@
 
 @import 'components/tabs/services-tab.css';
 
+@import 'components/dropdown_menu/service.css';
+
 
 /* Pages */
 @import 'pages/dashboard.css';

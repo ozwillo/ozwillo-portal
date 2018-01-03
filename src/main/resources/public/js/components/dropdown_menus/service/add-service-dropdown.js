@@ -100,7 +100,7 @@ class AddServiceDropdown extends React.Component {
                 onAddMember={this.onAddMember}/>) || null;
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
-            <section className='create-service-content'>
+            <section className='service-content'>
                 <ul className="member-list undecorated-list flex-col">
                     {
                         service.members.map((member, i) => {
@@ -110,7 +110,7 @@ class AddServiceDropdown extends React.Component {
 
                                     <div className="options">
                                         <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
-                                            <i className="fa fa-trash delete-icon"/>
+                                            <i className="fa fa-trash option-icon delete"/>
                                         </button>
                                     </div>
                                 </article>
@@ -118,7 +118,6 @@ class AddServiceDropdown extends React.Component {
                         })
                     }
                 </ul>
-
             </section>
         </DropDownMenu>;
     }
