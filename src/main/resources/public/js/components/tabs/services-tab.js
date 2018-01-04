@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 //Components
 import AddServiceDropdown from '../dropdown_menus/service/add-service-dropdown';
@@ -9,10 +10,17 @@ import ServiceDropdown from '../dropdown_menus/service/service-dropdown';
 class ServicesTabHeader extends React.Component {
 
     render() {
-        return <header>Services</header>
+        return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/services`}>
+            <header className="tab-header">Services</header>
+        </Link>;
     }
 
 }
+const ServicesTabHeaderWithRedux = connect(state => {
+    return {
+        organization: state.organization.current
+    };
+})(ServicesTabHeader);
 
 class ServicesTab extends React.Component {
 
@@ -59,5 +67,5 @@ const ServiceTabWithRedux = connect(mapStateToProps)(ServicesTab);
 
 export {
     ServiceTabWithRedux as ServicesTab,
-    ServicesTabHeader
+    ServicesTabHeaderWithRedux as ServicesTabHeader
 };

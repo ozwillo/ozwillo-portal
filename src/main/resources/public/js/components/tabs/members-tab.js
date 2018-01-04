@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 //Components
 import OrganizationInvitationForm from '../organization-invitation-form';
@@ -8,10 +9,17 @@ import OrganizationInvitationForm from '../organization-invitation-form';
 class MembersTabHeader extends React.Component {
 
     render() {
-        return <header>Members</header>
+        return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/members`}>
+            <header className="tab-header">Members</header>
+        </Link>;
     }
 
 }
+const MembersTabHeaerWithRedux = connect(state => {
+    return {
+        organization: state.organization.current
+    };
+})(MembersTabHeader);
 
 class MembersTab extends React.Component {
 
@@ -47,15 +55,14 @@ class MembersTab extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
+const MemberTabWithRedux = connect(state => {
     return {
         organization: state.organization.current,
     };
-};
-const MemberTabWithRedux = connect(mapStateToProps)(MembersTab);
+})(MembersTab);
 
 
 export {
     MemberTabWithRedux as MembersTab,
-    MembersTabHeader
+    MembersTabHeaerWithRedux as MembersTabHeader
 };

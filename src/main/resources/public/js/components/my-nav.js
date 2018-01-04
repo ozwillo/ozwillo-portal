@@ -25,7 +25,6 @@ class MyNav extends React.Component {
                 <div className="collapse navbar-collapse" id="ozwillo-navbar">
                     <ul className="nav navbar-nav">
                         <li>
-                            {/*className="${item.isActive()}? 'active' : ''"*/}
                             <Link to="/my/">
                                 <img src="/img/dashboard.png"
                                      alt={this.context.t('my.dashboard')}/>
@@ -33,7 +32,6 @@ class MyNav extends React.Component {
                             </Link>
                         </li>
                         <li>
-                            {/*className="${item.isActive()}? 'active' : ''"*/}
                             <Link to="/my/profile">
                                 <img src="/img/profile.png"
                                      alt={this.context.t('my.profile')}/>
@@ -41,7 +39,6 @@ class MyNav extends React.Component {
                             </Link>
                         </li>
                         <li>
-                            {/*className="${item.isActive()}? 'active' : ''"*/}
                             <Link to="/my/network">
                                 <img src="/img/network.png"
                                      alt={this.context.t('my.network')}/>
@@ -49,11 +46,17 @@ class MyNav extends React.Component {
                             </Link>
                         </li>
                         <li>
-                            {/*className="${item.isActive()}? 'active' : ''"*/}
                             <Link to="/my/apps">
                                 <img src="/img/apps.png"
                                      alt={this.context.t('my.apps')}/>
                                 <span>{this.context.t('my.apps')}</span>
+                            </Link>
+                        </li>
+                        <li>
+                            <Link to="/my/organization">
+                                <img src="/img/apps.png"
+                                     alt={this.context.t('my.apps')}/>
+                                <span>{'Organization'}</span>
                             </Link>
                         </li>
                     </ul>

@@ -6,6 +6,7 @@ import {
 const defaultState = {
     organizations: [],
     current: {
+        id: '2e6039b5-85d5-46b7-95f9-9fff77738626',
         members: [],
         services: [
             { id: 1, name: "App 1", isPublic: true, members: [

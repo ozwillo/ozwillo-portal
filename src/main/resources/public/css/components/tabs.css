@@ -9,7 +9,6 @@
     min-height: 30px;
     border: 1px solid white;
     text-align: center;
-    cursor: pointer;
 }
 
 .tabs .tabs-headers .header.active {
@@ -19,6 +18,16 @@
 .tabs .tab-content {
     margin: 0 50px;
 }
+
+.tab-header {
+    width: 100%;
+    height: 100%;
+    color: white;
+    text-decoration: none;
+}
+
+
+
 
 
 

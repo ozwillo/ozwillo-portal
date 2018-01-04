@@ -15,32 +15,8 @@ class Tabs extends React.Component {
         tabToDisplay: PropTypes.string
     };
 
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            tabToDisplay: this.props.tabToDisplay || Object.keys(this.props.headers)[0] || ''
-        };
-
-        //bind methods
-        this.onChangeTab = this.onChangeTab.bind(this);
-    }
-
-
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            tabToDisplay: nextProps.tabToDisplay || Object.keys(nextProps.headers)[0] || ''
-        });
-    }
-
-    onChangeTab(e) {
-        this.setState({
-            tabToDisplay: e.currentTarget.dataset.tab
-        });
-    }
-
     render() {
-        const tabToDisplay = this.state.tabToDisplay;
+        const tabToDisplay = this.props.tabToDisplay;
         const tabName = Object.keys(this.props.tabs).find(attr => {
             return attr === tabToDisplay;
         });
