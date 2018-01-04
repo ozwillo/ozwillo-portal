@@ -83,6 +83,7 @@ label.required {
 
 .oz-body.wrapper {
     padding: 20px 100px;
+    height: 100%;
 }
 
 .oz-body h1 {
