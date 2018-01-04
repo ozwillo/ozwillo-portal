@@ -61,7 +61,7 @@ class AddServiceDropdownFooter extends React.Component {
     }
 
     render() {
-        return <footer className="service-footer flex-row">
+        return <footer className="dropdown-footer flex-row">
             <Select
                 className="select"
                 name="members"

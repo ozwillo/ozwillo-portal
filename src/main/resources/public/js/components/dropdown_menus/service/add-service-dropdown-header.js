@@ -59,7 +59,7 @@ class AddServiceDropdownHeader extends React.Component {
 
     render() {
         const service = this.props.service;
-        return <header className="service-header">
+        return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <Select
                     className="select"
@@ -71,7 +71,7 @@ class AddServiceDropdownHeader extends React.Component {
                     placeholder="Services"/>
 
                 <div className="options flex-row end">
-                    <label className="is-public">
+                    <label>
                         Public
                         <input className="field" name="isPublic" type="checkbox"
                                checked={service.isPublic} onChange={this.onCheckboxChange}/>

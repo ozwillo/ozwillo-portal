@@ -14,19 +14,3 @@
 .services-tab .select {
     min-width: 250px;
 }
-
-/* icons */
-.services-tab .option-icon {
-    color: #6f438e;
-    font-size: 1.6em;
-}
-
-.service-header .option-icon,
-.service-header .option-icon:hover {
-    color: white;
-}
-
-.services-tab .option-icon.delete,
-.services-tab .option-icon.delete:hover {
-    color: #ce1717;
-}

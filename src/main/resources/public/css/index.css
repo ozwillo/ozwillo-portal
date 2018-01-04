@@ -5,6 +5,7 @@
 /* Components */
 @import 'components/btn.css';
 @import 'components/datepicker.css';
+@import 'components/dropdown-helper.css';
 @import 'components/dropdown-menu.css';
 @import 'components/footer.css';
 @import 'components/header.css';
@@ -21,8 +22,6 @@
 
 @import 'components/tabs/services-tab.css';
 @import 'components/tabs/members-tab.css';
-
-@import 'components/dropdown_menu/service.css';
 
 
 /* Pages */

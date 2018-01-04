@@ -54,7 +54,7 @@ class ServiceDropdown extends React.Component {
         </footer>) || null;
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
-            <section className='service-content'>
+            <section className='dropdown-content'>
                 <ul className="member-list undecorated-list flex-col">
                     {
                         service.members.map((member, i) => {

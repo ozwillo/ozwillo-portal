@@ -1,0 +1,62 @@
+.dropdown-header .form,
+.dropdown-header .form .dropdown-name,
+.dropdown-header .options,
+.dropdown-footer .options,
+.dropdown-content .member-list .member,
+.dropdown-content .member-list .options {
+    height: 100%;
+    align-items: center;
+}
+
+.dropdown-header {
+    color: white !important;
+}
+
+.dropdown-header .form .field {
+    margin: 0 2px;
+    font-size: 1.2em;
+}
+
+.dropdown-header .form .dropdown-name,
+.dropdown-header .options,
+.dropdown-footer .options {
+    width: 100%;
+}
+
+.dropdown-content .member-list .member {
+    position: relative;
+    padding: 5px 0;
+}
+
+.dropdown-content .member-list .member:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 1px;
+    background-color: #6f438e;
+}
+
+.dropdown-content .member-list .member .name {
+    width: 100%;
+    margin: 0;
+}
+
+/* icons */
+.dropdown-header .option-icon,
+.dropdown-content .option-icon ,
+.dropdown-footer .option-icon {
+    color: #6f438e;
+    font-size: 1.6em;
+}
+
+.dropdown-header .option-icon {
+    color: white;
+}
+
+.dropdown-header .option-icon.delete ,
+.dropdown-content .option-icon.delete ,
+.dropdown-footer .option-icon.delete {
+    color: #ce1717;
+}
+
