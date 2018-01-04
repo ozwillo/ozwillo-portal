@@ -53,7 +53,7 @@ class ServiceDropdown extends React.Component {
             <ServiceInvitationForm members={this.props.members} service={this.props.service}/>
         </footer>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
             <section className='service-content'>
                 <ul className="member-list undecorated-list flex-col">
                     {
