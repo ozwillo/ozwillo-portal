@@ -1,0 +1,22 @@
+
+.organization-invitation-form {
+    width: 100%;
+    align-self: center;
+}
+
+.organization-invitation-form .label {
+    width: 100%;
+    text-align: left;
+    margin: auto 0;
+    font-size: 0.9em;
+}
+
+.organization-invitation-form .field {
+    margin: 0 5px;
+}
+
+.organization-invitation-form .action-icon {
+    font-size: 1.2em;
+    color: white;
+}
+

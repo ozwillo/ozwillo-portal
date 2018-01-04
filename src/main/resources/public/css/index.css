@@ -12,6 +12,7 @@
 @import 'components/modal.css';
 @import 'components/nav.css';
 @import 'components/notification.css';
+@import 'components/organization-invitation-form.css';
 @import 'components/react-autosuggest.css';
 @import 'components/select.css';
 @import 'components/service-invitation-form.css';
@@ -19,6 +20,7 @@
 @import 'components/tabs.css';
 
 @import 'components/tabs/services-tab.css';
+@import 'components/tabs/members-tab.css';
 
 @import 'components/dropdown_menu/service.css';
 

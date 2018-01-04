@@ -1,0 +1,12 @@
+
+
+
+.members-tab .box {
+    display: flex;
+    flex-direction: row;
+    padding: 5px 10px;
+    align-items: center;
+
+    color: white;
+    background-color: #4c2d62;
+}

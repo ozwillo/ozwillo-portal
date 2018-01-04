@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 //Components
 import Tabs from '../components/tabs';
 import { ServicesTabHeader, ServicesTab } from '../components/tabs/services-tab';
+import { MembersTabHeader, MembersTab } from '../components/tabs/members-tab';
 
 //actions
 import { fetchOrganizationWithId } from "../actions/organization";
@@ -11,15 +12,13 @@ import PropTypes from "prop-types";
 
 const tabsHeaders = {
     services: ServicesTabHeader,
-    members: () => 'Members',
+    members: MembersTabHeader,
     admin: () => 'Admin'
 };
 
 const tabs = {
     services: ServicesTab,
-    members: () => {
-        return <h1>Members</h1>
-    },
+    members: MembersTab,
     admin: () => {
         return <h1>Admin</h1>
     }
