@@ -1,0 +1,6 @@
+.admin-tab .form .row {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+}
+
