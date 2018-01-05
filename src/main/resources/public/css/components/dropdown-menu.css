@@ -30,3 +30,30 @@
     background-color: white;
     padding: 5px 10px;
 }
+
+
+/* Service dropdown */
+.dropdown-header .form .dropdown-name {
+    height: 100%;
+    width: 100%;
+    align-items: center;
+}
+
+/* Organization dropdown */
+.dropdown-content .apps {
+    width: 40%;
+    min-width: 150px;
+    align-items: center;
+}
+
+.dropdown-content .apps .app {
+    margin: 0 10px;
+}
+
+.dropdown-content .invitation {
+    width: 100%;
+}
+
+.dropdown-content .invitation .organization-invitation-form .label {
+    width: auto;
+}

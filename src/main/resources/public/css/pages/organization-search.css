@@ -17,11 +17,8 @@
     min-width: 300px;
 }
 
-.organization-search .organisations-list .item > .organization {
-    margin: auto;
-
-    width: 80%;
-    min-width: 300px;
+.organization-search .organisations-list .organization {
+    margin: 10px 0;
 }
 
 .link {

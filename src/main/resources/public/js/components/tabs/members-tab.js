@@ -32,7 +32,7 @@ class MembersTab extends React.Component {
             <section className="add-member">
                 <header>Send an invitation</header>
                 <div className="box">
-                    <OrganizationInvitationForm organization={this.props.organization}/>
+                    <OrganizationInvitationForm className="" organization={this.props.organization}/>
                 </div>
             </section>
             <section className="search-service">

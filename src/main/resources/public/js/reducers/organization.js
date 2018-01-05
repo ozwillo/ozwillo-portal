@@ -1,22 +1,65 @@
 import {
     FETCH_ORGANIZATIONS,
     FETCH_ORGANIZATION_WITH_ID
-} from "../actions/organization";
+} from '../actions/organization';
 
 const defaultState = {
-    organizations: [],
+    organizations: [
+        {
+            id: '1',
+            name: 'Organization 1',
+            members: [],
+            services: [
+                { id: 1, name: 'App 1', isPublic: true, members: [
+                        {
+                            id: 1,
+                            firstname: 'firstname',
+                            lastname: 'lastname'
+                        }
+                    ] },
+                { id: 2, name: 'App 2', isPublic: false, members: [
+                        {
+                            id: 1,
+                            firstname: 'firstname',
+                            lastname: 'lastname'
+                        }
+                    ] }
+            ]
+        },
+        {
+            id: '2',
+            name: 'Organization 2',
+            members: [],
+            services: [
+                { id: 1, name: 'App 1', isPublic: true, members: [
+                        {
+                            id: 1,
+                            firstname: 'firstname',
+                            lastname: 'lastname'
+                        }
+                    ] },
+                { id: 2, name: 'App 2', isPublic: false, members: [
+                        {
+                            id: 1,
+                            firstname: 'firstname',
+                            lastname: 'lastname'
+                        }
+                    ] }
+            ]
+        }
+    ],
     current: {
         id: '2e6039b5-85d5-46b7-95f9-9fff77738626',
         members: [],
         services: [
-            { id: 1, name: "App 1", isPublic: true, members: [
+            { id: 1, name: 'App 1', isPublic: true, members: [
                     {
                         id: 1,
                         firstname: 'firstname',
                         lastname: 'lastname'
                     }
                 ] },
-            { id: 2, name: "App 2", isPublic: false, members: [
+            { id: 2, name: 'App 2', isPublic: false, members: [
                     {
                         id: 1,
                         firstname: 'firstname',

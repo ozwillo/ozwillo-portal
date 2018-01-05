@@ -4,8 +4,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 // Components
-import DropdownMenu from '../components/dropdown-menu';
 import SideMenu from '../components/side-menu';
+import OrganizationDropdown from '../components/dropdown_menus/organization/organization-dropdown';
 
 //action
 import { fetchOrganizations } from '../actions/organization';
@@ -53,6 +53,17 @@ class OrganizationSearch extends React.Component {
                 <form className="search oz-form">
                     <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
                 </form>
+
+                <ul className="organisations-list undecorated-list">
+                    {
+
+                        this.props.organizations.map((org) => {
+                            return <li key={org.id} className="organization">
+                                <OrganizationDropdown organization={org}/>
+                            </li>
+                        })
+                    }
+                </ul>
             </section>
 
 
@@ -69,14 +80,8 @@ class OrganizationSearch extends React.Component {
                 {
 
                     this.props.userOrganizations.map((org) => {
-                        const Header = <Link to={`/my/organization/${org.id}`} className="link">
-                            {org.name}
-                        </Link>;
-
-                        return <li key={org.id} className="item">
-                            <DropdownMenu header={Header} className="organization">
-                                <h1>{org.label}</h1>
-                            </DropdownMenu>
+                        return <li key={org.id} className="organization">
+                            <OrganizationDropdown organization={org}/>
                         </li>
                     })
                 }

@@ -7,3 +7,8 @@
     color: white;
     background-color: #4c2d62;
 }
+
+.add-member .label,
+.add-member .action-icon {
+    color: white;
+}

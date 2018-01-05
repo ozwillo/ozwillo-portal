@@ -2,6 +2,7 @@
 .organization-invitation-form {
     width: 100%;
     align-self: center;
+    color: #6f438e;
 }
 
 .organization-invitation-form .label {
@@ -9,6 +10,7 @@
     text-align: left;
     margin: auto 0;
     font-size: 0.9em;
+    color: #6f438e;
 }
 
 .organization-invitation-form .field {
@@ -17,6 +19,6 @@
 
 .organization-invitation-form .action-icon {
     font-size: 1.2em;
-    color: white;
+    color: #6f438e;
 }
 
