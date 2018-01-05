@@ -19,6 +19,7 @@ class MemberDropdownFooter extends React.Component {
 
         //binds methods
         this.onSubmit = this.onSubmit.bind(this);
+        this.onOptionChange = this.onOptionChange.bind(this);
     }
 
     onSubmit(e) {
