@@ -21,11 +21,15 @@ class OrganizationSearch extends React.Component {
         super(props);
 
         this.state = {
-            sideMenuIsOpen: false
+            sideMenuIsOpen: false,
+            organizationsFilter: '',
+            userOrganizationsFilter: ''
         };
 
         //bind methods
         this.sideMenuToogle = this.sideMenuToogle.bind(this);
+        this.handleChange = this.handleChange.bind(this);
+        this.filterOrganizations = this.filterOrganizations.bind(this);
     }
 
     componentDidMount() {
@@ -38,9 +42,30 @@ class OrganizationSearch extends React.Component {
         });
     }
 
-    render() {
-        return <section className="organization-search oz-body wrapper flex-col">
+    handleChange(e) {
+        this.setState({
+            [e.currentTarget.name]: e.currentTarget.value
+        });
+    }
 
+    filterOrganizations(organizations, filter) {
+        if (!filter) {
+            return organizations;
+        }
+        const regex = new RegExp(`(\\w|\\S)*${filter.toUpperCase()}(\\w|\\S)*`);
+
+        return organizations.filter((org) => {
+            return regex.test(org.name.toUpperCase());
+        });
+    }
+
+    render() {
+        const organizations = this.props.organizations;
+        const userOrganizations = this.props.userOrganizations;
+        const organizationsFilter = this.state.organizationsFilter;
+        const userOrganizationsFilter = this.state.userOrganizationsFilter;
+
+        return <section className="organization-search oz-body wrapper flex-col">
             <div className="flex-row end">
                 <button onClick={this.sideMenuToogle} className="btn icon"><i className="fa fa-bars menu-icon"/></button>
             </div>
@@ -51,21 +76,21 @@ class OrganizationSearch extends React.Component {
                 </header>
 
                 <form className="search oz-form">
-                    <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
+                    <input name="organizationsFilter" className="field form-control" type="text"
+                           placeholder={this.context.t('ui.search')} value={organizationsFilter}
+                           onChange={this.handleChange}/>
                 </form>
 
                 <ul className="organisations-list undecorated-list">
                     {
-
-                        this.props.organizations.map((org) => {
+                        this.filterOrganizations(organizations, organizationsFilter).map((org) => {
                             return <li key={org.id} className="organization">
                                 <OrganizationDropdown organization={org}/>
-                            </li>
+                            </li>;
                         })
                     }
                 </ul>
             </section>
-
 
             <section>
                 <header>
@@ -73,16 +98,17 @@ class OrganizationSearch extends React.Component {
                 </header>
 
                 <form className="search oz-form">
-                    <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
+                    <input name="userOrganizationsFilter" className="field form-control" type="text"
+                           placeholder={this.context.t('ui.search')} value={userOrganizationsFilter}
+                           onChange={this.handleChange}/>
                 </form>
 
                 <ul className="organisations-list undecorated-list">
                 {
-
-                    this.props.userOrganizations.map((org) => {
+                    this.filterOrganizations(userOrganizations, userOrganizationsFilter).map((org) => {
                         return <li key={org.id} className="organization">
                             <OrganizationDropdown organization={org}/>
-                        </li>
+                        </li>;
                     })
                 }
                 </ul>

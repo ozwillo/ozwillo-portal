@@ -31,7 +31,7 @@ class OrganizationDropdown extends React.Component {
                             {
                                 organization.services &&
                                 organization.services.map((service) => {
-                                    return <li className="app">
+                                    return <li key={service.id} className="app">
                                         {service.name}
                                     </li>
                                 })
