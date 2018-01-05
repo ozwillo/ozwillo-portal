@@ -8,7 +8,19 @@
     background-color: #4c2d62;
 }
 
+.members-tab .search {
+    margin-bottom: 20px;
+}
+
 .add-member .label,
 .add-member .action-icon {
     color: white;
+}
+
+.members-tab .search-member .members-list > .member {
+    margin: 10px 0;
+}
+
+.members-tab .select {
+    min-width: 250px;
 }

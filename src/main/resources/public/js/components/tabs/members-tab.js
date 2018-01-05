@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 
 //Components
 import OrganizationInvitationForm from '../organization-invitation-form';
+import MemberDropdown from '../dropdown_menus/member/member-dropdown';
 
 class MembersTabHeader extends React.Component {
 
@@ -35,8 +36,8 @@ class MembersTab extends React.Component {
                     <OrganizationInvitationForm className="" organization={this.props.organization}/>
                 </div>
             </section>
-            <section className="search-service">
-                <header>Search a service</header>
+            <section className="search-member">
+                <header>Search a member</header>
                 <form className="search oz-form">
                     <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
                 </form>
@@ -44,8 +45,9 @@ class MembersTab extends React.Component {
                 <ul className="members-list undecorated-list flex-col">
                     {
                         this.props.organization.members.map((member) => {
-                            return <li key={service.id} className="member">
-                                {member.firstname}
+                            return <li key={member.id} className="member">
+                                <MemberDropdown member={member} organization={this.props.organization}
+                                                services={this.props.services}/>
                             </li>
                         })
                     }
@@ -58,6 +60,7 @@ class MembersTab extends React.Component {
 const MemberTabWithRedux = connect(state => {
     return {
         organization: state.organization.current,
+        services: state.service.services
     };
 })(MembersTab);
 

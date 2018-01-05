@@ -50,7 +50,49 @@ const defaultState = {
     ],
     current: {
         id: '2e6039b5-85d5-46b7-95f9-9fff77738626',
-        members: [],
+        members: [
+            {
+                id: 1,
+                firstname: 'firstname',
+                lastname: 'lastname',
+                services: [
+                    {
+                        id: 1,
+                        name: 'App 1'
+                    },
+                    {
+                        id: 2,
+                        name: 'App 2'
+                    },
+                    {
+                        id: 3,
+                        name: 'App 3'
+                    }
+                ]
+            },
+            {
+                id: 2,
+                firstname: 'firstname 2',
+                lastname: 'lastname 2',
+                services: [
+                    {
+                        id: 1,
+                        name: 'App 1'
+                    },
+                    {
+                        id: 3,
+                        name: 'App 3'
+                    }
+                ]
+            },
+            {
+                id: 3,
+                firstname: 'firstname 3',
+                lastname: 'lastname 3',
+                services: [],
+                isPending: true
+            }
+        ],
         services: [
             { id: 1, name: 'App 1', isPublic: true, members: [
                     {
