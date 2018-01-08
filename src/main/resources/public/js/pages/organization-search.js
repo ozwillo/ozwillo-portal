@@ -60,9 +60,7 @@ class OrganizationSearch extends React.Component {
     }
 
     render() {
-        const organizations = this.props.organizations;
         const userOrganizations = this.props.userOrganizations;
-        const organizationsFilter = this.state.organizationsFilter;
         const userOrganizationsFilter = this.state.userOrganizationsFilter;
 
         return <section className="organization-search oz-body wrapper flex-col">
@@ -72,29 +70,7 @@ class OrganizationSearch extends React.Component {
 
             <section>
                 <header>
-                    <h1 className="title">{this.context.t('search')}</h1>
-                </header>
-
-                <form className="search oz-form">
-                    <input name="organizationsFilter" className="field form-control" type="text"
-                           placeholder={this.context.t('ui.search')} value={organizationsFilter}
-                           onChange={this.handleChange}/>
-                </form>
-
-                <ul className="organisations-list undecorated-list">
-                    {
-                        this.filterOrganizations(organizations, organizationsFilter).map((org) => {
-                            return <li key={org.id} className="organization">
-                                <OrganizationDropdown organization={org}/>
-                            </li>;
-                        })
-                    }
-                </ul>
-            </section>
-
-            <section>
-                <header>
-                    <h1 className="title">{this.context.t('my organization')}</h1>
+                    <h1 className="title">{this.context.t('Organizations')}</h1>
                 </header>
 
                 <form className="search oz-form">
@@ -125,7 +101,6 @@ class OrganizationSearch extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        organizations: state.organization.organizations,
         userOrganizations: state.userInfo.organizations
     };
 };
