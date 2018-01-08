@@ -3,6 +3,8 @@ import PropTypes from 'prop-types';
 import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
 
+import Select from 'react-select';
+
 const Form = ({ id, onSubmit, children }) =>
     <form id={id} onSubmit={onSubmit} className="form-horizontal">
         {children}
@@ -46,7 +48,7 @@ InputText.propTypes = {
     disabled: PropTypes.bool
 };
 
-const Select = ({ name, value, label, onChange, children, labelClassName, divClassName, error, errorMsg, isRequired }) =>
+/*const Select = ({ name, value, label, onChange, children, labelClassName, divClassName, error, errorMsg, isRequired }) =>
     <div className={error ? 'form-group has-error' : 'form-group'}>
         <label htmlFor={name} className={isRequired ? labelClassName + ' required' : labelClassName}>
             {label} {isRequired ? '* ' : ' '}
@@ -78,7 +80,7 @@ Select.defaultProps = {
     labelClassName: 'control-label col-sm-3',
     emptyValue: true,
     value: ''
-};
+};*/
 
 const SubmitButton = ({ label, className }) =>
     <div className="form-group">
@@ -126,55 +128,6 @@ InputDatePicker.defaultProps = {
     dropdownMode: 'select'
 };
 
-class CountrySelector extends React.Component {
-    constructor(props) {
-        super(props)
-        this.state = {
-            countries: []
-        }
-    }
-
-    static propTypes = {
-        value: PropTypes.string,
-        url: PropTypes.string.isRequired,
-        onChange: PropTypes.func.isRequired,
-        label: PropTypes.string
-    };
-
-    componentWillMount () {
-        // get countries from DC
-        $.ajax({
-            url: this.props.url,
-            type: 'get',
-            dataType: 'json',
-            data: {q: ' '}
-        })
-        .done(data => {
-
-            let options = data.areas
-                .filter(n => n !== null)
-                .map((area, key) => Object.assign({}, {key:key ,value: area.uri, label: area.name}))
-
-            this.setState({ countries: options });
-        })
-        .fail((xhr, status, err) => {
-                this.setState({ error : "Unable to retrieve countries info" + err.toString() })
-            }
-        )
-    }
-    render() {
-        return (
-            <Select name="country" value={this.props.value}
-                    onChange={this.props.onChange}
-                    label={this.props.label}>
-                {this.state.countries.map(option =>
-                    <option key={option.key} value={option.value}>{option.label}</option>)
-                }
-            </Select>
-        )
-    }
-}
-
 class GenderSelector extends React.Component {
     static propTypes = {
         value: PropTypes.string,
@@ -201,4 +154,4 @@ class GenderSelector extends React.Component {
     }
 }
 
-module.exports = { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector }
+module.exports = { Form, InputText, SubmitButton, InputDatePicker, GenderSelector }

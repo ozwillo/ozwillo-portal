@@ -7,7 +7,8 @@ const defaultState = {
     languages: ['en'],
     kernelEndPoint: '',
     accountEndPoint: '',
-    opendatEndPoint: ''
+    opendatEndPoint: '',
+    countries: []
 };
 
 export default (state = defaultState, action) => {

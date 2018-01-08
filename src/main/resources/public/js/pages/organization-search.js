@@ -65,7 +65,9 @@ class OrganizationSearch extends React.Component {
 
         return <section className="organization-search oz-body wrapper flex-col">
             <div className="flex-row end">
-                <button onClick={this.sideMenuToogle} className="btn icon"><i className="fa fa-bars menu-icon"/></button>
+                <Link to="/my/organization/create" className="link undecorated-link">
+                    <i className="fa fa-plus action-icon"/>
+                </Link>
             </div>
 
             <section>

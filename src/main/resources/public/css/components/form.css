@@ -1,0 +1,23 @@
+
+.oz-form .oz-fieldset > .oz-legend {
+    color: white;
+}
+
+.oz-form .oz-fieldset .flex-row {
+    margin: 12px 20px
+}
+
+.oz-form .flex-row .label {
+    text-align: right;
+    min-width: 150px;
+    font-size: 1em;
+}
+
+.oz-form .flex-row .field {
+    width: 100%;
+}
+
+.oz-form .flex-row .label,
+.oz-form .flex-row .field {
+    margin: auto 10px;
+}
