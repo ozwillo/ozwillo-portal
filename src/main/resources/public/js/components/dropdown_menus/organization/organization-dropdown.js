@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 
 //Component
 import DropdownMenu from '../../dropdown-menu';
+import OrganizationDropdownHeader from '../../dropdown_menus/organization/organization-dropdown-header'
 import OrganizationInvitationForm from '../../organization-invitation-form';
 
 
@@ -15,13 +16,7 @@ class OrganizationDropdown extends React.Component {
 
     render() {
         const organization = this.props.organization;
-        const Header = <header>
-            <Link to={`/my/organization/${organization.id}`} className="link">
-                {organization.name}
-            </Link> - <Link to={`/my/organization/${organization.id}/members`} className="link">
-                xxx members
-            </Link>
-        </header>;
+        const Header = <OrganizationDropdownHeader organization={organization}/> ;
 
         return <DropdownMenu header={Header}>
             <section className='dropdown-content flex-row end'>
