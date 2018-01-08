@@ -19,7 +19,7 @@ class DropDownMenu extends React.Component {
         super(props);
 
         this.state = {
-            isOpen: !!props.isOpen
+            isOpen: props.isOpen
         };
 
         //bind methods

@@ -18,7 +18,7 @@ class OrganizationDropdown extends React.Component {
         const organization = this.props.organization;
         const Header = <OrganizationDropdownHeader organization={organization}/> ;
 
-        return <DropdownMenu header={Header}>
+        return <DropdownMenu header={Header} isOpen={true}>
             <section className='dropdown-content flex-row end'>
                 <div className='container flex-row'>
                     <section className="apps">
