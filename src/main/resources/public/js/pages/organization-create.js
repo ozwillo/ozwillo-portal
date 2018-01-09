@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import Select from 'react-select';
 
 //Component
-import LegalNameAutosuggest from '../components/legal-name-autosuggest';
-import TaxRegActivityAutosuggest from '../components/tax-reg-activity-autosuggest';
-import GeoAreaAutosuggest from '../components/geoarea-autosuggest';
+import LegalNameAutosuggest from '../components/autosuggests/legal-name-autosuggest';
+import TaxRegActivityAutosuggest from '../components/autosuggests/tax-reg-activity-autosuggest';
+import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 
 //Action
 import { fetchCountries } from '../actions/config';

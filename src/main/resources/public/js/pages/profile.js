@@ -8,8 +8,8 @@ import '../util/csrf';
 
 import FranceConnectBtn from '../components/france-connect-btn';
 
-import { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/form';
-import GeoAreaAutosuggest from '../components/geoarea-autosuggest';
+import { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/forms/form';
+import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 
 class Profile extends React.Component {
     state = {

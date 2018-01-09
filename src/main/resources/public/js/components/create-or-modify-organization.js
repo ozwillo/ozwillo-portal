@@ -10,7 +10,7 @@ import debounce from 'debounce';
 
 import renderIf from 'render-if';
 
-import GeoAreaAutosuggest from './geoarea-autosuggest';
+import GeoAreaAutosuggest from './autosuggests/geoarea-autosuggest';
 
 export const CreateOrModifyOrganizationModal = createClass({
     getInitialState: function () {

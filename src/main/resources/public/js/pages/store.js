@@ -5,7 +5,7 @@ import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 import createClass from 'create-react-class';
 
-import GeoAreaAutosuggest from '../components/geoarea-autosuggest';
+import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import AppModal from '../components/store-install-app'
 
 const default_app = null;

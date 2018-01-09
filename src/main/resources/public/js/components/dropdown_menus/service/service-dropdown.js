@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 //Components
 import DropDownMenu from '../../dropdown-menu';
-import ServiceInvitationForm from '../../service-invitation-form';
+import ServiceInvitationForm from '../../forms/service-invitation-form';
 import ServiceDropdownHeader from '../../dropdown_menus/service/service-dropdown-header';
 
 

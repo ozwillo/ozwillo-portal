@@ -11,7 +11,7 @@ var converter = new Showdown.Converter({tables: true});
 
 import { Modal } from './bootstrap-react';
 import { RatingWrapper } from './rating';
-import GeoAreaAutosuggest from './geoarea-autosuggest';
+import GeoAreaAutosuggest from './autosuggests/geoarea-autosuggest';
 import { CreateOrModifyOrganizationForm } from './create-or-modify-organization';
 
 var default_org_data = {

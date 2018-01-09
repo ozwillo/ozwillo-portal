@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import "../util/csrf";
-import { SubmitButton } from "./form";
+import { SubmitButton } from "./forms/form";
 
 
 class FranceConnectBtn extends React.Component {

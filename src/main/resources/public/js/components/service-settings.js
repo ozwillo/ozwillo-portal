@@ -5,7 +5,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
 
-import GeoAreaAutosuggest from './geoarea-autosuggest';
+import GeoAreaAutosuggest from './autosuggests/geoarea-autosuggest';
 import { Modal } from './bootstrap-react';
 import FileUploadInput from './fileuploadinput';
 import DashboardUsersManagement from './dashboard-users';

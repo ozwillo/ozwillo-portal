@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 //Component
 import DropdownMenu from '../../dropdown-menu';
 import OrganizationDropdownHeader from '../../dropdown_menus/organization/organization-dropdown-header'
-import OrganizationInvitationForm from '../../organization-invitation-form';
+import OrganizationInvitationForm from '../../forms/organization-invitation-form';
 
 
 class OrganizationDropdown extends React.Component {

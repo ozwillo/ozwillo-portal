@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
 //Components
-import OrganizationInvitationForm from '../organization-invitation-form';
+import OrganizationInvitationForm from '../forms/organization-invitation-form';
 import MemberDropdown from '../dropdown_menus/member/member-dropdown';
 
 class MembersTabHeader extends React.Component {
