@@ -11,6 +11,7 @@ const renderSuggestion = suggestion => (
 class GeoAreaAutosuggest extends Component {
     static propTypes = {
         name: PropTypes.string.isRequired,
+        endpoint: PropTypes.string.isRequired,
         placeholder: PropTypes.string,
         value: PropTypes.string,
         countryUri: PropTypes.string.isRequired,
@@ -31,8 +32,8 @@ class GeoAreaAutosuggest extends Component {
         if (!this.props.countryUri) return;
 
         $.ajax({
-            url: `/api/store/geographicalAreas`,
-            dataType: "json",
+            url: `/api/store${this.props.endpoint}`,
+            dataType: 'json',
             data: { country_uri: this.props.countryUri, q: query },
             type: 'get',
             success: function(data) {

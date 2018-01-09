@@ -32,6 +32,7 @@ class OrganizationCreate extends React.Component {
         this.handleJurisdictionChange = this.handleJurisdictionChange.bind(this);
         this.onOrganizationSelected = this.onOrganizationSelected.bind(this);
         this.handleOrganizationChange = this.handleOrganizationChange.bind(this);
+        this.handleCityChange = this.handleCityChange.bind(this);
     }
 
     componentDidMount() {
@@ -65,6 +66,17 @@ class OrganizationCreate extends React.Component {
                 {
                     jurisdiction_uri: jurisdiction.uri,
                     jurisdiction: jurisdiction.name
+                })
+        });
+    }
+
+    handleCityChange(city) {
+        this.setState({
+            organization: Object.assign({}, this.state.organization,
+                {
+                    city_uri: city.uri,
+                    city: city.name,
+                    zip: city.postalCode
                 })
         });
     }
@@ -232,6 +244,7 @@ class OrganizationCreate extends React.Component {
                                 <GeoAreaAutosuggest name="jurisdiction" value={organization.jurisdiction} className="field"
                                                     onChange={this.handleOrganizationChange}
                                                     onGeoAreaSelected={this.handleJurisdictionChange}
+                                                    endpoint="/geographicalAreas"
                                                     countryUri={countrySelected.uri}/>
                             </div>
                         }
@@ -267,11 +280,65 @@ class OrganizationCreate extends React.Component {
                         }
                     </fieldset>
 
-                    <fieldset>
-                        <legend>Contact Information</legend>
+                    {
+                        countrySelected &&
+                        <fieldset className="oz-fieldset">
+                            <legend className="oz-legend">Contact Information</legend>
+                            <div className="flex-row">
+                                <label htmlFor="street_and_number" className="label">
+                                    {this.context.t('my.network.organization.street_and_number')}
+                                </label>
 
+                                <input id="street_and_number" name="street_and_number" type="text"
+                                       value={organization.street_and_number} className="form-control field"
+                                       onChange={this.handleOrganizationChange} />
+                            </div>
 
-                    </fieldset>
+                            <div className="flex-row">
+                                <label htmlFor="po_box" className="label">
+                                    {this.context.t('my.network.organization.po_box')}
+                                </label>
+
+                                <input id="po_box" name="po_box" type="text"
+                                       value={organization.po_box} className="form-control field"
+                                       onChange={this.handleOrganizationChange} />
+                            </div>
+
+                            <div className="flex-row">
+                                <label htmlFor="city" className="label">
+                                    {this.context.t('my.network.organization.city')}
+                                </label>
+
+                                <GeoAreaAutosuggest name="city" className="field"
+                                                    countryUri={countrySelected.uri}
+                                                    endpoint="/dc-cities"
+                                                    onChange={this.handleOrganizationChange}
+                                                    onGeoAreaSelected={this.handleCityChange}
+                                                    value={organization.city} />
+                            </div>
+
+                            <div className="flex-row">
+                                <label htmlFor="zip" className="label">
+                                    {this.context.t('my.network.organization.zip')}
+                                </label>
+
+                                <input id="zip" name="zip" type="text" maxLength={6}
+                                       value={organization.zip} className="form-control field"
+                                       onChange={this.handleOrganizationChange} />
+                            </div>
+
+                            <div className="flex-row">
+                                <label htmlFor="cedex" className="label">
+                                    {this.context.t('my.network.organization.cedex')}
+                                </label>
+
+                                <input id="cedex" name="cedex" type="text" maxLength={3}
+                                       value={organization.cedex} className="form-control field"
+                                       onChange={this.handleOrganizationChange} />
+                            </div>
+
+                        </fieldset>
+                    }
 
                     <fieldset>
                         <legend>Update your profile</legend>
