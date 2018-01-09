@@ -22,7 +22,9 @@ class OrganizationCreate extends React.Component {
 
         this.state = {
             countrySelected: null,
-            organization: {}
+            organization: {},
+            contact_lastname: '',
+            contact_name: ''
         };
 
         //bind methods
@@ -32,6 +34,7 @@ class OrganizationCreate extends React.Component {
         this.handleJurisdictionChange = this.handleJurisdictionChange.bind(this);
         this.onOrganizationSelected = this.onOrganizationSelected.bind(this);
         this.handleOrganizationChange = this.handleOrganizationChange.bind(this);
+        this.handleUserChange = this.handleUserChange.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
     }
 
@@ -46,7 +49,6 @@ class OrganizationCreate extends React.Component {
     }
 
     handleCountriesChange(country) {
-        console.log('country ', country)
         this.setState({ countrySelected: country})
     }
 
@@ -115,6 +117,16 @@ class OrganizationCreate extends React.Component {
 
         this.setState({
             organization: Object.assign({}, this.state.organization, { [field]: value })
+        });
+    }
+
+    handleUserChange (e) {
+        const el = e.currentTarget;
+        const field = el.name;
+        const value = ( el.type === 'checkbox') ?  el.checked : el.value;
+
+        this.setState({
+            [field]: value
         });
     }
 
@@ -340,11 +352,32 @@ class OrganizationCreate extends React.Component {
                         </fieldset>
                     }
 
-                    <fieldset>
-                        <legend>Update your profile</legend>
+                    {
+                        countrySelected &&
+                        <fieldset className="oz-fieldset">
+                            <legend className="oz-legend">Update your profile</legend>
 
+                            <div className="flex-row">
+                                <label htmlFor="contact_lastname" className="label">
+                                    {this.context.t('my.network.organization.contact_lastname')}
+                                </label>
 
-                    </fieldset>
+                                <input id="contact_lastname" name="contact_lastname" type="text"
+                                       value={this.state.contact_lastname} className="form-control field"
+                                       onChange={this.handleUserChange} />
+                            </div>
+
+                            <div className="flex-row">
+                                <label htmlFor="contact_name" className="label">
+                                    {this.context.t('my.network.organization.contact_name')}
+                                </label>
+
+                                <input id="contact_name" name="contact_name" type="text"
+                                       value={this.state.contact_name} className="form-control field"
+                                       onChange={this.handleUserChange} />
+                            </div>
+                        </fieldset>
+                    }
 
                     <input type="submit" value="Send" />
                 </form>
@@ -357,7 +390,8 @@ class OrganizationCreate extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        countries: state.config.countries
+        countries: state.config.countries,
+        userInfo: state.userInfo
     }
 };
 
