@@ -7,10 +7,12 @@ import debounce from "debounce";
 
 class LegalNameAutosuggest extends React.Component {
     static propTypes = {
+        name: PropTypes.string.isRequired,
+        placeholder: PropTypes.string,
         countryUri: PropTypes.string.isRequired,
-        value: PropTypes.string.isRequired,
-        onOrganizationSelected: PropTypes.func.isRequired,
-        onChange: PropTypes.func.isRequired
+        value: PropTypes.string,
+        onChange: PropTypes.func.isRequired,
+        onOrganizationSelected: PropTypes.func.isRequired
     };
 
     static contextTypes = {
@@ -30,9 +32,8 @@ class LegalNameAutosuggest extends React.Component {
         this.onSuggestionsFetchRequested = this.onSuggestionsFetchRequested.bind(this);
         this.onSuggestionsClearRequested = this.onSuggestionsClearRequested.bind(this);
         this.onSuggestionSelected = this.onSuggestionSelected.bind(this);
-        this.onChange = this.onChange.bind(this);
-        this.getSuggestionValue = this.getSuggestionValue.bind(this);
         this.shouldRenderSuggestions = this.shouldRenderSuggestions.bind(this);
+        this.getSuggestionValue = this.getSuggestionValue.bind(this);
     }
 
     searchOrganizations(query) {
@@ -62,7 +63,6 @@ class LegalNameAutosuggest extends React.Component {
     }
 
     onSuggestionsFetchRequested ({ value, reason }) {
-        this.props.onChange(value);
         if (reason !== 'enter' && reason !== 'click') {
             debounce(this.searchOrganizations(value), 500);
         }
@@ -77,24 +77,21 @@ class LegalNameAutosuggest extends React.Component {
         this.props.onOrganizationSelected(suggestion);
     }
 
-    onChange(event, { newValue }) {
-        this.props.onChange(newValue);
+    shouldRenderSuggestions(input) {
+        return input.trim().length > 0;
     }
 
     getSuggestionValue(suggestion) {
         return suggestion.legal_name;
     }
 
-    shouldRenderSuggestions(input) {
-        return input.trim().length > 2;
-    }
-
     render() {
         const inputProps = {
-            value: this.props.value,
-            onChange: this.onChange,
+            name: this.props.name,
+            value: this.props.value || '',
+            onChange: this.props.onChange,
             type: 'search',
-            placeholder: '',
+            placeholder: this.props.placeholder || '',
             className: `form-control ${this.props.className}`
         };
 
@@ -102,8 +99,8 @@ class LegalNameAutosuggest extends React.Component {
                             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                             onSuggestionSelected={this.onSuggestionSelected}
-                            getSuggestionValue={this.getSuggestionValue}
                             renderSuggestion={this.renderSuggestion}
+                            getSuggestionValue={this.getSuggestionValue}
                             inputProps={inputProps}
                             shouldRenderSuggestions={this.shouldRenderSuggestions}/>;
     }

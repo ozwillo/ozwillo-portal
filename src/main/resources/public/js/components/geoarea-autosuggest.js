@@ -10,31 +10,28 @@ const renderSuggestion = suggestion => (
 
 class GeoAreaAutosuggest extends Component {
     static propTypes = {
+        name: PropTypes.string.isRequired,
         placeholder: PropTypes.string,
-        initialValue: PropTypes.string,
-        endpoint: PropTypes.string,
-        countryUri: PropTypes.string,
-        onChange: PropTypes.func.isRequired
+        value: PropTypes.string,
+        countryUri: PropTypes.string.isRequired,
+        onChange: PropTypes.func.isRequired,
+        onGeoAreaSelected: PropTypes.func.isRequired
     };
+
     static defaultProps = {
+        value: '',
         placeholder: ''
     };
+
     state = {
-        value: '',
         suggestions: []
     };
-    componentDidMount() {
-        this.setState({ value: this.props.initialValue || '' });
-    }
-    componentWillReceiveProps(nextProps) {
-        if (this.props.initialValue !== nextProps.initialValue)
-            this.setState({ value: nextProps.initialValue })
-    }
+
     searchCities(query) {
-        if (this.props.countryUri === undefined) return;
+        if (!this.props.countryUri) return;
 
         $.ajax({
-            url: `/api/store${this.props.endpoint}`,
+            url: `/api/store/geographicalAreas`,
             dataType: "json",
             data: { country_uri: this.props.countryUri, q: query },
             type: 'get',
@@ -46,46 +43,43 @@ class GeoAreaAutosuggest extends Component {
             }
         })
     }
+
     onSuggestionsFetchRequested = ({ value }) => {
-        this.setState({ value: value });
         this.searchCities(value);
-    }
+    };
+
     onSuggestionsClearRequested = () => {
         this.setState({ suggestions: [] })
-    }
-    onSuggestionSelected = (event, { suggestion, suggestionValue, sectionIndex, method }) => {
-        this.setState({ value: suggestion.name });
-        this.props.onChange(suggestion);
-    }
-    onChange(event, { newValue, method }) {
-        if (method === "type" && newValue === '') {
-            this.props.onChange(null)
-        } else {
-            this.setState({ value: newValue })
-        }
-    }
+    };
+
+    onSuggestionSelected = (event, { suggestion }) => {
+        this.props.onGeoAreaSelected(suggestion);
+    };
+
+    getSuggestionValue = suggestion => suggestion.name;
+
+    shouldRenderSuggestions = (input) => {
+        return !input && input.trim().length > 2;
+    };
+
     render() {
         const inputProps = {
-            value: this.state.value || '',
-            onChange: this.onChange.bind(this),
+            name: this.props.name,
+            value: this.props.value,
+            onChange: this.props.onChange,
             type: 'search',
             placeholder: this.props.placeholder,
-            className: 'form-control'
+            className: `form-control ${this.props.className}`
         };
 
-        return (
-            <div className="input-group">
-                <Autosuggest suggestions={this.state.suggestions}
-                             onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                             onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                             onSuggestionSelected={this.onSuggestionSelected}
-                             getSuggestionValue={suggestion => suggestion.name}
-                             renderSuggestion={renderSuggestion}
-                             inputProps={inputProps}
-                             shouldRenderSuggestions={input => input != null && input.trim().length > 2}/>
-                <span className="input-group-addon"><i className="fa fa-search"></i></span>
-            </div>
-        )
+        return <Autosuggest suggestions={this.state.suggestions}
+                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                     onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                     onSuggestionSelected={this.onSuggestionSelected}
+                     getSuggestionValue={this.getSuggestionValue}
+                     renderSuggestion={renderSuggestion}
+                     inputProps={inputProps}
+                     shouldRenderSuggestions={this.shouldRenderSuggestions}/>
     }
 }
 

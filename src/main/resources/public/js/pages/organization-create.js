@@ -5,6 +5,8 @@ import Select from 'react-select';
 
 //Component
 import LegalNameAutosuggest from '../components/legal-name-autosuggest';
+import TaxRegActivityAutosuggest from '../components/tax-reg-activity-autosuggest';
+import GeoAreaAutosuggest from '../components/geoarea-autosuggest';
 
 //Action
 import { fetchCountries } from '../actions/config';
@@ -20,16 +22,16 @@ class OrganizationCreate extends React.Component {
 
         this.state = {
             countrySelected: null,
-            legalName: '',
-            sectorType: ''
+            organization: {}
         };
 
         //bind methods
         this.onSubmit = this.onSubmit.bind(this);
         this.handleCountriesChange = this.handleCountriesChange.bind(this);
-        this.handleLegalNameChange = this.handleLegalNameChange.bind(this);
-        this.handleSectorTypeChange = this.handleSectorTypeChange.bind(this);
+        this.handleTaxRegActivityChange = this.handleTaxRegActivityChange.bind(this);
+        this.handleJurisdictionChange = this.handleJurisdictionChange.bind(this);
         this.onOrganizationSelected = this.onOrganizationSelected.bind(this);
+        this.handleOrganizationChange = this.handleOrganizationChange.bind(this);
     }
 
     componentDidMount() {
@@ -47,13 +49,23 @@ class OrganizationCreate extends React.Component {
         this.setState({ countrySelected: country})
     }
 
-    handleLegalNameChange(legalName) {
-        this.setState({ legalName })
+    handleTaxRegActivityChange(taxRegActivity) {
+        this.setState({
+            organization: Object.assign({}, this.state.organization,
+                {
+                    tax_reg_activity_uri: taxRegActivity.uri,
+                    tax_reg_activity: taxRegActivity.name
+                })
+        });
     }
 
-    handleSectorTypeChange(e) {
+    handleJurisdictionChange(jurisdiction) {
         this.setState({
-            sectorType: e.currentTarget.value
+            organization: Object.assign({}, this.state.organization,
+                {
+                    jurisdiction_uri: jurisdiction.uri,
+                    jurisdiction: jurisdiction.name
+                })
         });
     }
 
@@ -62,38 +74,52 @@ class OrganizationCreate extends React.Component {
     }
 
     // TODO: change that !!!!
-    get taxRegNumLabel() {
+    get taxLabels() {
         if(!this.state.countrySelected){
             return '';
         }
 
-        let taxRegNumLabel = '';
+        let lang = '';
         switch(this.state.countrySelected.name){
-            case 'България' : taxRegNumLabel = this.context.t('search.organization.business-id.bg'); break;
-            case 'Italia'   : taxRegNumLabel = this.context.t('search.organization.business-id.it'); break;
-            case 'France'   : taxRegNumLabel = this.context.t('search.organization.business-id.fr'); break;
-            case 'España'   : taxRegNumLabel = this.context.t('search.organization.business-id.es'); break;
-            case 'Türkiye'  : taxRegNumLabel = this.context.t('search.organization.business-id.tr'); break;
-            default         : taxRegNumLabel = this.context.t('search.organization.business-id.en'); break;
+            case 'България' : lang = 'bg'; break;
+            case 'Italia'   : lang = 'it'; break;
+            case 'France'   : lang = 'fr'; break;
+            case 'España'   : lang = 'es'; break;
+            case 'Türkiye'  : lang = 'tr'; break;
+            default         : lang = 'en'; break;
         }
 
-        return taxRegNumLabel;
+        return  {
+            taxRegNum: this.context.t(`search.organization.business-id.${lang}`),
+            taxRegOfficialId: this.context.t(`my.network.organization.tax_reg_official_id.${lang}`),
+            taxRegActivity: this.context.t(`my.network.organization.tax_reg_activity.${lang}`)
+        };
+    }
+
+    handleOrganizationChange (e) {
+        const el = e.currentTarget;
+        const field = el.name;
+        const value = ( el.type === 'checkbox') ?  el.checked : el.value;
+
+        this.setState({
+            organization: Object.assign({}, this.state.organization, { [field]: value })
+        });
     }
 
     render() {
         const countrySelected = this.state.countrySelected;
-        const legalName = this.state.legalName;
         const sectorType = this.state.sectorType;
+        const organization = this.state.organization;
+        const taxLabels = this.taxLabels;
 
         return <section className="organization-create oz-body wrapper flex-col">
             <header className="header flex-row">
                 <h1 className="title">Create an organization</h1>
             </header>
             <section>
-
                 <form className="oz-form">
                     <fieldset className="oz-fieldset">
-                        <legend className="oz-legend">Search an organization</legend>
+                        <legend className="oz-legend">Organization</legend>
                         <div className="flex-row">
                             <label htmlFor="country" className="label">Country</label>
                             <Select className="select field" value={countrySelected} onChange={this.handleCountriesChange}
@@ -104,18 +130,19 @@ class OrganizationCreate extends React.Component {
                         {
                             countrySelected &&
                             <div className="flex-row">
-                                <label htmlFor="legal-name" className="label">Legal name</label>
-                                <LegalNameAutosuggest onChange={this.handleLegalNameChange} className="field"
+                                <label htmlFor="legal_name" className="label">Legal name</label>
+                                <LegalNameAutosuggest name="legal_name" className="field"
+                                                      onChange={this.handleOrganizationChange}
                                                       countryUri={countrySelected.uri}
                                                       onOrganizationSelected={this.onOrganizationSelected}
-                                                      value={legalName} />
+                                                      value={organization.legal_name} />
                             </div>
                         }
 
                         {
                             countrySelected &&
                             <div className="flex-row">
-                                <label htmlFor="tax_reg_num" className="label">{this.taxRegNumLabel}</label>
+                                <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum}</label>
                                 <input id="tax_reg_num" name="tax_reg_num" type="number" className="form-control field" />
                             </div>
                         }
@@ -127,25 +154,117 @@ class OrganizationCreate extends React.Component {
 
                                 <label className="radio-inline field">
                                     <input type="radio" name="sector_type" value="PUBLIC_BODY"
-                                           disabled={this.props.static} onChange={this.handleSectorTypeChange}
-                                           checked={sectorType === 'Public' || sectorType === 'PUBLIC_BODY'} />
+                                           disabled={this.props.static} onChange={this.handleOrganizationChange}
+                                           checked={ organization.sector_type === 'Public' ||
+                                               organization.sector_type === 'PUBLIC_BODY' } />
                                     {this.context.t('search.organization.sector-type.PUBLIC_BODY')}
                                 </label>
 
                                 <label className="radio-inline field">
                                     <input type="radio" name="sector_type" value="COMPANY"
-                                           disabled={this.props.static} onChange={this.handleSectorTypeChange}
-                                           checked={sectorType === 'Private' || sectorType === 'COMPANY'} />
+                                           disabled={this.props.static} onChange={this.handleOrganizationChange}
+                                           checked={ organization.sector_type === 'Private' ||
+                                                    organization.sector_type === 'COMPANY' } />
                                     {this.context.t('search.organization.sector-type.COMPANY')}
                                 </label>
                             </div>
                         }
 
-                    </fieldset>
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label htmlFor="in_activity" className="label">{this.context.t('my.network.organization.in_activity')}</label>
 
-                    <fieldset>
-                        <legend>Organization</legend>
+                                <input id="in_activity" name="in_activity" type="checkbox" checked={organization.in_activity}
+                                       onChange={this.handleOrganizationChange} className="field"/>
+                            </div>
+                        }
 
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label htmlFor="alt_name" className="label">{this.context.t('my.network.organization.alt_name')}</label>
+
+                                <input name="alt_name" className="form-control field" id="alt_name" type="text"
+                                       value={organization.alt_name} onChange={this.handleInputChange} />
+                            </div>
+                        }
+
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label htmlFor="org_type" className="label">{this.context.t('my.network.organization.org_type')}</label>
+
+                                <input name="org_type" className="form-control field" id="org_type" type="text"
+                                       value={organization.alt_name} onChange={this.handleInputChange}
+                                       placeholder={this.context.t('my.network.organization.org_type.placeholder')}/>
+                            </div>
+                        }
+
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label className="label">{taxLabels.taxRegActivity}</label>
+
+                                <TaxRegActivityAutosuggest name="tax_reg_activity" className="field"
+                                                           onChange={this.handleOrganizationChange}
+                                                           onTaxRegActivitySelected={this.handleTaxRegActivityChange}
+                                                           countryUri={countrySelected.uri}
+                                                           value={organization.tax_reg_activity} />
+                            </div>
+                        }
+
+                        {
+                            countrySelected && organization.sector_type === 'PUBLIC_BODY' &&
+                            <div className="flex-row">
+                                <label htmlFor="tax_reg_official_id" className="label">{taxLabels.taxRegOfficialId}</label>
+
+                                <input name="tax_reg_official_id" className="form-control field" id="tax_reg_official_id" type="text"
+                                       value={organization.tax_reg_official_id} onChange={this.handleInputChange} />
+                            </div>
+                        }
+
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label name="jurisdiction" className="label">{this.context.t('my.network.organization.jurisdiction')}</label>
+
+                                <GeoAreaAutosuggest name="jurisdiction" value={organization.jurisdiction} className="field"
+                                                    onChange={this.handleOrganizationChange}
+                                                    onGeoAreaSelected={this.handleJurisdictionChange}
+                                                    countryUri={countrySelected.uri}/>
+                            </div>
+                        }
+
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label htmlFor="phone_number" className="label">{this.context.t('my.network.organization.phone_number')}</label>
+
+                                <input id="phone_number" name="phone_number" type="number" value={organization.phone_number}
+                                       onChange={this.handleOrganizationChange} className="form-control field"/>
+                            </div>
+                        }
+
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label htmlFor="web_site" className="label">{this.context.t('my.network.organization.web_site')}</label>
+
+                                <input id="web_site" name="web_site" type="text" value={organization.web_site}
+                                       onChange={this.handleOrganizationChange} className="form-control field"/>
+                            </div>
+                        }
+
+                        {
+                            countrySelected &&
+                            <div className="flex-row">
+                                <label htmlFor="email" className="label">{this.context.t('my.network.organization.email')}</label>
+
+                                <input id="email" name="email" type="email" value={organization.email}
+                                       onChange={this.handleOrganizationChange} className="form-control field"/>
+                            </div>
+                        }
                     </fieldset>
 
                     <fieldset>
