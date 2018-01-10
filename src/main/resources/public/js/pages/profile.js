@@ -4,10 +4,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
 import moment from 'moment';
+
 import '../util/csrf';
 
+// Component
 import FranceConnectBtn from '../components/france-connect-btn';
-
 import { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/forms/form';
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 
@@ -205,16 +206,23 @@ class AddressAccount extends React.Component {
         t: PropTypes.func.isRequired
     };
 
-    handleChange(locality) {
-        if(locality !== null) {
-            this.props.onValueChange('address.locality', locality.name)
-            this.props.onValueChange('address.postal_code', locality.postalCode)
-        }
-        else {
-            this.props.onValueChange('address.locality', '')
-            this.props.onValueChange('address.postal_code', '')
-        }
+    constructor(props) {
+        super(props);
+
+        //bind methods
+        this.handleChange = this.handleChange.bind(this);
+        this.onGeoAreaSelected = this.handleChange.bind(this);
     }
+
+    handleChange(e) {
+        this.props.onValueChange('address.locality', e.currentTarget.value);
+    }
+
+    onGeoAreaSelected(locality) {
+        this.props.onValueChange('address.locality', locality.name);
+        this.props.onValueChange('address.postal_code', locality.postalCode);
+    }
+
     render () {
         return (
             <div className="row">
@@ -229,10 +237,12 @@ class AddressAccount extends React.Component {
                         {this.context.t('my.profile.personal.locality')}
                     </label>
                     <div className="col-sm-7">
-                        <GeoAreaAutosuggest onChange={this.handleChange.bind(this)}
-                                            countryUri={this.props.address.country}
+                        <GeoAreaAutosuggest name="locality"
+                                            onGeoAreaSelected={this.onGeoAreaSelected}
+                                            onChange={this.handleChange}
+                                            countryUri={this.props.address.country || ''}
                                             endpoint="/dc-cities" placeholder={this.context.t('my.profile.personal.locality')}
-                                            initialValue={this.props.address.locality} />
+                                            value={this.props.address.locality} />
                     </div>
                 </div>
 

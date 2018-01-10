@@ -77,6 +77,7 @@ class GeoAreaAutosuggest extends Component {
             required: this.props.required
         };
 
+
         return <Autosuggest
                     suggestions={this.state.suggestions}
                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
