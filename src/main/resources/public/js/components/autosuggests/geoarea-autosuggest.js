@@ -1,6 +1,9 @@
 import React, {Component} from 'react'
 import PropTypes from 'prop-types';
 import Autosuggest from 'react-autosuggest';
+import Config from '../../config/config';
+
+const sizeQueryBeforeFetch = Config.sizeQueryBeforeFetch;
 
 const renderSuggestion = suggestion => (
     <div>
@@ -29,8 +32,6 @@ class GeoAreaAutosuggest extends Component {
     };
 
     searchCities(query) {
-        if (!this.props.countryUri) return;
-
         $.ajax({
             url: `/api/store${this.props.endpoint}`,
             dataType: 'json',
@@ -57,19 +58,19 @@ class GeoAreaAutosuggest extends Component {
         this.props.onGeoAreaSelected(suggestion);
     };
 
-    getSuggestionValue = suggestion => suggestion.name;
+    getSuggestionValue = suggestion => suggestion.name || GeoAreaAutosuggest.defaultProps.value;
 
     shouldRenderSuggestions = (input) => {
-        return !input && input.trim().length > 2;
+        return input && (input.trim().length >= sizeQueryBeforeFetch);
     };
 
     render() {
         const inputProps = {
             name: this.props.name,
-            value: this.props.value,
+            value: this.props.value || GeoAreaAutosuggest.defaultProps.value,
             onChange: this.props.onChange,
             type: 'search',
-            placeholder: this.props.placeholder,
+            placeholder: this.props.placeholder || GeoAreaAutosuggest.defaultProps.placeholder,
             className: `form-control ${this.props.className}`
         };
 

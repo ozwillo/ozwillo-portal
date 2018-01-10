@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import debounce from 'debounce';
 import Autosuggest from 'react-autosuggest';
+import Config from '../../config/config';
+
+const sizeQueryBeforeFetch = Config.sizeQueryBeforeFetch;
 
 
 class TaxRegActivityAutosuggest extends React.Component {
@@ -42,8 +45,6 @@ class TaxRegActivityAutosuggest extends React.Component {
     }
 
     searchTaxRegActivities (query) {
-        if (query.trim().length < 3) return;
-
         $.ajax({
             url: "/api/store/dc-taxRegActivity",
             dataType: "json",
@@ -80,20 +81,20 @@ class TaxRegActivityAutosuggest extends React.Component {
     }
 
     getSuggestionValue(suggestion) {
-        return suggestion.name;
+        return suggestion.name || TaxRegActivityAutosuggest.defaultProps.value;
     }
 
     shouldRenderSuggestions(input) {
-        return input.trim().length > 0;
+        return input && (input.trim().length >= sizeQueryBeforeFetch);
     }
 
     render() {
         const inputProps = {
             name: this.props.name,
-            value: this.props.value,
+            value: this.props.value || TaxRegActivityAutosuggest.defaultProps.value,
             onChange: this.props.onChange,
             type: 'search',
-            placeholder: this.props.placeholder,
+            placeholder: this.props.placeholder || TaxRegActivityAutosuggest.defaultProps.placeholder,
             className: `form-control ${this.props.className}`
         };
 

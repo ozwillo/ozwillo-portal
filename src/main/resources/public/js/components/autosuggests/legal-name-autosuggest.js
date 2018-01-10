@@ -1,8 +1,10 @@
 import React from 'react';
 import PropTypes from "prop-types";
-
 import Autosuggest from 'react-autosuggest';
 import debounce from "debounce";
+import Config from '../../config/config';
+
+const sizeQueryBeforeFetch = Config.sizeQueryBeforeFetch;
 
 
 class LegalNameAutosuggest extends React.Component {
@@ -15,8 +17,9 @@ class LegalNameAutosuggest extends React.Component {
         onOrganizationSelected: PropTypes.func.isRequired
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
+    static defaultProps = {
+        value: '',
+        placeholder: ''
     };
 
     constructor(props) {
@@ -37,8 +40,6 @@ class LegalNameAutosuggest extends React.Component {
     }
 
     searchOrganizations(query) {
-        if (query.trim().length < 3) return;
-
         $.ajax({
             url: "/my/api/network/search-organizations",
             dataType: 'json',
@@ -78,20 +79,20 @@ class LegalNameAutosuggest extends React.Component {
     }
 
     shouldRenderSuggestions(input) {
-        return input.trim().length > 0;
+        return input && (input.trim().length >= sizeQueryBeforeFetch);;
     }
 
     getSuggestionValue(suggestion) {
-        return suggestion.legal_name;
+        return suggestion.legal_name || LegalNameAutosuggest.defaultProps.value;
     }
 
     render() {
         const inputProps = {
             name: this.props.name,
-            value: this.props.value || '',
+            value: this.props.value || LegalNameAutosuggest.defaultProps.value,
             onChange: this.props.onChange,
             type: 'search',
-            placeholder: this.props.placeholder || '',
+            placeholder: this.props.placeholder || LegalNameAutosuggest.defaultProps.placeholder,
             className: `form-control ${this.props.className}`
         };
 
