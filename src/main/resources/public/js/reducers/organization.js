@@ -1,6 +1,6 @@
 import {
-    FETCH_ORGANIZATIONS,
-    FETCH_ORGANIZATION_WITH_ID
+    FETCH_ORGANIZATION_WITH_ID,
+    FETCH_CREATE_ORGANIZATION
 } from '../actions/organization';
 
 const defaultState = {
@@ -116,11 +116,24 @@ const defaultState = {
     }
 };
 
+const organizationsState = (state = [], action ) => {
+    let nextState = Object.assign([], state);
+    switch(action.type) {
+        case FETCH_CREATE_ORGANIZATION:
+            nextState.push(action.organization);
+            break;
+        default:
+            return state;
+    }
+
+    return nextState;
+};
+
 export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
     switch(nextState.id) {
-        case FETCH_ORGANIZATIONS:
-            nextState.organizations = action.organizations;
+        case FETCH_CREATE_ORGANIZATION:
+            nextState.organizations = organizationsState(nextState.organizations, action);
             break;
         case FETCH_ORGANIZATION_WITH_ID:
             nextState.current = action.organization;

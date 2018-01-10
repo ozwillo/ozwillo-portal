@@ -9,6 +9,7 @@ import TaxRegActivityAutosuggest from '../components/autosuggests/tax-reg-activi
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 
 //Action
+import { fetchCreateOrganization } from '../actions/organization';
 import { fetchCountries } from '../actions/config';
 
 class OrganizationCreate extends React.Component {
@@ -24,7 +25,8 @@ class OrganizationCreate extends React.Component {
             countrySelected: null,
             organization: {},
             contact_lastname: '',
-            contact_name: ''
+            contact_name: '',
+            loading: false
         };
 
         //bind methods
@@ -44,12 +46,26 @@ class OrganizationCreate extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
+        this.setState({ loading: true });
 
-        console.log('onSubmit');
+        this.props.fetchCreateOrganization(this.state.organization)
+            .then(() => {
+                this.props.history.push('/my/organization');
+            })
+            .catch(() => {
+                this.setState({ loading: false });
+            });
     }
 
     handleCountriesChange(country) {
-        this.setState({ countrySelected: country})
+        this.setState({
+            countrySelected: country,
+            organization: Object.assign({}, this.state.organization,
+                {
+                    country_uri: country.uri,
+                    country: country.name
+                })
+        });
     }
 
     handleTaxRegActivityChange(taxRegActivity) {
@@ -165,9 +181,9 @@ class OrganizationCreate extends React.Component {
                         {
                             countrySelected &&
                             <div className="flex-row">
-                                <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum} *</label>
+                                <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum} toto *</label>
                                 <input id="tax_reg_num" name="tax_reg_num" type="number" required={true}
-                                       className="form-control field" />
+                                       className="form-control field" onChange={this.handleOrganizationChange}/>
                             </div>
                         }
 
@@ -382,8 +398,15 @@ class OrganizationCreate extends React.Component {
 
 
                     {
-                        countrySelected &&
+                        countrySelected && !this.state.loading &&
                         <input type="submit" value="Send" className="submit btn"/>
+                    }
+
+                    {
+                        countrySelected && this.state.loading &&
+                        <button type="button" className="submit btn icon">
+                            <i className="fa fa-spinner fa-spin" />
+                        </button>
                     }
                 </form>
 
@@ -404,6 +427,9 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchCountries() {
             return dispatch(fetchCountries());
+        },
+        fetchCreateOrganization(organization) {
+            return dispatch(fetchCreateOrganization(organization))
         }
     };
 };

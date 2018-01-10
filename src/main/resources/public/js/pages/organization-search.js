@@ -8,7 +8,6 @@ import SideMenu from '../components/side-menu';
 import OrganizationDropdown from '../components/dropdown_menus/organization/organization-dropdown';
 
 //action
-import { fetchOrganizations } from '../actions/organization';
 import { fetchUserOrganizations } from '../actions/organization';
 
 class OrganizationSearch extends React.Component {
@@ -109,9 +108,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchOrganizations() {
-            return dispatch(fetchOrganizations());
-        },
         fetchUserOrganizations() {
             return dispatch(fetchUserOrganizations());
         }

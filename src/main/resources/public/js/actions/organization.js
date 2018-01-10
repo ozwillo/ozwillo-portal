@@ -1,17 +1,10 @@
 import customFetch, { urlBuilder } from '../util/custom-fetch';
 
-export const FETCH_ORGANIZATIONS = 'FETCH_ORGANIZATIONS';
 export const FETCH_ORGANIZATION_WITH_ID = 'FETCH_ORGANIZATION_WITH_ID';
 export const FETCH_USER_ORGANIZATIONS = 'FETCH_USER_ORGANIZATIONS';
+export const FETCH_CREATE_ORGANIZATION = 'FETCH_CREATE_ORGANIZATION';
 
-
-const fetchOrganizationsAction = (organizations) => {
-    return {
-        type: FETCH_ORGANIZATIONS,
-        organizations
-    };
-};
-
+// Actions
 const fetchOrganizationWithIdAction = (organization) => {
     return {
         type: FETCH_ORGANIZATION_WITH_ID,
@@ -26,15 +19,14 @@ const fetchUserOrganizationsAction = (organizations) => {
     };
 };
 
-export const fetchOrganizations = () => {
-    return dispatch => {
-        return customFetch('/my/api/network/search-organizations.json')
-            .then((organizations) => {
-                dispatch(fetchOrganizationsAction(organizations));
-            });
+const fetchCreateOrganizationAction = (organization) => {
+    return {
+        type: FETCH_CREATE_ORGANIZATION,
+        organization
     };
 };
 
+// Async methods
 export const fetchOrganizationWithId = (id) => {
     return dispatch => {
         return customFetch(urlBuilder(`/my/api/network/organization.json`, { dc_id: id }))
@@ -50,5 +42,16 @@ export const fetchUserOrganizations = () => {
             .then((organizations) => {
                 dispatch(fetchUserOrganizationsAction(organizations));
             });
+    };
+};
+
+export const fetchCreateOrganization = (organization) => {
+    return dispatch => {
+        return customFetch('/my/api/network/create-dc-organization', {
+            method: 'POST',
+            json: organization
+        }).then((org) => {
+            dispatch(fetchCreateOrganizationAction(org));
+        });
     };
 };

@@ -1,5 +1,5 @@
 import { FETCH_USER_INFO } from '../actions/user';
-import { FETCH_USER_ORGANIZATIONS } from "../actions/organization";
+import { FETCH_CREATE_ORGANIZATION, FETCH_USER_ORGANIZATIONS } from "../actions/organization";
 
 
 const defaultState = {
@@ -52,6 +52,23 @@ const organizations = [
     }
 ];
 
+const organizationsState = (state = [], action ) => {
+    let nextState = Object.assign([], state);
+    switch(action.type) {
+        case FETCH_USER_ORGANIZATIONS:
+            //TODO: Remove organizations insert for tests
+            nextState = action.organizations.concat(organizations);
+            break;
+        case FETCH_CREATE_ORGANIZATION:
+            nextState.push(action.organization);
+            break;
+        default:
+            return state;
+    }
+
+    return nextState;
+};
+
 export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
     switch(action.type){
@@ -59,8 +76,8 @@ export default (state = defaultState, action) => {
             return Object.assign(nextState, action.userInfo);
             break;
         case FETCH_USER_ORGANIZATIONS:
-            //TODO: Remove organizations insert for tests
-            nextState.organizations = action.organizations.concat(organizations);
+        case FETCH_CREATE_ORGANIZATION:
+            nextState.organizations = organizationsState(state.organizations, action);
             break;
         default:
             return state;

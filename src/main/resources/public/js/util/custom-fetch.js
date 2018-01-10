@@ -1,14 +1,28 @@
+/*
+* Custom fetch
+*
+* Integrate :
+*   - A json parameter to send a json object.
+*   - Fix cross-origin problems
+*   - Insert in the request header a csrf field
+*/
+
 export default (url, params = { headers: {} }) => {
     if(!params.headers) {
         params.headers = {};
     }
 
     //Add csrf
-    const token = $("meta[name='_csrf']").attr("content");
-    const headerField = $("meta[name='_csrf_header']").attr("content");
+    const token = document.querySelector("meta[name='_csrf']").content;
+    const headerField = document.querySelector("meta[name='_csrf_header']").content;
 
     params.headers[headerField] = token;
     params.credentials = 'same-origin';
+
+    if(params.json){
+        params.body = JSON.stringify(params.json);
+        params.headers['Content-Type'] = 'application/json';
+    }
 
     return fetch(url, params)
         .then((res) => {
@@ -21,6 +35,7 @@ export default (url, params = { headers: {} }) => {
         .then((res) => res.json())
         .catch((err) => {
             console.error(err);
+            throw Error(err);
         });
 }
 
