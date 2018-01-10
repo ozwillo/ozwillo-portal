@@ -132,7 +132,6 @@ class OrganizationCreate extends React.Component {
 
     render() {
         const countrySelected = this.state.countrySelected;
-        const sectorType = this.state.sectorType;
         const organization = this.state.organization;
         const taxLabels = this.taxLabels;
 
@@ -141,21 +140,21 @@ class OrganizationCreate extends React.Component {
                 <h1 className="title">Create an organization</h1>
             </header>
             <section>
-                <form className="oz-form">
+                <form className="oz-form" onSubmit={this.onSubmit}>
                     <fieldset className="oz-fieldset">
                         <legend className="oz-legend">Organization</legend>
                         <div className="flex-row">
-                            <label htmlFor="country" className="label">Country</label>
+                            <label htmlFor="country" className="label">{this.context.t('my.network.organization.country')} *</label>
                             <Select className="select field" value={countrySelected} onChange={this.handleCountriesChange}
                                     options={this.props.countries} clearable={false} valueKey="uri" labelKey="name"
-                                    placeholder="Country" />
+                                    placeholder="Country" required={true} />
                         </div>
 
                         {
                             countrySelected &&
                             <div className="flex-row">
-                                <label htmlFor="legal_name" className="label">Legal name</label>
-                                <LegalNameAutosuggest name="legal_name" className="field"
+                                <label htmlFor="legal_name" className="label">{this.context.t('my.network.organization.legal_name')} *</label>
+                                <LegalNameAutosuggest name="legal_name" className="field" required={true}
                                                       onChange={this.handleOrganizationChange}
                                                       countryUri={countrySelected.uri}
                                                       onOrganizationSelected={this.onOrganizationSelected}
@@ -166,8 +165,9 @@ class OrganizationCreate extends React.Component {
                         {
                             countrySelected &&
                             <div className="flex-row">
-                                <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum}</label>
-                                <input id="tax_reg_num" name="tax_reg_num" type="number" className="form-control field" />
+                                <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum} *</label>
+                                <input id="tax_reg_num" name="tax_reg_num" type="number" required={true}
+                                       className="form-control field" />
                             </div>
                         }
 
@@ -177,7 +177,7 @@ class OrganizationCreate extends React.Component {
                                 <label htmlFor="sector_type" className="label">{this.context.t('search.organization.sector-type')} * </label>
 
                                 <label className="radio-inline field">
-                                    <input type="radio" name="sector_type" value="PUBLIC_BODY"
+                                    <input type="radio" name="sector_type" value="PUBLIC_BODY" required={true}
                                            disabled={this.props.static} onChange={this.handleOrganizationChange}
                                            checked={ organization.sector_type === 'Public' ||
                                                organization.sector_type === 'PUBLIC_BODY' } />
@@ -251,9 +251,10 @@ class OrganizationCreate extends React.Component {
                         {
                             countrySelected &&
                             <div className="flex-row">
-                                <label name="jurisdiction" className="label">{this.context.t('my.network.organization.jurisdiction')}</label>
+                                <label name="jurisdiction" className="label">{this.context.t('my.network.organization.jurisdiction')} *</label>
 
-                                <GeoAreaAutosuggest name="jurisdiction" value={organization.jurisdiction} className="field"
+                                <GeoAreaAutosuggest name="jurisdiction" required={true}
+                                                    value={organization.jurisdiction}className="field"
                                                     onChange={this.handleOrganizationChange}
                                                     onGeoAreaSelected={this.handleJurisdictionChange}
                                                     endpoint="/geographicalAreas"
@@ -298,10 +299,10 @@ class OrganizationCreate extends React.Component {
                             <legend className="oz-legend">Contact Information</legend>
                             <div className="flex-row">
                                 <label htmlFor="street_and_number" className="label">
-                                    {this.context.t('my.network.organization.street_and_number')}
+                                    {this.context.t('my.network.organization.street_and_number')} *
                                 </label>
 
-                                <input id="street_and_number" name="street_and_number" type="text"
+                                <input id="street_and_number" name="street_and_number" type="text" required={true}
                                        value={organization.street_and_number} className="form-control field"
                                        onChange={this.handleOrganizationChange} />
                             </div>
@@ -318,10 +319,10 @@ class OrganizationCreate extends React.Component {
 
                             <div className="flex-row">
                                 <label htmlFor="city" className="label">
-                                    {this.context.t('my.network.organization.city')}
+                                    {this.context.t('my.network.organization.city')} *
                                 </label>
 
-                                <GeoAreaAutosuggest name="city" className="field"
+                                <GeoAreaAutosuggest name="city" className="field" required={true}
                                                     countryUri={countrySelected.uri}
                                                     endpoint="/dc-cities"
                                                     onChange={this.handleOrganizationChange}
@@ -331,10 +332,10 @@ class OrganizationCreate extends React.Component {
 
                             <div className="flex-row">
                                 <label htmlFor="zip" className="label">
-                                    {this.context.t('my.network.organization.zip')}
+                                    {this.context.t('my.network.organization.zip')} *
                                 </label>
 
-                                <input id="zip" name="zip" type="text" maxLength={6}
+                                <input id="zip" name="zip" type="text" maxLength={6} required={true}
                                        value={organization.zip} className="form-control field"
                                        onChange={this.handleOrganizationChange} />
                             </div>
@@ -379,7 +380,11 @@ class OrganizationCreate extends React.Component {
                         </fieldset>
                     }
 
-                    <input type="submit" value="Send" />
+
+                    {
+                        countrySelected &&
+                        <input type="submit" value="Send" className="submit btn"/>
+                    }
                 </form>
 
             </section>

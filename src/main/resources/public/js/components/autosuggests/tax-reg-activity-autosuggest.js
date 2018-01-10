@@ -14,12 +14,14 @@ class TaxRegActivityAutosuggest extends React.Component {
         placeholder: PropTypes.string,
         countryUri: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
-        onTaxRegActivitySelected: PropTypes.func.isRequired
+        onTaxRegActivitySelected: PropTypes.func.isRequired,
+        required: PropTypes.bool
     };
 
     static defaultProps = {
         value: '',
-        placeholder: ''
+        placeholder: '',
+        required: false
     };
 
 
@@ -95,7 +97,8 @@ class TaxRegActivityAutosuggest extends React.Component {
             onChange: this.props.onChange,
             type: 'search',
             placeholder: this.props.placeholder || TaxRegActivityAutosuggest.defaultProps.placeholder,
-            className: `form-control ${this.props.className}`
+            className: `form-control ${this.props.className}`,
+            required: this.props.required
         };
 
         return <Autosuggest suggestions={this.state.suggestions}

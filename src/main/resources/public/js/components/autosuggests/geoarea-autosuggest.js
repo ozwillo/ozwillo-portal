@@ -19,12 +19,14 @@ class GeoAreaAutosuggest extends Component {
         value: PropTypes.string,
         countryUri: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
-        onGeoAreaSelected: PropTypes.func.isRequired
+        onGeoAreaSelected: PropTypes.func.isRequired,
+        required: PropTypes.bool
     };
 
     static defaultProps = {
         value: '',
-        placeholder: ''
+        placeholder: '',
+        required: false
     };
 
     state = {
@@ -71,7 +73,8 @@ class GeoAreaAutosuggest extends Component {
             onChange: this.props.onChange,
             type: 'search',
             placeholder: this.props.placeholder || GeoAreaAutosuggest.defaultProps.placeholder,
-            className: `form-control ${this.props.className}`
+            className: `form-control ${this.props.className}`,
+            required: this.props.required
         };
 
         return <Autosuggest suggestions={this.state.suggestions}
