@@ -89,6 +89,10 @@ class OrganizationForm extends React.Component {
         };
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({ organization: nextProps.organization});
+    }
+
     onSubmit(e) {
         e.preventDefault();
         this.props.onSubmit(this.state.organization);

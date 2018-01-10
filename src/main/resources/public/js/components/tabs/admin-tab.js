@@ -3,6 +3,11 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 
+//Components
+import OrganizationForm from '../forms/organization-form';
+
+//actions
+import { fetchCountries } from "../../actions/config";
 
 class AdminTabHeader extends React.Component {
 
@@ -28,52 +33,48 @@ class AdminTab extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            isLoading: false
+        };
+
         //bind methods
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    onSubmit(e) {
-        e.preventDefault();
-        console.log('onSubmit !');
+    componentDidMount() {
+        this.props.fetchCountries();
+    }
+
+    onSubmit(organization) {
+        console.log('submit ', organization);
     }
 
     render() {
         return <article className="admin-tab">
-            <header>Admin</header>
-            <form onSubmit={this.onSubmit} className="form flex-col">
-                <div className="row">
-                    <label className="label">
-                        Firstname :
-                        <input name="fistname" type="text" placeholder="firstname" className="field"/>
-                    </label>
-                </div>
-
-                <div className="row">
-                    <label className="label">
-                        Lastname :
-                        <input name="lastname" type="text" placeholder="lastname" className="field"/>
-                    </label>
-                </div>
-
-                <div className="row">
-                    <label className="label">
-                        Email :
-                        <input name="email" type="email" placeholder="email" className="field"/>
-                    </label>
-                </div>
-
-                <input type="submit" value="Send" className="btn oz-btn-save"/>
-            </form>
+            <OrganizationForm onSubmit={this.onSubmit} countries={this.props.countries}
+                              isLoading={this.state.isLoading}
+                              organization={this.state.organization}/>
         </article>;
     }
 }
 
 const mapStateToProps = state => {
     return {
-        services: state.organization.current.services
+
+        countries: state.config.countries,
+        organization: state.organization.current
     };
 };
-const AdminTabWithRedux = connect(mapStateToProps)(AdminTab);
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchCountries() {
+            return dispatch(fetchCountries());
+        }
+    };
+};
+
+const AdminTabWithRedux = connect(mapStateToProps, mapDispatchToProps)(AdminTab);
 
 
 export {
