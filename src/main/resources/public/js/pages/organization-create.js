@@ -371,42 +371,11 @@ class OrganizationCreate extends React.Component {
 
                     {
                         countrySelected &&
-                        <fieldset className="oz-fieldset">
-                            <legend className="oz-legend">Update your profile</legend>
 
-                            <div className="flex-row">
-                                <label htmlFor="contact_lastname" className="label">
-                                    {this.context.t('my.network.organization.contact_lastname')}
-                                </label>
-
-                                <input id="contact_lastname" name="contact_lastname" type="text"
-                                       value={this.state.contact_lastname} className="form-control field"
-                                       onChange={this.handleUserChange} />
-                            </div>
-
-                            <div className="flex-row">
-                                <label htmlFor="contact_name" className="label">
-                                    {this.context.t('my.network.organization.contact_name')}
-                                </label>
-
-                                <input id="contact_name" name="contact_name" type="text"
-                                       value={this.state.contact_name} className="form-control field"
-                                       onChange={this.handleUserChange} />
-                            </div>
-                        </fieldset>
-                    }
-
-
-                    {
-                        countrySelected && !this.state.loading &&
-                        <input type="submit" value="Send" className="submit btn"/>
-                    }
-
-                    {
-                        countrySelected && this.state.loading &&
+                        (( !this.state.loading && <input type="submit" value="Send" className="submit btn"/> ) ||
                         <button type="button" className="submit btn icon">
                             <i className="fa fa-spinner fa-spin" />
-                        </button>
+                        </button>)
                     }
                 </form>
 
