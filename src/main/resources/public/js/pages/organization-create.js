@@ -170,7 +170,7 @@ class OrganizationCreate extends React.Component {
                             countrySelected &&
                             <div className="flex-row">
                                 <label htmlFor="legal_name" className="label">{this.context.t('my.network.organization.legal_name')} *</label>
-                                <LegalNameAutosuggest name="legal_name" className="field" required={true}
+                                <LegalNameAutosuggest name="legal_name" required={true}
                                                       onChange={this.handleOrganizationChange}
                                                       countryUri={countrySelected.uri}
                                                       onOrganizationSelected={this.onOrganizationSelected}
@@ -246,7 +246,7 @@ class OrganizationCreate extends React.Component {
                             <div className="flex-row">
                                 <label className="label">{taxLabels.taxRegActivity}</label>
 
-                                <TaxRegActivityAutosuggest name="tax_reg_activity" className="field"
+                                <TaxRegActivityAutosuggest name="tax_reg_activity"
                                                            onChange={this.handleOrganizationChange}
                                                            onTaxRegActivitySelected={this.handleTaxRegActivityChange}
                                                            countryUri={countrySelected.uri}
@@ -270,7 +270,7 @@ class OrganizationCreate extends React.Component {
                                 <label name="jurisdiction" className="label">{this.context.t('my.network.organization.jurisdiction')} *</label>
 
                                 <GeoAreaAutosuggest name="jurisdiction" required={true}
-                                                    value={organization.jurisdiction}className="field"
+                                                    value={organization.jurisdiction}
                                                     onChange={this.handleOrganizationChange}
                                                     onGeoAreaSelected={this.handleJurisdictionChange}
                                                     endpoint="/geographicalAreas"
@@ -338,7 +338,7 @@ class OrganizationCreate extends React.Component {
                                     {this.context.t('my.network.organization.city')} *
                                 </label>
 
-                                <GeoAreaAutosuggest name="city" className="field" required={true}
+                                <GeoAreaAutosuggest name="city" required={true}
                                                     countryUri={countrySelected.uri}
                                                     endpoint="/dc-cities"
                                                     onChange={this.handleOrganizationChange}

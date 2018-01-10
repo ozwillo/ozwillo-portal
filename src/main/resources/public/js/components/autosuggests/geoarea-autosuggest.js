@@ -77,14 +77,15 @@ class GeoAreaAutosuggest extends Component {
             required: this.props.required
         };
 
-        return <Autosuggest suggestions={this.state.suggestions}
-                     onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                     onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                     onSuggestionSelected={this.onSuggestionSelected}
-                     getSuggestionValue={this.getSuggestionValue}
-                     renderSuggestion={renderSuggestion}
-                     inputProps={inputProps}
-                     shouldRenderSuggestions={this.shouldRenderSuggestions}/>
+        return <Autosuggest
+                    suggestions={this.state.suggestions}
+                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                    onSuggestionSelected={this.onSuggestionSelected}
+                    getSuggestionValue={this.getSuggestionValue}
+                    renderSuggestion={renderSuggestion}
+                    inputProps={inputProps}
+                    shouldRenderSuggestions={this.shouldRenderSuggestions}/>
     }
 }
 

@@ -101,14 +101,15 @@ class TaxRegActivityAutosuggest extends React.Component {
             required: this.props.required
         };
 
-        return <Autosuggest suggestions={this.state.suggestions}
-                         onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                         onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                         onSuggestionSelected={this.onSuggestionSelected}
-                         renderSuggestion={this.renderSuggestion}
-                         getSuggestionValue={this.getSuggestionValue}
-                         inputProps={inputProps}
-                         shouldRenderSuggestions={this.shouldRenderSuggestions}/>
+        return <Autosuggest
+                        suggestions={this.state.suggestions}
+                        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+                        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+                        onSuggestionSelected={this.onSuggestionSelected}
+                        renderSuggestion={this.renderSuggestion}
+                        getSuggestionValue={this.getSuggestionValue}
+                        inputProps={inputProps}
+                        shouldRenderSuggestions={this.shouldRenderSuggestions}/>
     }
 }
 
