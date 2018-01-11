@@ -16,6 +16,11 @@ body {
     width: 100%;
 }
 
+.row {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
 .flex-row {
     display: flex;
     flex-direction: row;
@@ -526,6 +531,12 @@ ul.react-autosuggest__suggestions-list li p {
 #profile form a.change-password {
     text-decoration: underline;
     color: #add8e6;
+}
+
+#profile .btn {
+    color: white;
+    margin: auto;
+    width: 100%;
 }
 
 #legal {

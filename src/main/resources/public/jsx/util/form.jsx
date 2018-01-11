@@ -82,10 +82,8 @@ Select.defaultProps = {
 }
 
 const SubmitButton = ({ label, className }) =>
-    <div className="form-group">
-        <div className="col-sm-9 col-sm-offset-3">
-            <button type="submit" className={className + ' btn oz-btn-save'}>{label}</button>
-        </div>
+    <div className="form-group flex-row">
+        <button type="submit" className={className + ' btn oz-btn-save'}>{label}</button>
     </div>
 
 SubmitButton.propTypes = {

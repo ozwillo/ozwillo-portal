@@ -79,8 +79,8 @@ class Profile extends React.Component {
     render() {
         const userProfile = this.state.userProfile;
         return (
-            <div>
-                <Form id="account" onSubmit={this.onSubmit.bind(this)}>
+            <div id="account">
+                <Form onSubmit={this.onSubmit.bind(this)}>
                     {renderIf(this.state.updateSucceeded) (
                         <div className="alert alert-success" role="alert">
                             <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
@@ -94,7 +94,11 @@ class Profile extends React.Component {
                                      onValueChange={this.onValueChange.bind(this)} />
                     <AddressAccount address={userProfile.address}
                                     onValueChange={this.onValueChange.bind(this)} />
-                    <SubmitButton label={t('ui.save')} className="btn-lg" />
+                    {/*<SubmitButton label={t('ui.save')} className="btn-lg" />*/}
+
+                    <div className="row flex-row">
+                        <input type="submit" className="btn-lg btn oz-btn-save" value={t('ui.save')}/>
+                    </div>
                 </Form>
 
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} passwordExist={!!userProfile.email_verified} />
@@ -242,18 +246,14 @@ class PasswordAccount extends React.Component {
     render() {
         return (
             <div className="row">
-                <div className="col-sm-12">
+                <header>
                     <h2>{t('my.profile.account.password')}</h2>
-                </div>
-                <div className="col-sm-12">
-                    <div className="form-group">
-                        <div className="flex-row middle">
-                            <a className="change-password btn btn-lg btn-warning" href={this.props.passwordChangeEndpoint}>
-                                { this.props.passwordExist && t('my.profile.account.changepassword')}
-                                { !this.props.passwordExist && t('my.profile.account.createpassword')}
-                            </a>
-                        </div>
-                    </div>
+                </header>
+                <div className="flex-row middle">
+                    <a className="change-password btn btn-lg btn-warning" href={this.props.passwordChangeEndpoint}>
+                        { this.props.passwordExist && t('my.profile.account.changepassword')}
+                        { !this.props.passwordExist && t('my.profile.account.createpassword')}
+                    </a>
                 </div>
             </div>
         )

@@ -19,14 +19,14 @@ class FranceConnectBtn extends React.Component {
         return <form id="FranceConnectButton"
                      method="post" action={this.props.linkFranceConnectEndpoint}
                      className="form-horizontal">
-            <div>
+            <header>
                 <h2>France Connect</h2>
-            </div>
-            <div className="flex-row middle">
+            </header>
+            <fieldset className="flex-row middle">
                 {
                     userProfile.franceconnect_sub && userProfile.email_verified &&
                    <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-lg oz-btn-danger">
-                       {t("franceconnect.form.unlink")}
+                       {t('franceconnect.form.unlink')}
                    </a>
 
                 }
@@ -34,19 +34,18 @@ class FranceConnectBtn extends React.Component {
                 {
                     userProfile.franceconnect_sub && !userProfile.email_verified &&
                     <a href={this.props.passwordChangeEndpoint} className="btn btn-lg btn-warning">
-                        {t("franceconnect.form.unlink-without-pwd")}
+                        {t('franceconnect.form.unlink-without-pwd')}
                     </a>
                 }
 
                 {
                     !userProfile.franceconnect_sub && userProfile.email_verified &&
                     <fieldset>
-                        <input type="hidden" name="continue"
-                               value={`${window.location.origin}/my/profile/franceconnect`}/>
-                        <SubmitButton label={t("franceconnect.form.link")} className="btn btn-lg btn-warning"/>
+                        <input type="hidden" name="continue" value={`${window.location.origin}/my/profile/franceconnect`}/>
+                        <input type="submit" className="btn btn-lg btn-warning" value={t('franceconnect.form.link')}/>
                     </fieldset>
                 }
-            </div>
+            </fieldset>
         </form>;
     }
 }
