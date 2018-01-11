@@ -4,6 +4,7 @@ import React from "react";
 import ReactDOM from "react-dom";
 import "../csrf";
 import "../my";
+import '../util/string-plugin';
 import t from "../util/message";
 
 
@@ -117,17 +118,38 @@ class LinkFCProfile extends React.Component {
                         Object.keys(this.state.franceConnectProfile).map((item) => {
                             return <fieldset key={item}>
                                 <legend>{t(languageData[item])}</legend>
-                                <div className="row">
-                                    <label className="item">
-                                        <input id={item} type="radio" name={item} value={userProfile[item]}/>
-                                        {userProfile[item]}
-                                    </label>
+                                {
+                                    /* Field exist in Ozwillo account */
+                                    userProfile[item] &&
+                                    <div className="row">
+                                        <label className="item">
+                                            <input id={item} type="radio" name={item} value={userProfile[item]}/>
+                                            {userProfile[item]}
+                                        </label>
 
-                                    <label className="item">
-                                        <input id={item} type="radio" name={item} value={franceConnectProfile[item]}/>
-                                        {franceConnectProfile[item]}
-                                    </label>
-                                </div>
+                                        <label className="item">
+                                            <input id={item} type="radio" name={item} value={franceConnectProfile[item]}/>
+                                            {franceConnectProfile[item]}
+                                        </label>
+                                    </div>
+                                }
+
+                                {
+                                    /* Field not exist in Ozwillo account */
+                                    !userProfile[item] &&
+                                    <div className="row">
+                                        <label className="item no-value">
+                                            <p className="line">{t('franceconnect.form.field-not-inform').format(t(languageData[item]))}</p>
+                                            <p className="line">{t('franceconnect.form.ask-update-field').format(t(languageData[item]))}</p>
+                                        </label>
+
+                                        <label className="item">
+                                            <input id={item} type="checkbox" name={item} value={franceConnectProfile[item]}/>
+                                            {franceConnectProfile[item]}
+                                        </label>
+                                    </div>
+                                }
+
                             </fieldset>
                         })
                     }
