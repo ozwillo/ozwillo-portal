@@ -503,16 +503,16 @@ public class DCOrganizationService {
                 if (obj instanceof Map) {
                     Map<String, String> nameMap = (Map<String, String>) obj;
                     logger.debug("nameMap: " + nameMap.toString());
-                    String l = nameMap.get("@language"); // TODO Q why ?? @language only in application/json+ld, otherwise l
+                    String l = nameMap.get("l") != null ? nameMap.get("l") : nameMap.get("@language");
                     if (l == null) {
                         continue; /* shouldn't happen */
                     }
                     if (l.equalsIgnoreCase(language)) {
-                        String val = nameMap.get("@value");
-                        return val == null || val.isEmpty() ? null : nameMap.get("@value"); //break; // can't find better
+                        String val = nameMap.get("v") != null ? nameMap.get("v") : nameMap.get("@value");
+                        return val == null || val.isEmpty() ? null : val; //break; // can't find better
                     }
                     if (valueMap == null) { // takes the last valid match
-                        valueMap = nameMap.get("@value"); // TODO Q why ?? @value only in application/json+ld, otherwise v
+                        valueMap = nameMap.get("v") != null ? nameMap.get("v") : nameMap.get("@value");
                     }
                 } else {
                     valueMap = object.toString();
