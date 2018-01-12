@@ -536,7 +536,10 @@ ul.react-autosuggest__suggestions-list li p {
 #profile .btn {
     color: white;
     margin: auto;
-    width: 100%;
+    width: 30%;
+    font-size: 1em;
+    min-width: 200px;
+    white-space: normal;
 }
 
 #legal {

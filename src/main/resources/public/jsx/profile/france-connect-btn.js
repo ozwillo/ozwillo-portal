@@ -25,7 +25,7 @@ class FranceConnectBtn extends React.Component {
             <fieldset className="flex-row middle">
                 {
                     userProfile.franceconnect_sub && userProfile.email_verified &&
-                   <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-lg oz-btn-danger">
+                   <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-lg btn-warning">
                        {t('franceconnect.form.unlink')}
                    </a>
 
@@ -40,10 +40,10 @@ class FranceConnectBtn extends React.Component {
 
                 {
                     !userProfile.franceconnect_sub && userProfile.email_verified &&
-                    <fieldset>
-                        <input type="hidden" name="continue" value={`${window.location.origin}/my/profile/franceconnect`}/>
+                    [
+                        <input type="hidden" name="continue" value={`${window.location.origin}/my/profile/franceconnect`}/>,
                         <input type="submit" className="btn btn-lg btn-warning" value={t('franceconnect.form.link')}/>
-                    </fieldset>
+                    ]
                 }
             </fieldset>
         </form>;
