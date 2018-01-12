@@ -140,7 +140,7 @@ class LinkFCProfile extends React.Component {
                                     <div className="row">
                                         <label className="item no-value">
                                             <p className="line">{t('franceconnect.form.field-not-inform').format(t(languageData[item]))}</p>
-                                            <p className="line">{t('franceconnect.form.ask-update-field').format(t(languageData[item]))}</p>
+                                            <p className="line">{t('franceconnect.form.ask-update-field')}</p>
                                         </label>
 
                                         <label className="item">
