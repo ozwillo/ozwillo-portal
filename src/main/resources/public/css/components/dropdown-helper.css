@@ -58,7 +58,7 @@
 
 .dropdown-content .vertical-sep {
     min-width: 1px;
-    height: 100%;
+    height: auto;
     margin: 0 10px;
     background-color: #6f438e;
 }

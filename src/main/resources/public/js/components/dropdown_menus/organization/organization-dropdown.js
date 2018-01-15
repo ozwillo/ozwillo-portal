@@ -21,40 +21,31 @@ class OrganizationDropdown extends React.Component {
 
         return <DropdownMenu header={Header} isOpen={true}>
             <section className='dropdown-content flex-row end'>
-                <div className='container flex-row'>
+                <section className="apps">
+                    <ul className="list undecorated-list flex-row">
+                        {
+                            organization.instances &&
+                            organization.instances.map((instance) => {
+                                return instance.services && instance.services.map(
+                                    (service) => {
+                                        return <li key={service.service.id} className="app">
+                                            <Service service={service} className="launcher"/>
+                                        </li>;
+                                    });
+                            })
+                        }
+                    </ul>
+                </section>
 
-                    <section className="apps" key="1">
-                        <ul className="list undecorated-list flex-row">
-                            {
-                                organization.instances &&
-                                organization.instances.map((instance) => {
-                                    return instance.services && instance.services.map(
-                                        (service) => {
-                                            return <li key={service.service.id} className="app">
-                                                <Service service={service} className="launcher"/>
-                                            </li>;
-                                        });
-                                })
-                            }
-                        </ul>
-                    </section>
+                {
+                    organization.instances &&
+                    (organization.instances.length || null) &&
+                    <div className="vertical-sep"/>
+                }
 
-                    {
-                        organization.instances &&
-                        (organization.instances.length || null) &&
-                        <div className="vertical-sep" key="2"/>
-                    }
-
-                    <section className="invitation">
-                        <OrganizationInvitationForm organization={organization}/>
-                    </section>
-                </div>
-
-                <div className='container flex-row end'>
-                    <Link to={`/my/organization/${organization.id}/services`} className="link">
-                        <em>Display more</em>
-                    </Link>
-                </div>
+                <section className="invitation">
+                    <OrganizationInvitationForm organization={organization}/>
+                </section>
             </section>
         </DropdownMenu>
 
