@@ -5,7 +5,8 @@
 .btn.icon,
 .btn.icon:hover,
 .btn.icon:active,
-.btn.icon:focus {
+.btn.icon:focus,
+.btn.icon[disabled] {
     background-color: transparent;
     border: none;
     outline: 0 !important;

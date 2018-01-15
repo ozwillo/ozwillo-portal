@@ -13,8 +13,9 @@
 }
 
 .add-member .label,
-.add-member .action-icon {
-    color: white;
+.add-member .action-icon,
+.add-member .legend {
+    color: white !important;
 }
 
 .members-tab .search-member .members-list > .member {

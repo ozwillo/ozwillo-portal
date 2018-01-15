@@ -32,11 +32,18 @@ export default (url, params = { headers: {} }) => {
 
             return res;
         })
-        .then((res) => res.json())
+        //Manage error
         .catch((err) => {
             console.error(err);
             throw Error(err);
-        });
+        })
+        //Parse to json
+        .then((res) => {
+            return res.json()
+                .catch((err) => {
+                    console.debug('Error to parse result in JSON: ', err);
+                })
+        })
 }
 
 export const urlBuilder = (url, params) => {

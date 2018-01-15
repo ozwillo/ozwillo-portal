@@ -58,6 +58,7 @@
 
 .dropdown-content .invitation {
     width: 100%;
+    margin: auto 0;
 }
 
 .dropdown-content .invitation .organization-invitation-form .label {

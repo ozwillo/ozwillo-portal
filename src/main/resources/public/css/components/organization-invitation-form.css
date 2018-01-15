@@ -5,6 +5,13 @@
     color: #6f438e;
 }
 
+.organization-invitation-form .legend {
+    border: none;
+    font-size: 0.9em;
+    margin-bottom: 0;
+    color: #6f438e;
+}
+
 .organization-invitation-form .label {
     width: 100%;
     text-align: left;
@@ -14,10 +21,14 @@
 }
 
 .organization-invitation-form .field {
+    display: inline;
+    width: 230px;
+    height: auto;
+    padding: 2px 5px;
     margin: 0 5px;
 }
 
-.organization-invitation-form .action-icon {
+.organization-invitation-form .options .action-icon {
     font-size: 1.2em;
     color: #6f438e;
 }
