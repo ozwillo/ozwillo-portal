@@ -3,11 +3,13 @@ package org.oasis_eu.portal.model.network;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.Instant;
+import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
+import java.util.List;
 
 /**
  * User: schambon
@@ -65,6 +67,8 @@ public class UIOrganization {
      */
     @JsonProperty("status_change_requester_label")
     String statusChangeRequesterLabel;
+
+    List<MyAppsInstance> instances;
 
     @JsonProperty
     boolean admin;
@@ -163,6 +167,14 @@ public class UIOrganization {
 
     public void setStatusChangeRequesterLabel(String statusChangeRequesterLabel) {
         this.statusChangeRequesterLabel = statusChangeRequesterLabel;
+    }
+
+    public List<MyAppsInstance> getInstances() {
+        return instances;
+    }
+
+    public void setInstances(List<MyAppsInstance> instances) {
+        this.instances = instances;
     }
 
     @Override

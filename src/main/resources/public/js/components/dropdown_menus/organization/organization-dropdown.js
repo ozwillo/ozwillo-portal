@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 //Component
+import Service from '../../service';
 import DropdownMenu from '../../dropdown-menu';
 import OrganizationDropdownHeader from '../../dropdown_menus/organization/organization-dropdown-header'
 import OrganizationInvitationForm from '../../forms/organization-invitation-form';
@@ -21,19 +22,30 @@ class OrganizationDropdown extends React.Component {
         return <DropdownMenu header={Header} isOpen={true}>
             <section className='dropdown-content flex-row end'>
                 <div className='container flex-row'>
-                    <section className="apps">
-                        <ul className="list undecorated-list flex-row">
-                            {
-                                organization.services &&
-                                organization.services.map((service) => {
-                                    return <li key={service.id} className="app">
-                                        {service.name}
-                                    </li>
-                                })
-                            }
-                        </ul>
-                    </section>
-                    <div className="vertical-sep"/>
+
+                    {
+                        organization.instances &&
+                        (organization.instances.length || null) &&
+                        [
+                            <section className="apps">
+                                <ul className="list undecorated-list flex-row">
+                                    {
+                                        organization.instances &&
+                                        organization.instances.map((instance) => {
+                                            return instance.services && instance.services.map(
+                                                (service) => {
+                                                    return <li key={service.id} className="app">
+                                                        <Service service={service} className="launcher"/>
+                                                    </li>;
+                                                });
+                                        })
+                                    }
+                                </ul>
+                            </section>,
+                            <div className="vertical-sep"/>
+                        ]
+                    }
+
                     <section className="invitation">
                         <OrganizationInvitationForm organization={organization}/>
                     </section>

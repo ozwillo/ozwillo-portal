@@ -38,7 +38,7 @@ export const fetchOrganizationWithId = (id) => {
 
 export const fetchUserOrganizations = () => {
     return dispatch => {
-        return customFetch('/my/api/network/organizations.json')
+        return customFetch('/my/api/organization.json')
             .then((organizations) => {
                 dispatch(fetchUserOrganizationsAction(organizations));
             });

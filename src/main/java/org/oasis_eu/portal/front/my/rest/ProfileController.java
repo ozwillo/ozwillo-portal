@@ -1,7 +1,8 @@
-package org.oasis_eu.portal.front.my.services;
+package org.oasis_eu.portal.front.my.rest;
 
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.model.OasisLocales;
+import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
 import org.oasis_eu.portal.model.kernel.UserProfile;
 import org.oasis_eu.portal.model.profile.UIUserProfile;
 import org.oasis_eu.portal.services.FranceConnectService;
@@ -17,7 +18,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/my/api/profile")
-public class ProfileAJAXServices extends BaseAJAXServices {
+public class ProfileController extends BaseAJAXServices {
 
     @Autowired
     private UserInfoService userInfoService;

@@ -52,6 +52,8 @@
 
 .dropdown-content .flex-row.container {
     align-items: center;
+    padding-left: 0;
+    padding-right: 0;
 }
 
 .dropdown-content .vertical-sep {

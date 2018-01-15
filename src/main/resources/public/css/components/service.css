@@ -1,0 +1,10 @@
+
+
+.service {
+    text-align: center;
+    min-width: 80px;
+}
+
+.service .name {
+    color: #6f438e;
+}
