@@ -23,27 +23,26 @@ class OrganizationDropdown extends React.Component {
             <section className='dropdown-content flex-row end'>
                 <div className='container flex-row'>
 
+                    <section className="apps" key="1">
+                        <ul className="list undecorated-list flex-row">
+                            {
+                                organization.instances &&
+                                organization.instances.map((instance) => {
+                                    return instance.services && instance.services.map(
+                                        (service) => {
+                                            return <li key={service.service.id} className="app">
+                                                <Service service={service} className="launcher"/>
+                                            </li>;
+                                        });
+                                })
+                            }
+                        </ul>
+                    </section>
+
                     {
                         organization.instances &&
                         (organization.instances.length || null) &&
-                        [
-                            <section className="apps">
-                                <ul className="list undecorated-list flex-row">
-                                    {
-                                        organization.instances &&
-                                        organization.instances.map((instance) => {
-                                            return instance.services && instance.services.map(
-                                                (service) => {
-                                                    return <li key={service.id} className="app">
-                                                        <Service service={service} className="launcher"/>
-                                                    </li>;
-                                                });
-                                        })
-                                    }
-                                </ul>
-                            </section>,
-                            <div className="vertical-sep"/>
-                        ]
+                        <div className="vertical-sep" key="2"/>
                     }
 
                     <section className="invitation">
