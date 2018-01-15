@@ -22,7 +22,8 @@ class OrganizationSearch extends React.Component {
         this.state = {
             sideMenuIsOpen: false,
             organizationsFilter: '',
-            userOrganizationsFilter: ''
+            userOrganizationsFilter: '',
+            isLoading: true
         };
 
         //bind methods
@@ -32,7 +33,10 @@ class OrganizationSearch extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchUserOrganizations();
+        this.props.fetchUserOrganizations()
+            .then(() => {
+                this.setState({ isLoading: false });
+            });
     }
 
     sideMenuToogle() {
@@ -82,6 +86,7 @@ class OrganizationSearch extends React.Component {
 
                 <ul className="organisations-list undecorated-list">
                 {
+                    !this.state.isLoading &&
                     this.filterOrganizations(userOrganizations, userOrganizationsFilter).map((org) => {
                         return <li key={org.id} className="organization">
                             <OrganizationDropdown organization={org}/>
@@ -89,6 +94,14 @@ class OrganizationSearch extends React.Component {
                     })
                 }
                 </ul>
+
+
+                {
+                    this.state.isLoading &&
+                    <div className="loading-container">
+                        <i className="fa fa-spinner fa-spin loading"/>
+                    </div>
+                }
             </section>
 
 

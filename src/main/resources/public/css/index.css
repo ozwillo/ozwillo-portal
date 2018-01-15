@@ -132,3 +132,12 @@ label.required {
 .text-align-middle {
     padding-top:0.5em;
 }
+
+/* Loading */
+.loading-container {
+    text-align: center;
+}
+
+.loading-container .loading {
+    font-size: 2.5em;
+}
