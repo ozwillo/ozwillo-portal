@@ -159,6 +159,8 @@ class OrganizationForm extends React.Component {
         const countrySelected = this.state.countrySelected;
         const organization = this.state.organization;
         const taxLabels = this.taxLabels;
+        const isPublic = (organization.sector_type === 'Public' || organization.sector_type === 'PUBLIC_BODY');
+        const isPrivate = (organization.sector_type === 'Private' || organization.sector_type === 'COMPANY');
 
         return <form className="oz-form" onSubmit={this.onSubmit}>
             {/*     Organization     */}
@@ -186,7 +188,7 @@ class OrganizationForm extends React.Component {
                         </div>
 
                         <div className="flex-row">
-                            <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum} toto *</label>
+                            <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum} *</label>
                             <input id="tax_reg_num" name="tax_reg_num" type="number" required={true}
                                    className="form-control field" onChange={this.handleOrganizationChange}/>
                         </div>
@@ -199,16 +201,14 @@ class OrganizationForm extends React.Component {
                             <label className="radio-inline field">
                                 <input type="radio" name="sector_type" value="PUBLIC_BODY" required={true}
                                        disabled={this.props.static} onChange={this.handleOrganizationChange}
-                                       checked={organization.sector_type === 'Public' ||
-                                       organization.sector_type === 'PUBLIC_BODY'}/>
+                                       checked={isPublic}/>
                                 {this.context.t('search.organization.sector-type.PUBLIC_BODY')}
                             </label>
 
                             <label className="radio-inline field">
                                 <input type="radio" name="sector_type" value="COMPANY"
                                        disabled={this.props.static} onChange={this.handleOrganizationChange}
-                                       checked={organization.sector_type === 'Private' ||
-                                       organization.sector_type === 'COMPANY'}/>
+                                       checked={isPrivate}/>
                                 {this.context.t('search.organization.sector-type.COMPANY')}
                             </label>
                         </div>
@@ -249,7 +249,7 @@ class OrganizationForm extends React.Component {
                         </div>
 
                         {
-                            organization.sector_type === 'PUBLIC_BODY' &&
+                            isPublic &&
                             <div className="flex-row">
                                 <label htmlFor="tax_reg_official_id" className="label">
                                     {taxLabels.taxRegOfficialId}
@@ -262,9 +262,9 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label name="jurisdiction" className="label">
-                                {this.context.t('my.network.organization.jurisdiction')} *
+                                {this.context.t('my.network.organization.jurisdiction')} { (isPublic && '*') || ''}
                             </label>
-                            <GeoAreaAutosuggest name="jurisdiction" required={true}
+                            <GeoAreaAutosuggest name="jurisdiction" required={isPublic}
                                                 value={organization.jurisdiction}
                                                 onChange={this.handleOrganizationChange}
                                                 onGeoAreaSelected={this.handleJurisdictionChange}
