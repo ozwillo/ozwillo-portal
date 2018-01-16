@@ -20,6 +20,7 @@ class GeoAreaAutosuggest extends Component {
         countryUri: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
         onGeoAreaSelected: PropTypes.func.isRequired,
+        onBlur: PropTypes.func,
         required: PropTypes.bool
     };
 
@@ -71,6 +72,7 @@ class GeoAreaAutosuggest extends Component {
             name: this.props.name,
             value: this.props.value || GeoAreaAutosuggest.defaultProps.value,
             onChange: this.props.onChange,
+            onBlur: this.props.onBlur,
             type: 'search',
             placeholder: this.props.placeholder || GeoAreaAutosuggest.defaultProps.placeholder,
             className: `form-control ${this.props.className}`,

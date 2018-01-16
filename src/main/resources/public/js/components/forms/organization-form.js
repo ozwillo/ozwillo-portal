@@ -64,6 +64,8 @@ class OrganizationForm extends React.Component {
         this.handleJurisdictionChange = this.handleJurisdictionChange.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleOrganizationChange = this.handleOrganizationChange.bind(this);
+        this.verifyTaxRegNum = this.verifyTaxRegNum.bind(this);
+        this.verifyCountry = this.verifyCountry.bind(this);
     }
 
     // TODO: change that !!!!
@@ -155,6 +157,25 @@ class OrganizationForm extends React.Component {
         });
     }
 
+    // Verify fields
+    verifyTaxRegNum(e) {
+        const el = e.currentTarget;
+        if(/^[A-Za-z\d]*$/.test(this.state.organization.tax_reg_num)){
+            el.setCustomValidity('');
+        } else {
+            el.setCustomValidity('The field must contain only letters or numbers without spaces');
+        }
+    }
+
+    verifyCountry(e){
+        const el = e.currentTarget;
+        if(!this.state.organization.countryUri){
+            el.setCustomValidity('You must to select a country.');
+        } else {
+            el.setCustomValidity('');
+        }
+    }
+
     render() {
         const countrySelected = this.state.countrySelected;
         const organization = this.state.organization;
@@ -180,17 +201,17 @@ class OrganizationForm extends React.Component {
                             <label htmlFor="legal_name" className="label">
                                 {this.context.t('my.network.organization.legal_name')} *
                             </label>
-                            <LegalNameAutosuggest name="legal_name" required={true}
+                            <LegalNameAutosuggest name="legal_name" required={true} value={organization.legal_name}
                                                   onChange={this.handleOrganizationChange}
                                                   countryUri={countrySelected.uri}
-                                                  onOrganizationSelected={this.onOrganizationSelected}
-                                                  value={organization.legal_name}/>
+                                                  onOrganizationSelected={this.onOrganizationSelected}/>
                         </div>
 
                         <div className="flex-row">
                             <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum} *</label>
                             <input id="tax_reg_num" name="tax_reg_num" type="text" required={true}
-                                   className="form-control field" onChange={this.handleOrganizationChange}/>
+                                   className="form-control field" onChange={this.handleOrganizationChange}
+                                    onBlur={this.verifyTaxRegNum}/>
                         </div>
 
                         <div className="flex-row">
@@ -325,13 +346,14 @@ class OrganizationForm extends React.Component {
                         <label htmlFor="city" className="label">{this.context.t('my.network.organization.city')} *</label>
                         <GeoAreaAutosuggest name="city" required={true} countryUri={countrySelected.uri}
                                             endpoint="/dc-cities" onChange={this.handleOrganizationChange}
-                                            onGeoAreaSelected={this.handleCityChange} value={organization.city} />
+                                            onGeoAreaSelected={this.handleCityChange} value={organization.city}
+                                            onBlur={this.verifyCountry}/>
                     </div>
 
                     <div className="flex-row">
                         <label htmlFor="zip" className="label">{this.context.t('my.network.organization.zip')} *</label>
                         <input id="zip" name="zip" type="text" maxLength={6} required={true} className="form-control field"
-                               value={organization.zip} onChange={this.handleOrganizationChange} />
+                               value={organization.zip} onChange={this.handleOrganizationChange} disabled={true}/>
                     </div>
 
                     <div className="flex-row">
