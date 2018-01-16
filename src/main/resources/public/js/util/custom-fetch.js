@@ -7,6 +7,18 @@
 *   - Insert in the request header a csrf field
 */
 
+const buildError = (res) => {
+    return res.text()
+        .then((message) => {
+            const err = {
+                error: message,
+                status: res.status
+            };
+            console.error(err)
+            throw err;
+        });
+};
+
 export default (url, params = { headers: {} }) => {
     if(!params.headers) {
         params.headers = {};
@@ -27,18 +39,13 @@ export default (url, params = { headers: {} }) => {
     return fetch(url, params)
         .then((res) => {
             if(!res.ok) {
-                throw new Error(res.error);
+                throw res;
             }
 
             return res;
         })
-        //Manage error
-        .catch((err) => {
-            console.error(err);
-            throw Error(err);
-        })
-        //Parse to json
-        .then((res) => {
+        .catch(buildError)
+        .then((res) => { //Parse to json
             return res.json()
                 .catch((err) => {
                     console.debug('Error to parse result in JSON: ', err);
