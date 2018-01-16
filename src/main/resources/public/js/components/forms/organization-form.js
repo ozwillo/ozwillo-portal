@@ -189,7 +189,7 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="tax_reg_num" className="label">{taxLabels.taxRegNum} *</label>
-                            <input id="tax_reg_num" name="tax_reg_num" type="number" required={true}
+                            <input id="tax_reg_num" name="tax_reg_num" type="text" required={true}
                                    className="form-control field" onChange={this.handleOrganizationChange}/>
                         </div>
 

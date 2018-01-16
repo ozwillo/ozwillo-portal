@@ -20,6 +20,11 @@
     width: 100%;
 }
 
+.oz-form .flex-row  .field.radio-inline,
+.oz-form .flex-row .field[type="checkbox"] {
+    width: auto;
+}
+
 .oz-form .flex-row .label,
 .oz-form .flex-row .react-autosuggest__container,
 .oz-form .flex-row .field {
