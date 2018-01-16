@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.front.generic;
 
+import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.oasis_eu.spring.kernel.exception.AuthenticationRequiredException;
 import org.oasis_eu.spring.kernel.exception.EntityNotFoundException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
@@ -7,6 +8,7 @@ import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -35,13 +37,12 @@ public abstract class BaseAJAXServices {
     // was used in MyAppsAJAXServices
     @ExceptionHandler(AccessDeniedException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public void accessDenied() {
-    }
+    public void accessDenied() { }
 
     //was used in  DashBoardAJAXServices
     @ExceptionHandler(AuthenticationRequiredException.class)
     @ResponseStatus(HttpStatus.UNAUTHORIZED)
-    public void hande401(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    public void hande401(HttpServletRequest request, HttpServletResponse response) {
         HttpSession session = request.getSession(false);
         if (session != null) {
             session.invalidate();
@@ -50,9 +51,8 @@ public abstract class BaseAJAXServices {
 
     // was used in NetworkAJAXSQervices
     @ExceptionHandler(WrongQueryException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public String handle400(HttpServletRequest request, WrongQueryException wqex) throws IOException {
+    public ResponseEntity<String> handle400(HttpServletRequest request, WrongQueryException wqex) {
         // public String handle400(HttpServletResponse httpRes,
         // WrongQueryException wqex) throws IOException {
         if (wqex.getTranslatedBusinessMessage() == null || wqex.getTranslatedBusinessMessage().isEmpty()) {
@@ -60,37 +60,40 @@ public abstract class BaseAJAXServices {
             String translatedBusinessMessage = getErrorMessage("action-cant-be-done", request);
             wqex.setTranslatedBusinessMessage(translatedBusinessMessage);
         }
-        return wqex.getTranslatedBusinessMessage();
+
+        return ResponseEntity
+                .status(HttpStatus.valueOf(wqex.getStatusCode()))
+                .body(wqex.getTranslatedBusinessMessage());
     }
 
     // new
     @ExceptionHandler(EntityNotFoundException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public String handle404(HttpServletRequest request, EntityNotFoundException enfex) throws IOException {
+    public ResponseEntity<String> handle404(HttpServletRequest request, EntityNotFoundException enfex) {
         if (enfex.getTranslatedBusinessMessage() == null || enfex.getTranslatedBusinessMessage().isEmpty()) {
             String translatedBusinessMessage = getErrorMessage("not-found", request);
             enfex.setTranslatedBusinessMessage(translatedBusinessMessage);
         }
-        return enfex.getTranslatedBusinessMessage();
+        return ResponseEntity
+                .status(HttpStatus.valueOf(enfex.getStatusCode()))
+                .body(enfex.getTranslatedBusinessMessage());
     }
 
     @ExceptionHandler(ForbiddenException.class)
-    @ResponseStatus(HttpStatus.FORBIDDEN)
     @ResponseBody
-    public String handle403(HttpServletRequest request, ForbiddenException fex) throws IOException {
+    public ResponseEntity<String>  handle403(HttpServletRequest request, ForbiddenException fex) {
         if (fex.getTranslatedBusinessMessage() == null || fex.getTranslatedBusinessMessage().isEmpty()) {
             String translatedBusinessMessage = getErrorMessage("action-forbidden", request);
             fex.setTranslatedBusinessMessage(translatedBusinessMessage);
         }
-        return fex.getTranslatedBusinessMessage();
+        return ResponseEntity
+                .status(HttpStatus.valueOf(fex.getStatusCode()))
+                .body(fex.getTranslatedBusinessMessage());
     }
 
     // was used in StoreAJAXServices
     @ExceptionHandler(IllegalArgumentException.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR) // rather than 400, because is developer error
-    public void handle500() {
-    }
-
+    public void handle500() { }
 
 }
