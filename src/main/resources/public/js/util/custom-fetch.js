@@ -14,7 +14,7 @@ const buildError = (res) => {
                 error: message,
                 status: res.status
             };
-            console.error(err)
+            console.error(err);
             throw err;
         });
 };

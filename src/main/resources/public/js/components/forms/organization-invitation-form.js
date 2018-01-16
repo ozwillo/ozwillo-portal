@@ -14,7 +14,8 @@ class OrganizationInvitationForm extends React.Component {
 
         this.state = {
             email: '',
-            isLoading: false
+            isLoading: false,
+            error: ''
         };
 
         //bind methods
@@ -35,13 +36,18 @@ class OrganizationInvitationForm extends React.Component {
         this.setState({ isLoading: true });
         sendInvitationToJoinOrganization(this.state.email, this.props.organization.id)
             .then(() => {
-                console.log('coucou');
                 this.setState({
                     email: '',
-                    isLoading: false
+                    isLoading: false,
+                    error: ''
                 });
             })
-            .catch(() => { this.setState({ isLoading: false }); });
+            .catch((err) => {
+                this.setState({
+                    isLoading: false,
+                    error: err.error
+                });
+            });
     }
 
     render() {
@@ -69,6 +75,9 @@ class OrganizationInvitationForm extends React.Component {
                             }
                         </button>
                     </div>
+                </div>
+                <div className="error">
+                    <span>{this.state.error}</span>
                 </div>
             </fieldset>
         </form>;
