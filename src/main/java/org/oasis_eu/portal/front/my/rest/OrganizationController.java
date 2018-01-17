@@ -6,12 +6,12 @@ import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.front.my.services.MyAppsAJAXServices;
-import org.oasis_eu.portal.front.my.services.NetworkAJAXServices;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.network.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
+import org.oasis_eu.portal.services.dc.organization.DCOrganization;
 import org.oasis_eu.portal.services.dc.organization.OrganizationService;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
@@ -25,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,7 +43,7 @@ class OrganizationController extends BaseAJAXServices {
     private PortalAppManagementService appManagementService;
 
     @Autowired
-    private ImageService imageService;
+    private OrganizationService organizationService;
 
     @Autowired
     private NetworkService networkService;
@@ -52,8 +51,11 @@ class OrganizationController extends BaseAJAXServices {
     @Autowired
     private HttpServletRequest request;
 
+    @Autowired
+    private ImageService imageService;
+
     @RequestMapping(value = "", method = GET)
-    public List<UIOrganization>  organizations() {
+    public List<UIOrganization> organizations() {
 
         List<Authority> authorities = networkService.getMyAuthorities(true).stream()
                 .filter(Authority::isAdmin)
@@ -62,14 +64,17 @@ class OrganizationController extends BaseAJAXServices {
         List<UIOrganization> orgs = new ArrayList<>();
 
         for(Authority a : authorities) {
-            String authorityId = a.getId();
-
             List<MyAppsInstance> myInstances = appManagementService.getMyInstances(
                     networkService.getAuthority(a.getType().toString(), a.getId()), true);
             orgs.add(transformToUIOrganization(a, myInstances));
         }
 
         return orgs;
+    }
+
+    @RequestMapping(value = "", method = POST)
+    public UIOrganization createOrganization(@RequestBody DCOrganization dcOrganization) {
+        return organizationService.create(dcOrganization);
     }
 
     private UIOrganization transformToUIOrganization(Authority authority, List<MyAppsInstance> myInstances) {
@@ -101,7 +106,6 @@ class OrganizationController extends BaseAJAXServices {
 
         networkService.invite(invitation.email, organizationId);
     }
-
 
 
     private static class InvitationRequest {

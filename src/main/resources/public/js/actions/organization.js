@@ -47,7 +47,7 @@ export const fetchUserOrganizations = () => {
 
 export const fetchCreateOrganization = (organization) => {
     return dispatch => {
-        return customFetch('/my/api/network/create-dc-organization', {
+        return customFetch('/my/api/organization/', {
             method: 'POST',
             json: organization
         }).then((org) => {
