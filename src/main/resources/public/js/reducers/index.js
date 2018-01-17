@@ -9,6 +9,9 @@ import organization from './organization';
 import service from './service';
 import userInfo from './userInfo';
 
+//Components
+import organizationForm from './components/organization-form';
+
 export default combineReducers({
     config,
     member,
@@ -16,5 +19,8 @@ export default combineReducers({
     organization,
     service,
     userInfo,
-    i18nState
+    i18nState,
+
+    //Components
+    organizationForm
 });

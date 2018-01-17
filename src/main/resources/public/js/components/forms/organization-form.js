@@ -1,11 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { connect } from 'react-redux';
 
 //Component
 import LegalNameAutosuggest from '../autosuggests/legal-name-autosuggest';
 import TaxRegActivityAutosuggest from '../autosuggests/tax-reg-activity-autosuggest';
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
+
+//Actions
+import { updateOrganizationForm, resetOrganizationForm } from "../../actions/components/organization-form";
 
 class OrganizationForm extends React.Component {
 
@@ -15,49 +19,26 @@ class OrganizationForm extends React.Component {
 
     static propTypes = {
         countries: PropTypes.array,
-        organization: PropTypes.object,
         onSubmit: PropTypes.func.isRequired,
         isLoading: PropTypes.bool
     };
 
     static defaultProps = {
         countries: [],
-        isLoading: false,
-        organization: {
-            cedex: '',
-            city: '',
-            city_uri: '',
-            country: '',
-            country_uri: '',
-            email: '',
-            in_activity: false,
-            jurisdiction: '',
-            jurisdiction_uri: '',
-            legal_name: '',
-            phone_number: '',
-            po_box: '',
-            sector_type: '',
-            street_and_number: '',
-            tax_reg_activity: '',
-            tax_reg_activity_uri: '',
-            tax_reg_num: '',
-            web_site: '',
-            zip: '',
-        }
-    }
+        isLoading: false
+    };
 
     constructor(props){
         super(props);
 
         this.state = {
-            countrySelected: null,
-            organization: this.props.organization
+            countrySelected: null
         };
 
         //bind methods
         this.onSubmit = this.onSubmit.bind(this);
         this.onOrganizationSelected = this.onOrganizationSelected.bind(this);
-        this.handleCountriesChange = this.handleCountriesChange.bind(this);
+        this.handleCountryChange = this.handleCountryChange.bind(this);
         this.handleTaxRegActivityChange = this.handleTaxRegActivityChange.bind(this);
         this.handleJurisdictionChange = this.handleJurisdictionChange.bind(this);
         this.handleCityChange = this.handleCityChange.bind(this);
@@ -89,95 +70,71 @@ class OrganizationForm extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({ organization: nextProps.organization});
-    }
-
     onSubmit(e) {
         e.preventDefault();
-        this.props.onSubmit(this.state.organization);
-        debugger;
+        this.props.onSubmit(this.props.organization, e);
     }
 
     onOrganizationSelected(organization) {
-        this.setState({ organization });
+        this.props.updateOrganizationForm(organization);
     }
 
-    handleCountriesChange(country) {
-        this.setState({
-            countrySelected: country,
-            organization: Object.assign({}, this.state.organization,
-                {
-                    country_uri: country.uri,
-                    country: country.name
-                })
+    handleCountryChange(country) {
+        this.setState({ countrySelected: country });
+        this.props.resetOrganizationForm();
+        this.props.updateOrganizationForm({
+            country_uri: country.uri,
+            country: country.name
         });
     }
 
     handleTaxRegActivityChange(taxRegActivity) {
-        this.setState({
-            organization: Object.assign({}, this.state.organization,
-                {
-                    tax_reg_activity_uri: taxRegActivity.uri,
-                    tax_reg_activity: taxRegActivity.name
-                })
+        this.props.updateOrganizationForm({
+            tax_reg_activity_uri: taxRegActivity.uri,
+            tax_reg_activity: taxRegActivity.name
         });
     }
 
     handleJurisdictionChange(jurisdiction) {
-        this.setState({
-            organization: Object.assign({}, this.state.organization,
-                {
-                    jurisdiction_uri: jurisdiction.uri,
-                    jurisdiction: jurisdiction.name
-                })
+        this.props.updateOrganizationForm({
+            jurisdiction_uri: jurisdiction.uri,
+            jurisdiction: jurisdiction.name
         });
     }
 
     handleCityChange(city) {
-        this.setState({
-            organization: Object.assign({}, this.state.organization,
-                {
-                    city_uri: city.uri,
-                    city: city.name,
-                    zip: city.postalCode
-                })
+        this.props.updateOrganizationForm({
+            city_uri: city.uri,
+            city: city.name,
+            zip: city.postalCode
         });
     }
-
 
     handleOrganizationChange (e) {
         const el = e.currentTarget;
         const field = el.name;
         const value = ( el.type === 'checkbox') ?  el.checked : el.value;
 
-        this.setState({
-            organization: Object.assign({}, this.state.organization, { [field]: value })
-        });
+        this.props.updateOrganizationForm({ [field]: value });
     }
 
     // Verify fields
     verifyTaxRegNum(e) {
         const el = e.currentTarget;
-        if(/^[A-Za-z\d]*$/.test(this.state.organization.tax_reg_num)){
-            el.setCustomValidity('');
-        } else {
-            el.setCustomValidity('The field must contain only letters or numbers without spaces');
-        }
+        const msg =(/^[A-Za-z\d]*$/.test(this.props.organization.tax_reg_num))? '' :
+            'The field must contain only letters or numbers without spaces';
+        el.setCustomValidity(msg);
     }
 
     verifyCountry(e){
         const el = e.currentTarget;
-        if(!this.state.organization.country_uri){
-            el.setCustomValidity('You must select a country.');
-        } else {
-            el.setCustomValidity('');
-        }
+        const msg = (!this.props.organization.country_uri)? 'You must select a country.' : '';
+        el.setCustomValidity(msg);
     }
 
     render() {
         const countrySelected = this.state.countrySelected;
-        const organization = this.state.organization;
+        const organization = this.props.organization;
         const taxLabels = this.taxLabels;
         const isPublic = (organization.sector_type === 'Public' || organization.sector_type === 'PUBLIC_BODY');
         const isPrivate = (organization.sector_type === 'Private' || organization.sector_type === 'COMPANY');
@@ -188,7 +145,7 @@ class OrganizationForm extends React.Component {
                 <legend className="oz-legend">Organization</legend>
                 <div className="flex-row">
                     <label htmlFor="country" className="label">{this.context.t('my.network.organization.country')} *</label>
-                    <Select className="select field" value={countrySelected} onChange={this.handleCountriesChange}
+                    <Select className="select field" value={countrySelected} onChange={this.handleCountryChange}
                             options={this.props.countries} clearable={false} valueKey="uri" labelKey="name"
                             placeholder="Country" required={true} />
                 </div>
@@ -378,4 +335,21 @@ class OrganizationForm extends React.Component {
     }
 }
 
-export default OrganizationForm;
+const mapStateToProps = state => {
+    return {
+        organization: state.organizationForm
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        updateOrganizationForm(organization) {
+            return dispatch(updateOrganizationForm(organization));
+        },
+        resetOrganizationForm() {
+            return dispatch(resetOrganizationForm());
+        }
+    }
+};
+
+export default connect(mapStateToProps, mapDispatchToProps) (OrganizationForm);
