@@ -10,3 +10,9 @@
     margin: 10px 0;
 }
 
+.organization-create .error {
+    color: red;
+    text-align: center;
+    font-size: 1.2em;
+}
+

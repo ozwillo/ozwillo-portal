@@ -19,7 +19,8 @@ class OrganizationCreate extends React.Component {
         super(props);
 
         this.state = {
-            isLoading: false
+            isLoading: false,
+            error: ''
         };
 
         //bind methods
@@ -37,8 +38,17 @@ class OrganizationCreate extends React.Component {
             .then(() => {
                 this.props.history.push('/my/organization');
             })
-            .catch(() => {
-                this.setState({ isLoading: false });
+            .catch((err) => {
+                //scroll to top
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+
+                this.setState({
+                    isLoading: false,
+                    error: err.error || 'An error has occurred.\nYour request has not been sent.'
+                });
             });
     }
 
@@ -47,9 +57,12 @@ class OrganizationCreate extends React.Component {
             <header className="header flex-row">
                 <h1 className="title">Create an organization</h1>
             </header>
-            <section>
+            <section className="content">
+                <div className="error">
+                    <span>{this.state.error}</span>
+                </div>
                 <OrganizationForm onSubmit={this.onSubmit} isLoading={this.state.isLoading}
-                    countries={this.props.countries}/>
+                                  countries={this.props.countries}/>
             </section>
         </section>;
     }
