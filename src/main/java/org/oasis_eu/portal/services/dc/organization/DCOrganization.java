@@ -1,7 +1,10 @@
 package org.oasis_eu.portal.services.dc.organization;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
+
+import javax.validation.constraints.NotNull;
 
 
 public class DCOrganization {
@@ -72,11 +75,19 @@ public class DCOrganization {
     @JsonProperty
     private boolean exist = false;
 
-    @JsonProperty
+    /*
+    * defaultValue property that may be used to document expected default value for the property.
+    * https://fasterxml.github.io/jackson-annotations/javadoc/2.6/com/fasterxml/jackson/annotation/JsonProperty.html#defaultValue()
+    */
+    @JsonProperty(defaultValue = "0")
+    @NotNull
+    @NotEmpty
     private String version;
 
 
     public DCOrganization() {
+        // defaultValue
+        this.version = "0";
     }
 
     public String getId() {
