@@ -51,9 +51,7 @@ class OrganizationForm extends React.Component {
 
         this.state = {
             countrySelected: null,
-            organization: this.props.organization,
-            contact_lastname: '',
-            contact_name: ''
+            organization: this.props.organization
         };
 
         //bind methods
@@ -98,6 +96,7 @@ class OrganizationForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
         this.props.onSubmit(this.state.organization);
+        debugger;
     }
 
     onOrganizationSelected(organization) {
@@ -169,8 +168,8 @@ class OrganizationForm extends React.Component {
 
     verifyCountry(e){
         const el = e.currentTarget;
-        if(!this.state.organization.countryUri){
-            el.setCustomValidity('You must to select a country.');
+        if(!this.state.organization.country_uri){
+            el.setCustomValidity('You must select a country.');
         } else {
             el.setCustomValidity('');
         }
@@ -353,7 +352,7 @@ class OrganizationForm extends React.Component {
                     <div className="flex-row">
                         <label htmlFor="zip" className="label">{this.context.t('my.network.organization.zip')} *</label>
                         <input id="zip" name="zip" type="text" maxLength={6} required={true} className="form-control field"
-                               value={organization.zip} onChange={this.handleOrganizationChange} disabled={true}/>
+                               value={organization.zip} onChange={this.handleOrganizationChange} readOnly={true}/>
                     </div>
 
                     <div className="flex-row">
