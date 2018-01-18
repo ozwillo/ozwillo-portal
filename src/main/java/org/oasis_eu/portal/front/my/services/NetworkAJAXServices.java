@@ -2,15 +2,15 @@ package org.oasis_eu.portal.front.my.services;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.oasis_eu.portal.front.generic.BaseAJAXServices;
-import org.oasis_eu.portal.model.network.UIOrganization;
-import org.oasis_eu.portal.model.network.UIOrganizationMember;
-import org.oasis_eu.portal.model.network.UIPendingOrganizationMember;
+import org.oasis_eu.portal.front.generic.BaseController;
+import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.services.NetworkService;
-import org.oasis_eu.portal.services.NetworkService.UserGeneralInfo;
+import org.oasis_eu.portal.services.dc.organization.OrganizationService;
+import org.oasis_eu.portal.ui.UIOrganization;
+import org.oasis_eu.portal.ui.UIOrganizationMember;
+import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
 import org.oasis_eu.portal.services.dc.organization.DCOrganization;
 import org.oasis_eu.portal.services.dc.organization.DCOrganizationService;
-import org.oasis_eu.portal.services.dc.organization.OrganizationService;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
@@ -33,15 +33,15 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 @RequestMapping("/my/api/network")
-public class NetworkAJAXServices extends BaseAJAXServices {
+public class NetworkAJAXServices extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(NetworkAJAXServices.class);
 
     @Autowired
-    private NetworkService networkService;
+    private OrganizationService organizationService;
 
     @Autowired
-    private OrganizationService organizationService;
+    private NetworkService networkService;
 
     @Autowired
     private DCOrganizationService dcOrganizationService;

@@ -1,23 +1,23 @@
 package org.oasis_eu.portal.services;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.model.appsmanagement.Authority;
-import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
-import org.oasis_eu.portal.model.appsmanagement.User;
-import org.oasis_eu.portal.model.network.UIOrganization;
-import org.oasis_eu.portal.model.network.UIOrganizationMember;
-import org.oasis_eu.portal.model.network.UIPendingOrganizationMember;
+import org.oasis_eu.portal.model.authority.Authority;
+import org.oasis_eu.portal.model.authority.AuthorityType;
+import org.oasis_eu.portal.model.user.User;
+import org.oasis_eu.portal.model.user.UserGeneralInfo;
+import org.oasis_eu.portal.ui.UIOrganization;
+import org.oasis_eu.portal.ui.UIOrganizationMember;
+import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
 import org.oasis_eu.portal.services.kernel.UserMembershipService;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.*;
-import org.oasis_eu.portal.model.kernel.OrgMembership;
-import org.oasis_eu.portal.model.kernel.PendingOrgMembership;
-import org.oasis_eu.portal.model.kernel.UserMembership;
+import org.oasis_eu.portal.model.organization.OrgMembership;
+import org.oasis_eu.portal.model.organization.PendingOrgMembership;
+import org.oasis_eu.portal.model.organization.UserMembership;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -201,8 +201,8 @@ public class NetworkService {
         pMembership.setId(pendingOrgMembership.getId());
         pMembership.setEmail(pendingOrgMembership.getEmail());
         pMembership.setAdmin(pendingOrgMembership.isAdmin());
-        pMembership.setPending_membership_etag(pendingOrgMembership.getPending_membership_etag());
-        pMembership.setPending_membership_uri(pendingOrgMembership.getPending_membership_uri());
+        pMembership.setPendingMembershipEtag(pendingOrgMembership.getMembershipEtag());
+        pMembership.setPendingMembershipUri(pendingOrgMembership.getMembershipUri());
 
         return pMembership;
     }
@@ -285,24 +285,6 @@ public class NetworkService {
         UserInfo userInfo = userInfoService.currentUser();
         UserGeneralInfo userGeneralInfo = new UserGeneralInfo(userInfo.getGivenName(), userInfo.getFamilyName(), userInfo.getEmail(), userInfo.getAddress());
         return userGeneralInfo;
-    }
-
-    public class UserGeneralInfo {
-        @JsonProperty
-        String user_name;
-        @JsonProperty
-        String user_email;
-        @JsonProperty
-        String user_lastname;
-        @JsonProperty
-        Address address;
-
-        public UserGeneralInfo(String user_name, String user_lastname, String user_email, Address address) {
-            this.user_name = user_name;
-            this.user_lastname = user_lastname;
-            this.user_email = user_email;
-            this.address = address;
-        }
     }
 
     public List<Authority> getMyAuthorities(boolean includePersonal) {

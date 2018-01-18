@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.core.dao;
 
 import org.oasis_eu.portal.core.model.ace.ACE;
-import org.oasis_eu.portal.model.appsmanagement.User;
+import org.oasis_eu.portal.model.user.User;
 
 import java.util.List;
 

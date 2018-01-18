@@ -2,7 +2,7 @@ package org.oasis_eu.portal.core.dao.impl;
 
 import org.oasis_eu.portal.core.dao.InstanceACLStore;
 import org.oasis_eu.portal.core.model.ace.ACE;
-import org.oasis_eu.portal.model.appsmanagement.User;
+import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -215,7 +215,7 @@ var Instance = createClass({
         
         var instance = this.props.id;
         var services = this.props.instance.services.map(function (service) {
-            return <Service key={service.service.id} service={service} instance={instance} status={applicationInstanceStatus}/>;
+            return <Service key={service.catalogEntry.id} service={service} instance={instance} status={applicationInstanceStatus}/>;
         });
 
         var buttons = [];

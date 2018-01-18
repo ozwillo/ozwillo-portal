@@ -2,15 +2,14 @@ package org.oasis_eu.portal.services.dc.organization;
 
 import com.google.common.base.Strings;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.model.kernel.UserProfile;
-import org.oasis_eu.portal.model.network.UIOrganization;
+import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.portal.services.NetworkService;
+import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
-import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -234,7 +233,7 @@ public class OrganizationService {
         if (knOrganization == null) {
             // org not found in kernel
             UIOrganization createdKOrg =
-                networkService.createOrganization(dcOrganization.getLegal_name(), sectorType.name(), territoryId, dcId);
+                    networkService.createOrganization(dcOrganization.getLegal_name(), sectorType.name(), territoryId, dcId);
             if (createdKOrg != null && createdKOrg.getId() != null) {
                 return createdKOrg;
             }

@@ -28,7 +28,7 @@ class OrganizationDropdown extends React.Component {
                             organization.instances.map((instance) => {
                                 return instance.services && instance.services.map(
                                     (service) => {
-                                        return <li key={service.service.id} className="app">
+                                        return <li key={service.catalogEntry.id} className="app">
                                             <Service service={service} className="launcher"/>
                                         </li>;
                                     });

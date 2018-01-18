@@ -3,7 +3,7 @@ package org.oasis_eu.portal.front.my.services;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.oasis_eu.portal.front.generic.BaseAJAXServices;
+import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -32,7 +32,7 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/my/api/contact")
-public class ContactAJAXServices extends BaseAJAXServices {
+public class ContactAJAXServices extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(ContactAJAXServices.class);
 

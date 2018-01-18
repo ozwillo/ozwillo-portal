@@ -5,13 +5,13 @@ import com.google.common.base.Strings;
 import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.front.generic.BaseAJAXServices;
-import org.oasis_eu.portal.model.appsmanagement.Authority;
-import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
-import org.oasis_eu.portal.model.appsmanagement.MyAppsService;
-import org.oasis_eu.portal.model.appsmanagement.User;
+import org.oasis_eu.portal.front.generic.BaseController;
+import org.oasis_eu.portal.model.authority.Authority;
+import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.app.service.Service;
+import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.NetworkService;
-import org.oasis_eu.portal.services.PortalAppManagementService;
+import org.oasis_eu.portal.services.ApplicationService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,7 +35,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
  */
 @RestController
 @RequestMapping("/my/api/myapps")
-public class MyAppsAJAXServices extends BaseAJAXServices {
+public class MyAppsAJAXServices extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(MyAppsAJAXServices.class);
 
@@ -43,7 +43,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
     private NetworkService networkService;
 
     @Autowired
-    private PortalAppManagementService appManagementService;
+    private ApplicationService appManagementService;
 
     @Autowired
     private ImageService imageService;
@@ -165,7 +165,7 @@ public class MyAppsAJAXServices extends BaseAJAXServices {
     }
 
     @RequestMapping(value = "/service/{serviceId}", method = RequestMethod.GET)
-    public MyAppsService loadService(@PathVariable String serviceId) {
+    public Service loadService(@PathVariable String serviceId) {
         return appManagementService.getService(serviceId);
     }
 

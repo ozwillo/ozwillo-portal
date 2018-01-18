@@ -75,7 +75,6 @@ public class ApplicationInstance {
     @JsonProperty("provider_id")
     String providerId;
 
-
     public String getApplicationId() {
         return applicationId;
     }

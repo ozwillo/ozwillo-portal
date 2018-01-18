@@ -4,17 +4,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.front.generic.BaseAJAXServices;
+import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.portal.front.my.services.MyAppsAJAXServices;
-import org.oasis_eu.portal.model.appsmanagement.Authority;
-import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
-import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
-import org.oasis_eu.portal.model.network.UIOrganization;
-import org.oasis_eu.portal.model.network.UIOrganizationMember;
+import org.oasis_eu.portal.model.authority.Authority;
+import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.services.NetworkService;
-import org.oasis_eu.portal.services.PortalAppManagementService;
-import org.oasis_eu.portal.services.dc.organization.DCOrganization;
 import org.oasis_eu.portal.services.dc.organization.OrganizationService;
+import org.oasis_eu.portal.ui.UIOrganization;
+import org.oasis_eu.portal.ui.UIOrganizationMember;
+import org.oasis_eu.portal.services.ApplicationService;
+import org.oasis_eu.portal.services.dc.organization.DCOrganization;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,18 +36,18 @@ import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/my/api/organization")
-class OrganizationController extends BaseAJAXServices {
+class OrganizationController extends BaseController {
 
     private static final Logger logger = LoggerFactory.getLogger(MyAppsAJAXServices.class);
 
     @Autowired
-    private PortalAppManagementService appManagementService;
-
-    @Autowired
-    private OrganizationService organizationService;
+    private ApplicationService appManagementService;
 
     @Autowired
     private NetworkService networkService;
+
+    @Autowired
+    private OrganizationService organizationService;
 
     @Autowired
     private HttpServletRequest request;
