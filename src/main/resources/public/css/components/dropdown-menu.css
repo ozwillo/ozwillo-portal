@@ -25,10 +25,14 @@
     align-self: end;
 }
 
-.oz-dropdown-menu  > .content,
+.oz-dropdown-menu > .content,
 .oz-dropdown-menu > .footer {
     background-color: white;
     padding: 5px 10px;
+}
+
+.oz-dropdown-menu > .content.empty {
+    padding: 0px;
 }
 
 
@@ -42,6 +46,11 @@
 /* Organization dropdown */
 .dropdown-content .apps {
     align-items: center;
+    width: 100%;
+}
+
+.dropdown-content .apps > .list {
+    flex-wrap: wrap;
 }
 
 .dropdown-content .apps .app {
@@ -57,7 +66,6 @@
 }
 
 .dropdown-content .invitation {
-    width: 100%;
     margin: auto 0;
 }
 

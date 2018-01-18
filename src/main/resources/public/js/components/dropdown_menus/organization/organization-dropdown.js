@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
 
 //Component
 import Service from '../../service';
@@ -20,33 +19,36 @@ class OrganizationDropdown extends React.Component {
         const Header = <OrganizationDropdownHeader organization={organization}/> ;
 
         return <DropdownMenu header={Header} isOpen={true}>
-            <section className='dropdown-content flex-row end'>
-                <section className="apps">
-                    <ul className="list undecorated-list flex-row">
-                        {
-                            organization.instances &&
-                            organization.instances.map((instance) => {
-                                return instance.services && instance.services.map(
-                                    (service) => {
-                                        return <li key={service.catalogEntry.id} className="app">
-                                            <Service service={service} className="launcher"/>
-                                        </li>;
-                                    });
-                            })
-                        }
-                    </ul>
-                </section>
+            {
+                (organization.isAdmin || organization.instances.length || null) &&
+                <section className='dropdown-content flex-row end'>
+                    <section className="apps">
+                        <ul className="list undecorated-list flex-row">
+                            {
+                                organization.instances &&
+                                organization.instances.map((instance) => {
+                                    return instance.services && instance.services.map(
+                                        (service) => {
+                                            return <li key={service.catalogEntry.id} className="app">
+                                                <Service service={service} className="launcher"/>
+                                            </li>;
+                                        });
+                                })
+                            }
+                        </ul>
+                    </section>
 
-                {
-                    organization.instances &&
-                    (organization.instances.length || null) &&
-                    <div className="vertical-sep"/>
-                }
+                    {
+                        organization.instances &&
+                        (organization.instances.length || null) &&
+                        <div className="vertical-sep"/>
+                    }
 
-                <section className="invitation">
-                    <OrganizationInvitationForm organization={organization}/>
+                    <section className="invitation">
+                        <OrganizationInvitationForm organization={organization}/>
+                    </section>
                 </section>
-            </section>
+            }
         </DropdownMenu>
 
     }

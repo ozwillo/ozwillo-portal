@@ -36,15 +36,20 @@ class DropDownMenu extends React.Component {
         const isOpenClassName = (!this.state.isOpen && 'hidden') || '';
         const iconClassName = (this.state.isOpen && 'up') || 'down';
         const isAvailableClassName = (!this.props.isAvailable && 'hidden') || '';
+        const isEmptyClassName = (!this.props.children && 'empty') || '';
 
         return <section className={`oz-dropdown-menu flex-col ${this.props.className || ''}`}>
             <header className="header flex-row">
                 <div className="content">{this.props.header}</div>
-                <i onClick={this.dropDownToggle}
-                   className={`fa fa-chevron-${iconClassName} arrow-icon ${isAvailableClassName}` }/>
+                {
+                    this.props.children && // is not empty
+                    <i onClick={this.dropDownToggle}
+                       className={`fa fa-chevron-${iconClassName} arrow-icon ${isAvailableClassName}` }/>
+                }
+
             </header>
 
-            <article className={`content ${isOpenClassName} ${isAvailableClassName}`}>
+            <article className={`content ${isOpenClassName} ${isAvailableClassName} ${isEmptyClassName}`}>
                 {this.props.children}
             </article>
 
