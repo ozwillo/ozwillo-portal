@@ -44,10 +44,12 @@ class ServicesTab extends React.Component {
 
                 <ul className="services-list undecorated-list flex-col">
                     {
-                        this.props.services.map((service) => {
-                            return <li key={service.id} className="service">
-                                <ServiceDropdown service={service}/>
-                            </li>
+                        this.props.instances.map((instance) => {
+                            return instance.services.map((service) => {
+                                return <li key={service.id} className="service">
+                                    <ServiceDropdown service={service}/>
+                                </li>
+                            });
                         })
                     }
                 </ul>
@@ -59,7 +61,7 @@ class ServicesTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        services: state.organization.current.services
+        instances: state.organization.current.instances
     };
 };
 const ServiceTabWithRedux = connect(mapStateToProps)(ServicesTab);

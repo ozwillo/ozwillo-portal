@@ -56,7 +56,7 @@ class ServiceDropdown extends React.Component {
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
-                    {
+                    {/*{
                         service.members.map((member, i) => {
                             return <li key={member.id}>
                                 <article className="item flex-row">
@@ -70,7 +70,7 @@ class ServiceDropdown extends React.Component {
                                 </article>
                             </li>;
                         })
-                    }
+                    }*/}
                 </ul>
             </section>
         </DropDownMenu>;

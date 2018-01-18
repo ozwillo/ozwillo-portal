@@ -29,7 +29,7 @@ const fetchCreateOrganizationAction = (organization) => {
 // Async methods
 export const fetchOrganizationWithId = (id) => {
     return dispatch => {
-        return customFetch(urlBuilder(`/my/api/network/organization.json`, { dc_id: id }))
+        return customFetch(urlBuilder(`/my/api/organization/${id}`))
             .then((organization) => {
                 dispatch(fetchOrganizationWithIdAction(organization));
             });
@@ -47,7 +47,7 @@ export const fetchUserOrganizations = () => {
 
 export const fetchCreateOrganization = (organization) => {
     return dispatch => {
-        return customFetch('/my/api/organization/', {
+        return customFetch('/my/api/organization', {
             method: 'POST',
             json: organization
         }).then((org) => {

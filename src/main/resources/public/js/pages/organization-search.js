@@ -115,7 +115,7 @@ class OrganizationSearch extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        userOrganizations: state.userInfo.organizations
+        userOrganizations: state.organization.organizations
     };
 };
 
