@@ -35,7 +35,7 @@
 /* Service dropdown */
 .dropdown-header .form .dropdown-name {
     height: 100%;
-    width: 100%;
+    width: auto;
     align-items: center;
 }
 
