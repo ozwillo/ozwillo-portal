@@ -70,7 +70,6 @@ public class PortalAppManagementService {
     private UserProfileService userProfileService;
 
     public List<MyAppsInstance> getMyInstances(Authority authority, boolean fetchServices) {
-
         switch (authority.getType()) {
             case INDIVIDUAL:
                 return getPersonalInstances(authority, fetchServices);
@@ -81,7 +80,6 @@ public class PortalAppManagementService {
         logger.error("Should never be here - authority is neither an individual or an organization: {}", authority.getType());
         return null;
     }
-
 
     private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority, boolean fetchServices) {
         return applicationInstanceStore.findByUserId(personalAuthority.getId())

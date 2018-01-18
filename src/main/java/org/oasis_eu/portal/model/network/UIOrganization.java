@@ -70,6 +70,8 @@ public class UIOrganization {
 
     List<MyAppsInstance> instances;
 
+    List<UIOrganizationMember> members;
+
     @JsonProperty
     boolean admin;
 
@@ -175,6 +177,14 @@ public class UIOrganization {
 
     public void setInstances(List<MyAppsInstance> instances) {
         this.instances = instances;
+    }
+
+    public List<UIOrganizationMember> getMembers() {
+        return members;
+    }
+
+    public void setMembers(List<UIOrganizationMember> members) {
+        this.members = members;
     }
 
     @Override

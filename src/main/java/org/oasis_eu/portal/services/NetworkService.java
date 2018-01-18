@@ -328,6 +328,25 @@ public class NetworkService {
         return authorities;
     }
 
+    public Authority getOrganizationAuthority(String organizationId) {
+        String userId = userInfoService.currentUser().getUserId();
+
+        if (userId.equals(organizationId)) {
+            return new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true);
+        }
+
+        List<UserMembership> orgMemberships = userMembershipService.getMembershipsOfUser(userId);
+        UserMembership currentMember = null;
+        for(UserMembership member : orgMemberships) {
+            if(member.getOrganizationId().equals(organizationId)){
+                currentMember = member;
+                break;
+            }
+        }
+
+        return (currentMember != null)? toAuthority(currentMember) : null;
+    }
+
     private Authority toAuthority(UserMembership userMembership) {
         return new Authority(AuthorityType.ORGANIZATION, userMembership.getOrganizationName(), userMembership.getOrganizationId(), userMembership.isAdmin());
     }

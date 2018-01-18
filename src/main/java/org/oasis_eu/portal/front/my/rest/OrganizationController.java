@@ -7,8 +7,10 @@ import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.front.generic.BaseAJAXServices;
 import org.oasis_eu.portal.front.my.services.MyAppsAJAXServices;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
+import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
 import org.oasis_eu.portal.model.appsmanagement.MyAppsInstance;
 import org.oasis_eu.portal.model.network.UIOrganization;
+import org.oasis_eu.portal.model.network.UIOrganizationMember;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.PortalAppManagementService;
 import org.oasis_eu.portal.services.dc.organization.DCOrganization;
@@ -62,38 +64,32 @@ class OrganizationController extends BaseAJAXServices {
                 .collect(Collectors.toList());
 
         List<UIOrganization> orgs = new ArrayList<>();
-
         for(Authority a : authorities) {
-            List<MyAppsInstance> myInstances = appManagementService.getMyInstances(
-                    networkService.getAuthority(a.getType().toString(), a.getId()), true);
-            orgs.add(transformToUIOrganization(a, myInstances));
+            List<MyAppsInstance> instances = appManagementService.getMyInstances(a, true);
+            UIOrganization uiOrg = transformToUIOrganization(a);
+            uiOrg.setInstances(loadIcons(instances));
+            orgs.add(uiOrg);
         }
 
         return orgs;
     }
 
+    @RequestMapping(value = "/{organizationId}", method = GET)
+    public UIOrganization organization(@PathVariable String organizationId) {
+        Authority authority = networkService.getOrganizationAuthority(organizationId);
+        List<MyAppsInstance> instances = appManagementService.getMyInstances(authority, true);
+        List<UIOrganizationMember> members = networkService.getOrganizationMembers(organizationId);
+
+        UIOrganization uiOrg = transformToUIOrganization(authority);
+        uiOrg.setInstances(loadIcons(instances));
+        uiOrg.setMembers(members);
+
+        return uiOrg;
+    }
+
     @RequestMapping(value = "", method = POST)
     public UIOrganization createOrganization(@RequestBody DCOrganization dcOrganization) {
         return organizationService.create(dcOrganization);
-    }
-
-    private UIOrganization transformToUIOrganization(Authority authority, List<MyAppsInstance> myInstances) {
-        //Load icons
-        for (MyAppsInstance instance : myInstances) {
-            instance.setIcon(
-                    imageService.getImageForURL(instance.getApplicationInstance().getIcon(RequestContextUtils.getLocale(request)),
-                            ImageFormat.PNG_64BY64, false));
-            instance.setName(instance.getApplicationInstance().getName(RequestContextUtils.getLocale(request)));
-        }
-
-        //Create new UIOrganization
-        UIOrganization uiOrg = new UIOrganization();
-        uiOrg.setId(authority.getId());
-        uiOrg.setName(authority.getName());
-        uiOrg.setAdmin(authority.isAdmin());
-        uiOrg.setInstances(myInstances);
-
-        return uiOrg;
     }
 
     @RequestMapping(value = "/invite/{organizationId}", method = POST)
@@ -113,6 +109,27 @@ class OrganizationController extends BaseAJAXServices {
         @NotNull
         @NotEmpty
         String email;
+    }
+
+
+    private List<MyAppsInstance> loadIcons(List<MyAppsInstance> myAppsInstances) {
+        for (MyAppsInstance instance : myAppsInstances) {
+            instance.setIcon(
+                    imageService.getImageForURL(instance.getApplicationInstance().getIcon(RequestContextUtils.getLocale(request)),
+                            ImageFormat.PNG_64BY64, false));
+            instance.setName(instance.getApplicationInstance().getName(RequestContextUtils.getLocale(request)));
+        }
+
+        return myAppsInstances;
+    }
+
+    private UIOrganization transformToUIOrganization(Authority authority) {
+        UIOrganization uiOrg = new UIOrganization();
+        uiOrg.setId(authority.getId());
+        uiOrg.setName(authority.getName());
+        uiOrg.setAdmin(authority.isAdmin());
+
+        return uiOrg;
     }
 
 }
