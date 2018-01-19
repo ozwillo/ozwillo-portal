@@ -62,7 +62,8 @@ class MemberDropdown extends React.Component {
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
                     {
-                        member.services.map((service, i) => {
+                        //Todo uncomment
+                        /*member.services.map((service, i) => {
                             return <li key={service.id}>
                                 <article className="item flex-row">
                                     <p className="name">{service.name}</p>
@@ -77,7 +78,7 @@ class MemberDropdown extends React.Component {
                                     </div>
                                 </article>
                             </li>;
-                        })
+                        })*/
                     }
                 </ul>
             </section>
