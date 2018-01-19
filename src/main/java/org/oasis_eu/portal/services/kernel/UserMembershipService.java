@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -91,7 +92,7 @@ public class UserMembershipService {
                 .toUriString();
 
         OrgMembership[] omsArray = kernel.getEntityOrNull(uri, OrgMembership[].class, user());
-        return Arrays.asList(omsArray);
+        return (omsArray != null) ? Arrays.asList(omsArray) : new ArrayList<>();
     }
 
     @CacheEvict(value = "org-memberships", key = "#organizationId")
