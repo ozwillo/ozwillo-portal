@@ -56,11 +56,11 @@ class ServiceDropdown extends React.Component {
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
-                    {/*{
-                        service.members.map((member, i) => {
-                            return <li key={member.id}>
+                    {
+                        service.users && service.users.map((user, i) => {
+                            return <li key={user.userid}>
                                 <article className="item flex-row">
-                                    <p className="name">{`${member.firstname} ${member.lastname}`}</p>
+                                    <p className="name">{`${user.fullname}`}</p>
 
                                     <div className="options">
                                         <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
@@ -70,7 +70,7 @@ class ServiceDropdown extends React.Component {
                                 </article>
                             </li>;
                         })
-                    }*/}
+                    }
                 </ul>
             </section>
         </DropDownMenu>;

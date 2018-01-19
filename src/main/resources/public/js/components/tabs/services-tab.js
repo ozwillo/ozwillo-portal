@@ -8,19 +8,18 @@ import AddServiceDropdown from '../dropdown_menus/service/add-service-dropdown';
 import ServiceDropdown from '../dropdown_menus/service/service-dropdown';
 
 class ServicesTabHeader extends React.Component {
-
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/services`}>
             <header className="tab-header">Services</header>
         </Link>;
     }
-
 }
 const ServicesTabHeaderWithRedux = connect(state => {
     return {
         organization: state.organization.current
     };
 })(ServicesTabHeader);
+
 
 class ServicesTab extends React.Component {
 
@@ -44,12 +43,10 @@ class ServicesTab extends React.Component {
 
                 <ul className="services-list undecorated-list flex-col">
                     {
-                        this.props.instances.map((instance) => {
-                            return instance.services.map((service) => {
-                                return <li key={service.id} className="service">
-                                    <ServiceDropdown service={service}/>
-                                </li>
-                            });
+                        this.props.services.map((service) => {
+                            return <li key={service.id} className="service">
+                                <ServiceDropdown service={service}/>
+                            </li>
                         })
                     }
                 </ul>
@@ -61,9 +58,10 @@ class ServicesTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        instances: state.organization.current.instances
+        services: state.organization.current.services
     };
 };
+
 const ServiceTabWithRedux = connect(mapStateToProps)(ServicesTab);
 
 

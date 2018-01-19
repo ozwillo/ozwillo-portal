@@ -10,6 +10,7 @@ import { AdminTabHeader, AdminTab } from '../components/tabs/admin-tab';
 //actions
 import { fetchOrganizationWithId } from "../actions/organization";
 import PropTypes from "prop-types";
+import { fetchUsersOfService } from "../actions/service";
 
 const tabsHeaders = {
     services: ServicesTabHeader,
@@ -35,7 +36,12 @@ class OrganizationDesc extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchOrganizationWithId();
+        this.props.fetchOrganizationWithId()
+            .then(() => {
+                this.props.organization.services.forEach((service) => {
+                    this.props.fetchUsersOfService(service.catalogEntry.id);
+                });
+            });
     }
 
     render() {
@@ -63,8 +69,11 @@ const mapDispatchToProps = (dispatch, ownProps) => {
     return {
         fetchOrganizationWithId() {
             return dispatch(fetchOrganizationWithId(ownProps.match.params.id));
+        },
+        fetchUsersOfService(serviceId) {
+            return dispatch(fetchUsersOfService(serviceId));
         }
-    }
+    };
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(OrganizationDesc);

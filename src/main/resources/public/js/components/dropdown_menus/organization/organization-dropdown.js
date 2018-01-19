@@ -20,27 +20,23 @@ class OrganizationDropdown extends React.Component {
 
         return <DropdownMenu header={Header} isOpen={true}>
             {
-                (organization.isAdmin || organization.instances.length || null) &&
+                (organization.isAdmin || organization.services.length || null) &&
                 <section className='dropdown-content flex-row end'>
                     <section className="apps">
                         <ul className="list undecorated-list flex-row">
                             {
-                                organization.instances &&
-                                organization.instances.map((instance) => {
-                                    return instance.services && instance.services.map(
-                                        (service) => {
-                                            return <li key={service.catalogEntry.id} className="app">
-                                                <Service service={service} className="launcher"/>
-                                            </li>;
-                                        });
+                                organization.services.map((service) => {
+                                    return <li key={service.catalogEntry.id} className="app">
+                                        <Service service={service} className="launcher"/>
+                                    </li>;
                                 })
                             }
                         </ul>
                     </section>
 
                     {
-                        organization.instances &&
-                        (organization.instances.length || null) &&
+                        organization.services &&
+                        (organization.services.length || null) &&
                         <div className="vertical-sep"/>
                     }
 
