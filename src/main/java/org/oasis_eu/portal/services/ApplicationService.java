@@ -13,9 +13,9 @@ import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
-import org.oasis_eu.portal.model.app.service.Service;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
@@ -24,7 +24,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
+import sun.jvm.hotspot.oops.Instance;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Comparator;
@@ -36,7 +38,7 @@ import java.util.stream.Collectors;
  * User: schambon
  * Date: 7/29/14
  */
-@org.springframework.stereotype.Service
+@Service
 public class ApplicationService {
 
     private static final Logger logger = LoggerFactory.getLogger(ApplicationService.class);
@@ -125,17 +127,17 @@ public class ApplicationService {
     }
 
 
-    private Service fetchService(CatalogEntry service) {
+    private InstanceService fetchService(CatalogEntry service) {
 
         logger.debug("Fetching service data for {}", service);
 
-        return new Service()
+        return new InstanceService()
             .setCatalogEntry(service)
             .setName(service.getName(RequestContextUtils.getLocale(request)))
             .setIconUrl(imageService.getImageForURL(service.getIcon(), ImageFormat.PNG_64BY64, false));
     }
 
-    public Service getService(String serviceId) {
+    public InstanceService getService(String serviceId) {
 
         return fetchService(catalogStore.findService(serviceId));
 

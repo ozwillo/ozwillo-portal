@@ -6,7 +6,7 @@ import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
  * User: schambon
  * Date: 7/29/14
  */
-public class Service {
+public class InstanceService {
 
     private CatalogEntry catalogEntry;
     private SubscriptionStatus subscriptionStatus;
@@ -19,7 +19,7 @@ public class Service {
         return catalogEntry;
     }
 
-    public Service setCatalogEntry(CatalogEntry catalogEntry) {
+    public InstanceService setCatalogEntry(CatalogEntry catalogEntry) {
         this.catalogEntry = catalogEntry;
         return this;
     }
@@ -28,7 +28,7 @@ public class Service {
         return subscriptionStatus;
     }
 
-    public Service setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
+    public InstanceService setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
         this.subscriptionStatus = subscriptionStatus;
         return this;
     }
@@ -37,7 +37,7 @@ public class Service {
         return name;
     }
 
-    public Service setName(String name) {
+    public InstanceService setName(String name) {
         this.name = name;
         return this;
     }
@@ -46,7 +46,7 @@ public class Service {
         return iconUrl;
     }
 
-    public Service setIconUrl(String iconUrl) {
+    public InstanceService setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
         return this;
     }

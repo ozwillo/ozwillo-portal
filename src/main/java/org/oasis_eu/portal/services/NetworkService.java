@@ -3,6 +3,8 @@ package org.oasis_eu.portal.services;
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.authority.AuthorityType;
 import org.oasis_eu.portal.model.user.User;
@@ -30,10 +32,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,6 +66,14 @@ public class NetworkService {
     @Autowired
     private OrganizationStore organizationStore;
 
+    @Autowired
+    private ApplicationService applicationService;
+
+
+    public UIOrganization getOrganization(String organizationId) {
+        return fillUIOrganization(organizationStore.find(organizationId));
+    }
+
     public List<UIOrganization> getMyOrganizations() {
         String userId = userInfoService.currentUser().getUserId();
 
@@ -74,6 +81,7 @@ public class NetworkService {
             .stream()
             .map(this::toUIOrganization)
             .filter(o -> o != null)
+            .sorted(Comparator.comparing(UIOrganization::getName))
             .collect(Collectors.toList());
     }
 
@@ -115,6 +123,9 @@ public class NetworkService {
             uiOrg.setStatusChangeRequesterLabel(getUserName(organization.getStatusChangeRequesterId(), null)); // TODO protected ?? then from membership
         }
 
+        uiOrg.setMembers(getOrganizationMembers(organization.getId()));
+        uiOrg.setServices(getOrganizationServices(organization.getId()));
+
         return uiOrg;
     }
 
@@ -151,6 +162,17 @@ public class NetworkService {
                 // NB. self is already in first position, so ne need to sort
                 .collect(Collectors.toList());
         }
+    }
+
+    public List<InstanceService> getOrganizationServices(String organizationIds) {
+        Authority authority = getOrganizationAuthority(organizationIds);
+        List<MyAppsInstance> instances =  applicationService.getMyInstances(authority, true);
+        List<InstanceService> services = new ArrayList<>();
+        for (MyAppsInstance i : instances) {
+            services.addAll(i.getServices());
+        }
+
+        return services;
     }
 
     public List<UIPendingOrganizationMember> getOrganizationPendingMembers(String organizationId) {

@@ -3,7 +3,7 @@ package org.oasis_eu.portal.ui;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.joda.time.Instant;
-import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 
@@ -68,7 +68,7 @@ public class UIOrganization {
     @JsonProperty("status_change_requester_label")
     String statusChangeRequesterLabel;
 
-    List<MyAppsInstance> instances;
+    List<InstanceService> services;
 
     List<UIOrganizationMember> members;
 
@@ -171,12 +171,12 @@ public class UIOrganization {
         this.statusChangeRequesterLabel = statusChangeRequesterLabel;
     }
 
-    public List<MyAppsInstance> getInstances() {
-        return instances;
+    public List<InstanceService> getServices() {
+        return services;
     }
 
-    public void setInstances(List<MyAppsInstance> instances) {
-        this.instances = instances;
+    public void setServices(List<InstanceService> services) {
+        this.services = services;
     }
 
     public List<UIOrganizationMember> getMembers() {

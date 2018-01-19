@@ -41,49 +41,19 @@ class OrganizationController extends BaseController {
     private static final Logger logger = LoggerFactory.getLogger(MyAppsAJAXServices.class);
 
     @Autowired
-    private ApplicationService appManagementService;
-
-    @Autowired
     private NetworkService networkService;
 
     @Autowired
     private OrganizationService organizationService;
 
-    @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private ImageService imageService;
-
     @RequestMapping(value = "", method = GET)
     public List<UIOrganization> organizations() {
-
-        List<Authority> authorities = networkService.getMyAuthorities(true).stream()
-                .filter(Authority::isAdmin)
-                .collect(Collectors.toList());
-
-        List<UIOrganization> orgs = new ArrayList<>();
-        for(Authority a : authorities) {
-            List<MyAppsInstance> instances = appManagementService.getMyInstances(a, true);
-            UIOrganization uiOrg = transformToUIOrganization(a);
-            uiOrg.setInstances(loadIcons(instances));
-            orgs.add(uiOrg);
-        }
-
-        return orgs;
+        return networkService.getMyOrganizations();
     }
 
     @RequestMapping(value = "/{organizationId}", method = GET)
     public UIOrganization organization(@PathVariable String organizationId) {
-        Authority authority = networkService.getOrganizationAuthority(organizationId);
-        List<MyAppsInstance> instances = appManagementService.getMyInstances(authority, true);
-        List<UIOrganizationMember> members = networkService.getOrganizationMembers(organizationId);
-
-        UIOrganization uiOrg = transformToUIOrganization(authority);
-        uiOrg.setInstances(loadIcons(instances));
-        uiOrg.setMembers(members);
-
-        return uiOrg;
+        return networkService.getOrganization(organizationId);
     }
 
     @RequestMapping(value = "", method = POST)
@@ -110,17 +80,6 @@ class OrganizationController extends BaseController {
         String email;
     }
 
-
-    private List<MyAppsInstance> loadIcons(List<MyAppsInstance> myAppsInstances) {
-        for (MyAppsInstance instance : myAppsInstances) {
-            instance.setIcon(
-                    imageService.getImageForURL(instance.getApplicationInstance().getIcon(RequestContextUtils.getLocale(request)),
-                            ImageFormat.PNG_64BY64, false));
-            instance.setName(instance.getApplicationInstance().getName(RequestContextUtils.getLocale(request)));
-        }
-
-        return myAppsInstances;
-    }
 
     private UIOrganization transformToUIOrganization(Authority authority) {
         UIOrganization uiOrg = new UIOrganization();

@@ -3,7 +3,7 @@ package org.oasis_eu.portal.model.app.instance;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.model.app.service.Service;
+import org.oasis_eu.portal.model.app.service.InstanceService;
 
 import java.util.List;
 
@@ -15,7 +15,7 @@ public class MyAppsInstance {
 
     private ApplicationInstance applicationInstance;
 
-    private List<Service> services;
+    private List<InstanceService> services;
 
     private String name;
 
@@ -37,11 +37,11 @@ public class MyAppsInstance {
         this.applicationInstance = applicationInstance;
     }
 
-    public List<Service> getServices() {
+    public List<InstanceService> getServices() {
         return services;
     }
 
-    public void setServices(List<Service> services) {
+    public void setServices(List<InstanceService> services) {
         this.services = services;
     }
 

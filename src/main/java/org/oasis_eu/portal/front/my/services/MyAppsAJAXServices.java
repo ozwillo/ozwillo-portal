@@ -6,9 +6,9 @@ import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.front.generic.BaseController;
+import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
-import org.oasis_eu.portal.model.app.service.Service;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.ApplicationService;
@@ -165,7 +165,7 @@ public class MyAppsAJAXServices extends BaseController {
     }
 
     @RequestMapping(value = "/service/{serviceId}", method = RequestMethod.GET)
-    public Service loadService(@PathVariable String serviceId) {
+    public InstanceService loadService(@PathVariable String serviceId) {
         return appManagementService.getService(serviceId);
     }
 
