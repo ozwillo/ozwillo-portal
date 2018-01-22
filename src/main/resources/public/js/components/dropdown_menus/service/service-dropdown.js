@@ -27,6 +27,11 @@ class ServiceDropdown extends React.Component {
         this.onUpdateService = this.onUpdateService.bind(this);
     }
 
+    componentWillReceiveProps(nextProps) {
+        this.setState({
+            service: nextProps.service
+        });
+    }
 
     onClickConfigIcon(service) {
         console.log('onClickConfigIcon ', service);

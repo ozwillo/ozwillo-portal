@@ -29,7 +29,7 @@ const servicesState = (state = [], action) => {
                 return state;
             }
 
-            nextState[i] = serviceReducer(state[i], action);
+            nextState[i] = serviceReducer(nextState[i], action);
             break;
         default:
             return state;
