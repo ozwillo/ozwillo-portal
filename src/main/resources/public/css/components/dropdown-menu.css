@@ -53,6 +53,10 @@
     flex-wrap: wrap;
 }
 
+.dropdown-content .apps.empty {
+    width: 0;
+}
+
 .dropdown-content .apps .app {
     margin: 0 2px;
 }

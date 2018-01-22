@@ -15,17 +15,18 @@ class OrganizationDropdown extends React.Component {
     };
 
     render() {
-        const organization = this.props.organization;
-        const Header = <OrganizationDropdownHeader organization={organization}/> ;
+        const org = this.props.organization;
+        const Header = <OrganizationDropdownHeader organization={org}/>;
+
 
         return <DropdownMenu header={Header} isOpen={true}>
             {
-                (organization.isAdmin || organization.services.length || null) &&
-                <section className='dropdown-content flex-row end'>
-                    <section className="apps">
+                (org.admin || org.services.length || null) &&
+                <section className='dropdown-content flex-row'>
+                    <section className={`apps ${!org.services.length ? 'empty' : ''}`}>
                         <ul className="list undecorated-list flex-row">
                             {
-                                organization.services.map((service) => {
+                                org.services.map((service) => {
                                     return <li key={service.catalogEntry.id} className="app">
                                         <Service service={service} className="launcher"/>
                                     </li>;
@@ -35,13 +36,13 @@ class OrganizationDropdown extends React.Component {
                     </section>
 
                     {
-                        organization.services &&
-                        (organization.services.length || null) &&
+                        org.services &&
+                        (org.services.length || null) &&
                         <div className="vertical-sep"/>
                     }
 
                     <section className="invitation">
-                        <OrganizationInvitationForm organization={organization}/>
+                        <OrganizationInvitationForm organization={org}/>
                     </section>
                 </section>
             }
