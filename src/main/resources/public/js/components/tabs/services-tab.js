@@ -27,7 +27,42 @@ class ServicesTab extends React.Component {
         t: PropTypes.func.isRequired,
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            servicesFilter: ''
+        };
+
+
+        //bind methods
+        this.handleChange = this.handleChange.bind(this);
+        this.filterServices = this.filterServices.bind(this);
+
+    }
+
+    handleChange(e) {
+        const el = e.currentTarget;
+        this.setState({
+            [el.name]: el.value
+        });
+    }
+
+    filterServices(services, filter) {
+        if (!filter) {
+            return services;
+        }
+        const regex = new RegExp(`(\\w|\\S)*${filter.toUpperCase()}(\\w|\\S)*`);
+
+        return services.filter((service) => {
+            return regex.test(service.name.toUpperCase());
+        });
+    }
+
     render() {
+        const services = this.props.services;
+        const servicesFilter = this.state.servicesFilter;
+
         return <article className="services-tab">
 
             <section className="add-service">
@@ -38,12 +73,13 @@ class ServicesTab extends React.Component {
             <section className="search-service">
                 <header>Search a service</header>
                 <form className="search oz-form">
-                    <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
+                    <input name="servicesFilter" className="field form-control" type="text" value={servicesFilter}
+                           placeholder={this.context.t('ui.search')} onChange={this.handleChange}/>
                 </form>
 
                 <ul className="services-list undecorated-list flex-col">
                     {
-                        this.props.services.map((service) => {
+                        this.filterServices(services, servicesFilter).map((service) => {
                             return <li key={service.id} className="service">
                                 <ServiceDropdown service={service}/>
                             </li>
