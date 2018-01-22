@@ -4,6 +4,7 @@ const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
@@ -131,11 +132,7 @@ if(TARGET === 'build' || TARGET === 'stats') {
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': '"production"'
             }),
-            new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
-                }
-            }),
+            new UglifyJsPlugin(),
             extractCSS
         ],
         module: {

@@ -63,7 +63,7 @@ public class AppStoreController extends PortalController {
 
 //        model.addAttribute("defaultApp", null);
 
-        return "/index";
+        return "index";
     }
 
 
@@ -80,7 +80,7 @@ public class AppStoreController extends PortalController {
 
         model.addAttribute("defaultApp", defaultApp);*/
 
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(value = {"/application/{applicationId}", "/application/{applicationId}/*"}, method = RequestMethod.GET)
@@ -96,7 +96,7 @@ public class AppStoreController extends PortalController {
 
         model.addAttribute("defaultApp", defaultApp);*/
 
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/login")
