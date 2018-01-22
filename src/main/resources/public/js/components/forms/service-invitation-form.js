@@ -39,7 +39,7 @@ class ServiceInvitationForm extends React.Component {
         members.forEach((member) => {
             options.push({
                 value: member.id,
-                label: `${member.firstname} ${member.lastname}`
+                label: `${member.name}`
             });
         });
 

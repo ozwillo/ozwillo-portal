@@ -1,10 +1,10 @@
 
 
-.service {
+.service-icon {
     text-align: center;
     min-width: 130px;
 }
 
-.service .name {
+.service-icon .name {
     color: #6f438e;
 }

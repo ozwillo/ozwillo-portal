@@ -10,7 +10,7 @@ class Service extends React.Component {
     render() {
         const service = this.props.service;
         const iconUrl = service.catalogEntry.icon || service.iconUrl;
-        return <article className={`service flex-col ${this.props.className}`}>
+        return <article className={`service-icon flex-col ${this.props.className}`}>
             <a className="link undecorated-link" href={service.catalogEntry.service_uri} target="_blank">
                 <img className="icon" src={iconUrl} />
                 <p className="name">{service.name}</p>

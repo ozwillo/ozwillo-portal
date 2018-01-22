@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
 //Components
 import DropDownMenu from '../../dropdown-menu';
@@ -11,7 +10,8 @@ import ServiceDropdownHeader from '../../dropdown_menus/service/service-dropdown
 class ServiceDropdown extends React.Component {
 
     static propTypes = {
-        service: PropTypes.object.isRequired
+        service: PropTypes.object.isRequired,
+        members: PropTypes.array.isRequired
     };
 
     constructor(props){
@@ -25,11 +25,13 @@ class ServiceDropdown extends React.Component {
         this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
         this.onRemoveService = this.onRemoveService.bind(this);
         this.onUpdateService = this.onUpdateService.bind(this);
+        this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            service: nextProps.service
+            service: nextProps.service,
+            members: nextProps.members
         });
     }
 
@@ -45,8 +47,19 @@ class ServiceDropdown extends React.Component {
         this.setState({ service: Object.assign({}, this.props.service, service)});
     }
 
+    filterMemberWithoutAccess(member) {
+        if(!this.state.service.users) {
+            return true;
+        }
+
+        return !this.state.service.users.find((user) => {
+            return user.userid === member.id;
+        })
+    }
+
     render() {
         const service = this.state.service;
+        const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
 
         const Header = <ServiceDropdownHeader
                             service={service}
@@ -55,7 +68,7 @@ class ServiceDropdown extends React.Component {
                             onUpdateService={this.onUpdateService}/>;
 
         const Footer = (!service.isPublic && <footer>
-            <ServiceInvitationForm members={this.props.members} service={this.props.service}/>
+            <ServiceInvitationForm members={membersWithoutAccess} service={this.props.service}/>
         </footer>) || null;
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
@@ -82,10 +95,4 @@ class ServiceDropdown extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        members: state.member.members
-    }
-};
-
-export default connect(mapStateToProps)(ServiceDropdown);
+export default ServiceDropdown;

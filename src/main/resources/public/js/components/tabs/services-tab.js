@@ -60,7 +60,7 @@ class ServicesTab extends React.Component {
     }
 
     render() {
-        const services = this.props.services;
+        const org = this.props.organization;
         const servicesFilter = this.state.servicesFilter;
 
         return <article className="services-tab">
@@ -79,9 +79,9 @@ class ServicesTab extends React.Component {
 
                 <ul className="services-list undecorated-list flex-col">
                     {
-                        this.filterServices(services, servicesFilter).map((service) => {
+                        this.filterServices(org.services, servicesFilter).map((service) => {
                             return <li key={service.id} className="service">
-                                <ServiceDropdown service={service}/>
+                                <ServiceDropdown service={service} members={org.members}/>
                             </li>
                         })
                     }
@@ -94,7 +94,7 @@ class ServicesTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        services: state.organization.current.services
+        organization: state.organization.current,
     };
 };
 
