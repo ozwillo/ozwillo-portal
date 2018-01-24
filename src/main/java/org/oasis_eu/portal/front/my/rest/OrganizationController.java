@@ -2,17 +2,11 @@ package org.oasis_eu.portal.front.my.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
-import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.portal.front.my.services.MyAppsAJAXServices;
-import org.oasis_eu.portal.model.authority.Authority;
-import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.dc.organization.OrganizationService;
 import org.oasis_eu.portal.ui.UIOrganization;
-import org.oasis_eu.portal.ui.UIOrganizationMember;
-import org.oasis_eu.portal.services.ApplicationService;
 import org.oasis_eu.portal.services.dc.organization.DCOrganization;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
@@ -23,13 +17,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 import static org.springframework.web.bind.annotation.RequestMethod.POST;
@@ -78,16 +68,6 @@ class OrganizationController extends BaseController {
         @NotNull
         @NotEmpty
         String email;
-    }
-
-
-    private UIOrganization transformToUIOrganization(Authority authority) {
-        UIOrganization uiOrg = new UIOrganization();
-        uiOrg.setId(authority.getId());
-        uiOrg.setName(authority.getName());
-        uiOrg.setAdmin(authority.isAdmin());
-
-        return uiOrg;
     }
 
 }

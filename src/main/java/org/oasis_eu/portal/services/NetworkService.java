@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services;
 
 import org.joda.time.DateTime;
 import org.joda.time.Instant;
+import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
@@ -69,39 +70,69 @@ public class NetworkService {
     @Autowired
     private ApplicationService applicationService;
 
+    @Autowired
+    private SubscriptionStore subscriptionStore;
 
-    public UIOrganization getOrganization(String organizationId) {
-        return fillUIOrganization(organizationStore.find(organizationId));
-    }
 
     public List<UIOrganization> getMyOrganizations() {
+        List<UIOrganization> organizations = new ArrayList<>();
         String userId = userInfoService.currentUser().getUserId();
 
-        return userMembershipService.getMembershipsOfUser(userId)
+        //Fetch all user's services
+        List<InstanceService> instanceServices = subscriptionStore.findByUserId(userId)
             .stream()
-            .map(this::toUIOrganization)
-            .filter(o -> o != null)
-            .sorted(Comparator.comparing(UIOrganization::getName))
+            .map(sub -> applicationService.getService(sub.getServiceId()))
             .collect(Collectors.toList());
+
+
+        //build Organizations
+        List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
+        for (UserMembership u : userMemberships) {
+            Organization org = organizationStore.find(u.getOrganizationId());
+
+            //Fetch services associate with organization
+            List<InstanceService> services = new ArrayList<>();
+            for (InstanceService is : instanceServices) {
+                if(is.getCatalogEntry().getProviderId().equals(org.getId())){
+                    services.add(is);
+                }
+            }
+
+            //Build UIOrganization
+            UIOrganization uiOrg = fillUIOrganization(org);
+            uiOrg.setMembers(getOrganizationMembers(org.getId()));
+            uiOrg.setServices(services);
+            organizations.add(uiOrg);
+        }
+
+        return organizations;
     }
 
-    private UIOrganization toUIOrganization(UserMembership userMembership) {
-        String organizationId = userMembership.getOrganizationId();
-        if (organizationId == null) {
-            logger.warn("User membership {} has no organization", userMembership.getMembershipUri());
-            return null;
+
+    public UIOrganization getOrganization(String organizationId) {
+        String userId = userInfoService.currentUser().getUserId();
+
+        //Fetch all user's services
+        List<InstanceService> instanceServices = subscriptionStore.findByUserId(userId)
+                .stream()
+                .map(sub -> applicationService.getService(sub.getServiceId()))
+                .collect(Collectors.toList());
+
+        //Fetch services associate with organization
+        Organization org = organizationStore.find(organizationId);
+        List<InstanceService> services = new ArrayList<>();
+        for (InstanceService is : instanceServices) {
+            if(is.getCatalogEntry().getProviderId().equals(org.getId())){
+                services.add(is);
+            }
         }
 
-        Organization organization = organizationStore.find(organizationId);
-        if (organization == null) {
-            logger.warn("Unable to retrieve organization {}", organizationId);
-            return null;
-        }
+        //Build UIOrganization
+        UIOrganization uiOrg = fillUIOrganization(org);
+        uiOrg.setMembers(getOrganizationMembers(org.getId()));
+        uiOrg.setServices(services);
 
-        UIOrganization org = fillUIOrganization(organization);
-        org.setAdmin(userMembership.isAdmin());
-
-        return org;
+        return uiOrg;
     }
 
     private UIOrganization fillUIOrganization(Organization organization) {
@@ -122,9 +153,6 @@ public class NetworkService {
             uiOrg.setStatusChangeRequesterId(organization.getStatusChangeRequesterId());
             uiOrg.setStatusChangeRequesterLabel(getUserName(organization.getStatusChangeRequesterId(), null)); // TODO protected ?? then from membership
         }
-
-        uiOrg.setMembers(getOrganizationMembers(organization.getId()));
-        uiOrg.setServices(getOrganizationServices(organization.getId()));
 
         return uiOrg;
     }
