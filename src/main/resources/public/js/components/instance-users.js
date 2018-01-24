@@ -27,7 +27,7 @@ var ApplicationUsersManagement = createClass({
     loadUsers: function() {
         $.ajax({
             // only users that are app_user (so not those that are !app_user or app_admin)
-            url: `my/api/myapps/users/instance/${this.props.instanceId}?app_admin=false&pending=true`,
+            url: `/my/api/myapps/users/instance/${this.props.instanceId}?app_admin=false&pending=true`,
             dataType: 'json',
             method: 'get'
         })
@@ -39,7 +39,7 @@ var ApplicationUsersManagement = createClass({
     },
     queryUsers: function(query, callback) {
         $.ajax({
-            url: `/my/api/myapps/users/network${this.props.authority}?q=${query}`,
+            url: `/my/api/myapps/users/network/${this.props.authority}?q=${query}`,
             dataType: 'json',
             method: 'get',
             success: callback,

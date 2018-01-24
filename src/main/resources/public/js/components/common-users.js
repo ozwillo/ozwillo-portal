@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import { connect } from 'react-redux';
 import createClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
@@ -19,7 +20,7 @@ export const UsersList = createClass({
     render: function() {
         var usersList = this.props.users.map(user => {
             var userId = user.status === 'new_from_email' || !user.userid ? user.email : user.userid;
-            return <User key={userId} user={user} removeUser={this.props.removeUser(userId)} />;
+            return <UserWithRedux key={userId} user={user} removeUser={this.props.removeUser(userId)} />;
         });
 
         return (
@@ -58,7 +59,7 @@ var User = createClass({
             return this.context.t('settings.status.member');
     },
     render: function() {
-        moment.locale(currentLanguage);
+        moment.locale(this.props.currentLanguage);
         return (
             <tr>
                 <td>{this.props.user.fullname || this.props.user.email}</td>
@@ -75,6 +76,12 @@ var User = createClass({
         );
     }
 });
+User.contextTypes = {
+    t: PropTypes.func.isRequired
+};
+const UserWithRedux = connect(state => {
+    return { currentLanguage: state.config.language };
+})(User);
 
 export const OrgUserPicker = createClass({
     propTypes: {

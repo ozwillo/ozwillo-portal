@@ -19,7 +19,7 @@ class GeoAreaAutosuggest extends Component {
         value: PropTypes.string,
         countryUri: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
-        onGeoAreaSelected: PropTypes.func.isRequired,
+        onGeoAreaSelected: PropTypes.func,
         onBlur: PropTypes.func,
         required: PropTypes.bool
     };

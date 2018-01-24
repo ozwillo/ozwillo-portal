@@ -8,6 +8,7 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
 
+
 import { Modal } from '../components/bootstrap-react';
 import Service from '../components/service-settings';
 import ApplicationUsersManagement from '../components/instance-users';
@@ -291,7 +292,7 @@ Instance.contextTypes = {
     t: PropTypes.func.isRequired
 };
 const InstanceWithRedux = connect(state => {
-    language: state.config.language
+    return { language: state.config.language }
 })(Instance);
 
 class MyAppsWrapper extends React.Component {

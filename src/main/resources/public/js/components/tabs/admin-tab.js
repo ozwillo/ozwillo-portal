@@ -60,7 +60,6 @@ class AdminTab extends React.Component {
 
 const mapStateToProps = state => {
     return {
-
         countries: state.config.countries,
         organization: state.organization.current
     };
