@@ -33,11 +33,18 @@
     color: #6f438e;
 }
 
-.organization-invitation-form .error {
+.organization-invitation-form .error,
+.organization-invitation-form .success{
     width: 100%;
     font-size: 0.8em;
-    color: red;
     text-align: center;
+}
 
+.organization-invitation-form .error {
+    color: red;
+}
+
+.organization-invitation-form .success {
+    color: green;
 }
 

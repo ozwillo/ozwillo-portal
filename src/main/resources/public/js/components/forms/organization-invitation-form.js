@@ -15,6 +15,7 @@ class OrganizationInvitationForm extends React.Component {
         this.state = {
             email: '',
             isLoading: false,
+            success: '',
             error: ''
         };
 
@@ -39,7 +40,8 @@ class OrganizationInvitationForm extends React.Component {
                 this.setState({
                     email: '',
                     isLoading: false,
-                    error: ''
+                    error: '',
+                    success: 'Your request has been sent !'
                 });
             })
             .catch((err) => {
@@ -76,9 +78,20 @@ class OrganizationInvitationForm extends React.Component {
                         </button>
                     </div>
                 </div>
-                <div className="error">
-                    <span>{this.state.error}</span>
-                </div>
+
+                {
+                    this.state.error &&
+                    <div className="error">
+                        <span>{this.state.error}</span>
+                    </div>
+                }
+
+                {
+                    this.state.success &&
+                    <div className="success">
+                        <span>{this.state.success}</span>
+                    </div>
+                }
             </fieldset>
         </form>;
     }
