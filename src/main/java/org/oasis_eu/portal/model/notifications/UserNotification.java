@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.model.notifications;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 
 /**

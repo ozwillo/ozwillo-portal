@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.model.user;
 
-import org.joda.time.Instant;
+import java.time.Instant;
 
 /**
  * User: schambon
