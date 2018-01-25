@@ -35,6 +35,7 @@
 .oz-form .btn.submit {
     background-color: #00796b;
     color: white;
-    width: 100%;
     font-size: 1.2em;
+    padding: 5px 50px;
+    margin: 20px auto;
 }

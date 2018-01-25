@@ -68,8 +68,8 @@ class OrganizationSearch extends React.Component {
 
         return <section className="organization-search oz-body wrapper flex-col">
             <div className="flex-row end">
-                <Link to="/my/organization/create" className="link undecorated-link">
-                    <i className="fa fa-plus action-icon"/>
+                <Link to="/my/organization/create" className="link">
+                     New organization
                 </Link>
             </div>
 

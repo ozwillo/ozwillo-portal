@@ -27,8 +27,8 @@
 }
 
 .link:hover {
-    text-decoration: none;
-    color: #6f438e;
+    text-decoration: underline;
+    color: white;
 }
 
 

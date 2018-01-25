@@ -322,15 +322,17 @@ class OrganizationForm extends React.Component {
             }
 
             {/*     Submit button     */}
+            <div className="flex-row">
             {
                 countrySelected &&
                 (
-                    ( !this.props.isLoading && <input type="submit" value="Send" className="submit btn"/> ) ||
+                    ( !this.props.isLoading && <input type="submit" value="Create an organization" className="submit btn"/> ) ||
                     <button type="button" className="submit btn icon">
                         <i className="fa fa-spinner fa-spin" />
                     </button>
                 )
             }
+            </div>
         </form>;
     }
 }

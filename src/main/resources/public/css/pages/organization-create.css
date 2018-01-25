@@ -5,9 +5,14 @@
     font-weight: bold;
 }
 
-.organization-create > .header,
-.organization-create > .content {
+.organization-create > .header {
     margin: 10px 0;
+}
+
+.organization-create > .content {
+    width: 75%;
+    margin: 0 auto;
+    min-width: 500px;
 }
 
 .organization-create .error {
