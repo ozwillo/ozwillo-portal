@@ -18,7 +18,6 @@ class OrganizationDropdown extends React.Component {
         const org = this.props.organization;
         const Header = <OrganizationDropdownHeader organization={org}/>;
 
-
         return <DropdownMenu header={Header} isOpen={true}>
             {
                 (org.admin || org.services.length || null) &&
@@ -36,14 +35,19 @@ class OrganizationDropdown extends React.Component {
                     </section>
 
                     {
+                        ((org.admin &&
                         org.services &&
-                        (org.services.length || null) &&
+                        org.services.length) || null) &&
                         <div className="vertical-sep"/>
                     }
 
-                    <section className="invitation">
-                        <OrganizationInvitationForm organization={org}/>
-                    </section>
+                    {
+                        org.admin &&
+                        <section className="invitation">
+                            <OrganizationInvitationForm organization={org}/>
+                        </section>
+                    }
+
                 </section>
             }
         </DropdownMenu>
