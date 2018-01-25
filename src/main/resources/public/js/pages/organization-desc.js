@@ -38,9 +38,11 @@ class OrganizationDesc extends React.Component {
     componentDidMount() {
         this.props.fetchOrganizationWithId()
             .then(() => {
-                this.props.organization.services.forEach((service) => {
-                    this.props.fetchUsersOfService(service.catalogEntry.id);
-                });
+                if(this.props.organization.admin) {
+                    this.props.organization.services.forEach((service) => {
+                        this.props.fetchUsersOfService(service.catalogEntry.id);
+                    });
+                }
             });
     }
 

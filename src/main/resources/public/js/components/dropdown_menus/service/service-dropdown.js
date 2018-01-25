@@ -11,7 +11,12 @@ class ServiceDropdown extends React.Component {
 
     static propTypes = {
         service: PropTypes.object.isRequired,
-        members: PropTypes.array.isRequired
+        members: PropTypes.array.isRequired,
+        isAdmin: PropTypes.bool
+    };
+
+    static defaultProps = {
+        isAdmin: false
     };
 
     constructor(props){
@@ -58,20 +63,22 @@ class ServiceDropdown extends React.Component {
     }
 
     render() {
+        const isAdmin = this.props.isAdmin;
         const service = this.state.service;
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
 
         const Header = <ServiceDropdownHeader
+                            isAdmin={isAdmin}
                             service={service}
                             onClickConfigIcon={this.onClickConfigIcon}
                             onRemoveService={this.onRemoveService}
                             onUpdateService={this.onUpdateService}/>;
 
-        const Footer = (!service.isPublic && <footer>
+        const Footer = (isAdmin && !service.isPublic && <footer>
             <ServiceInvitationForm members={membersWithoutAccess} service={this.props.service}/>
         </footer>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAdmin && !service.isPublic}>
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
                     {

@@ -65,10 +65,14 @@ class ServicesTab extends React.Component {
 
         return <article className="services-tab">
 
-            <section className="add-service">
-                <header>Add a service</header>
-                <AddServiceDropdown />
-            </section>
+            {
+                org.admin &&
+                <section className="add-service">
+                    <header>Add a service</header>
+                    <AddServiceDropdown />
+                </section>
+            }
+
 
             <section className="search-service">
                 <header>Search a service</header>

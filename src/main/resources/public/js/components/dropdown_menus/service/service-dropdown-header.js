@@ -7,7 +7,12 @@ class ServiceDropdownHeader extends React.Component {
         service: PropTypes.object.isRequired,
         onRemoveService: PropTypes.func.isRequired,
         onUpdateService: PropTypes.func.isRequired,
-        onClickConfigIcon: PropTypes.func.isRequired
+        onClickConfigIcon: PropTypes.func.isRequired,
+        isAdmin: PropTypes.bool
+    };
+
+    static defaultProps = {
+        isAdmin: false
     };
 
     constructor(props) {
@@ -32,24 +37,27 @@ class ServiceDropdownHeader extends React.Component {
     }
 
     render() {
+        const isAdmin = this.props.isAdmin;
         const service = this.props.service;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <span className="dropdown-name">{service.name}</span>
-
-                <div className="options flex-row end">
-                    <label>
-                        Public
-                        <input className="field" className="field" name="isPublic" type="checkbox"
-                               checked={service.isPublic} onChange={this.onCheckboxChange}/>
-                    </label>
-                    <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
-                        <i className="fa fa-cog option-icon"/>
-                    </button>
-                    <button type="submit" className="btn icon">
-                        <i className="fa fa-trash option-icon delete"/>
-                    </button>
-                </div>
+                {
+                    isAdmin &&
+                    <div className="options flex-row end">
+                        <label>
+                            Public
+                            <input className="field" className="field" name="isPublic" type="checkbox"
+                                   checked={service.isPublic} onChange={this.onCheckboxChange}/>
+                        </label>
+                        <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
+                            <i className="fa fa-cog option-icon"/>
+                        </button>
+                        <button type="submit" className="btn icon">
+                            <i className="fa fa-trash option-icon delete"/>
+                        </button>
+                    </div>
+                }
             </form>
         </header>;
     }
