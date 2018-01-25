@@ -93,7 +93,6 @@ public class NetworkService {
             //Fetch services associate with organization
             List<InstanceService> services = new ArrayList<>();
             for (InstanceService is : instanceServices) {
-
                 //Log provider id
                 if(is.getCatalogEntry().getProviderId() == null) {
                     logger.warn("Service " +is.getCatalogEntry().getId() + " has a providerId == null");
@@ -108,6 +107,7 @@ public class NetworkService {
             UIOrganization uiOrg = fillUIOrganization(org);
             uiOrg.setMembers(getOrganizationMembers(org.getId()));
             uiOrg.setServices(services);
+            uiOrg.setAdmin(userIsAdmin(org.getId()));
             organizations.add(uiOrg);
         }
 
@@ -128,7 +128,7 @@ public class NetworkService {
         Organization org = organizationStore.find(organizationId);
         List<InstanceService> services = new ArrayList<>();
         for (InstanceService is : instanceServices) {
-            if(is.getCatalogEntry().getProviderId().equals(org.getId())){
+            if(org.getId().equals(is.getCatalogEntry().getProviderId())){
                 services.add(is);
             }
         }
@@ -137,6 +137,7 @@ public class NetworkService {
         UIOrganization uiOrg = fillUIOrganization(org);
         uiOrg.setMembers(getOrganizationMembers(org.getId()));
         uiOrg.setServices(services);
+        uiOrg.setAdmin(userIsAdmin(organizationId));
 
         return uiOrg;
     }
@@ -198,16 +199,6 @@ public class NetworkService {
         }
     }
 
-    public List<InstanceService> getOrganizationServices(String organizationIds) {
-        Authority authority = getOrganizationAuthority(organizationIds);
-        List<MyAppsInstance> instances =  applicationService.getMyInstances(authority, true);
-        List<InstanceService> services = new ArrayList<>();
-        for (MyAppsInstance i : instances) {
-            services.addAll(i.getServices());
-        }
-
-        return services;
-    }
 
     public List<UIPendingOrganizationMember> getOrganizationPendingMembers(String organizationId) {
         UserInfo currentUser = userInfoService.currentUser();
