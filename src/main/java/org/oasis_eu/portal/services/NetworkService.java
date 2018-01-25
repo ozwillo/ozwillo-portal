@@ -93,7 +93,13 @@ public class NetworkService {
             //Fetch services associate with organization
             List<InstanceService> services = new ArrayList<>();
             for (InstanceService is : instanceServices) {
-                if(is.getCatalogEntry().getProviderId().equals(org.getId())){
+
+                //Log provider id
+                if(is.getCatalogEntry().getProviderId() == null) {
+                    logger.warn("Service " +is.getCatalogEntry().getId() + " has a providerId == null");
+                }
+
+                if(org.getId().equals(is.getCatalogEntry().getProviderId())){
                     services.add(is);
                 }
             }
