@@ -431,16 +431,20 @@ Organization.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-const PendingMembership = ({pMember, removeInvitation}) =>
+const PendingMembership = ({pMember, removeInvitation}, context) =>
     <div className="row organization-pending-member-row">
         <div className="col-sm-3">{pMember.email}</div>
-        <div className="col-sm-3">{this.context.t('my.network.organization.pending-invitation') }</div>
+        <div className="col-sm-3">{context.t('my.network.organization.pending-invitation') }</div>
         <div className="col-sm-6">
             <span className="pull-right action-icon" onClick={() => removeInvitation(pMember)}>
                 <i className="fa fa-trash"></i>
             </span>
         </div>
     </div>;
+
+PendingMembership.contextTypes = {
+    t: PropTypes.func.isRequired
+};
 
 var Member = createClass({
     getInitialState: function() {

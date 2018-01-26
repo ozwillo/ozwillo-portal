@@ -363,7 +363,7 @@ var Tab1 = createClass({
     },
     render: function() {
         var className = this.props.currentTab === 1 ? "" : "hidden";
-        var country_uri = this.props.organization ? this.props.organization.country_uri : '';
+        var country_uri = (this.props.organization  && this.props.organization.country_uri) || '';
         // FIXME : quite ugly and non-Reacty, find a better way to do this
         //         when called from the store, componentWillReceiveProps does not get called b/c there is no change in props
         //         find the right lifecycle hook to handle this properly
@@ -386,7 +386,8 @@ var Tab1 = createClass({
                                            value={this.state.organization.po_box} onChange={this.handleInputChange} />
                                 </Field>
                                 <Field name="city" error={$.inArray("city", this.state.errors) != -1} isRequired={true}>
-                                    <GeoAreaAutosuggest countryUri={country_uri}
+                                    <GeoAreaAutosuggest name="city"
+                                        countryUri={country_uri}
                                         endpoint="/dc-cities"
                                         onChange={this.handleCityChange}
                                         initialValue={this.state.organization.city} />
