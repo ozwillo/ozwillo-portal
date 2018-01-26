@@ -81,7 +81,7 @@ public class UserMembershipService {
 
         String uri = builder.buildAndExpand(organizationId).toUriString();
 
-        OrgMembership[] response = kernel.getEntityOrNull(uri, OrgMembership[].class, user());
+        OrgMembership[] response = kernel.getEntityOrException(uri, OrgMembership[].class, user());
         return Arrays.asList(response);
     }
 
@@ -91,8 +91,7 @@ public class UserMembershipService {
                 .buildAndExpand(organizationId)
                 .toUriString();
 
-        OrgMembership[] omsArray = kernel.getEntityOrNull(uri, OrgMembership[].class, user());
-        return (omsArray != null) ? Arrays.asList(omsArray) : new ArrayList<>();
+        return Arrays.asList(kernel.getEntityOrException(uri, OrgMembership[].class, user()));
     }
 
     @CacheEvict(value = "org-memberships", key = "#organizationId")
@@ -195,7 +194,6 @@ public class UserMembershipService {
 
         String uri = builder.buildAndExpand(organizationId).toUriString();
 
-        PendingOrgMembership[] response = kernel.getEntityOrNull(uri, PendingOrgMembership[].class, user());
-        return Arrays.asList(response);
+        return Arrays.asList(kernel.getEntityOrException(uri, PendingOrgMembership[].class, user()));
     }
 }

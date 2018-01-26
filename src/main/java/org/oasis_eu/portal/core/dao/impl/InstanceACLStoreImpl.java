@@ -37,7 +37,7 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 
     @Override
     public List<ACE> getACL(String instanceId) {
-        List<ACE> acl = Arrays.asList(kernel.getEntityOrNull(endpoint + "/acl/instance/{instanceId}",
+        List<ACE> acl = Arrays.asList(kernel.getEntityOrException(endpoint + "/acl/instance/{instanceId}",
             ACE[].class, user(), instanceId));
         if (logger.isDebugEnabled()) {
             logger.debug("ACL for instance {}", instanceId);
@@ -50,7 +50,7 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 
     @Override
     public List<ACE> getPendingACL(String instanceId) {
-        List<ACE> acl = Arrays.asList(kernel.getEntityOrNull(endpoint + "/pending-acl/instance/{instanceId}",
+        List<ACE> acl = Arrays.asList(kernel.getEntityOrException(endpoint + "/pending-acl/instance/{instanceId}",
             ACE[].class, user(), instanceId));
         if (logger.isDebugEnabled()) {
             logger.debug("ACL for instance {}", instanceId);

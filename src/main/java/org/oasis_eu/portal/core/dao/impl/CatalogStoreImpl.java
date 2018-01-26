@@ -85,7 +85,7 @@ public class CatalogStoreImpl implements CatalogStore {
 
         String uri = uriBuilder.build().toUriString();
 
-        List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getEntityOrNull(uri, CatalogEntry[].class, none()));
+        List<CatalogEntry> catalogEntries = Arrays.asList(kernel.getEntityOrException(uri, CatalogEntry[].class, none()));
         if (logger.isDebugEnabled()) {
             logger.debug("Found catalog entries:");
             catalogEntries.forEach(e -> logger.debug(e.toString()));
@@ -97,14 +97,14 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     @Cacheable("applications")
     public CatalogEntry findApplication(String id) {
-        return kernel.getEntityOrNull(appsEndpoint + "/app/{id}", CatalogEntry.class, userIfExists(), id);
+        return kernel.getEntityOrException(appsEndpoint + "/app/{id}", CatalogEntry.class, userIfExists(), id);
     }
 
 
     @Override
     @Cacheable("services")
     public ServiceEntry findService(String id) {
-        return kernel.getEntityOrNull(appsEndpoint + "/service/{id}", ServiceEntry.class, userIfExists(), id);
+        return kernel.getEntityOrException(appsEndpoint + "/service/{id}", ServiceEntry.class, userIfExists(), id);
     }
 
     @Override
@@ -139,21 +139,15 @@ public class CatalogStoreImpl implements CatalogStore {
     public List<ServiceEntry> findServicesOfInstance(String instanceId) {
         logger.debug("Finding services of instance {}", instanceId);
 
-        ServiceEntry[] serviceEntries = kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}/services",
+        ServiceEntry[] serviceEntries = kernel.getEntityOrException(appsEndpoint + "/instance/{instance_id}/services",
             ServiceEntry[].class, user(), instanceId);
-        if (serviceEntries != null) {
-            return Arrays.asList(serviceEntries);
-        } else {
-            logger.error("Empty services collection found for instance {}", instanceId);
-            return Collections.emptyList();
-        }
-
+        return Arrays.asList(serviceEntries);
     }
 
     @Override
     @Cacheable("instances")
     public ApplicationInstance findApplicationInstance(String instanceId) {
-        return kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
+        return kernel.getEntityOrException(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
     }
 
 

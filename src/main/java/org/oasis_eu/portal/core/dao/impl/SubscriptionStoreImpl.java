@@ -46,17 +46,11 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     @Cacheable("subscriptions")
     public List<Subscription> findByUserId(String userId) {
 
-        ResponseEntity<Subscription[]> response = kernel.exchange(endpoint + "/user/{user_id}", HttpMethod.GET, null,
-            Subscription[].class, user(), userId);
+        Subscription[] subscriptions = kernel.getEntityOrException(endpoint + "/user/{user_id}", Subscription[].class, user(), userId);
 
-        Subscription[] subscriptions = kernel.getBodyOrNull(response, Subscription[].class, endpoint + "/user/{user_id}", userId);
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("--> " + response.getStatusCode()); // supplementary, subscription-specific log
-            if (subscriptions != null) {
-                for (Subscription s : subscriptions) {
-                    logger.debug("Subscribed: {}", s);
-                }
+        if (logger.isDebugEnabled() && subscriptions != null) {
+            for (Subscription s : subscriptions) {
+                logger.debug("Subscribed: {}", s);
             }
         }
 
