@@ -74,12 +74,14 @@
 }
 
 .btn-default {
-    color: #6f438e;
-    border: 1px solid #6f438e;
+    background-color: #fff;
+    color: #6f438e !important;
+    border: 1px solid #fff;
 }
 
 .btn-default.focus, .btn-default:focus, .btn-default:hover {
-    background-color: #6f438e;
+    color: #fff !important;
+    background-color: #6f438e !important;
 }
 
 .btn-default-inverse {

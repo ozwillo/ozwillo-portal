@@ -22,30 +22,36 @@ class OrganizationDropdown extends React.Component {
             {
                 (org.admin || org.services.length || null) &&
                 <section className='dropdown-content flex-row'>
-                    <section className={`apps ${!org.services.length ? 'empty' : ''}`}>
-                        <ul className="list undecorated-list flex-row">
-                            {
-                                org.services.map((service) => {
-                                    return <li key={service.catalogEntry.id} className="app">
-                                        <Service service={service} className="launcher"/>
-                                    </li>;
-                                })
-                            }
-                        </ul>
+                    <section className="apps flex-row">
+                        {
+                            org.services.length &&
+                            <ul className="list undecorated-list flex-row">
+                                {
+                                    org.services.map((service) => {
+                                        return <li key={service.catalogEntry.id} className="app">
+                                            <Service service={service} className="launcher"/>
+                                        </li>;
+                                    })
+                                }
+                            </ul> || null
+                        }
+
+                        {
+                            !org.services.length &&
+                            <span className="empty-message">
+                                You do not have any installed app.
+                            </span>
+                        }
                     </section>
 
                     {
-                        ((org.admin &&
-                        org.services &&
-                        org.services.length) || null) &&
-                        <div className="vertical-sep"/>
-                    }
-
-                    {
                         org.admin &&
-                        <section className="invitation">
-                            <OrganizationInvitationForm organization={org}/>
-                        </section>
+                        [
+                            <div className="vertical-sep"/>,
+                            <section className="invitation">
+                                <OrganizationInvitationForm organization={org}/>
+                            </section>
+                        ]
                     }
 
                 </section>

@@ -24,6 +24,7 @@
 
 .dropdown-header,
 .dropdown-header .link {
+    font-size: 1.1em;
     color: white !important;
 }
 
@@ -69,7 +70,7 @@
 .dropdown-content .option-icon ,
 .dropdown-footer .option-icon {
     color: #6f438e;
-    font-size: 1.6em;
+    font-size: 1.8em;
 }
 
 .dropdown-header .option-icon {

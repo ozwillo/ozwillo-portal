@@ -22,7 +22,6 @@
 .oz-dropdown-menu > .header .arrow-icon {
     font-size: 2em;
     cursor: pointer;
-    align-self: end;
 }
 
 .oz-dropdown-menu > .content,
@@ -53,8 +52,9 @@
     flex-wrap: wrap;
 }
 
-.dropdown-content .apps.empty {
-    width: 0;
+.dropdown-content .apps > .empty-message {
+    font-size: 1.1em;
+
 }
 
 .dropdown-content .apps .app {
@@ -62,11 +62,11 @@
 }
 
 .dropdown-content .apps .app .launcher .icon {
-    width: 42px;
+    width: 52px;
 }
 
 .dropdown-content .apps .app .launcher .name {
-    font-size: 0.8em;
+    font-size: 0.9em;
 }
 
 .dropdown-content .invitation {
