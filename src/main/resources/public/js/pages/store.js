@@ -208,7 +208,8 @@ var SearchAppsForm = createClass({
                             <label htmlFor="geoSearch" className="col-sm-4 control-label">{this.context.t('geoarea')}</label>
 
                             <div className="col-sm-8">
-                                <GeoAreaAutosuggest countryUri=""
+                                <GeoAreaAutosuggest name="geoSearch"
+                                                    countryUri=""
                                                     endpoint="/geographicalAreas"
                                                     onChange={this.onGeoChange} />
                             </div>
@@ -343,7 +344,11 @@ var App = createClass({
         }
     },
     openApp: function () {
-        this.refs.appmodal.open();
+        /*
+            getWrappedInstance allow to recup the componnent wrapped by Redux
+        */
+        const modal = this.refs.appmodal.getWrappedInstance()
+        modal.open();
     },
     render: function () {
         var indicatorStatus = this.props.app.installed ? "installed" : (this.props.app.paid ? "paid" : "free");

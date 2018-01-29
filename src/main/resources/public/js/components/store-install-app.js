@@ -549,13 +549,13 @@ var InstallForm =  createClass({
          }.bind(this);
     },
     changeInputAddress: function (fieldname, value, isNumericField) {
-             var org = this.state.installData;
-             if(isNumericField && value !== ''){
-                org.address[fieldname] =  value.trim().search(/^\d+$/) !== -1 ? value.trim() : org.address[fieldname];
-             } else {
-                org.address[fieldname] = value;
-             }
-             this.setState({installData: org, errors: []});
+         var org = Object.assign({ address: {} }, this.state.installData);
+         if(isNumericField && value !== ''){
+            org.address[fieldname] =  value.trim().search(/^\d+$/) !== -1 ? value.trim() : org.address[fieldname];
+         } else {
+            org.address[fieldname] = value;
+         }
+         this.setState({installData: org, errors: []});
     },
     validateContact: function(){
         var errs = [];
@@ -753,15 +753,21 @@ var AddressComponent = createClass({
                 //If country has changed, the city is not longer valid
                 changeInput("city", "", isNumericField);
                 changeInput("city_uri", "", isNumericField);
-                if(this.refs.geoSearchCity) this.refs.geoSearchCity.clear(); //works only to remove tags in current component state, geoSelect placeholder still there.
+                if(this.refs.geoSearchCity) {
+                    this.refs.geoSearchCity.clear();
+                } //works only to remove tags in current component state, geoSelect placeholder still there.
             }else {
                 changeInput(fieldname, event.target.value, isNumericField);
             }
         }.bind(this)
     },
-    handleCityChange: function(city) {
+    handleCitySelected: function(city) {
         this.props.changeInput('city_uri', city.uri, false);
         this.props.changeInput('city', city.name, false);
+    },
+    handleCityChange: function(e) {
+        const el = e.currentTarget;
+        this.props.changeInput('city', el.value, false);
     },
     render: function() {
         var address = this.props.addressContainer;
@@ -786,10 +792,12 @@ var AddressComponent = createClass({
                                    defLabel={address.country} onChange={this.changeInput('country')} disabled={this.props.disabled}/>
                 </Field>
                 <Field name="city" error={$.inArray("city", this.props.errors) != -1} isRequired={true}>
-                    <GeoAreaAutosuggest countryUri={address.country_uri}
+                    <GeoAreaAutosuggest name="city"
+                                        countryUri={address.country_uri}
                                         endpoint="/dc-cities"
                                         onChange={this.handleCityChange}
-                                        initialValue={address.city} />
+                                        onGeoAreaSelected={this.handleCitySelected}
+                                        value={address.city} />
                 </Field>
                 <Field name="zip" class_name_div='col-sm-3' error={$.inArray("zip", this.props.errors) != -1} isRequired={true}>
                     <input className="form-control" id="zip" type="text" maxLength={6} value={address.zip}
@@ -900,7 +908,7 @@ var CountrySelect = createClass({
         // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-base fonctuion decodeURIComponent()
         return (
             <select className="form-control" id="country" onChange={this.onChange}
-                    value={value} disabled={this.props.disabled}>
+                    value={value || ''} disabled={this.props.disabled}>
                 {this.state.options}
             </select>
         );
@@ -966,8 +974,9 @@ var SetOrganizationComponent = createClass({
             <div className={formGroupClass}>
                 {this.renderLabel('organization', this.context.t('search.organization.title'), true)}
                 <div className="col-sm-8">
-                    <select id="organization" className="col-sm-8 form-control" onChange={this.onChangeOrgInput('selectedOrgId')}
-                        value={this.state.orgSearchData.selectedOrgId} >
+                    <select id="organization" className="col-sm-8 form-control"
+                            onChange={this.onChangeOrgInput('selectedOrgId')}
+                            value={this.state.orgSearchData.selectedOrgId || ''} >
                         {opts}
                     </select>
                 </div>
@@ -1091,4 +1100,4 @@ export default connect(state => {
         config: state.config,
         userInfo: state.userInfo
     }
-})(AppModal);
+}, null, null, { withRef: true })(AppModal);
