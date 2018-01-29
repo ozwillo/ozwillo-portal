@@ -12,7 +12,7 @@
 }
 
 .tabs .tabs-headers .header.active {
-    background-color: #4c2d62;
+    background-color: rgba(200,200,200,0.4);
 }
 
 .tabs .tab-content {

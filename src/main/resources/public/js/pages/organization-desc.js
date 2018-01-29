@@ -51,7 +51,6 @@ class OrganizationDesc extends React.Component {
 
         return <section className="organization-desc oz-body wrapper flex-col">
             <header className="header flex-row">
-                <i className="fa fa-picture-o organization-logo" />
                 <h1 className="title">{this.props.organization.name}</h1>
             </header>
 
