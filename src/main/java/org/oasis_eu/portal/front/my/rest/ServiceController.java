@@ -5,7 +5,9 @@ import org.oasis_eu.portal.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
@@ -15,10 +17,9 @@ public class ServiceController {
     @Autowired
     private ApplicationService appManagementService;
 
-    @RequestMapping(value = "/{serviceId}/users", method = RequestMethod.GET)
-    public List<User> getUsersOfService(@PathVariable String serviceId) {
-        return appManagementService.getSubscribedUsersOfService(serviceId).stream()
-                .sorted()
-                .collect(Collectors.toList());
+    @RequestMapping(value = "/{instanceId}/users", method = RequestMethod.GET)
+    public List<User> getUsersOfService(@PathVariable String instanceId) {
+        return appManagementService.getAllAppUsers(instanceId);
     }
+
 }

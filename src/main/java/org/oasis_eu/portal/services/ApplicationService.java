@@ -223,6 +223,12 @@ public class ApplicationService {
             .collect(Collectors.toList());
     }
 
+    public List<User> getAllAppUsers(String instanceId) {
+        List<User> users = getAppUsers(instanceId, true);
+        users.addAll(getPendingAppUsers(instanceId));
+        return users;
+    }
+
     public void saveAppUsers(String instanceId, List<User> users) {
         if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(instanceId).getProviderId())) {
             throw new AccessDeniedException("Unauthorized access");
