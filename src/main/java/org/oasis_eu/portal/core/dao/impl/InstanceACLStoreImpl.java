@@ -14,6 +14,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -60,6 +61,56 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
         return acl;
     }
 
+
+    @Override
+    public void createACL(String instanceId, User user) {
+        List<ACE> existingACL = getACL(instanceId);
+        List<ACE> existingPendingACL = getPendingACL(instanceId);
+
+        // delete the excess ACEs
+        existingACL.stream()
+                .filter(ace -> !user.getUserid().equals(ace.getUserId()))
+                .filter(ACE::isAppUser)
+                .forEach(ace -> {
+                    logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
+                    kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<>(ifmatch(ace.getEntryEtag())), Void.class, user());
+                });
+
+        existingPendingACL.stream()
+                .filter(ace -> !user.getEmail().equals(ace.getEmail()))
+                .forEach(ace -> {
+                    logger.debug("Deleting pending ACE for {}", ace.getEmail());
+                    kernel.exchange(ace.getPendingEntryUri(), HttpMethod.DELETE,
+                            new HttpEntity<>(ifmatch(ace.getPendingEntryEtag())), Void.class, user());
+                });
+
+
+        logger.debug("Creating ACE for user {} - {}", user.getUserid(), user.getEmail());
+        kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST,
+                new HttpEntity<>(ace(user.getUserid(), user.getEmail(), instanceId)), ACE.class, user(), instanceId);
+    }
+
+
+    @Override
+    public void createACL(String instanceId, String email) {
+        List<ACE> existingPendingACL = getPendingACL(instanceId);
+
+        // delete the excess ACEs
+        existingPendingACL.stream()
+                .filter(ace -> !ace.getEmail().equals(email))
+                .forEach(ace -> {
+                    logger.debug("Deleting pending ACE for {} ", ace.getEmail());
+                    kernel.exchange(ace.getPendingEntryUri(), HttpMethod.DELETE,
+                            new HttpEntity<>(ifmatch(ace.getPendingEntryEtag())), Void.class, user());
+                });
+
+
+        logger.debug("Creating pending ACE for {} ", email);
+        kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST,
+                new HttpEntity<>(ace(null, email, instanceId)), ACE.class, user(), instanceId);
+    }
+
+
     @Override
     public void saveACL(String instanceId, List<User> users) {
         List<ACE> existingACL = getACL(instanceId);
@@ -103,7 +154,8 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
             .filter(user -> !currentUsersIds.contains(user.getUserid()) && !currentUsersEmails.contains(user.getEmail())) // only on not existing users (NB. can be already app_admin)
             .forEach(user -> {
                 logger.debug("Creating ACE for user {} - {}", user.getUserid(), user.getEmail());
-                kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST, new HttpEntity<>(ace(user.getUserid(), user.getEmail(), instanceId)), ACE.class, user(), instanceId);
+                kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST,
+                        new HttpEntity<>(ace(user.getUserid(), user.getEmail(), instanceId)), ACE.class, user(), instanceId);
             });
 
     }

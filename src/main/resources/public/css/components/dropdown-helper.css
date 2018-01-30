@@ -65,6 +65,12 @@
     background-color: #6f438e;
 }
 
+.dropdown-content .options {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+}
+
     /* icons */
 .dropdown-header .option-icon,
 .dropdown-content .option-icon ,

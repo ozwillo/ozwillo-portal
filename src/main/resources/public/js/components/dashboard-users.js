@@ -49,7 +49,7 @@ var DashboardUsersManagement = createClass({
         })
     },
     addUser: function(user) {
-        if (this.state.users.filter(u => u.userid == user.userid).length == 0) {
+        if (this.state.users.filter(u => u.id == user.id).length == 0) {
             user.status = 'new_to_push';
             this.setState({ users: [user].concat(this.state.users) });
         }
@@ -58,7 +58,7 @@ var DashboardUsersManagement = createClass({
         return function() {
             this.setState({
                 users: this.state.users.filter(function (user) {
-                    return user.userid != userId;
+                    return user.id != userId;
                 })
             });
         }.bind(this);

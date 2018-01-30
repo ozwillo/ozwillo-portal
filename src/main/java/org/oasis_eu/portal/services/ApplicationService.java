@@ -237,6 +237,15 @@ public class ApplicationService {
         instanceACLStore.saveACL(instanceId, users);
     }
 
+    public void createAcl(String instanceId, User user) {
+        if(user.getUserid() != null && !user.getUserid().isEmpty()){
+            instanceACLStore.createACL(instanceId, user);
+        } else {
+            instanceACLStore.createACL(instanceId, user.getEmail());
+        }
+
+    }
+
     /**
      * for (un)trash
      */

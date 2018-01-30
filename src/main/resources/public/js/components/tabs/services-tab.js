@@ -85,7 +85,7 @@ class ServicesTab extends React.Component {
                     {
                         this.filterServices(org.services, servicesFilter).map((service) => {
                             return <li key={service.id} className="service">
-                                <ServiceDropdown service={service} members={org.members}/>
+                                <ServiceDropdown service={service} members={org.members} isAdmin={org.admin}/>
                             </li>
                         })
                     }

@@ -11,11 +11,13 @@ const fetchUsersOfServiceAction = (serviceId, users) => {
     };
 };
 
-export const fetchUsersOfService = (serviceId) => {
+//Async methods
+export const fetchUsersOfService = (service) => {
     return (dispatch) => {
-        return customFetch(`/my/api/service/${serviceId}/users`)
+        return customFetch(`/my/api/service/${service.catalogEntry.instance_id}/users`)
             .then(users => {
-                return dispatch(fetchUsersOfServiceAction(serviceId, users));
+                return dispatch(fetchUsersOfServiceAction(service.catalogEntry.id, users));
             });
     };
 };
+

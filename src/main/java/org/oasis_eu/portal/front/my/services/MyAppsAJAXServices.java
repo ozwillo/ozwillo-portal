@@ -91,7 +91,7 @@ public class MyAppsAJAXServices extends BaseController {
         @RequestParam(value = "app_admin", required = false, defaultValue = "true") boolean appAdmin,
         @RequestParam(value = "pending", required = false, defaultValue = "false") boolean pending) {
         List<User> appUsers = appManagementService.getAppUsers(instanceId, appAdmin).stream()
-            .sorted(Comparator.comparing(User::getFullname))
+            .sorted(Comparator.comparing(User::getName))
             .collect(Collectors.toList());
         if (pending) {
             List<User> pendingUsers = appManagementService.getPendingAppUsers(instanceId).stream()
@@ -107,12 +107,12 @@ public class MyAppsAJAXServices extends BaseController {
     }
 
     private static boolean isMatchUser(User u, String query) {
-        if (Strings.isNullOrEmpty(u.getFullname())) {
+        if (Strings.isNullOrEmpty(u.getName())) {
             logger.debug("User without fullname, user id : {}", u.getUserid());
             // See #293 also clean kernel data
             return false;
         }
-        return u.getFullname().toLowerCase().contains(query.toLowerCase());
+        return u.getName().toLowerCase().contains(query.toLowerCase());
     }
 
     @RequestMapping(value = "/users/instance/{instanceId}", method = RequestMethod.POST)
@@ -129,7 +129,7 @@ public class MyAppsAJAXServices extends BaseController {
         String aId = authorityId.split("::")[1];
         return networkService.getUsersOfOrganization(aId)
             .stream()
-            .filter(u -> u.getFullname().toLowerCase().contains(q.toLowerCase()))
+            .filter(u -> u.getName().toLowerCase().contains(q.toLowerCase()))
             .sorted()
             .collect(Collectors.toList());
     }

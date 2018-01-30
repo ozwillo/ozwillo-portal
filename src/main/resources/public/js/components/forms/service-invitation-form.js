@@ -1,6 +1,11 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+
+
+//Action
+import { fetchCreateAcl } from "../../actions/acl";
 
 class ServiceInvitationForm extends React.Component {
 
@@ -14,77 +19,104 @@ class ServiceInvitationForm extends React.Component {
 
         this.state = {
             selectedOption: null,
-            options: this.createOptions(this.props.members)
+            email: '',
+            addToOrganization: false,
+            isLoading: false
         };
 
         //bind methods
         this.onOptionChange = this.onOptionChange.bind(this);
-        this.createOptions = this.createOptions.bind(this);
+        this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            options: this.createOptions(nextProps.members)
-        });
-    }
-
     onOptionChange(selectedOption) {
-        this.setState({ selectedOption: selectedOption.value })
+        this.setState({ selectedOption: selectedOption })
     }
 
-    createOptions(members) {
-        const options = [];
-
-        members.forEach((member) => {
-            options.push({
-                value: member.id,
-                label: `${member.name}`
-            });
+    handleChange(e) {
+        const el = e.currentTarget;
+        this.setState({
+            [el.name]: el.type === 'checkbox' ? el.checked : el.value
         });
-
-        return options;
     }
 
     onSubmit(e) {
         e.preventDefault();
+
+        this.setState({ isLoading: true });
+
+        const user = this.state.selectedOption || { email: this.state.email };
+        this.props.fetchCreateAcl(user, this.props.service)
+            .then(() => {
+                this.setState({
+                    isLoading: false,
+                    selectedOption: null
+                });
+            })
+            .catch((err) => {
+                console.error(err);
+                this.setState({ isLoading: false });
+            });
     }
 
     render() {
-        return <form onSubmit={this.onSubmit} className={`service-invitation-form flex-row end ${this.props.className || ''}`}>
+        return <form className={`service-invitation-form flex-row end ${this.props.className || ''}`}
+                     onSubmit={this.onSubmit}>
             <div className="content flex-row">
                 <Select
                     className="select"
                     name="members"
                     value={this.state.selectedOption}
+                    labelKey="name"
+                    valueKey="id"
                     onChange={this.onOptionChange}
-                    options={this.state.options}
-                    clearable={false}
-                    placeholder="Members" />
+                    options={this.props.members}
+                    placeholder="Members"
+                    required={!this.state.email}/>
 
                 <em className="sep-text">or</em>
 
                 <div className="new-user-fieldset flex-row">
                     <label className="label">
                         Email
-                        <input name="email" type="email" className="field"/>
+                        <input name="email" type="email" className="form-control field" required={!this.state.selectedOption}
+                                value={this.state.email} onChange={this.handleChange} />
                     </label>
 
 
                     <label className="label">
-                        <input name="addInOrganization" type="checkbox" className="field"/>
+                        <input name="addInOrganization" type="checkbox" className="field"
+                               checked={this.state.addToOrganization} onChange={this.handleChange}/>
                         Add in organization
                     </label>
                 </div>
             </div>
 
 
-            <button type="submit" className="submit btn icon">
-                <i className="fa fa-paper-plane send-icon"/>
+
+            <button type="submit" className="submit btn icon" disabled={this.state.isLoading}>
+                {
+                    !this.state.isLoading &&
+                    <i className="fa fa-paper-plane send-icon"/>
+                }
+
+                {
+                    this.state.isLoading &&
+                    <i className="fa fa-spinner fa-spin send-icon"/>
+                }
             </button>
         </form>;
     }
 
 }
 
-export default ServiceInvitationForm;
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchCreateAcl(user, serviceId) {
+            return dispatch(fetchCreateAcl(user, serviceId));
+        }
+    };
+};
+
+export default connect(null, mapDispatchToProps)(ServiceInvitationForm);

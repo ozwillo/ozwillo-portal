@@ -4,7 +4,6 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.authority.AuthorityType;
@@ -412,7 +411,7 @@ public class NetworkService {
                 if (u2.getUserid().equals(userInfoService.currentUser().getUserId())) return 1;
                 if (u1.isAdmin()) return -1;
                 if (u2.isAdmin()) return 1;
-                return u1.getFullname() != null && u2.getFullname() != null ? u1.getFullname().compareTo(u2.getFullname()) : 1;
+                return u1.getName() != null && u2.getName() != null ? u1.getName().compareTo(u2.getName()) : 1;
             })
             .collect(Collectors.toList());
     }

@@ -58,7 +58,7 @@ class ServiceDropdown extends React.Component {
         }
 
         return !this.state.service.users.find((user) => {
-            return user.userid === member.id;
+            return user.id === member.id;
         })
     }
 
@@ -83,16 +83,36 @@ class ServiceDropdown extends React.Component {
                 <ul className="list undecorated-list flex-col">
                     {
                         service.users && service.users.map((user, i) => {
-                            return <li key={user.userid}>
-                                <article className="item flex-row">
-                                    <p className="name">{`${user.fullname}`}</p>
+                            return <li key={user.id}>
 
-                                    <div className="options">
-                                        <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
-                                            <i className="fa fa-trash option-icon delete"/>
-                                        </button>
-                                    </div>
-                                </article>
+                                {
+                                    user.id &&
+                                    <article className="item flex-row">
+                                        <p className="name">{`${user.name}`}</p>
+
+                                        <div className="options">
+                                            <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
+                                                <i className="fa fa-trash option-icon delete"/>
+                                            </button>
+                                        </div>
+                                    </article>
+                                }
+
+                                {
+                                    !user.id &&
+                                    <article className="item flex-row">
+                                        <p className="name">{`${user.email}`}</p>
+
+                                        <div className="options">
+                                            <i className="fa fa-spinner fa-spin option-icon"/>
+
+                                            <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
+                                                <i className="fa fa-trash option-icon delete"/>
+                                            </button>
+                                        </div>
+                                    </article>
+                                }
+
                             </li>;
                         })
                     }

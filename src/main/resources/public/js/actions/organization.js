@@ -1,4 +1,4 @@
-import customFetch, { urlBuilder } from '../util/custom-fetch';
+import customFetch from '../util/custom-fetch';
 
 export const FETCH_ORGANIZATION_WITH_ID = 'FETCH_ORGANIZATION_WITH_ID';
 export const FETCH_USER_ORGANIZATIONS = 'FETCH_USER_ORGANIZATIONS';
@@ -29,7 +29,7 @@ const fetchCreateOrganizationAction = (organization) => {
 // Async methods
 export const fetchOrganizationWithId = (id) => {
     return dispatch => {
-        return customFetch(urlBuilder(`/my/api/organization/${id}`))
+        return customFetch(`/my/api/organization/${id}`)
             .then((organization) => {
                 dispatch(fetchOrganizationWithIdAction(organization));
             });

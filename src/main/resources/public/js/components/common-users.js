@@ -19,7 +19,7 @@ export const UsersList = createClass({
     },
     render: function() {
         var usersList = this.props.users.map(user => {
-            var userId = user.status === 'new_from_email' || !user.userid ? user.email : user.userid;
+            var userId = user.status === 'new_from_email' || !user.id ? user.email : user.id;
             return <UserWithRedux key={userId} user={user} removeUser={this.props.removeUser(userId)} />;
         });
 
@@ -53,7 +53,7 @@ var User = createClass({
     displayStatus: function(user) {
         if (['new_from_organization', 'new_from_email', 'new_to_push'].indexOf(user.status) !== -1)
             return this.context.t('settings.status.to-validate');
-        else if (!user.userid)
+        else if (!user.id)
             return this.context.t('settings.status.pending')
         else
             return this.context.t('settings.status.member');
@@ -62,7 +62,7 @@ var User = createClass({
         moment.locale(this.props.currentLanguage);
         return (
             <tr>
-                <td>{this.props.user.fullname || this.props.user.email}</td>
+                <td>{this.props.user.name || this.props.user.email}</td>
                 <td>
                     {this.displayStatus(this.props.user)}
                     {renderIf(this.props.user.created !== null)(<small> ({moment(this.props.user.created).format('lll')})</small>)}
@@ -96,7 +96,7 @@ export const OrgUserPicker = createClass({
     },
     renderSuggestion: function(suggestion) {
         return (
-            <div>{suggestion.fullname}</div>
+            <div>{suggestion.name}</div>
         );
     },
     onSuggestionsFetchRequested: function({ value, reason }) {
@@ -130,7 +130,7 @@ export const OrgUserPicker = createClass({
                                      onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
                                      onSuggestionsClearRequested={this.onSuggestionsClearRequested}
                                      onSuggestionSelected={this.onSuggestionSelected}
-                                     getSuggestionValue={suggestion => suggestion.fullname}
+                                     getSuggestionValue={suggestion => suggestion.name}
                                      renderSuggestion={this.renderSuggestion}
                                      inputProps={inputProps}
                                      shouldRenderSuggestions={input => true}/>

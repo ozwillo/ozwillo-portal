@@ -40,7 +40,7 @@ class OrganizationDesc extends React.Component {
             .then(() => {
                 if(this.props.organization.admin) {
                     this.props.organization.services.forEach((service) => {
-                        this.props.fetchUsersOfService(service.catalogEntry.id);
+                        this.props.fetchUsersOfService(service);
                     });
                 }
             });
@@ -71,8 +71,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         fetchOrganizationWithId() {
             return dispatch(fetchOrganizationWithId(ownProps.match.params.id));
         },
-        fetchUsersOfService(serviceId) {
-            return dispatch(fetchUsersOfService(serviceId));
+        fetchUsersOfService(service) {
+            return dispatch(fetchUsersOfService(service));
         }
     };
 };

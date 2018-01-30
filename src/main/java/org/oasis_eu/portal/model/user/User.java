@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.model.user;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import java.time.Instant;
 
 /**
@@ -7,18 +9,23 @@ import java.time.Instant;
  * Date: 8/14/14
  */
 public class User implements Comparable<User> {
-    String fullname;
-    String userid;
-    String email;
-    Instant created;
+    @JsonProperty("id")
+    private String userid;
+
+    private String name;
+
+    private String email;
+
+    private Instant created;
+
     boolean admin;
 
-    public String getFullname() {
-        return fullname;
+    public String getName() {
+        return name;
     }
 
-    public void setFullname(String fullname) {
-        this.fullname = fullname;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getUserid() {
@@ -53,24 +60,23 @@ public class User implements Comparable<User> {
         this.created = created;
     }
 
-    public User() {
-    }
+    public User() { }
 
-    public User(String userid, String fullname, boolean admin) {
-        this.fullname = fullname;
+    public User(String userid, String name, boolean admin) {
+        this.name = name;
         this.userid = userid;
         this.admin = admin;
     }
 
-    public User(String userid, String email, String fullname, boolean admin) {
-        this.fullname = fullname;
+    public User(String userid, String email, String name, boolean admin) {
+        this.name = name;
         this.userid = userid;
         this.email = email;
         this.admin = admin;
     }
 
-    public User(String userid, String email, String fullname, Instant created, boolean admin) {
-        this.fullname = fullname;
+    public User(String userid, String email, String name, Instant created, boolean admin) {
+        this.name = name;
         this.userid = userid;
         this.email = email;
         this.created = created;
@@ -79,11 +85,11 @@ public class User implements Comparable<User> {
 
     @Override
     public int compareTo(User user) {
-        if (getFullname() == null)
+        if (getName() == null)
             return -1;
-        else if (user.getFullname() == null)
+        else if (user.getName() == null)
             return 1;
         else
-            return getFullname().toLowerCase().compareTo(user.getFullname().toLowerCase());
+            return getName().toLowerCase().compareTo(user.getName().toLowerCase());
     }
 }

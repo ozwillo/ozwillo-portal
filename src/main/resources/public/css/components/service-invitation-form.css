@@ -23,6 +23,8 @@
 }
 
 .service-invitation-form .field {
+    display: inline;
+    width: initial;
     margin: 0 5px;
 }
 
