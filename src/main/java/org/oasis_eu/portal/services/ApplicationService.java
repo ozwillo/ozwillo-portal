@@ -246,6 +246,15 @@ public class ApplicationService {
 
     }
 
+    public void deleteAcl(String instanceId, User user) {
+        if(user.getUserid() != null && !user.getUserid().isEmpty()){
+            instanceACLStore.deleteACL(instanceId, user);
+        } else {
+            instanceACLStore.deleteACL(instanceId, user.getEmail());
+        }
+
+    }
+
     /**
      * for (un)trash
      */

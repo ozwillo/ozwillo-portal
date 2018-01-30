@@ -1,4 +1,5 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 
 //Components
@@ -6,6 +7,9 @@ import DropDownMenu from '../../dropdown-menu';
 import ServiceInvitationForm from '../../forms/service-invitation-form';
 import ServiceDropdownHeader from '../../dropdown_menus/service/service-dropdown-header';
 
+
+//action
+import { fetchDeleteAcl } from "../../../actions/acl";
 
 class ServiceDropdown extends React.Component {
 
@@ -22,15 +26,12 @@ class ServiceDropdown extends React.Component {
     constructor(props){
         super(props);
 
-        this.state = {
-            service: this.props.service
-        };
-
         //bind methods
         this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
         this.onRemoveService = this.onRemoveService.bind(this);
         this.onUpdateService = this.onUpdateService.bind(this);
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
+        this.removeUserAccessToService = this.removeUserAccessToService.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -53,18 +54,25 @@ class ServiceDropdown extends React.Component {
     }
 
     filterMemberWithoutAccess(member) {
-        if(!this.state.service.users) {
+        if(!this.props.service.users) {
             return true;
         }
 
-        return !this.state.service.users.find((user) => {
+        return !this.props.service.users.find((user) => {
             return user.id === member.id;
         })
     }
 
+    removeUserAccessToService(e) {
+        const i = e.currentTarget.dataset.member;
+        const member = this.props.service.users[i];
+
+        this.props.fetchDeleteAcl(member, this.props.service);
+    }
+
     render() {
         const isAdmin = this.props.isAdmin;
-        const service = this.state.service;
+        const service = this.props.service;
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
 
         const Header = <ServiceDropdownHeader
@@ -91,7 +99,8 @@ class ServiceDropdown extends React.Component {
                                         <p className="name">{`${user.name}`}</p>
 
                                         <div className="options">
-                                            <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
+                                            <button className="btn icon" data-member={i}
+                                                    onClick={this.removeUserAccessToService}>
                                                 <i className="fa fa-trash option-icon delete"/>
                                             </button>
                                         </div>
@@ -106,7 +115,8 @@ class ServiceDropdown extends React.Component {
                                         <div className="options">
                                             <i className="fa fa-spinner fa-spin option-icon"/>
 
-                                            <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
+                                            <button className="btn icon" data-member={i}
+                                                    onClick={this.removeUserAccessToService}>
                                                 <i className="fa fa-trash option-icon delete"/>
                                             </button>
                                         </div>
@@ -122,4 +132,12 @@ class ServiceDropdown extends React.Component {
     }
 }
 
-export default ServiceDropdown;
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchDeleteAcl(user, service) {
+            return dispatch(fetchDeleteAcl(user, service));
+        }
+    };
+};
+
+export default connect(null, mapDispatchToProps)(ServiceDropdown);

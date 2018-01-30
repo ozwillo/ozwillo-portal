@@ -50,4 +50,20 @@ public interface InstanceACLStore {
      * @param email
      */
     void createACL(String instanceId, String email);
+
+    /**
+     * Delete ACL
+     *
+     * @param instanceId
+     * @param user
+     */
+    void deleteACL(String instanceId, User user);
+
+    /**
+     * Delete ACL sent by email
+     *
+     * @param instanceId
+     * @param email
+     */
+    void deleteACL(String instanceId, String email);
 }

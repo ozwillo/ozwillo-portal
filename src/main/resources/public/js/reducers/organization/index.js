@@ -4,8 +4,13 @@ import {
     FETCH_CREATE_ORGANIZATION
 } from '../../actions/organization';
 
+import {
+    FETCH_CREATE_ACL,
+    FETCH_DELETE_ACL
+} from "../../actions/acl";
+
 import { FETCH_USERS_OF_SERVICE } from "../../actions/service";
-import { FETCH_CREATE_ACL } from "../../actions/acl";
+
 
 //Reducers
 import serviceReducer from './service';
@@ -22,6 +27,7 @@ const servicesState = (state = [], action) => {
     let nextState = Object.assign([], state);
     switch(action.type) {
         case FETCH_USERS_OF_SERVICE:
+        case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
             const i = nextState.findIndex((service) => {
                 return service.catalogEntry.id === action.serviceId;
@@ -45,6 +51,7 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_ORGANIZATION_WITH_ID:
             nextState = action.organization;
             break;
+        case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
         case FETCH_USERS_OF_SERVICE:
             nextState.services = servicesState(state.services, action);
@@ -81,6 +88,7 @@ export default (state = defaultState, action) => {
             break;
         case FETCH_USERS_OF_SERVICE:
         case FETCH_CREATE_ACL:
+        case FETCH_DELETE_ACL:
         case FETCH_ORGANIZATION_WITH_ID:
             nextState.current = currentOrganizationState(state.current, action);
             break;
