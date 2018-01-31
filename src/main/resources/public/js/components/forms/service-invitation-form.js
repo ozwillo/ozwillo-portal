@@ -54,6 +54,7 @@ class ServiceInvitationForm extends React.Component {
                 this.setState({
                     isLoading: false,
                     selectedOption: null,
+                    email: '',
                     success: 'Your request has been sent !',
                     error: ''
                 });

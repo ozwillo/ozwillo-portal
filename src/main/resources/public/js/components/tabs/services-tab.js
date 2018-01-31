@@ -34,11 +34,9 @@ class ServicesTab extends React.Component {
             servicesFilter: ''
         };
 
-
         //bind methods
         this.handleChange = this.handleChange.bind(this);
         this.filterServices = this.filterServices.bind(this);
-
     }
 
     handleChange(e) {
@@ -84,7 +82,7 @@ class ServicesTab extends React.Component {
                 <ul className="services-list undecorated-list flex-col">
                     {
                         this.filterServices(org.services, servicesFilter).map((service) => {
-                            return <li key={service.id} className="service">
+                            return <li key={service.catalogEntry.id} className="service">
                                 <ServiceDropdown service={service} members={org.members} isAdmin={org.admin}/>
                             </li>
                         })

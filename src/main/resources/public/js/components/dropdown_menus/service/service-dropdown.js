@@ -103,7 +103,7 @@ class ServiceDropdown extends React.Component {
                 <ul className="list undecorated-list flex-col">
                     {
                         service.users && service.users.map((user, i) => {
-                            return <li key={user.id}>
+                            return <li key={user.id || user.email}>
                                 <article className="item flex-row">
                                     <p className="name">{`${(user.id && user.name) || user.email}`}</p>
 
