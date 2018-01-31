@@ -21,7 +21,9 @@ class ServiceInvitationForm extends React.Component {
             selectedOption: null,
             email: '',
             addToOrganization: false,
-            isLoading: false
+            isLoading: false,
+            error: '',
+            success: ''
         };
 
         //bind methods
@@ -51,17 +53,23 @@ class ServiceInvitationForm extends React.Component {
             .then(() => {
                 this.setState({
                     isLoading: false,
-                    selectedOption: null
+                    selectedOption: null,
+                    success: 'Your request has been sent !',
+                    error: ''
                 });
             })
             .catch((err) => {
                 console.error(err);
-                this.setState({ isLoading: false });
+                this.setState({
+                    isLoading: false,
+                    success: '',
+                    error: err.error
+                });
             });
     }
 
     render() {
-        return <form className={`service-invitation-form flex-row end ${this.props.className || ''}`}
+        return <form className={`service-invitation-form flex-col end ${this.props.className || ''}`}
                      onSubmit={this.onSubmit}>
             <div className="content flex-row">
                 <Select
@@ -81,7 +89,7 @@ class ServiceInvitationForm extends React.Component {
                     <label className="label">
                         Email
                         <input name="email" type="email" className="form-control field" required={!this.state.selectedOption}
-                                value={this.state.email} onChange={this.handleChange} />
+                               value={this.state.email} onChange={this.handleChange} />
                     </label>
 
 
@@ -91,21 +99,34 @@ class ServiceInvitationForm extends React.Component {
                         Add in organization
                     </label>
                 </div>
+
+                <button type="submit" className="submit btn icon" disabled={this.state.isLoading}>
+                    {
+                        !this.state.isLoading &&
+                        <i className="fa fa-paper-plane send-icon"/>
+                    }
+
+                    {
+                        this.state.isLoading &&
+                        <i className="fa fa-spinner fa-spin send-icon"/>
+                    }
+                </button>
             </div>
 
 
-
-            <button type="submit" className="submit btn icon" disabled={this.state.isLoading}>
-                {
-                    !this.state.isLoading &&
-                    <i className="fa fa-paper-plane send-icon"/>
+            {
+                this.state.error &&
+                <span className="error">
+                    {this.state.error}
+                </span>
                 }
 
                 {
-                    this.state.isLoading &&
-                    <i className="fa fa-spinner fa-spin send-icon"/>
-                }
-            </button>
+                    this.state.success &&
+                    <span className="success">
+                    {this.state.success}
+                </span>
+            }
         </form>;
     }
 

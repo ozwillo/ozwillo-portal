@@ -36,3 +36,18 @@
 .service-invitation-form .new-user-fieldset {
     align-items: center;
 }
+
+.service-invitation-form .error,
+.service-invitation-form .success {
+    font-size: 1.1em;
+    align-self: center;
+    margin: 2px 0;
+}
+
+.service-invitation-form .error {
+    color: red;
+}
+
+.service-invitation-form .success {
+    color: green;
+}

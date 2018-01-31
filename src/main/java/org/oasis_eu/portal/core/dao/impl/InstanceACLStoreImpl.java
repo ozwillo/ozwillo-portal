@@ -3,18 +3,22 @@ package org.oasis_eu.portal.core.dao.impl;
 import org.oasis_eu.portal.core.dao.InstanceACLStore;
 import org.oasis_eu.portal.core.model.ace.ACE;
 import org.oasis_eu.portal.model.user.User;
+import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -32,6 +36,12 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 
     @Autowired
     private Kernel kernel;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Value("${kernel.portal_endpoints.apps}")
     private String endpoint;
@@ -65,25 +75,16 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
     @Override
     public void createACL(String instanceId, User user) {
         List<ACE> existingACL = getACL(instanceId);
-        List<ACE> existingPendingACL = getPendingACL(instanceId);
 
         // delete the excess ACEs
-        existingACL.stream()
-                .filter(ace -> !user.getUserid().equals(ace.getUserId()))
-                .filter(ACE::isAppUser)
-                .forEach(ace -> {
-                    logger.debug("Deleting ACE {} - {}", ace.getUserId(), ace.getUserName());
-                    kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE, new HttpEntity<>(ifmatch(ace.getEntryEtag())), Void.class, user());
-                });
+        for(ACE ace : existingACL) {
+            if(ace.getUserId().equals(user.getUserid())) {
+                String translatedBusinessMessage = messageSource.getMessage("error.msg.acl-already-exist",
+                        new Object[]{}, RequestContextUtils.getLocale(request));
+                throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
+            }
 
-        existingPendingACL.stream()
-                .filter(ace -> !user.getEmail().equals(ace.getEmail()))
-                .forEach(ace -> {
-                    logger.debug("Deleting pending ACE for {}", ace.getEmail());
-                    kernel.exchange(ace.getPendingEntryUri(), HttpMethod.DELETE,
-                            new HttpEntity<>(ifmatch(ace.getPendingEntryEtag())), Void.class, user());
-                });
-
+        }
 
         logger.debug("Creating ACE for user {} - {}", user.getUserid(), user.getEmail());
         kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST,
@@ -95,15 +96,14 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
     public void createACL(String instanceId, String email) {
         List<ACE> existingPendingACL = getPendingACL(instanceId);
 
-        // delete the excess ACEs
-        existingPendingACL.stream()
-                .filter(ace -> !ace.getEmail().equals(email))
-                .forEach(ace -> {
-                    logger.debug("Deleting pending ACE for {} ", ace.getEmail());
-                    kernel.exchange(ace.getPendingEntryUri(), HttpMethod.DELETE,
-                            new HttpEntity<>(ifmatch(ace.getPendingEntryEtag())), Void.class, user());
-                });
+        for(ACE ace : existingPendingACL) {
+            if(ace.getEmail().equals(email)) {
+                String translatedBusinessMessage = messageSource.getMessage("error.msg.acl-already-exist",
+                        new Object[]{}, RequestContextUtils.getLocale(request));
+                throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
+            }
 
+        }
 
         logger.debug("Creating pending ACE for {} ", email);
         kernel.exchange(endpoint + "/acl/instance/{instanceId}", HttpMethod.POST,

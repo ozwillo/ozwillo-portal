@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.front.my.rest;
 
+import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +13,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/my/api/service")
-public class ServiceController {
+public class ServiceController extends BaseController {
 
     @Autowired
     private ApplicationService appManagementService;

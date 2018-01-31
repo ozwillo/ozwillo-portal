@@ -26,6 +26,10 @@ class ServiceDropdown extends React.Component {
     constructor(props){
         super(props);
 
+        this.state = {
+            error: null
+        };
+
         //bind methods
         this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
         this.onRemoveService = this.onRemoveService.bind(this);
@@ -67,7 +71,15 @@ class ServiceDropdown extends React.Component {
         const i = e.currentTarget.dataset.member;
         const member = this.props.service.users[i];
 
-        this.props.fetchDeleteAcl(member, this.props.service);
+        this.props.fetchDeleteAcl(member, this.props.service)
+            .then(() => {
+                this.setState({ error: null});
+            })
+            .catch((err) => {
+                this.setState({
+                    error: { memberIndex: i, message: err.error}
+                });
+            });
     }
 
     render() {
@@ -92,37 +104,28 @@ class ServiceDropdown extends React.Component {
                     {
                         service.users && service.users.map((user, i) => {
                             return <li key={user.id}>
+                                <article className="item flex-row">
+                                    <p className="name">{`${(user.id && user.name) || user.email}`}</p>
 
-                                {
-                                    user.id &&
-                                    <article className="item flex-row">
-                                        <p className="name">{`${user.name}`}</p>
+                                    {
+                                        this.state.error && i === this.state.error.memberIndex &&
+                                        <span className="error">
+                                            {this.state.error.message}
+                                        </span>
+                                    }
 
-                                        <div className="options">
-                                            <button className="btn icon" data-member={i}
-                                                    onClick={this.removeUserAccessToService}>
-                                                <i className="fa fa-trash option-icon delete"/>
-                                            </button>
-                                        </div>
-                                    </article>
-                                }
-
-                                {
-                                    !user.id &&
-                                    <article className="item flex-row">
-                                        <p className="name">{`${user.email}`}</p>
-
-                                        <div className="options">
+                                    <div className="options">
+                                        {
+                                            !user.id &&
                                             <i className="fa fa-spinner fa-spin option-icon"/>
+                                        }
 
-                                            <button className="btn icon" data-member={i}
-                                                    onClick={this.removeUserAccessToService}>
-                                                <i className="fa fa-trash option-icon delete"/>
-                                            </button>
-                                        </div>
-                                    </article>
-                                }
-
+                                        <button className="btn icon" data-member={i}
+                                                onClick={this.removeUserAccessToService}>
+                                            <i className="fa fa-trash option-icon delete"/>
+                                        </button>
+                                    </div>
+                                </article>
                             </li>;
                         })
                     }

@@ -71,6 +71,13 @@
     align-items: end;
 }
 
+.dropdown-content .error {
+    font-size: 1.1em;
+    color: red;
+    margin: 0 10px;
+    white-space: nowrap;
+}
+
     /* icons */
 .dropdown-header .option-icon,
 .dropdown-content .option-icon ,
