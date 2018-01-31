@@ -78,7 +78,7 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
 
         // delete the excess ACEs
         for(ACE ace : existingACL) {
-            if(ace.getUserId().equals(user.getUserid())) {
+            if(ace.getUserId().equals(user.getUserid()) && ace.isAppUser()) {
                 String translatedBusinessMessage = messageSource.getMessage("error.msg.acl-already-exist",
                         new Object[]{}, RequestContextUtils.getLocale(request));
                 throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
