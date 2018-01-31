@@ -224,7 +224,7 @@ public class ApplicationService {
     }
 
     public List<User> getAllAppUsers(String instanceId) {
-        List<User> users = getAppUsers(instanceId, true);
+        List<User> users = getAppUsers(instanceId, false);
         users.addAll(getPendingAppUsers(instanceId));
         return users;
     }

@@ -114,11 +114,10 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
     public void deleteACL(String instanceId, User user) {
         getACL(instanceId)
             .stream()
-            .filter(ace -> !ace.getUserId().equals(user.getUserid()))
-            .filter(ace -> ace.getId() != null)
+            .filter(ace -> ace.getUserId().equals(user.getUserid()))
             .forEach(ace -> {
                 logger.debug("Deleting ACE for {} ", ace.getEmail());
-                kernel.exchange(endpoint + "/acl/ace/{aceId}", HttpMethod.DELETE,
+                kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE,
                         new HttpEntity<>(ifmatch(ace.getEntryEtag())), Void.class, user(), ace.getId());
             });
     }
@@ -127,10 +126,10 @@ public class InstanceACLStoreImpl implements InstanceACLStore {
     public void deleteACL(String instanceId, String email) {
         getPendingACL(instanceId)
                 .stream()
-                .filter(ace -> !ace.getEmail().equals(email))
+                .filter(ace -> ace.getEmail().equals(email))
                 .forEach(ace -> {
                     logger.debug("Deleting pending ACE for {} ", ace.getEmail());
-                    kernel.exchange(endpoint + "/pending-acl/ace/{aceId}", HttpMethod.DELETE,
+                    kernel.exchange(ace.getPendingEntryUri(), HttpMethod.DELETE,
                             new HttpEntity<>(ifmatch(ace.getPendingEntryEtag())), Void.class, user(), ace.getId());
                 });
     }
