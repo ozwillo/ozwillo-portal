@@ -105,7 +105,6 @@ public class NetworkService {
 
             //Build UIOrganization
             UIOrganization uiOrg = fillUIOrganization(org);
-            uiOrg.setMembers(getOrganizationMembers(org.getId()));
             uiOrg.setServices(services);
             uiOrg.setAdmin(userIsAdmin(org.getId()));
             organizations.add(uiOrg);
