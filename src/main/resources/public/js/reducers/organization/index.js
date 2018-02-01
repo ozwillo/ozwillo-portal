@@ -9,41 +9,42 @@ import {
     FETCH_DELETE_ACL
 } from "../../actions/acl";
 
-import { FETCH_USERS_OF_SERVICE } from "../../actions/service";
-
+import { FETCH_USERS_OF_INSTANCE } from "../../actions/instance";
 
 //Reducers
-import serviceReducer from './service';
+import instanceReducer from './instance';
 
 const defaultState = {
     organizations: [],
     current: {
+        instances: [],
         services: [],
         members: []
     }
 };
 
-const servicesState = (state = [], action) => {
+const instancesState = (state = [], action) => {
     let nextState = Object.assign([], state);
     switch(action.type) {
-        case FETCH_USERS_OF_SERVICE:
+        case FETCH_USERS_OF_INSTANCE:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
-            const i = nextState.findIndex((service) => {
-                return service.catalogEntry.id === action.serviceId;
+            const i = nextState.findIndex((instance) => {
+                return instance.id === action.instanceId;
             });
 
             if(i < 0){
                 return state;
             }
 
-            nextState[i] = serviceReducer(nextState[i], action);
+            nextState[i] = instanceReducer(nextState[i], action);
             break;
         default:
             return state;
     }
     return nextState;
 };
+
 
 const currentOrganizationState = (state = {}, action) => {
     let nextState = Object.assign({}, state);
@@ -53,8 +54,8 @@ const currentOrganizationState = (state = {}, action) => {
             break;
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
-        case FETCH_USERS_OF_SERVICE:
-            nextState.services = servicesState(state.services, action);
+        case FETCH_USERS_OF_INSTANCE:
+            nextState.instances = instancesState(state.instances, action);
             break;
         default:
             return state;
@@ -86,7 +87,7 @@ export default (state = defaultState, action) => {
         case FETCH_CREATE_ORGANIZATION:
             nextState.organizations = organizationsState(nextState.organizations, action);
             break;
-        case FETCH_USERS_OF_SERVICE:
+        case FETCH_USERS_OF_INSTANCE:
         case FETCH_CREATE_ACL:
         case FETCH_DELETE_ACL:
         case FETCH_ORGANIZATION_WITH_ID:

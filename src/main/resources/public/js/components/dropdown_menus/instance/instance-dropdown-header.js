@@ -1,12 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-class ServiceDropdownHeader extends React.Component {
+class InstanceDropdownHeader extends React.Component {
 
     static propTypes = {
-        service: PropTypes.object.isRequired,
-        onRemoveService: PropTypes.func.isRequired,
-        onUpdateService: PropTypes.func.isRequired,
+        instance: PropTypes.object.isRequired,
+        onRemoveInstance: PropTypes.func.isRequired,
+        onUpdateInstance: PropTypes.func.isRequired,
         onClickConfigIcon: PropTypes.func.isRequired,
         isAdmin: PropTypes.bool
     };
@@ -24,31 +24,31 @@ class ServiceDropdownHeader extends React.Component {
     }
 
     onCheckboxChange() {
-        this.props.onUpdateService({ isPublic: !this.props.service.isPublic });
+        this.props.onUpdateInstance({ isPublic: !this.props.instance.isPublic });
     }
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.onRemoveService(this.props.service);
+        this.props.onRemoveInstance(this.props.instance);
     }
 
     onClickConfigIcon() {
-        this.props.onClickConfigIcon(this.props.service);
+        this.props.onClickConfigIcon(this.props.instance);
     }
 
     render() {
         const isAdmin = this.props.isAdmin;
-        const service = this.props.service;
+        const instance = this.props.instance;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
-                <span className="dropdown-name">{service.name}</span>
+                <span className="dropdown-name">{instance.name}</span>
                 {
                     isAdmin &&
                     <div className="options flex-row end">
                         <label>
                             Public
-                            <input className="field" className="field" name="isPublic" type="checkbox"
-                                   checked={service.isPublic} onChange={this.onCheckboxChange}/>
+                            <input className="field" name="isPublic" type="checkbox"
+                                   checked={instance.isPublic} onChange={this.onCheckboxChange}/>
                         </label>
                         <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
                             <i className="fa fa-cog option-icon"/>
@@ -63,4 +63,4 @@ class ServiceDropdownHeader extends React.Component {
     }
 }
 
-export default ServiceDropdownHeader;
+export default InstanceDropdownHeader;

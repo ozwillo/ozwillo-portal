@@ -4,17 +4,17 @@ import PropTypes from 'prop-types';
 
 //Components
 import DropDownMenu from '../../dropdown-menu';
-import ServiceInvitationForm from '../../forms/service-invitation-form';
-import ServiceDropdownHeader from '../../dropdown_menus/service/service-dropdown-header';
+import InstanceInvitationForm from '../../forms/instance-invitation-form';
+import InstanceDropdownHeader from './instance-dropdown-header';
 
 
 //action
 import { fetchDeleteAcl } from "../../../actions/acl";
 
-class ServiceDropdown extends React.Component {
+class InstanceDropdown extends React.Component {
 
     static propTypes = {
-        service: PropTypes.object.isRequired,
+        instance: PropTypes.object.isRequired,
         members: PropTypes.array.isRequired,
         isAdmin: PropTypes.bool
     };
@@ -32,46 +32,46 @@ class ServiceDropdown extends React.Component {
 
         //bind methods
         this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
-        this.onRemoveService = this.onRemoveService.bind(this);
-        this.onUpdateService = this.onUpdateService.bind(this);
+        this.onRemoveInstance = this.onRemoveInstance.bind(this);
+        this.onUpdateInstance = this.onUpdateInstance.bind(this);
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
-        this.removeUserAccessToService = this.removeUserAccessToService.bind(this);
+        this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            service: nextProps.service,
+            instance: nextProps.instance,
             members: nextProps.members
         });
     }
 
-    onClickConfigIcon(service) {
-        console.log('onClickConfigIcon ', service);
+    onClickConfigIcon(instance) {
+        console.log('onClickConfigIcon ', instance);
     }
 
-    onRemoveService(service) {
-        console.log('onRemoveService ', service);
+    onRemoveInstance(instance) {
+        console.log('onRemoveInstance ', instance);
     }
 
-    onUpdateService(service) {
-        this.setState({ service: Object.assign({}, this.props.service, service)});
+    onUpdateInstance(instance) {
+        this.setState({ instance: Object.assign({}, this.props.instance, instance)});
     }
 
     filterMemberWithoutAccess(member) {
-        if(!this.props.service.users) {
+        if(!this.props.instance.users) {
             return true;
         }
 
-        return !this.props.service.users.find((user) => {
+        return !this.props.instance.users.find((user) => {
             return user.id === member.id;
         })
     }
 
-    removeUserAccessToService(e) {
+    removeUserAccessToInstance(e) {
         const i = e.currentTarget.dataset.member;
-        const member = this.props.service.users[i];
+        const member = this.props.instance.users[i];
 
-        this.props.fetchDeleteAcl(member, this.props.service)
+        this.props.fetchDeleteAcl(member, this.props.instance)
             .then(() => {
                 this.setState({ error: null});
             })
@@ -84,25 +84,25 @@ class ServiceDropdown extends React.Component {
 
     render() {
         const isAdmin = this.props.isAdmin;
-        const service = this.props.service;
+        const instance = this.props.instance;
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
 
-        const Header = <ServiceDropdownHeader
+        const Header = <InstanceDropdownHeader
                             isAdmin={isAdmin}
-                            service={service}
+                            instance={instance}
                             onClickConfigIcon={this.onClickConfigIcon}
-                            onRemoveService={this.onRemoveService}
-                            onUpdateService={this.onUpdateService}/>;
+                            onRemoveInstance={this.onRemoveInstance}
+                            onUpdateInstance={this.onUpdateInstance}/>;
 
-        const Footer = (isAdmin && !service.isPublic && <footer>
-            <ServiceInvitationForm members={membersWithoutAccess} service={this.props.service}/>
+        const Footer = (isAdmin && !instance.isPublic && <footer>
+            <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAdmin && !service.isPublic}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAdmin && !instance.isPublic}>
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
                     {
-                        service.users && service.users.map((user, i) => {
+                        instance.users && instance.users.map((user, i) => {
                             return <li key={user.id || user.email}>
                                 <article className="item flex-row">
                                     <p className="name">{`${(user.id && user.name) || user.email}`}</p>
@@ -121,7 +121,7 @@ class ServiceDropdown extends React.Component {
                                         }
 
                                         <button className="btn icon" data-member={i}
-                                                onClick={this.removeUserAccessToService}>
+                                                onClick={this.removeUserAccessToInstance}>
                                             <i className="fa fa-trash option-icon delete"/>
                                         </button>
                                     </div>
@@ -137,10 +137,10 @@ class ServiceDropdown extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchDeleteAcl(user, service) {
-            return dispatch(fetchDeleteAcl(user, service));
+        fetchDeleteAcl(user, instance) {
+            return dispatch(fetchDeleteAcl(user, instance));
         }
     };
 };
 
-export default connect(null, mapDispatchToProps)(ServiceDropdown);
+export default connect(null, mapDispatchToProps)(InstanceDropdown);

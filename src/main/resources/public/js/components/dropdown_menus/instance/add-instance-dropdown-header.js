@@ -2,21 +2,21 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-class AddServiceDropdownHeader extends React.Component {
+class AddInstanceDropdownHeader extends React.Component {
 
     static propTypes = {
-        services: PropTypes.array.isRequired,
-        service: PropTypes.object.isRequired,
-        onAddService: PropTypes.func.isRequired,
-        onChangeService: PropTypes.func.isRequired,
-        onUpdateService: PropTypes.func.isRequired
+        instances: PropTypes.array.isRequired,
+        instance: PropTypes.object.isRequired,
+        onAddInstance: PropTypes.func.isRequired,
+        onChangeInstance: PropTypes.func.isRequired,
+        onUpdateInstance: PropTypes.func.isRequired
     };
 
     constructor(props) {
         super(props);
 
         this.state = {
-            options: this.createOptions(this.props.services)
+            options: this.createOptions(this.props.instances)
         };
 
         //bind methods
@@ -25,13 +25,13 @@ class AddServiceDropdownHeader extends React.Component {
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    createOptions(services) {
+    createOptions(instances) {
         const options = [];
 
-        services.forEach((service) => {
+        instances.forEach((instance) => {
             options.push({
-                value: service.id,
-                label: service.name
+                value: instance.id,
+                label: instance.name
             });
         });
 
@@ -40,41 +40,41 @@ class AddServiceDropdownHeader extends React.Component {
 
     componentWillReceiveProps(nextProps){
         this.setState({
-            options: this.createOptions(nextProps.services)
+            options: this.createOptions(nextProps.instances)
         });
     }
 
     onOptionChange(selectedOption) {
-        this.props.onChangeService(selectedOption.value)
+        this.props.onChangeInstance(selectedOption.value)
     }
 
     onCheckboxChange() {
-        this.props.onUpdateService({ isPublic: !this.props.service.isPublic });
+        this.props.onUpdateInstance({ isPublic: !this.props.instance.isPublic });
     }
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.onAddService();
+        this.props.onAddInstance();
     }
 
     render() {
-        const service = this.props.service;
+        const instance = this.props.instance;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <Select
                     className="select"
                     name="app"
-                    value={service.id}
+                    value={instance.id}
                     onChange={this.onOptionChange}
                     options={this.state.options}
                     clearable={false}
-                    placeholder="Services"/>
+                    placeholder="Instances"/>
 
                 <div className="options flex-row end">
                     <label>
                         Public
                         <input className="field" name="isPublic" type="checkbox"
-                               checked={service.isPublic} onChange={this.onCheckboxChange}/>
+                               checked={instance.isPublic} onChange={this.onCheckboxChange}/>
                     </label>
                     <button type="submit" className="btn icon"><i className="fa fa-plus option-icon"/></button>
                 </div>
@@ -83,4 +83,4 @@ class AddServiceDropdownHeader extends React.Component {
     }
 }
 
-export default AddServiceDropdownHeader;
+export default AddInstanceDropdownHeader;

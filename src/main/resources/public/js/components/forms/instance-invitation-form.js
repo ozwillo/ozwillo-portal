@@ -7,10 +7,10 @@ import Select from 'react-select';
 //Action
 import { fetchCreateAcl } from "../../actions/acl";
 
-class ServiceInvitationForm extends React.Component {
+class InstanceInvitationForm extends React.Component {
 
     static propTypes = {
-        service: PropTypes.object.isRequired,
+        instance: PropTypes.object.isRequired,
         members: PropTypes.array.isRequired
     };
 
@@ -49,7 +49,7 @@ class ServiceInvitationForm extends React.Component {
         this.setState({ isLoading: true });
 
         const user = this.state.selectedOption || { email: this.state.email };
-        this.props.fetchCreateAcl(user, this.props.service)
+        this.props.fetchCreateAcl(user, this.props.instance)
             .then(() => {
                 this.setState({
                     isLoading: false,
@@ -70,7 +70,7 @@ class ServiceInvitationForm extends React.Component {
     }
 
     render() {
-        return <form className={`service-invitation-form flex-col end ${this.props.className || ''}`}
+        return <form className={`instance-invitation-form flex-col end ${this.props.className || ''}`}
                      onSubmit={this.onSubmit}>
             <div className="content flex-row">
                 <Select
@@ -135,10 +135,10 @@ class ServiceInvitationForm extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchCreateAcl(user, serviceId) {
-            return dispatch(fetchCreateAcl(user, serviceId));
+        fetchCreateAcl(user, instance) {
+            return dispatch(fetchCreateAcl(user, instance));
         }
     };
 };
 
-export default connect(null, mapDispatchToProps)(ServiceInvitationForm);
+export default connect(null, mapDispatchToProps)(InstanceInvitationForm);

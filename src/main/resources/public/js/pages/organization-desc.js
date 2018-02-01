@@ -3,26 +3,28 @@ import { connect } from 'react-redux';
 
 //Components
 import Tabs from '../components/tabs';
-import { ServicesTabHeader, ServicesTab } from '../components/tabs/services-tab';
+import { InstancesTabHeader, InstancesTab } from '../components/tabs/instances-tab';
 import { MembersTabHeader, MembersTab } from '../components/tabs/members-tab';
 import { AdminTabHeader, AdminTab } from '../components/tabs/admin-tab';
 
 //actions
 import { fetchOrganizationWithId } from "../actions/organization";
 import PropTypes from "prop-types";
-import { fetchUsersOfService } from "../actions/service";
+import { fetchUsersOfInstance } from "../actions/instance";
 
 const tabsHeaders = {
-    services: ServicesTabHeader,
+    instances: InstancesTabHeader,
     members: MembersTabHeader,
     admin: AdminTabHeader
 };
 
 const tabs = {
-    services: ServicesTab,
+    instances: InstancesTab,
     members: MembersTab,
     admin: AdminTab
 };
+
+const defaultTabToDisplay = 'instances';
 
 
 class OrganizationDesc extends React.Component {
@@ -39,15 +41,15 @@ class OrganizationDesc extends React.Component {
         this.props.fetchOrganizationWithId()
             .then(() => {
                 if(this.props.organization.admin) {
-                    this.props.organization.services.forEach((service) => {
-                        this.props.fetchUsersOfService(service);
+                    this.props.organization.instances.forEach((instance) => {
+                        this.props.fetchUsersOfInstance(instance);
                     });
                 }
             });
     }
 
     render() {
-        const tabToDisplay = this.props.match.params.tab || 'services';
+        const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
 
         return <section className="organization-desc oz-body wrapper flex-col">
             <header className="header flex-row">
@@ -71,8 +73,8 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         fetchOrganizationWithId() {
             return dispatch(fetchOrganizationWithId(ownProps.match.params.id));
         },
-        fetchUsersOfService(service) {
-            return dispatch(fetchUsersOfService(service));
+        fetchUsersOfInstance(instance) {
+            return dispatch(fetchUsersOfInstance(instance));
         }
     };
 };

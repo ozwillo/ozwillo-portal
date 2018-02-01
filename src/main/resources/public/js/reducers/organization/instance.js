@@ -1,17 +1,20 @@
-import { FETCH_USERS_OF_SERVICE } from "../../actions/service";
 import {
     FETCH_CREATE_ACL,
-    FETCH_DELETE_ACL,
+    FETCH_DELETE_ACL
 } from "../../actions/acl";
 
+import { FETCH_USERS_OF_INSTANCE } from "../../actions/instance";
+
 const defaultState = {
+    services: [],
     users: []
 };
 
+
 export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
-    switch (action.type) {
-        case FETCH_USERS_OF_SERVICE:
+    switch(action.type) {
+        case FETCH_USERS_OF_INSTANCE:
             nextState.users = action.users;
             break;
         case FETCH_CREATE_ACL:

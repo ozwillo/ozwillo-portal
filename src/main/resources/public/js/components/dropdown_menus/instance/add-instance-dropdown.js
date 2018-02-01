@@ -3,31 +3,31 @@ import { connect } from 'react-redux';
 
 //Components
 import DropDownMenu from "../../dropdown-menu";
-import AddServiceDropdownHeader from './add-service-dropdown-header';
-import AddServiceDropdownFooter from './add-service-dropdown-footer';
+import AddInstanceDropdownHeader from './add-instance-dropdown-header';
+import AddInstanceDropdownFooter from './add-instance-dropdown-footer';
 
 
 
-class AddServiceDropdown extends React.Component {
+class AddInstanceDropdown extends React.Component {
 
     constructor(props) {
         super(props);
 
         this.state = {
-            services: this.props.services,
-            service: (this.props.services.length && this.props.services[0]) || this.defaultService
+            instances: this.props.instances,
+            instance: (this.props.instances.length && this.props.instances[0]) || this.defaultInstance
         };
 
         //bind methods
-        this.onAddService = this.onAddService.bind(this);
+        this.onAddInstance = this.onAddInstance.bind(this);
         this.onAddMember = this.onAddMember.bind(this);
         this.onRemoveMember = this.onRemoveMember.bind(this);
-        this.onUpdateService = this.onUpdateService.bind(this);
-        this.onChangeService = this.onChangeService.bind(this);
+        this.onUpdateInstance = this.onUpdateInstance.bind(this);
+        this.onChangeInstance = this.onChangeInstance.bind(this);
         this.filterMembersWithoutAccess = this.filterMembersWithoutAccess.bind(this);
     }
 
-   get defaultService() {
+   get defaultInstance() {
         return {
             isPublic: true,
             members: []
@@ -36,74 +36,74 @@ class AddServiceDropdown extends React.Component {
 
     componentWillReceiveProps(nextProps) {
         this.setState({
-            services: nextProps.services
+            instances: nextProps.instances
         })
     }
 
-    onAddService(service) {
-        console.log('TODO onAddService :', service);
+    onAddInstance(instance) {
+        console.log('TODO onAddInstance :', instance);
     }
 
     onAddMember(member) {
-        const members = Object.assign([], this.state.service.members);
+        const members = Object.assign([], this.state.instance.members);
         members.push(member);
         this.setState({
-            service: Object.assign({}, this.state.service, { members })
+            instance: Object.assign({}, this.state.instance, { members })
         });
     }
 
     onRemoveMember(e) {
         const memberIndex = parseInt(e.currentTarget.dataset.member, 10);
-        const members = Object.assign([], this.state.service.members);
+        const members = Object.assign([], this.state.instance.members);
         members.splice(memberIndex, 1);
         this.setState({
-            service: Object.assign({}, this.state.service, { members })
+            instance: Object.assign({}, this.state.instance, { members })
         });
     }
 
-    onChangeService(id) {
-        const service = this.state.services.find((service) => {
-            return service.id === id;
+    onChangeInstance(id) {
+        const instance = this.state.instances.find((instance) => {
+            return instance.id === id;
         });
 
 
-        this.setState({ service });
+        this.setState({ instance });
     }
 
-    onUpdateService(service) {
+    onUpdateInstance(instance) {
         this.setState({
-            service:  Object.assign({}, this.state.service, service)
+            instance:  Object.assign({}, this.state.instance, instance)
         });
     }
 
     filterMembersWithoutAccess(member) {
-        return !this.state.service.members.find((m) => {
+        return !this.state.instance.members.find((m) => {
             return member.id === m.id;
         });
     }
 
     render() {
-        const services =  this.state.services;
-        const service = this.state.service;
+        const instances =  this.state.instances;
+        const instance = this.state.instance;
         const membersWithoutAccess = this.props.members.filter(this.filterMembersWithoutAccess);
 
-        const Header = <AddServiceDropdownHeader
-            services={services}
-            service={service}
-            onAddService={this.onAddService}
-            onUpdateService={this.onUpdateService}
-            onChangeService={this.onChangeService}/>;
+        const Header = <AddInstanceDropdownHeader
+            instances={instances}
+            instance={instance}
+            onAddInstance={this.onAddInstance}
+            onUpdateInstance={this.onUpdateInstance}
+            onChangeInstance={this.onChangeInstance}/>;
 
-        const Footer = (!service.isPublic &&
-            <AddServiceDropdownFooter
+        const Footer = (!instance.isPublic &&
+            <AddInstanceDropdownFooter
                 members={membersWithoutAccess}
                 onAddMember={this.onAddMember}/>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={!service.isPublic}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={!instance.isPublic}>
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
                     {
-                        service.members.map((member, i) => {
+                        instance.members.map((member, i) => {
                             return <li key={member.id}>
                                 <article className="item flex-row">
                                     <p className="name">{`${member.firstname} ${member.lastname}`}</p>
@@ -126,7 +126,7 @@ class AddServiceDropdown extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        services: state.service.services,
+        instances: state.instance.instances,
         members: state.member.members
     };
 };
@@ -136,4 +136,4 @@ const mapDispatchToProps = dispatch => {
 };
 
 
-export default connect(mapStateToProps, mapDispatchToProps) (AddServiceDropdown);
+export default connect(mapStateToProps, mapDispatchToProps) (AddInstanceDropdown);

@@ -12,8 +12,8 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/my/api/service")
-public class ServiceController extends BaseController {
+@RequestMapping("/my/api/instance")
+public class InstanceController extends BaseController {
 
     @Autowired
     private ApplicationService appManagementService;

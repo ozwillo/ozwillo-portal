@@ -18,12 +18,12 @@
 @import 'components/react-autosuggest.css';
 @import 'components/select.css';
 @import 'components/service.css';
-@import 'components/service-invitation-form.css';
+@import 'components/instance-invitation-form.css';
 @import 'components/side-menu.css';
 @import 'components/tabs.css';
 
 @import 'components/tabs/admin-tab.css';
-@import 'components/tabs/services-tab.css';
+@import 'components/tabs/instances-tab.css';
 @import 'components/tabs/members-tab.css';
 
 

@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-class AddServiceDropdownFooter extends React.Component {
+class AddInstanceDropdownFooter extends React.Component {
 
     static propTypes = {
         members: PropTypes.array.isRequired,
@@ -80,4 +80,4 @@ class AddServiceDropdownFooter extends React.Component {
     }
 }
 
-export default AddServiceDropdownFooter;
+export default AddInstanceDropdownFooter;

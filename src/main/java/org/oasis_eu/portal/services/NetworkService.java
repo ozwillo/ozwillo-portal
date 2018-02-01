@@ -4,6 +4,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Instant;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.authority.AuthorityType;
@@ -136,9 +137,15 @@ public class NetworkService {
         UIOrganization uiOrg = fillUIOrganization(org);
         uiOrg.setMembers(getOrganizationMembers(org.getId()));
         uiOrg.setServices(services);
+        uiOrg.setInstances(getOrganizationInstances(org.getId()));
         uiOrg.setAdmin(userIsAdmin(organizationId));
 
         return uiOrg;
+    }
+
+    private List<MyAppsInstance> getOrganizationInstances(String organizationId) {
+        Authority authority = getOrganizationAuthority(organizationId);
+        return applicationService.getMyInstances(authority, true);
     }
 
     private UIOrganization fillUIOrganization(Organization organization) {
