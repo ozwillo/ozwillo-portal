@@ -255,11 +255,23 @@ public class ApplicationService {
     }
 
     public void deleteAcl(String instanceId, User user) {
-        if(user.getUserid() != null && !user.getUserid().isEmpty()){
-            instanceACLStore.deleteACL(instanceId, user);
-        } else {
+        //Delete pending ACL
+        if(user.getUserid() == null || user.getUserid().isEmpty()){
             instanceACLStore.deleteACL(instanceId, user.getEmail());
+            return;
         }
+
+        //Delete ACL
+        instanceACLStore.deleteACL(instanceId, user);
+
+        //Delete user's subscriptions for services of instance
+        List<ServiceEntry> instanceServices = catalogStore.findServicesOfInstance(instanceId);
+        subscriptionStore.findByUserId(user.getUserid())
+                .stream()
+                .filter(sub -> instanceServices
+                        .stream()
+                        .anyMatch(s -> s.getId().equals(sub.getServiceId())))
+                .forEach(sub -> subscriptionStore.unsubscribe(sub.getId()));
 
     }
 
