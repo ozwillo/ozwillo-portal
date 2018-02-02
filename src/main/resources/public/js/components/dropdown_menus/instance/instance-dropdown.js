@@ -141,7 +141,7 @@ class InstanceDropdown extends React.Component {
                             <th className="fill-content" colSpan={2}/>
                             {
                                 instance.services.map((service) => {
-                                    return <th className="center">
+                                    return <th key={service.catalogEntry.id} className="center">
                                         <span title={service.name}>{service.name.toAcronyme()}</span>
                                     </th>
                                 })
@@ -154,7 +154,7 @@ class InstanceDropdown extends React.Component {
                             instance.users && instance.users.map((user, i) => {
                                 const status = this.state.status[user.id];
 
-                                return <tr>
+                                return <tr key={user.id || user.email}>
                                     <td>
                                         <article className="item flex-row">
                                             <span className="name">{`${(user.id && user.name) || user.email}`}</span>
@@ -174,7 +174,7 @@ class InstanceDropdown extends React.Component {
                                     {
                                         user.id &&
                                         instance.services.map((service) => {
-                                            return <td className="center">
+                                            return <td key={service.catalogEntry.id} className="center">
                                                 {
                                                     (!status || !status.subIsSent) &&
                                                     <button className="btn icon" onClick={this.createSubscription}
