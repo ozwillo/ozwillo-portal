@@ -116,20 +116,21 @@ class InstanceDropdown extends React.Component {
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
-        const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
+        const isPending = instance.applicationInstance.status === 'PENDING';
+        const isAvailable = isAdmin && !instance.isPublic && !isPending;
 
+        const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
         const Header = <InstanceDropdownHeader
                             isAdmin={isAdmin}
                             instance={instance}
                             onClickConfigIcon={this.onClickConfigIcon}
                             onRemoveInstance={this.onRemoveInstance}
                             onUpdateInstance={this.onUpdateInstance}/>;
-
-        const Footer = (isAdmin && !instance.isPublic && <footer>
+        const Footer = (isAvailable && <footer>
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAdmin && !instance.isPublic}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable}>
             <section className='dropdown-content'>
                 <table className="table">
                     <thead>

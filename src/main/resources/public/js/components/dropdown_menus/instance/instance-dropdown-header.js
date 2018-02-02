@@ -39,11 +39,13 @@ class InstanceDropdownHeader extends React.Component {
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
+        const isPending = instance.applicationInstance.status === 'PENDING';
+
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <span className="dropdown-name">{instance.name}</span>
                 {
-                    isAdmin &&
+                    !isPending && isAdmin &&
                     <div className="options flex-row end">
                         <label>
                             Public
@@ -56,6 +58,13 @@ class InstanceDropdownHeader extends React.Component {
                         <button type="submit" className="btn icon">
                             <i className="fa fa-trash option-icon delete"/>
                         </button>
+                    </div>
+                }
+
+                {
+                    isPending &&
+                    <div className="options flex-row end">
+                        <i className="fa fa-spinner fa-spin option-icon"/>
                     </div>
                 }
             </form>

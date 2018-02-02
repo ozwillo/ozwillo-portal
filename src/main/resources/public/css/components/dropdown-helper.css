@@ -28,6 +28,10 @@
     color: white !important;
 }
 
+.dropdown-header .form {
+    min-height: 38px;
+}
+
 .dropdown-content .link {
     color: #6f438e
 }
