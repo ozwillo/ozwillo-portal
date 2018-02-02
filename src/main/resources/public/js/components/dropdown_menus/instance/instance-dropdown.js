@@ -10,6 +10,7 @@ import InstanceDropdownHeader from './instance-dropdown-header';
 
 //action
 import { fetchDeleteAcl } from "../../../actions/acl";
+import { fetchCreateSubscription} from "../../../actions/subscription";
 
 class InstanceDropdown extends React.Component {
 
@@ -27,7 +28,8 @@ class InstanceDropdown extends React.Component {
         super(props);
 
         this.state = {
-            error: null
+            error: null,
+            status: {}
         };
 
         //bind methods
@@ -36,6 +38,7 @@ class InstanceDropdown extends React.Component {
         this.onUpdateInstance = this.onUpdateInstance.bind(this);
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
         this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
+        this.createSubscription = this.createSubscription.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -73,11 +76,39 @@ class InstanceDropdown extends React.Component {
 
         this.props.fetchDeleteAcl(member, this.props.instance)
             .then(() => {
-                this.setState({ error: null});
+                this.setState({
+                    status: Object.assign({}, this.state.status, {
+                        [member.id]: { error: null }
+                    })
+                });
             })
             .catch((err) => {
                 this.setState({
-                    error: { memberIndex: i, message: err.error}
+                    status: Object.assign({}, this.state.status, {
+                        [member.id]: { error: err.error }
+                    })
+                });
+            });
+    }
+
+    createSubscription(e) {
+        const el = e.currentTarget;
+        const userId = el.dataset.user;
+        const serviceId = el.dataset.service;
+
+        fetchCreateSubscription(userId, serviceId)
+            .then(() => {
+                this.setState({
+                    status: Object.assign({}, this.state.status, {
+                        [userId]: { subIsSent: true, error: null }
+                    })
+                });
+            })
+            .catch((err) => {
+                this.setState({
+                    status: Object.assign({}, this.state.status, {
+                        [userId]: { error: err.error }
+                    })
                 });
             });
     }
@@ -100,36 +131,89 @@ class InstanceDropdown extends React.Component {
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={isAdmin && !instance.isPublic}>
             <section className='dropdown-content'>
-                <ul className="list undecorated-list flex-col">
-                    {
-                        instance.users && instance.users.map((user, i) => {
-                            return <li key={user.id || user.email}>
-                                <article className="item flex-row">
-                                    <p className="name">{`${(user.id && user.name) || user.email}`}</p>
+                <table className="table">
+                    <thead>
+                        {/*
+                            Header: size: 3+ n (services)
+                            user's name; error message; n services; options
+                        */}
+                        <tr>
+                            <th className="fill-content" colSpan={2}/>
+                            {
+                                instance.services.map((service) => {
+                                    return <th className="center">
+                                        <span title={service.name}>{service.name.toAcronyme()}</span>
+                                    </th>
+                                })
+                            }
+                            <th/>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {
+                            instance.users && instance.users.map((user, i) => {
+                                const status = this.state.status[user.id];
 
+                                return <tr>
+                                    <td>
+                                        <article className="item flex-row">
+                                            <span className="name">{`${(user.id && user.name) || user.email}`}</span>
+                                        </article>
+                                    </td>
+
+                                    {/* error messages */}
+                                    <td className="fill-content">
+                                        {
+                                            status && status.error &&
+                                            <span className="error">{status.error}</span>
+                                        }
+                                    </td>
+
+
+                                    {/* Instances */}
                                     {
-                                        this.state.error && i === this.state.error.memberIndex &&
-                                        <span className="error">
-                                            {this.state.error.message}
-                                        </span>
+                                        user.id &&
+                                        instance.services.map((service) => {
+                                            return <td className="center">
+                                                {
+                                                    (!status || !status.subIsSent) &&
+                                                    <button className="btn icon" onClick={this.createSubscription}
+                                                            data-user={user.id} data-service={service.catalogEntry.id}>
+                                                        <i className="fa fa-share option-icon"/>
+                                                    </button>
+                                                    || <i className="fa fa-check option-icon success"/>
+                                                }
+                                            </td>
+                                        })
                                     }
 
-                                    <div className="options">
-                                        {
-                                            !user.id &&
-                                            <i className="fa fa-spinner fa-spin option-icon"/>
-                                        }
 
-                                        <button className="btn icon" data-member={i}
-                                                onClick={this.removeUserAccessToInstance}>
-                                            <i className="fa fa-trash option-icon delete"/>
-                                        </button>
-                                    </div>
-                                </article>
-                            </li>;
-                        })
-                    }
-                </ul>
+                                    {/* Options */}
+                                    {
+                                        !user.id &&
+                                        <td colSpan={instance.services.length + 1} className="right">
+                                            <i className="fa fa-spinner fa-spin option-icon"/>
+                                            <button className="btn icon" data-member={i}
+                                                    onClick={this.removeUserAccessToInstance}>
+                                                <i className="fa fa-trash option-icon delete"/>
+                                            </button>
+                                        </td>
+                                    }
+
+                                    {
+                                        user.id &&
+                                        <td colSpan={instance.services.length} className="right">
+                                            <button className="btn icon" data-member={i}
+                                                    onClick={this.removeUserAccessToInstance}>
+                                                <i className="fa fa-trash option-icon delete"/>
+                                            </button>
+                                        </td>
+                                    }
+                                </tr>
+                            })
+                        }
+                    </tbody>
+                </table>
             </section>
         </DropDownMenu>;
     }

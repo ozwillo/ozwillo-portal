@@ -7,6 +7,9 @@ import I18n from "redux-i18n"
 
 import App from './app';
 
+//Load plugins
+import './util/string-plugin';
+
 ReactDOM.render(
     <Provider store={store}>
         <I18n translations={{}} initialLang="en" useReducer={true}>

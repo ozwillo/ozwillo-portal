@@ -96,3 +96,36 @@
     color: #ce1717;
 }
 
+
+.dropdown-content .table {
+    width: 100%;
+}
+
+.dropdown-content .table th {
+    min-width: 80px;
+    white-space: nowrap;
+}
+
+.dropdown-content .table tr > td {
+    vertical-align: middle;
+}
+
+.dropdown-content .table .fill-content {
+    width: 100%;
+}
+
+.dropdown-content .table .center {
+    text-align: center;
+}
+
+.dropdown-content .table .right {
+    text-align: right;
+}
+
+.dropdown-content .success {
+    color: green
+}
+
+.dropdown-content .error {
+    color: red
+}

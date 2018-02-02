@@ -185,19 +185,27 @@ public class ApplicationService {
         unsubscribeUsers(existing.stream().filter(s -> !usersToSubscribe.contains(s)).collect(Collectors.toSet()), serviceId);
     }
 
+    public void subscribeUser(String userId, String serviceId) {
+        Subscription s = new Subscription();
+        s.setSubscriptionType(SubscriptionType.ORGANIZATION);
+        s.setServiceId(serviceId);
+        s.setUserId(userId);
+
+        subscriptionStore.create(userId, s);
+    }
+
     public void subscribeUsers(Set<String> users, String serviceId) {
         users.forEach(u -> {
-            Subscription s = new Subscription();
-            s.setSubscriptionType(SubscriptionType.ORGANIZATION);
-            s.setServiceId(serviceId);
-            s.setUserId(u);
-
-            subscriptionStore.create(u, s);
+            subscribeUser(u, serviceId);
         });
     }
 
+    public void unsubscribeUser(String userId, String serviceId) {
+        subscriptionStore.unsubscribe(userId, serviceId, SubscriptionType.ORGANIZATION);
+    }
+
     public void unsubscribeUsers(Set<String> users, String serviceId) {
-        users.forEach(u -> subscriptionStore.unsubscribe(u, serviceId, SubscriptionType.ORGANIZATION));
+        users.forEach(u -> unsubscribeUser(u, serviceId));
     }
 
     /**

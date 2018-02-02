@@ -13,12 +13,15 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,6 +44,12 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private HttpServletRequest request;
 
     @Override
     @Cacheable("subscriptions")
@@ -68,11 +77,20 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             installedStatusRepository.delete(status);
         }
 
-        String uri = endpoint + "/user/{user_id}";
-        ResponseEntity<Void> kernelResp = kernel.exchange(uri, HttpMethod.POST,
-            new HttpEntity<>(subscription), Void.class, user(), userId);
-        // validate response body
-        kernel.getBodyUnlessClientError(kernelResp, Void.class, uri); // TODO test
+        try {
+            String uri = endpoint + "/user/{user_id}";
+            ResponseEntity<Void> kernelResp = kernel.exchange(uri, HttpMethod.POST,
+                    new HttpEntity<>(subscription), Void.class, user(), userId);
+            // validate response body
+            kernel.getBodyUnlessClientError(kernelResp, Void.class, uri); // TODO test
+
+        } catch(WrongQueryException e) {
+            String translatedBusinessMessage = messageSource.getMessage("error.msg.user-is-already-subscribed",
+                    new Object[]{}, RequestContextUtils.getLocale(request));
+            e.setTranslatedBusinessMessage(translatedBusinessMessage);
+            throw e;
+        }
+
     }
 
 
