@@ -20,7 +20,7 @@ class OrganizationDropdownHeader extends React.Component {
                 </span>
 
                 <div className="options flex-row end">
-                    <Link className="btn icon" to={`/my/organization/${organization.id}/services`}>
+                    <Link className="btn icon" to={`/my/organization/${organization.id}/instances`}>
                         <i className="fa fa-list-alt option-icon"/>
                     </Link>
 
