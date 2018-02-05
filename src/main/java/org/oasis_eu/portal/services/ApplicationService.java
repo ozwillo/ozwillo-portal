@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import org.joda.time.DateTime;
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.InstanceACLStore;
@@ -27,8 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.time.temporal.ChronoUnit;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -116,10 +115,8 @@ public class ApplicationService {
     private MyAppsInstance fillUIInstance(MyAppsInstance uiInstance) {
         ApplicationInstance instance = uiInstance.getApplicationInstance();
         if (instance.getStatusChanged() != null) {
-            //TODO check if computeDeletionPlanned() in NetworkService is required here
-            Instant deletionPlanned = instance.getStatusChanged()
-                .plus(applicationInstanceDaysTillDeletedFromTrash, ChronoUnit.DAYS);
-            uiInstance.setDeletionPlanned(deletionPlanned);
+            LocalDateTime statusChangedDate = LocalDateTime.ofInstant(instance.getStatusChanged(), ZoneOffset.UTC);
+            uiInstance.setDeletionPlanned(statusChangedDate.plusDays(applicationInstanceDaysTillDeletedFromTrash).toInstant(ZoneOffset.UTC));
         }
         if (instance.getStatusChangeRequesterId() != null) {
             uiInstance.setStatusChangeRequesterLabel(userProfileService.findUserProfile(instance.getStatusChangeRequesterId()).getDisplayName()); // TODO protected ?? then from membership
