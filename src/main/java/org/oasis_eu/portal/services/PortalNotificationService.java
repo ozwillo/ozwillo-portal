@@ -120,7 +120,7 @@ public class PortalNotificationService {
                     notif.setApplicationId(serviceEntry.getId());
 
                 } else if (n.getInstanceId() != null) {
-                    ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
+                    ApplicationInstance instance = catalogStore.findApplicationInstanceOrNull(n.getInstanceId());
                     if (instance == null) {
                         // case of #179 Bug with notifications referring destroyed app instances or #206 500 on portal notification api
                         // LATER we could keep app instance with a "deleted" flag so it doesn't happen (rather than auto deleting this portal data),

@@ -150,6 +150,11 @@ public class CatalogStoreImpl implements CatalogStore {
         return kernel.getEntityOrException(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
     }
 
+    @Override
+    @Cacheable("instances")
+    public ApplicationInstance findApplicationInstanceOrNull(String instanceId) {
+        return kernel.getEntityOrNull(appsEndpoint + "/instance/{instance_id}", ApplicationInstance.class, user(), instanceId);
+    }
 
     @Override
     @CachePut(value = "services", key = "#result.id")
