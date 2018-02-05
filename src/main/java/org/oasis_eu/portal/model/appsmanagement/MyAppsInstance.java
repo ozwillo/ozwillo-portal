@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.model.appsmanagement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 
+import java.time.Instant;
 import java.util.List;
 
 /**
