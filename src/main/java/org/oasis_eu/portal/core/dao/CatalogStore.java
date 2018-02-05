@@ -31,6 +31,8 @@ public interface CatalogStore {
 
     void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
 
+    ApplicationInstance findApplicationInstanceOrNull(String instanceId);
+
     ServiceEntry updateService(String serviceId, ServiceEntry service);
 
     /**
