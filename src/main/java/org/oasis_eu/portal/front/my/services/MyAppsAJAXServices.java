@@ -196,13 +196,10 @@ public class MyAppsAJAXServices extends BaseController {
      * (ideally should be {id}/set-status)
      *
      * @param instance
-     * @param instanceId not used
-     * @param errors
      * @return
      */
     @RequestMapping(value = "/set-status/{instanceId}", method = POST)
-    public String setInstanceStatus(@RequestBody @Valid MyAppsInstance instance, @PathVariable String instanceId,
-        Errors errors) {
+    public String setInstanceStatus(@RequestBody @Valid MyAppsInstance instance) {
         logger.debug("Updating app instance {}", instance);
 
         return appManagementService.setInstanceStatus(instance);

@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.services;
 
 import org.joda.time.DateTime;
-import org.joda.time.Instant;
 import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.InstanceACLStore;
@@ -28,6 +27,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -115,8 +116,9 @@ public class ApplicationService {
     private MyAppsInstance fillUIInstance(MyAppsInstance uiInstance) {
         ApplicationInstance instance = uiInstance.getApplicationInstance();
         if (instance.getStatusChanged() != null) {
-            Instant deletionPlanned = new DateTime(instance.getStatusChanged()) //TODO check if computeDeletionPlanned() in NetworkService is required here
-                .plusDays(applicationInstanceDaysTillDeletedFromTrash).toInstant();
+            //TODO check if computeDeletionPlanned() in NetworkService is required here
+            Instant deletionPlanned = instance.getStatusChanged()
+                .plus(applicationInstanceDaysTillDeletedFromTrash, ChronoUnit.DAYS);
             uiInstance.setDeletionPlanned(deletionPlanned);
         }
         if (instance.getStatusChangeRequesterId() != null) {
@@ -285,11 +287,7 @@ public class ApplicationService {
         }
 
         ApplicationInstance instance = uiInstance.getApplicationInstance();
-        boolean statusHasChanged = instance.getStatus() == null || existingInstance.getStatus() == null || !(instance.getStatus().equals(existingInstance.getStatus()));
-        if (statusHasChanged) {
-            return catalogStore.setInstanceStatus(instance.getInstanceId(), instance.getStatus());
-        }
-        return null;
+        return catalogStore.setInstanceStatus(instance.getInstanceId(), instance.getStatus());
     }
 
 }

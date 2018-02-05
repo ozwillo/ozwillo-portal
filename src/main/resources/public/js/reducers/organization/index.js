@@ -9,7 +9,10 @@ import {
     FETCH_DELETE_ACL
 } from "../../actions/acl";
 
-import { FETCH_USERS_OF_INSTANCE } from "../../actions/instance";
+import {
+    FETCH_USERS_OF_INSTANCE,
+    FETCH_UPDATE_INSTANCE_STATUS
+} from "../../actions/instance";
 
 //Reducers
 import instanceReducer from './instance';
@@ -26,6 +29,7 @@ const defaultState = {
 const instancesState = (state = [], action) => {
     let nextState = Object.assign([], state);
     switch(action.type) {
+        case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_USERS_OF_INSTANCE:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
@@ -52,6 +56,7 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_ORGANIZATION_WITH_ID:
             nextState = action.organization;
             break;
+        case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
         case FETCH_USERS_OF_INSTANCE:
@@ -87,6 +92,7 @@ export default (state = defaultState, action) => {
         case FETCH_CREATE_ORGANIZATION:
             nextState.organizations = organizationsState(nextState.organizations, action);
             break;
+        case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_USERS_OF_INSTANCE:
         case FETCH_CREATE_ACL:
         case FETCH_DELETE_ACL:

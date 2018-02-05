@@ -83,7 +83,7 @@ class InstancesTab extends React.Component {
                     {
                         this.filterInstances(org.instances, instancesFilter).map((instance) => {
                             return <li key={instance.id} className="instance">
-                                <InstanceDropdown instance={instance} members={org.members} isAdmin={org.admin}/>
+                                <InstanceDropdown instance={instance} members={org.members || []} isAdmin={org.admin}/>
                             </li>
                         })
                     }

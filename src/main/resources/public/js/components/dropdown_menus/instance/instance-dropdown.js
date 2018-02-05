@@ -7,10 +7,14 @@ import DropDownMenu from '../../dropdown-menu';
 import InstanceInvitationForm from '../../forms/instance-invitation-form';
 import InstanceDropdownHeader from './instance-dropdown-header';
 
-
 //action
-import { fetchDeleteAcl } from "../../../actions/acl";
-import { fetchCreateSubscription} from "../../../actions/subscription";
+import { fetchDeleteAcl } from '../../../actions/acl';
+import { fetchCreateSubscription } from '../../../actions/subscription';
+import { fetchUpdateInstanceStatus } from '../../../actions/instance';
+
+//Config
+import Config from '../../../config/config';
+const instanceStatus = Config.instanceStatus;
 
 class InstanceDropdown extends React.Component {
 
@@ -35,6 +39,7 @@ class InstanceDropdown extends React.Component {
         //bind methods
         this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
         this.onRemoveInstance = this.onRemoveInstance.bind(this);
+        this.onCancelRemoveInstance = this.onCancelRemoveInstance.bind(this);
         this.onUpdateInstance = this.onUpdateInstance.bind(this);
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
         this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
@@ -53,7 +58,11 @@ class InstanceDropdown extends React.Component {
     }
 
     onRemoveInstance(instance) {
-        console.log('onRemoveInstance ', instance);
+        this.props.fetchUpdateInstanceStatus(instance, instanceStatus.stopped);
+    }
+
+    onCancelRemoveInstance(instance) {
+        this.props.fetchUpdateInstanceStatus(instance, instanceStatus.running);
     }
 
     onUpdateInstance(instance) {
@@ -116,8 +125,8 @@ class InstanceDropdown extends React.Component {
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
-        const isPending = instance.applicationInstance.status === 'PENDING';
-        const isAvailable = isAdmin && !instance.isPublic && !isPending;
+        const isRunning = instance.applicationInstance.status === instanceStatus.running;
+        const isAvailable = isAdmin && !instance.isPublic && isRunning;
 
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
         const Header = <InstanceDropdownHeader
@@ -125,6 +134,7 @@ class InstanceDropdown extends React.Component {
                             instance={instance}
                             onClickConfigIcon={this.onClickConfigIcon}
                             onRemoveInstance={this.onRemoveInstance}
+                            onCancelRemoveInstance={this.onCancelRemoveInstance}
                             onUpdateInstance={this.onUpdateInstance}/>;
         const Footer = (isAvailable && <footer>
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
@@ -224,6 +234,9 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchDeleteAcl(user, instance) {
             return dispatch(fetchDeleteAcl(user, instance));
+        },
+        fetchUpdateInstanceStatus(instance, status) {
+            return dispatch(fetchUpdateInstanceStatus(instance, status));
         }
     };
 };

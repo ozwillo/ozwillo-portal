@@ -2,7 +2,6 @@ package org.oasis_eu.portal.ui;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.Instant;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
@@ -10,6 +9,7 @@ import org.oasis_eu.spring.kernel.model.OrganizationType;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
+import java.time.Instant;
 import java.util.List;
 
 /**
@@ -20,67 +20,69 @@ public class UIOrganization {
     @JsonProperty
     @NotNull
     @NotEmpty
-    String id;
+    private String id;
 
     @JsonProperty
     @NotNull
     @NotEmpty
-    String name;
+    private String name;
 
     @JsonProperty
     @NotNull
-    OrganizationType type;
+    private OrganizationType type;
 
     @JsonProperty("territory_id")
-    URI territoryId;
+    private URI territoryId;
 
     @JsonProperty("territory_label")
-    String territoryLabel;
+    private String territoryLabel;
 
     @JsonProperty("dc_id")
-    URI dcId;
+    private URI dcId;
 
     /**
      * optional
      */
-    OrganizationStatus status;
+    private OrganizationStatus status;
 
     /**
      * optional
      */
     @JsonProperty("status_changed")
-    Instant statusChanged;
+    private Instant statusChanged;
 
     /**
      * optional
      */
     @JsonProperty("deletion_planned")
-    Instant deletionPlanned;
+    private Instant deletionPlanned;
 
     /**
      * optional
      */
     @JsonProperty("status_change_requester_id")
-    String statusChangeRequesterId;
+    private String statusChangeRequesterId;
 
     /**
      * optional
      */
     @JsonProperty("status_change_requester_label")
-    String statusChangeRequesterLabel;
+    private String statusChangeRequesterLabel;
 
 
     @JsonProperty
-    List<MyAppsInstance> instances;
+    private List<MyAppsInstance> instances;
 
     @JsonProperty
-    List<InstanceService> services;
+    private List<InstanceService> services;
 
     @JsonProperty
-    List<UIOrganizationMember> members;
+    private List<UIOrganizationMember> members;
 
     @JsonProperty
     boolean admin;
+
+
 
     public String getId() {
         return id;

@@ -1,7 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import org.joda.time.DateTime;
-import org.joda.time.Instant;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
@@ -33,6 +31,12 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -78,36 +82,14 @@ public class NetworkService {
         List<UIOrganization> organizations = new ArrayList<>();
         String userId = userInfoService.currentUser().getUserId();
 
-        //Fetch all user's services
-        List<InstanceService> instanceServices = subscriptionStore.findByUserId(userId)
-            .stream()
-            .map(sub -> applicationService.getService(sub.getServiceId()))
-            .collect(Collectors.toList());
-
+        //fetch personal organization
+        organizations.add(fetchOrganization(userId, false));
 
         //build Organizations
         List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
         for (UserMembership u : userMemberships) {
             Organization org = organizationStore.find(u.getOrganizationId());
-
-            //Fetch services associate with organization
-            List<InstanceService> services = new ArrayList<>();
-            for (InstanceService is : instanceServices) {
-                //Log provider id
-                if(is.getCatalogEntry().getProviderId() == null) {
-                    logger.warn("Service " +is.getCatalogEntry().getId() + " has a providerId == null");
-                }
-
-                if(org.getId().equals(is.getCatalogEntry().getProviderId())){
-                    services.add(is);
-                }
-            }
-
-            //Build UIOrganization
-            UIOrganization uiOrg = fillUIOrganization(org);
-            uiOrg.setServices(services);
-            uiOrg.setAdmin(userIsAdmin(org.getId()));
-            organizations.add(uiOrg);
+            organizations.add(fetchOrganization(org.getId(), false));
         }
 
         return organizations;
@@ -115,7 +97,12 @@ public class NetworkService {
 
 
     public UIOrganization getOrganization(String organizationId) {
+        return fetchOrganization(organizationId, true);
+    }
+
+    private UIOrganization fetchOrganization(String organizationId, boolean fetchMembers) {
         String userId = userInfoService.currentUser().getUserId();
+        boolean isPersonal = userId.equals(organizationId);
 
         //Fetch all user's services
         List<InstanceService> instanceServices = subscriptionStore.findByUserId(userId)
@@ -124,9 +111,15 @@ public class NetworkService {
                 .collect(Collectors.toList());
 
         //Fetch services associate with organization
-        Organization org = organizationStore.find(organizationId);
+        Organization org = (isPersonal)? getPersonalOrganization() : organizationStore.find(organizationId);
+
         List<InstanceService> services = new ArrayList<>();
         for (InstanceService is : instanceServices) {
+
+            if(is.getCatalogEntry().getProviderId() == null) {
+                logger.warn("Service " +is.getCatalogEntry().getId() + " has a providerId == null");
+            }
+
             if(org.getId().equals(is.getCatalogEntry().getProviderId())){
                 services.add(is);
             }
@@ -134,12 +127,25 @@ public class NetworkService {
 
         //Build UIOrganization
         UIOrganization uiOrg = fillUIOrganization(org);
-        uiOrg.setMembers(getOrganizationMembers(org.getId()));
         uiOrg.setServices(services);
         uiOrg.setInstances(getOrganizationInstances(org.getId()));
         uiOrg.setAdmin(userIsAdmin(organizationId));
 
+        if(fetchMembers && !isPersonal) {
+            uiOrg.setMembers(getOrganizationMembers(org.getId()));
+        }
+
         return uiOrg;
+    }
+
+    private Organization getPersonalOrganization() {
+        String userId = userInfoService.currentUser().getUserId();
+
+        Organization org = new Organization();
+        org.setId(userId);
+        org.setName("Personal");
+
+        return org;
     }
 
     private List<MyAppsInstance> getOrganizationInstances(String organizationId) {
@@ -170,11 +176,12 @@ public class NetworkService {
     }
 
     private Instant computeDeletionPlanned(Organization organization) {
-        DateTime possibleDeletionAskedDate = organization.getStatus() == OrganizationStatus.DELETED
-            ? new DateTime(organization.getStatusChanged()) // the user already has clicked on "delete".
-            : new DateTime(); // when the user will click on delete, the deletion planned date
+        Instant possibleDeletionAskedDate = organization.getStatus() == OrganizationStatus.DELETED
+            ? organization.getStatusChanged() // the user already has clicked on "delete".
+            : Instant.now(); // when the user will click on delete, the deletion planned date
         // will be right even without refreshing the organization first (i.e. passing again in this method).
-        return possibleDeletionAskedDate.plusDays(organizationDaysTillDeletedFromTrash).toInstant();
+
+        return possibleDeletionAskedDate.plus(organizationDaysTillDeletedFromTrash, ChronoUnit.DAYS);
     }
 
     public List<UIOrganizationMember> getOrganizationMembers(String organizationId) {
@@ -442,7 +449,9 @@ public class NetworkService {
      * @return Boolean : True if is organization administrator, False otherwise.
      */
     public boolean userIsAdmin(String organizationId) {
-        return userMembershipService.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
+        String userId = userInfoService.currentUser().getUserId();
+
+        return userMembershipService.getMembershipsOfUser(userId).stream()
             .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin());
     }
 

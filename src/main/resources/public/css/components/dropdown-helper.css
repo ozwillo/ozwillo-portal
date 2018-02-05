@@ -22,6 +22,12 @@
     width: 100%;
 }
 
+.dropdown-content .message,
+.dropdown-header .message,
+.dropdown-footer .message {
+    margin: 0 15px;
+}
+
 .dropdown-header,
 .dropdown-header .link {
     font-size: 1.1em;
@@ -130,6 +136,7 @@
     color: green
 }
 
+.dropdown-header .delete,
 .dropdown-content .error {
     color: red
 }
