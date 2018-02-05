@@ -24,6 +24,10 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
@@ -135,7 +139,7 @@ public class PortalNotificationService {
                 }
 
                 notif.setDate(n.getTime());
-                notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
+                notif.setDateText(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).format(LocalDateTime.ofInstant(n.getTime(), ZoneOffset.UTC)));
 
                 notif.setFormattedText(getFormattedText(n, locale));
                 notif.setId(n.getId());
