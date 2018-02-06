@@ -20,11 +20,11 @@ class OrganizationDropdown extends React.Component {
 
         return <DropdownMenu header={Header} isOpen={true}>
             {
-                (org.admin || org.services.length || null) &&
+                (org.admin || org.services || null) &&
                 <section className='dropdown-content flex-row'>
                     <section className="apps flex-row">
                         {
-                            org.services.length &&
+                            org.services &&
                             <ul className="list undecorated-list flex-row">
                                 {
                                     org.services.map((service) => {
@@ -37,7 +37,7 @@ class OrganizationDropdown extends React.Component {
                         }
 
                         {
-                            !org.services.length &&
+                            !org.services &&
                             <span className="empty-message">
                                 You do not have any installed app.
                             </span>
