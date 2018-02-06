@@ -16,7 +16,7 @@ class MembersTabHeader extends React.Component {
     }
 
 }
-const MembersTabHeaerWithRedux = connect(state => {
+const MembersTabHeaderWithRedux = connect(state => {
     return {
         organization: state.organization.current
     };
@@ -29,6 +29,8 @@ class MembersTab extends React.Component {
     };
 
     render() {
+        const org = this.props.organization;
+
         return <article className="members-tab">
             <section className="add-member">
                 <header>Send an invitation</header>
@@ -44,10 +46,10 @@ class MembersTab extends React.Component {
 
                 <ul className="members-list undecorated-list flex-col">
                     {
-                        this.props.organization.members.map((member) => {
+                        org.members && org.members.map((member) => {
                             return <li key={member.id} className="member">
                                 <MemberDropdown member={member} organization={this.props.organization}
-                                                services={this.props.services}/>
+                                                instances={this.props.instances}/>
                             </li>
                         })
                     }
@@ -60,12 +62,12 @@ class MembersTab extends React.Component {
 const MemberTabWithRedux = connect(state => {
     return {
         organization: state.organization.current,
-        services: state.service.services
+        instances: state.instance.instances
     };
 })(MembersTab);
 
 
 export {
     MemberTabWithRedux as MembersTab,
-    MembersTabHeaerWithRedux as MembersTabHeader
+    MembersTabHeaderWithRedux as MembersTabHeader
 };

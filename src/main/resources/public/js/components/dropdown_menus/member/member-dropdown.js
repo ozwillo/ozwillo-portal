@@ -11,30 +11,30 @@ class MemberDropdown extends React.Component {
     static propTypes = {
         member: PropTypes.object.isRequired,
         organization: PropTypes.object.isRequired,
-        services: PropTypes.array.isRequired
+        instances: PropTypes.array.isRequired
     };
 
     constructor(props) {
         super(props);
 
         //bind methods
-        this.addServiceIconToDesktop = this.addServiceIconToDesktop.bind(this);
-        this.removeAccessToService = this.removeAccessToService.bind(this);
-        this.addAccessToService = this.addAccessToService.bind(this);
+        this.addInstanceIconToDesktop = this.addInstanceIconToDesktop.bind(this);
+        this.removeAccessToInstance= this.removeAccessToInstance.bind(this);
+        this.addAccessToInstance = this.addAccessToInstance.bind(this);
         this.removeMemberInOrganization = this.removeMemberInOrganization.bind(this);
         this.sendInvitation = this.sendInvitation.bind(this);
     }
 
-    addServiceIconToDesktop() {
-        console.log('addServiceIconToDesktop')
+    addInstanceIconToDesktop() {
+        console.log('addInstanceIconToDesktop')
     }
 
-    removeAccessToService() {
-        console.log('removeAccessToService')
+    removeAccessToInstance() {
+        console.log('removeAccessToInstance')
     }
 
-    addAccessToService() {
-        console.log('addAccessToService')
+    addAccessToInstance() {
+        console.log('addAccessToInstance')
     }
 
     removeMemberInOrganization() {
@@ -48,15 +48,15 @@ class MemberDropdown extends React.Component {
     render() {
         const member = this.props.member;
         const organization = this.props.organization;
-        const services = this.props.services;
+        const instances = this.props.instances;
 
         const Header = <MemberDropdownHeader member={member}
                                              organization={organization}
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
                                              onSendInvitation={this.sendInvitation}/>;
         const Footer = <MemberDropdownFooter member={member}
-                                             services={services}
-                                             onAddAccessToService={this.addAccessToService}/>
+                                             instances={instances}
+                                             onAddAccessToInstance={this.addAccessToInstance}/>
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!member.isPending}>
             <section className='dropdown-content'>

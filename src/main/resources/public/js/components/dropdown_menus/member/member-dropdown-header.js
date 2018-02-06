@@ -29,7 +29,7 @@ class MemberDropdownHeader extends React.Component {
         const member = this.props.member;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
-                <span className="dropdown-name">{`${member.firstname} ${member.lastname}`}</span>
+                <span className="dropdown-name">{member.name}</span>
 
                 <div className="options flex-row end">
                     {

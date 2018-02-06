@@ -6,8 +6,8 @@ import Select from 'react-select';
 class MemberDropdownFooter extends React.Component {
 
     static propTypes = {
-        services: PropTypes.array.isRequired,
-        onAddAccessToService: PropTypes.func.isRequired
+        instances: PropTypes.array.isRequired,
+        onAddAccessToInstance: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -24,7 +24,7 @@ class MemberDropdownFooter extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.onAddAccessToService();
+        this.props.onAddAccessToInstance();
     }
 
     onOptionChange(selectedOption) {
@@ -39,11 +39,11 @@ class MemberDropdownFooter extends React.Component {
                     name="app"
                     value={this.state.selectedOption}
                     onChange={this.onOptionChange}
-                    options={this.props.services}
+                    options={this.props.instances}
                     clearable={false}
                     valueKey="id"
                     labelKey="name"
-                    placeholder="Services"/>
+                    placeholder="Instances"/>
 
                 <div className="options flex-row end">
                     <button type="submit" className="btn" className="btn-default">Send</button>
