@@ -17,14 +17,18 @@ class NotificationsCountLoader extends React.Component {
         };
     }
 
-    componentDidMount() {
-        this.props.fetchNotificationsCount();
-        const intervalId = setInterval(this.props.fetchNotificationsCount, notificationsCountInterval);
-        this.setState({intervalId: intervalId});
+    componentWillReceiveProps(nextProps) {
+        if(nextProps.notificationsEnabled && !this.state.intervalId) {
+            this.props.fetchNotificationsCount();
+            const intervalId = setInterval(this.props.fetchNotificationsCount, notificationsCountInterval);
+            this.setState({ intervalId: intervalId });
+        }
     }
 
     componentWillUnmount() {
-        clearInterval(this.state.intervalId);
+        if (this.state.intervalId) {
+            clearInterval(this.state.intervalId);
+        }
     }
 
     render() {
@@ -32,6 +36,12 @@ class NotificationsCountLoader extends React.Component {
     }
 
 }
+
+const mapStateToProps = dispatch => {
+    return {
+        notificationsEnabled: dispatch.config.notificationsEnabled
+    }
+} ;
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -41,4 +51,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(null, mapDispatchToProps)(NotificationsCountLoader);
+export default connect(mapStateToProps, mapDispatchToProps)(NotificationsCountLoader);

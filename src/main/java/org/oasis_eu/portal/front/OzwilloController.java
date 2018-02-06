@@ -46,6 +46,9 @@ public class OzwilloController {
     @Value("${application.devmode:false}")
     private boolean devMode;
 
+    @Value("${application.notificationsEnabled:true}")
+    private boolean notificationsEnabled;
+
     @GetMapping("/user")
     public UserInfo getCurrentUser() {
         return userInfoService.currentUser();
@@ -76,6 +79,7 @@ public class OzwilloController {
         config.accountEndPoint = accountEndPoint;
         config.opendatEndPoint = opendatEndPoint;
         config.devMode = devMode;
+        config.notificationsEnabled = notificationsEnabled;
 
         return config;
     }
@@ -107,5 +111,8 @@ public class OzwilloController {
 
         @JsonProperty
         boolean devMode;
+
+        @JsonProperty
+        boolean notificationsEnabled;
     }
 }

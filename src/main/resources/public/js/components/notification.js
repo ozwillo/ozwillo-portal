@@ -27,7 +27,7 @@ class Notification extends React.Component {
     render() {
         return <section className={`notification ${this.state.display && 'hidden'}`} id="error-container">
                 <div className="close" onClick={this.close}>
-                    <i className="fa fa-times"></i>
+                    <i className="fa fa-times" />
                 </div>
                 <p className='message'>
                     {this.state}
