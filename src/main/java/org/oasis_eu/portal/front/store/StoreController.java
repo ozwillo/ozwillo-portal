@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.front.store;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
+import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
@@ -9,8 +11,12 @@ import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.front.generic.BaseController;
+import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.app.store.AppstoreHit;
 import org.oasis_eu.portal.model.app.store.InstallationOption;
+import org.oasis_eu.portal.model.user.User;
+import org.oasis_eu.portal.services.ApplicationService;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.AppstoreService;
@@ -69,6 +75,12 @@ public class StoreController extends BaseController {
     @Autowired
     private DCOrganizationService organizationService;
 
+    @Autowired
+    private ApplicationService applicationService;
+
+    @Autowired
+    private CatalogStore catalogStore;
+
     @Value("${application.store.load_size:20}")
     private int loadSize;
 
@@ -110,7 +122,8 @@ public class StoreController extends BaseController {
 
 
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
-    public StoreAppResponse applications(@RequestParam boolean target_citizens,
+    public StoreAppResponse applications(
+        @RequestParam boolean target_citizens,
         @RequestParam boolean target_publicbodies,
         @RequestParam boolean target_companies,
         @RequestParam boolean free,
@@ -160,22 +173,23 @@ public class StoreController extends BaseController {
     }
 
     @RequestMapping(value = "/buy", method = RequestMethod.POST)
-    public StoreBuyStatus buy(@RequestBody StoreBuyRequest request) {
-        StoreBuyStatus response = new StoreBuyStatus();
-        try {
-            appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
-            response.success = true;
-        } catch (ApplicationInstanceCreationException | WrongQueryException e) {
-            response.success = false; // specific error handling, TODO LATER make it more consistent with generic error handling
-        }
-        try {
-            //Update user details contained in StoreBuyRequest, usually contact & address (address if personal service install)
-            appstoreService.updateUserInfo(request.contact_name, request.contact_lastname, request.contact_email,
-                request.street_and_number, request.zip, request.city, request.country);
-        } catch (/*WrongQuery*/Exception e) {
-            logger.warn("Couldn't update the user details : {}", request);
-        }
-        return response;
+    public MyAppsInstance buy(@RequestBody StoreBuyRequest request) {
+        appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
+
+        //Update user details contained in StoreBuyRequest, usually contact & address (address if personal service install)
+        appstoreService.updateUserInfo(request.contact_name, request.contact_lastname, request.contact_email,
+            request.street_and_number, request.zip, request.city, request.country);
+
+        //Create ACLs
+        //TODO may be for next feature: Add an instance to an organization and create in same time ACLs for users
+        //
+        /*if (request.members != null) {
+           request.members.forEach( user -> applicationService.createAcl(request.appId, user));
+        }*/
+
+        //return new instance
+        ApplicationInstance applicationInstance = catalogStore.findApplicationInstance(request.appId);
+        return applicationService.fetchInstance(applicationInstance, true);
     }
 
     @RequestMapping(value = "/rate/{appType}/{appId}", method = RequestMethod.POST)
@@ -286,12 +300,8 @@ public class StoreController extends BaseController {
         String country_uri;
         @JsonProperty
         String country;
-
-    }
-
-    private static class StoreBuyStatus {
         @JsonProperty
-        boolean success;
+        List<User> members;
     }
 
 

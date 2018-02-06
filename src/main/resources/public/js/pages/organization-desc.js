@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from "prop-types";
 import { connect } from 'react-redux';
 
 //Components
@@ -9,8 +10,8 @@ import { AdminTabHeader, AdminTab } from '../components/tabs/admin-tab';
 
 //actions
 import { fetchOrganizationWithId } from "../actions/organization";
-import PropTypes from "prop-types";
 import { fetchUsersOfInstance } from "../actions/instance";
+import { fetchApplications } from "../actions/app-store";
 
 const tabsHeaders = {
     instances: InstancesTabHeader,
@@ -38,14 +39,19 @@ class OrganizationDesc extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchOrganizationWithId()
-            .then(() => {
-                if(this.props.organization.admin) {
-                    this.props.organization.instances.forEach((instance) => {
-                        this.props.fetchUsersOfInstance(instance);
-                    });
-                }
-            });
+        Promise.all([
+            this.props.fetchOrganizationWithId()
+                .then(() => {
+                    if(this.props.organization.admin) {
+                        this.props.organization.instances.forEach((instance) => {
+                            this.props.fetchUsersOfInstance(instance);
+                        });
+                    }
+                }),
+            this.props.fetchApplications()
+        ]).catch((err) => {
+            console.error(err);
+        });
     }
 
     render() {
@@ -75,6 +81,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         fetchUsersOfInstance(instance) {
             return dispatch(fetchUsersOfInstance(instance));
+        },
+        fetchApplications() {
+            return dispatch(fetchApplications());
         }
     };
 };

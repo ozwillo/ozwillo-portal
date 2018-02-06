@@ -14,6 +14,8 @@ import {
     FETCH_UPDATE_INSTANCE_STATUS
 } from "../../actions/instance";
 
+import { FETCH_ADD_INSTANCE_TO_ORG } from "../../actions/app-store";
+
 //Reducers
 import instanceReducer from './instance';
 
@@ -29,6 +31,9 @@ const defaultState = {
 const instancesState = (state = [], action) => {
     let nextState = Object.assign([], state);
     switch(action.type) {
+        case FETCH_ADD_INSTANCE_TO_ORG:
+            nextState.push(action.instance);
+            break;
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_USERS_OF_INSTANCE:
         case FETCH_DELETE_ACL:

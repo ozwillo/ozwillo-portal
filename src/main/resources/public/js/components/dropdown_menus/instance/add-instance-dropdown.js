@@ -2,11 +2,12 @@ import React from 'react';
 import { connect } from 'react-redux';
 
 //Components
-import DropDownMenu from "../../dropdown-menu";
+import DropDownMenu from '../../dropdown-menu';
 import AddInstanceDropdownHeader from './add-instance-dropdown-header';
 import AddInstanceDropdownFooter from './add-instance-dropdown-footer';
 
-
+//Action
+import { fetchAddInstanceToOrg } from '../../../actions/app-store';
 
 class AddInstanceDropdown extends React.Component {
 
@@ -14,24 +15,16 @@ class AddInstanceDropdown extends React.Component {
         super(props);
 
         this.state = {
-            instances: this.props.instances,
-            instance: (this.props.instances.length && this.props.instances[0]) || this.defaultInstance
+            app: null,
+            members: []
         };
 
         //bind methods
         this.onAddInstance = this.onAddInstance.bind(this);
         this.onAddMember = this.onAddMember.bind(this);
         this.onRemoveMember = this.onRemoveMember.bind(this);
-        this.onUpdateInstance = this.onUpdateInstance.bind(this);
-        this.onChangeInstance = this.onChangeInstance.bind(this);
+        this.onChangeApp = this.onChangeApp.bind(this);
         this.filterMembersWithoutAccess = this.filterMembersWithoutAccess.bind(this);
-    }
-
-   get defaultInstance() {
-        return {
-            isPublic: true,
-            members: []
-        }
     }
 
     componentWillReceiveProps(nextProps) {
@@ -40,73 +33,66 @@ class AddInstanceDropdown extends React.Component {
         })
     }
 
-    onAddInstance(instance) {
-        console.log('TODO onAddInstance :', instance);
+    onAddInstance() {
+        const orgId = this.props.organization.id;
+        this.props.fetchAddInstanceToOrg(orgId, this.state.app, this.state.members)
+            .then(() => {
+                this.setState({
+                    app: null,
+                    members: []
+                })
+            });
     }
 
     onAddMember(member) {
-        const members = Object.assign([], this.state.instance.members);
+        const members = Object.assign([], this.state.members);
         members.push(member);
-        this.setState({
-            instance: Object.assign({}, this.state.instance, { members })
-        });
+        this.setState({ members });
     }
 
     onRemoveMember(e) {
         const memberIndex = parseInt(e.currentTarget.dataset.member, 10);
-        const members = Object.assign([], this.state.instance.members);
+        const members = Object.assign([], this.state.members);
         members.splice(memberIndex, 1);
-        this.setState({
-            instance: Object.assign({}, this.state.instance, { members })
-        });
+        this.setState({ members: members });
     }
 
-    onChangeInstance(id) {
-        const instance = this.state.instances.find((instance) => {
-            return instance.id === id;
-        });
-
-
-        this.setState({ instance });
-    }
-
-    onUpdateInstance(instance) {
-        this.setState({
-            instance:  Object.assign({}, this.state.instance, instance)
-        });
+    onChangeApp(app) {
+        this.setState({ app });
     }
 
     filterMembersWithoutAccess(member) {
-        return !this.state.instance.members.find((m) => {
+        return !this.state.members.find((m) => {
             return member.id === m.id;
         });
     }
 
     render() {
-        const instances =  this.state.instances;
-        const instance = this.state.instance;
-        const membersWithoutAccess = this.props.members.filter(this.filterMembersWithoutAccess);
+        const apps = this.props.apps;
+        const app = this.state.app;
+        const org = this.props.organization;
+        const membersWithoutAccess = org.members.filter(this.filterMembersWithoutAccess);
 
         const Header = <AddInstanceDropdownHeader
-            instances={instances}
-            instance={instance}
+            apps={apps}
+            app={app}
             onAddInstance={this.onAddInstance}
-            onUpdateInstance={this.onUpdateInstance}
-            onChangeInstance={this.onChangeInstance}/>;
+            onChangeInstance={this.onChangeApp}/>;
 
-        const Footer = (!instance.isPublic &&
-            <AddInstanceDropdownFooter
+        //TODO may be for next feature: Add an instance to an organization and create in same time ACLs for users
+        /*const Footer = <AddInstanceDropdownFooter
                 members={membersWithoutAccess}
-                onAddMember={this.onAddMember}/>) || null;
+                onAddMember={this.onAddMember}/>;*/
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={!instance.isPublic}>
+        return <DropDownMenu header={Header} /*footer={Footer}*/ isAvailable={false}>
+            {/*
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
                     {
-                        instance.members.map((member, i) => {
+                        this.state.members.map((member, i) => {
                             return <li key={member.id}>
                                 <article className="item flex-row">
-                                    <p className="name">{`${member.firstname} ${member.lastname}`}</p>
+                                    <p className="name">{member.name}</p>
 
                                     <div className="options">
                                         <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
@@ -118,7 +104,7 @@ class AddInstanceDropdown extends React.Component {
                         })
                     }
                 </ul>
-            </section>
+            </section>*/}
         </DropDownMenu>;
     }
 }
@@ -126,14 +112,17 @@ class AddInstanceDropdown extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        instances: state.instance.instances,
-        members: state.member.members
+        apps: state.appStore.apps,
+        organization: state.organization.current
     };
 };
 
 const mapDispatchToProps = dispatch => {
-    return {};
+    return {
+        fetchAddInstanceToOrg(orgId, app, members) {
+            return dispatch(fetchAddInstanceToOrg(orgId, app, members));
+        }
+    };
 };
-
 
 export default connect(mapStateToProps, mapDispatchToProps) (AddInstanceDropdown);

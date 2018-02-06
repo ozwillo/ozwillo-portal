@@ -2,6 +2,7 @@ import { combineReducers } from 'redux';
 import { i18nState } from 'redux-i18n';
 
 //Reducers
+import appStore from './app-store';
 import config from './config';
 import instance from './instance';
 import member from './member';
@@ -13,6 +14,7 @@ import userInfo from './userInfo';
 import organizationForm from './components/organization-form';
 
 export default combineReducers({
+    appStore,
     config,
     instance,
     member,

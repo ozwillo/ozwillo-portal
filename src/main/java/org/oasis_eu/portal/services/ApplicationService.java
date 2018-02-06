@@ -99,8 +99,7 @@ public class ApplicationService {
             .collect(Collectors.toList());
     }
 
-    private MyAppsInstance fetchInstance(ApplicationInstance instance, boolean fetchServices) {
-
+    public MyAppsInstance fetchInstance(ApplicationInstance instance, boolean fetchServices) {
         logger.debug("Fetching instance data for {}, instance id {}", instance.getDefaultName(), instance.getInstanceId());
 
         MyAppsInstance uiInstance = fillUIInstance(new MyAppsInstance(instance));

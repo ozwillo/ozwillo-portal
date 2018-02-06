@@ -13,37 +13,16 @@ class AddInstanceDropdownFooter extends React.Component {
         super(props);
 
         this.state = {
-            selectedOption: 0,
-            options: this.createOptions(this.props.members)
+            selectedOption: null
         };
 
         //bind methods
-        this.createOptions = this.createOptions.bind(this);
         this.onOptionChange = this.onOptionChange.bind(this)
         this.onAddMember = this.onAddMember.bind(this);
     }
 
-    createOptions(members) {
-        const options = [];
-
-        members.forEach((member) => {
-            options.push({
-                value: member.id,
-                label: `${member.firstname} ${member.lastname}`
-            });
-        });
-
-        return options;
-    }
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            options: this.createOptions(nextProps.members)
-        })
-    }
-
     onOptionChange(selectedOption) {
-        this.setState({ selectedOption: selectedOption.value });
+        this.setState({ selectedOption });
     }
 
     onAddMember(e) {
@@ -53,11 +32,8 @@ class AddInstanceDropdownFooter extends React.Component {
             return;
         }
 
-        const member = this.props.members.find((member) => {
-            return member.id === this.state.selectedOption;
-        });
-
-        this.props.onAddMember(member);
+        this.setState({ selectedOption: null });
+        this.props.onAddMember(this.state.selectedOption);
     }
 
     render() {
@@ -67,8 +43,8 @@ class AddInstanceDropdownFooter extends React.Component {
                 name="members"
                 value={this.state.selectedOption}
                 onChange={this.onOptionChange}
-                options={this.state.options}
-                clearable={false}
+                options={this.props.members}
+                labelKey="name"
                 placeholder="Members" />
 
             <div className="options flex-row end">

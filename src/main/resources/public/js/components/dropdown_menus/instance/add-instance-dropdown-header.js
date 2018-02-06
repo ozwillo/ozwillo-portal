@@ -5,51 +5,22 @@ import Select from 'react-select';
 class AddInstanceDropdownHeader extends React.Component {
 
     static propTypes = {
-        instances: PropTypes.array.isRequired,
-        instance: PropTypes.object.isRequired,
+        apps: PropTypes.array.isRequired,
+        app: PropTypes.object,
         onAddInstance: PropTypes.func.isRequired,
-        onChangeInstance: PropTypes.func.isRequired,
-        onUpdateInstance: PropTypes.func.isRequired
+        onChangeInstance: PropTypes.func.isRequired
     };
 
     constructor(props) {
         super(props);
 
-        this.state = {
-            options: this.createOptions(this.props.instances)
-        };
-
         //bind methods
         this.onOptionChange = this.onOptionChange.bind(this);
-        this.onCheckboxChange = this.onCheckboxChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
     }
 
-    createOptions(instances) {
-        const options = [];
-
-        instances.forEach((instance) => {
-            options.push({
-                value: instance.id,
-                label: instance.name
-            });
-        });
-
-        return options;
-    }
-
-    componentWillReceiveProps(nextProps){
-        this.setState({
-            options: this.createOptions(nextProps.instances)
-        });
-    }
-
     onOptionChange(selectedOption) {
-        this.props.onChangeInstance(selectedOption.value)
-    }
-
-    onCheckboxChange() {
-        this.props.onUpdateInstance({ isPublic: !this.props.instance.isPublic });
+        this.props.onChangeInstance(selectedOption)
     }
 
     onSubmit(e) {
@@ -58,25 +29,21 @@ class AddInstanceDropdownHeader extends React.Component {
     }
 
     render() {
-        const instance = this.props.instance;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <Select
                     className="select"
                     name="app"
-                    value={instance.id}
+                    value={this.props.app}
+                    labelKey="name"
                     onChange={this.onOptionChange}
-                    options={this.state.options}
-                    clearable={false}
-                    placeholder="Instances"/>
+                    options={this.props.apps}
+                    placeholder="Applications"/>
 
                 <div className="options flex-row end">
-                    <label>
-                        Public
-                        <input className="field" name="isPublic" type="checkbox"
-                               checked={instance.isPublic} onChange={this.onCheckboxChange}/>
-                    </label>
-                    <button type="submit" className="btn icon"><i className="fa fa-plus option-icon"/></button>
+                    <button type="submit" className="btn icon">
+                        <i className="fa fa-plus option-icon"/>
+                    </button>
                 </div>
             </form>
         </header>;
