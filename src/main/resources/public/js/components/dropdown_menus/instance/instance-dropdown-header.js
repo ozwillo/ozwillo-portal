@@ -13,7 +13,6 @@ class InstanceDropdownHeader extends React.Component {
         instance: PropTypes.object.isRequired,
         onRemoveInstance: PropTypes.func.isRequired,
         onCancelRemoveInstance: PropTypes.func.isRequired,
-        onUpdateInstance: PropTypes.func.isRequired,
         onClickConfigIcon: PropTypes.func.isRequired,
         isAdmin: PropTypes.bool
     };
@@ -25,14 +24,9 @@ class InstanceDropdownHeader extends React.Component {
     constructor(props) {
         super(props);
 
-        this.onCheckboxChange = this.onCheckboxChange.bind(this);
         this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
         this.onRemoveInstance = this.onRemoveInstance.bind(this);
         this.onCancelRemoveInstance = this.onCancelRemoveInstance.bind(this);
-    }
-
-    onCheckboxChange() {
-        this.props.onUpdateInstance({ isPublic: !this.props.instance.isPublic });
     }
 
     onRemoveInstance(e) {
@@ -70,11 +64,6 @@ class InstanceDropdownHeader extends React.Component {
                 {
                     !isStopped && !isPending && isAdmin &&
                     <div className="options flex-row end">
-                        <label>
-                            Public
-                            <input className="field" name="isPublic" type="checkbox"
-                                   checked={instance.isPublic} onChange={this.onCheckboxChange}/>
-                        </label>
                         <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
                             <i className="fa fa-cog option-icon"/>
                         </button>

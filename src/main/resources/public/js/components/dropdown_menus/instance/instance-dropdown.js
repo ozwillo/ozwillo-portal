@@ -40,7 +40,6 @@ class InstanceDropdown extends React.Component {
         this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
         this.onRemoveInstance = this.onRemoveInstance.bind(this);
         this.onCancelRemoveInstance = this.onCancelRemoveInstance.bind(this);
-        this.onUpdateInstance = this.onUpdateInstance.bind(this);
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
         this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
         this.createSubscription = this.createSubscription.bind(this);
@@ -63,10 +62,6 @@ class InstanceDropdown extends React.Component {
 
     onCancelRemoveInstance(instance) {
         this.props.fetchUpdateInstanceStatus(instance, instanceStatus.running);
-    }
-
-    onUpdateInstance(instance) {
-        this.setState({ instance: Object.assign({}, this.props.instance, instance)});
     }
 
     filterMemberWithoutAccess(member) {
@@ -134,8 +129,7 @@ class InstanceDropdown extends React.Component {
                             instance={instance}
                             onClickConfigIcon={this.onClickConfigIcon}
                             onRemoveInstance={this.onRemoveInstance}
-                            onCancelRemoveInstance={this.onCancelRemoveInstance}
-                            onUpdateInstance={this.onUpdateInstance}/>;
+                            onCancelRemoveInstance={this.onCancelRemoveInstance}/>;
         const Footer = (isAvailable && <footer>
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
