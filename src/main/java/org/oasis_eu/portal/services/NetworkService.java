@@ -31,12 +31,8 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
-import java.time.Duration;
 import java.time.Instant;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -82,52 +78,44 @@ public class NetworkService {
         List<UIOrganization> organizations = new ArrayList<>();
         String userId = userInfoService.currentUser().getUserId();
 
-        //fetch personal organization
-        organizations.add(fetchOrganization(userId, false));
+        //Fetch all user's services
+        Map<String, List<InstanceService>> instanceServices = subscriptionStore.findByUserId(userId)
+                .stream()
+                .map(sub -> applicationService.getService(sub.getServiceId()))
+                .filter(is -> is.getCatalogEntry().getProviderId() != null)
+                .collect(Collectors.groupingBy(is -> is.getCatalogEntry().getProviderId()));
 
         //build Organizations
         List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
         for (UserMembership u : userMemberships) {
             Organization org = organizationStore.find(u.getOrganizationId());
-            organizations.add(fetchOrganization(org.getId(), false));
+            UIOrganization uiOrg = fillUIOrganization(org);
+            uiOrg.setServices(instanceServices.get(org.getId()));
+            uiOrg.setAdmin(userIsAdmin(org.getId()));
+            organizations.add(uiOrg);
         }
+
+        UIOrganization uiOrganization = new UIOrganization();
+        uiOrganization.setId(userId);
+        uiOrganization.setName("Personal");
+        uiOrganization.setServices(instanceServices.get(userId));
+        organizations.add(uiOrganization);
 
         return organizations;
     }
 
-
     public UIOrganization getOrganization(String organizationId) {
-        return fetchOrganization(organizationId, true);
+        return fetchOrganizationWithInstances(organizationId, true);
     }
 
-    private UIOrganization fetchOrganization(String organizationId, boolean fetchMembers) {
+    private UIOrganization fetchOrganizationWithInstances(String organizationId, boolean fetchMembers) {
         String userId = userInfoService.currentUser().getUserId();
         boolean isPersonal = userId.equals(organizationId);
 
-        //Fetch all user's services
-        List<InstanceService> instanceServices = subscriptionStore.findByUserId(userId)
-                .stream()
-                .map(sub -> applicationService.getService(sub.getServiceId()))
-                .collect(Collectors.toList());
-
-        //Fetch services associate with organization
         Organization org = (isPersonal)? getPersonalOrganization() : organizationStore.find(organizationId);
-
-        List<InstanceService> services = new ArrayList<>();
-        for (InstanceService is : instanceServices) {
-
-            if(is.getCatalogEntry().getProviderId() == null) {
-                logger.warn("Service " +is.getCatalogEntry().getId() + " has a providerId == null");
-            }
-
-            if(org.getId().equals(is.getCatalogEntry().getProviderId())){
-                services.add(is);
-            }
-        }
 
         //Build UIOrganization
         UIOrganization uiOrg = fillUIOrganization(org);
-        uiOrg.setServices(services);
         uiOrg.setInstances(getOrganizationInstances(org.getId()));
         uiOrg.setAdmin(userIsAdmin(organizationId));
 
