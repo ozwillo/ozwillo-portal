@@ -264,13 +264,8 @@ public class ApplicationService {
 
         //Delete user's subscriptions for services of instance
         List<ServiceEntry> instanceServices = catalogStore.findServicesOfInstance(instanceId);
-        subscriptionStore.findByUserId(user.getUserid())
-                .stream()
-                .filter(sub -> instanceServices
-                        .stream()
-                        .anyMatch(s -> s.getId().equals(sub.getServiceId())))
-                .forEach(sub -> subscriptionStore.unsubscribe(sub.getId()));
-
+        instanceServices.forEach(service ->
+                subscriptionStore.unsubscribe(user.getUserid(), service.getId(), SubscriptionType.ORGANIZATION));
     }
 
     /**
