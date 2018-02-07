@@ -2,6 +2,7 @@ import customFetch from '../util/custom-fetch';
 
 export const FETCH_USERS_OF_INSTANCE = 'FETCH_USERS_OF_INSTANCE';
 export const FETCH_UPDATE_INSTANCE_STATUS = 'FETCH_UPDATE_INSTANCE_STATUS';
+export const FETCH_UPDATE_SERVICE_CONFIG = 'FETCH_UPDATE_SERVICE_CONFIG';
 
 //Actions
 const fetchUsersOfInstanceAction = (instanceId, users) => {
@@ -17,6 +18,14 @@ const fetchUpdateInstanceStatusAction = (instanceId, status) => {
         type: FETCH_UPDATE_INSTANCE_STATUS,
         instanceId,
         status
+    };
+};
+
+const fetchUpdateServiceConfigAction = (instanceId, service) => {
+    return {
+        type: FETCH_UPDATE_SERVICE_CONFIG,
+        instanceId,
+        service
     };
 };
 
@@ -37,6 +46,18 @@ export const fetchUpdateInstanceStatus = ({applicationInstance}, status) => {
             json: { applicationInstance: { id: applicationInstance.id, status } }
         }).then(() => {
             return dispatch(fetchUpdateInstanceStatusAction(applicationInstance.id, status));
+        });
+    };
+};
+
+
+export const fetchUpdateServiceConfig = (instanceId, catalogEntry) => {
+    return (dispatch) => {
+        return customFetch(`/my/api/service/${catalogEntry.id}`, {
+            method: 'PUT',
+            json: catalogEntry
+        }).then((service) => {
+            return dispatch(fetchUpdateServiceConfigAction(instanceId, service));
         });
     };
 };

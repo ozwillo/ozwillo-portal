@@ -2,6 +2,7 @@ import React from 'react';
 import { connect } from 'react-redux';
 import { Route } from 'react-router-dom';
 import { Router, Switch, Redirect } from 'react-router';
+import Popup from 'react-popup';
 import history from './history';
 
 // Components
@@ -63,6 +64,7 @@ class AppRouter extends React.Component {
         return <Router history={history}>
             <BootLoader>
                 <Layout>
+                    <Popup/>
                     <Switch>
                         <Route path="/my" component={RouterWithUser} />
                         <Route path="/:lang/store" component={Store}/>

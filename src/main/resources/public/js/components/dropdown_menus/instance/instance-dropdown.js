@@ -1,11 +1,13 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Popup from 'react-popup';
 
 //Components
 import DropDownMenu from '../../dropdown-menu';
 import InstanceInvitationForm from '../../forms/instance-invitation-form';
 import InstanceDropdownHeader from './instance-dropdown-header';
+import InstanceConfigForm from '../../forms/instance-config-form';
 
 //action
 import { fetchDeleteAcl } from '../../../actions/acl';
@@ -15,6 +17,9 @@ import { fetchUpdateInstanceStatus } from '../../../actions/instance';
 //Config
 import Config from '../../../config/config';
 const instanceStatus = Config.instanceStatus;
+
+//Action
+import { fetchUpdateServiceConfig } from "../../../actions/instance";
 
 class InstanceDropdown extends React.Component {
 
@@ -43,6 +48,7 @@ class InstanceDropdown extends React.Component {
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
         this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
         this.createSubscription = this.createSubscription.bind(this);
+        this.fetchUpdateServiceConfig = this.fetchUpdateServiceConfig.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -52,8 +58,18 @@ class InstanceDropdown extends React.Component {
         });
     }
 
+    fetchUpdateServiceConfig(instanceId, catalogEntry) {
+        return this.props.fetchUpdateServiceConfig(instanceId, catalogEntry)
+            .then(() => {
+                Popup.close();
+            });
+    }
+
     onClickConfigIcon(instance) {
-        console.log('onClickConfigIcon ', instance);
+        Popup.create({
+            title: instance.name,
+            content: <InstanceConfigForm instance={instance} onSubmit={this.fetchUpdateServiceConfig}/>
+        }, true);
     }
 
     onRemoveInstance(instance) {
@@ -231,6 +247,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchUpdateInstanceStatus(instance, status) {
             return dispatch(fetchUpdateInstanceStatus(instance, status));
+        },
+        fetchUpdateServiceConfig(instanceId, catalogEntry) {
+            return dispatch(fetchUpdateServiceConfig(instanceId, catalogEntry));
         }
     };
 };

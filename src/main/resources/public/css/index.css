@@ -8,17 +8,15 @@
 @import 'components/dropdown-helper.css';
 @import 'components/dropdown-menu.css';
 @import 'components/footer.css';
-@import 'components/form.css';
 @import 'components/header.css';
 @import 'components/layout.css';
 @import 'components/modal.css';
 @import 'components/nav.css';
 @import 'components/notification.css';
-@import 'components/organization-invitation-form.css';
+@import 'components/popup.css';
 @import 'components/react-autosuggest.css';
 @import 'components/select.css';
 @import 'components/service.css';
-@import 'components/instance-invitation-form.css';
 @import 'components/side-menu.css';
 @import 'components/tabs.css';
 
@@ -26,6 +24,10 @@
 @import 'components/tabs/instances-tab.css';
 @import 'components/tabs/members-tab.css';
 
+@import 'components/forms/form.css';
+@import 'components/forms/instance-config-form.css';
+@import 'components/forms/instance-invitation-form.css';
+@import 'components/forms/organization-invitation-form.css';
 
 /* Pages */
 @import 'pages/dashboard.css';

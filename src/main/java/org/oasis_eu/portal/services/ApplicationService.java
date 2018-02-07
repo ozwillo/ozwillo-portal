@@ -140,13 +140,14 @@ public class ApplicationService {
 
     }
 
-    public void updateService(String serviceId, ServiceEntry serviceEntry) {
+    public InstanceService updateService(String serviceId, ServiceEntry serviceEntry) {
         ApplicationInstance appInstance = catalogStore.findApplicationInstance(serviceEntry.getInstanceId());
         if (!networkService.userIsAdminOrPersonalAppInstance(appInstance)) {
             // let it with the default forbidden error message
             throw new ForbiddenException();
         }
-        catalogStore.updateService(serviceId, serviceEntry);
+
+        return fetchService(catalogStore.updateService(serviceId, serviceEntry));
     }
 
     /**

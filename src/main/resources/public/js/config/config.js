@@ -6,5 +6,10 @@ export default {
         pending: 'PENDING',
         stopped: 'STOPPED',
         running: 'RUNNING'
+    },
+    instanceVisibility: {
+        never: 'NEVER_VISIBLE',
+        visible: 'VISIBLE',
+        hidden: 'HIDDEN'
     }
 };

@@ -32,6 +32,10 @@
 }
 
 
+.oz-form textarea.field {
+    resize: none;
+}
+
 .oz-form .btn.submit {
     background-color: #00796b;
     color: white;

@@ -39,7 +39,7 @@ class InstanceDropdownHeader extends React.Component {
         this.props.onCancelRemoveInstance(this.props.instance);
     }
 
-    onClickConfigIcon() {
+    onClickConfigIcon(e) {
         this.props.onClickConfigIcon(this.props.instance);
     }
 
@@ -47,7 +47,13 @@ class InstanceDropdownHeader extends React.Component {
         const now = Date.now();
         const deletionDate = new Date(this.props.instance.deletion_planned).getTime();
 
-        return Math.round((deletionDate - now ) / TIME_DAY);
+        const days = Math.round((deletionDate - now ) / TIME_DAY);
+
+        if(days < 0) {
+            debugger;
+        }
+
+        return days;
     }
 
     render() {
