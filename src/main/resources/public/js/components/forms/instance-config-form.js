@@ -32,8 +32,8 @@ class InstanceConfigForm extends React.Component {
             name: (serviceSelected && serviceSelected.name) || '',
             description: (serviceSelected && serviceSelected.description) || '',
             iconUrl: (serviceSelected && serviceSelected.icon) || '',
-            area: '',
-            areaUri: '',
+            area: this.readGeoNameFromUri(serviceSelected.geographical_areas[0]),
+            areaUri: serviceSelected.geographical_areas[0] || '',
             visibility: serviceSelected && serviceSelected.visibility === instanceVisibility.visible
         };
 
@@ -43,6 +43,17 @@ class InstanceConfigForm extends React.Component {
         this.onGeoAreaSelected = this.onGeoAreaSelected.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.uploadIconFile = this.uploadIconFile.bind(this);
+        this.readGeoNameFromUri = this.readGeoNameFromUri.bind(this);
+    }
+
+    readGeoNameFromUri(uri) {
+        if (!uri) {
+            return ''
+        }
+
+        console.log(uri);
+
+        return decodeURI(uri.substring(uri.lastIndexOf("/") + 1));
     }
 
     onSubmit(e) {
@@ -52,6 +63,7 @@ class InstanceConfigForm extends React.Component {
             name: this.state.name,
             description: this.state.description,
             icon: this.state.iconUrl,
+            geographical_areas: [this.state.areaUri]
         });
 
         if(this.state.serviceSelected.visibility !== instanceVisibility.never) {
