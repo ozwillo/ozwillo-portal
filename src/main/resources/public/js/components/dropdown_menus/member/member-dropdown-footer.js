@@ -24,7 +24,7 @@ class MemberDropdownFooter extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.onAddAccessToInstance();
+        this.props.onAddAccessToInstance(this.state.selectedOption);
     }
 
     onOptionChange(selectedOption) {

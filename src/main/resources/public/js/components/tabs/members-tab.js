@@ -48,8 +48,7 @@ class MembersTab extends React.Component {
                     {
                         org.members && org.members.map((member) => {
                             return <li key={member.id} className="member">
-                                <MemberDropdown member={member} organization={this.props.organization}
-                                                instances={this.props.instances}/>
+                                <MemberDropdown member={member} organization={this.props.organization}/>
                             </li>
                         })
                     }
@@ -61,8 +60,7 @@ class MembersTab extends React.Component {
 
 const MemberTabWithRedux = connect(state => {
     return {
-        organization: state.organization.current,
-        instances: state.instance.instances
+        organization: state.organization.current
     };
 })(MembersTab);
 
