@@ -9,6 +9,7 @@ import org.oasis_eu.portal.core.mongo.dao.icons.ImageRepository;
 import org.oasis_eu.portal.core.mongo.model.images.Image;
 import org.oasis_eu.portal.core.mongo.model.images.ImageDownloadAttempt;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoOperations;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -26,6 +28,8 @@ import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
@@ -85,20 +89,22 @@ public class ImageService {
     public Image storeImageForObjectId(String objectId, Image imageToStore) {
         byte[] iconBytes = imageToStore.getBytes();
         if (iconBytes == null || imageToStore.getFilename() == null) {
-            throw new RuntimeException("Image must have bytes and name");
+            throw new WrongQueryException("Image must have bytes and name", HttpStatus.BAD_REQUEST.value());
         }
 
         // 1. build servedImageUrl, also used as "proxied" / cached inputUrl
         String servedImageUrl = buildObjectIconImageVirtualUrl(objectId);
 
         // 2. make sure it is a 64x64 PNG (NB this will change in the future with more intelligent format detection / conversion)
+        ImageFormat format = getFormat(iconBytes);
         if (!ensurePNG(iconBytes)) {
             logger.error("Icon URL {} is not a PNG, returning default icon", servedImageUrl);
-            throw new RuntimeException("Image must be 64x64 PNG");
+            throw new WrongQueryException("Image must be 64x64 PNG", HttpStatus.BAD_REQUEST.value());
         }
-        ImageFormat format = getFormat(iconBytes);
+
         if (format == ImageFormat.INVALID) {
-            throw new RuntimeException("Invalid format of image for object " + objectId);
+            logger.error("Invalid format of image for object.");
+            throw new WrongQueryException("Image must be 64x64 PNG", HttpStatus.BAD_REQUEST.value());
         }
 
         Image image = imageRepository.findByUrl(servedImageUrl);
@@ -110,10 +116,14 @@ public class ImageService {
         // 3. compute the hash and store the icon
         image.setUrl(servedImageUrl); // servedImageUrl used as inputUrl, required in this collection, guarantees only one image per object
         image.setImageFormat(format);
-        image.setFilename(imageToStore.getFilename()); //image.setFilename(ICONIMAGE_NAME);
         image.setBytes(iconBytes);
         image.setHash(getHash(iconBytes));
         image.setDownloadedTime(DateTime.now());
+        try {
+            image.setFilename(URLEncoder.encode(imageToStore.getFilename(), "UTF-8")); //image.setFilename(ICONIMAGE_NAME);
+        } catch (UnsupportedEncodingException e) {
+            throw new WrongQueryException("The icon name is incorrect", HttpStatus.BAD_REQUEST.value());
+        }
 
         imageRepository.save(image);
 

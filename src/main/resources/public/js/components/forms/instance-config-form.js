@@ -4,10 +4,15 @@ import PropTypes from 'prop-types';
 //Components
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
 import Select from 'react-select';
+import FileUploadInput from '../fileuploadinput';
 
 //Config
 import Config from '../../config/config';
 const instanceVisibility = Config.instanceVisibility;
+const iconMaxSize = Config.iconMaxSize;
+
+//Action
+import { uploadFile } from '../../actions/file-upload';
 
 class InstanceConfigForm extends React.Component {
 
@@ -22,11 +27,11 @@ class InstanceConfigForm extends React.Component {
 
         const serviceSelected = (props.instance.services.length === 1)? props.instance.services[0].catalogEntry : null;
         this.state = {
+            iconError: '',
             serviceSelected,
             name: (serviceSelected && serviceSelected.name) || '',
             description: (serviceSelected && serviceSelected.description) || '',
             iconUrl: (serviceSelected && serviceSelected.icon) || '',
-            icon: null,
             area: '',
             areaUri: '',
             visibility: serviceSelected && serviceSelected.visibility === instanceVisibility.visible
@@ -37,6 +42,7 @@ class InstanceConfigForm extends React.Component {
         this.handleServiceChange = this.handleServiceChange.bind(this);
         this.onGeoAreaSelected = this.onGeoAreaSelected.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+        this.uploadIconFile = this.uploadIconFile.bind(this);
     }
 
     onSubmit(e) {
@@ -68,11 +74,24 @@ class InstanceConfigForm extends React.Component {
     }
 
     onGeoAreaSelected(geoArea) {
-        debugger;
         this.setState({
             area: geoArea.name,
             areaUri: geoArea.uri
         });
+    }
+
+    uploadIconFile(e) {
+        const file = e.currentTarget.files[0];
+        
+        if(file.size > iconMaxSize) {
+            e.currentTarget.value = null;
+            this.setState({ iconError: `icon must have a max size of ${Math.round(iconMaxSize/1024)} Ko` });
+            return;
+        }
+
+        uploadFile(file, this.state.serviceSelected.id)
+            .then(iconUrl => { this.setState({ iconUrl, iconError: '' }); })
+            .catch(err => { this.setState({ iconError: err.error }); });
     }
 
     render() {
@@ -94,7 +113,7 @@ class InstanceConfigForm extends React.Component {
                         <div className="flex-row">
                             <label htmlFor="name" className="label">Name</label>
                             <input type="text" name="name" id="name" className="form-control field"
-                                   value={this.state.name} onChange={this.handleChange} />
+                                   value={this.state.name} onChange={this.handleChange} required={true}/>
                         </div>
 
                         <div className="flex-row">
@@ -105,8 +124,25 @@ class InstanceConfigForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="iconUrl" className="label">Icon</label>
-                            <input type="text" name="iconUrl" id="iconUrl" className="form-control field"
-                                   value={this.state.iconUrl} onChange={this.handleChange} />
+
+                            <div className="flew-row field icon">
+                                <img src={this.state.iconUrl} />
+                                <input type="text" name="iconUrl" id="iconUrl" className="form-control"
+                                       value={this.state.iconUrl} onChange={this.handleChange} required={true} />
+                            </div>
+                        </div>
+
+                        <div className="flex-row">
+                            <label htmlFor="iconFile" className="label empty"> </label>
+                            <div className="flex-col field">
+                                <input name="iconFile" type="file"
+                                       onChange={this.uploadIconFile} accept="image/*" />
+                                {
+                                    this.state.iconError &&
+                                    <span className="error-message">{this.state.iconError}</span>
+                                }
+                            </div>
+
                         </div>
 
 

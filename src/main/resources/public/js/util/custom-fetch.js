@@ -45,12 +45,18 @@ export default (url, params = { headers: {} }) => {
             return res;
         })
         .catch(buildError)
-        .then((res) => { //Parse to json
-            return res.json()
-                .catch((err) => {
-                    console.debug('Error to parse result in JSON: ', err);
-                })
-        })
+        .then((res) => {
+            const contentType = res.headers.get('Content-Type');
+            if(!contentType) {
+                return;
+            }
+
+            if(contentType.split(';').includes('application/json')) {
+                return res.json();
+            }
+
+            return res.text();
+        });
 }
 
 export const urlBuilder = (url, params) => {

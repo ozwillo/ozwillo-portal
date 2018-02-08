@@ -11,5 +11,6 @@ export default {
         never: 'NEVER_VISIBLE',
         visible: 'VISIBLE',
         hidden: 'HIDDEN'
-    }
+    },
+    iconMaxSize: 20480 // octets
 };

@@ -109,7 +109,6 @@ public class CatalogStoreImpl implements CatalogStore {
 
     @Override
     public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) throws ApplicationInstanceCreationException {
-
         logger.info("Application instantiation request: {}", instancePattern);
 
         InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, appId, userInfoHelper.currentUser().getUserId());

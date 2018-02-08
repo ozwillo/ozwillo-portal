@@ -2,3 +2,19 @@
 .instance-config-form .label {
     color: black;
 }
+
+.instance-config-form .field.icon > img {
+    width: 48px;
+    margin: 0 5px;
+}
+
+.instance-config-form .field.icon > input {
+    width: calc(100% - 58px);
+    display: initial;
+}
+
+.instance-config-form .field .error-message {
+    color: red;
+    width: 100%;
+    text-align: center;
+}
