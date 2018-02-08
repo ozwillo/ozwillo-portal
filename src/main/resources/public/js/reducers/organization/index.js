@@ -11,7 +11,8 @@ import {
 
 import {
     FETCH_USERS_OF_INSTANCE,
-    FETCH_UPDATE_INSTANCE_STATUS
+    FETCH_UPDATE_INSTANCE_STATUS,
+    FETCH_UPDATE_SERVICE_CONFIG
 } from "../../actions/instance";
 
 import { FETCH_ADD_INSTANCE_TO_ORG } from "../../actions/app-store";
@@ -34,6 +35,7 @@ const instancesState = (state = [], action) => {
         case FETCH_ADD_INSTANCE_TO_ORG:
             nextState.push(action.instance);
             break;
+        case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_USERS_OF_INSTANCE:
         case FETCH_DELETE_ACL:
@@ -61,6 +63,7 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_ORGANIZATION_WITH_ID:
             nextState = action.organization;
             break;
+        case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
@@ -97,6 +100,7 @@ export default (state = defaultState, action) => {
         case FETCH_CREATE_ORGANIZATION:
             nextState.organizations = organizationsState(nextState.organizations, action);
             break;
+        case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_USERS_OF_INSTANCE:
         case FETCH_CREATE_ACL:

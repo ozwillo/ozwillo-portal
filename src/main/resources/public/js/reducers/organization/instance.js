@@ -5,7 +5,8 @@ import {
 
 import {
     FETCH_USERS_OF_INSTANCE,
-    FETCH_UPDATE_INSTANCE_STATUS
+    FETCH_UPDATE_INSTANCE_STATUS,
+    FETCH_UPDATE_SERVICE_CONFIG
 } from "../../actions/instance";
 
 const defaultState = {
@@ -16,7 +17,20 @@ const defaultState = {
 
 export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
+    let i = -1;
     switch(action.type) {
+        case FETCH_UPDATE_SERVICE_CONFIG:
+            i = nextState.services.findIndex((service) => {
+                return service.catalogEntry.id === action.service.catalogEntry.id;
+            });
+
+            if(i < 0){
+                return state;
+            }
+
+            nextState.services = Object.assign([], nextState.services);
+            nextState.services[i] = action.service;
+            break;
         case FETCH_UPDATE_INSTANCE_STATUS:
             nextState.applicationInstance = Object.assign({}, state.applicationInstance, { status: action.status });
             break;
@@ -29,7 +43,7 @@ export default (state = defaultState, action) => {
             break;
         case FETCH_DELETE_ACL:
             nextState.users = Object.assign([], state.users);
-            const i = nextState.users.findIndex((user) => {
+            i = nextState.users.findIndex((user) => {
                 //We check names if user is waiting before to accept a request
                 return  (!action.user.id && user.name === action.user.name ) || user.id === action.user.id
             });
