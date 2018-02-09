@@ -9,6 +9,7 @@ import MemberDropdownFooter from './member-dropdown-footer';
 
 //Actions
 import { fetchCreateAcl, fetchDeleteAcl } from "../../../actions/acl";
+import { fetchDeleteMember } from "../../../actions/member";
 
 class MemberDropdown extends React.Component {
 
@@ -46,8 +47,8 @@ class MemberDropdown extends React.Component {
         this.props.fetchDeleteAcl(this.props.member, instance);
     }
 
-    removeMemberInOrganization() {
-        console.log('removeMemberInOrganization')
+    removeMemberInOrganization(memberId) {
+        this.props.fetchDeleteMember(this.props.organization.id, memberId);
     }
 
     sendInvitation() {
@@ -129,6 +130,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchDeleteAcl(user, instance) {
             return dispatch(fetchDeleteAcl(user, instance));
+        },
+        fetchDeleteMember(organizationId, memberId) {
+            return dispatch(fetchDeleteMember(organizationId, memberId));
         }
     };
 };

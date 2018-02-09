@@ -18,7 +18,7 @@ class MemberDropdownHeader extends React.Component {
     }
 
     onRemoveMemberInOrganization() {
-        this.props.onRemoveMemberInOrganization();
+        this.props.onRemoveMemberInOrganization(this.props.member.id);
     }
 
     onSendInvitation() {

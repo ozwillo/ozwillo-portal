@@ -7,15 +7,17 @@ import {
 import {
     FETCH_CREATE_ACL,
     FETCH_DELETE_ACL
-} from "../../actions/acl";
+} from '../../actions/acl';
 
 import {
     FETCH_USERS_OF_INSTANCE,
     FETCH_UPDATE_INSTANCE_STATUS,
     FETCH_UPDATE_SERVICE_CONFIG
-} from "../../actions/instance";
+} from '../../actions/instance';
 
-import { FETCH_ADD_INSTANCE_TO_ORG } from "../../actions/app-store";
+import { FETCH_DELETE_MEMBER } from '../../actions/member';
+
+import { FETCH_ADD_INSTANCE_TO_ORG } from '../../actions/app-store';
 
 //Reducers
 import instanceReducer from './instance';
@@ -70,6 +72,18 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_USERS_OF_INSTANCE:
             nextState.instances = instancesState(state.instances, action);
             break;
+        case FETCH_DELETE_MEMBER:
+            const i = nextState.members.findIndex(member => {
+                return member.id === action.memberId
+            });
+
+            if(!i) {
+                return state;
+            }
+
+            nextState.members = Object.assign([], nextState.members);
+            nextState.members.splice(i, 1);
+            break;
         default:
             return state;
     }
@@ -100,6 +114,7 @@ export default (state = defaultState, action) => {
         case FETCH_CREATE_ORGANIZATION:
             nextState.organizations = organizationsState(nextState.organizations, action);
             break;
+        case FETCH_DELETE_MEMBER:
         case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_USERS_OF_INSTANCE:
