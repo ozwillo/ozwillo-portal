@@ -12,9 +12,3 @@
     width: calc(100% - 58px);
     display: initial;
 }
-
-.instance-config-form .field .error-message {
-    color: red;
-    width: 100%;
-    text-align: center;
-}

@@ -1,6 +1,12 @@
+.admin-tab {
+    margin: 30px 0;
+}
+
 .admin-tab .form .row {
     display: flex;
     flex-direction: row;
     justify-content: center;
 }
+
+
 

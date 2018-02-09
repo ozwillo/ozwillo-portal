@@ -17,7 +17,7 @@ class Header extends React.Component {
                     <button type="button" className="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
-                    <div id="error-message"></div>
+                    <span id="error-message"></span>
                 </div>
             </div>
             <div className="row clearfix">

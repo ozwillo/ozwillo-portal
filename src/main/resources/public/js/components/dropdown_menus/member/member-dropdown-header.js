@@ -7,22 +7,26 @@ class MemberDropdownHeader extends React.Component {
         organization: PropTypes.object.isRequired,
         member: PropTypes.object.isRequired,
         onRemoveMemberInOrganization: PropTypes.func.isRequired,
-        onSendInvitation: PropTypes.func.isRequired
     };
 
     constructor(props) {
         super(props);
 
+        this.state = {
+            error: ''
+        };
+
         this.onRemoveMemberInOrganization = this.onRemoveMemberInOrganization.bind(this);
-        this.onSendInvitation = this.onSendInvitation.bind(this);
     }
 
     onRemoveMemberInOrganization() {
-        this.props.onRemoveMemberInOrganization(this.props.member.id);
-    }
-
-    onSendInvitation() {
-        this.props.onSendInvitation();
+        this.props.onRemoveMemberInOrganization(this.props.member.id)
+            .then(() => {
+                this.setState({ error: '' })
+            })
+            .catch((err) => {
+                this.setState({ error: err.error });
+            });
     }
 
     render() {
@@ -30,7 +34,7 @@ class MemberDropdownHeader extends React.Component {
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <span className="dropdown-name">{member.name}</span>
-
+                <span className="error-message">{this.state.error}</span>
                 <div className="options flex-row end">
                     {
                         member.isPending &&

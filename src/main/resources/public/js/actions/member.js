@@ -14,7 +14,7 @@ const fetchDeleteMemberAction = (memberId) => {
 // async methods
 export const fetchDeleteMember = (organizationId, memberId) => {
     return dispatch => {
-        customFetch(`/my/api/organization/${organizationId}/membership/${memberId}`, {
+        return customFetch(`/my/api/organization/${organizationId}/membership/${memberId}`, {
             method: 'DELETE'
         }).then(() => {
             return dispatch(fetchDeleteMemberAction(memberId));

@@ -14,7 +14,8 @@ class MemberDropdownFooter extends React.Component {
         super(props);
 
         this.state = {
-            selectedOption: null
+            selectedOption: null,
+            error: ''
         };
 
         //binds methods
@@ -24,7 +25,13 @@ class MemberDropdownFooter extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.onAddAccessToInstance(this.state.selectedOption);
+        this.props.onAddAccessToInstance(this.state.selectedOption)
+            .then(() => {
+                this.setState({ error: '' });
+            })
+            .catch(err => {
+                this.setState({ error: err.error });
+            });
     }
 
     onOptionChange(selectedOption) {
@@ -45,7 +52,9 @@ class MemberDropdownFooter extends React.Component {
                     labelKey="name"
                     placeholder="Instances"/>
 
-                <div className="options flex-row end">
+                <span className="error-message">{this.state.error}</span>
+
+                <div className="flex-row end">
                     <button type="submit" className="btn" className="btn-default">Send</button>
                 </div>
             </form>

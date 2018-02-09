@@ -21,11 +21,14 @@ class MemberDropdown extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            errors: {}
+        };
+
         //bind methods
         this.removeAccessToInstance= this.removeAccessToInstance.bind(this);
         this.addAccessToInstance = this.addAccessToInstance.bind(this);
         this.removeMemberInOrganization = this.removeMemberInOrganization.bind(this);
-        this.sendInvitation = this.sendInvitation.bind(this);
         this.memberInstances = this.memberInstances.bind(this);
         this.filterInstanceWithoutAccess = this.filterInstanceWithoutAccess.bind(this);
     }
@@ -35,7 +38,7 @@ class MemberDropdown extends React.Component {
             return;
         }
 
-        this.props.fetchCreateAcl(this.props.member, instance);
+        return this.props.fetchCreateAcl(this.props.member, instance);
     }
 
     removeAccessToInstance(e) {
@@ -44,15 +47,19 @@ class MemberDropdown extends React.Component {
             return instance.id === instanceId;
         });
 
-        this.props.fetchDeleteAcl(this.props.member, instance);
+        this.props.fetchDeleteAcl(this.props.member, instance)
+            .then(() => {
+                const errors = Object.assign({}, this.state.errors, { [instanceId]: '' });
+                this.setState({ errors });
+            })
+            .catch((err) => {
+                const errors = Object.assign({}, this.state.errors, { [instanceId]: err.error });
+                this.setState({ errors });
+            });
     }
 
     removeMemberInOrganization(memberId) {
-        this.props.fetchDeleteMember(this.props.organization.id, memberId);
-    }
-
-    sendInvitation() {
-        console.log('sendInvitation')
+       return this.props.fetchDeleteMember(this.props.organization.id, memberId);
     }
 
     memberInstances() {
@@ -93,11 +100,10 @@ class MemberDropdown extends React.Component {
 
         const Header = <MemberDropdownHeader member={member}
                                              organization={org}
-                                             onRemoveMemberInOrganization={this.removeMemberInOrganization}
-                                             onSendInvitation={this.sendInvitation}/>;
+                                             onRemoveMemberInOrganization={this.removeMemberInOrganization}/>;
         const Footer = <MemberDropdownFooter member={member}
                                              instances={instancesWithoutAccess}
-                                             onAddAccessToInstance={this.addAccessToInstance}/>
+                                             onAddAccessToInstance={this.addAccessToInstance}/>;
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!member.isPending}>
             <section className='dropdown-content'>
@@ -107,7 +113,7 @@ class MemberDropdown extends React.Component {
                             return <li key={instance.id}>
                                 <article className="item flex-row">
                                     <p className="name">{instance.name}</p>
-
+                                    <span className="error-message">{this.state.errors[instance.id]}</span>
                                     <div className="options flex-row">
                                         <button className="btn icon" onClick={this.removeAccessToInstance} data-instance={instance.id}>
                                             <i className="fa fa-trash option-icon delete"/>

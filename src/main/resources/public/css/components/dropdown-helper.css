@@ -16,10 +16,14 @@
 
 .dropdown-content .list,
 .dropdown-content .flex-row.container,
-.dropdown-header .form .dropdown-name,
 .dropdown-header .options,
 .dropdown-footer .options {
     width: 100%;
+}
+
+.dropdown-header .form .dropdown-name {
+    width: 25%;
+    min-width: 150px;
 }
 
 .dropdown-content .message,
@@ -57,7 +61,8 @@
 }
 
 .dropdown-content .list .item .name {
-    width: 100%;
+    width: 25%%;
+    min-width: 180px;
     margin: 0;
     text-align: left;
 }

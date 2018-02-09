@@ -139,6 +139,13 @@ label.required {
     padding-top:0.5em;
 }
 
+.error-message {
+    color: red;
+    width: 100%;
+    text-align: left;
+    margin: auto 5px;
+}
+
 /* Loading */
 .loading-container {
     text-align: center;

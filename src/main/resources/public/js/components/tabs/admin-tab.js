@@ -34,11 +34,16 @@ class AdminTab extends React.Component {
         super(props);
 
         this.state = {
-            isLoading: false
+            isLoading: false,
+            organization: this.props.organization
         };
 
         //bind methods
         this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ organization: nextProps.organization });
     }
 
     componentDidMount() {
