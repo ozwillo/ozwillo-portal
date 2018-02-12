@@ -383,7 +383,7 @@ var DashList = createClass({
         if (this.props.loading) {
             return (
                 <div className="text-center">
-                    <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
                 </div>
             );
         } else {
@@ -666,7 +666,7 @@ var Desktop = createClass({
             return (
                 <div className="row">
                     <div className="col-sm-12 text-center">
-                        <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}
+                        <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
                     </div>
                 </div>
             );
@@ -839,8 +839,7 @@ class DashboardWrapper extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
-                            <img src="/img/profile-lg.png" />
-                            <span>{this.context.t('my.dashboard')}</span>
+                            <span className="title">{this.context.t('my.dashboard')}</span>
                         </h1>
                     </div>
                 </div>

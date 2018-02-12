@@ -101,7 +101,7 @@ class SynchronizeFCProfile extends React.Component {
 
         if(!userProfile){
             return <section className="synchronize-fc-profile">
-                <i className="fa fa-spinner fa-spin spinner"></i>
+                <i className="fa fa-spinner fa-spin spinner loading"></i>
             </section>
         }
 

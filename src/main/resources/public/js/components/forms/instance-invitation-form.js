@@ -109,7 +109,7 @@ class InstanceInvitationForm extends React.Component {
 
                     {
                         this.state.isLoading &&
-                        <i className="fa fa-spinner fa-spin send-icon"/>
+                        <i className="fa fa-spinner fa-spin send-icon loading"/>
                     }
                 </button>
             </div>

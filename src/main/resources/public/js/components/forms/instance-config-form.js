@@ -183,7 +183,7 @@ class InstanceConfigForm extends React.Component {
                             {
                                 (!this.props.isLoading && <input type="submit" value="Save" className="submit btn"/> ) ||
                                 <button type="button" className="submit btn icon">
-                                    <i className="fa fa-spinner fa-spin" />
+                                    <i className="fa fa-spinner fa-spin loading"/>
                                 </button>
                             }
                         </div>

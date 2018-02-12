@@ -1,5 +1,6 @@
 /* GLOBAL STYLES */
 
+@import 'variables.css';
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,700);
 
 /* Components */
@@ -18,6 +19,7 @@
 @import 'components/select.css';
 @import 'components/service.css';
 @import 'components/side-menu.css';
+@import 'components/table.css';
 @import 'components/tabs.css';
 
 @import 'components/tabs/admin-tab.css';
@@ -56,7 +58,6 @@ body { height: 100%; }
 
 body {
     width: 100%;
-    color: #fff !important;
 }
 
 body, h1, h2 {
@@ -77,6 +78,12 @@ label.required {
     font-weight: 700;
 }
 
+.title {
+    color: var(--pink-color);
+    font-weight: bold;
+    font-size: 0.8em;
+}
+
 /* page-row */
 .page-row {
     display: table-row;
@@ -87,7 +94,7 @@ label.required {
 
 /* oz-body */
 .oz-body {
-    background: #6f438e;
+    background: var(--white-color);
 }
 
 .oz-body.wrapper {
@@ -153,4 +160,8 @@ label.required {
 
 .loading-container .loading {
     font-size: 2.5em;
+}
+
+.loading {
+    color: var(--pink-color);
 }

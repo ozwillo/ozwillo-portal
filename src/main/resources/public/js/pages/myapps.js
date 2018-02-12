@@ -111,7 +111,7 @@ var InstanceList = createClass({
         if (this.state.loading) {
             return (
                 <p className="text-center">
-                    <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
                 </p>
             );
         }
@@ -307,8 +307,7 @@ class MyAppsWrapper extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
-                            <img src="/img/apps.png" />
-                            <span>{this.context.t('my.apps')}</span>
+                            <span className="title">{this.context.t('my.apps')}</span>
                         </h1>
                     </div>
                 </div>

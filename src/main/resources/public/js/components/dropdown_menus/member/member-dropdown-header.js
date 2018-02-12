@@ -39,7 +39,7 @@ class MemberDropdownHeader extends React.Component {
                     {
                         member.isPending &&
                         <button type="button" className="btn icon">
-                            <i className="fa fa-spinner fa-spin option-icon"/>
+                            <i className="fa fa-spinner fa-spin option-icon loading"/>
                         </button>
                     }
                     {

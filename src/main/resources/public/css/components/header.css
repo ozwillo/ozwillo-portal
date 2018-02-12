@@ -1,6 +1,19 @@
 .oz-header {
-    margin-top: 15px;
-    width: 100%;
+    position: relative;
+    min-height: 60px;
+    margin-top: 20px;
+}
+
+.oz-header .logo-home {
+    margin-left: 10px;
+    width: 160px;
+}
+
+.my-oasis {
+    width: 200px;
+    position: absolute;
+    bottom: 0;
+    left: calc(50% - 100px);
 }
 
 .oz-header .welcome {
@@ -9,10 +22,68 @@
 }
 
 .oz-header .welcome a {
-    color: #6f438e;
+    color: var(--blue-color);
 }
 
 .oz-header .welcome .badge {
-    background: #c92828;
-    color: #FFF;
+    background: var(--red-color);
+    color: var(--white-color);
+}
+
+.oz-header .logo-container {
+    position: absolute;
+    height: 100%;
+    width: 200px;
+    border: 1px solid var(--white-color);
+    border-radius: 100px;
+    z-index: 2;
+    padding: 3px;
+    background-color: var(--white-color);
+    box-shadow: -1px 4px 4px rgba(0, 0, 0, 0.2),
+                1px -1px 4px rgba(0, 0, 0, 0.1);
+}
+
+.oz-header .navbar-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+}
+
+.oz-header .user-container {
+    position: absolute;
+    right: 15px;
+    top: 15px;
+    z-index: 2;
+}
+
+.oz-header .logo-app {
+    height: 100%;
+    padding: 10px;
+}
+
+@media (max-width: 425px) {
+
+    .oz-header {
+        height: 120px;
+    }
+
+    .oz-header .logo-container {
+        width: 120px;
+    }
+
+    .oz-header .logo-app {
+        padding: 5px;
+    }
+
+    .oz-header .user-container {
+        right: 0px;
+        top: 0px;
+    }
+
+    .oz-header .user-container p {
+        margin: 0;
+    }
 }

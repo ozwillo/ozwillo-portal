@@ -130,7 +130,7 @@ var NotificationTable = createClass({
                                             updateAppFilter={this.filterByApp} apps={this.state.apps}/>
                     </div>
                     <div className="col-md-12">
-                        <table className="table">
+                        <table className="oz-table table">
                             <thead>
                             <tr>
                                 <SortableHeader name="date" label="date" size="2" sortBy={this.sortBy}
@@ -287,8 +287,7 @@ class NotificationTableWrapper extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
-                            <img src="/img/bell.png" />
-                            <span>{this.context.t('ui.notifications')}</span>
+                            <span className="title">{this.context.t('ui.notifications')}</span>
                         </h1>
                     </div>
                 </div>

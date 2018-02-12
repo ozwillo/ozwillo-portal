@@ -1,17 +1,16 @@
 #myapps .authority {
-    border: 1px solid #6f438e;
     padding: 10px 20px;
 }
 
 #myapps .authority-header {
-    background-color: #4c2d62;
+    background-color: var(--light-blue-color);
     font-size: 20px;
-    border-bottom: 1px solid #6f438e;
+    color: var(--white-color);
 }
 
 #myapps .authority-body {
     background-color: white;
-    color: #333;
+    color: var(--black-2-color);
 }
 
 #myapps .authority-body .authority-app {

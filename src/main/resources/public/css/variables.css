@@ -1,0 +1,29 @@
+:root {
+    /* COLOR */
+    --black-color: #4c4c4c;
+    --black-2-color: #545454;
+    --white-color: white;
+    --red-color: rgba(190, 40, 62, 1);
+    --dark-red-color: rgba(150, 0, 42, 1);
+    --blue-color: rgba(51, 56, 156, 1);
+    --dark-blue-color: rgba(31, 36, 136, 1);
+    --light-blue-color: rgba(70, 171, 226, 1);
+    --gray-color: #CCC;
+    --light-gray-color: #DDD;
+    --dark-gray-color: #999;
+    --pink-color: rgba(212, 64, 130, 1);
+    --light-pink-color: rgba(232, 84, 150, 0.95);
+    --yellow-color: #f8ba03;
+    --orange-color: #f69b04;
+    --dark-orange-color: #D67b00;
+    --green-color: #43a047;
+    --dark-green-color: #2e7d32;
+
+    /* SCREEN SIZE
+    --sm-phone-width: 320;
+    --m-phone-width: 375;
+    --l-phone-width: 425;
+    --m-tablet-width: 768;
+    --l-laptop-width: 1024;
+     */
+}

@@ -307,7 +307,7 @@ var LoadMore = createClass({
         if (this.props.loading) {
             return (
                 <div className="text-center">
-                    <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
                 </div>
             );
         } else if (this.props.maybeMoreApps) {

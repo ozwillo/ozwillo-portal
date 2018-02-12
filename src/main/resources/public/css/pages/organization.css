@@ -1,0 +1,62 @@
+.organization {
+    background-color: white;
+    margin-bottom: 1em;
+}
+
+div.organization .organization-header {
+    padding: 10px 20px;
+    margin: 0;
+    background-color: var(--blue-color);
+}
+
+div.organization .organization-header .title {
+    color: var(--white-color);
+    font-size: 1.2em;
+}
+
+div.organization .organization-member{
+    padding: 5px 15px;
+    margin: 0 10px 0 10px;
+    border-bottom: 1px solid var(--light-gray-color);
+    line-height: 30px;
+    color: #333;
+}
+
+div.organization .organization-member .name,
+div.organization .organization-member .status,
+div.organization .organization-member .actions,
+div.organization .organization-member .empty-space
+{
+    width: 100%;
+}
+
+
+
+div.organization .organization-pending-member-row {
+    font-style: italic;
+    padding: 5px 15px;
+    margin: 0 10px 0 10px;
+    border-bottom: 1px solid var(--white-color);
+    line-height: 30px;
+    color: #333;
+}
+
+.organization-pending-member-row:last-child, .organization-member:last-child {
+    border-bottom: none;
+}
+
+.add-organization-action {
+    margin-bottom: 1em;
+}
+
+@media (max-width: 425px) {
+
+    .organization-header .btn-line {
+        margin-right: 8px;
+    }
+
+    div.organization .organization-header {
+        padding: 10px 0;
+    }
+
+}

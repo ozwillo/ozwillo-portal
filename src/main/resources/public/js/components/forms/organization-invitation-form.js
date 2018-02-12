@@ -73,7 +73,7 @@ class OrganizationInvitationForm extends React.Component {
                             {
 
                                 this.state.isLoading &&
-                                <i className="fa fa-spinner fa-spin action-icon"/>
+                                <i className="fa fa-spinner fa-spin action-icon loading"/>
                             }
                         </button>
                     </div>

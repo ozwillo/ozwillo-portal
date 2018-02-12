@@ -4,12 +4,13 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import renderIf from 'render-if';
 import moment from 'moment';
+import Select from 'react-select';
 
 import '../util/csrf';
 
 // Component
 import FranceConnectBtn from '../components/france-connect-btn';
-import { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/forms/form';
+import { Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/forms/form';
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 
 class Profile extends React.Component {
@@ -85,13 +86,14 @@ class Profile extends React.Component {
                 <Form id="account" onSubmit={this.onSubmit.bind(this)}>
                     {renderIf(this.state.updateSucceeded) (
                         <div className="alert alert-success" role="alert">
-                            <button type="button" className="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
                             {this.context.t('my.profile.account.update')}
                         </div>
                     )}
                     <ProfileAccount userProfile={userProfile} languages={this.state.languages}
-                                    onValueChange={this.onValueChange.bind(this)}
-                    />
+                                    onValueChange={this.onValueChange.bind(this)} />
                     <IdentityAccount userProfile={userProfile}
                                      onValueChange={this.onValueChange.bind(this)} />
                     <AddressAccount address={userProfile.address}
@@ -120,26 +122,59 @@ class ProfileAccount extends React.Component {
         t: PropTypes.func.isRequired
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            options: this.createOptions(this.props.languages)
+        };
+
+        this.createOptions = this.createOptions.bind(this);
+        this.handleSelectChange = this.handleSelectChange.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps) {
+        this.setState({ options: this.createOptions(nextProps.languages) });
+    }
+
+    createOptions(languages) {
+        const options = [];
+        languages.forEach((lang) => {
+            const label = this.context.t(`my.profile.account.language.${lang}`);
+            options.push({ value: lang, label })
+        });
+
+        return options;
+    }
+
+    handleSelectChange(valueSelected) {
+        this.props.onValueChange('locale', valueSelected.value);
+    }
+
     render() {
         return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <h2>{this.context.t('my.profile.title.account')}</h2>
+            <fieldset className="oz-fieldset">
+                <legend className="oz-legend">{this.context.t('my.profile.title.account')}</legend>
+                <div className="flex-row">
+                    <label className="label">
+                        {this.context.t('my.profile.account.email')} *
+                    </label>
+                    <span className="field">{this.props.userProfile.email_address}</span>
                 </div>
-                <div className="form-group">
-                    <div className="control-label col-sm-3 required">
-                        {this.context.t('my.profile.account.email')}
-                    </div>
-                    <div className="col-sm-7 text-align-middle">
-                        <span>{this.props.userProfile.email_address}</span>
-                    </div>
-                </div>
+
                 <InputText name="nickname" value={this.props.userProfile.nickname} isRequired={true}
                            onChange={e => this.props.onValueChange('nickname', e.target.value)}
                            label={this.context.t('my.profile.personal.nickname')} />
-                <LanguageSelector value={this.props.userProfile.locale} languages={this.props.languages}
-                                  onChange={e => this.props.onValueChange('locale', e.target.value)}/>
-            </div>
+
+                {/*<LanguageSelector value={this.props.userProfile.locale} languages={this.props.languages}
+                                  onChange={e => this.props.onValueChange('locale', e.target.value)}/>*/}
+                <div className="flex-row">
+                    <label htmlFor="language" className="label">{this.context.t('my.profile.account.language')} *</label>
+                    <Select className="select field" value={this.props.userProfile.locale}
+                            onChange={this.handleSelectChange} placeholder=""
+                            options={this.state.options} clearable={false} required={true} />
+                </div>
+            </fieldset>
         )
     }
 }
@@ -155,23 +190,21 @@ class IdentityAccount extends React.Component {
     };
 
     handleChange(date) {
-        let birthdate = date
-        if (!date.isUTC()) {
+        let birthdate = date;
+        /*if (!date.isUTC()) {
             birthdate = moment(date).utc().add(date.utcOffset(), 'm');
-        }
+        }*/
 
-        this.props.onValueChange('birthdate', birthdate)
+        this.props.onValueChange('birthdate', birthdate);
     }
 
     render () {
         moment.locale(this.props.userProfile.locale)
-        const birthdate = moment.utc(this.props.userProfile.birthdate)
+        const birthdate = moment.utc(this.props.userProfile.birthdate);
 
         return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <h2>{this.context.t('my.profile.personal.identity')}</h2>
-                </div>
+            <fieldset className="oz-fieldset">
+                <legend className="oz-legend">{this.context.t('my.profile.personal.identity')}</legend>
                 <InputText name="given_name" value={this.props.userProfile.given_name}
                            onChange={e => this.props.onValueChange('given_name', e.target.value)}
                            label={this.context.t('my.profile.personal.firstname')} />
@@ -182,13 +215,14 @@ class IdentityAccount extends React.Component {
                            label={this.context.t('my.profile.personal.lastname')}
                            onChange={e => this.props.onValueChange('family_name', e.target.value)} />
                 <InputDatePicker name="birthdate" label={this.context.t('my.profile.personal.birthdate')}
-                                 onChange={this.handleChange.bind(this)} onSubmit={this.handleChange.bind(this)} startDate={birthdate} />
+                                 onChange={this.handleChange.bind(this)} onSubmit={this.handleChange.bind(this)}
+                                 value={birthdate} dropdownMode="select"/>
                 <InputText name="phone_number" value={this.props.userProfile.phone_number}
                            label={this.context.t('my.profile.personal.phonenumber')}
                            onChange={e => this.props.onValueChange('phone_number', e.target.value)} />
                 <GenderSelector value={this.props.userProfile.gender}
-                                onChange={e => this.props.onValueChange('gender', e.target.value)} />
-            </div>
+                                onChange={value => this.props.onValueChange('gender', value)} />
+            </fieldset>
         )
     }
 }
@@ -225,25 +259,21 @@ class AddressAccount extends React.Component {
 
     render () {
         return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <h2>{this.context.t('my.profile.personal.address')}</h2>
-                </div>
+            <fieldset className="oz-fieldset">
+                <legend className="oz-legend">{this.context.t('my.profile.personal.address')}</legend>
                 <CountrySelector value={this.props.address.country}
-                                 onChange={e => this.props.onValueChange('address.country', e.target.value)}
-                                 url="/api/store/dc-countries" label={this.context.t('my.profile.personal.country')} />
-                <div className='form-group'>
-                    <label className="control-label col-sm-3">
+                                 onChange={value => this.props.onValueChange('address.country', value)}
+                                 url="/api/store/dc-countries"/>
+                <div className="flex-row">
+                    <label className="label">
                         {this.context.t('my.profile.personal.locality')}
                     </label>
-                    <div className="col-sm-7">
-                        <GeoAreaAutosuggest name="locality"
-                                            onGeoAreaSelected={this.onGeoAreaSelected}
-                                            onChange={this.handleChange}
-                                            countryUri={this.props.address.country || ''}
-                                            endpoint="/dc-cities" placeholder={this.context.t('my.profile.personal.locality')}
-                                            value={this.props.address.locality} />
-                    </div>
+                    <GeoAreaAutosuggest name="locality"
+                                        onGeoAreaSelected={this.onGeoAreaSelected}
+                                        onChange={this.handleChange}
+                                        countryUri={this.props.address.country || ''}
+                                        endpoint="/dc-cities" placeholder={this.context.t('my.profile.personal.locality')}
+                                        value={this.props.address.locality} />
                 </div>
 
                 <InputText name="address.postal_code" value={this.props.address.postal_code}
@@ -254,7 +284,7 @@ class AddressAccount extends React.Component {
                 <InputText name="address.street_address" value={this.props.address.street_address}
                            label={this.context.t('my.profile.personal.streetaddress')}
                            onChange={e => this.props.onValueChange('address.street_address', e.target.value)} />
-            </div>
+            </fieldset>
         )
     }
 }
@@ -271,46 +301,16 @@ class PasswordAccount extends React.Component {
 
     render() {
         return (
-            <div className="row">
-                <div className="col-sm-12">
-                    <h2>{this.context.t('my.profile.account.password')}</h2>
-                </div>
-                <div className="col-sm-12">
-                    <div className="form-group">
-                        <div className="col-sm-9 col-sm-offset-3">
-                            <a className="change-password btn btn-lg btn-warning" href={this.props.passwordChangeEndpoint}>
-                                { this.props.passwordExist && this.context.t('my.profile.account.changepassword')}
-                                { !this.props.passwordExist && this.context.t('my.profile.account.createpassword')}
-                            </a>
-                        </div>
-                    </div>
-                </div>
+            <div className="flex-col">
+                <h2>{this.context.t('my.profile.account.password')}</h2>
+
+                <a className="change-password" href={this.props.passwordChangeEndpoint}>
+                    <span className="btn btn-lg btn-warning">
+                        { this.props.passwordExist && this.context.t('my.profile.account.changepassword')}
+                        { !this.props.passwordExist && this.context.t('my.profile.account.createpassword')}
+                    </span>
+                </a>
             </div>
-        )
-    }
-}
-
-
-class LanguageSelector extends React.Component {
-    static propTypes = {
-        value: PropTypes.string,
-        languages: PropTypes.array.isRequired,
-        onChange: PropTypes.func.isRequired
-    };
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
-    render() {
-        return (
-            <Select name="language" value={this.props.value}
-                    onChange={this.props.onChange}
-                    label={this.context.t('my.profile.account.language')}>
-                { this.props.languages.map(option =>
-                    <option key={option} value={option}>{this.context.t('my.profile.account.language.' + option)}</option>)
-                }
-            </Select>
         )
     }
 }
@@ -328,8 +328,7 @@ class ProfileWrapper extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
-                            <img src="/img/profile-lg.png" />
-                            <span>{this.context.t('my.profile')}</span>
+                            <span className="title" >{this.context.t('my.profile')}</span>
                         </h1>
                     </div>
                 </div>

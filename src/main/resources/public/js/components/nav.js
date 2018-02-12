@@ -13,17 +13,13 @@ class Nav extends React.Component {
                     <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
                             data-target="#ozwillo-navbar" aria-expanded="false" aria-controls="navbar">
                         <span className="sr-only">Toggle navigation</span>
-                        <span className="icon-bar"></span>
-                        <span className="icon-bar"></span>
-                        <span className="icon-bar"></span>
+                        <span className="icon-bar" />
+                        <span className="icon-bar" />
+                        <span className="icon-bar" />
                     </button>
-                    <Link className="navbar-brand" to="/">
-                        <img src="/img/logo-ozwillo.png" alt="Logo Ozwillo"/>
-                    </Link>
                 </div>
 
                 <div className="collapse navbar-collapse" id="ozwillo-navbar">
-
                     <ul className="nav navbar-nav">
                         {
                             this.props.siteMapHeader && this.props.siteMapHeader.contentItems.map((item, index) => {
@@ -83,7 +79,7 @@ class Nav extends React.Component {
                         <li className="dropdown">
                             <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown">
                                 <span>{this.props.language}</span>
-                                <i className="caret"></i>
+                                <i className="caret" />
                             </a>
                             <ul className="dropdown-menu">
                                 <li>

@@ -22,7 +22,7 @@ class FranceConnectBtn extends React.Component {
 
         return <form id="FranceConnectButton"
                      method="post" action={this.props.linkFranceConnectEndpoint}
-                     className="form-horizontal">
+                     className="oz-form">
             <div>
                 <h2>France Connect</h2>
             </div>
@@ -47,7 +47,7 @@ class FranceConnectBtn extends React.Component {
                 <fieldset>
                     <input type="hidden" name="continue"
                            value={`${window.location.origin}/my/profile/franceconnect`}/>
-                    <SubmitButton label={this.context.t("franceconnect.form.synchronise")} className="btn btn-lg btn-warning"/>
+                    <SubmitButton label={this.context.t("franceconnect.form.synchronise")}/>
                 </fieldset>
             }
         </form>;

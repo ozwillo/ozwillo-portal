@@ -1,52 +1,81 @@
-#oz-nav.navbar-auth .navbar-nav>li>a:hover,
-#oz-nav.navbar-auth .navbar-nav>li>a.focus,
-#oz-nav.navbar-auth .navbar-nav>li>a:focus {
-    color: #fff;
+#oz-nav .navbar-nav>li>a:hover,
+#oz-nav .navbar-nav>li>a.focus,
+#oz-nav .navbar-nav>li>a:focus {
+    color: var(--white-color);
 }
 
-#oz-nav.navbar-auth .navbar-nav>li>a>img,
-#oz-nav.navbar-noauth .navbar-nav>li>a>img {
+#oz-nav .navbar-nav>li>a>img {
     margin-right: 5px;
 }
 
-#oz-nav.navbar-noauth {
-    margin-bottom: 0;
-    background: #fff;
+#oz-nav {
+    width: 100%;
+    margin: auto 0 !important;
+    background: var(--blue-color);
     border: none;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
 }
 
-#oz-nav.navbar-noauth a {
-    text-transform: uppercase;
-    color: #6f438e !important;
+#oz-nav .navbar-nav > li {
+    min-height: 50px;
+    display: flex;
 }
 
-#oz-nav.navbar-noauth #ozwillo-navbar {
-    margin-top: 10px;
+#oz-nav .dropdown.open > a,
+#oz-nav .dropdown-menu > li > a:hover,
+#oz-nav .navbar-nav > li:hover,
+#oz-nav .navbar-nav > li > a:hover {
+    background-color: var(--pink-color);
 }
 
-#oz-nav.navbar-noauth .navbar-brand {
-    padding: 10px;
+#oz-nav .navbar-nav>li>a {
+    color: var(--white-color);
+    margin: auto 10px;
+    padding: 0;
 }
 
-#oz-nav.navbar-noauth .navbar-brand>img {
-    max-height: 100%;
-    height: 100%;
-    width: auto;
-    margin: 0 auto;
+#oz-nav .navbar-nav .menu-icon {
+    font-size: 1.2em;
 }
 
-#oz-nav.navbar-auth {
-    margin-bottom: 0;
-    background: #4c2d62;
-    border: none;
+.navbar-toggle {
+    cursor: pointer;
 }
 
-#oz-nav.navbar-auth .navbar-nav>li>a {
-    color: #fff;
+.navbar-toggle,
+.navbar-toggle:hover,
+.navbar-toggle.collapsed:hover,
+.navbar-toggle.collapsed .icon-bar {
+    background-color: var(--white-color) !important;
 }
+
+.navbar-toggle.collapsed,
+.navbar-toggle .icon-bar,
+.navbar-toggle:hover .icon-bar{
+    background-color: var(--blue-color) !important;
+}
+
+#ozwillo-navbar {
+    position: relative;
+}
+
+#oz-nav .dropdown-menu {
+    background-color: var(--blue-color);
+}
+
+#oz-nav .dropdown-menu > li > a {
+    color: var(--white-color);
+}
+
 
 @media (min-width: 768px) {
     #oz-nav.navbar {
         border-radius: 0;
+    }
+}
+
+@media (max-width: 1024px) {
+    #oz-nav .navbar-nav>li>a {
+        margin: auto 6px;
     }
 }

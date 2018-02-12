@@ -2,9 +2,10 @@ import React from "react";
 import PropTypes from 'prop-types';
 import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
+import Select from 'react-select';
 
 const Form = ({ id, onSubmit, children }) =>
-    <form id={id} onSubmit={onSubmit} className="form-horizontal">
+    <form id={id} onSubmit={onSubmit} className="oz-form">
         {children}
     </form>;
 
@@ -14,16 +15,16 @@ Form.propTypes = {
 };
 
 const InputText = ({ name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled }) =>
-    <div className={error ? 'form-group has-error' : 'form-group'}>
-        <label htmlFor={name} className={isRequired ? labelClassName + ' required' : labelClassName}>
+    <div className={`flex-row ${(error && 'has-error') || ''}`}>
+        <label htmlFor={name} className={`label ${labelClassName} ${(isRequired && 'required') || ''}`}>
             {label} {isRequired ? '* ' : ' '}
         </label>
-        <div className={divClassName}>
-            <input className="form-control" name={name} type="text" value={value} onChange={onChange} disabled={disabled} />
-            {renderIf(error && errorMsg)(
+        <input className="form-control field" name={name} type="text" value={value} onChange={onChange} disabled={disabled} />
+        {
+            renderIf(error && errorMsg)(
                 <span className="help-block">{errorMsg}</span>
-            )}
-        </div>
+            )
+        }
     </div>;
 
 InputText.defaultProps = {
@@ -31,7 +32,7 @@ InputText.defaultProps = {
     labelClassName: 'control-label col-sm-3',
     disabled: false,
     value: ''
-};
+};``
 
 InputText.propTypes = {
     name: PropTypes.string.isRequired,
@@ -46,45 +47,9 @@ InputText.propTypes = {
     disabled: PropTypes.bool
 };
 
-const Select = ({ name, value, label, onChange, children, labelClassName, divClassName, error, errorMsg, isRequired }) =>
-    <div className={error ? 'form-group has-error' : 'form-group'}>
-        <label htmlFor={name} className={isRequired ? labelClassName + ' required' : labelClassName}>
-            {label} {isRequired ? '* ' : ' '}
-        </label>
-        <div className={divClassName}>
-            <select name={name} value={value} onChange={onChange} className="form-control">
-                {renderIf(!isRequired)(
-                    <option key="" value=""></option>
-                )}
-                {children}
-            </select>
-        </div>
-    </div>;
-
-Select.propTypes = {
-    name: PropTypes.string.isRequired,
-    value: PropTypes.string,
-    label: PropTypes.string.isRequired,
-    onChange: PropTypes.func.isRequired,
-    labelClassName: PropTypes.string,
-    divClassName: PropTypes.string,
-    error: PropTypes.bool,
-    errorMsg: PropTypes.string,
-    isRequired: PropTypes.bool,
-};
-
-Select.defaultProps = {
-    divClassName: 'col-sm-7',
-    labelClassName: 'control-label col-sm-3',
-    emptyValue: true,
-    value: ''
-};
-
 const SubmitButton = ({ label, className }) =>
-    <div className="form-group">
-        <div className="col-sm-9 col-sm-offset-3">
-            <button type="submit" className={className + ' btn oz-btn-save'}>{label}</button>
-        </div>
+    <div className="flex-row">
+        <button type="submit" className={`submit btn ${className || ''}`}>{label}</button>
     </div>
 
 SubmitButton.propTypes = {
@@ -93,25 +58,23 @@ SubmitButton.propTypes = {
 };
 
 
-const InputDatePicker = ({ label, labelClassName, divClassName, name, startDate, onChange, dropdownMode }) =>
-    <div className='form-group'>
-        <label className={labelClassName}>
+const InputDatePicker = ({ label, name, value, onChange, dropdownMode }) =>
+    <div className='flex-row'>
+        <label htmlFor={name} className='label'>
             {label}
         </label>
-        <div className={divClassName}>
-            <DatePicker selected={startDate}
-                        onChange={onChange}
-                        dropdownMode={dropdownMode}
-                        peekNextMonth
-                        showMonthDropdown
-                        showYearDropdown
-                        className="form-control" name={name} />
-        </div>
+        <DatePicker selected={value}
+                    onChange={onChange}
+                    dropdownMode={dropdownMode}
+                    peekNextMonth
+                    showMonthDropdown
+                    showYearDropdown
+                    className="form-control field" name={name} />
     </div>;
 
 InputDatePicker.propTypes = {
     name: PropTypes.string.isRequired,
-    value: PropTypes.string,
+    value: PropTypes.object,
     dropdownMode: PropTypes.string,
     label: PropTypes.string.isRequired,
     startDate: PropTypes.object,
@@ -141,6 +104,10 @@ class CountrySelector extends React.Component {
         label: PropTypes.string
     };
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     componentWillMount () {
         // get countries from DC
         $.ajax({
@@ -148,29 +115,28 @@ class CountrySelector extends React.Component {
             type: 'get',
             dataType: 'json',
             data: {q: ' '}
+        }).done(data => {
+            let options = data.areas
+                .filter(n => n !== null)
+                .map((area, key) => Object.assign({}, {key:key ,value: area.uri, label: area.name}))
+
+            this.setState({ countries: options });
         })
-            .done(data => {
-
-                let options = data.areas
-                    .filter(n => n !== null)
-                    .map((area, key) => Object.assign({}, {key:key ,value: area.uri, label: area.name}))
-
-                this.setState({ countries: options });
-            })
-            .fail((xhr, status, err) => {
-                    this.setState({ error : "Unable to retrieve countries info" + err.toString() })
-                }
-            )
+        .fail((xhr, status, err) => {
+                this.setState({ error : "Unable to retrieve countries info" + err.toString() })
+            }
+        )
     }
     render() {
         return (
-            <Select name="country" value={this.props.value}
-                    onChange={this.props.onChange}
-                    label={this.props.label}>
-                {this.state.countries.map(option =>
-                    <option key={option.key} value={option.value}>{option.label}</option>)
-                }
-            </Select>
+            <div className='flex-row'>
+                <label htmlFor="gender" className="label">
+                    { this.context.t('my.profile.personal.country') }
+                </label>
+                <Select name="country" value={this.props.value} placeholder=""
+                        onChange={this.props.onChange} className="select field"
+                        options={this.state.countries}/>
+            </div>
         )
     }
 }
@@ -185,20 +151,42 @@ class GenderSelector extends React.Component {
         t: PropTypes.func.isRequired
     };
 
+    constructor(props, context) {
+        super(props);
+
+        this.state = {
+            options: this.createOptions(context)
+        };
+
+        this.createOptions = this.createOptions.bind(this);
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({
+            options: this.createOptions(nextContext)
+        });
+    }
+
+    createOptions(context) {
+        return [{
+            label: context.t('my.profile.personal.gender.male'),
+            value: 'male'
+        },{
+            label: context.t('my.profile.personal.gender.female'),
+            value: 'female'
+        }];
+    }
+
     render() {
-        const genders = ['male','female']
-        return (
-            <Select name="gender" value={this.props.value}
-                    label={this.context.t('my.profile.personal.gender')}
-                    onChange={this.props.onChange}>
-                {
-                    genders.map(option =>
-                        <option key={option} value={option}>{this.context.t('my.profile.personal.gender.' + option)}</option>
-                    )
-                }
-            </Select>
-        )
+        return <div className='flex-row'>
+            <label htmlFor="gender" className="label">
+                { this.context.t('my.profile.personal.gender') }
+            </label>
+            <Select name="gender" value={this.props.value} placeholder=""
+                    clearable={false} options={this.state.options}
+                    onChange={this.props.onChange} className="select field"/>
+        </div>;
     }
 }
 
-export { Form, InputText, Select, SubmitButton, InputDatePicker, CountrySelector, GenderSelector }
+export { Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector }

@@ -1,0 +1,16 @@
+
+.oz-table thead {
+    color: var(--blue-color);
+}
+
+.oz-table thead .icon {
+    color: var(--pink-color);
+}
+
+.oz-table thead tr th {
+    border: none !important;
+}
+
+.oz-table tbody {
+    color: var(--black-color);
+}

@@ -328,7 +328,7 @@ class OrganizationForm extends React.Component {
                 (
                     ( !this.props.isLoading && <input type="submit" value="Create an organization" className="submit btn"/> ) ||
                     <button type="button" className="submit btn icon">
-                        <i className="fa fa-spinner fa-spin" />
+                        <i className="fa fa-spinner fa-spin loading"/>
                     </button>
                 )
             }

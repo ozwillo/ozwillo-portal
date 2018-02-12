@@ -1,6 +1,9 @@
 
 .oz-form .oz-fieldset > .oz-legend {
-    color: white;
+    color: var(--blue-color);
+    border-bottom-color: var(--blue-color);
+    text-transform: uppercase;
+    font-size: 1.2em;
 }
 
 .oz-form .oz-fieldset .flex-row {
@@ -13,11 +16,13 @@
     max-width: 180px;
     font-size: 1em;
     white-space: normal;
+    color: var(--pink-color);
 }
 
 .oz-form .flex-row .react-autosuggest__container,
 .oz-form .flex-row .field {
     width: 100%;
+    color: var(--black-color);
 }
 
 .oz-form .flex-row  .field.radio-inline,

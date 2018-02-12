@@ -120,7 +120,7 @@ var OrganizationsList = createClass({
             return <p className="alert alert-danger">{this.context.t('ui.general-error')}</p>
         } else if (this.state.loading) {
             return <p className="text-center">
-                <i className="fa fa-spinner fa-spin"></i> {this.context.t('ui.loading')}</p>
+                <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}</p>
         } else {
             var orgs = this.state.organizations.map(org =>
                 <Organization key={org.id} org={org}
@@ -685,8 +685,7 @@ class NetworkWrapper extends React.Component {
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
-                            <img src="/img/network-lg.png" />
-                            <span>{this.context.t('my.network')}</span>
+                            <span className="title">{this.context.t('my.network')}</span>
                         </h1>
                     </div>
                 </div>

@@ -271,7 +271,7 @@ var AppModal = createClass({
             );
     },
     renderBuying: function () {
-        return ( <h3> <i className="fa fa-spinner fa-spin"></i> {this.context.t('buying')}</h3> );
+        return ( <h3> <i className="fa fa-spinner fa-spin loading" /> {this.context.t('buying')}</h3> );
     },
     renderInstallingForm: function(){
         return (<InstallForm ref='instalForm'
@@ -377,7 +377,7 @@ var AppDescriptionComponent = createClass({
                 launchOrInstallButton = <a className="btn oz-btn-save btn-lg pull-right" href={this.props.stateApp.serviceUrl}
                                            target="_new">{this.context.t('launch')}</a>;
             } else {
-                launchOrInstallButton = (<label > <i className="fa fa-spinner fa-spin"></i> </label> );
+                launchOrInstallButton = (<label > <i className="fa fa-spinner fa-spin loading"/> </label> );
             }
         } else {
             const storeUrl = `/${this.props.config.language}/api/store`;
