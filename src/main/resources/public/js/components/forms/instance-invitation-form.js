@@ -101,10 +101,10 @@ class InstanceInvitationForm extends React.Component {
                     </label>
                 </div>
 
-                <button type="submit" className="submit btn icon" disabled={this.state.isLoading}>
+                <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                     {
                         !this.state.isLoading &&
-                        <i className="fa fa-paper-plane send-icon"/>
+                        'Send'
                     }
 
                     {

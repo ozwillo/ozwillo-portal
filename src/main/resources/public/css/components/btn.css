@@ -76,24 +76,37 @@ a.btn { text-decoration: none; }
     border: 1px solid var(--dark-red-color);
 }
 
+.btn.icon {
+    background-color: transparent;
+}
+
 .btn-default {
-    color: var(--white-color);
-    background-color: var(--light-blue-color);
+    color: var(--blue-color) !important;
+    border-color: var(--blue-color) !important;
 }
 
-.btn-default.focus, .btn-default:focus, .btn-default:hover {
-    color: var(--light-blue-color);
-    background-color: var(--white-color);
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active {
+    color: var(--pink-color) !important;
+    border-color: var(--pink-color) !important;
+    background-color: var(--white-color) !important;
 }
 
+
+.btn-submit,
 .btn-default-inverse {
-    background-color: var(--blue-color);
-    color: var(--white-color);
-    border: 1px solid var(--blue-color);
+    color: var(--pink-color) !important;
+    border-color: var(--pink-color) !important;
 }
 
-.btn-default-inverse.focus, .btn-default-inverse:focus, .btn-default-inverse:hover {
-    color: var(--blue-color);
-    background-color: var(--white-color);
-    border: 1px solid var(--blue-color);
+.btn-submit:hover,
+.btn-submit:focus,
+.btn-submit:active,
+.btn-default-inverse:hover,
+.btn-default-inverse:focus,
+.btn-default-inverse:active {
+    color: var(--blue-color) !important;
+    border-color: var(--blue-color) !important;
+    background-color: var(--white-color) !important;
 }

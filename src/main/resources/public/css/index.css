@@ -94,7 +94,7 @@ label.required {
 
 /* oz-body */
 .oz-body {
-    background: var(--white-color);
+    background: var(--light-gray-color);
 }
 
 .oz-body.wrapper {

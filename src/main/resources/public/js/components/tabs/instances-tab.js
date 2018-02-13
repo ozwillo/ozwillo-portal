@@ -10,7 +10,7 @@ import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
 class InstancesTabHeader extends React.Component {
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/instances`}>
-            <header className="tab-header">Instances</header>
+            <header className="tab-header">Applications</header>
         </Link>;
     }
 }
@@ -66,14 +66,13 @@ class InstancesTab extends React.Component {
             {
                 org.admin &&
                 <section className="add-instance">
-                    <header>Add an instance</header>
+                    <header className="sub-title">Add an application</header>
                     <AddInstanceDropdown />
                 </section>
             }
 
 
             <section className="search-instance">
-                <header>Search an instance</header>
                 <form className="search oz-form">
                     <input name="instancesFilter" className="field form-control" type="text" value={instancesFilter}
                            placeholder={this.context.t('ui.search')} onChange={this.handleChange}/>

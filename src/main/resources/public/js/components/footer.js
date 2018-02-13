@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 class Footer extends React.Component {
     render() {
         const siteMapFooter = this.props.siteMapFooter;
-        return <footer className="footer">
+        return <footer className="oz-footer">
             <div className="flex-row">
                 <section className="logo">
                     <img className="image" src="/img/logo-ozwillo-footer.png" />

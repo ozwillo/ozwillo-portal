@@ -33,13 +33,12 @@ class MembersTab extends React.Component {
 
         return <article className="members-tab">
             <section className="add-member">
-                <header>Send an invitation</header>
+                <header className="sub-title">Send an invitation</header>
                 <div className="box">
                     <OrganizationInvitationForm className="" organization={this.props.organization}/>
                 </div>
             </section>
             <section className="search-member">
-                <header>Search a member</header>
                 <form className="search oz-form">
                     <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
                 </form>

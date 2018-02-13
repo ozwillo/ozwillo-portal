@@ -1,8 +1,8 @@
 
 
 .oz-dropdown-menu {
-    background-color: white;
-    color: #6f438e;
+    background-color: var(--white-color);
+    color: var(--pink-color);
 }
 
 .oz-dropdown-menu  > .header {
@@ -11,8 +11,8 @@
     padding: 5px 10px;
     align-items: center;
 
-    color: white;
-    background-color: #4c2d62;
+    color: var(--white-color);
+    background-color: var(--blue-color);
 }
 
 .oz-dropdown-menu  > .header .content {
@@ -24,15 +24,26 @@
     cursor: pointer;
 }
 
+.oz-dropdown-menu > .header .arrow-icon:hover {
+    color: var(--pink-color);
+}
+
 .oz-dropdown-menu > .content,
 .oz-dropdown-menu > .footer {
-    background-color: white;
+    background-color: var(--white-color);
     padding: 5px 10px;
 }
 
 .oz-dropdown-menu > .content.empty {
     padding: 0px;
 }
+
+/* shadow */
+.oz-dropdown-menu {
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3),
+                -1px -1px 2px rgba(0, 0, 0, 0.2);
+}
+
 
 
 /* Service dropdown */
@@ -75,5 +86,10 @@
 
 .dropdown-content .invitation .organization-invitation-form .label {
     width: auto;
+}
+
+.dropdown-content .btn.btn-submit {
+    padding: 3px 6px;
+    font-size: 0.9em;
 }
 

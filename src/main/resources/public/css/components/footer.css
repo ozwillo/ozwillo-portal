@@ -1,14 +1,14 @@
-.footer {
+.oz-footer {
     background: #EEE;
     box-shadow:0 0 40px rgba(0, 0, 0, 0.2);
 }
 
-.footer .image {
+.oz-footer .image {
     max-height: 48px;
     margin: 5px 10px;
 }
 
-.footer .link {
+.oz-footer .link {
     color: var(--light-blue-color);
     font-size: 0.9em;
     margin: 4px 0;
@@ -16,11 +16,11 @@
     display: block;
 }
 
-.footer > .flex-row:first-child {
+.oz-footer > .flex-row:first-child {
     position: relative;
     margin-top: 40px;
 }
-.footer > .flex-row:first-child:after{
+.oz-footer > .flex-row:first-child:after{
     content:'';
     position: absolute;
     bottom: 0;
@@ -28,29 +28,29 @@
     height: 1px;
     background-color: var(--light-blue-color);
 }
-.footer > .flex-row {
+.oz-footer > .flex-row {
     margin: 20px 0;
 }
 
-.footer .outer-links-list,
-.footer .logo,
-.footer .outer-links,
-.footer .partners,
-.footer .social-network {
+.oz-footer .outer-links-list,
+.oz-footer .logo,
+.oz-footer .outer-links,
+.oz-footer .partners,
+.oz-footer .social-network {
     width: 100%;
 }
 
-.footer .logo {
+.oz-footer .logo {
     display: flex;
     align-items: center;
 }
 
-.footer .logo > .image {
+.oz-footer .logo > .image {
     max-height: 60px;
     margin: 0 50px;
 }
 
-.twitter {
+.oz-footer .twitter {
     display: inline-block;
     padding: 10px;
 
@@ -63,7 +63,7 @@
 
 
 @media (max-width: 768px) {
-    .footer .link {
+    .oz-footer .link {
         font-size: 1em;
         line-height: 25px;
     }

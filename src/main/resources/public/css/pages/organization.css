@@ -1,5 +1,5 @@
 .organization {
-    background-color: white;
+    background-color: var(--white-color);
     margin-bottom: 1em;
 }
 

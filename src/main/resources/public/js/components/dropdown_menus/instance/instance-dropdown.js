@@ -152,7 +152,7 @@ class InstanceDropdown extends React.Component {
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable}>
             <section className='dropdown-content'>
-                <table className="table">
+                <table className="oz-table">
                     <thead>
                         {/*
                             Header: size: 3+ n (services)
@@ -163,7 +163,7 @@ class InstanceDropdown extends React.Component {
                             {
                                 instance.services.map((service) => {
                                     return <th key={service.catalogEntry.id} className="center">
-                                        <span title={service.name}>{service.name.toAcronyme()}</span>
+                                        <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
                                     </th>
                                 })
                             }
@@ -200,7 +200,7 @@ class InstanceDropdown extends React.Component {
                                                     (!status || !status.subIsSent) &&
                                                     <button className="btn icon" onClick={this.createSubscription}
                                                             data-user={user.id} data-service={service.catalogEntry.id}>
-                                                        <i className="fa fa-share option-icon"/>
+                                                        <i className="fa fa-home option-icon service"/>
                                                     </button>
                                                     || <i className="fa fa-check option-icon success"/>
                                                 }

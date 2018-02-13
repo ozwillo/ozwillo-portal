@@ -39,7 +39,7 @@ class MemberDropdownFooter extends React.Component {
     }
 
     render() {
-        return <header className="dropdown-header">
+        return <header className="dropdown-footer">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <Select
                     className="select"
@@ -55,7 +55,7 @@ class MemberDropdownFooter extends React.Component {
                 <span className="error-message">{this.state.error}</span>
 
                 <div className="flex-row end">
-                    <button type="submit" className="btn" className="btn-default">Send</button>
+                    <button type="submit" className="btn btn-submit icon">Send</button>
                 </div>
             </form>
         </header>;

@@ -1,3 +1,6 @@
+.oz-table {
+    width: 100%;
+}
 
 .oz-table thead {
     color: var(--blue-color);
@@ -7,10 +10,32 @@
     color: var(--pink-color);
 }
 
-.oz-table thead tr th {
-    border: none !important;
+.oz-table tr {
+  border-bottom: solid 1px var(--gray-color);
 }
 
-.oz-table tbody {
-    color: var(--black-color);
+.oz-table tr:last-child {
+    border: none;
+}
+
+
+.oz-table th {
+    min-width: 80px;
+    white-space: nowrap;
+}
+
+.oz-table tr > td {
+    vertical-align: middle;
+}
+
+.oz-table .fill-content {
+    width: 100%;
+}
+
+.oz-table .center {
+    text-align: center;
+}
+
+.oz-table .right {
+    text-align: right;
 }

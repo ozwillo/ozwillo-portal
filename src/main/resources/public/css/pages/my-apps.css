@@ -9,7 +9,7 @@
 }
 
 #myapps .authority-body {
-    background-color: white;
+    background-color: var(--white-color);
     color: var(--black-2-color);
 }
 
