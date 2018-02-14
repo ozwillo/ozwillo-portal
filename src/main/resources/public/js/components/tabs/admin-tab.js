@@ -13,7 +13,7 @@ class AdminTabHeader extends React.Component {
 
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/admin`}>
-            <header className="tab-header">Admin</header>
+            <header className="tab-header"><span>Admin</span></header>
         </Link>;
     }
 

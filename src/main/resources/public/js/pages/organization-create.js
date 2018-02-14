@@ -54,16 +54,16 @@ class OrganizationCreate extends React.Component {
 
     render() {
         return <section className="organization-create oz-body wrapper flex-col">
-            <header className="header flex-row">
-                <h1 className="title">Create an organization</h1>
-            </header>
-            <section className="content">
+            <div className="box">
+                <header className="header flex-row">
+                    <h1 className="title">Create an organization</h1>
+                </header>
                 <div className="error">
                     <span>{this.state.error}</span>
                 </div>
                 <OrganizationForm onSubmit={this.onSubmit} isLoading={this.state.isLoading}
                                   countries={this.props.countries}/>
-            </section>
+            </div>
         </section>;
     }
 

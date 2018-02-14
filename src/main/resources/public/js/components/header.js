@@ -10,25 +10,40 @@ class Header extends React.Component {
     };
 
     render() {
+        const isLogged = !!this.props.userInfo.sub;
+
         return <header className="oz-header flex-row">
             <div className="logo-home">
-                <Link to='/my/dashboard'>
-                    <img src="/img/logo-ozwillo.png" alt="Logo Ozwillo"/>
-                </Link>
+                {
+                    isLogged &&
+                    <Link to='/my/dashboard'>
+                        <img src="/img/logo-ozwillo.png" alt="Logo Ozwillo"/>
+                    </Link>
+                }
+                {
+                    !isLogged &&
+                    <a href={`https://www.ozwillo.com/${this.props.config.language}/`}>
+                        <img src="/img/logo-ozwillo.png" alt="Logo Ozwillo"/>
+                    </a>
+                }
             </div>
 
-            <div className="my-oasis">
-                <p className="text-center welcome" data-toggle="tooltip" data-placement="bottom"
-                   title={ this.props.message }>
-                    <Link to="/my/notif">
-                        <span>{this.context.t('ui.welcome')} {this.props.userInfo.nickname} </span>
-                        <span className="badge badge-notifications">
+            {
+                isLogged &&
+                <div className="my-oasis">
+                    <p className="text-center welcome" data-toggle="tooltip" data-placement="bottom"
+                       title={ this.props.message }>
+                        <Link to="/my/notif">
+                            <span>{this.context.t('ui.welcome')} {this.props.userInfo.nickname} </span>
+                            <span className="badge badge-notifications">
                             { this.props.notificationsCount }
-                            <span className="sr-only">{ this.props.message }</span>
+                                <span className="sr-only">{ this.props.message }</span>
                         </span>
-                    </Link>
-                </p>
-            </div>
+                        </Link>
+                    </p>
+                </div>
+            }
+
         </header>
     }
 
@@ -38,7 +53,8 @@ const mapStateToProps = (state) => {
     return {
         notificationsCount: state.notifications.count,
         message: state.notifications.message,
-        userInfo: state.userInfo
+        userInfo: state.userInfo,
+        config: state.config
     }
 }
 

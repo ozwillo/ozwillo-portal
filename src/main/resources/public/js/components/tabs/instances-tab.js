@@ -10,7 +10,7 @@ import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
 class InstancesTabHeader extends React.Component {
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/instances`}>
-            <header className="tab-header">Applications</header>
+            <header className="tab-header"><span>Applications</span></header>
         </Link>;
     }
 }

@@ -428,13 +428,12 @@ class AppStoreWrapper extends React.Component {
 
     render() {
         return <div className="oz-body page-row page-row-expanded">
-
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
                             <img src="/img/store-lg.png" />
-                            <span>{this.context.t('ui.appstore')}</span>
+                            <span className="title">{this.context.t('ui.appstore')}</span>
                         </h1>
                     </div>
                 </div>
@@ -444,7 +443,7 @@ class AppStoreWrapper extends React.Component {
                 <AppStoreWithRedux/>
             </div>
 
-            <div className="push"></div>
+            <div className="push"/>
         </div>;
     }
 }

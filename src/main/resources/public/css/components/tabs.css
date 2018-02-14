@@ -36,10 +36,19 @@
 
 
 .tabs .tabs-headers .tab-header {
-    color: white;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    align-content: center;
     width: 100%;
     height: 100%;
+
+    color: white;
     text-decoration: none;
+}
+
+.tabs .tabs-headers .tab-header > span {
+    margin: auto;
 }
 
 .tabs .tabs-headers .header.active .tab-header{

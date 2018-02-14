@@ -1,8 +1,8 @@
 .organization-desc .header .title {
     width: 100%;
     text-align: center;
-    font-size: 1.8em;
-    font-weight: bold;
+    color: var(--pink-color);
+    font-weight: bold !important;
 }
 
 .organization-desc > .header,

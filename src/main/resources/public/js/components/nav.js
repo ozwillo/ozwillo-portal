@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import PropTypes from "prop-types";
 
 
@@ -24,10 +23,10 @@ class Nav extends React.Component {
                         {
                             this.props.siteMapHeader && this.props.siteMapHeader.contentItems.map((item, index) => {
                                 const isSubMenu = item.type === 'submenu';
-                                return <li className={(isSubMenu && 'dropdpwn') || ''} key={index}>
+                                return <li className={`menu ${(isSubMenu && 'dropdown') || ''}`} key={index}>
                                         {
                                             isSubMenu &&
-                                            <a href="#" className="dropdown-toggle" data-toggle="dropdown" role="button"
+                                            <a href="#" className="link dropdown-toggle" data-toggle="dropdown" role="button"
                                                aria-expanded="false" aria-haspopup="true" href={item.url}>
                                                 <span data-th-text="${item.label}">{item.label}</span>
                                                 <span className="caret" />
@@ -38,8 +37,9 @@ class Nav extends React.Component {
                                             <ul className="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
                                                 {
                                                     item.items.map((subMenu, index) => {
-                                                        return <li role="presentation" key={index}>
-                                                            <a role="menuitem" tabIndex="-1" href={subMenu.url}>{subMenu.label}</a>
+                                                        return <li className="menu" role="presentation" key={index}>
+                                                            <a className="link" role="menuitem" tabIndex="-1"
+                                                               href={subMenu.url}>{subMenu.label}</a>
                                                         </li>
                                                     })
                                                 }
@@ -47,7 +47,7 @@ class Nav extends React.Component {
                                         }
                                     {
                                         !isSubMenu &&
-                                        <a role="menuitem" tabIndex="-1" href={item.url}>
+                                        <a className="link" role="menuitem" tabIndex="-1" href={item.url}>
                                             {item.label}
                                         </a>
                                     }
@@ -58,35 +58,34 @@ class Nav extends React.Component {
                     </ul>
 
                     <ul className="nav navbar-nav navbar-right">
-                        <li>
-                            <a href={`/${this.props.language}/store`}>
-                                <img src="/img/store-icon-color.png" alt="Apps store icon"/>
+                        <li className="menu">
+                            <a className="link" href={`/${this.props.language}/store`}>
+                                <img className="icon" src="/img/store-icon-white.png" alt="Apps store icon"/>
                                 <span>{this.context.t('ui.appstore')}</span>
                             </a>
                         </li>
-                        <li>
-                            <a href={`${this.props.opendatEndPoint}/${this.props.language}`}>
-                                <img src="/img/data-icon-purple.png" alt="Data icon"/>
+                        <li className="menu">
+                            <a className="link" href={`${this.props.opendatEndPoint}/${this.props.language}`}>
+                                <img className="icon" src="/img/data-icon-white.png" alt="Data icon"/>
                                 <span>{this.context.t('ui.datastore')}</span>
                             </a>
                         </li>
-                        <li>
-                            <a href={`/${this.props.language}/store/login`}>
-                                <img src="/img/login-icon-purple.png" alt="Login icon"/>
+                        <li className="menu">
+                            <a className="link" href={`/${this.props.language}/store/login`}>
+                                <img className="icon" src="/img/login-icon-purple.png" alt="Login icon"/>
                                 <span>{this.context.t('ui.login')}</span>
                             </a>
                         </li>
-                        <li className="dropdown">
-                            <a href="#" className="nav-link dropdown-toggle" data-toggle="dropdown">
+                        <li className="menu dropdown">
+                            <a href="#" className="link nav-link dropdown-toggle" data-toggle="dropdown">
                                 <span>{this.props.language}</span>
                                 <i className="caret" />
                             </a>
                             <ul className="dropdown-menu">
-                                <li>
-
+                                <li className="menu">
                                     {
                                         this.props.languages && this.props.languages.map((lang, index) => {
-                                            return <a key={index} href={`${lang}/store`}
+                                            return <a className="link" key={index} href={`${lang}/store`}
                                                       data-th-text="${lang.name}">{lang}</a>
                                         })
                                     }

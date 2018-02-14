@@ -9,7 +9,7 @@ import Select from 'react-select';
 import '../util/csrf';
 
 // Component
-import FranceConnectBtn from '../components/france-connect-btn';
+import FranceConnectForm from '../components/forms/france-connect-form';
 import { Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/forms/form';
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 
@@ -83,29 +83,35 @@ class Profile extends React.Component {
         const userProfile = this.state.userProfile;
         return (
             <div className="container" id="profile">
-                <Form id="account" onSubmit={this.onSubmit.bind(this)}>
-                    {renderIf(this.state.updateSucceeded) (
-                        <div className="alert alert-success" role="alert">
-                            <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
-                            {this.context.t('my.profile.account.update')}
-                        </div>
-                    )}
-                    <ProfileAccount userProfile={userProfile} languages={this.state.languages}
-                                    onValueChange={this.onValueChange.bind(this)} />
-                    <IdentityAccount userProfile={userProfile}
-                                     onValueChange={this.onValueChange.bind(this)} />
-                    <AddressAccount address={userProfile.address}
-                                    onValueChange={this.onValueChange.bind(this)} />
-                    <SubmitButton label={this.context.t('ui.save')} className="btn-lg" />
-                </Form>
+                <section className="box">
+                    <header className="text-center">
+                        <span className="title" >{this.context.t('my.profile')}</span>
+                    </header>
+                    <Form id="account" onSubmit={this.onSubmit.bind(this)}>
+                        {renderIf(this.state.updateSucceeded) (
+                            <div className="alert alert-success" role="alert">
+                                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                {this.context.t('my.profile.account.update')}
+                            </div>
+                        )}
+                        <ProfileAccount userProfile={userProfile} languages={this.state.languages}
+                                        onValueChange={this.onValueChange.bind(this)} />
+                        <IdentityAccount userProfile={userProfile}
+                                         onValueChange={this.onValueChange.bind(this)} />
+                        <AddressAccount address={userProfile.address}
+                                        onValueChange={this.onValueChange.bind(this)} />
+                        <SubmitButton label={this.context.t('ui.save')} className="btn-lg" />
+                    </Form>
+                </section>
+
 
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint} passwordExist={!!userProfile.email_verified} />
-                <FranceConnectBtn passwordChangeEndpoint={this.state.passwordChangeEndpoint}
-                                  linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
-                                  unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
-                                  userProfile={userProfile}/>
+                <FranceConnectForm passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                                   linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
+                                   unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
+                                   userProfile={userProfile} className="box"/>
             </div>
         )
     }
@@ -301,16 +307,18 @@ class PasswordAccount extends React.Component {
 
     render() {
         return (
-            <div className="flex-col">
-                <h2>{this.context.t('my.profile.account.password')}</h2>
+            <section className="box flex-col">
+                <header className="sub-title">
+                    {this.context.t('my.profile.account.password')}
+                </header>
 
                 <a className="change-password" href={this.props.passwordChangeEndpoint}>
-                    <span className="btn btn-lg btn-warning">
+                    <span className="btn btn-warning">
                         { this.props.passwordExist && this.context.t('my.profile.account.changepassword')}
                         { !this.props.passwordExist && this.context.t('my.profile.account.createpassword')}
                     </span>
                 </a>
-            </div>
+            </section>
         )
     }
 }
@@ -322,24 +330,13 @@ class ProfileWrapper extends React.Component {
     };
 
     render() {
-        return <div className="oz-body page-row page-row-expanded">
-
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            <span className="title" >{this.context.t('my.profile')}</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
-
+        return <section className="oz-body">
             <div className="oz-body-content">
                 <Profile/>
             </div>
 
             <div className="push"></div>
-        </div>;
+        </section>;
     }
 }
 

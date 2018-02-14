@@ -1,8 +1,8 @@
 .organization-create .header .title {
     width: 100%;
     text-align: center;
-    font-size: 1.8em;
-    font-weight: bold;
+    font-size: 2em;
+    font-weight: bold !important;
 }
 
 .organization-create > .header {
@@ -16,7 +16,7 @@
 }
 
 .organization-create .error {
-    color: red;
+    color: var(--red-color);
     text-align: center;
     font-size: 1.2em;
 }

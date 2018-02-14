@@ -833,7 +833,7 @@ class DashboardWrapper extends React.Component {
     };
 
     render() {
-        return <div className="oz-body page-row page-row-expanded">
+        return <div className="oz-body wrapper light">
 
             <div className="container-fluid">
                 <div className="row">

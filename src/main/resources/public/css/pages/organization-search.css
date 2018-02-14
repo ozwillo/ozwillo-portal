@@ -1,5 +1,11 @@
 
-.organization-search .title,
+.organization-search .title {
+    color: var(--pink-color);
+    font-weight: bold !important;
+    text-align: center;
+    font-size: 2em;
+}
+
 .organization-search form.search {
     margin: 20px auto;
     text-align: center;

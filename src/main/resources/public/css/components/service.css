@@ -6,6 +6,6 @@
 }
 
 .service-icon .name {
-    color: #6f438e;
+    color: var(--pink-color);
     margin: 0;
 }

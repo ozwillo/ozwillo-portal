@@ -9,3 +9,20 @@
 #profile .change-password {
     text-align: center;
 }
+
+#profile .title {
+    font-size: 2em;
+}
+
+#profile .sub-title {
+    color: var(--pink-color);
+    font-weight: bold !important;
+    margin: 5px 0;
+    font-size: 1.4em;
+}
+
+#profile .btn {
+    min-width: 200px;
+    font-size: 1.2em;
+    margin: 5px auto;
+}

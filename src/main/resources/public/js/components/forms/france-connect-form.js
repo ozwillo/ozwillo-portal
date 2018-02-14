@@ -1,10 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import "../util/csrf";
-import { SubmitButton } from "./forms/form";
+import { SubmitButton } from "./form";
 
-
-class FranceConnectBtn extends React.Component {
+class FranceConnectForm extends React.Component {
 
     static propTypes = {
         userProfile: PropTypes.object.isRequired,
@@ -20,16 +18,16 @@ class FranceConnectBtn extends React.Component {
     render() {
         const userProfile = this.props.userProfile || {};
 
-        return <form id="FranceConnectButton"
+        return <form id="FranceConnectForm"
                      method="post" action={this.props.linkFranceConnectEndpoint}
-                     className="oz-form">
+                     className={`oz-form ${this.props.className}`}>
             <div>
-                <h2>France Connect</h2>
+                <h2 className="sub-title">France Connect</h2>
             </div>
 
             {
                 userProfile.franceconnect_sub && userProfile.email_verified &&
-               <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-lg oz-btn-danger">
+               <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-submit">
                    {this.context.t("franceconnect.form.desynchronize")}
                </a>
 
@@ -37,7 +35,7 @@ class FranceConnectBtn extends React.Component {
 
             {
                 userProfile.franceconnect_sub && !userProfile.email_verified &&
-                <a href={this.props.passwordChangeEndpoint} className="btn btn-lg btn-warning">
+                <a href={this.props.passwordChangeEndpoint} className="btn btn-submit">
                     {this.context.t("franceconnect.form.desynchronize-without-pwd")}
                 </a>
             }
@@ -54,4 +52,4 @@ class FranceConnectBtn extends React.Component {
     }
 }
 
-export default FranceConnectBtn;
+export default FranceConnectForm;

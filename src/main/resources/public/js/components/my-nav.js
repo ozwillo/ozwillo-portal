@@ -24,58 +24,58 @@ class MyNav extends React.Component {
 
                 <div className="collapse navbar-collapse" id="ozwillo-navbar">
                     <ul className="nav navbar-nav">
-                        <li>
-                            <Link to="/my/">
-                                <img src="/img/dashboard.png"
+                        <li className="menu">
+                            <Link className="link" to="/my/">
+                                <img className="icon" src="/img/dashboard.png"
                                      alt={this.context.t('my.dashboard')}/>
                                 <span>{this.context.t('my.dashboard')}</span>
                             </Link>
                         </li>
-                        <li>
-                            <Link to="/my/profile">
-                                <img src="/img/profile.png"
+                        <li className="menu">
+                            <Link className="link" to="/my/profile">
+                                <img className="icon" src="/img/profile.png"
                                      alt={this.context.t('my.profile')}/>
                                 <span>{this.context.t('my.profile')}</span>
                             </Link>
                         </li>
-                        <li>
-                            <Link to="/my/network">
-                                <img src="/img/network.png"
+                        <li className="menu">
+                            <Link className="link" to="/my/network">
+                                <img className="icon" src="/img/network.png"
                                      alt={this.context.t('my.network')}/>
                                 <span>{this.context.t('my.network')}</span>
                             </Link>
                         </li>
-                        <li>
-                            <Link to="/my/apps">
-                                <img src="/img/apps.png"
+                        <li className="menu">
+                            <Link className="link" to="/my/apps">
+                                <img className="icon" src="/img/apps.png"
                                      alt={this.context.t('my.apps')}/>
                                 <span>{this.context.t('my.apps')}</span>
                             </Link>
                         </li>
-                        <li>
-                            <Link to="/my/organization">
-                                <img src="/img/apps.png"
+                        <li className="menu">
+                            <Link className="link" to="/my/organization">
+                                <img className="icon" src="/img/apps.png"
                                      alt={this.context.t('my.apps')}/>
                                 <span>{'Organization'}</span>
                             </Link>
                         </li>
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
-                        <li>
-                            <Link to={`/${this.props.language}/store`}>
-                                <img src="/img/store-icon-white.png" alt="Store icon"/>
+                        <li className="menu">
+                            <Link className="link" to={`/${this.props.language}/store`}>
+                                <img className="icon" src="/img/store-icon-white.png" alt="Store icon"/>
                                 <span>{this.context.t('ui.appstore')}</span>
                             </Link>
                         </li>
-                        <li>
-                            <a href={`${this.props.opendatEndPoint}/${this.props.language}`}>
-                                <img src="/img/data-icon-white.png" alt="Data icon"/>
+                        <li className="menu">
+                            <a className="link" href={`${this.props.opendatEndPoint}/${this.props.language}`}>
+                                <img className="icon" src="/img/data-icon-white.png" alt="Data icon"/>
                                 <span>{this.context.t('ui.datastore')}</span>
                             </a>
                         </li>
-                        <li>
-                            <a href="/logout">
-                                <img src="/img/close.png" alt="Logout icon"/>
+                        <li className="menu">
+                            <a className="link" href="/logout">
+                                <img className="icon" src="/img/close.png" alt="Logout icon"/>
                                 <span>{this.context.t('ui.logout')}</span>
                             </a>
                         </li>
