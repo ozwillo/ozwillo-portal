@@ -3,11 +3,11 @@
 }
 
 .oz-table thead {
-    color: var(--blue-color);
+    color: var(--dark-purple-color);
 }
 
 .oz-table thead .icon {
-    color: var(--pink-color);
+    color: var(--purple-color);
 }
 
 .oz-table tr {

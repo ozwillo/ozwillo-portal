@@ -5,19 +5,23 @@
     --white-color: white;
     --red-color: rgba(190, 40, 62, 1);
     --dark-red-color: rgba(150, 0, 42, 1);
-    --blue-color: rgba(51, 56, 156, 1);
     --dark-blue-color: rgba(31, 36, 136, 1);
     --light-blue-color: rgba(70, 171, 226, 1);
     --gray-color: #CCC;
-    --light-gray-color: #f4f4f4;
+    --light-gray-color: #EEE;
+    --light-2-gray-color: #f4f4f4;
+    --light-3-gray-color: #FBFBFB;
     --dark-gray-color: #999;
-    --pink-color: rgba(212, 64, 130, 1);
     --light-pink-color: rgba(232, 84, 150, 0.95);
     --yellow-color: #f8ba03;
     --orange-color: #f69b04;
     --dark-orange-color: #D67b00;
     --green-color: #43a047;
     --dark-green-color: #2e7d32;
+
+    --dark-purple-color: #4c2d62;
+    --purple-color: #6f438e;
+    --light-purple-color: #dfcae2;
 
     /* SCREEN SIZE
     --sm-phone-width: 320;

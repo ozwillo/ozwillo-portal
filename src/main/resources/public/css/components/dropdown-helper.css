@@ -39,7 +39,7 @@
 }
 
 .dropdown-header .link:hover {
-    color: var(--pink-color) !important;
+    color: var(--dark-purple-color) !important;
 }
 
 .dropdown-header .form {
@@ -47,7 +47,7 @@
 }
 
 .dropdown-content .link {
-    color: var(--pink-color)
+    color: var(--purple-color)
 }
 
 .dropdown-content .list .item {
@@ -61,7 +61,7 @@
     bottom: 0;
     width: 100%;
     height: 1px;
-    background-color: var(--pink-color);
+    background-color: var(--purple-color);
 }
 
 .dropdown-content .list .item:last-child:after {
@@ -85,7 +85,7 @@
     min-width: 1px;
     height: auto;
     margin: 0 10px;
-    background-color: var(--pink-color);
+    background-color: var(--purple-color);
 }
 
 .dropdown-content .options {
@@ -110,7 +110,7 @@
 .dropdown-header .option-icon,
 .dropdown-content .option-icon ,
 .dropdown-footer .option-icon {
-    color: var(--pink-color);
+    color: var(--purple-color);
     font-size: 1.8em;
 }
 
@@ -119,13 +119,13 @@
 }
 
 .dropdown-header .option-icon:hover {
-    color: var(--pink-color);
+    color: var(--dark-purple-color);
 }
 
 .dropdown-header .option-icon.delete ,
 .dropdown-content .option-icon.delete ,
 .dropdown-footer .option-icon.delete {
-    color: var(--pink-color);
+    color: var(--red-color);
 }
 
 .dropdown-content .success {

@@ -74,7 +74,7 @@ class InstanceDropdownHeader extends React.Component {
                             <i className="fa fa-cog option-icon"/>
                         </button>
                         <button type="submit" className="btn icon">
-                            <i className="fa fa-trash option-icon delete"/>
+                            <i className="fa fa-trash option-icon"/>
                         </button>
                     </div>
                 }

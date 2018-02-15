@@ -4,7 +4,7 @@
 }
 
 .tabs .tabs-headers .header {
-    background-color: var(--blue-color);
+    background-color: var(--dark-purple-color);
     width: 100%;
     min-height: 30px;
     text-align: center;
@@ -52,8 +52,8 @@
 }
 
 .tabs .tabs-headers .header.active .tab-header{
-    color: var(--pink-color);
-    border-top: solid 2px var(--pink-color);
+    color: var(--dark-purple-color);
+    border-top: solid 2px var(--purple-color);
 }
 
 

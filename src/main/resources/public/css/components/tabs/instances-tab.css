@@ -1,5 +1,5 @@
 .instances-tab .sub-title {
-    color: var(--pink-color);
+    color: var(--dark-purple-color);
     text-transform: uppercase;
     font-weight: bold;
 }
@@ -23,5 +23,5 @@
 
 
 .instances-tab .service {
-    color: var(--blue-color);
+    color: var(--purple-color);
 }

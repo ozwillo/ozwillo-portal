@@ -1,8 +1,8 @@
 
 
 .oz-dropdown-menu {
-    background-color: var(--white-color);
-    color: var(--pink-color);
+    background-color: var(--purple-color);
+    color: var(--dark-purple-color);
 }
 
 .oz-dropdown-menu  > .header {
@@ -12,7 +12,7 @@
     align-items: center;
 
     color: var(--white-color);
-    background-color: var(--blue-color);
+    background-color: var(--purple-color);
 }
 
 .oz-dropdown-menu  > .header .content {
@@ -25,7 +25,7 @@
 }
 
 .oz-dropdown-menu > .header .arrow-icon:hover {
-    color: var(--pink-color);
+    color: var(--dark-purple-color);
 }
 
 .oz-dropdown-menu > .content,

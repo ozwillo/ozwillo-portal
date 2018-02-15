@@ -1,6 +1,6 @@
 
 .organization-search .title {
-    color: var(--pink-color);
+    color: var(--purple-color);
     font-weight: bold !important;
     text-align: center;
     font-size: 2em;
@@ -24,7 +24,7 @@
 }
 
 .organization-search .organisations-list .organization {
-    margin: 10px 0;
+    margin: 15px 0;
 }
 
 .link {

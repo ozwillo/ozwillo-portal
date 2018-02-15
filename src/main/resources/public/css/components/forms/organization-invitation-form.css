@@ -2,14 +2,14 @@
 .organization-invitation-form {
     width: 100%;
     align-self: center;
-    color: var(--pink-color);
+    color: var(--purple-color);
 }
 
 .organization-invitation-form .legend {
     border: none;
     font-size: 1em;
     margin-bottom: 0;
-    color: var(--blue-color);
+    color: var(--purple-color);
     font-weight: bold;
 }
 
@@ -18,7 +18,7 @@
     text-align: left;
     margin: auto 0;
     font-size: 0.9em;
-    color: var(--pink-color);
+    color: var(--dark-purple-color);
     padding: 2px 0;
     font-weight: normal;
 }
@@ -33,7 +33,7 @@
 
 .organization-invitation-form .options .action-icon {
     font-size: 1.5em;
-    color: var(--pink-color);
+    color: var(--purple-color);
 }
 
 .organization-invitation-form .error,

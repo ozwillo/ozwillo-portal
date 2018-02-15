@@ -79,7 +79,7 @@ label.required {
 }
 
 .title {
-    color: var(--pink-color);
+    color: var(--purple-color);
     font-weight: bold;
     font-size: 0.8em;
 }
@@ -94,7 +94,7 @@ label.required {
 
 /* oz-body */
 .oz-body {
-    background: var(--light-gray-color);
+    background: var(--light-2-gray-color);
 }
 
 .oz-body.light {
@@ -175,5 +175,5 @@ label.required {
 }
 
 .loading {
-    color: var(--pink-color);
+    color: var(--purple-color);
 }

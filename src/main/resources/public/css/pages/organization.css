@@ -6,7 +6,7 @@
 div.organization .organization-header {
     padding: 10px 20px;
     margin: 0;
-    background-color: var(--blue-color);
+    background-color: var(--purple-color);
 }
 
 div.organization .organization-header .title {
@@ -17,7 +17,7 @@ div.organization .organization-header .title {
 div.organization .organization-member{
     padding: 5px 15px;
     margin: 0 10px 0 10px;
-    border-bottom: 1px solid var(--light-gray-color);
+    border-bottom: 1px solid var(--light-2-gray-color);
     line-height: 30px;
     color: #333;
 }

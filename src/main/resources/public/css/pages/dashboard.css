@@ -1,31 +1,25 @@
 #dashboard .nav-tabs {
-    border-bottom-color: var(--blue-color);
+    border-bottom-color: var(--dark-purple-color);
 }
 
 #dashboard ul.nav.nav-tabs > li {
     margin-right: 10px;
 }
 
-#dashboard ul.nav.nav-tabs > li > a {
-    font-size: 20px;
-    color: var(--blue-color);
-    border-radius: 0;
-    border: 1px solid var(--blue-color);
-}
-
-#dashboard ul.nav.nav-tabs > li > a:hover {
-    color: var(--white-color);
-    background-color: var(--blue-color);
-}
-
+#dashboard ul.nav.nav-tabs > li > a,
 #dashboard ul.nav.nav-tabs > li.active > a {
-    background-color: var(--blue-color);
+    font-size: 20px;
+    border-radius: 0;
     color: var(--white-color);
+    background-color: var(--purple-color);
+    border: solid 1px var(--dark-purple-color)
 }
 
+#dashboard ul.nav.nav-tabs > li > a:hover,
 #dashboard ul.nav.nav-tabs > li.active > a:hover {
+    color: var(--dark-purple-color);
     background-color: var(--white-color);
-    color: var(--blue-color);
+
 }
 
 #dashboard ul.nav.nav-tabs > li > a i {
@@ -67,7 +61,7 @@
     position:relative;
     display:inline-block;
 
-    color: var(--pink-color);
+    color: var(--dark-purple-color);
     text-transform: uppercase;
     font-weight: bold;
     font-size: 0.8em;
@@ -75,7 +69,7 @@
 
 #dashboard div.appzone div.app:hover {
     color: var(--white-color);
-    background-color: var(--pink-color);
+    background-color: var(--purple-color);
 }
 
 #dashboard div.appzone div.app span.badge-notifications {
@@ -112,8 +106,13 @@
 }
 
 #dashboard .action-icon a {
-    color: var(--blue-color);
+    color: var(--purple-color);
 }
+
+#dashboard .action-icon:hover a {
+    color: var(--white-color);
+}
+
 
 #dashboard div.top-menu {
     display: flex;

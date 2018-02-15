@@ -1,18 +1,14 @@
-#oz-nav .navbar-nav >.menu > .link:hover,
-#oz-nav .navbar-nav > .menu > .link.focus,
-#oz-nav .navbar-nav > .menu > .link:focus {
-    color: var(--white-color);
-}
 
 #oz-nav .navbar-nav > .menu > .link > .icon {
     margin-right: 5px;
+    font-size: 1.6em;
 }
 
 #oz-nav {
     width: 100%;
     margin: auto 0 !important;
-    background: var(--blue-color);
-    border: none;
+    background: var(--light-3-gray-color);
+    border-bottom: solid 2px var(--purple-color);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
 }
 
@@ -24,14 +20,14 @@
 #oz-nav .dropdown.open > .link,
 #oz-nav .dropdown-menu.open > .link,
 #oz-nav .dropdown-menu > .menu > .link:hover,
-#oz-nav .navbar-nav > .menu:hover,
 #oz-nav .navbar-nav > .menu > .link:hover {
-    background-color: var(--pink-color);
+    border-color: var(--purple-color);
 }
 
 #oz-nav .navbar-nav > .menu > .link {
-    color: var(--white-color);
+    color: var(--dark-purple-color);
     padding: 15px 10px;
+    border-top: solid 2px transparent;
 }
 
 #oz-nav .navbar-nav .menu-icon {
@@ -46,13 +42,14 @@
 .navbar-toggle:hover,
 .navbar-toggle.collapsed:hover,
 .navbar-toggle.collapsed .icon-bar {
-    background-color: var(--pink-color) !important;
+    background-color: var(--dark-purple-color) !important;
+    color: var(--white-color);
 }
 
 .navbar-toggle.collapsed,
 .navbar-toggle .icon-bar,
 .navbar-toggle:hover .icon-bar{
-    background-color: var(--blue-color) !important;
+    background-color: var(--white-color) !important;
 }
 
 #ozwillo-navbar {
@@ -60,12 +57,12 @@
 }
 
 #oz-nav .dropdown-menu {
-    background-color: var(--blue-color);
+    background-color: var(--white-color);
 }
 
 
 #oz-nav .dropdown-menu > .menu > .link {
-    color: var(--white-color);
+    color: var(--purple-color);
 }
 
 

@@ -51,7 +51,7 @@ class MemberDropdownHeader extends React.Component {
                     {
                         !member.isPending &&
                         <button type="button" className="btn icon" onClick={this.onRemoveMemberInOrganization}>
-                            <i className="fa fa-trash option-icon delete"/>
+                            <i className="fa fa-trash option-icon"/>
                         </button>
                     }
                 </div>
