@@ -8,8 +8,8 @@ import MemberDropdownHeader from './member-dropdown-header';
 import MemberDropdownFooter from './member-dropdown-footer';
 
 //Actions
-import { fetchCreateAcl, fetchDeleteAcl } from "../../../actions/acl";
-import { fetchDeleteMember } from "../../../actions/member";
+import { fetchCreateAcl, fetchDeleteAcl } from '../../../actions/acl';
+import { fetchDeleteMember, fetchUpdateRoleMember } from '../../../actions/member';
 
 class MemberDropdown extends React.Component {
 
@@ -31,6 +31,7 @@ class MemberDropdown extends React.Component {
         this.removeMemberInOrganization = this.removeMemberInOrganization.bind(this);
         this.memberInstances = this.memberInstances.bind(this);
         this.filterInstanceWithoutAccess = this.filterInstanceWithoutAccess.bind(this);
+        this.onUpdateRoleMember = this.onUpdateRoleMember.bind(this);
     }
 
     addAccessToInstance(instance) {
@@ -92,6 +93,10 @@ class MemberDropdown extends React.Component {
         })
     }
 
+    onUpdateRoleMember(isAdmin) {
+        this.props.fetchUpdateRoleMember(this.props.organization.id, this.props.member.id, isAdmin);
+    }
+
     render() {
         const member = this.props.member;
         const org = this.props.organization;
@@ -100,7 +105,8 @@ class MemberDropdown extends React.Component {
 
         const Header = <MemberDropdownHeader member={member}
                                              organization={org}
-                                             onRemoveMemberInOrganization={this.removeMemberInOrganization}/>;
+                                             onRemoveMemberInOrganization={this.removeMemberInOrganization}
+                                             onUpdateRoleMember={this.onUpdateRoleMember}/>;
         const Footer = <MemberDropdownFooter member={member}
                                              instances={instancesWithoutAccess}
                                              onAddAccessToInstance={this.addAccessToInstance}/>;
@@ -139,6 +145,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchDeleteMember(organizationId, memberId) {
             return dispatch(fetchDeleteMember(organizationId, memberId));
+        },
+        fetchUpdateRoleMember(organizationId, memberId, isAdmin) {
+            return dispatch(fetchUpdateRoleMember(organizationId, memberId, isAdmin));
         }
     };
 };

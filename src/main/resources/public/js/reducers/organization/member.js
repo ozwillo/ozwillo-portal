@@ -1,25 +1,17 @@
 
+import { FETCH_UPDATE_ROLE_MEMBER } from '../../actions/member';
 
-const defaultState = {
-    members: [
-        {
-            id: 1,
-            firstname: 'firstname',
-            lastname: 'lastname'
-        },
-        {
-            id: 2,
-            firstname: 'firstname 2',
-            lastname: 'lastname 2'
-        },
-        {
-            id: 3,
-            firstname: 'firstname 3',
-            lastname: 'lastname 3'
-        }
-    ]
-};
 
-export default (state = defaultState, actions) => {
-    return state;
+export default (state = {}, action) => {
+    let nextState = Object.assign({}, state);
+
+    switch(action.type) {
+        case FETCH_UPDATE_ROLE_MEMBER:
+            nextState.admin = action.isAdmin;
+            break;
+        default:linux 
+            return state;
+    }
+
+    return nextState;
 };

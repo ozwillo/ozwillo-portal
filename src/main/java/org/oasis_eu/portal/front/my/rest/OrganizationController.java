@@ -70,6 +70,12 @@ class OrganizationController extends BaseController {
         networkService.invite(invitation.email, organizationId);
     }
 
+    @PutMapping("/{organizationId}/membership/{accountId}/role/{isAdmin}")
+    public void updateRoleMember(@PathVariable String organizationId, @PathVariable String accountId,
+                             @PathVariable boolean isAdmin) {
+        networkService.updateMember(organizationId, accountId, isAdmin);
+    }
+
     @DeleteMapping("/{organizationId}/membership/{accountId}")
     public void removeMember(@PathVariable String organizationId, @PathVariable String accountId) {
         networkService.removeMember(organizationId, accountId);

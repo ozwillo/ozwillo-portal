@@ -17,12 +17,16 @@ import {
     FETCH_UPDATE_SERVICE_CONFIG
 } from '../../actions/instance';
 
-import { FETCH_DELETE_MEMBER } from '../../actions/member';
+import {
+    FETCH_DELETE_MEMBER,
+    FETCH_UPDATE_ROLE_MEMBER
+} from '../../actions/member';
 
 import { FETCH_ADD_INSTANCE_TO_ORG } from '../../actions/app-store';
 
 //Reducers
 import instanceReducer from './instance';
+import memberReducer from './member';
 
 const defaultState = {
     organizations: [],
@@ -60,6 +64,39 @@ const instancesState = (state = [], action) => {
     return nextState;
 };
 
+const membersState = (state = [], action) => {
+    let nextState = Object.assign([], state);
+    let i;
+    switch(action.type) {
+        case FETCH_UPDATE_ROLE_MEMBER:
+            i = nextState.findIndex(member => {
+                return member.id === action.memberId
+            });
+
+            if(!i) {
+                return state;
+            }
+
+            nextState[i] = memberReducer(nextState[i], action);
+            break;
+        case FETCH_DELETE_MEMBER:
+            i = nextState.findIndex(member => {
+                return member.id === action.memberId
+            });
+
+            if(!i) {
+                return state;
+            }
+
+            nextState.splice(i, 1);
+            break;
+
+        default:
+            return state;
+    }
+    return nextState;
+};
+
 
 const currentOrganizationState = (state = {}, action) => {
     let nextState = Object.assign({}, state);
@@ -78,17 +115,9 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_USERS_OF_INSTANCE:
             nextState.instances = instancesState(state.instances, action);
             break;
+        case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_DELETE_MEMBER:
-            const i = nextState.members.findIndex(member => {
-                return member.id === action.memberId
-            });
-
-            if(!i) {
-                return state;
-            }
-
-            nextState.members = Object.assign([], nextState.members);
-            nextState.members.splice(i, 1);
+            nextState.members = membersState(nextState.members, action);
             break;
         default:
             return state;
@@ -121,6 +150,7 @@ export default (state = defaultState, action) => {
             nextState.organizations = organizationsState(nextState.organizations, action);
             break;
         case FETCH_DELETE_MEMBER:
+        case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_USERS_OF_INSTANCE:

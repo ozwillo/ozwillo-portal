@@ -7,6 +7,7 @@ class MemberDropdownHeader extends React.Component {
         organization: PropTypes.object.isRequired,
         member: PropTypes.object.isRequired,
         onRemoveMemberInOrganization: PropTypes.func.isRequired,
+        onUpdateRoleMember: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -17,6 +18,7 @@ class MemberDropdownHeader extends React.Component {
         };
 
         this.onRemoveMemberInOrganization = this.onRemoveMemberInOrganization.bind(this);
+        this.memberRoleToggle = this.memberRoleToggle.bind(this);
     }
 
     onRemoveMemberInOrganization() {
@@ -29,6 +31,10 @@ class MemberDropdownHeader extends React.Component {
             });
     }
 
+    memberRoleToggle() {
+        this.props.onUpdateRoleMember(!this.props.member.admin);
+    }
+
     render() {
         const member = this.props.member;
         return <header className="dropdown-header">
@@ -36,6 +42,22 @@ class MemberDropdownHeader extends React.Component {
                 <span className="dropdown-name">{member.name}</span>
                 <span className="error-message">{this.state.error}</span>
                 <div className="options flex-row end">
+
+                    {
+                        member.admin &&
+                        <button type="button" className="btn icon" onClick={this.memberRoleToggle}>
+                            <i className="fa fa-superpowers option-icon"/>
+                        </button>
+                    }
+
+                    {
+                        !member.admin &&
+                        <button type="button" className="btn icon" onClick={this.memberRoleToggle}>
+                            <i className="fa fa-user option-icon"/>
+                        </button>
+                    }
+
+
                     {
                         member.isPending &&
                         <button type="button" className="btn icon">
