@@ -151,7 +151,14 @@ label.required {
 }
 
 .error-message {
-    color: red;
+    color: var(--red-color);
+    width: 100%;
+    text-align: left;
+    margin: auto 5px;
+}
+
+.success-message {
+    color: var(--green-color);
     width: 100%;
     text-align: left;
     margin: auto 5px;

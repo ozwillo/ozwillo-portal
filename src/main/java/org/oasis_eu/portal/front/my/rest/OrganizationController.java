@@ -44,9 +44,19 @@ class OrganizationController extends BaseController {
         return networkService.getOrganization(organizationId);
     }
 
+    @GetMapping(value = "/info")
+    public DCOrganization getOrganizationInfo(@RequestParam String dcId) {
+        return organizationService.getOrganization(dcId);
+    }
+
     @PostMapping
     public UIOrganization createOrganization(@RequestBody DCOrganization dcOrganization) {
         return organizationService.create(dcOrganization);
+    }
+
+    @PutMapping
+    public UIOrganization updateDCOrganization(@RequestBody DCOrganization dcOrganization) {
+        return organizationService.update(dcOrganization);
     }
 
     @PostMapping ("/invite/{organizationId}")

@@ -62,7 +62,7 @@ class OrganizationCreate extends React.Component {
                     <span>{this.state.error}</span>
                 </div>
                 <OrganizationForm onSubmit={this.onSubmit} isLoading={this.state.isLoading}
-                                  countries={this.props.countries}/>
+                                  countries={this.props.countries} label="Create an organization"/>
             </div>
         </section>;
     }

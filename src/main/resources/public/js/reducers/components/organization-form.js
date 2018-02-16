@@ -31,6 +31,11 @@ export default (state = defaultState, action) => {
     switch(action.type) {
         case UPDATE_ORG_FORM:
             nextState = Object.assign(nextState, action.organization);
+
+            //remove null and undefined values
+            Object.keys(nextState).forEach(attr => {
+               nextState[attr] =  nextState[attr] || '';
+            });
             break;
         case RESET_ORG_FORM:
             nextState = defaultState;

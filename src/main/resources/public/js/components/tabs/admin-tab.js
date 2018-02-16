@@ -7,7 +7,9 @@ import { Link } from 'react-router-dom';
 import OrganizationForm from '../forms/organization-form';
 
 //actions
-import { fetchCountries } from "../../actions/config";
+import { fetchCountries } from '../../actions/config';
+import { updateOrganizationForm } from '../../actions/components/organization-form';
+import { fetchUpdateOrganization } from '../../actions/organization';
 
 class AdminTabHeader extends React.Component {
 
@@ -34,8 +36,8 @@ class AdminTab extends React.Component {
         super(props);
 
         this.state = {
-            isLoading: false,
-            organization: this.props.organization
+
+            isLoading: false
         };
 
         //bind methods
@@ -43,22 +45,46 @@ class AdminTab extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        this.setState({ organization: nextProps.organization });
+        this.props.updateOrganizationForm(nextProps.orgInfo);
     }
 
     componentDidMount() {
         this.props.fetchCountries();
     }
 
-    onSubmit(organization) {
-        console.log('submit ', organization);
+    onSubmit(info) {
+        this.props.fetchUpdateOrganization(info)
+            .then(() => {
+                this.setState({
+                    isLoading: false,
+                    success: 'The form has been sent !'
+                })
+            })
+            .catch(err => {
+                this.setState({
+                    isLoading: false,
+                    success: '',
+                    error: err.error
+                })
+            });
     }
 
     render() {
         return <article className="admin-tab">
             <OrganizationForm onSubmit={this.onSubmit} countries={this.props.countries}
-                              isLoading={this.state.isLoading}
-                              organization={this.state.organization}/>
+                              isLoading={this.state.isLoading} countryFieldIsDisabled={true}
+                              label="Save"/>
+
+            <div className="text-center">
+                {
+                    this.state.error &&
+                    <span className="error-message">{this.state.error}</span>
+                }
+                {
+                    this.state.success &&
+                    <span className="success-message">{this.state.success}</span>
+                }
+            </div>
         </article>;
     }
 }
@@ -66,7 +92,7 @@ class AdminTab extends React.Component {
 const mapStateToProps = state => {
     return {
         countries: state.config.countries,
-        organization: state.organization.current
+        orgInfo: state.organization.current.info
     };
 };
 
@@ -74,6 +100,12 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchCountries() {
             return dispatch(fetchCountries());
+        },
+        updateOrganizationForm(info) {
+            return dispatch(updateOrganizationForm(info))
+        },
+        fetchUpdateOrganization(info) {
+            return dispatch(fetchUpdateOrganization(info));
         }
     };
 };

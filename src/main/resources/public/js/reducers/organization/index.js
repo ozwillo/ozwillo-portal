@@ -1,7 +1,9 @@
 import {
     FETCH_USER_ORGANIZATIONS,
     FETCH_ORGANIZATION_WITH_ID,
-    FETCH_CREATE_ORGANIZATION
+    FETCH_CREATE_ORGANIZATION,
+    FETCH_UPDATE_ORGANIZATION,
+    FETCH_ORGANIZATION_INFO
 } from '../../actions/organization';
 
 import {
@@ -62,6 +64,10 @@ const instancesState = (state = [], action) => {
 const currentOrganizationState = (state = {}, action) => {
     let nextState = Object.assign({}, state);
     switch(action.type) {
+        case FETCH_ORGANIZATION_INFO:
+            nextState.info = action.info;
+            break;
+        case FETCH_UPDATE_ORGANIZATION:
         case FETCH_ORGANIZATION_WITH_ID:
             nextState = action.organization;
             break;
@@ -121,6 +127,8 @@ export default (state = defaultState, action) => {
         case FETCH_CREATE_ACL:
         case FETCH_DELETE_ACL:
         case FETCH_ORGANIZATION_WITH_ID:
+        case FETCH_ORGANIZATION_INFO:
+        case FETCH_UPDATE_ORGANIZATION:
             nextState.current = currentOrganizationState(state.current, action);
             break;
         default:

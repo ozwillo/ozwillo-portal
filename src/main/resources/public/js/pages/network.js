@@ -617,7 +617,7 @@ var InformationDialog = createClass({
     loadDCOrganizations: function() {
         if (this.props.org.dc_id) {
             $.ajax({
-                url: 'my/api/network/organization',
+                url: '/my/api/network/organization',
                 type: 'get',
                 contentType: 'json',
                 data: {dc_id: this.props.org.dc_id},

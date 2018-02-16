@@ -1,8 +1,10 @@
-import customFetch from '../util/custom-fetch';
+import customFetch, { urlBuilder } from '../util/custom-fetch';
 
 export const FETCH_ORGANIZATION_WITH_ID = 'FETCH_ORGANIZATION_WITH_ID';
 export const FETCH_USER_ORGANIZATIONS = 'FETCH_USER_ORGANIZATIONS';
 export const FETCH_CREATE_ORGANIZATION = 'FETCH_CREATE_ORGANIZATION';
+export const FETCH_UPDATE_ORGANIZATION = 'FETCH_UPDATE_ORGANIZATION';
+export const FETCH_ORGANIZATION_INFO = 'FETCH_ORGANIZATION_INFO';
 
 // Actions
 const fetchOrganizationWithIdAction = (organization) => {
@@ -23,6 +25,20 @@ const fetchCreateOrganizationAction = (organization) => {
     return {
         type: FETCH_CREATE_ORGANIZATION,
         organization
+    };
+};
+
+const fetchUpdateOrganizationAction = (organization) => {
+    return {
+        type: FETCH_UPDATE_ORGANIZATION,
+        organization
+    };
+};
+
+const fetchOrganizationInfoAction = (info) => {
+    return {
+        type: FETCH_ORGANIZATION_INFO,
+        info
     };
 };
 
@@ -53,5 +69,26 @@ export const fetchCreateOrganization = (organization) => {
         }).then((org) => {
             dispatch(fetchCreateOrganizationAction(org));
         });
+    };
+};
+
+export const fetchUpdateOrganization = (info) => {
+    return dispatch => {
+        return customFetch('/my/api/organization', {
+            method: 'PUT',
+            json: info
+        }).then((org) => {
+            org.info = info
+            dispatch(fetchUpdateOrganizationAction(org));
+        });
+    };
+};
+
+export const fetchOrganizationInfo = (dcId) => {
+    return dispatch => {
+        return customFetch(urlBuilder('/my/api/organization/info', { dcId }))
+            .then((info) => {
+                return dispatch(fetchOrganizationInfoAction(info));
+            });
     };
 };

@@ -9,7 +9,7 @@ import { MembersTabHeader, MembersTab } from '../components/tabs/members-tab';
 import { AdminTabHeader, AdminTab } from '../components/tabs/admin-tab';
 
 //actions
-import { fetchOrganizationWithId } from "../actions/organization";
+import { fetchOrganizationWithId, fetchOrganizationInfo } from "../actions/organization";
 import { fetchUsersOfInstance } from "../actions/instance";
 import { fetchApplications } from "../actions/app-store";
 
@@ -42,11 +42,17 @@ class OrganizationDesc extends React.Component {
         Promise.all([
             this.props.fetchOrganizationWithId()
                 .then(() => {
-                    if(this.props.organization.admin) {
-                        this.props.organization.instances.forEach((instance) => {
+                    const org = this.props.organization;
+                    const requests = [];
+                    if(org.admin) {
+                        org.instances.forEach((instance) => {
                             this.props.fetchUsersOfInstance(instance);
                         });
                     }
+
+                    requests.push(this.props.fetchOrganizationInfo(org.dc_id));
+
+                    return Promise.all(requests);
                 }),
             this.props.fetchApplications()
         ]).catch((err) => {
@@ -84,6 +90,9 @@ const mapDispatchToProps = (dispatch, ownProps) => {
         },
         fetchApplications() {
             return dispatch(fetchApplications());
+        },
+        fetchOrganizationInfo(dcId) {
+            return dispatch(fetchOrganizationInfo(dcId));
         }
     };
 };
