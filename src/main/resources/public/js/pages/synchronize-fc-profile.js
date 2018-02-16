@@ -100,8 +100,8 @@ class SynchronizeFCProfile extends React.Component {
         const franceConnectProfile = this.state.franceConnectProfile
 
         if(!userProfile){
-            return <section className="synchronize-fc-profile">
-                <i className="fa fa-spinner fa-spin spinner loading"></i>
+            return <section className="synchronize-fc-profile loading-container">
+                <i className="fa fa-spinner fa-spin loading" />
             </section>
         }
 
@@ -132,7 +132,7 @@ class SynchronizeFCProfile extends React.Component {
                 }
 
                 <div className="row submit">
-                    <input type="submit" value="save" className="btn oz-btn-save"/>
+                    <input type="submit" value="save" className="btn btn-submit"/>
                 </div>
             </form>
         </section>
@@ -147,14 +147,13 @@ class SynchronizeFCProfileWrapper extends React.Component {
     };
 
     render() {
-        return <div className="oz-body page-row page-row-expanded">
+        return <div className="oz-body wrapper flex-col">
 
             <div className="container-fluid">
                 <div className="row">
                     <div className="col-md-12">
                         <h1 className="text-center">
-                            <img src="/img/profile-lg.png" />
-                            <span>{this.context.t('my.profile')}</span>
+                            <span className="title">{this.context.t('my.profile')}</span>
                         </h1>
                     </div>
                 </div>
@@ -164,7 +163,7 @@ class SynchronizeFCProfileWrapper extends React.Component {
                 <SynchronizeFCProfileWithRouter/>
             </div>
 
-            <div className="push"></div>
+            <div className="push" />
         </div>;
     }
 }
