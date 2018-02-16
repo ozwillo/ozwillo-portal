@@ -1,9 +1,15 @@
+#dashboard {
+    height: 100%;
+}
+
 #dashboard .nav-tabs {
-    border-bottom-color: var(--dark-purple-color);
+    border: none;
 }
 
 #dashboard ul.nav.nav-tabs > li {
-    margin-right: 10px;
+    margin-right: 0.7em;
+    box-shadow: 3px 0px 3px rgba(0, 0, 0, 0.2);
+    background-color: transparent;
 }
 
 #dashboard ul.nav.nav-tabs > li > a,
@@ -12,7 +18,8 @@
     border-radius: 0;
     color: var(--white-color);
     background-color: var(--purple-color);
-    border: solid 1px var(--dark-purple-color)
+    border: solid 1px var(--dark-purple-color);
+    margin: 0;
 }
 
 #dashboard ul.nav.nav-tabs > li > a:hover,
@@ -27,7 +34,13 @@
 }
 
 #dashboard div.all-apps {
+    height: 100%;
+    background-color: var(--white-color);
     padding-left: 0;
+    border-top: solid 2px var(--purple-color);
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
+                4px 3px 3px rgba(0, 0, 0, 0.2);
+
 }
 
 #dashboard div.appzone {
@@ -109,7 +122,7 @@
     color: var(--purple-color);
 }
 
-#dashboard .action-icon:hover a {
+#dashboard .app:hover .action-icon a {
     color: var(--white-color);
 }
 

@@ -14,7 +14,7 @@ class OrganizationDropdownHeader extends React.Component {
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <span className="dropdown-name">
-                    <Link className="link undecorated-link" to={`/my/organization/${organization.id}/`}>
+                    <Link className="link" to={`/my/organization/${organization.id}/`}>
                         {organization.name}
                     </Link>
                 </span>

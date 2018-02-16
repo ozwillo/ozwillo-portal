@@ -38,10 +38,6 @@
     color: var(--white-color) !important;
 }
 
-.dropdown-header .link:hover {
-    color: var(--dark-purple-color) !important;
-}
-
 .dropdown-header .form {
     min-height: 38px;
 }
@@ -118,10 +114,6 @@
     color: var(--white-color);
 }
 
-.dropdown-header .option-icon:hover {
-    color: var(--dark-purple-color);
-}
-
 .dropdown-header .option-icon.delete ,
 .dropdown-content .option-icon.delete ,
 .dropdown-footer .option-icon.delete {
@@ -135,4 +127,13 @@
 .dropdown-header .delete,
 .dropdown-content .error {
     color: var(--red-color)
+}
+
+.dropdown-header .btn.icon {
+    border-radius: 50px;
+    padding: 0.5em 0.6em;
+}
+
+.dropdown-header .btn.icon:hover {
+    background-color: var(--dark-purple-color);
 }

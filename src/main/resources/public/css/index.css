@@ -129,6 +129,7 @@ label.required {
 
 .oz-body div.oz-body-content {
     padding: 20px 0;
+    height: 100%;
 }
 /* END oz-body */
 

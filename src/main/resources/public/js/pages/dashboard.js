@@ -342,36 +342,32 @@ var Dashboard = createClass({
     },
     render: function () {
         return (
-            <section className="container" id="dashboard">
-                <div className="row">
-                    <div className="col-md-12">
-                        <DashList
-                            loading={this.state.loadingDashboards}
-                            dashboards={this.state.dashboards}
-                            currentDash={this.state.dash}
-                            dragging={this.state.dragging}
-                            draggingPending={this.state.draggingPending}
-                            switchToDashboard={this.switchToDashboard}
-                            moveToDash={this.moveToDash}
-                            renameDash={this.renameDash}
-                            removeDash={this.removeDash}
-                            createDash={this.createDash} />
-                        <Desktop
-                            dash={this.state.dash}
-                            loading={this.state.loadingApps}
-                            apps={this.state.apps}
-                            pendingApps={this.state.pendingApps}
-                            deleteApp={this.deleteApp}
-                            deletePending={this.deletePending}
-                            startDrag={this.startDrag}
-                            startDragPending={this.startDragPending}
-                            endDrag={this.endDrag}
-                            endDragPending={this.endDragPending}
-                            dragging={this.state.dragging}
-                            draggingPending={this.state.draggingPending}
-                            dropCallback={this.reorderApps} />
-                    </div>
-                </div>
+            <section id="dashboard" className="flex-col">
+                <DashList
+                    loading={this.state.loadingDashboards}
+                    dashboards={this.state.dashboards}
+                    currentDash={this.state.dash}
+                    dragging={this.state.dragging}
+                    draggingPending={this.state.draggingPending}
+                    switchToDashboard={this.switchToDashboard}
+                    moveToDash={this.moveToDash}
+                    renameDash={this.renameDash}
+                    removeDash={this.removeDash}
+                    createDash={this.createDash} />
+                <Desktop
+                    dash={this.state.dash}
+                    loading={this.state.loadingApps}
+                    apps={this.state.apps}
+                    pendingApps={this.state.pendingApps}
+                    deleteApp={this.deleteApp}
+                    deletePending={this.deletePending}
+                    startDrag={this.startDrag}
+                    startDragPending={this.startDragPending}
+                    endDrag={this.endDrag}
+                    endDragPending={this.endDragPending}
+                    dragging={this.state.dragging}
+                    draggingPending={this.state.draggingPending}
+                    dropCallback={this.reorderApps} />
             </section>
         );
     }
@@ -664,10 +660,8 @@ var Desktop = createClass({
     render: function () {
         if (this.props.loading) {
             return (
-                <div className="row">
-                    <div className="col-sm-12 text-center">
-                        <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
-                    </div>
+                <div className="col-sm-12 text-center">
+                    <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
                 </div>
             );
         } else {
@@ -715,10 +709,8 @@ var Desktop = createClass({
             );
 
             return (
-                <div className="row">
-                    <div className="col-sm-12 all-apps">
-                        {icons}
-                    </div>
+                <div className="all-apps">
+                    {icons}
                 </div>
             );
         }
@@ -833,15 +825,12 @@ class DashboardWrapper extends React.Component {
     };
 
     render() {
-        return <div className="oz-body wrapper light">
-
+        return <section className="oz-body wrapper flex-col">
             <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            <span className="title">{this.context.t('my.dashboard')}</span>
-                        </h1>
-                    </div>
+                <div className="col-md-12">
+                    <h1 className="text-center">
+                        <span className="title">{this.context.t('my.dashboard')}</span>
+                    </h1>
                 </div>
             </div>
 
@@ -850,7 +839,7 @@ class DashboardWrapper extends React.Component {
             </div>
 
             <div className="push"></div>
-        </div>;
+        </section>;
     }
 }
 

@@ -34,7 +34,7 @@ class DropDownMenu extends React.Component {
 
     render() {
         const isOpenClassName = (!this.state.isOpen && 'hidden') || '';
-        const iconClassName = (this.state.isOpen && 'up') || 'down';
+        const iconClassName = (this.state.isOpen && 'down') || 'up';
         const isAvailableClassName = (!this.props.isAvailable && 'hidden') || '';
         const isEmptyClassName = (!this.props.children && 'empty') || '';
 
