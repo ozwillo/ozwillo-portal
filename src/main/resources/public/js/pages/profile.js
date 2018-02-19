@@ -243,11 +243,24 @@ class AddressAccount extends React.Component {
         super(props);
 
         //bind methods
-        this.handleChange = this.handleChange.bind(this);
-        this.onGeoAreaSelected = this.handleChange.bind(this);
+        this.onGeoAreaChange = this.onGeoAreaChange.bind(this);
+        this.onGeoAreaSelected = this.onGeoAreaSelected.bind(this);
+        this.onCountryChange = this.onCountryChange.bind(this);
     }
 
-    handleChange(e) {
+    onCountryChange(country) {
+        //reset fields
+        this.props.onValueChange('address.street_address', '');
+        this.props.onValueChange('address.postal_code', '');
+        this.props.onValueChange('address.locality', '');
+        this.props.onValueChange('address.country', '');
+
+        this.props.onValueChange('address.country', country.value)
+    }
+
+
+
+    onGeoAreaChange(e) {
         this.props.onValueChange('address.locality', e.currentTarget.value);
     }
 
@@ -257,32 +270,40 @@ class AddressAccount extends React.Component {
     }
 
     render () {
+        const address = this.props.address;
+        console.log(address);
         return (
             <fieldset className="oz-fieldset">
                 <legend className="oz-legend">{this.context.t('my.profile.personal.address')}</legend>
-                <CountrySelector value={this.props.address.country}
-                                 onChange={value => this.props.onValueChange('address.country', value)}
+                <CountrySelector value={address.country|| ''}
+                                 onChange={this.onCountryChange}
                                  url="/api/store/dc-countries"/>
-                <div className="flex-row">
-                    <label className="label">
-                        {this.context.t('my.profile.personal.locality')}
-                    </label>
-                    <GeoAreaAutosuggest name="locality"
-                                        onGeoAreaSelected={this.onGeoAreaSelected}
-                                        onChange={this.handleChange}
-                                        countryUri={this.props.address.country || ''}
-                                        endpoint="/dc-cities" placeholder={this.context.t('my.profile.personal.locality')}
-                                        value={this.props.address.locality} />
-                </div>
 
-                <InputText name="address.postal_code" value={this.props.address.postal_code}
-                           label={this.context.t('my.profile.personal.postalcode')}
-                           onChange={e => this.props.onValueChange('address.postal_code', e.target.value)}
-                           disabled={true} />
+                {
+                    address.country && [
+                        <div key={`${address.country}_locality`} className="flex-row">
+                            <label className="label">
+                                {this.context.t('my.profile.personal.locality')}
+                            </label>
+                            <GeoAreaAutosuggest name="locality"
+                                                onGeoAreaSelected={this.onGeoAreaSelected}
+                                                onChange={this.onGeoAreaChange}
+                                                countryUri={address.country || ''}
+                                                endpoint="/dc-cities" placeholder={this.context.t('my.profile.personal.locality')}
+                                                value={address.locality || ''} />
+                        </div>,
 
-                <InputText name="address.street_address" value={this.props.address.street_address}
-                           label={this.context.t('my.profile.personal.streetaddress')}
-                           onChange={e => this.props.onValueChange('address.street_address', e.target.value)} />
+                        <InputText key={`${address.country}_postal_code`} name="address.postal_code" value={address.postal_code}
+                            label={this.context.t('my.profile.personal.postalcode')}
+                            onChange={e => this.props.onValueChange('address.postal_code', e.target.value)}
+                            disabled={true} />,
+
+                        <InputText key={`${address.country}_street_address`} name="address.street_address" value={address.street_address}
+                            label={this.context.t('my.profile.personal.streetaddress')}
+                            onChange={e => this.props.onValueChange('address.street_address', e.target.value)} />
+                    ]
+                }
+
             </fieldset>
         )
     }
