@@ -99,6 +99,7 @@ class MemberDropdown extends React.Component {
 
     render() {
         const member = this.props.member;
+        const isPending = !member.name;
         const org = this.props.organization;
         const memberInstances = this.memberInstances();
         const instancesWithoutAccess = org.instances.filter(this.filterInstanceWithoutAccess);
@@ -107,11 +108,11 @@ class MemberDropdown extends React.Component {
                                              organization={org}
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
                                              onUpdateRoleMember={this.onUpdateRoleMember}/>;
-        const Footer = <MemberDropdownFooter member={member}
+        const Footer = !isPending && <MemberDropdownFooter member={member}
                                              instances={instancesWithoutAccess}
                                              onAddAccessToInstance={this.addAccessToInstance}/>;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={!member.isPending}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={!isPending}>
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">
                     {

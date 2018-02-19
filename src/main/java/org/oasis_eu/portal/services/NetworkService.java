@@ -120,7 +120,9 @@ public class NetworkService {
         uiOrg.setAdmin(userIsAdmin(organizationId));
 
         if(fetchMembers && !isPersonal) {
-            uiOrg.setMembers(getOrganizationMembers(org.getId()));
+            List<UIOrganizationMember> members = getOrganizationMembers(org.getId());
+            members.addAll(getOrganizationPendingMembers(org.getId()));
+            uiOrg.setMembers(members);
         }
 
         return uiOrg;

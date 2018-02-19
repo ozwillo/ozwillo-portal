@@ -37,9 +37,10 @@ class MemberDropdownHeader extends React.Component {
 
     render() {
         const member = this.props.member;
+        const isPending = !member.name;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
-                <span className="dropdown-name">{member.name}</span>
+                <span className="dropdown-name">{member.name || member.email}</span>
                 <span className="error-message">{this.state.error}</span>
                 <div className="options flex-row end">
 
@@ -51,7 +52,7 @@ class MemberDropdownHeader extends React.Component {
                     }
 
                     {
-                        !member.admin &&
+                        !member.admin && !isPending &&
                         <button type="button" className="btn icon" onClick={this.memberRoleToggle}>
                             <i className="fa fa-user option-icon"/>
                         </button>
@@ -59,19 +60,13 @@ class MemberDropdownHeader extends React.Component {
 
 
                     {
-                        member.isPending &&
+                        isPending &&
                         <button type="button" className="btn icon">
                             <i className="fa fa-spinner fa-spin option-icon loading"/>
                         </button>
                     }
                     {
-                        member.isPending &&
-                        <button type="button" className="btn icon" onClick={this.onSendInvitation}>
-                            <i className="fa fa-paper-plane option-icon"/>
-                        </button>
-                    }
-                    {
-                        !member.isPending &&
+                        !isPending &&
                         <button type="button" className="btn icon" onClick={this.onRemoveMemberInOrganization}>
                             <i className="fa fa-trash option-icon"/>
                         </button>

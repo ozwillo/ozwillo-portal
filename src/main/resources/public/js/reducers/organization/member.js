@@ -9,7 +9,7 @@ export default (state = {}, action) => {
         case FETCH_UPDATE_ROLE_MEMBER:
             nextState.admin = action.isAdmin;
             break;
-        default:linux 
+        default:
             return state;
     }
 
