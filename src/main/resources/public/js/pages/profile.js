@@ -6,8 +6,6 @@ import renderIf from 'render-if';
 import moment from 'moment';
 import Select from 'react-select';
 
-import '../util/csrf';
-
 // Component
 import FranceConnectForm from '../components/forms/france-connect-form';
 import { Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/forms/form';
@@ -66,7 +64,7 @@ class Profile extends React.Component {
         this.setState({ userProfile: fields })
     }
     onSubmit(e) {
-        e.preventDefault()
+        e.preventDefault();
 
         $.ajax({
             url: '/my/api/profile',
@@ -75,8 +73,8 @@ class Profile extends React.Component {
             data: JSON.stringify(this.state.userProfile)
         })
             .done(function (data) {
-                this.setState({ updateSucceeded: true })
-                this.componentDidMount()
+                this.setState({ updateSucceeded: true });
+                this.componentDidMount();
             }.bind(this))
     }
     render() {
@@ -196,16 +194,11 @@ class IdentityAccount extends React.Component {
     };
 
     handleChange(date) {
-        let birthdate = date;
-        /*if (!date.isUTC()) {
-            birthdate = moment(date).utc().add(date.utcOffset(), 'm');
-        }*/
-
-        this.props.onValueChange('birthdate', birthdate);
+        this.props.onValueChange('birthdate', moment(date).utc());
     }
 
     render () {
-        moment.locale(this.props.userProfile.locale)
+        moment.locale(this.props.userProfile.locale);
         const birthdate = moment.utc(this.props.userProfile.birthdate);
 
         return (
