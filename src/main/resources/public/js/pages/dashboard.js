@@ -135,7 +135,6 @@ var Dashboard = createClass({
     },
     reorderApps: function (before) {
         return function (app) {
-
             var state = this.state;
             state.dragging = false;
 
@@ -144,8 +143,8 @@ var Dashboard = createClass({
                 var to = this.findById(this.state.apps, before);
                 if (to != fr) {
                     // remove
-                    var removed = state.apps.splice(fr, 1);
                     var to = this.findById(this.state.apps, before);
+                    var removed = state.apps.splice(fr, 1);
                     state.apps.splice(to, 0, removed[0]);
                 }
             } else {
@@ -495,7 +494,7 @@ var DashActions = createClass({
     render: function () {
         if (this.props.primary) {
             return (
-                <i className="fa fa-pencil" onClick={this.props.edit}></i>
+                <i className="fa fa-pencil" onClick={this.props.edit} />
             );
         } else {
             var buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
@@ -506,8 +505,8 @@ var DashActions = createClass({
                         <span>{this.context.t('my.confirm-delete-dash-long')}</span>
                     </Modal>
 
-                    <i className="fa fa-pencil" onClick={this.props.edit}></i>
-                    <i className="fa fa-trash" onClick={this.showRemove}></i>
+                    <i className="fa fa-pencil" onClick={this.props.edit} />
+                    <i className="fa fa-trash" onClick={this.showRemove} />
                 </span>
             );
         }
@@ -628,7 +627,7 @@ var DeleteApp = createClass({
         this.setState(this.getInitialState());
     },
     render: function () {
-        var className = "delete-app appzone" + (this.state.over ? " over" : "");
+        var className = "appzone" + (this.state.over ? " over" : "");
         var buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
 
         return (
@@ -661,59 +660,54 @@ var Desktop = createClass({
         if (this.props.loading) {
             return (
                 <div className="col-sm-12 text-center">
-                    <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
-                </div>
-            );
-        } else {
-
-            var icons = this.props.apps.map(function (app) {
-                return <AppZone
-                    key={app.id}
-                    app={app}
-                    startDrag={this.props.startDrag}
-                    endDrag={this.props.endDrag}
-                    dragging={this.props.dragging}
-                    dropCallback={this.props.dropCallback}
-                />;
-            }.bind(this));
-
-
-            if (this.props.pendingApps && this.props.dash.main) {
-                for (var i in this.props.pendingApps) {
-                    var app = this.props.pendingApps[i];
-                    icons.push(
-                        <PendingApp
-                            key={app.id}
-                            app={app}
-                            startDrag={this.props.startDragPending}
-                            endDrag={this.props.endDragPending}
-                        />
-                    );
-                }
-            }
-
-            icons.push(
-                <AddNewWithRedux
-                    key="add-new-icon"
-                    dragging={this.props.dragging}
-                    dropCallback={this.props.dropCallback} />
-            );
-
-            icons.push(
-                <DeleteApp
-                    key="delete-icon"
-                    dragging={this.props.dragging}
-                    draggingPending={this.props.draggingPending}
-                    delete={this.props.deleteApp}
-                    deletePending={this.props.deletePending} />
-            );
-
-            return (
-                <div className="all-apps">
-                    {icons}
+                    <i className="fa fa-spinner fa-spin loading" /> {this.context.t('ui.loading')}
                 </div>
             );
         }
+
+        return (
+            <section className="all-apps">
+                <ul className="list undecorated-list flex-row">
+                   {/* Apps */}
+                    {
+                        this.props.apps.map(app => {
+                            return <li key={app.id} className="item">
+                                <AppZone
+                                    app={app}
+                                    startDrag={this.props.startDrag}
+                                    endDrag={this.props.endDrag}
+                                    dragging={this.props.dragging}
+                                    dropCallback={this.props.dropCallback}
+                                />
+                            </li>;
+                        })
+                    }
+
+                    {/*Pending apps*/}
+                    {
+                        this.props.pendingApps && this.props.dash.main &&
+                        this.props.pendingApps.map( app => {
+                            return <li key={app.id} className="item">
+                                <PendingApp
+                                    app={app}
+                                    startDrag={this.props.startDragPending}
+                                    endDrag={this.props.endDragPending}
+                                />
+                            </li>;
+                        })
+                    }
+                    <li className="item">
+                        <DeleteApp
+                            key="delete-icon"
+                            dragging={this.props.dragging}
+                            draggingPending={this.props.draggingPending}
+                            delete={this.props.deleteApp}
+                            deletePending={this.props.deletePending} />
+                    </li>
+
+                </ul>
+            </section>
+        );
     }
 });
 Desktop.contextTypes = {
@@ -724,42 +718,18 @@ var AppZone = createClass({
     render: function () {
         return (
             <div className="appzone" title={this.props.app.name}>
-                <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback(this.props.app)}/>
-                <AppIcon app={this.props.app} startDrag={this.props.startDrag} endDrag={this.props.endDrag}/>
+                <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback(this.props.app)}>
+                    <AppIcon app={this.props.app} startDrag={this.props.startDrag} endDrag={this.props.endDrag}/>
+                </DropZone>
             </div>
         );
     }
 });
-
-var AddNew = createClass({
-    render: function () {
-        return (
-            <div className="appzone">
-                <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback("last")}/>
-                <div className="app">
-                    <div className="action-icon">
-                        <a href={`/${this.props.config.language}/store`} title={this.context.t('my.click-to-add')} draggable="false">
-                            <i className="fa fa-plus fa-3x fa-border"></i>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        );
-    }
-});
-AddNew.contextTypes = {
-    t: PropTypes.func.isRequired
-};
-const AddNewWithRedux = connect(state => {
-    return { config: state.config };
-})(AddNew);
-
 
 var PendingApp = createClass({
     render: function () {
         return (
             <div className="appzone">
-                <div className="dropzone"/>
                 <div className="app pending" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
                      onDragEnd={this.props.endDrag}>
                     <img src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
@@ -791,7 +761,9 @@ var DropZone = createClass({
     render: function () {
         var className = "dropzone" + (this.state.over ? " dragover" : "") + (this.props.dragging ? " dragging" : "");
 
-        return <div className={className} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.drop}/>;
+        return <div className={className} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.drop}>
+            {this.props.children}
+        </div>;
     }
 });
 

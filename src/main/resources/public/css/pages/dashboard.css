@@ -6,6 +6,14 @@
     border: none;
 }
 
+#dashboard .all-apps .list{
+    flex-wrap: wrap;
+}
+
+#dashboard .all-apps .list > .item{
+    margin: 0.4em;
+}
+
 #dashboard ul.nav.nav-tabs > li {
     margin-right: 0.7em;
     box-shadow: 3px 0px 3px rgba(0, 0, 0, 0.2);
@@ -33,7 +41,7 @@
     margin-left: 5px;
 }
 
-#dashboard div.all-apps {
+#dashboard .all-apps {
     height: 100%;
     background-color: var(--white-color);
     padding-left: 0;
@@ -43,17 +51,11 @@
 
 }
 
-#dashboard div.appzone {
-    position: relative;
-    float: left;
-    margin-top: 1em;
-    margin-bottom: 1em;
+#dashboard .appzone {
+    height: 100%;
 }
 
-#dashboard div.appzone div.dropzone {
-    float: left;
-    height: 160px;
-    width: 20px;
+#dashboard .appzone .dropzone {
     transition: width 0.2s;
     -moz-transition: width 0.2s;
     -webkit-transition: width 0.2s;
@@ -61,18 +63,18 @@
     -ms-transition: width 0.2s;
 }
 
-#dashboard div.appzone div.app {
-    float: left;
+#dashboard .appzone .app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     overflow: hidden;
-    min-height: 100px;
-    max-height: 140px;
-    min-width: 100px;
-    max-width: 140px;
+    width: 130px;
+    height: 100%;
+    border-radius: 3px;
+    text-align: center;
     padding: 10px;
-    border-radius: 5px;
-    text-align:center;
     position:relative;
-    display:inline-block;
 
     color: var(--dark-purple-color);
     text-transform: uppercase;
@@ -80,12 +82,13 @@
     font-size: 0.8em;
 }
 
-#dashboard div.appzone div.app:hover {
+#dashboard .appzone .dropzone.dragover .app,
+#dashboard .appzone .app:hover {
     color: var(--white-color);
     background-color: var(--purple-color);
 }
 
-#dashboard div.appzone div.app span.badge-notifications {
+#dashboard .appzone .app span.badge-notifications {
     position: absolute;
     right:17px;
     top:0;
@@ -97,22 +100,23 @@
     font-size:12px;
 }
 
-#dashboard div.appzone div.app.pending img {
+#dashboard .appzone .app.pending {
+    background-color: var(--light-2-gray-color);
     filter: grayscale(100%);
     -webkit-filter: grayscale(50%);
     -moz-filter: grayscale(100%);
     -ms-filter: grayscale(100%);
 }
 
-#dashboard div.appzone.delete-app {
-    width: 140px;
+#dashboard .appzone .app.pending:hover {
+    color: var(--dark-purple-color);
 }
 
-#dashboard div.appzone.delete-app div.app {
-    margin-left: 20px;
-}
-
-#dashboard div.appzone div.app div.action-icon {
+#dashboard .appzone .app .action-icon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     height: 64px;
     width: 64px;
     margin: auto;
@@ -127,36 +131,45 @@
 }
 
 
-#dashboard div.top-menu {
+#dashboard .top-menu {
     display: flex;
     flex-direction: row;
     justify-content: flex-end;
 }
 
-#dashboard div.top-menu .action-icon {
+#dashboard .top-menu .action-icon {
     font-size: 0.8em;
     margin: 0 2px;
 }
 
-#dashboard div.top-menu .action-icon.delete-app {
+#dashboard .top-menu .action-icon.delete-app {
     color: var(--red-color);
 }
 
-#dashboard div.top-menu .action-icon .fa-border {
-    padding: 5px;
+#dashboard .action-icon .fa-trash {
+    color: var(--purple-color);
+    border-color: var(--purple-color);
 }
 
+#dashboard .app:hover .action-icon .fa-trash {
+    color: var(--white-color);
+    border-color: var(--white-color);
+}
+
+#dashboard .appzone .app p {
+    margin: 0;
+}
 
 /* See non-webkit sol : http://codepen.io/anon/pen/oXxKpE?editors=110 */
 @supports (-webkit-line-clamp: 4) {
-    #dashboard div.appzone div.app p {
+    #dashboard .appzone .app p {
         display: -webkit-box;
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         text-overflow: ellipsis;
         overflow: hidden;
     }
-    #dashboard div.appzone div.app p:after {
+    #dashboard .appzone .app p:after {
         display: none;
     }
 }
