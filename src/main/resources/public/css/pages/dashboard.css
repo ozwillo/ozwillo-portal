@@ -16,25 +16,24 @@
 
 #dashboard ul.nav.nav-tabs > li {
     margin-right: 0.7em;
-    box-shadow: 3px 0px 3px rgba(0, 0, 0, 0.2);
-    background-color: transparent;
+    box-shadow: -1px -1px 3px -1px rgba(0, 0, 0, 0.2)
 }
 
-#dashboard ul.nav.nav-tabs > li > a,
-#dashboard ul.nav.nav-tabs > li.active > a {
+#dashboard ul.nav.nav-tabs > li > a {
     font-size: 20px;
     border-radius: 0;
     color: var(--white-color);
     background-color: var(--purple-color);
-    border: solid 1px var(--dark-purple-color);
+    border-color: transparent;
+    border-width: 2px 0 0 0;
     margin: 0;
 }
 
-#dashboard ul.nav.nav-tabs > li > a:hover,
-#dashboard ul.nav.nav-tabs > li.active > a:hover {
+#dashboard ul.nav.nav-tabs > li > a.over,
+#dashboard ul.nav.nav-tabs > li.active > a {
     color: var(--dark-purple-color);
     background-color: var(--white-color);
-
+    border-color: var(--purple-color);
 }
 
 #dashboard ul.nav.nav-tabs > li > a i {
@@ -45,7 +44,6 @@
     height: 100%;
     background-color: var(--white-color);
     padding-left: 0;
-    border-top: solid 2px var(--purple-color);
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
                 4px 3px 3px rgba(0, 0, 0, 0.2);
 

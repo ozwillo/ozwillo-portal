@@ -39,6 +39,7 @@ class RouterWithUser extends React.Component {
                 <Route path="/my/organization/create" component={OrganizationCreate}/>
                 <Route path="/my/organization/:id/:tab?" component={OrganizationDesc}/>
                 <Route path="/my/organization" component={OrganizationSearch}/>
+                <Route path="/my/dashboard/:id?" component={Dashboard}/>
                 <Route path="/my/" component={Dashboard}/>
                 <Redirect to="/my/"/>
             </Switch>
