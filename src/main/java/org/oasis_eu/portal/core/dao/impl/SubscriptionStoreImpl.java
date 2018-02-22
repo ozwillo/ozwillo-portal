@@ -67,7 +67,8 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     }
 
     @Override
-    public void create(String userId, Subscription subscription) throws WrongQueryException {
+    public Subscription create(String userId, Subscription subscription) throws WrongQueryException {
+
         logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
 
         InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(
@@ -77,12 +78,14 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             installedStatusRepository.delete(status);
         }
 
+        Subscription newSub;
         try {
             String uri = endpoint + "/user/{user_id}";
-            ResponseEntity<Void> kernelResp = kernel.exchange(uri, HttpMethod.POST,
-                    new HttpEntity<>(subscription), Void.class, user(), userId);
+            ResponseEntity<Subscription> kernelResp = kernel.exchange(uri, HttpMethod.POST,
+                    new HttpEntity<>(subscription), Subscription.class, user(), userId);
+
             // validate response body
-            kernel.getBodyUnlessClientError(kernelResp, Void.class, uri); // TODO test
+            newSub =  kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri);
 
         } catch(WrongQueryException e) {
             String translatedBusinessMessage = messageSource.getMessage("error.msg.user-is-already-subscribed",
@@ -90,6 +93,8 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
             e.setTranslatedBusinessMessage(translatedBusinessMessage);
             throw e;
         }
+
+        return newSub;
 
     }
 

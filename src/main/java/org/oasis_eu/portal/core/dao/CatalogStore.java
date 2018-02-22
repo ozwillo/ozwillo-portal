@@ -29,7 +29,7 @@ public interface CatalogStore {
         List<Locale> supportedLocales, List<String> geographicalAreas,
         List<String> categoryIds, String q, String hl, int from);
 
-    void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
+    ApplicationInstance instantiate(String appId, ApplicationInstantiationRequest instancePattern);
 
     ApplicationInstance findApplicationInstanceOrNull(String instanceId);
 

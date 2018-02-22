@@ -7,6 +7,7 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
+import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
@@ -173,7 +174,7 @@ public class StoreController extends BaseController {
     }
 
     @RequestMapping(value = "/buy", method = RequestMethod.POST)
-    public MyAppsInstance buy(@RequestBody StoreBuyRequest request) {
+    public void buy(@RequestBody StoreBuyRequest request) {
         appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
 
         //Update user details contained in StoreBuyRequest, usually contact & address (address if personal service install)
@@ -186,10 +187,16 @@ public class StoreController extends BaseController {
         /*if (request.members != null) {
            request.members.forEach( user -> applicationService.createAcl(request.appId, user));
         }*/
+    }
 
-        //return new instance
-        ApplicationInstance applicationInstance = catalogStore.findApplicationInstance(request.appId);
-        return applicationService.fetchInstance(applicationInstance, true);
+    @PostMapping("/buy/application")
+    public MyAppsInstance buyApplication(@RequestBody StoreBuyRequest request) {
+        return appstoreService.buyApplication(request.appId, request.organizationId);
+    }
+
+    @PostMapping("/buy/service/{serviceId}")
+    public Subscription buyApplication(@PathVariable String serviceId) {
+        return appstoreService.buyService(serviceId);
     }
 
     @RequestMapping(value = "/rate/{appType}/{appId}", method = RequestMethod.POST)

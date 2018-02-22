@@ -3,16 +3,14 @@ package org.oasis_eu.portal.services;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.core.model.catalog.Audience;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
-import org.oasis_eu.portal.core.model.catalog.PaymentOption;
+import org.oasis_eu.portal.core.model.catalog.*;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.store.AppstoreHit;
 import org.oasis_eu.portal.model.app.store.InstallationOption;
 import org.oasis_eu.portal.model.user.UserProfile;
@@ -66,7 +64,7 @@ public class AppstoreService {
     GeographicalAreaService geographicalAreaService;
 
     @Autowired
-    private ApplicationService appManagementService;
+    private ApplicationService applicationService;
 
     @Autowired
     private NetworkService networkService;
@@ -150,25 +148,33 @@ public class AppstoreService {
         logger.debug("Buying application {} of type {}", appId, appType);
 
         if (CatalogEntryType.APPLICATION.equals(appType)) {
-            CatalogEntry application = catalogStore.findApplication(appId);
-
-            ApplicationInstantiationRequest instanceRequest = new ApplicationInstantiationRequest();
-            instanceRequest.setProviderId(organizationId);
-            instanceRequest.setName(application.getName(RequestContextUtils.getLocale(request))); // TODO make this user-provided at some stage
-            instanceRequest.setDescription(application.getDescription(RequestContextUtils.getLocale(request)));
-
-            catalogStore.instantiate(appId, instanceRequest);
+            buyApplication(appId, organizationId);
         } else if (CatalogEntryType.SERVICE.equals(appType)) {
-
-            Subscription subscription = new Subscription();
-            subscription.setId(UUID.randomUUID().toString());
-
-            subscription.setSubscriptionType(SubscriptionType.PERSONAL);
-            subscription.setUserId(userInfoService.currentUser().getUserId());
-            subscription.setServiceId(appId);
-
-            subscriptionStore.create(userInfoService.currentUser().getUserId(), subscription);
+            buyService(appId);
         }
+    }
+
+    public MyAppsInstance buyApplication(String appId, String organizationId) {
+        CatalogEntry application = catalogStore.findApplication(appId);
+
+        ApplicationInstantiationRequest instanceRequest = new ApplicationInstantiationRequest();
+        instanceRequest.setProviderId(organizationId);
+        instanceRequest.setName(application.getName(RequestContextUtils.getLocale(request))); // TODO make this user-provided at some stage
+        instanceRequest.setDescription(application.getDescription(RequestContextUtils.getLocale(request)));
+
+        ApplicationInstance instance = catalogStore.instantiate(appId, instanceRequest);
+        return applicationService.fetchInstance(instance, true);
+    }
+
+    public Subscription buyService(String appId) {
+        Subscription subscription = new Subscription();
+        subscription.setId(UUID.randomUUID().toString());
+
+        subscription.setSubscriptionType(SubscriptionType.PERSONAL);
+        subscription.setUserId(userInfoService.currentUser().getUserId());
+        subscription.setServiceId(appId);
+
+        return subscriptionStore.create(userInfoService.currentUser().getUserId(), subscription);
     }
 
     public void updateUserInfo(String name, String lastName, String email, String street, String zip, String city, String country) {
@@ -228,7 +234,7 @@ public class AppstoreService {
                 PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         } else {
             return networkService.getMyAuthorities(true).stream()
-                .flatMap(authority -> appManagementService.getMyInstances(authority, false).stream())
+                .flatMap(authority -> applicationService.getMyInstances(authority, false).stream())
                 .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
                 ? InstallationOption.INSTALLED :
                 PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;

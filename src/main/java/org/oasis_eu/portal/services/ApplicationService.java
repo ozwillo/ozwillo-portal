@@ -28,6 +28,7 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
@@ -184,19 +185,19 @@ public class ApplicationService {
         unsubscribeUsers(existing.stream().filter(s -> !usersToSubscribe.contains(s)).collect(Collectors.toSet()), serviceId);
     }
 
-    public void subscribeUser(String userId, String serviceId) {
+    public Subscription subscribeUser(String userId, String serviceId) {
         Subscription s = new Subscription();
         s.setSubscriptionType(SubscriptionType.ORGANIZATION);
         s.setServiceId(serviceId);
         s.setUserId(userId);
 
-        subscriptionStore.create(userId, s);
+        return subscriptionStore.create(userId, s);
     }
 
-    public void subscribeUsers(Set<String> users, String serviceId) {
-        users.forEach(u -> {
-            subscribeUser(u, serviceId);
-        });
+    public List<Subscription> subscribeUsers(Set<String> users, String serviceId) {
+        return users.stream()
+            .map(u -> subscribeUser(u, serviceId))
+            .collect(Collectors.toList());
     }
 
     public void unsubscribeUser(String userId, String serviceId) {

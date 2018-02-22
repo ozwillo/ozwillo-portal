@@ -14,6 +14,11 @@ class AddInstanceDropdownHeader extends React.Component {
     constructor(props) {
         super(props);
 
+        this.state = {
+            error: '',
+            isLoading: false
+        };
+
         //bind methods
         this.onOptionChange = this.onOptionChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
@@ -25,7 +30,15 @@ class AddInstanceDropdownHeader extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.onAddInstance();
+
+        this.setState({ isLoading: true });
+
+        this.props.onAddInstance()
+            .then(() => this.setState({ error: '', isLoading: false }))
+            .catch(err => {
+                console.error(err);
+                this.setState({ error: 'An error has been occurred...', isLoading: false });
+            });
     }
 
     render() {
@@ -38,11 +51,25 @@ class AddInstanceDropdownHeader extends React.Component {
                     labelKey="name"
                     onChange={this.onOptionChange}
                     options={this.props.apps}
-                    placeholder="Applications"/>
+                    placeholder="Applications"
+                    required={true}/>
+
+                {
+                    this.state.error &&
+                    <span className="error-message">{this.state.error}</span>
+                }
 
                 <div className="options flex-row end">
-                    <button type="submit" className="btn icon">
-                        <i className="fa fa-plus option-icon"/>
+                    <button type="submit" className="btn icon" disabled={this.state.isLoading}>
+                        {
+                            !this.state.isLoading &&
+                            <i className="fa fa-plus option-icon"/>
+                        }
+
+                        {
+                            this.state.isLoading &&
+                            <i className="fa fa-spinner fa-spin option-icon"/>
+                        }
                     </button>
                 </div>
             </form>

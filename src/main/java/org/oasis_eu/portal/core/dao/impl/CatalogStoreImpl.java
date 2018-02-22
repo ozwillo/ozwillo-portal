@@ -105,7 +105,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
-    public void instantiate(String appId, ApplicationInstantiationRequest instancePattern) throws ApplicationInstanceCreationException {
+    public ApplicationInstance instantiate(String appId, ApplicationInstantiationRequest instancePattern) throws ApplicationInstanceCreationException {
         logger.info("Application instantiation request: {}", instancePattern);
 
         InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType.APPLICATION, appId, userInfoHelper.currentUser().getUserId());
@@ -113,9 +113,12 @@ public class CatalogStoreImpl implements CatalogStore {
             installedStatusRepository.delete(status);
         }
 
+        ApplicationInstance newInstance;
         try {
-            ResponseEntity<String> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST,
-                new HttpEntity<>(instancePattern), String.class, user(), appId);
+            ResponseEntity<ApplicationInstance> responseEntity = kernel.exchange(endpoint + "/instantiate/{appId}", HttpMethod.POST,
+                new HttpEntity<>(instancePattern), ApplicationInstance.class, user(), appId);
+
+            newInstance = responseEntity.getBody();
 
             // specific error handling, TODO LATER make it more consistent with generic error handling
             if (responseEntity.getStatusCode().is4xxClientError()) {
@@ -128,6 +131,7 @@ public class CatalogStoreImpl implements CatalogStore {
             throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
         }
 
+        return newInstance;
     }
 
     @Override

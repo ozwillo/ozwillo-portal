@@ -62,7 +62,7 @@ class InstanceDropdownHeader extends React.Component {
         return <header className="dropdown-header">
             <form className="form flex-row"
                   onSubmit={(isRunning && this.onRemoveInstance) ||
-                            (isStopped && this.onCancelRemoveInstance)}>
+                            (isStopped && this.onCancelRemoveInstance) || null}>
                 <span className="dropdown-name">{instance.name}</span>
                 {
                     !isStopped && !isPending && isAdmin &&

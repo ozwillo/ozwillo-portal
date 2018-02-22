@@ -12,5 +12,9 @@ export default {
         visible: 'VISIBLE',
         hidden: 'HIDDEN'
     },
-    iconMaxSize: 20480 // octets
+    iconMaxSize: 20480, // octets
+    appTypes: {
+        application: 'application',
+        service: 'service'
+    }
 };
