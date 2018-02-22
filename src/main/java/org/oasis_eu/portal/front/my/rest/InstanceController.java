@@ -29,9 +29,8 @@ public class InstanceController extends BaseController {
      * @return
      */
     @PostMapping("/{instanceId}/status")
-    public void setInstanceStatus(@RequestBody MyAppsInstance instance) {
-        applicationService.setInstanceStatus(instance);
+    public MyAppsInstance setInstanceStatus(@RequestBody MyAppsInstance instance) {
+        return applicationService.setInstanceStatus(instance);
     }
-
 
 }

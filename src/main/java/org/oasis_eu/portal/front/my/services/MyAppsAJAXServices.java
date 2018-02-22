@@ -199,10 +199,10 @@ public class MyAppsAJAXServices extends BaseController {
      * @return
      */
     @RequestMapping(value = "/set-status/{instanceId}", method = POST)
-    public String setInstanceStatus(@RequestBody @Valid MyAppsInstance instance) {
+    public void setInstanceStatus(@RequestBody @Valid MyAppsInstance instance) {
         logger.debug("Updating app instance {}", instance);
 
-        return appManagementService.setInstanceStatus(instance);
+        appManagementService.setInstanceStatus(instance);
     }
 
     public static class SaveServiceResponse {

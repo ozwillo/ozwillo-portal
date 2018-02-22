@@ -16,10 +16,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -184,7 +181,7 @@ public class CatalogStoreImpl implements CatalogStore {
     }
 
     @Override
-    public String setInstanceStatus(String instanceId, InstantiationStatus status) {
+    public ApplicationInstance setInstanceStatus(String instanceId, InstantiationStatus status) {
         logger.warn("Deleting instance {}", instanceId);
 
         ResponseEntity<ApplicationInstance> respAppInstance = kernel.exchange(appsEndpoint + "/instance/{instance_id}",
@@ -205,17 +202,9 @@ public class CatalogStoreImpl implements CatalogStore {
             appsEndpoint + "/instance/{instance_id}", instanceId);
 
         instance.setStatus(status);
-        ResponseEntity<String> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
-            new HttpEntity<>(instance, headers), String.class, user(), instanceId);
+        ResponseEntity<ApplicationInstance> resEntity = kernel.exchange(appsEndpoint + "/instance/{instance_id}", HttpMethod.POST,
+            new HttpEntity<>(instance, headers), ApplicationInstance.class, user(), instanceId);
 
-		/*  DONT CHANGE BELOW code unless updating front-end app since there is a pop up linked to this message */
-        // specific error handling, TODO LATER make it more consistent with generic error handling
-        if (resEntity.getStatusCode().is4xxClientError()) {
-            String res = resEntity.getBody();
-            if (res != null && !res.trim().isEmpty()) {
-                return res; // error message if any see #162 #163
-            }
-        }
-        return null;
+        return resEntity.getBody();
     }
 }

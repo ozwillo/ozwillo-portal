@@ -40,8 +40,8 @@ public interface CatalogStore {
      *
      * @param instanceId
      * @param status
-     * @return optional (error, warning...) message returned by Kernel
+     * @return ApplicationInstance
      */
-    String setInstanceStatus(String instanceId, InstantiationStatus status);
+    ApplicationInstance setInstanceStatus(String instanceId, InstantiationStatus status);
 
 }

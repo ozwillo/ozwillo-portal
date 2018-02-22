@@ -39,7 +39,7 @@ class InstanceDropdownHeader extends React.Component {
         this.props.onCancelRemoveInstance(this.props.instance);
     }
 
-    onClickConfigIcon(e) {
+    onClickConfigIcon() {
         this.props.onClickConfigIcon(this.props.instance);
     }
 
@@ -48,10 +48,6 @@ class InstanceDropdownHeader extends React.Component {
         const deletionDate = new Date(this.props.instance.deletion_planned).getTime();
 
         const days = Math.round((deletionDate - now ) / TIME_DAY);
-
-        if(days < 0) {
-            debugger;
-        }
 
         return days;
     }
@@ -65,7 +61,8 @@ class InstanceDropdownHeader extends React.Component {
 
         return <header className="dropdown-header">
             <form className="form flex-row"
-                  onSubmit={(isRunning && this.onRemoveInstance) || (isStopped && this.onCancelRemoveInstance) || null }>
+                  onSubmit={(isRunning && this.onRemoveInstance) ||
+                            (isStopped && this.onCancelRemoveInstance)}>
                 <span className="dropdown-name">{instance.name}</span>
                 {
                     !isStopped && !isPending && isAdmin &&

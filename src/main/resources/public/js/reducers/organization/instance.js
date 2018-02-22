@@ -32,7 +32,7 @@ export default (state = defaultState, action) => {
             nextState.services[i] = action.service;
             break;
         case FETCH_UPDATE_INSTANCE_STATUS:
-            nextState.applicationInstance = Object.assign({}, state.applicationInstance, { status: action.status });
+            nextState = Object.assign({}, state, action.instance);
             break;
         case FETCH_USERS_OF_INSTANCE:
             nextState.users = action.users;

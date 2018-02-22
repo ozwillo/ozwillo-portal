@@ -13,11 +13,11 @@ const fetchUsersOfInstanceAction = (instanceId, users) => {
     };
 };
 
-const fetchUpdateInstanceStatusAction = (instanceId, status) => {
+const fetchUpdateInstanceStatusAction = (instance) => {
     return {
         type: FETCH_UPDATE_INSTANCE_STATUS,
-        instanceId,
-        status
+        instanceId: instance.id,
+        instance
     };
 };
 
@@ -39,13 +39,13 @@ export const fetchUsersOfInstance = (instance) => {
     };
 };
 
-export const fetchUpdateInstanceStatus = ({applicationInstance}, status) => {
+export const fetchUpdateInstanceStatus = ({ applicationInstance }, status) => {
     return (dispatch) => {
         return customFetch(`/my/api/instance/${applicationInstance.id}/status`, {
             method: 'POST',
             json: { applicationInstance: { id: applicationInstance.id, status } }
-        }).then(() => {
-            return dispatch(fetchUpdateInstanceStatusAction(applicationInstance.id, status));
+        }).then(({ id, applicationInstance, deletion_planned }) => {
+            return dispatch(fetchUpdateInstanceStatusAction({ id, applicationInstance, deletion_planned }));
         });
     };
 };

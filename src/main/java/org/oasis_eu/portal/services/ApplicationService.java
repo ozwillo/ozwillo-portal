@@ -269,17 +269,16 @@ public class ApplicationService {
                 subscriptionStore.unsubscribe(user.getUserid(), service.getId(), SubscriptionType.ORGANIZATION));
     }
 
-    /**
-     * for (un)trash
-     */
-    public String setInstanceStatus(MyAppsInstance uiInstance) {
+    public MyAppsInstance setInstanceStatus(MyAppsInstance uiInstance) {
         ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());
         if (!networkService.userIsAdminOrPersonalAppInstance(existingInstance)) {
             throw new AccessDeniedException("Unauthorized access");
         }
 
         ApplicationInstance instance = uiInstance.getApplicationInstance();
-        return catalogStore.setInstanceStatus(instance.getInstanceId(), instance.getStatus());
+        ApplicationInstance instanceUpdated  = catalogStore.setInstanceStatus(instance.getInstanceId(), instance.getStatus());
+
+        return fetchInstance(instanceUpdated, false);
     }
 
 }
