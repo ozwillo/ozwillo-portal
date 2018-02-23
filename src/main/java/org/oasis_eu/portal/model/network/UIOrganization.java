@@ -2,12 +2,12 @@ package org.oasis_eu.portal.model.network;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.hibernate.validator.constraints.NotEmpty;
-import org.joda.time.Instant;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 
 import javax.validation.constraints.NotNull;
 import java.net.URI;
+import java.time.Instant;
 
 /**
  * User: schambon

@@ -1,8 +1,6 @@
 package org.oasis_eu.portal.services;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.joda.time.DateTime;
-import org.joda.time.Instant;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.model.appsmanagement.Authority;
 import org.oasis_eu.portal.model.appsmanagement.AuthorityType;
@@ -30,6 +28,9 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -119,11 +120,11 @@ public class NetworkService {
     }
 
     private Instant computeDeletionPlanned(Organization organization) {
-        DateTime possibleDeletionAskedDate = organization.getStatus() == OrganizationStatus.DELETED
-            ? new DateTime(organization.getStatusChanged()) // the user already has clicked on "delete".
-            : new DateTime(); // when the user will click on delete, the deletion planned date
+        Instant possibleDeletionAskedDate = organization.getStatus() == OrganizationStatus.DELETED
+            ? organization.getStatusChanged() // the user already has clicked on "delete".
+            : Instant.now(); // when the user will click on delete, the deletion planned date
         // will be right even without refreshing the organization first (i.e. passing again in this method).
-        return possibleDeletionAskedDate.plusDays(organizationDaysTillDeletedFromTrash).toInstant();
+        return possibleDeletionAskedDate.plus(organizationDaysTillDeletedFromTrash, ChronoUnit.DAYS);
     }
 
     public List<UIOrganizationMember> getOrganizationMembers(String organizationId) {
