@@ -61,11 +61,16 @@ export const fetchUserOrganizations = () => {
     };
 };
 
-export const fetchCreateOrganization = (organization) => {
+export const fetchCreateOrganization = (info) => {
     return dispatch => {
-        return customFetch('/my/api/organization', {
+        //Transform empty fields to null
+        Object.keys(info).forEach(key => {
+            info[key] = info[key] || null;
+        });
+
+        return customFetch('/my/api/network/create-dc-organization', {
             method: 'POST',
-            json: organization
+            json: { ...info }
         }).then((org) => {
             dispatch(fetchCreateOrganizationAction(org));
         });
@@ -74,11 +79,20 @@ export const fetchCreateOrganization = (organization) => {
 
 export const fetchUpdateOrganization = (info) => {
     return dispatch => {
+        //Transform empty fields to null
+        Object.keys(info).forEach(key => {
+            info[key] = info[key] || null;
+        });
+
         return customFetch('/my/api/organization', {
             method: 'PUT',
             json: info
         }).then((org) => {
-            org.info = info
+            //update version
+            info.version = `${parseInt(info.version, 10) + 1}`;
+
+            //update organization
+            org.info = info;
             dispatch(fetchUpdateOrganizationAction(org));
         });
     };

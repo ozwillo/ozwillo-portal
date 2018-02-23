@@ -225,7 +225,7 @@ class OrganizationForm extends React.Component {
                                 {this.context.t('my.network.organization.alt_name')}
                             </label>
                             <input name="alt_name" className="form-control field" id="alt_name" type="text"
-                                   value={organization.alt_name} onChange={this.handleInputChange}/>
+                                   value={organization.alt_name} onChange={this.handleOrganizationChange}/>
                         </div>
 
                         <div className="flex-row">
@@ -233,7 +233,7 @@ class OrganizationForm extends React.Component {
                                 {this.context.t('my.network.organization.org_type')}
                             </label>
                             <input name="org_type" className="form-control field" id="org_type" type="text"
-                                   value={organization.alt_name} onChange={this.handleInputChange}
+                                   value={organization.org_type} onChange={this.handleOrganizationChange}
                                    placeholder={this.context.t('my.network.organization.org_type.placeholder')}/>
                         </div>
 
@@ -254,7 +254,7 @@ class OrganizationForm extends React.Component {
                                 </label>
                                 <input name="tax_reg_official_id" className="form-control field"
                                        id="tax_reg_official_id" type="text"
-                                       value={organization.tax_reg_official_id} onChange={this.handleInputChange}/>
+                                       value={organization.tax_reg_official_id} onChange={this.handleOrganizationChange}/>
                             </div>
                         }
 

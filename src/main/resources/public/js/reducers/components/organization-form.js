@@ -24,6 +24,7 @@ const defaultState = {
     tax_reg_num: '',
     web_site: '',
     zip: '',
+    version: '0'
 };
 
 export default (state = defaultState, action) => {

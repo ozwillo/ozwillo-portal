@@ -132,6 +132,7 @@ public class CatalogStoreImpl implements CatalogStore {
         }
 
         return newInstance;
+
     }
 
     @Override

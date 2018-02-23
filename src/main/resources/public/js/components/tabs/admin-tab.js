@@ -112,7 +112,6 @@ const mapDispatchToProps = dispatch => {
 
 const AdminTabWithRedux = connect(mapStateToProps, mapDispatchToProps)(AdminTab);
 
-
 export {
     AdminTabHeaderWithRedux as AdminTabHeader,
     AdminTabWithRedux as AdminTab

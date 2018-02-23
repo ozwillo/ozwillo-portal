@@ -186,12 +186,12 @@ public class OrganizationService {
                     dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
                 dcResource.setVersion(Integer.parseInt(dcOrganization.getVersion()));
 
-                if (dcOrganizationService.changeDCOrganizationRights(dcResource, uiOrganization.getId())) {
+                //if (dcOrganizationService.changeDCOrganizationRights(dcResource, uiOrganization.getId())) {
                     //If rights have changed, then the version has increased in DC, so we increase it here as well.
-                    dcOrganization.setVersion(String.valueOf(Integer.parseInt(dcOrganization.getVersion()) + 1));
+                    //dcOrganization.setVersion(String.valueOf(Integer.parseInt(dcOrganization.getVersion()) + 1));
                     // now it can (by right) update an DC Organization
                     dcOrganizationService.update(dcOrganization);
-                }
+                //}
             } else { // Not updated
                 String message = String.format("Kernel Organization (%s) had been edited since you've started filling in the form.",
                     dcOrganization.getAlt_name());

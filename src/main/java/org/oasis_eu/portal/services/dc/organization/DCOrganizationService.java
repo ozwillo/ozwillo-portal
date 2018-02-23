@@ -7,13 +7,18 @@ import org.oasis_eu.portal.services.PortalSystemUserService;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.*;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +56,12 @@ public class DCOrganizationService {
     private String dcOrgSearchCountry;
     @Value("${application.dcOrgSearch.useTypeAsModel:false}")
     private boolean useTypeAsModel;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private MessageSource messageSource;
 
     public DCOrganization searchOrganization(String lang, String country_uri, String sector, String regNumber) {
 
@@ -180,27 +191,38 @@ public class DCOrganizationService {
             generateDcId(dcOrganization.getCountry_uri(), dcOrganization.getTax_reg_num());
         DCResource dcResource = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcId).getResource();
 
-        // if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
-        if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion())) { //found in DC
+
+        // if found check that version hasn't changed since filling the form (i.e. since clicking on "search")
+        if (dcResource != null && dcResource.getVersion() != Integer.parseInt(dcOrganization.getVersion())) {
+            String translatedBusinessMessage = messageSource.getMessage("my.network.organization.error.already_exist",
+                    new Object[]{}, RequestContextUtils.getLocale(request));
+            throw new WrongQueryException(translatedBusinessMessage, HttpStatus.BAD_REQUEST.value());
+        }
+
+        if (dcResource != null) { //found in DC
             logger.debug("It exists, and there are no previous updates. Merging it from form fields, and doing a datacoreClient.updateResource()");
             mergeDCOrgToDCResources(dcOrganization, dcResource);
             DCResult dcResult = datacore.updateResource(dcOrgProjectName.trim(), dcResource); // to test locally, you must change url as datacore namespace (plnm-dev-dc)
-            if (dcResult.getType() == DCResultType.FORBIDDEN) {
-                throw new ForbiddenException();
+
+            if (dcResult.getErrorMessages() != null && !dcResult.getErrorMessages().isEmpty()) {
+                dcResult.getErrorMessages().forEach(logger::info);
+                throw new WrongQueryException(HttpStatus.BAD_REQUEST.value());
             }
+
             return dcResource;
-        } else if (dcResource == null || dcResource.isNew()) {  // still doesn't exist in DC
+        } else {  // still doesn't exist in DC
             logger.debug("It doesn't exist in DC Doing a datacore.saveResource() with : {},{}", dcOrgProjectName.trim(), dcOrganization);
             DCResult newCreatedDCRes = datacore.saveResource(dcOrgProjectName.trim(), toNewDCResource(dcOrganization));
-            if (newCreatedDCRes.getResource() != null) {
-                logger.debug("Setting the new DC URI into the dcOrganization : {}", newCreatedDCRes.getResource().getUri());
-                dcOrganization.setId(newCreatedDCRes.getResource().getUri());
-                return newCreatedDCRes.getResource();
-            }
-        }
 
-        // if version has changed : "Sorry, did change while you were editing it, please copy your fields, close and restart the wizard"
-        return null;
+            if (newCreatedDCRes.getResource() == null) {
+                newCreatedDCRes.getErrorMessages().forEach(logger::info);
+                throw new WrongQueryException(HttpStatus.BAD_REQUEST.value());
+            }
+
+            logger.debug("Setting the new DC URI into the dcOrganization : {}", newCreatedDCRes.getResource().getUri());
+            dcOrganization.setId(newCreatedDCRes.getResource().getUri());
+            return newCreatedDCRes.getResource();
+        }
     }
 
     /**
@@ -354,8 +376,10 @@ public class DCOrganizationService {
 
         dcResource.setBaseUri(dcBaseUri.trim());
         dcResource.setType(orgModelType);
-        dcResource.setIri(cx.toUpperCase() // country acronym has no characters requiring encoding
+        // country acronym has no characters requiring encoding
+        dcResource.setIri(cx.toUpperCase()
             + "/" + DCResource.encodeUriPathSegment(regNumber));
+
         return dcResource;
     }
 

@@ -295,7 +295,12 @@ var Tab1 = createClass({
 
         this.setState({ organization: organization });
     },
-    handleCityChange: function(city) {
+    onChangeCity: function(e) {
+        var organization = this.state.organization;
+        organization.city = e.currentTarget.value;
+        this.setState({ organization: organization });
+    },
+    onSelectCity: function(city) {
         var organization = this.state.organization;
         organization.city_uri = city.uri;
         organization.city = city.name;
@@ -389,8 +394,9 @@ var Tab1 = createClass({
                                     <GeoAreaAutosuggest name="city"
                                         countryUri={country_uri}
                                         endpoint="/dc-cities"
-                                        onChange={this.handleCityChange}
-                                        initialValue={this.state.organization.city} />
+                                        onChange={this.onChangeCity}
+                                        onGeoAreaSelected={this.onSelectCity}
+                                        value={this.state.organization.city} />
                                 </Field>
                                 <Field name="zip" divClassName='col-sm-2' error={$.inArray("zip", this.state.errors) != -1} isRequired={true}>
                                     <input className="form-control" ref="zip" id="zip" type="text" maxLength={6}
@@ -532,10 +538,11 @@ var Tab2 = createClass({
         if (this.state.organization.sector_type === 'PUBLIC_BODY') {
             return (
                 <Field name="jurisdiction" error={$.inArray("jurisdiction", this.props.errors) != -1} isRequired={true}>
-                    <GeoAreaAutosuggest countryUri={this.props.organization.country_uri}
+                    <GeoAreaAutosuggest name="jurisdiction"
+                                     countryUri={this.props.organization.country_uri}
                                      endpoint="/geographicalAreas"
                                      onChange={this.handleJurisdictionChange}
-                                     initialValue={this.state.organization.jurisdiction} />
+                                     value={this.state.organization.jurisdiction} />
                 </Field>
 
             )
