@@ -31,7 +31,7 @@ import java.util.Date;
 import java.util.Locale;
 
 @RestController
-@RequestMapping("/my/api/contact")
+@RequestMapping("/api/contact")
 public class ContactAJAXServices extends BaseAJAXServices {
 
     private static final Logger logger = LoggerFactory.getLogger(ContactAJAXServices.class);
