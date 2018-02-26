@@ -52,7 +52,7 @@ class MyNav extends React.Component {
                         </li>
                         <li className="menu">
                             <Link className="link" to="/my/organization">
-                                <i className="fa fa-window-maximize icon" alt={this.context.t('my.apps')}/>
+                                <i className="fa fa-building icon" alt={this.context.t('my.apps')}/>
                                 <span>{'Organization'}</span>
                             </Link>
                         </li>

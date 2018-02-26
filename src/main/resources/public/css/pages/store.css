@@ -1,5 +1,13 @@
 #store {
     padding-bottom: 0 !important;
+    height: auto;
+}
+
+#store .title {
+    color: var(--purple-color);
+    font-weight: bold !important;
+    text-align: center;
+    font-size: 2em;
 }
 
 #store-search {
@@ -10,17 +18,18 @@
     font-weight: 300;
 }
 
+
+#store-search .right .form-group label {
+    width: auto;
+}
+
 #store-search .control-label {
     color: var(--dark-purple-color);
 }
 
-#store-apps {
-    background-color: var(--white-color);
-}
-
 #store-apps .app {
-    margin-bottom: 92px;
-    margin-top: 25px;
+    position:relative;
+    padding-top: calc(25px + (64px / 2)); /* padding top + (image width / 2)  */
     overflow: visible;
     cursor: pointer;
 }
@@ -28,15 +37,14 @@
 #store-apps .logo {
     display: flex;
     position: absolute;
-    top: 25px;
-    z-index: 99;
-    width: 164px !important;
-    height: 164px !important;
-    margin-left: -82px;
-    left: 50%;
+    top: calc((64px / 2) - 25px); /* (image size / 2)  - padding top */
+    z-index: 1;
     background-color: var(--white-color);
-    border: solid 1px var(--light-2-gray-color);
+    border: solid 1px var(--gray-color);
     border-radius: 100%;
+    left: calc(50% - (64px / 2) - 25px); /* (width / 2) - (image width / 2) - padding left */
+    padding: 25px;
+    box-shadow: 0px 0px 3px 1px rgba(0, 0, 0, 0.3);
 }
 
 #store-apps .logo img {
@@ -46,12 +54,12 @@
 }
 
 #store-apps .app .description {
+    background-color: var(--white-color);
     border: 1px solid var(--light-2-gray-color);
     display: block;
-    top: 82px;
     position: relative;
     border-radius: 5px;
-    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2)
 }
 
 #store-apps .app .description .app-header {

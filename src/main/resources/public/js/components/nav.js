@@ -60,19 +60,19 @@ class Nav extends React.Component {
                     <ul className="nav navbar-nav navbar-right">
                         <li className="menu">
                             <a className="link" href={`/${this.props.language}/store`}>
-                                <img className="icon" src="/img/store-icon-white.png" alt="Apps store icon"/>
+                                <i className="fa fa-shopping-cart icon" alt="Apps store icon"/>
                                 <span>{this.context.t('ui.appstore')}</span>
                             </a>
                         </li>
                         <li className="menu">
                             <a className="link" href={`${this.props.opendatEndPoint}/${this.props.language}`}>
-                                <img className="icon" src="/img/data-icon-white.png" alt="Data icon"/>
+                                <i className="fa fa-signal icon" alt="Data icon"/>
                                 <span>{this.context.t('ui.datastore')}</span>
                             </a>
                         </li>
                         <li className="menu">
                             <a className="link" href={`/${this.props.language}/store/login`}>
-                                <img className="icon" src="/img/login-icon-purple.png" alt="Login icon"/>
+                                <i className="fa fa-sign-in icon" alt="Login icon"/>
                                 <span>{this.context.t('ui.login')}</span>
                             </a>
                         </li>

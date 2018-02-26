@@ -2,7 +2,11 @@
 
 .service-icon {
     text-align: center;
-    min-width: 130px;
+}
+
+.service-icon .icon {
+    width: 64px;
+    height: 64px;
 }
 
 .service-icon .name {

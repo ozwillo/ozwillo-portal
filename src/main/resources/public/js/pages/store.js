@@ -142,7 +142,7 @@ var AppStore = createClass({
         languagesAndAll.unshift('all');
 
         return (
-            <div>
+            <section id="store">
                 <SearchAppsForm ref="searchAppsForm"
                                 languages={languagesAndAll}
                                 updateApps={this.updateApps}
@@ -153,10 +153,14 @@ var AppStore = createClass({
                     loading={this.state.loading}
                     maybeMoreApps={this.state.maybeMoreApps}
                     loadMoreApps={this.loadMoreApps}/>
-            </div>
+            </section>
         );
     }
 });
+AppStore.contextTypes = {
+    t: PropTypes.func.isRequired
+};
+
 const mapStateToProps = state => {
     return {
         config: state.config
@@ -187,7 +191,10 @@ var SearchAppsForm = createClass({
         );
 
         return (
-            <div className="container">
+            <section className="box">
+                <header className="text-center">
+                    <span className="title" >{this.context.t('ui.appstore')}</span>
+                </header>
 
                 <div className="row form-horizontal" id="store-search">
                     <div className="col-md-6">
@@ -229,7 +236,7 @@ var SearchAppsForm = createClass({
                             </div>
                         </div>
                     </div>
-                    <div className="col-md-6">
+                    <div className="col-md-6 right">
                         <div className="form-group">
                             <label htmlFor="fulltext" className="col-sm-4 control-label">{this.context.t('keywords')}</label>
 
@@ -268,7 +275,7 @@ var SearchAppsForm = createClass({
                         </div>
                     </div>
                 </div>
-            </div>
+            </section>
         );
     }
 });
@@ -363,10 +370,10 @@ var App = createClass({
         return (
             <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12">
                 <AppModal ref="appmodal" app={this.props.app}/>
-                <div className="logo">
-                    <img src={this.props.app.icon} />
-                </div>
                 <div className="app">
+                    <div className="logo">
+                        <img src={this.props.app.icon} />
+                    </div>
                     <div className="description" onClick={this.openApp}>
                         {pubServiceIndicator}
                         <div className="app-header">
@@ -421,28 +428,11 @@ Indicator.contextTypes = {
 };
 
 class AppStoreWrapper extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
     render() {
-        return <div className="oz-body page-row page-row-expanded">
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            <img src="/img/store-lg.png" />
-                            <span className="title">{this.context.t('ui.appstore')}</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
-
-            <div className="oz-body-content" id="store">
+        return <div className="oz-body wrapper page-row page-row-expanded">
+            <div className="oz-body-content">
                 <AppStoreWithRedux/>
             </div>
-
             <div className="push"/>
         </div>;
     }
