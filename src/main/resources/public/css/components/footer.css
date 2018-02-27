@@ -66,9 +66,55 @@
 }
 
 
-@media (max-width: 768px) {
+
+@media (max-width: 425px) {
+
+    .oz-footer > .flex-row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .oz-footer .logo {
+        margin: 20px 0;
+    }
+
+    .oz-footer .logo > .image {
+        max-height: initial;
+        margin: auto;
+    }
+
+    .oz-footer .twitter {
+        font-size: 1.5em !important;
+        padding: 6px;
+    }
+
+    .oz-footer .image {
+        max-height: 32px;
+    }
+
+    .oz-footer .outer-links {
+        flex-wrap: wrap;
+        margin: 10px 0;
+    }
+
+    .oz-footer .outer-links-list {
+        width: 50%;
+        margin: 0;
+    }
+
     .oz-footer .link {
-        font-size: 1em;
-        line-height: 25px;
+        text-align: center;
+    }
+
+    .oz-footer .partners,
+    .oz-footer .social-network {
+        width: auto;
+    }
+}
+
+
+@media (max-width: 425px) {
+    .oz-footer .outer-links {
+        display: none;
     }
 }

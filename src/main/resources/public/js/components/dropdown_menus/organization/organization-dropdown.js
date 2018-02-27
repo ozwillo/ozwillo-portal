@@ -47,7 +47,7 @@ class OrganizationDropdown extends React.Component {
                     {
                         org.admin &&
                         [
-                            <div key={`sep-${org.id}`} className="vertical-sep"/>,
+                            <div key={`sep-${org.id}`} className="sep"/>,
                             <section key={`invitation-${org.id}`} className="invitation">
                                 <OrganizationInvitationForm organization={org}/>
                             </section>

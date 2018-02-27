@@ -196,19 +196,21 @@ class OrganizationForm extends React.Component {
                                 {this.context.t('search.organization.sector-type')} *
                             </label>
 
-                            <label className="radio-inline field">
-                                <input type="radio" name="sector_type" value="PUBLIC_BODY" required={true}
-                                       disabled={this.props.static} onChange={this.handleOrganizationChange}
-                                       checked={isPublic}/>
-                                {this.context.t('search.organization.sector-type.PUBLIC_BODY')}
-                            </label>
+                            <div className="align-radio">
+                                <label className="radio-inline field">
+                                    <input type="radio" name="sector_type" value="PUBLIC_BODY" required={true}
+                                           disabled={this.props.static} onChange={this.handleOrganizationChange}
+                                           checked={isPublic}/>
+                                    {this.context.t('search.organization.sector-type.PUBLIC_BODY')}
+                                </label>
 
-                            <label className="radio-inline field">
-                                <input type="radio" name="sector_type" value="COMPANY"
-                                       disabled={this.props.static} onChange={this.handleOrganizationChange}
-                                       checked={isPrivate}/>
-                                {this.context.t('search.organization.sector-type.COMPANY')}
-                            </label>
+                                <label className="radio-inline field">
+                                    <input type="radio" name="sector_type" value="COMPANY"
+                                           disabled={this.props.static} onChange={this.handleOrganizationChange}
+                                           checked={isPrivate}/>
+                                    {this.context.t('search.organization.sector-type.COMPANY')}
+                                </label>
+                            </div>
                         </div>
 
                         <div className="flex-row">

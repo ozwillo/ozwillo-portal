@@ -56,3 +56,10 @@
     font-size: 0.9em;
 }
 
+
+@media (max-width: 425px) {
+    .organization-invitation-form .field {
+        width: auto;
+    }
+}
+

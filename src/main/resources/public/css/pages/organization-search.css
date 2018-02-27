@@ -42,3 +42,9 @@
     font-size: 2.4em;
     color: white;
 }
+
+@media (max-width: 425px) {
+    .organization-search .options {
+        margin: 5px 0;
+    }
+}

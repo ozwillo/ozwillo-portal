@@ -25,4 +25,5 @@
     min-width: 200px;
     font-size: 1.2em;
     margin: 5px auto;
+    white-space: normal;
 }

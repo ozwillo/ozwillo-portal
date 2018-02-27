@@ -45,3 +45,18 @@
     display: flex;
     flex-direction: column;
 }
+
+
+@media (max-width: 425px) {
+    .synchronize-fc-profile > form .row .title {
+        display: none;
+    }
+
+    .synchronize-fc-profile > form .row {
+        flex-wrap: wrap;
+    }
+
+    .synchronize-fc-profile > form .row .item {
+        margin: 10px 0;
+    }
+}

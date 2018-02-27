@@ -54,7 +54,7 @@ class OrganizationInvitationForm extends React.Component {
 
     render() {
         return <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
-            <fieldset className="flew-col">
+            <fieldset className="flex-col">
                 <legend className="legend">Invite a new collaborator</legend>
                 <div className="flex-row">
                     <label className="label">

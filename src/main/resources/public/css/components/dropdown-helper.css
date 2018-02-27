@@ -33,6 +33,7 @@
 }
 
 .dropdown-header,
+
 .dropdown-header .link {
     font-size: 1.1em;
     color: var(--white-color) !important;
@@ -81,7 +82,7 @@
     padding-right: 0;
 }
 
-.dropdown-content .vertical-sep {
+.dropdown-content .sep {
     min-width: 1px;
     height: auto;
     margin: 0 10px;
@@ -140,4 +141,40 @@
 
 .dropdown-header .btn.icon:hover {
     background-color: var(--dark-purple-color);
+}
+
+
+@media (max-width: 425px) {
+    .organization-search .options {
+        margin: 5px 0;
+    }
+
+    .dropdown-content {
+        flex-wrap: wrap;
+    }
+
+    .dropdown-content .sep {
+        width: 100%;
+        height: 1px;
+        margin: 10px 0;
+    }
+
+    .dropdown-header .option-icon,
+    .dropdown-content .option-icon ,
+    .dropdown-footer .option-icon {
+        font-size: 1.2em;
+    }
+
+    .dropdown-header,
+    .dropdown-header .link {
+        font-size: 1em;
+    }
+
+    .dropdown-header .message {
+        display: none;
+    }
+
+    .dropdown-header .form .dropdown-name {
+        min-width: ;
+    }
 }

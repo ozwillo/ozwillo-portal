@@ -25,3 +25,11 @@
 .instances-tab .service {
     color: var(--purple-color);
 }
+
+@media (max-width: 425px) {
+    .instances-tab .oz-table .option-icon {
+        font-size: 1.6em;
+        padding: 8px 0;
+    }
+}
+

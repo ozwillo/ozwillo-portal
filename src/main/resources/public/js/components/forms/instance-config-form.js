@@ -137,7 +137,7 @@ class InstanceConfigForm extends React.Component {
                         <div className="flex-row">
                             <label htmlFor="iconUrl" className="label">Icon</label>
 
-                            <div className="flew-row field icon">
+                            <div className="flex-row field icon">
                                 <img src={this.state.iconUrl} />
                                 <input type="text" name="iconUrl" id="iconUrl" className="form-control"
                                        value={this.state.iconUrl} onChange={this.handleChange} required={true} />

@@ -67,6 +67,12 @@
             4px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
+@media (max-width: 425px) {
+    .tabs .tab-content {
+        padding: 0 10px;
+    }
+}
+
 
 
 

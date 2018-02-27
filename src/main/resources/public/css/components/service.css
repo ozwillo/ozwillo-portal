@@ -13,3 +13,10 @@
     color: var(--dark-purple-color);
     margin: 0;
 }
+
+@media (max-width: 425px) {
+    .service-icon .icon {
+        width: 42px;
+        height: 42px;
+    }
+}

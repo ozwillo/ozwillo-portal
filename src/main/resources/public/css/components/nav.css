@@ -1,9 +1,14 @@
 #oz-nav {
     width: 100%;
-    margin: auto 0 !important;
+    margin: 0 !important;
     background: var(--light-3-gray-color);
     border-bottom: solid 2px var(--purple-color);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
+    min-height: auto;
+}
+
+#oz-nav .navbar-nav {
+    margin: 0 -15px
 }
 
 #oz-nav .navbar-nav > .menu > .link > .icon {
@@ -15,7 +20,7 @@
     display: flex;
     height: 46px;
     border-top: solid 2px transparent;
-    margin: auto 10px 2px 10px;
+    margin: auto 10px 0px 10px;
 }
 
 #oz-nav .navbar-nav > .menu:hover {
@@ -35,6 +40,8 @@
     padding: 0;
     margin: auto;
     align-items: center;
+    width: 100%;
+    height: 100%;
 }
 
 #oz-nav .navbar-nav .menu-icon {
@@ -76,6 +83,20 @@
 @media (min-width: 768px) {
     #oz-nav.navbar {
         border-radius: 0;
+    }
+}
+
+@media (max-width: 767px) {
+    #oz-nav .navbar-nav > .menu {
+        border-top: none;
+    }
+
+    #oz-nav .navbar-nav > .menu:hover {
+        background-color: var(--purple-color);
+    }
+
+    #oz-nav .navbar-nav > .menu:hover .link {
+        color: var(--white-color);
     }
 }
 

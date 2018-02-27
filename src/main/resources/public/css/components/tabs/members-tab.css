@@ -40,3 +40,10 @@
 .members-tab .select {
     min-width: 250px;
 }
+
+@media (max-width: 425px) {
+    .members-tab .select {
+        min-width: auto;
+        width: 100%;
+    }
+}

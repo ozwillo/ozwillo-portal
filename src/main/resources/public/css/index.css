@@ -185,3 +185,18 @@ label.required {
 .loading {
     color: var(--purple-color);
 }
+
+/* tablet */
+@media (max-width: 768px) {
+    .oz-body.wrapper {
+        padding: 20px 50px;
+    }
+}
+
+/* phone */
+@media (max-width: 425px) {
+    .oz-body.wrapper {
+        padding: 0px;
+    }
+}
+

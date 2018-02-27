@@ -67,7 +67,21 @@
 @media (max-width: 425px) {
 
     .oz-header {
-        height: 120px;
+        flex-direction: column !important;
+        margin: 20px 0;
+    }
+
+    .my-oasis {
+        width: 100%;
+        position: initial;
+    }
+
+    .oz-header .logo-home {
+        margin: 0 auto;
+    }
+
+    .oz-header .welcome {
+        font-size: 1em;
     }
 
     .oz-header .logo-container {
@@ -86,4 +100,10 @@
     .oz-header .user-container p {
         margin: 0;
     }
+
+    .oz-header .welcome {
+        margin: 8px 0;
+    }
+
+
 }

@@ -76,7 +76,7 @@
 }
 
 .dropdown-content .apps .app {
-    margin: 0 2px;
+    margin: 0 4px;
 }
 
 .dropdown-content .apps .app .launcher .name {
@@ -96,3 +96,13 @@
     font-size: 0.9em;
 }
 
+@media (max-width: 425px) {
+    .dropdown-content .invitation .organization-invitation-form .label,
+    .dropdown-content .invitation {
+        width: 100%;
+    }
+
+    .dropdown-header {
+        padding: 0 !important;
+    }
+}

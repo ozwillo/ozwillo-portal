@@ -27,9 +27,15 @@
     color: var(--black-color);
 }
 
+.oz-form input[type="radio"],
+.oz-form input[type="checkbox"] {
+    margin: 0 0 0 -20px;
+}
+
 .oz-form .flex-row  .field.radio-inline,
 .oz-form .flex-row .field[type="checkbox"] {
     width: auto;
+    margin: 4px 10px;
 }
 
 .oz-form .flex-row .label,
@@ -49,4 +55,35 @@
     font-size: 1.2em;
     padding: 5px 50px;
     margin: 20px auto;
+}
+
+/* phone */
+@media (max-width: 425px) {
+    .oz-form .oz-fieldset .flex-row {
+        flex-wrap: wrap;
+    }
+
+    .oz-form .flex-row .label {
+        text-align: left;
+        padding: 0.2em 0;
+    }
+
+    .oz-form .flex-row span.field {
+        text-align: center;
+    }
+
+    .oz-form .oz-fieldset .flex-row {
+        margin: 20px;
+    }
+
+    .oz-form .align-radio {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        width: 100%;
+    }
+
+    .oz-form. .oz-form .align-radio .field[type="checkbox"] {
+        width: 100%;
+    }
 }

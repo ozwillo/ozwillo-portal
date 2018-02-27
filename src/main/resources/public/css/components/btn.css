@@ -10,7 +10,7 @@ a.btn { text-decoration: none; }
     background-image: none;
     border: 1px solid transparent;
     border-radius: 0;
-    white-space: nowrap;
+    white-space: normal;
     padding: 6px 12px;
     font-size: 14px;
     line-height: 1.42857;
