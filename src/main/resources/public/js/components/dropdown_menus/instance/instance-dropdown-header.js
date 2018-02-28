@@ -64,34 +64,42 @@ class InstanceDropdownHeader extends React.Component {
                   onSubmit={(isRunning && this.onRemoveInstance) ||
                             (isStopped && this.onCancelRemoveInstance) || null}>
                 <span className="dropdown-name">{instance.name}</span>
-                {
-                    !isStopped && !isPending && isAdmin &&
-                    <div className="options flex-row end">
-                        <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
-                            <i className="fa fa-cog option-icon"/>
-                        </button>
-                        <button type="submit" className="btn icon">
-                            <i className="fa fa-trash option-icon"/>
-                        </button>
-                    </div>
-                }
 
-                {
-                    isPending &&
-                    <div className="options flex-row end">
+                <div className="options flex-row end">
+
+
+
+                    {
+                        !isStopped && !isPending && isAdmin &&
+
+                            <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
+                                <i className="fa fa-cog option-icon"/>
+                            </button>
+
+
+                    }
+
+                    {
+                        isPending &&
                         <button type="button" className="btn icon">
                             <i className="fa fa-stopwatch option-icon loading"/>
                         </button>
-                    </div>
-                }
+                    }
 
-                {
-                    isStopped &&
-                    <div className="options flex-row end">
-                        <span className="message delete">Will be deleted in {this.numberOfDaysBeforeDeletion} days</span>
-                        <button type="submit" className="btn oz-btn-danger">Cancel</button>
-                    </div>
-                }
+                    <button type="submit" className={`btn icon ${(isStopped || isPending || !isAdmin) ? 'invisible' : ''}`}>
+                        <i className="fa fa-trash option-icon"/>
+                    </button>
+
+                    {
+                        isStopped &&
+                        [
+                            <span className="message delete">
+                                Will be deleted in {this.numberOfDaysBeforeDeletion} days
+                            </span>,
+                            <button type="submit" className="btn oz-btn-danger">Cancel</button>
+                        ]
+                    }
+                </div>
             </form>
         </header>;
     }

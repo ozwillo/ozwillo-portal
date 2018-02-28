@@ -27,17 +27,21 @@ class FranceConnectForm extends React.Component {
 
             {
                 userProfile.franceconnect_sub && userProfile.email_verified &&
-               <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-submit">
-                   {this.context.t("franceconnect.form.desynchronize")}
-               </a>
+                <div className="text-center">
+                   <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-submit">
+                       {this.context.t("franceconnect.form.desynchronize")}
+                   </a>
+                </div>
 
             }
 
             {
                 userProfile.franceconnect_sub && !userProfile.email_verified &&
-                <a href={this.props.passwordChangeEndpoint} className="btn btn-submit">
-                    {this.context.t("franceconnect.form.desynchronize-without-pwd")}
-                </a>
+                <div className="text-center">
+                    <a href={this.props.passwordChangeEndpoint} className="btn btn-submit">
+                        {this.context.t("franceconnect.form.desynchronize-without-pwd")}
+                    </a>
+                </div>
             }
 
             {

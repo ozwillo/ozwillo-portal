@@ -45,7 +45,7 @@ class MemberDropdownHeader extends React.Component {
                 <div className="options flex-row end">
 
                     {
-                        member.admin &&
+                        member.admin && !isPending &&
                         <button type="button" className="btn icon" onClick={this.memberRoleToggle}>
                             <i className="fa fa-chess-king option-icon"/>
                         </button>
@@ -58,19 +58,17 @@ class MemberDropdownHeader extends React.Component {
                         </button>
                     }
 
-
                     {
                         isPending &&
                         <button type="button" className="btn icon">
                             <i className="fa fa-stopwatch option-icon loading"/>
                         </button>
                     }
-                    {
-                        !isPending &&
-                        <button type="button" className="btn icon" onClick={this.onRemoveMemberInOrganization}>
-                            <i className="fa fa-trash option-icon"/>
-                        </button>
-                    }
+
+                    <button type="button" className={`btn icon ${isPending && 'invisible' || ''}`}
+                            onClick={!isPending && this.memberRoleToggle || null}>
+                        <i className="fa fa-trash option-icon"/>
+                    </button>
                 </div>
             </form>
         </header>;
