@@ -79,7 +79,9 @@ class InstanceDropdownHeader extends React.Component {
                 {
                     isPending &&
                     <div className="options flex-row end">
-                        <i className="fa fa-hourglass-end option-icon loading"/>
+                        <button type="button" className="btn icon">
+                            <i className="fa fa-stopwatch option-icon loading"/>
+                        </button>
                     </div>
                 }
 

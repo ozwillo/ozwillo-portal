@@ -47,7 +47,7 @@ class MemberDropdownHeader extends React.Component {
                     {
                         member.admin &&
                         <button type="button" className="btn icon" onClick={this.memberRoleToggle}>
-                            <i className="fa fa-superpowers option-icon"/>
+                            <i className="fa fa-chess-king option-icon"/>
                         </button>
                     }
 
@@ -62,7 +62,7 @@ class MemberDropdownHeader extends React.Component {
                     {
                         isPending &&
                         <button type="button" className="btn icon">
-                            <i className="fa fa-hourglass-end option-icon loading"/>
+                            <i className="fa fa-stopwatch option-icon loading"/>
                         </button>
                     }
                     {
