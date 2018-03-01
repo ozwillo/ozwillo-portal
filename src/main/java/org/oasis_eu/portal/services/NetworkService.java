@@ -300,18 +300,25 @@ public class NetworkService {
         userMembershipService.updateMembership(orgMembership.get(), admin, organizationId);
     }
 
-    public String setOrganizationStatus(UIOrganization uiOrganization) {
+    public UIOrganization setOrganizationStatus(UIOrganization uiOrganization) {
         Organization org = organizationStore.find(uiOrganization.getId());
-
         if (!userIsAdmin(org.getId())) {
             throw new ForbiddenException();
         }
 
         boolean statusHasChanged = uiOrganization.getStatus() == null || org.getStatus() == null || !(uiOrganization.getStatus().equals(org.getStatus()));
-        if (statusHasChanged) {
-            return organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
+        if (!statusHasChanged) {
+            return uiOrganization;
         }
-        return null;
+
+        /*
+            TODO: Modify OrganizationStore.setStatus to return an Organization Object
+            see: https://github.com/ozwillo/ozwillo-kernel/blob/c7923c089da49a1a25a502b3ce96e1bc4ab023f8/oasis-webapp/src/main/java/oasis/web/userdirectory/OrganizationEndpoint.java
+
+            TODO: return Organization from response of OrganizationStore.setStatus
+         */
+        organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
+        return uiOrganization;
     }
 
     /**

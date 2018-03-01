@@ -24,6 +24,7 @@ const defaultState = {
     tax_reg_num: '',
     web_site: '',
     zip: '',
+    alt_name: '',
     version: '0'
 };
 

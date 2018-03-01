@@ -1,6 +1,7 @@
 'use strict';
 
 import React from 'react';
+import { connect } from 'react-redux';
 import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
 import PropTypes from 'prop-types';
@@ -123,7 +124,7 @@ var OrganizationsList = createClass({
                 <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}</p>
         } else {
             var orgs = this.state.organizations.map(org =>
-                <Organization key={org.id} org={org}
+                <OrganizationWithRedux key={org.id} org={org}
                               reload={this.loadOrganizations}
                               updateOrganization={this.updateOrganization} />
             );
@@ -327,7 +328,7 @@ var Organization = createClass({
         );
 
         if (this.props.org.status === 'DELETED') {
-            moment.locale(currentLanguage);
+            moment.locale(this.props.language);
             var byDeleteRequesterOnDate = this.context.t('my.network.by') + " " + this.props.org.status_change_requester_label
                 + " (" + moment(this.props.org.status_changed) + ")";
             buttons.push(
@@ -431,13 +432,21 @@ Organization.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
+const mapDispatchToProps = state => {
+    return {
+        language: state.config.language
+    };
+};
+
+const OrganizationWithRedux = connect(mapDispatchToProps)(Organization);
+
 const PendingMembership = ({pMember, removeInvitation}, context) =>
     <div className="row organization-pending-member-row">
         <div className="col-sm-3">{pMember.email}</div>
         <div className="col-sm-3">{context.t('my.network.organization.pending-invitation') }</div>
         <div className="col-sm-6">
             <span className="pull-right action-icon" onClick={() => removeInvitation(pMember)}>
-                <i className="fa fa-trash"></i>
+                <i className="fa fa-trash" />
             </span>
         </div>
     </div>;

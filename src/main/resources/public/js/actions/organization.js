@@ -5,6 +5,7 @@ export const FETCH_USER_ORGANIZATIONS = 'FETCH_USER_ORGANIZATIONS';
 export const FETCH_CREATE_ORGANIZATION = 'FETCH_CREATE_ORGANIZATION';
 export const FETCH_UPDATE_ORGANIZATION = 'FETCH_UPDATE_ORGANIZATION';
 export const FETCH_ORGANIZATION_INFO = 'FETCH_ORGANIZATION_INFO';
+export const FETCH_UPDATE_STATUS_ORGANIZATION = 'FETCH_UPDATE_STATUS_ORGANIZATION';
 
 // Actions
 const fetchOrganizationWithIdAction = (organization) => {
@@ -39,6 +40,13 @@ const fetchOrganizationInfoAction = (info) => {
     return {
         type: FETCH_ORGANIZATION_INFO,
         info
+    };
+};
+
+const fetchUpdateStatusOrganizationAction = (organization) => {
+    return {
+        type: FETCH_UPDATE_STATUS_ORGANIZATION,
+        organization
     };
 };
 
@@ -104,5 +112,16 @@ export const fetchOrganizationInfo = (dcId) => {
             .then((info) => {
                 return dispatch(fetchOrganizationInfoAction(info));
             });
+    };
+};
+
+export const fetchUpdateStatusOrganization = (organization) => {
+    return dispatch => {
+        return customFetch(`/my/api/organization/${organization.id}/status`, {
+            method: 'PUT',
+            json: organization
+        }).then(({ id, status }) => {
+            return dispatch(fetchUpdateStatusOrganizationAction({ id, status }));
+        });
     };
 };

@@ -3,7 +3,8 @@ import {
     FETCH_ORGANIZATION_WITH_ID,
     FETCH_CREATE_ORGANIZATION,
     FETCH_UPDATE_ORGANIZATION,
-    FETCH_ORGANIZATION_INFO
+    FETCH_ORGANIZATION_INFO,
+    FETCH_UPDATE_STATUS_ORGANIZATION
 } from '../../actions/organization';
 
 import {
@@ -130,6 +131,17 @@ const currentOrganizationState = (state = {}, action) => {
 const organizationsState = (state = [], action ) => {
     let nextState = Object.assign([], state);
     switch(action.type) {
+        case FETCH_UPDATE_STATUS_ORGANIZATION:
+            const i = nextState.findIndex((org) => {
+                return org.id === action.organization.id;
+            });
+
+            if (i < 0) {
+                return state;
+            }
+
+            nextState[i] = Object.assign({}, nextState[i], action.organization);
+            break;
         case FETCH_USER_ORGANIZATIONS:
             nextState = action.organizations;
             break;
@@ -148,6 +160,7 @@ export default (state = defaultState, action) => {
     switch(action.type) {
         case FETCH_USER_ORGANIZATIONS:
         case FETCH_CREATE_ORGANIZATION:
+        case FETCH_UPDATE_STATUS_ORGANIZATION:
             nextState.organizations = organizationsState(nextState.organizations, action);
             break;
         case FETCH_DELETE_MEMBER:

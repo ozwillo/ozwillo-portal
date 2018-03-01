@@ -16,5 +16,9 @@ export default {
     appTypes: {
         application: 'application',
         service: 'service'
+    },
+    organizationStatus: {
+        available: 'AVAILABLE',
+        deleted: 'DELETED'
     }
 };

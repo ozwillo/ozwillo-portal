@@ -170,10 +170,10 @@ public class NetworkAJAXServices extends BaseController {
     }
 
     @RequestMapping(value = "/organization/{organizationId}/set-status", method = POST)
-    public String setOrganizationStatus(@RequestBody @Valid UIOrganization organization, Errors errors) {
+    public void setOrganizationStatus(@RequestBody @Valid UIOrganization organization, Errors errors) {
         logger.debug("Updating organization {}", organization);
 
-        return networkService.setOrganizationStatus(organization);
+        networkService.setOrganizationStatus(organization);
     }
 
     @RequestMapping(value = "/organization/{organizationId}/members", method = GET)
