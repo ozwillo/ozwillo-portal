@@ -166,7 +166,8 @@ public class NetworkService {
     }
 
     private Instant computeDeletionPlanned(Organization organization) {
-        Instant possibleDeletionAskedDate = organization.getStatus() == OrganizationStatus.DELETED
+        Instant possibleDeletionAskedDate =
+                organization.getStatus() == OrganizationStatus.DELETED && organization.getStatusChanged() != null
             ? organization.getStatusChanged() // the user already has clicked on "delete".
             : Instant.now(); // when the user will click on delete, the deletion planned date
         // will be right even without refreshing the organization first (i.e. passing again in this method).
@@ -318,7 +319,8 @@ public class NetworkService {
             TODO: return Organization from response of OrganizationStore.setStatus
          */
         organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
-        return uiOrganization;
+        org.setStatus(uiOrganization.getStatus());
+        return fillUIOrganization(org);
     }
 
     /**
