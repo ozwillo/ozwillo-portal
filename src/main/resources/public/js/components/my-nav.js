@@ -72,7 +72,7 @@ class MyNav extends React.Component {
                         </li>
                         <li className="menu">
                             <a className="link" href="/logout">
-                                <i className="fa fa-sign-out icon" alt="Logout icon"/>
+                                <i className="fas fa-sign-out-alt icon" alt="Logout icon"/>
                                 <span>{this.context.t('ui.logout')}</span>
                             </a>
                         </li>

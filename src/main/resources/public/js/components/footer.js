@@ -30,7 +30,7 @@ class Footer extends React.Component {
             <div className="flex-row">
                 <section className="social-network">
                     <a href="https://twitter.com/ozwillo">
-                        <i className="fa fa-twitter image twitter" />
+                        <i className="fab fa-twitter image twitter" />
                     </a>
                 </section>
                 <section className="partners flex-row end">
