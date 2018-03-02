@@ -49,7 +49,7 @@ InputText.propTypes = {
 
 const SubmitButton = ({ label, className }) =>
     <div className="flex-row">
-        <button type="submit" className={`submit btn ${className || ''}`}>{label}</button>
+        <button type="submit" className={`submit btn-submit ${className || ''}`}>{label}</button>
     </div>
 
 SubmitButton.propTypes = {

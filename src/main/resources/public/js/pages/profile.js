@@ -326,12 +326,14 @@ class PasswordAccount extends React.Component {
                     {this.context.t('my.profile.account.password')}
                 </header>
 
-                <a className="change-password" href={this.props.passwordChangeEndpoint}>
-                    <span className="btn btn-warning">
-                        { this.props.passwordExist && this.context.t('my.profile.account.changepassword')}
-                        { !this.props.passwordExist && this.context.t('my.profile.account.createpassword')}
-                    </span>
-                </a>
+                <div className="text-center">
+                    <a  href={this.props.passwordChangeEndpoint}>
+                        <span className="btn btn-default">
+                            { this.props.passwordExist && this.context.t('my.profile.account.changepassword')}
+                            { !this.props.passwordExist && this.context.t('my.profile.account.createpassword')}
+                        </span>
+                    </a>
+                </div>
             </section>
         )
     }

@@ -1,7 +1,6 @@
 a.btn { text-decoration: none; }
 .btn {
     display: inline-block;
-    margin-bottom: 0;
     font-weight: normal;
     text-align: center;
     vertical-align: middle;
@@ -80,11 +79,16 @@ a.btn { text-decoration: none; }
     background-color: transparent;
 }
 
+.btn-submit,
 .btn-default {
     color: var(--purple-color) !important;
     border-color: var(--purple-color) !important;
 }
 
+
+.btn-submit:hover,
+.btn-submit:focus,
+.btn-submit:active,
 .btn-default:hover,
 .btn-default:focus,
 .btn-default:active {
@@ -93,20 +97,15 @@ a.btn { text-decoration: none; }
     background-color: var(--purple-color) !important;
 }
 
-
-.btn-submit,
 .btn-default-inverse {
-    color: var(--purple-color) !important;
-    border-color: var(--purple-color) !important;
+    color: var(--white-color) !important;
+    border-color: var(--dark-purple-color) !important;
+    background-color: var(--dark-purple-color) !important;
 }
 
-.btn-submit:hover,
-.btn-submit:focus,
-.btn-submit:active,
 .btn-default-inverse:hover,
 .btn-default-inverse:focus,
 .btn-default-inverse:active {
-    color: var(--purple-color) !important;
-    border-color: var(--purple-color) !important;
+    color: var(--dark-purple-color) !important;
     background-color: var(--white-color) !important;
 }

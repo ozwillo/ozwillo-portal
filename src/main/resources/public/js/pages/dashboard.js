@@ -379,7 +379,7 @@ const DashActions = createClass({
             return (
                 <span>
                     <Modal title={this.context.t('my.confirm-delete-dash')} successHandler={this.remove}
-                           buttonLabels={buttonLabels} saveButtonClass="oz-btn-danger" ref="modal">
+                           buttonLabels={buttonLabels} saveButtonClass="btn-default-inverse" ref="modal">
                         <span>{this.context.t('my.confirm-delete-dash-long')}</span>
                     </Modal>
 

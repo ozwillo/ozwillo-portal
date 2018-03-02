@@ -349,7 +349,7 @@ class OrganizationForm extends React.Component {
             {
                 countryIsSelected &&
                 (
-                    ( !this.props.isLoading && <input type="submit" value={this.props.label} className="submit btn"/> ) ||
+                    ( !this.props.isLoading && <input type="submit" value={this.props.label} className="submit btn-submit"/> ) ||
                     <button type="button" className="submit btn icon">
                         <i className="fa fa-spinner fa-spin loading"/>
                     </button>

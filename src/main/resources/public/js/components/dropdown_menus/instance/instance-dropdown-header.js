@@ -96,7 +96,7 @@ class InstanceDropdownHeader extends React.Component {
                             <span className="message delete">
                                 Will be deleted in {this.numberOfDaysBeforeDeletion} days
                             </span>,
-                            <button type="submit" className="btn oz-btn-danger">Cancel</button>
+                            <button type="submit" className="btn btn-default-inverse">Cancel</button>
                         ]
                     }
                 </div>

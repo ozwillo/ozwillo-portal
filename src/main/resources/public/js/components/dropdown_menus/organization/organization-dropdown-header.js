@@ -101,7 +101,7 @@ class OrganizationDropdownHeader extends React.Component {
                             <span key={`${org.id}-message`} className="message delete">
                                 Will be deleted in {this.numberOfDaysBeforeDeletion} days
                             </span>,
-                            <button key={`${org.id}-btn`} type="submit" className="btn oz-btn-danger">Cancel</button>
+                            <button key={`${org.id}-btn`} type="submit" className="btn btn-default-inverse">Cancel</button>
                         ]
                     }
 
