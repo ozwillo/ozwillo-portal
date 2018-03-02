@@ -1,6 +1,9 @@
 package org.oasis_eu.portal.model.app.service;
 
 import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.core.model.subscription.Subscription;
+
+import java.util.List;
 
 /**
  * User: schambon
@@ -14,6 +17,8 @@ public class InstanceService {
     private String name;
 
     private String iconUrl;
+
+    private List<Subscription> subscriptions;
 
     public CatalogEntry getCatalogEntry() {
         return catalogEntry;
@@ -48,6 +53,15 @@ public class InstanceService {
 
     public InstanceService setIconUrl(String iconUrl) {
         this.iconUrl = iconUrl;
+        return this;
+    }
+
+    public List<Subscription> getSubscriptions() {
+        return subscriptions;
+    }
+
+    public InstanceService setSubscriptions(List<Subscription> subscriptions) {
+        this.subscriptions = subscriptions;
         return this;
     }
 }

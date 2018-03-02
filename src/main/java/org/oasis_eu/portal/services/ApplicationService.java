@@ -106,7 +106,8 @@ public class ApplicationService {
         MyAppsInstance uiInstance = fillUIInstance(new MyAppsInstance(instance));
 
         if (fetchServices)
-            uiInstance.setServices(catalogStore.findServicesOfInstance(instance.getInstanceId()).stream()
+            uiInstance.setServices(
+                    catalogStore.findServicesOfInstance(instance.getInstanceId()).stream()
                 .map(this::fetchService).collect(Collectors.toList()));
 
         return uiInstance;
@@ -126,7 +127,6 @@ public class ApplicationService {
 
 
     private InstanceService fetchService(CatalogEntry service) {
-
         logger.debug("Fetching service data for {}", service);
 
         return new InstanceService()

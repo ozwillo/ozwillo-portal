@@ -9,16 +9,24 @@ import {
     FETCH_UPDATE_SERVICE_CONFIG
 } from "../../actions/instance";
 
+import {
+    FETCH_CREATE_SUBSCRIPTION,
+    FETCH_DELETE_SUBSCRIPTION
+} from '../../actions/subscription';
+
 const defaultState = {
     services: [],
     users: []
 };
 
+import serviceState from './service';
 
 export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
     let i = -1;
     switch(action.type) {
+        case FETCH_CREATE_SUBSCRIPTION:
+        case FETCH_DELETE_SUBSCRIPTION:
         case FETCH_UPDATE_SERVICE_CONFIG:
             i = nextState.services.findIndex((service) => {
                 return service.catalogEntry.id === action.service.catalogEntry.id;
@@ -28,8 +36,7 @@ export default (state = defaultState, action) => {
                 return state;
             }
 
-            nextState.services = Object.assign([], nextState.services);
-            nextState.services[i] = action.service;
+            nextState.services[i] = serviceState(nextState.services[i], action);
             break;
         case FETCH_UPDATE_INSTANCE_STATUS:
             nextState = Object.assign({}, state, action.instance);

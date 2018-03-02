@@ -11,7 +11,7 @@ import InstanceConfigForm from '../../forms/instance-config-form';
 
 //action
 import { fetchDeleteAcl } from '../../../actions/acl';
-import { fetchCreateSubscription } from '../../../actions/subscription';
+import { fetchCreateSubscription, fetchDeleteSubscription } from '../../../actions/subscription';
 import { fetchUpdateInstanceStatus } from '../../../actions/instance';
 
 //Config
@@ -19,7 +19,7 @@ import Config from '../../../config/config';
 const instanceStatus = Config.instanceStatus;
 
 //Action
-import { fetchUpdateServiceConfig } from "../../../actions/instance";
+import { fetchUpdateServiceConfig } from '../../../actions/instance';
 
 class InstanceDropdown extends React.Component {
 
@@ -48,7 +48,9 @@ class InstanceDropdown extends React.Component {
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
         this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
         this.createSubscription = this.createSubscription.bind(this);
+        this.deleteSubscription = this.deleteSubscription.bind(this);
         this.fetchUpdateServiceConfig = this.fetchUpdateServiceConfig.bind(this);
+        this.searchSubForUser = this.searchSubForUser.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -116,21 +118,62 @@ class InstanceDropdown extends React.Component {
         const userId = el.dataset.user;
         const serviceId = el.dataset.service;
 
-        fetchCreateSubscription(userId, serviceId)
+        this.setState({
+            status: Object.assign({}, this.state.status, {
+                [userId]: { isLoading: true }
+            })
+        });
+
+        this.props.fetchCreateSubscription(this.props.instance.id , { user_id: userId, service_id: serviceId })
             .then(() => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [userId]: { subIsSent: true, error: null }
+                        [userId]: { error: null, isLoading: false }
                     })
                 });
             })
             .catch((err) => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [userId]: { error: err.error }
+                        [userId]: { error: err.error, isLoading: false}
                     })
                 });
             });
+    }
+
+    deleteSubscription(e) {
+        const el = e.currentTarget;
+        const userId = el.dataset.user;
+        const serviceId = el.dataset.service;
+        const subId = el.dataset.sub;
+
+        this.setState({
+            status: Object.assign({}, this.state.status, {
+                [userId]: { isLoading: true }
+            })
+        });
+
+        this.props.fetchDeleteSubscription(this.props.instance.id , { id: subId, user_id: userId, service_id: serviceId })
+            .then(() => {
+                this.setState({
+                    status: Object.assign({}, this.state.status, {
+                        [userId]: { error: null, isLoading: false }
+                    })
+                });
+            })
+            .catch((err) => {
+                this.setState({
+                    status: Object.assign({}, this.state.status, {
+                        [userId]: { error: err.error, isLoading: false }
+                    })
+                });
+            });
+    }
+
+    searchSubForUser(user, service) {
+        return service.subscriptions.find((sub) => {
+            return sub.user_id === user.id;
+        });
     }
 
     render() {
@@ -191,18 +234,29 @@ class InstanceDropdown extends React.Component {
                                     </td>
 
 
-                                    {/* Instances */}
+                                    {/* Services */}
                                     {
                                         user.id &&
                                         instance.services.map((service) => {
+                                            const sub = this.searchSubForUser(user, service);
                                             return <td key={service.catalogEntry.id} className="center">
                                                 {
-                                                    (!status || !status.subIsSent) &&
+                                                    !sub &&
                                                     <button className="btn icon" onClick={this.createSubscription}
+                                                            disabled={status && status.isLoading}
                                                             data-user={user.id} data-service={service.catalogEntry.id}>
-                                                        <i className="fa fa-home option-icon service"/>
+                                                        <i className="fas fa-home option-icon service"/>
                                                     </button>
-                                                    || <i className="fa fa-check option-icon success"/>
+                                                }
+
+                                                {
+                                                    sub &&
+                                                    <button className="btn icon" onClick={this.deleteSubscription}
+                                                            disabled={status && status.isLoading}
+                                                            data-sub={sub.id}
+                                                            data-user={user.id} data-service={service.catalogEntry.id}>
+                                                        <i className="fa fa-plus option-icon service"/>
+                                                    </button>
                                                 }
                                             </td>
                                         })
@@ -250,7 +304,13 @@ const mapDispatchToProps = dispatch => {
         },
         fetchUpdateServiceConfig(instanceId, catalogEntry) {
             return dispatch(fetchUpdateServiceConfig(instanceId, catalogEntry));
-        }
+        },
+        fetchCreateSubscription(instanceId, sub) {
+            return dispatch(fetchCreateSubscription(instanceId, sub));
+        },
+        fetchDeleteSubscription(instanceId, sub) {
+            return dispatch(fetchDeleteSubscription(instanceId, sub));
+        },
     };
 };
 

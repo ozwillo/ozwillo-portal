@@ -25,6 +25,11 @@ import {
 
 import { FETCH_ADD_INSTANCE_TO_ORG } from '../../actions/app-store';
 
+import {
+    FETCH_CREATE_SUBSCRIPTION,
+    FETCH_DELETE_SUBSCRIPTION
+} from '../../actions/subscription';
+
 //Reducers
 import instanceReducer from './instance';
 import memberReducer from './member';
@@ -49,6 +54,8 @@ const instancesState = (state = [], action) => {
         case FETCH_USERS_OF_INSTANCE:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
+        case FETCH_CREATE_SUBSCRIPTION:
+        case FETCH_DELETE_SUBSCRIPTION:
             const i = nextState.findIndex((instance) => {
                 return instance.id === action.instanceId;
             });
@@ -115,6 +122,8 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
         case FETCH_USERS_OF_INSTANCE:
+        case FETCH_CREATE_SUBSCRIPTION:
+        case FETCH_DELETE_SUBSCRIPTION:
             nextState.instances = instancesState(state.instances, action);
             break;
         case FETCH_UPDATE_ROLE_MEMBER:
@@ -163,6 +172,8 @@ export default (state = defaultState, action) => {
         case FETCH_UPDATE_STATUS_ORGANIZATION:
             nextState.organizations = organizationsState(nextState.organizations, action);
             break;
+        case FETCH_CREATE_SUBSCRIPTION:
+        case FETCH_DELETE_SUBSCRIPTION:
         case FETCH_DELETE_MEMBER:
         case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_UPDATE_SERVICE_CONFIG:

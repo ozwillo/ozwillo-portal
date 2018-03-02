@@ -16,10 +16,16 @@ public class SubscriptionController extends BaseController {
     @Autowired
     private ApplicationService applicationService;
 
-    @PostMapping("")
+    @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     public Subscription createSubscription(@RequestBody RequestSubscription sub) {
         return applicationService.subscribeUser(sub.userId, sub.serviceId);
+    }
+
+
+    @DeleteMapping
+    public void deleteSubscription(@RequestBody RequestSubscription sub) {
+        applicationService.unsubscribeUser(sub.userId, sub.serviceId);
     }
 
     private static class RequestSubscription {

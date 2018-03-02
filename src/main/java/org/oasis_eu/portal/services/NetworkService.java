@@ -116,8 +116,9 @@ public class NetworkService {
 
         //Build UIOrganization
         UIOrganization uiOrg = fillUIOrganization(org);
-        uiOrg.setInstances(getOrganizationInstances(org.getId()));
         uiOrg.setAdmin(userIsAdmin(organizationId));
+        uiOrg.setInstances(getOrganizationInstances(org.getId(), uiOrg.isAdmin()));
+
 
         if(fetchMembers && !isPersonal) {
             List<UIOrganizationMember> members = getOrganizationMembers(org.getId());
@@ -138,9 +139,20 @@ public class NetworkService {
         return org;
     }
 
-    private List<MyAppsInstance> getOrganizationInstances(String organizationId) {
+    private List<MyAppsInstance> getOrganizationInstances(String organizationId, boolean isAdmin) {
         Authority authority = getOrganizationAuthority(organizationId);
-        return applicationService.getMyInstances(authority, true);
+        List<MyAppsInstance> instances = applicationService.getMyInstances(authority, true);
+
+        //Fetch subscriptions
+        if (isAdmin) {
+            instances.forEach(instance -> {
+                instance.getServices().forEach(s ->
+                        s.setSubscriptions(subscriptionStore.findByServiceId(s.getCatalogEntry().getId()))
+                );
+            });
+        }
+
+        return instances;
     }
 
     private UIOrganization fillUIOrganization(Organization organization) {
