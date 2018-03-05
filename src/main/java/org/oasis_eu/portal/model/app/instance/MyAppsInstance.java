@@ -1,6 +1,8 @@
 package org.oasis_eu.portal.model.app.instance;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 
@@ -25,6 +27,7 @@ public class MyAppsInstance {
      * optional
      */
     @JsonProperty("deletion_planned")
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant deletionPlanned;
 
     @JsonProperty("status_change_requester_label")

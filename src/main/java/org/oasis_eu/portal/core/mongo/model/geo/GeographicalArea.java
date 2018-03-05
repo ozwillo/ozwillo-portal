@@ -2,7 +2,9 @@ package org.oasis_eu.portal.core.mongo.model.geo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.joda.time.Instant;
+import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -79,6 +81,7 @@ public class GeographicalArea {
 
     @JsonIgnore
     @Indexed // used by result sort
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant replicationTime = Instant.now();
 
     public GeographicalArea() {

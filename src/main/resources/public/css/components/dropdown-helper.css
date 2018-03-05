@@ -130,7 +130,7 @@
 
 .dropdown-header .delete,
 .dropdown-content .error {
-    color: var(--red-color)
+    color: var(--white-color)
 }
 
 .dropdown-header .btn.icon {

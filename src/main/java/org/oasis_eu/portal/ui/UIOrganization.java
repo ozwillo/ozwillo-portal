@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.ui;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
@@ -49,12 +51,14 @@ public class UIOrganization {
      * optional
      */
     @JsonProperty("status_changed")
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant statusChanged;
 
     /**
      * optional
      */
     @JsonProperty("deletion_planned")
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant deletionPlanned;
 
     /**

@@ -3,6 +3,8 @@ package org.oasis_eu.portal.core.model.ace;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +41,7 @@ public class ACE {
     @JsonProperty("creator_name")
     private String creatorName;
     @JsonProperty("created")
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant created;
     @JsonProperty("app_admin")
     private boolean appAdmin = false; // for now Kernel deduces it from orga admin #157 Delete and re-add a service icon to my desk K#90
