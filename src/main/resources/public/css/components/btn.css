@@ -83,6 +83,7 @@ a.btn { text-decoration: none; }
 .btn-default {
     color: var(--purple-color) !important;
     border-color: var(--purple-color) !important;
+    background-color: var(--white-color);
 }
 
 
