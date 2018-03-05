@@ -163,7 +163,7 @@ class OrganizationForm extends React.Component {
         return <form className="oz-form" onSubmit={this.onSubmit}>
             {/*     Organization     */}
             <fieldset className="oz-fieldset">
-                <legend className="oz-legend">Organization</legend>
+                <legend className="oz-legend">{this.context.t('organization.form.title')}</legend>
                 <div className="flex-row">
                     <label htmlFor="country" className="label">{this.context.t('my.network.organization.country')} *</label>
                     <Select className="select field" value={organization.country_uri} onChange={this.handleCountryChange}
@@ -304,7 +304,7 @@ class OrganizationForm extends React.Component {
             {
                 countryIsSelected &&
                 <fieldset className="oz-fieldset">
-                    <legend className="oz-legend">Contact Information</legend>
+                    <legend className="oz-legend">{this.context.t('organization.form.contact-information')}</legend>
                     <div className="flex-row">
                         <label htmlFor="street_and_number" className="label">
                             {this.context.t('my.network.organization.street_and_number')} *

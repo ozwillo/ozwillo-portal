@@ -8,6 +8,9 @@ import Select from 'react-select';
 import { fetchCreateAcl } from "../../actions/acl";
 
 class InstanceInvitationForm extends React.Component {
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
@@ -55,7 +58,7 @@ class InstanceInvitationForm extends React.Component {
                     isLoading: false,
                     selectedOption: null,
                     email: '',
-                    success: 'Your request has been sent !',
+                    success: this.context.t('ui.request.send'),
                     error: ''
                 });
             })
@@ -81,14 +84,14 @@ class InstanceInvitationForm extends React.Component {
                     valueKey="id"
                     onChange={this.onOptionChange}
                     options={this.props.members}
-                    placeholder="Members"
+                    placeholder={this.context.t('organization.desc.members')}
                     required={!this.state.email}/>
 
                 <em className="sep-text">or</em>
 
                 <div className="new-user-fieldset flex-row">
                     <label className="label">
-                        Email
+                        {this.context.t('organization.form.email')}
                         <input name="email" type="email" className="form-control field" required={!this.state.selectedOption}
                                value={this.state.email} onChange={this.handleChange} />
                     </label>
@@ -97,14 +100,14 @@ class InstanceInvitationForm extends React.Component {
                     <label className="label">
                         <input name="addInOrganization" type="checkbox" className="field"
                                checked={this.state.addToOrganization} onChange={this.handleChange}/>
-                        Add in organization
+                        {this.context.t('organization.desc.add-in-organization')}
                     </label>
                 </div>
 
                 <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                     {
                         !this.state.isLoading &&
-                        'Send'
+                        this.context.t('ui.send')
                     }
 
                     {

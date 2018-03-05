@@ -10,6 +10,10 @@ class MemberDropdownFooter extends React.Component {
         onAddAccessToInstance: PropTypes.func.isRequired
     };
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired,
+    };
+
     constructor(props) {
         super(props);
 
@@ -55,7 +59,7 @@ class MemberDropdownFooter extends React.Component {
                 <span className="error-message">{this.state.error}</span>
 
                 <div className="flex-row end">
-                    <button type="submit" className="btn btn-submit icon">Send</button>
+                    <button type="submit" className="btn btn-submit icon">{this.context.t('ui.send')}</button>
                 </div>
             </form>
         </header>;

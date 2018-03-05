@@ -9,9 +9,15 @@ import MemberDropdown from '../dropdown_menus/member/member-dropdown';
 
 class MembersTabHeader extends React.Component {
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/members`}>
-            <header className="tab-header"><span>Members</span></header>
+            <header className="tab-header">
+                <span>{this.context.t('organization.desc.members')}</span>
+            </header>
         </Link>;
     }
 
@@ -33,9 +39,9 @@ class MembersTab extends React.Component {
 
         return <article className="members-tab">
             <section className="add-member">
-                <header className="sub-title">Send an invitation</header>
+                <header className="sub-title">{this.context.t('organization.desc.send-invitation')}</header>
                 <div className="box">
-                    <OrganizationInvitationForm className="" organization={this.props.organization}/>
+                    <OrganizationInvitationForm organization={this.props.organization}/>
                 </div>
             </section>
             <section className="search-member">

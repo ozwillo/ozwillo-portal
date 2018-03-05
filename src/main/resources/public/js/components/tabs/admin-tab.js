@@ -13,9 +13,15 @@ import { fetchUpdateOrganization } from '../../actions/organization';
 
 class AdminTabHeader extends React.Component {
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/admin`}>
-            <header className="tab-header"><span>Admin</span></header>
+            <header className="tab-header">
+                <span>{this.context.t('organization.desc.admin')}</span>
+            </header>
         </Link>;
     }
 
@@ -57,7 +63,7 @@ class AdminTab extends React.Component {
             .then(() => {
                 this.setState({
                     isLoading: false,
-                    success: 'The form has been sent !'
+                    success: this.context.t('ui.form.send')
                 })
             })
             .catch(err => {
@@ -73,7 +79,7 @@ class AdminTab extends React.Component {
         return <article className="admin-tab">
             <OrganizationForm onSubmit={this.onSubmit} countries={this.props.countries}
                               isLoading={this.state.isLoading} countryFieldIsDisabled={true}
-                              label="Save"/>
+                              label={this.context.t('ui.save')}/>
 
             <div className="text-center">
                 {

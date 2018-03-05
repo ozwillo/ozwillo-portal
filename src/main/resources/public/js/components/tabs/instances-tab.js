@@ -8,9 +8,16 @@ import AddInstanceDropdown from '../dropdown_menus/instance/add-instance-dropdow
 import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
 
 class InstancesTabHeader extends React.Component {
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/instances`}>
-            <header className="tab-header"><span>Applications</span></header>
+            <header className="tab-header">
+                <span>{this.context.t('organization.desc.applications')}</span>
+            </header>
         </Link>;
     }
 }
@@ -66,7 +73,7 @@ class InstancesTab extends React.Component {
             {
                 org.admin &&
                 <section className="add-instance">
-                    <header className="sub-title">Add an application</header>
+                    <header className="sub-title">{this.context.t('organization.desc.add-application')}</header>
                     <AddInstanceDropdown />
                 </section>
             }

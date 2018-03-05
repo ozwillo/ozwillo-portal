@@ -21,6 +21,10 @@ class OrganizationDropdown extends React.Component {
         organization: PropTypes.object.isRequired
     };
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     constructor(props) {
         super(props);
 
@@ -63,7 +67,7 @@ class OrganizationDropdown extends React.Component {
                         {
                             !org.services &&
                             <span className="empty-message">
-                                You do not have any installed app.
+                                {this.context.t('organization.search.no-apps-installed')}
                             </span>
                         }
                     </section>

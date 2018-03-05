@@ -16,6 +16,10 @@ class OrganizationDropdownHeader extends React.Component {
         onCancelRemoveOrganization: PropTypes.func.isRequired
     };
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     constructor(props) {
         super(props);
 
@@ -99,9 +103,11 @@ class OrganizationDropdownHeader extends React.Component {
                         !isAvailable && !isPersonal && org.admin &&
                         [
                             <span key={`${org.id}-message`} className="message delete">
-                                Will be deleted in {this.numberOfDaysBeforeDeletion} days
+                                {this.context.t('ui.message.will-be-deleted').format(this.numberOfDaysBeforeDeletion)}
                             </span>,
-                            <button key={`${org.id}-btn`} type="submit" className="btn btn-default-inverse">Cancel</button>
+                            <button key={`${org.id}-btn`} type="submit" className="btn btn-default-inverse">
+                                {this.context.t('ui.cancel')}
+                            </button>
                         ]
                     }
 

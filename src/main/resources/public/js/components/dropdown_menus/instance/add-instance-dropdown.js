@@ -11,9 +11,11 @@ import { fetchAddInstanceToOrg } from '../../../actions/app-store';
 
 //config
 import Config from '../../../config/config';
+import PropTypes from 'prop-types';
 const AppTypes = Config.appTypes;
 
 class AddInstanceDropdown extends React.Component {
+
 
     constructor(props) {
         super(props);
@@ -92,7 +94,6 @@ class AddInstanceDropdown extends React.Component {
         if(instance) {
             return false;
         }
-
 
         //Check types
         return (app.target_publicbodies &&  org.type === 'PUBLIC_BODY') ||

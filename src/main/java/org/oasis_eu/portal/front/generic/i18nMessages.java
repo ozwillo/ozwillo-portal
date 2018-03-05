@@ -21,7 +21,8 @@ public final class i18nMessages {
     private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
-        "no-matches-found", "yes", "datastore", "login", "logout", "notifications");
+        "no-matches-found", "yes", "datastore", "login", "logout", "notifications", "message.will-be-deleted", "or", "request.send",
+            "form.send","error");
 
     private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "network", "apps", "create", "confirm-delete-dash",
         "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
@@ -39,7 +40,9 @@ public final class i18nMessages {
 
     private static final List<String> createOrModifyOrganization = Arrays.asList("profile_information", "contact_lastname", "contact_name", "contact_information", "legal_name", "in_activity",
         "alt_name", "org_type", "org_type.placeholder", "tax_reg_num.bg", "tax_reg_num.es", "tax_reg_num.fr", "tax_reg_num.it", "tax_reg_num.tr",
-        "tax_reg_num.en", "tax_reg_num.already_used", "tax_reg_official_id.fr", "tax_reg_official_id.tr", "tax_reg_activity.bg", "tax_reg_activity.es", "tax_reg_activity.fr",
+        "tax_reg_num.en", "tax_reg_num.already_used", "tax_reg_official_id.fr", "tax_reg_official_id.tr", "tax_reg_official_id.bg",
+            "tax_reg_official_id.es", "tax_reg_official_id.it", "tax_reg_official_id.en",
+            "tax_reg_activity.bg", "tax_reg_activity.es", "tax_reg_activity.fr",
         "tax_reg_activity.it", "tax_reg_activity.tr", "tax_reg_activity.en", "jurisdiction",
         "jurisdiction.placeholder", "phone_number", "web_site", "email", "email.placeholder", "change-icon",
         "street_and_number", "po_box", "city", "zip", "cedex", "country", "invalid_fields", "step",
@@ -80,7 +83,18 @@ public final class i18nMessages {
     private static final List<String> franceconnectKeys = Arrays.asList("name", "form.your-profile", "form.synchronise", "form.desynchronize",
             "form.desynchronize-without-pwd");
 
+
+    private static final List<String> organizationSearchKeys = Arrays.asList("title", "new", "no-apps-installed");
+
+    private static final List<String> organizationFormKeys = Arrays.asList("invite-new-collaborator", "email", "create",
+            "title", "contact-information");
+
+    private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
+            "add-application", "add-in-organization", "send-invitation");
+
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
+
+
 
 
     /* Messages Handlers  */
@@ -100,6 +114,10 @@ public final class i18nMessages {
         i18n.putAll(i18nMessages.getI18n_profilekeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_languagekeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_franceconnectKeys(locale, messageSource));
+
+        i18n.putAll(i18nMessages.getI18n_organizationSearchKeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_organizationFormKeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_organizationDescKeys(locale, messageSource));
 
         return i18n;
     }
@@ -173,5 +191,20 @@ public final class i18nMessages {
 
     public static Map<String, String> getI18n_franceconnectKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (franceconnectKeys.stream().collect(Collectors.toMap(k -> "franceconnect." +k, k -> messageSource.getMessage("franceconnect." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_organizationSearchKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (organizationSearchKeys.stream().collect(Collectors.toMap(k -> "organization.search." +k,
+                k -> messageSource.getMessage("organization.search." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_organizationFormKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (organizationFormKeys.stream().collect(Collectors.toMap(k -> "organization.form." +k,
+                k -> messageSource.getMessage("organization.form." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_organizationDescKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (organizationDescKeys.stream().collect(Collectors.toMap(k -> "organization.desc." +k,
+                k -> messageSource.getMessage("organization.desc." + k, new Object[0], locale))));
     }
 }

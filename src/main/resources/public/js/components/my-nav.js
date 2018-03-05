@@ -53,7 +53,7 @@ class MyNav extends React.Component {
                         <li className="menu">
                             <Link className="link" to="/my/organization">
                                 <i className="fa fa-building icon" alt={this.context.t('my.apps')}/>
-                                <span>{'Organization'}</span>
+                                <span>{this.context.t('organization.form.title')}</span>
                             </Link>
                         </li>
                     </ul>

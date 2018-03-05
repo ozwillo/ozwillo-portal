@@ -69,13 +69,13 @@ class OrganizationSearch extends React.Component {
         return <section className="organization-search oz-body wrapper flex-col">
             <div className="flex-row end options">
                 <Link to="/my/organization/create" className="btn btn-default undecorated-link">
-                     New organization
+                    {this.context.t('organization.search.new')}
                 </Link>
             </div>
 
             <section>
                 <header>
-                    <h1 className="title">{this.context.t('Organizations')}</h1>
+                    <h1 className="title">{this.context.t('organization.search.title')}</h1>
                 </header>
 
                 <form className="search oz-form">

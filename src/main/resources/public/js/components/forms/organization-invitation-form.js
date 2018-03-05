@@ -9,6 +9,10 @@ class OrganizationInvitationForm extends React.Component {
         organization: PropTypes.object.isRequired
     };
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     constructor(props) {
         super(props);
 
@@ -41,7 +45,7 @@ class OrganizationInvitationForm extends React.Component {
                     email: '',
                     isLoading: false,
                     error: '',
-                    success: 'Your request has been sent !'
+                    success: this.context.t('ui.request.send')
                 });
             })
             .catch((err) => {
@@ -55,10 +59,10 @@ class OrganizationInvitationForm extends React.Component {
     render() {
         return <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
             <fieldset className="flex-col">
-                <legend className="legend">Invite a new collaborator</legend>
+                <legend className="legend">{this.context.t('organization.form.invite-new-collaborator')}</legend>
                 <div className="flex-row">
                     <label className="label">
-                        Email
+                        {this.context.t('organization.form.email')}
                         <input name="email" type="email" className="field form-control" required={true}
                             onChange={this.handleChange} value={this.state.email}/>
                     </label>
@@ -68,7 +72,7 @@ class OrganizationInvitationForm extends React.Component {
                         <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                             {
                                 !this.state.isLoading &&
-                                'Send'
+                                this.context.t('ui.send')
                             }
                             {
 

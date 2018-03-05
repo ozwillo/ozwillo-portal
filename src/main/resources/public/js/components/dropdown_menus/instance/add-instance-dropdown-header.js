@@ -4,6 +4,10 @@ import Select from 'react-select';
 
 class AddInstanceDropdownHeader extends React.Component {
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     static propTypes = {
         apps: PropTypes.array.isRequired,
         app: PropTypes.object,
@@ -37,7 +41,7 @@ class AddInstanceDropdownHeader extends React.Component {
             .then(() => this.setState({ error: '', isLoading: false }))
             .catch(err => {
                 console.error(err);
-                this.setState({ error: 'An error has been occurred...', isLoading: false });
+                this.setState({ error: this.context.t('ui.error'), isLoading: false });
             });
     }
 
@@ -51,7 +55,7 @@ class AddInstanceDropdownHeader extends React.Component {
                     labelKey="name"
                     onChange={this.onOptionChange}
                     options={this.props.apps}
-                    placeholder="Applications"
+                    placeholder={this.context.t('organization.desc.applications')}
                     required={true}/>
 
                 {
