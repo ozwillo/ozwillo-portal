@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Popup from "react-popup";
 
 class MemberDropdownHeader extends React.Component {
 
@@ -8,6 +9,10 @@ class MemberDropdownHeader extends React.Component {
         member: PropTypes.object.isRequired,
         onRemoveMemberInOrganization: PropTypes.func.isRequired,
         onUpdateRoleMember: PropTypes.func.isRequired
+    };
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -32,7 +37,24 @@ class MemberDropdownHeader extends React.Component {
     }
 
     memberRoleToggle() {
-        this.props.onUpdateRoleMember(!this.props.member.admin);
+        this.props.onUpdateRoleMember(!this.props.member.admin)
+            .catch((err) => {
+                if (err.status === 403) {
+                    Popup.create({
+                        title: this.props.organization.name,
+                        content: <p className="alert-message">
+                            { err.error }
+                        </p>,
+                        buttons: {
+                            right: [{
+                                text: this.context.t('ui.ok'),
+                                action: () => { Popup.close(); }
+                            }]
+                        }
+
+                    });
+                }
+            });
     }
 
     render() {

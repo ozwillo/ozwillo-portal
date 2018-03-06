@@ -94,7 +94,7 @@ class MemberDropdown extends React.Component {
     }
 
     onUpdateRoleMember(isAdmin) {
-        this.props.fetchUpdateRoleMember(this.props.organization.id, this.props.member.id, isAdmin);
+        return this.props.fetchUpdateRoleMember(this.props.organization.id, this.props.member.id, isAdmin);
     }
 
     render() {

@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -40,6 +41,12 @@ public class UserMembershipService {
     private String maxUserMembershipsPerPage;
 
     @Autowired private Kernel kernel;
+
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private HttpServletRequest request;
 
     @Cacheable("user-memberships")
     public List<UserMembership> getMembershipsOfUser(String userId) throws WrongQueryException {
@@ -110,9 +117,20 @@ public class UserMembershipService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", membershipEtag);
 
-        ResponseEntity<Void> kernelResp = kernel.exchange(membershipUri, HttpMethod.PUT, new HttpEntity<>(request, headers), Void.class, user());
-        // validate response body
-        kernel.getBodyUnlessClientError(kernelResp, Void.class, membershipUri);
+        try {
+            ResponseEntity<Void> kernelResp = kernel.exchange(membershipUri, HttpMethod.PUT, new HttpEntity<>(request, headers), Void.class, user());
+            // validate response body
+            kernel.getBodyUnlessClientError(kernelResp, Void.class, membershipUri);
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
+                String translatedBusinessMessage = messageSource.getMessage("error.msg.update-membership",
+                        new Object[]{}, RequestContextUtils.getLocale(this.request));
+
+                throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
+            }
+
+            throw e;
+        }
     }
 
     @CacheEvict(value = "org-memberships", key = "#organizationId")

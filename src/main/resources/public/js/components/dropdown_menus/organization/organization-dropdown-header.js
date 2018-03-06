@@ -49,7 +49,6 @@ class OrganizationDropdownHeader extends React.Component {
                         buttons: {
                             right: [{
                                 text: this.context.t('ui.ok'),
-                                key: '⌘+s',
                                 action: () => { Popup.close(); }
                             }]
                         }
