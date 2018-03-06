@@ -1,4 +1,5 @@
 a.btn { text-decoration: none; }
+
 .btn {
     display: inline-block;
     font-weight: normal;
@@ -79,6 +80,7 @@ a.btn { text-decoration: none; }
     background-color: transparent;
 }
 
+.mm-popup__btn,
 .btn-submit,
 .btn-default {
     color: var(--purple-color) !important;
@@ -86,7 +88,9 @@ a.btn { text-decoration: none; }
     background-color: var(--white-color);
 }
 
-
+.mm-popup__btn:hover,
+.mm-popup__btn:focus,
+.mm-popup__btn:active,
 .btn-submit:hover,
 .btn-submit:focus,
 .btn-submit:active,

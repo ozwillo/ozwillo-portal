@@ -26,7 +26,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -330,7 +332,18 @@ public class NetworkService {
 
             TODO: return Organization from response of OrganizationStore.setStatus
          */
-        organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
+        try {
+            organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
+        } catch (HttpClientErrorException e) {
+            if( HttpStatus.FORBIDDEN.equals(e.getStatusCode()) ) {
+                String translatedBusinessMessage = messageSource.getMessage("error.msg.delete-organization",
+                        new Object[]{}, RequestContextUtils.getLocale(request));
+                throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
+            }
+
+            throw e;
+        }
+
         org.setStatus(uiOrganization.getStatus());
         return fillUIOrganization(org);
     }

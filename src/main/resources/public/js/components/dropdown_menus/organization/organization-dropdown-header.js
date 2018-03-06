@@ -1,6 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import Popup from 'react-popup';
+import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
 
 import Config from '../../../config/config';
@@ -35,7 +36,29 @@ class OrganizationDropdownHeader extends React.Component {
         e.preventDefault();
         this.props.onRemoveOrganization(this.props.organization)
             .then(() => { this.setState({ error: '' }); })
-            .catch(err => { this.setState({ error: err.error }); });
+            .catch(err => {
+                if( err.status === 403 ) {
+                    this.setState({ error: '' });
+                    const lines = err.error.split('\n');
+
+                    Popup.create({
+                        title: this.props.organization.name,
+                        content: <p className="alert-message">
+                            { lines.map((msg, i) => <span key={i} className="line">{ msg }</span>) }
+                        </p>,
+                        buttons: {
+                            right: [{
+                                text: this.context.t('ui.ok'),
+                                key: '⌘+s',
+                                action: () => { Popup.close(); }
+                            }]
+                        }
+
+                    });
+                } else {
+                    this.setState({ error: err.error });
+                }
+            });
     }
 
     onCancelRemoveOrganization(e) {

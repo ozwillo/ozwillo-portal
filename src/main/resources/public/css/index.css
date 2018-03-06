@@ -173,6 +173,17 @@ label.required {
                 4px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
+.alert-message {
+    color: var(--dark-purple-color);
+    font-size: 1.2em;
+}
+
+.alert-message > .line {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+}
+
 /* Loading */
 .loading-container {
     text-align: center;
