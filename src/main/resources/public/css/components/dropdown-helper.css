@@ -64,10 +64,6 @@
     content: none;
 }
 
-.dropdown-content .name {
-    white-space: nowrap;
-}
-
 .dropdown-content .list .item .name {
     width: 25%;
     min-width: 180px;

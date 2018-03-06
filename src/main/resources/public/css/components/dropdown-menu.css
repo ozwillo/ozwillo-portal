@@ -77,7 +77,8 @@
 }
 
 .dropdown-content .apps .app {
-    margin: 0 4px;
+    margin: 10px;
+    width: 100px;
 }
 
 .dropdown-content .apps .app .launcher .name {
