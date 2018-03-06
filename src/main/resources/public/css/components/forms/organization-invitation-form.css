@@ -39,21 +39,25 @@
 .organization-invitation-form .error,
 .organization-invitation-form .success{
     width: 100%;
-    font-size: 0.8em;
+    font-size: 0.9em;
     text-align: center;
+    color: var(--red-color);
 }
 
 .organization-invitation-form .error {
-    color: red;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.organization-invitation-form .success {
-    color: green;
-}
 
 .organization-invitation-form .btn-submit {
     padding: 3px 6px;
     font-size: 0.9em;
+}
+
+.organization-invitation-form .wrapper {
+    width: 100%;
 }
 
 

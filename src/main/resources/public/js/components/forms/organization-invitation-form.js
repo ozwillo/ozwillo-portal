@@ -68,11 +68,27 @@ class OrganizationInvitationForm extends React.Component {
                     {this.context.t('organization.form.invite-new-collaborator')}
                 </legend>
                 <div className="flex-row">
-                    <label className="label">
-                        {this.context.t('organization.form.email')}
-                        <input name="email" type="email" className="field form-control" required={true}
-                            onChange={this.handleChange} value={this.state.email}/>
-                    </label>
+                    <div className="flex-row wrapper">
+                        <label className="label">
+                            {this.context.t('organization.form.email')}
+                            <input name="email" type="email" className="field form-control" required={true}
+                                   onChange={this.handleChange} value={this.state.email}/>
+                        </label>
+
+                        {
+                            this.state.error &&
+                            <div className="error">
+                                <span>{this.state.error}</span>
+                            </div>
+                        }
+
+                        {
+                            this.state.success &&
+                            <div className="success">
+                                <span>{this.state.success}</span>
+                            </div>
+                        }
+                    </div>
 
 
                     <div className="options flex-row end">
@@ -89,20 +105,6 @@ class OrganizationInvitationForm extends React.Component {
                         </button>
                     </div>
                 </div>
-
-                {
-                    this.state.error &&
-                    <div className="error">
-                        <span>{this.state.error}</span>
-                    </div>
-                }
-
-                {
-                    this.state.success &&
-                    <div className="success">
-                        <span>{this.state.success}</span>
-                    </div>
-                }
             </fieldset>
         </form>;
     }
