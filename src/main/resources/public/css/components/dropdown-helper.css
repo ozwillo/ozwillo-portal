@@ -33,6 +33,7 @@
     margin: 0 15px;
 }
 
+.dropdown-header .error-message,
 .dropdown-header .link {
     font-size: 1.1em;
     color: var(--white-color) !important;

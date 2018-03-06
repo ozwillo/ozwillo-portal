@@ -9,6 +9,10 @@ const TIME_DAY = 1000 * 3600 * 24; // millisecondes
 
 class InstanceDropdownHeader extends React.Component {
 
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     static propTypes = {
         instance: PropTypes.object.isRequired,
         onRemoveInstance: PropTypes.func.isRequired,
@@ -66,9 +70,6 @@ class InstanceDropdownHeader extends React.Component {
                 <span className="dropdown-name">{instance.name}</span>
 
                 <div className="options flex-row end">
-
-
-
                     {
                         !isStopped && !isPending && isAdmin &&
 
@@ -93,10 +94,10 @@ class InstanceDropdownHeader extends React.Component {
                     {
                         isStopped &&
                         [
-                            <span className="message delete">
-                                Will be deleted in {this.numberOfDaysBeforeDeletion} days
+                            <span key={`${instance.id}-message`} className="message delete">
+                                { this.context.t('ui.message.will-be-deleted').format(this.numberOfDaysBeforeDeletion) }
                             </span>,
-                            <button type="submit" className="btn btn-default-inverse">Cancel</button>
+                            <button key={`${instance.id}-submit`} type="submit" className="btn btn-default-inverse">Cancel</button>
                         ]
                     }
                 </div>

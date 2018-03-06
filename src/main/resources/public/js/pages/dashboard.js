@@ -20,6 +20,8 @@ import {
     moveToDash
 } from '../actions/dashboard';
 
+import UpdateTitle from '../components/update-title';
+
 const Dashboard = withRouter(createClass({
     notificationsChecked: false,
     getInitialState: function () {
@@ -676,6 +678,7 @@ class DashboardWrapper extends React.Component {
 
     render() {
         return <section className="oz-body wrapper flex-col">
+            <UpdateTitle title={this.context.t('my.dashboard')} />
             <div className="container-fluid">
                 <div className="col-md-12">
                     <h1 className="text-center">

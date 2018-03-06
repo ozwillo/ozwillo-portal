@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 // Components
 import SideMenu from '../components/side-menu';
 import OrganizationDropdown from '../components/dropdown_menus/organization/organization-dropdown';
+import UpdateTitle from '../components/update-title';
 
 //action
 import { fetchUserOrganizations } from '../actions/organization';
@@ -67,6 +68,9 @@ class OrganizationSearch extends React.Component {
         const userOrganizationsFilter = this.state.userOrganizationsFilter;
 
         return <section className="organization-search oz-body wrapper flex-col">
+
+            <UpdateTitle title={this.context.t('organization.search.title')}/>
+
             <div className="flex-row end options">
                 <Link to="/my/organization/create" className="btn btn-default undecorated-link">
                     {this.context.t('organization.search.new')}

@@ -5,6 +5,7 @@ import { withRouter } from 'react-router';
 import "../util/csrf";
 
 import PropTypes from "prop-types";
+import UpdateTitle from '../components/update-title';
 
 
 const languageData = {
@@ -148,6 +149,8 @@ class SynchronizeFCProfileWrapper extends React.Component {
 
     render() {
         return <div className="oz-body wrapper flex-col">
+
+            <UpdateTitle title={this.context.t('my.profile')}/>
 
             <div className="container-fluid">
                 <div className="row">

@@ -10,6 +10,7 @@ import Select from 'react-select';
 import FranceConnectForm from '../components/forms/france-connect-form';
 import { Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector } from '../components/forms/form';
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
+import UpdateTitle from '../components/update-title';
 
 class Profile extends React.Component {
     state = {
@@ -347,6 +348,7 @@ class ProfileWrapper extends React.Component {
 
     render() {
         return <section className="oz-body">
+            <UpdateTitle title={this.context.t('my.profile')} />
             <div className="oz-body-content">
                 <Profile/>
             </div>

@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 //Component
 import OrganizationForm from '../components/forms/organization-form';
+import UpdateTitle from '../components/update-title';
 
 //Action
 import { fetchCreateOrganization } from '../actions/organization';
@@ -54,9 +55,10 @@ class OrganizationCreate extends React.Component {
 
     render() {
         return <section className="organization-create oz-body wrapper flex-col">
+            <UpdateTitle title={this.context.t('organization.form.create')}/>
             <div className="box">
                 <header className="header flex-row">
-                    <h1 className="title">Create an organization</h1>
+                    <h1 className="title">{this.context.t('organization.form.create')}</h1>
                 </header>
                 <div className="error">
                     <span>{this.state.error}</span>

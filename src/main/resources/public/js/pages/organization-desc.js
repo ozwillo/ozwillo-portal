@@ -7,6 +7,7 @@ import Tabs from '../components/tabs';
 import { InstancesTabHeader, InstancesTab } from '../components/tabs/instances-tab';
 import { MembersTabHeader, MembersTab } from '../components/tabs/members-tab';
 import { AdminTabHeader, AdminTab } from '../components/tabs/admin-tab';
+import UpdateTitle from '../components/update-title';
 
 //actions
 import { fetchOrganizationWithId, fetchOrganizationInfo } from "../actions/organization";
@@ -64,6 +65,9 @@ class OrganizationDesc extends React.Component {
         const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
 
         return <section className="organization-desc oz-body wrapper flex-col">
+
+            <UpdateTitle title={this.props.organization.name}/>
+
             <header className="header flex-row">
                 <h1 className="title">{this.props.organization.name}</h1>
             </header>

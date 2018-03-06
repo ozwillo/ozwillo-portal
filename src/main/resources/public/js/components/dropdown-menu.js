@@ -35,15 +35,14 @@ class DropDownMenu extends React.Component {
     render() {
         const isOpenClassName = (!this.state.isOpen && 'hidden') || '';
         const iconClassName = (this.state.isOpen && 'down') || 'left';
-        const isAvailableClassName = (!this.props.isAvailable && 'hidden') || '';
+        const isAvailableClassName = (!this.props.isAvailable && 'invisible') || '';
         const isEmptyClassName = (!this.props.children && 'empty invisible') || '';
 
         return <section className={`oz-dropdown-menu flex-col ${this.props.className || ''}`}>
             <header className="header flex-row">
                 <div className="content">{this.props.header}</div>
                 <i onClick={this.dropDownToggle}
-                   className={`fa fa-caret-${iconClassName} arrow-icon ${isEmptyClassName}` }/>
-
+                   className={`fa fa-caret-${iconClassName} arrow-icon ${isEmptyClassName} ${isAvailableClassName}` }/>
             </header>
 
             <article className={`content ${isOpenClassName} ${isAvailableClassName} ${isEmptyClassName}`}>

@@ -9,6 +9,7 @@ import createClass from 'create-react-class';
 
 import config from '../config/config';
 const notificationInterval = config.notificationsInterval;
+import UpdateTitle from '../components/update-title';
 
 //actions
 import { fetchNotifications, deleteNotification } from "../actions/notifications";
@@ -283,6 +284,8 @@ class NotificationTableWrapper extends React.Component {
 
     render() {
         return <div className="oz-body wrapper flex-col">
+
+            <UpdateTitle title={this.context.t('ui.notifications')}/>
 
             <div className="oz-body-content">
                 <NotificationTableWithRedux/>

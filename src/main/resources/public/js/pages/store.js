@@ -7,6 +7,7 @@ import createClass from 'create-react-class';
 
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import AppModal from '../components/store-install-app'
+import UpdateTitle from '../components/update-title';
 
 const default_app = null;
 
@@ -428,8 +429,13 @@ Indicator.contextTypes = {
 };
 
 class AppStoreWrapper extends React.Component {
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
     render() {
         return <div className="oz-body wrapper page-row page-row-expanded">
+            <UpdateTitle title={this.context.t('ui.appstore')}/>
             <div className="oz-body-content">
                 <AppStoreWithRedux/>
             </div>
