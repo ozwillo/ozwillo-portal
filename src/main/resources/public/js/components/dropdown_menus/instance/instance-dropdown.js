@@ -267,7 +267,7 @@ class InstanceDropdown extends React.Component {
                                     {
                                         !user.id &&
                                         <td colSpan={instance.services.length + 1} className="right">
-                                            <i className="fa fa-spinner fa-spin option-icon loading"/>
+                                            <i className="fa fa-stopwatch option-icon loading"/>
                                             <button className="btn icon" data-member={i}
                                                     onClick={this.removeUserAccessToInstance}>
                                                 <i className="fa fa-trash option-icon delete"/>

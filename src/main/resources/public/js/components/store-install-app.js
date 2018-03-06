@@ -374,7 +374,7 @@ var AppDescriptionComponent = createClass({
         var launchOrInstallButton;
         if (this.props.app.type == "service" && this.props.app.installed) {
             if (this.props.stateApp && this.props.stateApp.serviceUrl) {
-                launchOrInstallButton = <a className="btn oz-btn-save btn-lg pull-right" href={this.props.stateApp.serviceUrl}
+                launchOrInstallButton = <a className="btn btn-default btn-lg pull-right" href={this.props.stateApp.serviceUrl}
                                            target="_new">{this.context.t('launch')}</a>;
             } else {
                 launchOrInstallButton = (<label > <i className="fa fa-spinner fa-spin loading"/> </label> );
@@ -382,9 +382,9 @@ var AppDescriptionComponent = createClass({
         } else {
             const storeUrl = `/${this.props.config.language}/api/store`;
             launchOrInstallButton = !isLogged
-                ? (<a className="btn oz-btn-save btn-lg pull-right"
+                ? (<a className="btn btn-default btn-lg pull-right"
                       href={storeUrl + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{this.context.t('install')}</a>)
-                : (<button type="button" className="btn oz-btn-save btn-lg pull-right" onClick={this.props.onInstallButton}>{this.context.t('install')}</button>)
+                : (<button type="button" className="btn btn-default btn-lg pull-right" onClick={this.props.onInstallButton}>{this.context.t('install')}</button>)
         }
 
 
@@ -603,7 +603,7 @@ var InstallForm =  createClass({
                           <AddressComponent ref='addressComponent' errors={this.state.errors} addressContainer={this.state.installData.address}
                                 changeInput={this.changeInputAddress} />
                           <div className="next">
-                              <button className="btn btn-primary pull-right" onClick={this.validateAndContinue}>{this.context.t('ui.next')}</button>
+                              <button className="btn btn-default pull-right" onClick={this.validateAndContinue}>{this.context.t('ui.next')}</button>
                           </div>
                        </div>)
                     : (<div>
@@ -611,7 +611,7 @@ var InstallForm =  createClass({
                            <SetOrganizationComponent ref='setOrgComponent' url={this.props.url} app={this.props.app} orgs={this.props.orgs}
                                 isOnlyForCitizens={this.isOnlyForCitizens} />
                            <div className="next">
-                               <button className="btn btn-primary pull-right" onClick={this.validateAndContinue}>{this.context.t('ui.next')}</button>
+                               <button className="btn btn-default pull-right" onClick={this.validateAndContinue}>{this.context.t('ui.next')}</button>
                            </div>
                        </div>)
                 }

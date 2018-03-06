@@ -6,6 +6,7 @@ import { Link } from 'react-router-dom';
 //Components
 import OrganizationInvitationForm from '../forms/organization-invitation-form';
 import MemberDropdown from '../dropdown_menus/member/member-dropdown';
+import DropDownMenu from '../dropdown-menu';
 
 class MembersTabHeader extends React.Component {
 
@@ -37,12 +38,12 @@ class MembersTab extends React.Component {
     render() {
         const org = this.props.organization;
 
+        const header = <OrganizationInvitationForm organization={this.props.organization} hideTitle={true}/>;
+
         return <article className="members-tab">
             <section className="add-member">
                 <header className="sub-title">{this.context.t('organization.desc.send-invitation')}</header>
-                <div className="box">
-                    <OrganizationInvitationForm organization={this.props.organization}/>
-                </div>
+                <DropDownMenu header={header}/>
             </section>
             <section className="search-member">
                 <form className="search oz-form">

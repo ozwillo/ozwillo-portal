@@ -6,7 +6,12 @@ import { sendInvitationToJoinOrganization } from '../../actions/invitation';
 class OrganizationInvitationForm extends React.Component {
 
     static propTypes = {
-        organization: PropTypes.object.isRequired
+        organization: PropTypes.object.isRequired,
+        hideTitle: PropTypes.bool
+    };
+
+    static defaultProps = {
+        hideTitle: false
     };
 
     static contextTypes = {
@@ -59,7 +64,9 @@ class OrganizationInvitationForm extends React.Component {
     render() {
         return <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
             <fieldset className="flex-col">
-                <legend className="legend">{this.context.t('organization.form.invite-new-collaborator')}</legend>
+                <legend className={`legend ${this.props.hideTitle && 'hidden' || ''}`}>
+                    {this.context.t('organization.form.invite-new-collaborator')}
+                </legend>
                 <div className="flex-row">
                     <label className="label">
                         {this.context.t('organization.form.email')}

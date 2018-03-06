@@ -48,8 +48,8 @@
 
 #store-apps .logo img {
     margin: auto;
-    max-width: 64px;
-    max-height: 64px;
+    width: 64px;
+    height: 64px;
 }
 
 #store-apps .app .description {
@@ -178,7 +178,6 @@
 
 #store-loadmore {
     padding: 30px 0 30px 0;
-    background-color: #fff;
 }
 
 #store-loadmore .oz-btn-loadmore {

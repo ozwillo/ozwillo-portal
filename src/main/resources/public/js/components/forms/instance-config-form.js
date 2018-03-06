@@ -181,8 +181,8 @@ class InstanceConfigForm extends React.Component {
 
                         <div className="flex-row">
                             {
-                                (!this.props.isLoading && <input type="submit" value="Save" className="submit btn"/> ) ||
-                                <button type="button" className="submit btn icon">
+                                (!this.props.isLoading && <input type="submit" value="Save" className="submit-btn"/> ) ||
+                                <button type="button" className="btn icon">
                                     <i className="fa fa-spinner fa-spin loading"/>
                                 </button>
                             }

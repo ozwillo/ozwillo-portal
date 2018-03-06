@@ -320,7 +320,7 @@ var LoadMore = createClass({
         } else if (this.props.maybeMoreApps) {
             return (
                 <div className="text-center">
-                    <button className="btn btn-lg oz-btn-loadmore" onClick={this.props.loadMoreApps}>{this.context.t('load-more')}</button>
+                    <button className="btn btn-lg btn-default" onClick={this.props.loadMoreApps}>{this.context.t('load-more')}</button>
                 </div>
             );
         }
@@ -411,7 +411,7 @@ var Indicator = createClass({
             btns = [
                 <button type="button" key="indicator_button" className="btn btn-lg btn-buy">{this.context.t('paid')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
-                    <i className="fa fa-eur"></i>
+                    <i className="fa fas fa-euro-sign"></i>
                 </button>
             ];
         }
