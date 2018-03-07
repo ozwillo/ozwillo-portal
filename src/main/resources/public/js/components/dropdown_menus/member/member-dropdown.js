@@ -10,6 +10,7 @@ import MemberDropdownFooter from './member-dropdown-footer';
 //Actions
 import { fetchCreateAcl, fetchDeleteAcl } from '../../../actions/acl';
 import { fetchDeleteMember, fetchUpdateRoleMember } from '../../../actions/member';
+import { fetchRemoveOrganizationInvitation } from "../../../actions/invitation";
 
 class MemberDropdown extends React.Component {
 
@@ -29,6 +30,7 @@ class MemberDropdown extends React.Component {
         this.removeAccessToInstance= this.removeAccessToInstance.bind(this);
         this.addAccessToInstance = this.addAccessToInstance.bind(this);
         this.removeMemberInOrganization = this.removeMemberInOrganization.bind(this);
+        this.removeInvitationToJoinAnOrg = this.removeInvitationToJoinAnOrg.bind(this);
         this.memberInstances = this.memberInstances.bind(this);
         this.filterInstanceWithoutAccess = this.filterInstanceWithoutAccess.bind(this);
         this.onUpdateRoleMember = this.onUpdateRoleMember.bind(this);
@@ -61,6 +63,10 @@ class MemberDropdown extends React.Component {
 
     removeMemberInOrganization(memberId) {
        return this.props.fetchDeleteMember(this.props.organization.id, memberId);
+    }
+
+    removeInvitationToJoinAnOrg(member) {
+        return this.props.fetchRemoveOrganizationInvitation(this.props.organization.id, member);
     }
 
     memberInstances() {
@@ -107,7 +113,8 @@ class MemberDropdown extends React.Component {
         const Header = <MemberDropdownHeader member={member}
                                              organization={org}
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
-                                             onUpdateRoleMember={this.onUpdateRoleMember}/>;
+                                             onUpdateRoleMember={this.onUpdateRoleMember}
+                                             onRemoveInvitationToJoinAnOrg={this.removeInvitationToJoinAnOrg}/>;
         const Footer = !isPending && <MemberDropdownFooter member={member}
                                              instances={instancesWithoutAccess}
                                              onAddAccessToInstance={this.addAccessToInstance}/>;
@@ -149,6 +156,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchUpdateRoleMember(organizationId, memberId, isAdmin) {
             return dispatch(fetchUpdateRoleMember(organizationId, memberId, isAdmin));
+        },
+        fetchRemoveOrganizationInvitation(orgId, invitation) {
+            return dispatch(fetchRemoveOrganizationInvitation(orgId, invitation));
         }
     };
 };

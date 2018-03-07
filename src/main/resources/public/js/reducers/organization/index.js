@@ -30,6 +30,11 @@ import {
     FETCH_DELETE_SUBSCRIPTION
 } from '../../actions/subscription';
 
+import {
+    FETCH_CREATE_ORGANIZATION_INVITATION,
+    FETCH_DELETE_ORGANIZATION_INVITATION
+} from '../../actions/invitation';
+
 //Reducers
 import instanceReducer from './instance';
 import memberReducer from './member';
@@ -87,9 +92,14 @@ const membersState = (state = [], action) => {
 
             nextState[i] = memberReducer(nextState[i], action);
             break;
+        case FETCH_CREATE_ORGANIZATION_INVITATION:
+            nextState.push(action.invitation);
+            break;
+        case FETCH_DELETE_ORGANIZATION_INVITATION:
         case FETCH_DELETE_MEMBER:
             i = nextState.findIndex(member => {
-                return member.id === action.memberId
+                return (member.id === action.memberId) ||
+                    (!member.id && member.email === action.invitation.email);
             });
 
             if(!i) {
@@ -128,6 +138,8 @@ const currentOrganizationState = (state = {}, action) => {
             break;
         case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_DELETE_MEMBER:
+        case FETCH_DELETE_ORGANIZATION_INVITATION:
+        case FETCH_CREATE_ORGANIZATION_INVITATION:
             nextState.members = membersState(nextState.members, action);
             break;
         default:
@@ -185,6 +197,8 @@ export default (state = defaultState, action) => {
         case FETCH_ORGANIZATION_WITH_ID:
         case FETCH_ORGANIZATION_INFO:
         case FETCH_UPDATE_ORGANIZATION:
+        case FETCH_DELETE_ORGANIZATION_INVITATION:
+        case FETCH_CREATE_ORGANIZATION_INVITATION:
             nextState.current = currentOrganizationState(state.current, action);
             break;
         default:

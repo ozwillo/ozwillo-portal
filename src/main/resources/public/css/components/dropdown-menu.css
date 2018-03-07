@@ -96,12 +96,6 @@
     font-size: 0.9em;
 }
 
-.oz-dropdown-menu .organization-invitation-form .error { color: var(--red-color); }
-.oz-dropdown-menu .organization-invitation-form .success { color: var(--green-color); }
-.oz-dropdown-menu .organization-invitation-form .wrapper {
-    flex-wrap: wrap;
-}
-
 @media (max-width: 425px) {
     .dropdown-content .invitation .organization-invitation-form .label,
     .dropdown-content .invitation {

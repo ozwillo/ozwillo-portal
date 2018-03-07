@@ -43,6 +43,12 @@
     color: white;
 }
 
+.organization-search .organization-invitation-form .error { color: var(--red-color); }
+.organization-search .organization-invitation-form .success { color: var(--green-color); }
+.organization-search .organization-invitation-form .wrapper {
+    flex-wrap: wrap;
+}
+
 @media (max-width: 425px) {
     .organization-search .options {
         margin: 5px 0;

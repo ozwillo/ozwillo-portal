@@ -487,14 +487,14 @@ public class NetworkService {
         return existingInstance.getProviderId() == null;
     }
 
-    public void invite(String email, String organizationId) {
+    public UIPendingOrganizationMember invite(String email, String organizationId) {
         if (!userIsAdmin(organizationId)) {
             logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
             throw new ForbiddenException();
         }
 
         try {
-            userMembershipService.createMembership(email, organizationId);
+            return userMembershipService.createMembership(email, organizationId);
         } catch (WrongQueryException wqex) {
             if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
                 // Translated msg. see issue #201
@@ -510,7 +510,7 @@ public class NetworkService {
         // prevent non organization admin users from removing invitations
         if (!userIsAdmin(organizationId)) {
             logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser()
-                .getUserId(), organizationId);
+                    .getUserId(), organizationId);
             throw new ForbiddenException();
         }
 
@@ -519,7 +519,7 @@ public class NetworkService {
         } catch (WrongQueryException wqex) {
             if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
                 String translatedBusinessMessage = messageSource.getMessage("error.msg.data-conflict",
-                    new Object[]{}, RequestContextUtils.getLocale(request));
+                        new Object[]{}, RequestContextUtils.getLocale(request));
                 wqex.setTranslatedBusinessMessage(translatedBusinessMessage);
             }
             throw wqex;

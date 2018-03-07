@@ -8,7 +8,8 @@ class MemberDropdownHeader extends React.Component {
         organization: PropTypes.object.isRequired,
         member: PropTypes.object.isRequired,
         onRemoveMemberInOrganization: PropTypes.func.isRequired,
-        onUpdateRoleMember: PropTypes.func.isRequired
+        onUpdateRoleMember: PropTypes.func.isRequired,
+        onRemoveInvitationToJoinAnOrg: PropTypes.func.isRequired
     };
 
     static contextTypes = {
@@ -23,6 +24,7 @@ class MemberDropdownHeader extends React.Component {
         };
 
         this.onRemoveMemberInOrganization = this.onRemoveMemberInOrganization.bind(this);
+        this.onRemoveInvitationToJoinAnOrg = this.onRemoveInvitationToJoinAnOrg.bind(this);
         this.memberRoleToggle = this.memberRoleToggle.bind(this);
     }
 
@@ -31,6 +33,13 @@ class MemberDropdownHeader extends React.Component {
             .then(() => {
                 this.setState({ error: '' })
             })
+            .catch((err) => {
+                this.setState({ error: err.error });
+            });
+    }
+
+    onRemoveInvitationToJoinAnOrg() {
+        this.props.onRemoveInvitationToJoinAnOrg(this.props.member)
             .catch((err) => {
                 this.setState({ error: err.error });
             });
@@ -87,8 +96,8 @@ class MemberDropdownHeader extends React.Component {
                         </button>
                     }
 
-                    <button type="button" className={`btn icon ${isPending && 'invisible' || ''}`}
-                            onClick={!isPending && this.memberRoleToggle || null}>
+                    <button type="button" className="btn icon"
+                            onClick={!isPending && this.memberRoleToggle || this.onRemoveInvitationToJoinAnOrg}>
                         <i className="fa fa-trash option-icon"/>
                     </button>
                 </div>

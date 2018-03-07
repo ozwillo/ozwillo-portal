@@ -8,6 +8,7 @@ import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.dc.organization.OrganizationService;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.dc.organization.DCOrganization;
+import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,11 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.*;
 
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.List;
-
-import static org.springframework.web.bind.annotation.RequestMethod.POST;
 
 @RestController
 @RequestMapping("/my/api/organization")
@@ -64,14 +62,14 @@ class OrganizationController extends BaseController {
     }
 
     @PostMapping ("/invite/{organizationId}")
-    public void invite(@PathVariable String organizationId, @RequestBody InvitationRequest invitation, Errors errors) {
+    public UIPendingOrganizationMember invite(@PathVariable String organizationId, @RequestBody InvitationRequest invitation, Errors errors) {
         logger.debug("Inviting {} to organization {}", invitation.email, organizationId);
 
         if (errors.hasErrors()) {
             throw new WrongQueryException();
         }
 
-        networkService.invite(invitation.email, organizationId);
+        return networkService.invite(invitation.email, organizationId);
     }
 
     @PutMapping("/{organizationId}/membership/{accountId}/role/{isAdmin}")
@@ -83,6 +81,11 @@ class OrganizationController extends BaseController {
     @DeleteMapping("/{organizationId}/membership/{accountId}")
     public void removeMember(@PathVariable String organizationId, @PathVariable String accountId) {
         networkService.removeMember(organizationId, accountId);
+    }
+
+    @DeleteMapping(value = "/{organizationId}/invitation/{invitationId}")
+    public void removeInvitation(@PathVariable String organizationId, @RequestBody UIPendingOrganizationMember member) {
+        networkService.removeInvitation(organizationId, member.getId(), member.getPendingMembershipEtag());
     }
 
     private static class InvitationRequest {

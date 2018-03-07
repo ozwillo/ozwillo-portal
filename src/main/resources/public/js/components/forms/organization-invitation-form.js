@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 
-import { sendInvitationToJoinOrganization } from '../../actions/invitation';
+import { createOrganizationInvitation } from '../../actions/invitation';
 
 class OrganizationInvitationForm extends React.Component {
 
@@ -44,7 +45,7 @@ class OrganizationInvitationForm extends React.Component {
         e.preventDefault();
 
         this.setState({ isLoading: true });
-        sendInvitationToJoinOrganization(this.state.email, this.props.organization.id)
+        this.props.createOrganizationInvitation(this.props.organization.id, this.state.email)
             .then(() => {
                 this.setState({
                     email: '',
@@ -111,4 +112,12 @@ class OrganizationInvitationForm extends React.Component {
 
 }
 
-export default OrganizationInvitationForm;
+const mapDispatchToProps = dispatch => {
+    return {
+        createOrganizationInvitation(orgId, email) {
+            return dispatch(createOrganizationInvitation(orgId, email));
+        }
+    };
+};
+
+export default connect(null, mapDispatchToProps)(OrganizationInvitationForm);

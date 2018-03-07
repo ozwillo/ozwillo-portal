@@ -38,18 +38,15 @@
 
 .organization-invitation-form .error,
 .organization-invitation-form .success{
-    width: 100%;
-    font-size: 0.9em;
-    text-align: center;
-    color: var(--red-color);
-}
-
-.organization-invitation-form .error {
     display: flex;
     justify-content: center;
     align-items: center;
-}
 
+    width: 100%;
+    font-size: 0.9em;
+    text-align: center;
+    color: var(--white-color);
+}
 
 .organization-invitation-form .btn-submit {
     padding: 3px 6px;
@@ -64,6 +61,10 @@
 @media (max-width: 425px) {
     .organization-invitation-form .field {
         width: auto;
+    }
+
+    .organization-invitation-form .wrapper {
+        flex-wrap: wrap;
     }
 }
 
