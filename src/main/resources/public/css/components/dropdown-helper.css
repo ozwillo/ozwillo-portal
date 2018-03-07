@@ -125,8 +125,7 @@
     color: var(--green-color);
 }
 
-.dropdown-header .delete,
-.dropdown-content .error {
+.dropdown-header .delete {
     color: var(--white-color)
 }
 

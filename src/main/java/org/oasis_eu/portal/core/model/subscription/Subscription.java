@@ -4,11 +4,12 @@ import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.joda.time.Instant;
 import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.portal.core.model.appstore.GenericEntity;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.time.Instant;
 
 /**
  * User: schambon
