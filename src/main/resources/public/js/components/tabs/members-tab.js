@@ -35,8 +35,37 @@ class MembersTab extends React.Component {
         t: PropTypes.func.isRequired,
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            membersFilter: ''
+        };
+
+        this.handleChange = this.handleChange.bind(this);
+        this.filterMembers = this.filterMembers.bind(this);
+    }
+
+    handleChange(e) {
+        const el = e.currentTarget;
+        this.setState({ [el.name]: el.value });
+    }
+
+    filterMembers(members, filter) {
+        if (!filter) {
+            return members;
+        }
+        const regex = new RegExp(`(\\w|\\S)*${filter.toUpperCase()}(\\w|\\S)*`);
+
+        return members.filter((member) => {
+            return member.name && regex.test(member.name.toUpperCase()) ||
+                !member.name && regex.test(member.email.toUpperCase());
+        });
+    }
+
     render() {
         const org = this.props.organization;
+        const membersFilter = this.state.membersFilter;
 
         const header = <OrganizationInvitationForm organization={this.props.organization} hideTitle={true}/>;
 
@@ -47,12 +76,13 @@ class MembersTab extends React.Component {
             </section>
             <section className="search-member">
                 <form className="search oz-form">
-                    <input className="field form-control" type="text" placeholder={this.context.t('ui.search')}/>
+                    <input name="membersFilter" className="field form-control" type="text"
+                           placeholder={this.context.t('ui.search')} onChange={this.handleChange}/>
                 </form>
 
                 <ul className="members-list undecorated-list flex-col">
                     {
-                        org.members && org.members.map((member) => {
+                        org.members && this.filterMembers(org.members, membersFilter).map((member) => {
                             return <li key={member.id} className="member">
                                 <MemberDropdown member={member} organization={this.props.organization}/>
                             </li>
