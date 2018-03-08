@@ -30,9 +30,6 @@ class MemberDropdownHeader extends React.Component {
 
     onRemoveMemberInOrganization() {
         this.props.onRemoveMemberInOrganization(this.props.member.id)
-            .then(() => {
-                this.setState({ error: '' })
-            })
             .catch((err) => {
                 this.setState({ error: err.error });
             });
@@ -76,28 +73,28 @@ class MemberDropdownHeader extends React.Component {
                 <div className="options flex-row end">
 
                     {
-                        member.admin && !isPending &&
-                        <button type="button" className="btn icon" onClick={this.memberRoleToggle}>
-                            <i className="fa fa-chess-king option-icon"/>
-                        </button>
-                    }
-
-                    {
-                        !member.admin && !isPending &&
-                        <button type="button" className="btn icon" onClick={this.memberRoleToggle}>
-                            <i className="fa fa-chess-pawn option-icon"/>
-                        </button>
-                    }
-
-                    {
                         isPending &&
                         <button type="button" className="btn icon">
                             <i className="fa fa-stopwatch option-icon loading"/>
                         </button>
                     }
 
+                    {
+                        member.admin &&
+                        <button type="button" className="btn icon" onClick={!isPending && this.memberRoleToggle || null}>
+                            <i className="fa fa-chess-king option-icon"/>
+                        </button>
+                    }
+
+                    {
+                        !member.admin &&
+                        <button type="button" className="btn icon" onClick={!isPending && this.memberRoleToggle || null}>
+                            <i className="fa fa-chess-pawn option-icon"/>
+                        </button>
+                    }
+
                     <button type="button" className="btn icon"
-                            onClick={!isPending && this.memberRoleToggle || this.onRemoveInvitationToJoinAnOrg}>
+                            onClick={!isPending && this.onRemoveMemberInOrganization || this.onRemoveInvitationToJoinAnOrg}>
                         <i className="fa fa-trash option-icon"/>
                     </button>
                 </div>

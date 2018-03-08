@@ -156,13 +156,14 @@ public class UserMembershipService {
         kernel.getBodyUnlessClientError(kernelResp, Void.class, uriString );
     }
 
-    public UIPendingOrganizationMember createMembership(String email, String organizationId) throws WrongQueryException {
+    public UIPendingOrganizationMember createMembership(String email, boolean isAdmin, String organizationId) throws WrongQueryException {
 
         String uriString = UriComponentsBuilder.fromHttpUrl(userMembershipEndpoint)
                 .path("/memberships/org/{organization_id}").build().expand(organizationId).toUriString();
 
         MembershipRequest request = new MembershipRequest();
         request.email = email;
+        request.admin = isAdmin;
 
         ResponseEntity<MembershipResponse> kernelResp = kernel.exchange(uriString, HttpMethod.POST, new HttpEntity<Object>(request),
                 MembershipResponse.class, user());
@@ -175,6 +176,7 @@ public class UserMembershipService {
         pendingOrganizationMember.setId(response.id);
         pendingOrganizationMember.setEmail(email);
         pendingOrganizationMember.setPendingMembershipEtag(kernelResp.getHeaders().getETag());
+        pendingOrganizationMember.setAdmin(isAdmin);
         return pendingOrganizationMember;
     }
 

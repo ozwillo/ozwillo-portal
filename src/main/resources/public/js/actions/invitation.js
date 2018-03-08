@@ -18,11 +18,11 @@ const fetchRemoveOrganizationInvitationAction =  (invitation) => {
 };
 
 
-export const createOrganizationInvitation = (orgId, email) => {
+export const createOrganizationInvitation = (orgId, email, admin) => {
     return dispatch => {
         return customFetch(`/my/api/organization/invite/${orgId}`, {
             method: 'POST',
-            json: { email }
+            json: { email, admin }
         }).then(invitation => {
             return dispatch(createOrganizationInvitationAction(invitation));
         });

@@ -87,7 +87,7 @@ public final class i18nMessages {
     private static final List<String> organizationSearchKeys = Arrays.asList("title", "new", "no-apps-installed");
 
     private static final List<String> organizationFormKeys = Arrays.asList("invite-new-collaborator", "email", "create",
-            "title", "contact-information");
+            "title", "contact-information", "admin");
 
     private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
             "add-application", "add-in-organization", "send-invitation");

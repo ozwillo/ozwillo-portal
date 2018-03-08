@@ -487,14 +487,14 @@ public class NetworkService {
         return existingInstance.getProviderId() == null;
     }
 
-    public UIPendingOrganizationMember invite(String email, String organizationId) {
+    public UIPendingOrganizationMember invite(String email, boolean isAdmin, String organizationId) {
         if (!userIsAdmin(organizationId)) {
             logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
             throw new ForbiddenException();
         }
 
         try {
-            return userMembershipService.createMembership(email, organizationId);
+            return userMembershipService.createMembership(email, isAdmin, organizationId);
         } catch (WrongQueryException wqex) {
             if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
                 // Translated msg. see issue #201

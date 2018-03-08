@@ -64,7 +64,7 @@ public class NetworkAJAXServices extends BaseController {
             throw new WrongQueryException();
         }
 
-        networkService.invite(invitation.email, organizationId);
+        networkService.invite(invitation.email, false, organizationId);
 
     }
 

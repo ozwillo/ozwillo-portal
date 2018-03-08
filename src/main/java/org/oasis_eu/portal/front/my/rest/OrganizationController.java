@@ -62,14 +62,8 @@ class OrganizationController extends BaseController {
     }
 
     @PostMapping ("/invite/{organizationId}")
-    public UIPendingOrganizationMember invite(@PathVariable String organizationId, @RequestBody InvitationRequest invitation, Errors errors) {
-        logger.debug("Inviting {} to organization {}", invitation.email, organizationId);
-
-        if (errors.hasErrors()) {
-            throw new WrongQueryException();
-        }
-
-        return networkService.invite(invitation.email, organizationId);
+    public UIPendingOrganizationMember invite(@PathVariable String organizationId, @RequestBody InvitationRequest invitation) {
+        return networkService.invite(invitation.email, invitation.admin, organizationId);
     }
 
     @PutMapping("/{organizationId}/membership/{accountId}/role/{isAdmin}")
@@ -93,6 +87,9 @@ class OrganizationController extends BaseController {
         @NotNull
         @NotEmpty
         String email;
+
+        @JsonProperty
+        boolean admin;
     }
 
 }

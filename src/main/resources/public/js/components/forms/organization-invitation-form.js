@@ -24,6 +24,7 @@ class OrganizationInvitationForm extends React.Component {
 
         this.state = {
             email: '',
+            admin: false,
             isLoading: false,
             success: '',
             error: ''
@@ -36,8 +37,9 @@ class OrganizationInvitationForm extends React.Component {
 
     handleChange(e) {
         const el = e.currentTarget;
+
         this.setState({
-            [el.name]: el.value
+            [el.name]: el.type === 'checkbox' ? el.checked : el.value
         });
     }
 
@@ -45,10 +47,11 @@ class OrganizationInvitationForm extends React.Component {
         e.preventDefault();
 
         this.setState({ isLoading: true });
-        this.props.createOrganizationInvitation(this.props.organization.id, this.state.email)
+        this.props.createOrganizationInvitation(this.props.organization.id, this.state.email, this.state.admin)
             .then(() => {
                 this.setState({
                     email: '',
+                    admin: false,
                     isLoading: false,
                     error: '',
                     success: this.context.t('ui.request.send')
@@ -70,11 +73,19 @@ class OrganizationInvitationForm extends React.Component {
                 </legend>
                 <div className="flex-row">
                     <div className="flex-row wrapper">
-                        <label className="label">
-                            {this.context.t('organization.form.email')}
-                            <input name="email" type="email" className="field form-control" required={true}
-                                   onChange={this.handleChange} value={this.state.email}/>
-                        </label>
+                        <div className="flex-row">
+                            <label className="label">
+                                {this.context.t('organization.form.email')}
+                                <input name="email" type="email" className="field form-control" required={true}
+                                       onChange={this.handleChange} value={this.state.email}/>
+                            </label>
+
+                            <label className="label">
+                                {this.context.t('organization.form.admin')}
+                                <input name="admin" type="checkbox" className="field" required={true}
+                                       onChange={this.handleChange} checked={this.state.admin}/>
+                            </label>
+                        </div>
 
                         {
                             this.state.error &&
@@ -114,8 +125,8 @@ class OrganizationInvitationForm extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        createOrganizationInvitation(orgId, email) {
-            return dispatch(createOrganizationInvitation(orgId, email));
+        createOrganizationInvitation(orgId, email, admin) {
+            return dispatch(createOrganizationInvitation(orgId, email, admin));
         }
     };
 };

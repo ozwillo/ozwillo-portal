@@ -31,6 +31,10 @@
     margin: 0 5px;
 }
 
+.organization-invitation-form input[type="checkbox"].field {
+    width: auto;
+}
+
 .organization-invitation-form .options .action-icon {
     font-size: 1.5em;
     color: var(--purple-color);
