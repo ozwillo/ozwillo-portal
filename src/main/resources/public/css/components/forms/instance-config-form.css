@@ -15,6 +15,18 @@
     margin: auto;
 }
 
+
+.instance-config-form .field .desc-field{
+    width: 100%;
+    align-self: center;
+}
+
+.instance-config-form .field .desc-field > .desc{
+    font-size: 0.9em;
+    color: var(--dark-purple-color);
+}
+
 .instance-config-form .btn {
     margin: auto;
 }
+

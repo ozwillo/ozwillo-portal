@@ -178,7 +178,7 @@ public final class i18nMessages {
     }
 
     public static Map<String, String> getI18n_myApps(Locale locale, MessageSource messageSource) throws JsonProcessingException {
-        return (myApps.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
+        return (myApps.stream().collect(Collectors.toMap(k -> "my.apps." + k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
     }
 
     public static Map<String, String> getI18n_profilekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
@@ -186,7 +186,7 @@ public final class i18nMessages {
     }
 
     public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
-        return (languagekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
+        return (languagekeys.stream().collect(Collectors.toMap(k -> "store.language." + k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
     }
 
     public static Map<String, String> getI18n_franceconnectKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {

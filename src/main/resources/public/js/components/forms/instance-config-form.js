@@ -4,7 +4,6 @@ import PropTypes from 'prop-types';
 //Components
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
 import Select from 'react-select';
-import FileUploadInput from '../fileuploadinput';
 
 //Config
 import Config from '../../config/config';
@@ -20,6 +19,10 @@ class InstanceConfigForm extends React.Component {
         instance: PropTypes.object.isRequired,
         onSubmit: PropTypes.func.isRequired,
         isLoading: PropTypes.bool
+    };
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -139,8 +142,12 @@ class InstanceConfigForm extends React.Component {
 
                             <div className="flex-row field icon">
                                 <img src={this.state.iconUrl} />
-                                <input type="text" name="iconUrl" id="iconUrl" className="form-control"
-                                       value={this.state.iconUrl} onChange={this.handleChange} required={true} />
+
+                                <div className="desc-field text-center">
+                                    <input type="text" name="iconUrl" id="iconUrl" className="form-control"
+                                           value={this.state.iconUrl} onChange={this.handleChange} required={true} />
+                                    <span className="desc">{this.context.t('my.apps.upload')}</span>
+                                </div>
                             </div>
                         </div>
 
@@ -164,7 +171,7 @@ class InstanceConfigForm extends React.Component {
                                                 endpoint="/geographicalAreas"
                                                 onChange={this.handleChange}
                                                 onGeoAreaSelected={this.onGeoAreaSelected}
-                                                value={this.state.area}/>
+                                                value={this.state.area} required={true}/>
                         </div>
 
                         {
