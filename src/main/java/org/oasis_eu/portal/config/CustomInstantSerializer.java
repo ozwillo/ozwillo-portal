@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.config;
 
 import com.fasterxml.jackson.core.JsonGenerator;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import org.joda.time.format.DateTimeFormat;
@@ -27,7 +26,9 @@ public class CustomInstantSerializer extends StdSerializer<Instant> {
     @Override
     public void serialize
             (Instant value, JsonGenerator gen, SerializerProvider arg2)
-            throws IOException, JsonProcessingException {
+            throws IOException {
         gen.writeString(formatter.print(Date.from(value).getTime()));
     }
+
+
 }

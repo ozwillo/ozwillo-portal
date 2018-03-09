@@ -1,7 +1,9 @@
 package org.oasis_eu.portal.model.user;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.oasis_eu.portal.config.CustomInstantDeserializer;
 import org.oasis_eu.portal.config.CustomInstantSerializer;
 
 import java.time.Instant;
@@ -19,6 +21,7 @@ public class User implements Comparable<User> {
     private String email;
 
     @JsonSerialize(using = CustomInstantSerializer.class)
+    @JsonDeserialize(using = CustomInstantDeserializer.class)
     private Instant created;
 
     boolean admin;

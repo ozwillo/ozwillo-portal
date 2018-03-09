@@ -2,8 +2,7 @@ package org.oasis_eu.portal.core.mongo.model.geo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.oasis_eu.portal.config.CustomInstantSerializer;
+import org.joda.time.Instant;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;
@@ -11,7 +10,6 @@ import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.data.mongodb.core.mapping.Field;
 
-import java.time.Instant;
 import java.util.List;
 
 @Document(collection = "geographical_area")
@@ -79,14 +77,22 @@ public class GeographicalArea {
     @Indexed
     private GeographicalAreaReplicationStatus status = GeographicalAreaReplicationStatus.INCOMING;
 
+
+    /*
+        https://spring.io/blog/2015/03/26/what-s-new-in-spring-data-fowler
+
+        This setup will make sure that both your application package and the Spring Data JPA one
+        for the JSR-310 converters will be scanned and handed to the persistence provider.
+        Find a complete example for that in our Spring Data Examples repository.
+        Note, that due to the fact that the converter simply converts the JSR-310 types to legacy Date instances,
+        only non-time-zoned (e.g. LocalDateTime etc.) are supported.
+    */
+
     @JsonIgnore
     @Indexed // used by result sort
-    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant replicationTime = Instant.now();
 
-    public GeographicalArea() {
-
-    }
+    public GeographicalArea() { }
 
     public String getName() {
         return name;
