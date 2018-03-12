@@ -374,7 +374,7 @@ const DashActions = createClass({
     render: function () {
         if (this.props.primary) {
             return (
-                <i className="fa fa-pencil" onClick={this.props.edit} />
+                <i className="fas fa-pencil-alt" onClick={this.props.edit} />
             );
         } else {
             const buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
@@ -385,7 +385,7 @@ const DashActions = createClass({
                         <span>{this.context.t('my.confirm-delete-dash-long')}</span>
                     </Modal>
 
-                    <i className="fa fa-pencil" onClick={this.props.edit} />
+                    <i className="fas fa-pencil-alt" onClick={this.props.edit} />
                     <i className="fa fa-trash" onClick={this.showRemove} />
                 </span>
             );

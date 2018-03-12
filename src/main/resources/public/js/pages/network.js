@@ -504,7 +504,7 @@ var Member = createClass({
                             <i className="fa fa-trash"></i>
                         </span>
                         <span className="pull-right btn-line action-icon" onClick={this.toggleEdit}>
-                            <i className="fa fa-pencil"></i>
+                            <i className="fas fa-pencil-alt"></i>
                         </span>
                     </div>
                 );
