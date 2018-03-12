@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 //Components
 import DropDownMenu from '../../dropdown-menu';
 import MemberDropdownHeader from './member-dropdown-header';
-import MemberDropdownFooter from './member-dropdown-footer';
+import MemberDropdownFooter from './member-dropdown-footer'
+import CustomTooltip from '../../custom-tooltip';
 
 //Actions
 import { fetchCreateAcl, fetchDeleteAcl } from '../../../actions/acl';
@@ -13,6 +14,10 @@ import { fetchDeleteMember, fetchUpdateRoleMember } from '../../../actions/membe
 import { fetchRemoveOrganizationInvitation } from "../../../actions/invitation";
 
 class MemberDropdown extends React.Component {
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
 
     static propTypes = {
         member: PropTypes.object.isRequired,
@@ -129,9 +134,12 @@ class MemberDropdown extends React.Component {
                                     <p className="name">{instance.name}</p>
                                     <span className="error-message">{this.state.errors[instance.id]}</span>
                                     <div className="options flex-row">
-                                        <button className="btn icon" onClick={this.removeAccessToInstance} data-instance={instance.id}>
-                                            <i className="fa fa-trash option-icon delete"/>
-                                        </button>
+                                        <CustomTooltip title={this.context.t('tooltip.remove.instance')}>
+                                            <button className="btn icon"
+                                                    onClick={this.removeAccessToInstance} data-instance={instance.id}>
+                                                <i className="fa fa-trash option-icon delete"/>
+                                            </button>
+                                        </CustomTooltip>
                                     </div>
                                 </article>
                             </li>;

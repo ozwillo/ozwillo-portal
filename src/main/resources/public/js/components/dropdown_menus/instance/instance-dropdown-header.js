@@ -1,6 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+//Components
+import CustomTooltip from '../../custom-tooltip';
+
+
 //Config
 import Config from '../../../config/config';
 const instanceStatus = Config.instanceStatus;
@@ -72,32 +76,40 @@ class InstanceDropdownHeader extends React.Component {
                 <div className="options flex-row end">
                     {
                         !isStopped && !isPending && isAdmin &&
-
+                        <CustomTooltip title={this.context.t('tooltip.config')}>
                             <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
                                 <i className="fa fa-cog option-icon"/>
                             </button>
-
-
+                        </CustomTooltip>
                     }
 
                     {
                         isPending &&
-                        <button type="button" className="btn icon">
-                            <i className="fa fa-stopwatch option-icon loading"/>
-                        </button>
+                        <CustomTooltip title={this.context.t('tooltip.pending')}>
+                            <button type="button" className="btn icon">
+                                <i className="fa fa-stopwatch option-icon loading"/>
+                            </button>
+                        </CustomTooltip>
                     }
 
-                    <button type="submit" className={`btn icon ${(isStopped || isPending || !isAdmin) ? 'invisible' : ''}`}>
-                        <i className="fa fa-trash option-icon"/>
-                    </button>
+                    <CustomTooltip title={this.context.t('tooltip.remove.instance')}
+                                   className={`${(isStopped || isPending || !isAdmin) ? 'invisible' : ''}`}>
+                        <button type="submit"
+                                className="btn icon">
+                            <i className="fa fa-trash option-icon"/>
+                        </button>
+                    </CustomTooltip>
 
                     {
                         isStopped &&
                         [
+
                             <span key={`${instance.id}-message`} className="message delete">
                                 { this.context.t('ui.message.will-be-deleted').format(this.numberOfDaysBeforeDeletion) }
                             </span>,
-                            <button key={`${instance.id}-submit`} type="submit" className="btn btn-default-inverse">Cancel</button>
+                            <button key={`${instance.id}-submit`} type="submit" className="btn btn-default-inverse">
+                                {this.context.t('ui.cancel')}
+                            </button>
                         ]
                     }
                 </div>

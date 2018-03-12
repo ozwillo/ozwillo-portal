@@ -15,7 +15,8 @@ const PATHS = {
 
 const commonEntryPointsLoadersAndServers = ['bootstrap-loader', /*'font-awesome-webpack',*/
     path.join(PATHS.nodeModules, 'react-select/dist/react-select.css'),
-    path.join(PATHS.nodeModules, 'react-datepicker/dist/react-datepicker.css')];
+    path.join(PATHS.nodeModules, 'react-datepicker/dist/react-datepicker.css'),
+    path.join(PATHS.nodeModules, 'react-tippy/dist/tippy.css')];
 const devEntryPointsLoadersAndServers = ['webpack-dev-server/client?http://localhost:3000', 'webpack/hot/only-dev-server'];
 
 const extractCSS = new ExtractTextPlugin({ filename: 'bundle.css' });

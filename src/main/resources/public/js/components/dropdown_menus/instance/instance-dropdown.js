@@ -8,6 +8,7 @@ import DropDownMenu from '../../dropdown-menu';
 import InstanceInvitationForm from '../../forms/instance-invitation-form';
 import InstanceDropdownHeader from './instance-dropdown-header';
 import InstanceConfigForm from '../../forms/instance-config-form';
+import CustomTooltip from '../../custom-tooltip';
 
 //action
 import { fetchDeleteAcl } from '../../../actions/acl';
@@ -22,6 +23,10 @@ const instanceStatus = Config.instanceStatus;
 import { fetchUpdateServiceConfig } from '../../../actions/instance';
 
 class InstanceDropdown extends React.Component {
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
@@ -242,21 +247,25 @@ class InstanceDropdown extends React.Component {
                                             return <td key={service.catalogEntry.id} className="center">
                                                 {
                                                     !sub &&
-                                                    <button className="btn icon" onClick={this.createSubscription}
-                                                            disabled={status && status.isLoading}
-                                                            data-user={user.id} data-service={service.catalogEntry.id}>
-                                                        <i className="fas fa-home option-icon service"/>
-                                                    </button>
+                                                    <CustomTooltip title={this.context.t('tooltip.add.icon')}>
+                                                        <button className="btn icon" onClick={this.createSubscription}
+                                                                disabled={status && status.isLoading}
+                                                                data-user={user.id} data-service={service.catalogEntry.id}>
+                                                            <i className="fas fa-times option-icon service"/>
+                                                        </button>
+                                                    </CustomTooltip>
                                                 }
 
                                                 {
                                                     sub &&
-                                                    <button className="btn icon" onClick={this.deleteSubscription}
-                                                            disabled={status && status.isLoading}
-                                                            data-sub={sub.id}
-                                                            data-user={user.id} data-service={service.catalogEntry.id}>
-                                                        <i className="fa fa-plus option-icon service"/>
-                                                    </button>
+                                                    <CustomTooltip title={this.context.t('tooltip.remove.icon')}>
+                                                        <button className="btn icon" onClick={this.deleteSubscription}
+                                                                disabled={status && status.isLoading}
+                                                                data-sub={sub.id}
+                                                                data-user={user.id} data-service={service.catalogEntry.id}>
+                                                            <i className="fas fa-home option-icon service"/>
+                                                        </button>
+                                                    </CustomTooltip>
                                                 }
                                             </td>
                                         })
@@ -267,21 +276,28 @@ class InstanceDropdown extends React.Component {
                                     {
                                         !user.id &&
                                         <td colSpan={instance.services.length + 1} className="right">
-                                            <i className="fa fa-stopwatch option-icon loading"/>
-                                            <button className="btn icon" data-member={i}
-                                                    onClick={this.removeUserAccessToInstance}>
-                                                <i className="fa fa-trash option-icon delete"/>
-                                            </button>
+                                            <CustomTooltip title={this.context.t('tooltip.pending')}>
+                                                <i className="fa fa-stopwatch option-icon loading"/>
+                                            </CustomTooltip>
+
+                                            <CustomTooltip title={this.context.t('tooltip.remove.member')}>
+                                                <button className="btn icon" data-member={i}
+                                                        onClick={this.removeUserAccessToInstance}>
+                                                    <i className="fa fa-trash option-icon delete"/>
+                                                </button>
+                                            </CustomTooltip>
                                         </td>
                                     }
 
                                     {
                                         user.id &&
                                         <td colSpan={instance.services.length} className="right">
-                                            <button className="btn icon" data-member={i}
-                                                    onClick={this.removeUserAccessToInstance}>
-                                                <i className="fa fa-trash option-icon delete"/>
-                                            </button>
+                                            <CustomTooltip title={this.context.t('tooltip.remove.member')}>
+                                                <button className="btn icon" data-member={i}
+                                                        onClick={this.removeUserAccessToInstance}>
+                                                    <i className="fa fa-trash option-icon delete"/>
+                                                </button>
+                                            </CustomTooltip>
                                         </td>
                                     }
                                 </tr>

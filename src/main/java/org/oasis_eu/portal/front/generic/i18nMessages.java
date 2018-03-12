@@ -94,8 +94,9 @@ public final class i18nMessages {
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 
-
-
+    private static final List<String> tooltipKeys = Arrays.asList("instances", "members", "admin", "config", "pending",
+            "delete.organization", "delete.instance", "delete.member", "remove.right", "remove.icon",
+            "remove.right.admin", "add.right.admin", "add.icon", "remove.instance", "remove.member");
 
     /* Messages Handlers  */
     public static Map<String, String> getI18n_all(Locale locale, MessageSource messageSource) throws JsonProcessingException {
@@ -118,6 +119,7 @@ public final class i18nMessages {
         i18n.putAll(i18nMessages.getI18n_organizationSearchKeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_organizationFormKeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_organizationDescKeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_tooltipKeys(locale, messageSource));
 
         return i18n;
     }
@@ -206,5 +208,10 @@ public final class i18nMessages {
     public static Map<String, String> getI18n_organizationDescKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         return (organizationDescKeys.stream().collect(Collectors.toMap(k -> "organization.desc." +k,
                 k -> messageSource.getMessage("organization.desc." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_tooltipKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+        return (tooltipKeys.stream().collect(Collectors.toMap(k -> "tooltip." +k,
+                k -> messageSource.getMessage("tooltip." + k, new Object[0], locale))));
     }
 }

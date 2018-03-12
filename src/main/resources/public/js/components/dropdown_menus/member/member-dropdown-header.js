@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Popup from "react-popup";
+import CustomTooltip from '../../custom-tooltip';
 
 class MemberDropdownHeader extends React.Component {
 
@@ -74,29 +75,37 @@ class MemberDropdownHeader extends React.Component {
 
                     {
                         isPending &&
-                        <button type="button" className="btn icon">
-                            <i className="fa fa-stopwatch option-icon loading"/>
-                        </button>
+                        <CustomTooltip title={this.context.t('tooltip.pending')}>
+                            <button type="button" className="btn icon">
+                                <i className="fa fa-stopwatch option-icon loading"/>
+                            </button>
+                        </CustomTooltip>
                     }
 
                     {
                         member.admin &&
-                        <button type="button" className="btn icon" onClick={!isPending && this.memberRoleToggle || null}>
-                            <i className="fa fa-chess-king option-icon"/>
-                        </button>
+                        <CustomTooltip title={this.context.t('tooltip.remove.right.admin')}>
+                            <button type="button" className="btn icon" onClick={!isPending && this.memberRoleToggle || null}>
+                                <i className="fa fa-chess-king option-icon"/>
+                            </button>
+                        </CustomTooltip>
                     }
 
                     {
                         !member.admin &&
-                        <button type="button" className="btn icon" onClick={!isPending && this.memberRoleToggle || null}>
-                            <i className="fa fa-chess-pawn option-icon"/>
-                        </button>
+                        <CustomTooltip title={this.context.t('tooltip.add.right.admin')}>
+                            <button type="button" className="btn icon" onClick={!isPending && this.memberRoleToggle || null}>
+                                <i className="fa fa-chess-pawn option-icon"/>
+                            </button>
+                        </CustomTooltip>
                     }
 
-                    <button type="button" className="btn icon"
-                            onClick={!isPending && this.onRemoveMemberInOrganization || this.onRemoveInvitationToJoinAnOrg}>
-                        <i className="fa fa-trash option-icon"/>
-                    </button>
+                    <CustomTooltip title={this.context.t('tooltip.delete.member')}>
+                        <button type="button" className="btn icon"
+                                onClick={!isPending && this.onRemoveMemberInOrganization || this.onRemoveInvitationToJoinAnOrg}>
+                            <i className="fa fa-trash option-icon"/>
+                        </button>
+                    </CustomTooltip>
                 </div>
             </form>
         </header>;

@@ -5,6 +5,7 @@
 
 /* Components */
 @import 'components/btn.css';
+@import 'components/custom-tooltip.css';
 @import 'components/datepicker.css';
 @import 'components/dropdown-helper.css';
 @import 'components/dropdown-menu.css';

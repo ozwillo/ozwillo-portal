@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import Popup from 'react-popup';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom'
+import CustomTooltip from '../../custom-tooltip';
 
 import Config from '../../../config/config';
 const organizationStatus = Config.organizationStatus;
@@ -100,24 +101,36 @@ class OrganizationDropdownHeader extends React.Component {
                 <div className="options flex-row end">
                     {
                         (isAvailable || isPersonal) && [
-                            <Link key={`${org.id}-instance-tab`} className="btn icon"
-                                  to={`/my/organization/${org.id}/instances`}>
-                                <i className="fa fa-list-alt option-icon"/>
-                            </Link>,
+                            <CustomTooltip key={`${org.id}-instance-tab`}
+                                           title={this.context.t('tooltip.instances')}>
+                                <Link className="btn icon"
+                                      to={`/my/organization/${org.id}/instances`} >
+                                        <i className="fa fa-list-alt option-icon"/>
+                                </Link>
+                            </CustomTooltip>,
 
-                            <Link key={`${org.id}-member-tab`} className="btn icon"
-                                  to={`/my/organization/${org.id}/members`}>
-                                <i className="fa fa-users option-icon"/>
-                            </Link>,
+                            <CustomTooltip key={`${org.id}-member-tab`}
+                                           title={this.context.t('tooltip.members')}>
+                                <Link className="btn icon"
+                                      to={`/my/organization/${org.id}/members`}>
+                                    <i className="fa fa-users option-icon"/>
+                                </Link>
+                            </CustomTooltip>,
 
-                            <Link key={`${org.id}-admin-tab`} className="btn icon"
-                                  to={`/my/organization/${org.id}/admin`}>
-                                <i className="fa fa-info-circle option-icon"/>
-                            </Link>,
-                            <button key={`${org.id}-delete`} type="submit"
-                                    className={`btn icon ${!org.admin && 'invisible' || ''}`}>
-                                <i className="fa fa-trash option-icon"/>
-                            </button>
+                            <CustomTooltip key={`${org.id}-admin-tab`}
+                                           title={this.context.t('tooltip.admin')}>
+                                <Link className="btn icon"
+                                      to={`/my/organization/${org.id}/admin`}>
+                                    <i className="fa fa-info-circle option-icon"/>
+                                </Link>
+                            </CustomTooltip>,
+                            <CustomTooltip key={`${org.id}-delete`} className={`${!org.admin && 'invisible' || ''}`}
+                                           title={this.context.t('tooltip.delete.organization')}>
+                                <button type="submit"
+                                        className="btn icon">
+                                    <i className="fa fa-trash option-icon"/>
+                                </button>
+                            </CustomTooltip>
                         ]
                     }
 

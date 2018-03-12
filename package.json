@@ -77,6 +77,7 @@
     "react-router": "^4.2.0",
     "react-router-dom": "^4.2.2",
     "react-select": "^1.1.0",
+    "react-tippy": "^1.2.2",
     "redux": "^3.7.2",
     "redux-i18n": "^1.5.11",
     "redux-thunk": "^2.2.0",
