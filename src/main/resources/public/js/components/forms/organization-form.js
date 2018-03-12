@@ -68,7 +68,6 @@ class OrganizationForm extends React.Component {
             default         : lang = 'en'; break;
         }
 
-        console.log('lang ', lang);
         return  {
             taxRegNum: this.context.t(`search.organization.business-id.${lang}`),
             taxRegOfficialId: this.context.t(`my.network.organization.tax_reg_official_id.${lang}`),
@@ -158,8 +157,6 @@ class OrganizationForm extends React.Component {
         const isPublic = (organization.sector_type === 'Public' || organization.sector_type === 'PUBLIC_BODY');
         const isPrivate = (organization.sector_type === 'Private' || organization.sector_type === 'COMPANY');
 
-        console.log('form ', organization);
-        console.log('options ', this.state.options);
         return <form className="oz-form" onSubmit={this.onSubmit}>
             {/*     Organization     */}
             <fieldset className="oz-fieldset">

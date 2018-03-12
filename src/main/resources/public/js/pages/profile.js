@@ -272,7 +272,6 @@ class AddressAccount extends React.Component {
 
     render () {
         const address = this.props.address;
-        console.log(address);
         return (
             <fieldset className="oz-fieldset">
                 <legend className="oz-legend">{this.context.t('my.profile.personal.address')}</legend>

@@ -82,7 +82,6 @@ var SearchOrganizationForm = createClass({
             type: 'head',
             global: false
         }).fail(function(xhr, status, err) {
-            console.log("Returned status for kernel organization search " + organization.id, xhr.status, err.toString());
             if (xhr.status === 302)
                 this.setState({ exist_in_dc: true, selected_organization: organization, exist_in_kernel: true, errors: ['general'] });
             else if (xhr.status === 404)
