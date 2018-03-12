@@ -176,6 +176,10 @@ class InstanceDropdown extends React.Component {
     }
 
     searchSubForUser(user, service) {
+        if (!service.subscriptions) {
+            return null;
+        }
+
         return service.subscriptions.find((sub) => {
             return sub.user_id === user.id;
         });
