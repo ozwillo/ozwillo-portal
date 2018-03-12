@@ -44,6 +44,7 @@ class InstanceConfigForm extends React.Component {
         this.handleChange = this.handleChange.bind(this);
         this.handleServiceChange = this.handleServiceChange.bind(this);
         this.onGeoAreaSelected = this.onGeoAreaSelected.bind(this);
+        this.onGeoAreaChange = this.onGeoAreaChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
         this.uploadIconFile = this.uploadIconFile.bind(this);
         this.readGeoNameFromUri = this.readGeoNameFromUri.bind(this);
@@ -53,8 +54,6 @@ class InstanceConfigForm extends React.Component {
         if (!uri) {
             return ''
         }
-
-        console.log(uri);
 
         return decodeURI(uri.substring(uri.lastIndexOf("/") + 1));
     }
@@ -66,7 +65,7 @@ class InstanceConfigForm extends React.Component {
             name: this.state.name,
             description: this.state.description,
             icon: this.state.iconUrl,
-            geographical_areas: [this.state.areaUri]
+            geographical_areas: this.state.areaUri && [this.state.areaUri] || []
         });
 
         if(this.state.serviceSelected.visibility !== instanceVisibility.never) {
@@ -86,6 +85,15 @@ class InstanceConfigForm extends React.Component {
 
     handleServiceChange(serviceSelected) {
         this.setState({ serviceSelected })
+    }
+
+    onGeoAreaChange(e) {
+        const el = e.currentTarget;
+
+        this.setState({
+            area: el.value,
+            areaUri: ''
+        });
     }
 
     onGeoAreaSelected(geoArea) {
@@ -169,9 +177,9 @@ class InstanceConfigForm extends React.Component {
                             <label htmlFor="area" className="label">Geographical area of interest</label>
                             <GeoAreaAutosuggest name="area" countryUri=""
                                                 endpoint="/geographicalAreas"
-                                                onChange={this.handleChange}
+                                                onChange={this.onGeoAreaChange}
                                                 onGeoAreaSelected={this.onGeoAreaSelected}
-                                                value={this.state.area} required={true}/>
+                                                value={this.state.area} />
                         </div>
 
                         {

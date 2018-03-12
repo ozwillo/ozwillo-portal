@@ -8,6 +8,7 @@ import org.oasis_eu.portal.core.model.catalog.ApplicationInstance.InstantiationS
 import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
 import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -18,6 +19,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.*;
@@ -178,9 +180,14 @@ public class CatalogStoreImpl implements CatalogStore {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", etag);
 
-        ResponseEntity<ServiceEntry> kernelResp =
-                kernel.exchange(uriString, HttpMethod.PUT, new HttpEntity<>(serviceFromKernel, headers),
-                        ServiceEntry.class, user(), serviceId);
+        ResponseEntity<ServiceEntry> kernelResp;
+        try {
+             kernelResp = kernel.exchange(uriString, HttpMethod.PUT, new HttpEntity<>(serviceFromKernel, headers),
+                            ServiceEntry.class, user(), serviceId);
+        } catch(RestClientException e) {
+            throw new WrongQueryException(e.getMessage(), HttpStatus.BAD_REQUEST.value());
+        }
+
 
         return kernel.getBodyUnlessClientError(kernelResp, ServiceEntry.class, uriString);
     }

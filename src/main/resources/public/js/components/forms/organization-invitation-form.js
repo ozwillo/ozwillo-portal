@@ -82,7 +82,7 @@ class OrganizationInvitationForm extends React.Component {
 
                             <label className="label">
                                 {this.context.t('organization.form.admin')}
-                                <input name="admin" type="checkbox" className="field" required={true}
+                                <input name="admin" type="checkbox" className="field"
                                        onChange={this.handleChange} checked={this.state.admin}/>
                             </label>
                         </div>
