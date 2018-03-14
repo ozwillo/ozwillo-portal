@@ -18,13 +18,16 @@ import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.ui.UIApp;
 import org.oasis_eu.portal.ui.UIPendingApp;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -113,7 +116,17 @@ public class DashboardService {
         List<UIApp> apps = userContext.getSubscriptions()
             .stream()
             .filter(us -> subscriptionById.containsKey(us.getId()))
-            .map(us -> toDashboardApp(subscriptionById.get(us.getId())))
+            .map(us -> {
+                try {
+                    return subscriptionById.get(us.getId());
+                } catch(WrongQueryException e) {
+                    logger.debug(e.getMessage());
+                    logger.debug("Delete subscription " + us.getId() + " in mongoDB");
+                    return null;
+                }
+            })
+            .filter(app -> app != null)
+            .map(this::toDashboardApp)
             .filter(app -> app != null)
             .collect(Collectors.toList());
 
@@ -149,8 +162,9 @@ public class DashboardService {
             }
 
             return app;
-        } catch (HttpServerErrorException kernelException) {
-            logger.error("Cannot load service from the Kernel for subscription {}, skipping.", sub);
+
+        } catch (WrongQueryException e) {
+            logger.debug(e.getMessage());
             return null;
         }
     }
@@ -301,6 +315,7 @@ public class DashboardService {
             // filter on "deleted" a.k.a portal-side hidden app : (#156 Possibility to delete "pending app instances" icons)
             .filter(instance -> (hidden == null || !hidden.getHiddenApps().contains(instance.getInstanceId())))
             .map(this::toPendingApp)
+            .filter(app -> app != null)
             .collect(Collectors.toList());
 
         return UIPendingAppLst;
@@ -317,22 +332,29 @@ public class DashboardService {
     }
 
     private UIPendingApp toPendingApp(ApplicationInstance instance) {
-        CatalogEntry appCatalog = catalogStore.findApplication(instance.getApplicationId());
+        try {
 
-        String imageUrl = "";
-        if (appCatalog != null) {
-            // No icons are set in the appInstance, so we have to take it directly from the app
-            // TODO remove once kernel #121 is done
-            imageUrl = appCatalog.getIcon(RequestContextUtils.getLocale(request));
-        } // #220 The app could be deleted or stopped
+            CatalogEntry appCatalog = catalogStore.findApplication(instance.getApplicationId());
 
-        UIPendingApp dashPendingApp = new UIPendingApp();
-        dashPendingApp.setId(instance.getInstanceId());
-        dashPendingApp.setIcon(imageService.getImageForURL(imageUrl, ImageFormat.PNG_64BY64, false));
-        //dashPendingApp.setIcon(imageService.getImageForURL(instance.getIcon(
-        //		RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false)); // TODO once kernel #121 is done
-        dashPendingApp.setName(instance.getName(RequestContextUtils.getLocale(request)));
+            String imageUrl = "";
+            if (appCatalog != null) {
+                // No icons are set in the appInstance, so we have to take it directly from the app
+                // TODO remove once kernel #121 is done
+                imageUrl = appCatalog.getIcon(RequestContextUtils.getLocale(request));
+            } // #220 The app could be deleted or stopped
 
-        return dashPendingApp;
+            UIPendingApp dashPendingApp = new UIPendingApp();
+            dashPendingApp.setId(instance.getInstanceId());
+            dashPendingApp.setIcon(imageService.getImageForURL(imageUrl, ImageFormat.PNG_64BY64, false));
+            //dashPendingApp.setIcon(imageService.getImageForURL(instance.getIcon(
+            //		RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false)); // TODO once kernel #121 is done
+            dashPendingApp.setName(instance.getName(RequestContextUtils.getLocale(request)));
+
+
+            return dashPendingApp;
+        } catch(HttpClientErrorException e) {
+            logger.debug(e.getMessage());
+            return null;
+        }
     }
 }

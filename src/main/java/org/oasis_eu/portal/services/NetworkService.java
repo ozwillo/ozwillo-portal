@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
@@ -81,9 +82,11 @@ public class NetworkService {
         String userId = userInfoService.currentUser().getUserId();
 
         //Fetch all user's services
-        Map<String, List<InstanceService>> instanceServices = subscriptionStore.findByUserId(userId)
+        List<Subscription> subs = subscriptionStore.findByUserId(userId);
+        Map<String, List<InstanceService>> instanceServices = subs
                 .stream()
-                .map(sub -> applicationService.getService(sub.getServiceId()))
+                .map(this::getServiceBySub)
+                .filter(sub -> sub != null)
                 .filter(is -> is.getCatalogEntry().getProviderId() != null)
                 .collect(Collectors.groupingBy(is -> is.getCatalogEntry().getProviderId()));
 
@@ -104,6 +107,18 @@ public class NetworkService {
         organizations.add(uiOrganization);
 
         return organizations;
+    }
+
+
+    private InstanceService getServiceBySub(Subscription sub) {
+        try {
+            return applicationService.getService(sub.getServiceId());
+        } catch (WrongQueryException e) {
+            if (HttpStatus.FORBIDDEN.value() != e.getStatusCode()) {
+                throw e;
+            }
+            return null;
+        }
     }
 
     public UIOrganization getOrganization(String organizationId) {

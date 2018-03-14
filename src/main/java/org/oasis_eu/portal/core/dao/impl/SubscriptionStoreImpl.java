@@ -14,11 +14,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -86,12 +84,11 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
             // validate response body
             newSub =  kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri);
-
-        } catch(WrongQueryException e) {
+        } catch(RestClientException e) { //TODO: Trigger another exception like WrongQueryException to check HttpStatus
             String translatedBusinessMessage = messageSource.getMessage("error.msg.user-is-already-subscribed",
                     new Object[]{}, RequestContextUtils.getLocale(request));
-            e.setTranslatedBusinessMessage(translatedBusinessMessage);
-            throw e;
+
+            throw new WrongQueryException(translatedBusinessMessage, HttpStatus.BAD_REQUEST.value());
         }
 
         return newSub;

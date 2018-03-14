@@ -19,6 +19,7 @@ import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -103,7 +104,21 @@ public class CatalogStoreImpl implements CatalogStore {
     @Override
     @Cacheable("services")
     public ServiceEntry findService(String id) {
-        return kernel.getEntityOrException(appsEndpoint + "/service/{id}", ServiceEntry.class, userIfExists(), id);
+        ServiceEntry serviceEntry;
+
+        try {
+            serviceEntry = kernel.getEntityOrException(appsEndpoint + "/service/{id}",
+                    ServiceEntry.class, userIfExists(), id);
+        } catch(HttpClientErrorException e) {
+            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
+                throw new WrongQueryException(e.getResponseBodyAsString(), e.getStatusCode().value());
+            }
+
+            throw e;
+        }
+
+        return serviceEntry;
+
     }
 
     @Override
