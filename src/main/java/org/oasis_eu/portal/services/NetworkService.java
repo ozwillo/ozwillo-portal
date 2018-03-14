@@ -29,6 +29,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -106,7 +107,11 @@ public class NetworkService {
         uiOrganization.setServices(instanceServices.get(userId));
         organizations.add(uiOrganization);
 
-        return organizations;
+        return organizations.stream()
+                .sorted(Comparator.comparing(UIOrganization::getId,
+                        (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2))? -1 : 0)
+                .thenComparing(Comparator.comparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER)))
+                .collect(Collectors.toList());
     }
 
 
@@ -163,9 +168,9 @@ public class NetworkService {
         //Fetch subscriptions
         if (isAdmin) {
             instances.forEach(instance -> {
-                instance.getServices().forEach(s ->
-                        s.setSubscriptions(subscriptionStore.findByServiceId(s.getCatalogEntry().getId()))
-                );
+                instance.getServices().forEach(s -> {
+                    s.setSubscriptions(subscriptionStore.findByServiceId(s.getCatalogEntry().getId()));
+                });
             });
         }
 

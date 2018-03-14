@@ -16,7 +16,9 @@ import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
+import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +34,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -68,6 +71,9 @@ public class ApplicationService {
     private NetworkService networkService;
 
     @Autowired
+    private UserInfoService userInfoService;
+
+    @Autowired
     private UserProfileService userProfileService;
 
     public List<MyAppsInstance> getMyInstances(Authority authority, boolean fetchServices) {
@@ -85,7 +91,8 @@ public class ApplicationService {
     private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority, boolean fetchServices) {
         return applicationInstanceStore.findByUserId(personalAuthority.getId())
             .stream()
-            .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed())
+            .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
+                    .thenComparing(Comparator.comparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER)))
             .map(i -> fetchInstance(i, fetchServices))
             .filter(i -> i != null) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .collect(Collectors.toList());
@@ -94,7 +101,8 @@ public class ApplicationService {
     private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority, boolean fetchServices) {
         return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
             .stream()
-            .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed())
+            .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
+                    .thenComparing(Comparator.comparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER)))
             .map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .filter(i -> i != null)
             .collect(Collectors.toList());
@@ -232,7 +240,15 @@ public class ApplicationService {
     }
 
     public List<User> getAllAppUsers(String instanceId) {
-        List<User> users = getAppUsers(instanceId, false);
+        String userId = userInfoService.currentUser().getUserId();
+
+        List<User> users = getAppUsers(instanceId, false)
+                .stream()
+                .sorted(Comparator.comparing(User::getUserid,
+                            (id1, id2) -> (userId.equals(id1)) ? -1 : (userId.equals(id2))? 1 : 0
+                ).thenComparing(Comparator.comparing(User::getName, String.CASE_INSENSITIVE_ORDER)))
+                .collect(Collectors.toList());
+
         users.addAll(getPendingAppUsers(instanceId));
         return users;
     }
