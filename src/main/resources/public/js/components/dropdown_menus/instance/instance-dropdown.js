@@ -228,7 +228,7 @@ class InstanceDropdown extends React.Component {
                                 const status = this.state.status[user.id];
 
                                 return <tr key={user.id || user.email}>
-                                    <td>
+                                    <td className="fill-content">
                                         <article className="item flex-row">
                                             <span className="name">{`${(user.id && user.name) || user.email}`}</span>
                                         </article>

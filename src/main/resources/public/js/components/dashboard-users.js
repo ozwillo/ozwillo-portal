@@ -84,7 +84,7 @@ var DashboardUsersManagement = createClass({
                         <div className="modal-header">
                             <button type="button" className="close" data-dismiss="modal" aria-label="Close"
                                     onClick={this.close}>
-                                <span aria-hidden="true"><img src="/img/cross.png"/></span>
+                                <span aria-hidden="true"><i className="fas fa-times icon" /></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{this.context.t('users')}</h4>
                         </div>

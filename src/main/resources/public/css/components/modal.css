@@ -11,3 +11,12 @@
 .oz-simple-modal .modal-footer {
     border-top: none;
 }
+
+.modal-header .close {
+    opacity: 1;
+}
+
+.modal-header .close .icon {
+    color: var(--dark-purple-color);
+    font-size: 1.2em;
+}
