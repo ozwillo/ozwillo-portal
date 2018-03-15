@@ -15,8 +15,6 @@ import NotificationsCount from '../components/notifications-count-loader';
 import Dashboard from '../pages/dashboard';
 import Profile from '../pages/profile';
 import SynchroniseFCProfile from '../pages/synchronize-fc-profile';
-import Network from '../pages/network';
-import Apps from '../pages/myapps';
 import Notification from '../pages/notifications';
 import OrganizationCreate from '../pages/organization-create';
 import OrganizationSearch from '../pages/organization-search';
@@ -31,10 +29,13 @@ class RouterWithUser extends React.Component {
         return <IfUser>
             <NotificationsCount/>
             <Switch>
+                {/* Redirect old pages */}
+                <Redirect from="/my/network" to="/my/organization" />
+                <Redirect from="/my/apps" to="/my/organization" />
+
+                {/* Routes */}
                 <Route path="/my/profile/franceconnect" component={SynchroniseFCProfile}/>
                 <Route path="/my/profile" component={Profile}/>
-                <Route path="/my/network" component={Network}/>
-                <Route path="/my/apps" component={Apps}/>
                 <Route path="/my/notif" component={Notification}/>
                 <Route path="/my/organization/create" component={OrganizationCreate}/>
                 <Route path="/my/organization/:id/:tab?" component={OrganizationDesc}/>
