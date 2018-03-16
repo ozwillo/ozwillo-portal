@@ -45,7 +45,13 @@ export default (url, params = { headers: {} }) => {
             return res;
         })
         .catch(buildError)
-        .then((res) => {
+        .catch(error => { //user is disconnected
+            if (error.status === 401) {
+                location.reload();
+            }
+            
+            throw error;
+        }).then((res) => {
             const contentType = res.headers.get('Content-Type');
             if(!contentType) {
                 return;

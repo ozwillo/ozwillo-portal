@@ -34,7 +34,6 @@
 
 /* Pages */
 @import 'pages/dashboard.css';
-@import 'pages/my-apps.css';
 @import 'pages/notifications.css';
 @import 'pages/organization-create.css';
 @import 'pages/organization-search.css';

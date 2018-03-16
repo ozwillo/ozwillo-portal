@@ -1,4 +1,4 @@
-import { FETCH_APPLICATIONS } from "../actions/app-store";
+import { FETCH_APPLICATIONS } from '../actions/app-store';
 
 const defaultState = {
     apps: []
