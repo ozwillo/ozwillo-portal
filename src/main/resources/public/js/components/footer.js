@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 class Footer extends React.Component {
     render() {
@@ -7,7 +7,7 @@ class Footer extends React.Component {
         return <footer className="oz-footer">
             <div className="flex-row">
                 <section className="logo">
-                    <img className="image" src="/img/logo-ozwillo-footer.png" />
+                    <img className="image" src="/img/logo-ozwillo-footer.png"/>
                 </section>
                 <section className="flex-row outer-links">
                     {
@@ -30,7 +30,7 @@ class Footer extends React.Component {
             <div className="flex-row">
                 <section className="social-network">
                     <a href="https://twitter.com/ozwillo">
-                        <i className="fab fa-twitter image twitter" />
+                        <i className="fab fa-twitter image twitter"/>
                     </a>
                 </section>
                 <section className="partners flex-row end">

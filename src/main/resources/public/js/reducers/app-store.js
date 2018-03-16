@@ -1,4 +1,4 @@
-import { FETCH_APPLICATIONS } from '../actions/app-store';
+import {FETCH_APPLICATIONS} from '../actions/app-store';
 
 const defaultState = {
     apps: []
@@ -7,7 +7,7 @@ const defaultState = {
 export default (state = defaultState, action) => {
     const nextState = Object.assign({}, state);
 
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_APPLICATIONS:
             nextState.apps = action.apps;
             break;

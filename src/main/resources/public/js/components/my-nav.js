@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
+import {Link} from 'react-router-dom';
 import {connect} from "react-redux";
 
 class MyNav extends React.Component {
@@ -16,9 +16,9 @@ class MyNav extends React.Component {
                     <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
                             data-target="#ozwillo-navbar" aria-expanded="false" aria-controls="navbar">
                         <span className="sr-only">Toggle navigation</span>
-                        <span className="icon-bar" />
-                        <span className="icon-bar" />
-                        <span className="icon-bar" />
+                        <span className="icon-bar"/>
+                        <span className="icon-bar"/>
+                        <span className="icon-bar"/>
                     </button>
                 </div>
 

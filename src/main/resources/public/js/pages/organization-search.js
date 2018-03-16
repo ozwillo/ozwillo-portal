@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 // Components
 import SideMenu from '../components/side-menu';
@@ -9,7 +9,7 @@ import OrganizationDropdown from '../components/dropdown_menus/organization/orga
 import UpdateTitle from '../components/update-title';
 
 //action
-import { fetchUserOrganizations } from '../actions/organization';
+import {fetchUserOrganizations} from '../actions/organization';
 
 class OrganizationSearch extends React.Component {
 
@@ -36,7 +36,7 @@ class OrganizationSearch extends React.Component {
     componentDidMount() {
         this.props.fetchUserOrganizations()
             .then(() => {
-                this.setState({ isLoading: false });
+                this.setState({isLoading: false});
             });
     }
 
@@ -89,14 +89,14 @@ class OrganizationSearch extends React.Component {
                 </form>
 
                 <ul className="organisations-list undecorated-list">
-                {
-                    !this.state.isLoading &&
-                    this.filterOrganizations(userOrganizations, userOrganizationsFilter).map((org) => {
-                        return <li key={org.id} className="organization">
-                            <OrganizationDropdown organization={org}/>
-                        </li>;
-                    })
-                }
+                    {
+                        !this.state.isLoading &&
+                        this.filterOrganizations(userOrganizations, userOrganizationsFilter).map((org) => {
+                            return <li key={org.id} className="organization">
+                                <OrganizationDropdown organization={org}/>
+                            </li>;
+                        })
+                    }
                 </ul>
 
 

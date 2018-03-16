@@ -19,8 +19,8 @@ const buildError = (res) => {
         });
 };
 
-export default (url, params = { headers: {} }) => {
-    if(!params.headers) {
+export default (url, params = {headers: {}}) => {
+    if (!params.headers) {
         params.headers = {};
     }
 
@@ -31,14 +31,14 @@ export default (url, params = { headers: {} }) => {
     params.headers[headerField] = token;
     params.credentials = 'same-origin';
 
-    if(params.json){
+    if (params.json) {
         params.body = JSON.stringify(params.json);
         params.headers['Content-Type'] = 'application/json';
     }
 
     return fetch(url, params)
         .then((res) => {
-            if(!res.ok) {
+            if (!res.ok) {
                 throw res;
             }
 
@@ -49,15 +49,15 @@ export default (url, params = { headers: {} }) => {
             if (error.status === 401) {
                 location.reload();
             }
-            
+
             throw error;
         }).then((res) => {
             const contentType = res.headers.get('Content-Type');
-            if(!contentType) {
+            if (!contentType) {
                 return;
             }
 
-            if(contentType.split(';').includes('application/json')) {
+            if (contentType.split(';').includes('application/json')) {
                 return res.json();
             }
 
@@ -66,7 +66,7 @@ export default (url, params = { headers: {} }) => {
 }
 
 export const urlBuilder = (url, params) => {
-    if(!params || !Object.keys(params).length) {
+    if (!params || !Object.keys(params).length) {
         return url;
     }
 

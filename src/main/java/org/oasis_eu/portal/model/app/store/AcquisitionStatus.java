@@ -8,6 +8,6 @@ public enum AcquisitionStatus {
 
     INSTALLED,
     PENDING,
-    AVAILABLE;
+    AVAILABLE
 
 }

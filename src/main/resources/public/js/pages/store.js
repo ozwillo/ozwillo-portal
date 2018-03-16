@@ -2,7 +2,7 @@
 
 import React from 'react';
 import PropTypes from "prop-types";
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import createClass from 'create-react-class';
 
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
@@ -14,7 +14,7 @@ const default_app = null;
 var AppStore = createClass({
     getInitialState: function () {
         return {
-            defaultApp : null,
+            defaultApp: null,
             apps: [],
             loading: true,
             maybeMoreApps: false,
@@ -37,16 +37,16 @@ var AppStore = createClass({
     componentDidMount: function () {
         this.updateApps();
     },
-    mergeAppsWithDefaultAppFirst : function() {
+    mergeAppsWithDefaultAppFirst: function () {
         if (!this.state.defaultApp) {
             return this.state.apps;
         }
-        return $.merge([ this.state.defaultApp ], $.map(this.state.apps, function(app, i) {
-            if(app.id == this.state.defaultApp.id) return;
+        return $.merge([this.state.defaultApp], $.map(this.state.apps, function (app, i) {
+            if (app.id == this.state.defaultApp.id) return;
             return app;
         }.bind(this)));
     },
-    updateFilter: function(category, key, value) {
+    updateFilter: function (category, key, value) {
         var filter = this.state.filter;
         if (category) {
             var filterCategory = filter[category];
@@ -54,25 +54,28 @@ var AppStore = createClass({
         } else {
             filter[key] = value;
         }
-        this.setState({ filter: filter});
+        this.setState({filter: filter});
         this.updateApps();
     },
-    getSearchFilters: function() {
+    getSearchFilters: function () {
         var supported_locales = [];
         if (this.state.filter.selectedLanguage !== 'all') {
             supported_locales.push(this.state.filter.selectedLanguage);
         }
         var filter = this.state.filter;
         return {
-            target_citizens: filter.audience.citizens, target_publicbodies: filter.audience.publicbodies, target_companies: filter.audience.companies,
-            free: filter.payment.free, paid: filter.payment.paid,
+            target_citizens: filter.audience.citizens,
+            target_publicbodies: filter.audience.publicbodies,
+            target_companies: filter.audience.companies,
+            free: filter.payment.free,
+            paid: filter.payment.paid,
             supported_locales: supported_locales,
             geoArea_AncestorsUris: filter.geoAreaAncestorsUris,
             category_ids: [],
             q: filter.searchText  // q being empty is ok
         };
     },
-    updateApps: function() {
+    updateApps: function () {
         if (default_app) {
             $.ajax({
                 url: "/api/store/application/" + default_app.type + "/" + default_app.id,
@@ -90,7 +93,7 @@ var AppStore = createClass({
                 }.bind(this)
             });
         } else {
-            this.setState({ defaultApp: null});
+            this.setState({defaultApp: null});
         }
 
         $.ajax({
@@ -107,13 +110,13 @@ var AppStore = createClass({
                 });
             }.bind(this),
             error: function (xhr, status, err) {
-                this.setState({ apps: [], loading: false });
+                this.setState({apps: [], loading: false});
                 console.error(status, err.toString());
             }.bind(this)
         });
     },
     loadMoreApps: function () {
-        this.setState({ loading: true });
+        this.setState({loading: true});
 
         var searchFilters = this.getSearchFilters();
         searchFilters.last = this.state.apps.length;
@@ -171,7 +174,7 @@ const AppStoreWithRedux = connect(mapStateToProps)(AppStore)
 
 
 var SearchAppsForm = createClass({
-    handleLanguageClicked: function(event) {
+    handleLanguageClicked: function (event) {
         this.props.updateFilter(null, "selectedLanguage", event.target.value);
     },
     fullTextSearchChanged: function (event) {
@@ -180,21 +183,21 @@ var SearchAppsForm = createClass({
     onGeoChange: function (geoArea) {
         this.props.updateFilter(null, "geoAreaAncestorsUris", geoArea.ancestors);
     },
-    onAudienceChange: function(event) {
+    onAudienceChange: function (event) {
         this.props.updateFilter("audience", event.target.name, event.target.checked);
     },
-    onPaymentChange: function(event) {
+    onPaymentChange: function (event) {
         this.props.updateFilter("payment", event.target.name, event.target.checked);
     },
     render: function () {
         var languageComponents = this.props.languages.map(language =>
-            <option key={language} value={language}>{ this.context.t(language) }</option>
+            <option key={language} value={language}>{this.context.t(language)}</option>
         );
 
         return (
             <section className="box">
                 <header className="text-center">
-                    <span className="title" >{this.context.t('ui.appstore')}</span>
+                    <span className="title">{this.context.t('ui.appstore')}</span>
                 </header>
 
                 <div className="row form-horizontal" id="store-search">
@@ -213,13 +216,14 @@ var SearchAppsForm = createClass({
 
                         {/* geo-filer - filtering by jurisdiction (geoArea) */}
                         <div className="form-group">
-                            <label htmlFor="geoSearch" className="col-sm-4 control-label">{this.context.t('geoarea')}</label>
+                            <label htmlFor="geoSearch"
+                                   className="col-sm-4 control-label">{this.context.t('geoarea')}</label>
 
                             <div className="col-sm-8">
                                 <GeoAreaAutosuggest name="geoSearch"
                                                     countryUri=""
                                                     endpoint="/geographicalAreas"
-                                                    onChange={this.onGeoChange} />
+                                                    onChange={this.onGeoChange}/>
                             </div>
                         </div>
                         <div className="form-group">
@@ -239,7 +243,8 @@ var SearchAppsForm = createClass({
                     </div>
                     <div className="col-md-6 right">
                         <div className="form-group">
-                            <label htmlFor="fulltext" className="col-sm-4 control-label">{this.context.t('keywords')}</label>
+                            <label htmlFor="fulltext"
+                                   className="col-sm-4 control-label">{this.context.t('keywords')}</label>
 
                             <div className="col-sm-8">
                                 <input type="text" id="fulltext" className="form-control"
@@ -285,14 +290,14 @@ SearchAppsForm.contextTypes = {
 };
 
 var AppList = createClass({
-    renderApps: function() {
+    renderApps: function () {
         return this.props.apps.map(function (app) {
             return (
                 <App key={app.id} app={app}/>
             );
         });
     },
-    render: function() {
+    render: function () {
         if (this.props.apps.length === 0)
             return (<div></div>);
         else
@@ -311,7 +316,7 @@ var AppList = createClass({
 });
 
 var LoadMore = createClass({
-    renderLoading: function() {
+    renderLoading: function () {
         if (this.props.loading) {
             return (
                 <div className="text-center">
@@ -321,7 +326,8 @@ var LoadMore = createClass({
         } else if (this.props.maybeMoreApps) {
             return (
                 <div className="text-center">
-                    <button className="btn btn-lg btn-default" onClick={this.props.loadMoreApps}>{this.context.t('load-more')}</button>
+                    <button className="btn btn-lg btn-default"
+                            onClick={this.props.loadMoreApps}>{this.context.t('load-more')}</button>
                 </div>
             );
         }
@@ -373,7 +379,7 @@ var App = createClass({
                 <AppModal ref="appmodal" app={this.props.app}/>
                 <div className="app">
                     <div className="logo">
-                        <img src={this.props.app.icon} />
+                        <img src={this.props.app.icon}/>
                     </div>
                     <div className="description" onClick={this.openApp}>
                         {pubServiceIndicator}
@@ -382,7 +388,7 @@ var App = createClass({
                             <p className="app-provider">{this.props.app.provider}</p>
                         </div>
                         <p className="app-description">{this.props.app.description}</p>
-                        <Indicator status={indicatorStatus} />
+                        <Indicator status={indicatorStatus}/>
                     </div>
                 </div>
             </div>
@@ -396,21 +402,24 @@ var Indicator = createClass({
         var status = this.props.status;
         if (status === "installed") {
             btns = [
-                <button type="button" key="indicator_button" className="btn btn-lg btn-installed">{this.context.t('installed')}</button>,
+                <button type="button" key="indicator_button"
+                        className="btn btn-lg btn-installed">{this.context.t('installed')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-installed-indicator">
                     <i className="fa fa-check"></i>
                 </button>
             ];
         } else if (status === "free") {
             btns = [
-                <button type="button" key="indicator_button" className="btn btn-lg btn-free">{this.context.t('free')}</button>,
+                <button type="button" key="indicator_button"
+                        className="btn btn-lg btn-free">{this.context.t('free')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-free-indicator">
                     <i className="fa fa-gift"></i>
                 </button>
             ];
         } else {
             btns = [
-                <button type="button" key="indicator_button" className="btn btn-lg btn-buy">{this.context.t('paid')}</button>,
+                <button type="button" key="indicator_button"
+                        className="btn btn-lg btn-buy">{this.context.t('paid')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
                     <i className="fa fas fa-euro-sign"></i>
                 </button>

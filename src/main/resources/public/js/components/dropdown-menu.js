@@ -26,7 +26,7 @@ class DropDownMenu extends React.Component {
         this.dropDownToggle = this.dropDownToggle.bind(this);
     }
 
-    dropDownToggle(){
+    dropDownToggle() {
         this.setState({
             isOpen: !this.state.isOpen
         });
@@ -42,7 +42,7 @@ class DropDownMenu extends React.Component {
             <header className="header flex-row">
                 <div className="content">{this.props.header}</div>
                 <i onClick={this.dropDownToggle}
-                   className={`fa fa-caret-${iconClassName} arrow-icon ${isEmptyClassName} ${isAvailableClassName}` }/>
+                   className={`fa fa-caret-${iconClassName} arrow-icon ${isEmptyClassName} ${isAvailableClassName}`}/>
             </header>
 
             <article className={`content ${isOpenClassName} ${isAvailableClassName} ${isEmptyClassName}`}>

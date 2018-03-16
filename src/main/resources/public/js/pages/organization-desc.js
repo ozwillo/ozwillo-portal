@@ -1,18 +1,18 @@
 import React from 'react';
 import PropTypes from "prop-types";
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Components
 import Tabs from '../components/tabs';
-import { InstancesTabHeader, InstancesTab } from '../components/tabs/instances-tab';
-import { MembersTabHeader, MembersTab } from '../components/tabs/members-tab';
-import { AdminTabHeader, AdminTab } from '../components/tabs/admin-tab';
+import {InstancesTabHeader, InstancesTab} from '../components/tabs/instances-tab';
+import {MembersTabHeader, MembersTab} from '../components/tabs/members-tab';
+import {AdminTabHeader, AdminTab} from '../components/tabs/admin-tab';
 import UpdateTitle from '../components/update-title';
 
 //actions
-import { fetchOrganizationWithId, fetchOrganizationInfo } from "../actions/organization";
-import { fetchUsersOfInstance } from "../actions/instance";
-import { fetchApplications } from "../actions/app-store";
+import {fetchOrganizationWithId, fetchOrganizationInfo} from "../actions/organization";
+import {fetchUsersOfInstance} from "../actions/instance";
+import {fetchApplications} from "../actions/app-store";
 
 const tabsHeaders = {
     instances: InstancesTabHeader,
@@ -45,7 +45,7 @@ class OrganizationDesc extends React.Component {
                 .then(() => {
                     const org = this.props.organization;
                     const requests = [];
-                    if(org.admin) {
+                    if (org.admin) {
                         org.instances.forEach((instance) => {
                             this.props.fetchUsersOfInstance(instance);
                         });

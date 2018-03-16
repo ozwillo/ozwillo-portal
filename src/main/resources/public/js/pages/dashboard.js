@@ -2,11 +2,11 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Link } from 'react-router-dom';
-import { withRouter } from 'react-router';
+import {Link} from 'react-router-dom';
+import {withRouter} from 'react-router';
 import createClass from 'create-react-class';
 
-import { ModalWithForm, Modal } from '../components/bootstrap-react';
+import {ModalWithForm, Modal} from '../components/bootstrap-react';
 import {
     fetchDashboards,
     fetchCreateDashboard,
@@ -45,7 +45,7 @@ const Dashboard = withRouter(createClass({
                     return dash.id === dashId;
                 }) || dashboards[0];
 
-                this.setState({ dashboards, dash: currentDash, loadingDashboards: false });
+                this.setState({dashboards, dash: currentDash, loadingDashboards: false});
             });
 
         this.loadApps(dashId);
@@ -53,7 +53,7 @@ const Dashboard = withRouter(createClass({
     },
     loadApps(dashId) {
         Promise.all([fetchApps(dashId), fetchPendingApps()])
-            .then( data => {
+            .then(data => {
                 this.setState({
                     apps: data[0],
                     pendingApps: data[1],
@@ -68,21 +68,21 @@ const Dashboard = withRouter(createClass({
     },
     startDrag: function (app) {
         return function (event) {
-            event.dataTransfer.setData('application/json', JSON.stringify({ app }));
-            this.setState({ dragging: true });
+            event.dataTransfer.setData('application/json', JSON.stringify({app}));
+            this.setState({dragging: true});
         }.bind(this);
     },
     startDragPending: function (app) {
         return function (event) {
-            event.dataTransfer.setData('application/json', JSON.stringify({ app }));
-            this.setState({ draggingPending: true });
+            event.dataTransfer.setData('application/json', JSON.stringify({app}));
+            this.setState({draggingPending: true});
         }.bind(this);
     },
     endDrag: function () {
-        this.setState({ dragging: false });
+        this.setState({dragging: false});
     },
     endDragPending: function () {
-        this.setState({ draggingPending: false });
+        this.setState({draggingPending: false});
     },
     reorderApps: function (before) {
         return function (app) {
@@ -102,7 +102,7 @@ const Dashboard = withRouter(createClass({
             fetchReorderApps(state.dash.id, apps)
                 .catch((err) => { //cancel
                     console.error(err);
-                    this.setState({ apps: oldApps });
+                    this.setState({apps: oldApps});
                 });
         }.bind(this);
     },
@@ -123,7 +123,7 @@ const Dashboard = withRouter(createClass({
             moveToDash(app.id, dash.id)
                 .catch((err) => { //cancel
                     console.error(err);
-                    this.setState({ apps: oldApps });
+                    this.setState({apps: oldApps});
                 });
         }.bind(this);
     },
@@ -144,7 +144,7 @@ const Dashboard = withRouter(createClass({
         fetchDeleteApp(app.id)
             .catch((err) => { //cancel
                 console.error(err);
-                this.setState({ apps: oldApps });
+                this.setState({apps: oldApps});
             });
     },
 
@@ -164,7 +164,7 @@ const Dashboard = withRouter(createClass({
         fetchDeletePendingApp(app.id)
             .catch((err) => { //cancel
                 console.error(err);
-                this.setState({ apps: oldApps });
+                this.setState({apps: oldApps});
             });
     },
 
@@ -173,7 +173,7 @@ const Dashboard = withRouter(createClass({
             .then((dashboard) => {
                 const dashboards = Object.assign([], this.state.dashboards);
                 dashboards.push(dashboard);
-                this.setState({ dashboards });
+                this.setState({dashboards});
             });
     },
 
@@ -183,19 +183,19 @@ const Dashboard = withRouter(createClass({
             const dashboards = Object.assign([], this.state.dashboards);
             const i = this.findById(dashboards, dash);
             dashboards[i].name = name;
-            this.setState({ dashboards });
+            this.setState({dashboards});
 
             fetchRenameDashboard(dash.id, name)
                 .catch((err) => { // cancel
                     console.error(err);
-                    this.setState({ dashboards: oldDashboards });
+                    this.setState({dashboards: oldDashboards});
                 });
 
         }.bind(this);
     },
     removeDash: function (dash) {
         return function () {
-            this.setState({ loadingDashboards: true });
+            this.setState({loadingDashboards: true});
 
             fetchDeleteDashboard(dash.id)
                 .then(() => {
@@ -204,18 +204,18 @@ const Dashboard = withRouter(createClass({
                     dashboards.splice(i, 1);
 
 
-                    this.setState({ dashboards, loadingDashboards: false });
+                    this.setState({dashboards, loadingDashboards: false});
                     this.props.history.push('/my/');
 
                 })
                 .catch((err) => {
                     console.error(err);
-                    this.setState({ loadingDashboards: false });
+                    this.setState({loadingDashboards: false});
                 });
         }.bind(this);
     },
     componentWillReceiveProps: function (nextProps) {
-        if(!this.state.dashboards) {
+        if (!this.state.dashboards) {
             return;
         }
 
@@ -224,13 +224,13 @@ const Dashboard = withRouter(createClass({
         }) || this.state.dashboards[0];
 
         //Update dashboard
-        this.setState({ dash: currentDash, apps: [], loadingApps: true });
+        this.setState({dash: currentDash, apps: [], loadingApps: true});
 
         //Load apps
         const oldState = this.state;
         fetchApps(currentDash.id)
             .then((apps) => {
-                this.setState({ apps, loadingApps: false });
+                this.setState({apps, loadingApps: false});
             })
             .catch((err) => { //cancel
                 console.error(err);
@@ -249,7 +249,7 @@ const Dashboard = withRouter(createClass({
                     moveToDash={this.moveToDash}
                     renameDash={this.renameDash}
                     removeDash={this.removeDash}
-                    createDash={this.createDash} />
+                    createDash={this.createDash}/>
                 <Desktop
                     dash={this.state.dash}
                     loading={this.state.loadingApps}
@@ -263,7 +263,7 @@ const Dashboard = withRouter(createClass({
                     endDragPending={this.endDragPending}
                     dragging={this.state.dragging}
                     draggingPending={this.state.draggingPending}
-                    dropCallback={this.reorderApps} />
+                    dropCallback={this.reorderApps}/>
             </section>
         );
     }
@@ -275,7 +275,7 @@ const DashList = createClass({
         if (this.props.loading) {
             return (
                 <div className="text-center">
-                    <i className="fa fa-spinner fa-spin loading" /> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"/> {this.context.t('ui.loading')}
                 </div>
             );
         } else {
@@ -313,19 +313,19 @@ const DashItem = createClass({
     over: function (isOver) {
         return function (event) {
             event.preventDefault();
-            this.setState({ over: isOver });
+            this.setState({over: isOver});
         }.bind(this);
     },
     drop: function (event) {
         const app = JSON.parse(event.dataTransfer.getData("application/json")).app;
         this.props.moveToDash(app);
-        this.setState({ over: false });
+        this.setState({over: false});
     },
     edit: function () {
-        this.setState({ editing: true });
+        this.setState({editing: true});
     },
     cancelEditing: function () {
-        this.setState({ editing: false });
+        this.setState({editing: false});
     },
     render: function () {
         if (this.props.active) {
@@ -350,10 +350,10 @@ const DashItem = createClass({
                     onDragLeave={this.over(false)}
                     onDrop={this.drop}>
                     <Link to={`/my/dashboard/${this.props.dash.id}`}
-                       className={className}
-                       data-toggle="tab"
-                       role="tab"
-                       aria-controls="profile">
+                          className={className}
+                          data-toggle="tab"
+                          role="tab"
+                          aria-controls="profile">
                         {this.props.dash.name}
                     </Link>
                 </li>
@@ -374,7 +374,7 @@ const DashActions = createClass({
     render: function () {
         if (this.props.primary) {
             return (
-                <i className="fas fa-pencil-alt" onClick={this.props.edit} />
+                <i className="fas fa-pencil-alt" onClick={this.props.edit}/>
             );
         } else {
             const buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
@@ -385,8 +385,8 @@ const DashActions = createClass({
                         <span>{this.context.t('my.confirm-delete-dash-long')}</span>
                     </Modal>
 
-                    <i className="fas fa-pencil-alt" onClick={this.props.edit} />
-                    <i className="fa fa-trash" onClick={this.showRemove} />
+                    <i className="fas fa-pencil-alt" onClick={this.props.edit}/>
+                    <i className="fa fa-trash" onClick={this.showRemove}/>
                 </span>
             );
         }
@@ -399,7 +399,7 @@ DashActions.contextTypes = {
 
 const EditingDash = createClass({
     getInitialState: function () {
-        return { val: this.props.name };
+        return {val: this.props.name};
     },
     componentDidMount: function () {
         const input = this.refs.input;
@@ -407,7 +407,7 @@ const EditingDash = createClass({
         input.select();
     },
     change: function (event) {
-        this.setState({ val: event.target.value });
+        this.setState({val: event.target.value});
     },
     click: function (event) {
         event.preventDefault();
@@ -422,10 +422,11 @@ const EditingDash = createClass({
         return (
             <li className="active">
                 <form onSubmit={this.submit}>
-                    <input ref="input" type="text" className="form-control" value={this.state.val} onChange={this.change}
-                           onClick={this.click} required={true} autoFocus={true} />
+                    <input ref="input" type="text" className="form-control" value={this.state.val}
+                           onChange={this.change}
+                           onClick={this.click} required={true} autoFocus={true}/>
                 </form>
-                <div className="dash-veil" onClick={this.props.cancel} />
+                <div className="dash-veil" onClick={this.props.cancel}/>
             </li>
         );
     }
@@ -438,8 +439,8 @@ const CreateDashboard = createClass({
             error: false
         };
     },
-    change: function(event) {
-        this.setState({ val: event.target.value });
+    change: function (event) {
+        this.setState({val: event.target.value});
     },
     showCreate: function () {
         this.refs.modal.open();
@@ -447,7 +448,7 @@ const CreateDashboard = createClass({
     submit: function (event) {
         event.preventDefault();
         if (this.state.val === '') {
-            this.setState({ error: true });
+            this.setState({error: true});
         } else {
             this.props.addDash(this.state.val);
             this.setState(this.getInitialState());
@@ -455,7 +456,7 @@ const CreateDashboard = createClass({
         }
     },
     render: function () {
-        const buttonLabels = { 'save': this.context.t('ui.confirm'), 'cancel': this.context.t('ui.cancel') };
+        const buttonLabels = {'save': this.context.t('ui.confirm'), 'cancel': this.context.t('ui.cancel')};
         const formGroupClass = this.state.error ? 'form-group has-error' : 'form-group';
 
         return (
@@ -473,7 +474,7 @@ const CreateDashboard = createClass({
                     </div>
                 </ModalWithForm>
                 <a href="#" onClick={this.showCreate} className="create">
-                    <i className="fa fa-plus" />
+                    <i className="fa fa-plus"/>
                 </a>
             </li>
         );
@@ -516,19 +517,20 @@ const DeleteApp = createClass({
     },
     render: function () {
         const className = 'appzone' + (this.state.over ? ' over' : '');
-        const buttonLabels = { save: this.context.t('ui.confirm'), cancel: this.context.t('ui.cancel')};
+        const buttonLabels = {save: this.context.t('ui.confirm'), cancel: this.context.t('ui.cancel')};
 
         return (
             <div className={className}
-                 onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop} >
-                <Modal title={this.context.t('my.confirm-remove-app')} successHandler={this.removeApp} cancelHandler={this.cancel}
+                 onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop}>
+                <Modal title={this.context.t('my.confirm-remove-app')} successHandler={this.removeApp}
+                       cancelHandler={this.cancel}
                        buttonLabels={buttonLabels} ref="modal">
                     <p>{this.context.t('my.confirm-remove-app-long')}</p>
                 </Modal>
                 <div className="app">
                     <div className="action-icon">
                         <span title={this.context.t('my.drop-to-remove')}>
-                            <i className="fa fa-trash fa-3x fa-border" />
+                            <i className="fa fa-trash fa-3x fa-border"/>
                         </span>
                     </div>
                 </div>
@@ -548,7 +550,7 @@ const Desktop = createClass({
         if (this.props.loading) {
             return (
                 <div className="col-sm-12 text-center">
-                    <i className="fa fa-spinner fa-spin loading" /> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"/> {this.context.t('ui.loading')}
                 </div>
             );
         }
@@ -556,7 +558,7 @@ const Desktop = createClass({
         return (
             <section className="all-apps">
                 <ul className="list undecorated-list flex-row">
-                   {/* Apps */}
+                    {/* Apps */}
                     {
                         this.props.apps.map(app => {
                             return <li key={app.id} className="item">
@@ -574,7 +576,7 @@ const Desktop = createClass({
                     {/*Pending apps*/}
                     {
                         this.props.pendingApps && this.props.dash.main &&
-                        this.props.pendingApps.map( app => {
+                        this.props.pendingApps.map(app => {
                             return <li key={app.id} className="item">
                                 <PendingApp
                                     app={app}
@@ -590,7 +592,7 @@ const Desktop = createClass({
                             dragging={this.props.dragging}
                             draggingPending={this.props.draggingPending}
                             delete={this.props.deleteApp}
-                            deletePending={this.props.deletePending} />
+                            deletePending={this.props.deletePending}/>
                     </li>
 
                 </ul>
@@ -678,7 +680,7 @@ class DashboardWrapper extends React.Component {
 
     render() {
         return <section className="oz-body wrapper flex-col">
-            <UpdateTitle title={this.context.t('my.dashboard')} />
+            <UpdateTitle title={this.context.t('my.dashboard')}/>
             <div className="container-fluid">
                 <div className="col-md-12">
                     <h1 className="text-center">
@@ -691,7 +693,7 @@ class DashboardWrapper extends React.Component {
                 <Dashboard/>
             </div>
 
-            <div className="push" />
+            <div className="push"/>
         </section>;
     }
 }

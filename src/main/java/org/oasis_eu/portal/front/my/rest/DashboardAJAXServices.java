@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.front.my.services;
+package org.oasis_eu.portal.front.my.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;

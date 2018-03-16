@@ -7,14 +7,14 @@ export const fetchDashboards = () => {
 export const fetchCreateDashboard = (name) => {
     return customFetch('/my/api/dashboard/dashboards', {
         method: 'POST',
-        json: { name }
+        json: {name}
     });
 };
 
 export const fetchRenameDashboard = (dashId, name) => {
     return customFetch(`/my/api/dashboard/dashboard/${dashId}`, {
         method: 'PUT',
-        json: { name }
+        json: {name}
     });
 };
 
@@ -33,11 +33,11 @@ export const fetchPendingApps = () => {
     return customFetch(`/my/api/dashboard/pending-apps.json`);
 };
 
-export const fetchReorderApps =  (dashId, apps) => {
+export const fetchReorderApps = (dashId, apps) => {
     return customFetch(`/my/api/dashboard/apps/${dashId}`,
         {
             method: 'PUT',
-            json: { apps }
+            json: {apps}
         });
 };
 

@@ -23,7 +23,7 @@ import {
     FETCH_UPDATE_ROLE_MEMBER
 } from '../../actions/member';
 
-import { FETCH_ADD_INSTANCE_TO_ORG } from '../../actions/app-store';
+import {FETCH_ADD_INSTANCE_TO_ORG} from '../../actions/app-store';
 
 import {
     FETCH_CREATE_SUBSCRIPTION,
@@ -50,7 +50,7 @@ const defaultState = {
 
 const instancesState = (state = [], action) => {
     let nextState = Object.assign([], state);
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_ADD_INSTANCE_TO_ORG:
             nextState.push(action.instance);
             break;
@@ -65,7 +65,7 @@ const instancesState = (state = [], action) => {
                 return instance.id === action.instanceId;
             });
 
-            if(i < 0){
+            if (i < 0) {
                 return state;
             }
 
@@ -80,13 +80,13 @@ const instancesState = (state = [], action) => {
 const membersState = (state = [], action) => {
     let nextState = Object.assign([], state);
     let i;
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_UPDATE_ROLE_MEMBER:
             i = nextState.findIndex(member => {
                 return member.id === action.memberId
             });
 
-            if(!i) {
+            if (!i) {
                 return state;
             }
 
@@ -102,7 +102,7 @@ const membersState = (state = [], action) => {
                     (!member.id && member.email === action.invitation.email);
             });
 
-            if(!i) {
+            if (!i) {
                 return state;
             }
 
@@ -118,7 +118,7 @@ const membersState = (state = [], action) => {
 
 const currentOrganizationState = (state = {}, action) => {
     let nextState = Object.assign({}, state);
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_ORGANIZATION_INFO:
             nextState.info = action.info;
             break;
@@ -149,9 +149,9 @@ const currentOrganizationState = (state = {}, action) => {
     return nextState;
 };
 
-const organizationsState = (state = [], action ) => {
+const organizationsState = (state = [], action) => {
     let nextState = Object.assign([], state);
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_UPDATE_STATUS_ORGANIZATION:
             const i = nextState.findIndex((org) => {
                 return org.id === action.organization.id;
@@ -178,7 +178,7 @@ const organizationsState = (state = [], action ) => {
 
 export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_USER_ORGANIZATIONS:
         case FETCH_CREATE_ORGANIZATION:
         case FETCH_UPDATE_STATUS_ORGANIZATION:
@@ -204,6 +204,6 @@ export default (state = defaultState, action) => {
         default:
             return state;
     }
-    
+
     return nextState;
 }

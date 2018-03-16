@@ -31,15 +31,15 @@ class MemberDropdownFooter extends React.Component {
         e.preventDefault();
         this.props.onAddAccessToInstance(this.state.selectedOption)
             .then(() => {
-                this.setState({ error: '' });
+                this.setState({error: ''});
             })
             .catch(err => {
-                this.setState({ error: err.error });
+                this.setState({error: err.error});
             });
     }
 
     onOptionChange(selectedOption) {
-        this.setState({ selectedOption });
+        this.setState({selectedOption});
     }
 
     render() {

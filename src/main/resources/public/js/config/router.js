@@ -1,7 +1,7 @@
 import React from 'react';
-import { connect } from 'react-redux';
-import { Route } from 'react-router-dom';
-import { Router, Switch, Redirect } from 'react-router';
+import {connect} from 'react-redux';
+import {Route} from 'react-router-dom';
+import {Router, Switch, Redirect} from 'react-router';
 import Popup from 'react-popup';
 import history from './history';
 
@@ -22,7 +22,7 @@ import OrganizationDesc from '../pages/organization-desc';
 import Store from '../pages/store';
 
 // Actions
-import { fetchUserInfo } from "../actions/user";
+import {fetchUserInfo} from "../actions/user";
 
 class RouterWithUser extends React.Component {
     render() {
@@ -30,8 +30,8 @@ class RouterWithUser extends React.Component {
             <NotificationsCount/>
             <Switch>
                 {/* Redirect old pages */}
-                <Redirect from="/my/network" to="/my/organization" />
-                <Redirect from="/my/apps" to="/my/organization" />
+                <Redirect from="/my/network" to="/my/organization"/>
+                <Redirect from="/my/apps" to="/my/organization"/>
 
                 {/* Routes */}
                 <Route path="/my/profile/franceconnect" component={SynchroniseFCProfile}/>
@@ -68,7 +68,7 @@ class AppRouter extends React.Component {
                 <Layout>
                     <Popup/>
                     <Switch>
-                        <Route path="/my" component={RouterWithUser} />
+                        <Route path="/my" component={RouterWithUser}/>
                         <Route path="/:lang/store" component={Store}/>
                         <Redirect to="/my/"/>
                     </Switch>

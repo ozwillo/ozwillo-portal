@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Components
 import DropDownMenu from '../../dropdown-menu';
@@ -9,9 +9,9 @@ import MemberDropdownFooter from './member-dropdown-footer'
 import CustomTooltip from '../../custom-tooltip';
 
 //Actions
-import { fetchCreateAcl, fetchDeleteAcl } from '../../../actions/acl';
-import { fetchDeleteMember, fetchUpdateRoleMember } from '../../../actions/member';
-import { fetchRemoveOrganizationInvitation } from "../../../actions/invitation";
+import {fetchCreateAcl, fetchDeleteAcl} from '../../../actions/acl';
+import {fetchDeleteMember, fetchUpdateRoleMember} from '../../../actions/member';
+import {fetchRemoveOrganizationInvitation} from "../../../actions/invitation";
 
 class MemberDropdown extends React.Component {
 
@@ -32,7 +32,7 @@ class MemberDropdown extends React.Component {
         };
 
         //bind methods
-        this.removeAccessToInstance= this.removeAccessToInstance.bind(this);
+        this.removeAccessToInstance = this.removeAccessToInstance.bind(this);
         this.addAccessToInstance = this.addAccessToInstance.bind(this);
         this.removeMemberInOrganization = this.removeMemberInOrganization.bind(this);
         this.removeInvitationToJoinAnOrg = this.removeInvitationToJoinAnOrg.bind(this);
@@ -42,7 +42,7 @@ class MemberDropdown extends React.Component {
     }
 
     addAccessToInstance(instance) {
-        if(!instance) {
+        if (!instance) {
             return;
         }
 
@@ -57,17 +57,17 @@ class MemberDropdown extends React.Component {
 
         this.props.fetchDeleteAcl(this.props.member, instance)
             .then(() => {
-                const errors = Object.assign({}, this.state.errors, { [instanceId]: '' });
-                this.setState({ errors });
+                const errors = Object.assign({}, this.state.errors, {[instanceId]: ''});
+                this.setState({errors});
             })
             .catch((err) => {
-                const errors = Object.assign({}, this.state.errors, { [instanceId]: err.error });
-                this.setState({ errors });
+                const errors = Object.assign({}, this.state.errors, {[instanceId]: err.error});
+                this.setState({errors});
             });
     }
 
     removeMemberInOrganization(memberId) {
-       return this.props.fetchDeleteMember(this.props.organization.id, memberId);
+        return this.props.fetchDeleteMember(this.props.organization.id, memberId);
     }
 
     removeInvitationToJoinAnOrg(member) {
@@ -78,7 +78,7 @@ class MemberDropdown extends React.Component {
         const instances = [];
 
         this.props.organization.instances.forEach(instance => {
-            if(!instance.users) {
+            if (!instance.users) {
                 return;
             }
 
@@ -86,7 +86,7 @@ class MemberDropdown extends React.Component {
                 return user.id === this.props.member.id;
             });
 
-            if(u) {
+            if (u) {
                 instances.push(instance);
             }
         });
@@ -95,7 +95,7 @@ class MemberDropdown extends React.Component {
     }
 
     filterInstanceWithoutAccess(instance) {
-        if(!instance.users) {
+        if (!instance.users) {
             return true;
         }
 
@@ -121,8 +121,8 @@ class MemberDropdown extends React.Component {
                                              onUpdateRoleMember={this.onUpdateRoleMember}
                                              onRemoveInvitationToJoinAnOrg={this.removeInvitationToJoinAnOrg}/>;
         const Footer = !isPending && <MemberDropdownFooter member={member}
-                                             instances={instancesWithoutAccess}
-                                             onAddAccessToInstance={this.addAccessToInstance}/>;
+                                                           instances={instancesWithoutAccess}
+                                                           onAddAccessToInstance={this.addAccessToInstance}/>;
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!isPending}>
             <section className='dropdown-content'>

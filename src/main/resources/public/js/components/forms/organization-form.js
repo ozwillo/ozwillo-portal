@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Component
 import LegalNameAutosuggest from '../autosuggests/legal-name-autosuggest';
@@ -9,7 +9,7 @@ import TaxRegActivityAutosuggest from '../autosuggests/tax-reg-activity-autosugg
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
 
 //Actions
-import { updateOrganizationForm, resetOrganizationForm } from '../../actions/components/organization-form';
+import {updateOrganizationForm, resetOrganizationForm} from '../../actions/components/organization-form';
 
 class OrganizationForm extends React.Component {
 
@@ -32,7 +32,7 @@ class OrganizationForm extends React.Component {
         countryFieldIsDisabled: false
     };
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -54,21 +54,33 @@ class OrganizationForm extends React.Component {
 
     // TODO: change that !!!!
     get taxLabels() {
-        if(!this.props.organization.country || !this.props.organization.country_uri){
+        if (!this.props.organization.country || !this.props.organization.country_uri) {
             return '';
         }
 
         let lang = '';
-        switch(this.props.country){
-            case 'България' : lang = 'bg'; break;
-            case 'Italia'   : lang = 'it'; break;
-            case 'France'   : lang = 'fr'; break;
-            case 'España'   : lang = 'es'; break;
-            case 'Türkiye'  : lang = 'tr'; break;
-            default         : lang = 'en'; break;
+        switch (this.props.country) {
+            case 'България' :
+                lang = 'bg';
+                break;
+            case 'Italia'   :
+                lang = 'it';
+                break;
+            case 'France'   :
+                lang = 'fr';
+                break;
+            case 'España'   :
+                lang = 'es';
+                break;
+            case 'Türkiye'  :
+                lang = 'tr';
+                break;
+            default         :
+                lang = 'en';
+                break;
         }
 
-        return  {
+        return {
             taxRegNum: this.context.t(`search.organization.business-id.${lang}`),
             taxRegOfficialId: this.context.t(`my.network.organization.tax_reg_official_id.${lang}`),
             taxRegActivity: this.context.t(`my.network.organization.tax_reg_activity.${lang}`)
@@ -82,8 +94,8 @@ class OrganizationForm extends React.Component {
     }
 
     createOptions(countries) {
-        return countries && countries .map(country => {
-            return { label: country.name, value: country.uri };
+        return countries && countries.map(country => {
+            return {label: country.name, value: country.uri};
         }) || [];
     }
 
@@ -126,28 +138,27 @@ class OrganizationForm extends React.Component {
         });
     }
 
-    handleOrganizationChange (e) {
+    handleOrganizationChange(e) {
         const el = e.currentTarget;
         const field = el.name;
-        const value = ( el.type === 'checkbox') ?  el.checked : el.value;
+        const value = (el.type === 'checkbox') ? el.checked : el.value;
 
-        this.props.updateOrganizationForm({ [field]: value });
+        this.props.updateOrganizationForm({[field]: value});
     }
 
     // Verify fields
     verifyTaxRegNum(e) {
         const el = e.currentTarget;
-        const msg =(/^[A-Za-z\d]*$/.test(this.props.organization.tax_reg_num))? '' :
+        const msg = (/^[A-Za-z\d]*$/.test(this.props.organization.tax_reg_num)) ? '' :
             'The field must contain only letters or numbers without spaces';
         el.setCustomValidity(msg);
     }
 
-    verifyCountry(e){
+    verifyCountry(e) {
         const el = e.currentTarget;
-        const msg = (!this.props.organization.country_uri)? 'You must select a country.' : '';
+        const msg = (!this.props.organization.country_uri) ? 'You must select a country.' : '';
         el.setCustomValidity(msg);
     }
-
 
 
     render() {
@@ -162,8 +173,10 @@ class OrganizationForm extends React.Component {
             <fieldset className="oz-fieldset">
                 <legend className="oz-legend">{this.context.t('organization.form.title')}</legend>
                 <div className="flex-row">
-                    <label htmlFor="country" className="label">{this.context.t('my.network.organization.country')} *</label>
-                    <Select className="select field" value={organization.country_uri} onChange={this.handleCountryChange}
+                    <label htmlFor="country"
+                           className="label">{this.context.t('my.network.organization.country')} *</label>
+                    <Select className="select field" value={organization.country_uri}
+                            onChange={this.handleCountryChange}
                             options={this.state.options} clearable={false}
                             placeholder="Country" required={true} disabled={this.props.countryFieldIsDisabled}/>
                 </div>
@@ -253,13 +266,14 @@ class OrganizationForm extends React.Component {
                                 </label>
                                 <input name="tax_reg_official_id" className="form-control field"
                                        id="tax_reg_official_id" type="text"
-                                       value={organization.tax_reg_official_id} onChange={this.handleOrganizationChange}/>
+                                       value={organization.tax_reg_official_id}
+                                       onChange={this.handleOrganizationChange}/>
                             </div>
                         }
 
                         <div className="flex-row">
                             <label name="jurisdiction" className="label">
-                                {this.context.t('my.network.organization.jurisdiction')} { (isPublic && '*') || ''}
+                                {this.context.t('my.network.organization.jurisdiction')} {(isPublic && '*') || ''}
                             </label>
                             <GeoAreaAutosuggest name="jurisdiction" required={isPublic}
                                                 value={organization.jurisdiction}
@@ -308,18 +322,20 @@ class OrganizationForm extends React.Component {
                         </label>
                         <input id="street_and_number" name="street_and_number" type="text" required={true}
                                value={organization.street_and_number} className="form-control field"
-                               onChange={this.handleOrganizationChange} />
+                               onChange={this.handleOrganizationChange}/>
                     </div>
 
                     <div className="flex-row">
-                        <label htmlFor="po_box" className="label">{this.context.t('my.network.organization.po_box')}</label>
+                        <label htmlFor="po_box"
+                               className="label">{this.context.t('my.network.organization.po_box')}</label>
                         <input id="po_box" name="po_box" type="text"
                                value={organization.po_box} className="form-control field"
-                               onChange={this.handleOrganizationChange} />
+                               onChange={this.handleOrganizationChange}/>
                     </div>
 
                     <div className="flex-row">
-                        <label htmlFor="city" className="label">{this.context.t('my.network.organization.city')} *</label>
+                        <label htmlFor="city"
+                               className="label">{this.context.t('my.network.organization.city')} *</label>
                         <GeoAreaAutosuggest name="city" required={true} countryUri={organization.country_uri}
                                             endpoint="/dc-cities" onChange={this.handleOrganizationChange}
                                             onGeoAreaSelected={this.handleCityChange} value={organization.city}
@@ -328,14 +344,16 @@ class OrganizationForm extends React.Component {
 
                     <div className="flex-row">
                         <label htmlFor="zip" className="label">{this.context.t('my.network.organization.zip')} *</label>
-                        <input id="zip" name="zip" type="text" maxLength={6} required={true} className="form-control field"
+                        <input id="zip" name="zip" type="text" maxLength={6} required={true}
+                               className="form-control field"
                                value={organization.zip} onChange={this.handleOrganizationChange} readOnly={true}/>
                     </div>
 
                     <div className="flex-row">
-                        <label htmlFor="cedex" className="label">{this.context.t('my.network.organization.cedex')}</label>
+                        <label htmlFor="cedex"
+                               className="label">{this.context.t('my.network.organization.cedex')}</label>
                         <input id="cedex" name="cedex" type="text" maxLength={3} value={organization.cedex}
-                               className="form-control field" onChange={this.handleOrganizationChange} />
+                               className="form-control field" onChange={this.handleOrganizationChange}/>
                     </div>
 
                 </fieldset>
@@ -343,15 +361,16 @@ class OrganizationForm extends React.Component {
 
             {/*     Submit button     */}
             <div className="flex-row">
-            {
-                countryIsSelected &&
-                (
-                    ( !this.props.isLoading && <input type="submit" value={this.props.label} className="submit btn-submit"/> ) ||
-                    <button type="button" className="submit btn icon">
-                        <i className="fa fa-spinner fa-spin loading"/>
-                    </button>
-                )
-            }
+                {
+                    countryIsSelected &&
+                    (
+                        (!this.props.isLoading &&
+                            <input type="submit" value={this.props.label} className="submit btn-submit"/>) ||
+                        <button type="button" className="submit btn icon">
+                            <i className="fa fa-spinner fa-spin loading"/>
+                        </button>
+                    )
+                }
             </div>
         </form>;
     }
@@ -374,4 +393,4 @@ const mapDispatchToProps = dispatch => {
     }
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (OrganizationForm);
+export default connect(mapStateToProps, mapDispatchToProps)(OrganizationForm);

@@ -226,8 +226,8 @@ public class ApplicationInstance {
         }
     }
 
-    public static enum InstantiationStatus {
-        PENDING, RUNNING, STOPPED; // STOPPED means trashed (replaces deletion)
+    public enum InstantiationStatus {
+        PENDING, RUNNING, STOPPED // STOPPED means trashed (replaces deletion)
     }
 
     @Override

@@ -9,5 +9,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface SiteMapHeaderRepository extends MongoRepository<SiteMapMenuSet, String> {
 
-    public SiteMapMenuSet findByLanguage(String language);
+    SiteMapMenuSet findByLanguage(String language);
 }

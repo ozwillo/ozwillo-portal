@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 
 //Component
@@ -9,10 +9,11 @@ import OrganizationDropdownHeader from '../../dropdown_menus/organization/organi
 import OrganizationInvitationForm from '../../forms/organization-invitation-form';
 
 //Actions
-import { fetchUpdateStatusOrganization } from "../../../actions/organization";
+import {fetchUpdateStatusOrganization} from "../../../actions/organization";
 
 //Config
 import Config from '../../../config/config';
+
 const organizationStatus = Config.organizationStatus;
 
 class OrganizationDropdown extends React.Component {
@@ -33,11 +34,11 @@ class OrganizationDropdown extends React.Component {
     }
 
     removeOrganization(org) {
-        return this.props.fetchUpdateStatusOrganization({ id: org.id, status: organizationStatus.deleted });
+        return this.props.fetchUpdateStatusOrganization({id: org.id, status: organizationStatus.deleted});
     }
 
     cancelRemoveOrganization(org) {
-        return this.props.fetchUpdateStatusOrganization({ id: org.id, status: organizationStatus.available });
+        return this.props.fetchUpdateStatusOrganization({id: org.id, status: organizationStatus.available});
     }
 
     render() {

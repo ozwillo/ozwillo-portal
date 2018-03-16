@@ -13,7 +13,7 @@
     margin: 10px 0;
 }
 
-.synchronize-fc-profile > form .row .item > input{
+.synchronize-fc-profile > form .row .item > input {
     margin: 0 10px;
 }
 
@@ -22,7 +22,7 @@
     font-size: 1.8em;
 }
 
-.synchronize-fc-profile > form .row label.item  {
+.synchronize-fc-profile > form .row label.item {
     width: 100%;
     height: 100%;
     margin: 0 10px;
@@ -45,7 +45,6 @@
     display: flex;
     flex-direction: column;
 }
-
 
 @media (max-width: 425px) {
     .synchronize-fc-profile > form .row .title {

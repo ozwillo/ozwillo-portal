@@ -4,18 +4,19 @@ import '../util/csrf';
 
 import React from 'react';
 import PropTypes from "prop-types";
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import createClass from 'create-react-class';
 
 import config from '../config/config';
+
 const notificationInterval = config.notificationsInterval;
 import UpdateTitle from '../components/update-title';
 
 //actions
-import { fetchNotifications, deleteNotification } from "../actions/notifications";
+import {fetchNotifications, deleteNotification} from "../actions/notifications";
 
 const NotificationTable = createClass({
-    getInitialState: function() {
+    getInitialState: function () {
         return {
             n: this.props.notifications || [],
             apps: this.props.apps || [],
@@ -30,16 +31,16 @@ const NotificationTable = createClass({
             intervalId: 0
         };
     },
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         this.setState({
             n: nextProps.notifications.sort(this.sortElement),
             apps: nextProps.apps
         });
     },
-    loadNotifications: function() {
+    loadNotifications: function () {
         this.props.fetchNotifications(this.state.filter.status);
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.loadNotifications();
         const intervalId = setInterval(this.loadNotifications, notificationInterval);
 
@@ -50,7 +51,7 @@ const NotificationTable = createClass({
     componentWillUnmount() {
         clearInterval(this.state.intervalId);
     },
-    sortBy: function(criterion) {
+    sortBy: function (criterion) {
         return () => {
             const currentSort = this.state.currentSort;
 
@@ -68,7 +69,7 @@ const NotificationTable = createClass({
             });
         };
     },
-    sortElement: function(a,b){
+    sortElement: function (a, b) {
         var currentSort = this.state.currentSort;
 
         if (typeof a[currentSort.prop] == typeof b[currentSort.prop]) {
@@ -82,15 +83,15 @@ const NotificationTable = createClass({
             }
         }
 
-        if (typeof a[currentSort.prop] == "undefined"){
+        if (typeof a[currentSort.prop] == "undefined") {
             return -currentSort.dir;
         }
-        if (typeof b[currentSort.prop] == "undefined"){
+        if (typeof b[currentSort.prop] == "undefined") {
             return currentSort.dir;
         }
 
         // In all other case, a basic and hazardous comparaison
-        return  (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
+        return (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
 
     },
     filterByStatus: function (event) {
@@ -120,11 +121,13 @@ const NotificationTable = createClass({
             );
 
         if (notificationNodes.length == 0) {
-            notificationNodes = <tr><td className="message" colSpan="4">{this.context.t('no-notification')}</td></tr>;
+            notificationNodes = <tr>
+                <td className="message" colSpan="4">{this.context.t('no-notification')}</td>
+            </tr>;
         }
 
         return (
-            <section id="notifications" className="box" >
+            <section id="notifications" className="box">
                 <div className="flex-col">
                     <h1 className="text-center">
                         <span className="title">{this.context.t('ui.notifications')}</span>
@@ -193,7 +196,8 @@ const SortableHeader = createClass({
         }
 
         return (
-            <th className={className} onClick={this.props.sortBy(this.props.name)}>{this.context.t(this.props.label)} {sortIcon}</th>
+            <th className={className}
+                onClick={this.props.sortBy(this.props.name)}>{this.context.t(this.props.label)} {sortIcon}</th>
         );
     }
 
@@ -248,28 +252,31 @@ const Notification = createClass({
     removeNotif: function () {
         this.props.onRemoveNotif(this.props.notif.id);
     },
-    render: function() {
+    render: function () {
         let action_by_url = null;
         let action_archive = null;
 
         if (this.props.notif.url) {
             const className = "btn btn-default pull-right";
-            action_by_url = <a href={this.props.notif.url} target="_new" className={className} >{this.props.notif.actionText}</a>;
+            action_by_url =
+                <a href={this.props.notif.url} target="_new" className={className}>{this.props.notif.actionText}</a>;
         }
-        if(this.props.notif.status !== "READ") {
-            action_archive = <a href="#" className="btn btn-default pull-right" onClick={this.removeNotif}>{this.context.t('archive')}</a>;
+        if (this.props.notif.status !== "READ") {
+            action_archive = <a href="#" className="btn btn-default pull-right"
+                                onClick={this.removeNotif}>{this.context.t('archive')}</a>;
         }
 
         return (
             <tr>
                 <td className="col-sm-2 date">{this.props.notif.dateText}</td>
                 <td className="col-sm-2 app">{this.props.notif.appName}</td>
-                <td className="col-sm-5 message" dangerouslySetInnerHTML={{__html: this.props.notif.formattedText}}></td>
+                <td className="col-sm-5 message"
+                    dangerouslySetInnerHTML={{__html: this.props.notif.formattedText}}></td>
                 <td className="col-sm-3">
                     {action_archive} {action_by_url}
                 </td>
             </tr>
-            );
+        );
     }
 });
 Notification.contextTypes = {

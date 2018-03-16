@@ -24,7 +24,7 @@ import serviceState from './service';
 export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
     let i = -1;
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_CREATE_SUBSCRIPTION:
         case FETCH_DELETE_SUBSCRIPTION:
         case FETCH_UPDATE_SERVICE_CONFIG:
@@ -32,7 +32,7 @@ export default (state = defaultState, action) => {
                 return service.catalogEntry.id === action.service.catalogEntry.id;
             });
 
-            if(i < 0){
+            if (i < 0) {
                 return state;
             }
 
@@ -52,7 +52,7 @@ export default (state = defaultState, action) => {
             nextState.users = Object.assign([], state.users);
             i = nextState.users.findIndex((user) => {
                 //We check names if user is waiting before to accept a request
-                return  (!action.user.id && user.name === action.user.name ) || user.id === action.user.id
+                return (!action.user.id && user.name === action.user.name) || user.id === action.user.id
             });
             nextState.users.splice(i, 1);
             break;

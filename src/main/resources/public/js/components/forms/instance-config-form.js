@@ -7,11 +7,12 @@ import Select from 'react-select';
 
 //Config
 import Config from '../../config/config';
+
 const instanceVisibility = Config.instanceVisibility;
 const iconMaxSize = Config.iconMaxSize;
 
 //Action
-import { uploadFile } from '../../actions/file-upload';
+import {uploadFile} from '../../actions/file-upload';
 
 class InstanceConfigForm extends React.Component {
 
@@ -28,7 +29,7 @@ class InstanceConfigForm extends React.Component {
     constructor(props) {
         super(props);
 
-        const serviceSelected = (props.instance.services.length === 1)? props.instance.services[0].catalogEntry : null;
+        const serviceSelected = (props.instance.services.length === 1) ? props.instance.services[0].catalogEntry : null;
         this.state = {
             iconError: '',
             serviceSelected,
@@ -68,7 +69,7 @@ class InstanceConfigForm extends React.Component {
             geographical_areas: this.state.areaUri && [this.state.areaUri] || []
         });
 
-        if(this.state.serviceSelected.visibility !== instanceVisibility.never) {
+        if (this.state.serviceSelected.visibility !== instanceVisibility.never) {
             result.visibility = this.state.visibility ? instanceVisibility.visible : instanceVisibility.hidden;
         }
 
@@ -80,11 +81,11 @@ class InstanceConfigForm extends React.Component {
 
     handleChange(e) {
         const el = e.currentTarget;
-        this.setState({ [el.name]: ( el.type === 'checkbox') ?  el.checked : el.value });
+        this.setState({[el.name]: (el.type === 'checkbox') ? el.checked : el.value});
     }
 
     handleServiceChange(serviceSelected) {
-        this.setState({ serviceSelected })
+        this.setState({serviceSelected})
     }
 
     onGeoAreaChange(e) {
@@ -105,16 +106,20 @@ class InstanceConfigForm extends React.Component {
 
     uploadIconFile(e) {
         const file = e.currentTarget.files[0];
-        
-        if(file.size > iconMaxSize) {
+
+        if (file.size > iconMaxSize) {
             e.currentTarget.value = null;
-            this.setState({ iconError: `icon must have a max size of ${Math.round(iconMaxSize/1024)} Ko` });
+            this.setState({iconError: `icon must have a max size of ${Math.round(iconMaxSize / 1024)} Ko`});
             return;
         }
 
         uploadFile(file, this.state.serviceSelected.id)
-            .then(iconUrl => { this.setState({ iconUrl, iconError: '' }); })
-            .catch(err => { this.setState({ iconError: err.error }); });
+            .then(iconUrl => {
+                this.setState({iconUrl, iconError: ''});
+            })
+            .catch(err => {
+                this.setState({iconError: err.error});
+            });
     }
 
     render() {
@@ -127,7 +132,7 @@ class InstanceConfigForm extends React.Component {
                             onChange={this.handleCountryChange}
                             options={this.props.instance.services} clearable={false}
                             valueKey="id" labelKey="name"
-                            placeholder="Service" required={true} />
+                            placeholder="Service" required={true}/>
                 </div>
 
                 {
@@ -142,18 +147,18 @@ class InstanceConfigForm extends React.Component {
                         <div className="flex-row">
                             <label htmlFor="description" className="label">Description</label>
                             <textarea name="description" id="description" className="form-control field"
-                                   value={this.state.description} onChange={this.handleChange} />
+                                      value={this.state.description} onChange={this.handleChange}/>
                         </div>
 
                         <div className="flex-row">
                             <label htmlFor="iconUrl" className="label">Icon</label>
 
                             <div className="flex-row field icon">
-                                <img src={this.state.iconUrl} />
+                                <img src={this.state.iconUrl}/>
 
                                 <div className="desc-field text-center">
                                     <input type="text" name="iconUrl" id="iconUrl" className="form-control"
-                                           value={this.state.iconUrl} onChange={this.handleChange} required={true} />
+                                           value={this.state.iconUrl} onChange={this.handleChange} required={true}/>
                                     <span className="desc">{this.context.t('my.apps.upload')}</span>
                                 </div>
                             </div>
@@ -163,7 +168,7 @@ class InstanceConfigForm extends React.Component {
                             <label htmlFor="iconFile" className="label empty"> </label>
                             <div className="flex-col field">
                                 <input name="iconFile" type="file"
-                                       onChange={this.uploadIconFile} accept="image/*" />
+                                       onChange={this.uploadIconFile} accept="image/*"/>
                                 {
                                     this.state.iconError &&
                                     <span className="error-message">{this.state.iconError}</span>
@@ -179,7 +184,7 @@ class InstanceConfigForm extends React.Component {
                                                 endpoint="/geographicalAreas"
                                                 onChange={this.onGeoAreaChange}
                                                 onGeoAreaSelected={this.onGeoAreaSelected}
-                                                value={this.state.area} />
+                                                value={this.state.area}/>
                         </div>
 
                         {
@@ -196,7 +201,8 @@ class InstanceConfigForm extends React.Component {
 
                         <div className="flex-row">
                             {
-                                (!this.props.isLoading && <input type="submit" value="Save" className="btn btn-submit"/> ) ||
+                                (!this.props.isLoading &&
+                                    <input type="submit" value="Save" className="btn btn-submit"/>) ||
                                 <button type="button" className="btn icon">
                                     <i className="fa fa-spinner fa-spin loading"/>
                                 </button>

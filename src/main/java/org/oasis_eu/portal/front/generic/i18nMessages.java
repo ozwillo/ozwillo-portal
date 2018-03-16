@@ -10,7 +10,7 @@ public final class i18nMessages {
     private i18nMessages() {
     }
 
-    ; //this class can't be an instance (all members are static)
+    //this class can't be an instance (all members are static)
 
     private static final List<String> i18nkeys = Arrays.asList("create-org", "modify-org", "add-organization", "information",
         "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave", "no-information-available",
@@ -124,16 +124,16 @@ public final class i18nMessages {
         return i18n;
     }
 
-    public static Map<String, String> getI18n_i18keys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_i18keys(Locale locale, MessageSource messageSource) {
         return (i18nkeys.stream().collect(Collectors.toMap(k -> "my.network." + k,
             k -> messageSource.getMessage("my.network." + k, new Object[]{}, locale))));
     }
 
-    public static Map<String, String> getI18n_generickeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_generickeys(Locale locale, MessageSource messageSource) {
         return (generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
     }
 
-    public static Map<String, String> getI18nContactKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18nContactKeys(Locale locale, MessageSource messageSource) {
         Map<String, String> i18n = new HashMap<>();
         i18n.putAll(contactKeys.stream().collect(Collectors.toMap(k -> "contact." + k,
             k -> messageSource.getMessage("contact." + k, new Object[]{}, locale))));
@@ -142,14 +142,14 @@ public final class i18nMessages {
         return i18n;
     }
 
-    public static Map<String, String> getI18nDashboardKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18nDashboardKeys(Locale locale, MessageSource messageSource) {
         Map<String, String> i18n = new HashMap<>();
         i18n.putAll(dashboardKeys.stream().collect(Collectors.toMap(k -> "my." + k,
             k -> messageSource.getMessage("my." + k, new Object[]{}, locale))));
         return i18n;
     }
 
-    public static Map<String, String> getI18n_searchOrganization(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_searchOrganization(Locale locale, MessageSource messageSource) {
         Map<String, String> i18n = new HashMap<>();
         i18n.putAll(searchOrganization.stream().collect(Collectors.toMap(k -> "search.organization." + k,
             k -> messageSource.getMessage("search.organization." + k, new Object[]{}, locale))));
@@ -158,16 +158,16 @@ public final class i18nMessages {
         return i18n;
     }
 
-    public static Map<String, String> getI18n_createOrModifyOrganization(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_createOrModifyOrganization(Locale locale, MessageSource messageSource) {
         return (createOrModifyOrganization.stream().collect(Collectors.toMap(k -> "my.network.organization." + k,
             k -> messageSource.getMessage("my.network.organization." + k, new Object[]{}, locale))));
     }
 
-    public static Map<String, String> getI18n_networkkeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_networkkeys(Locale locale, MessageSource messageSource) {
         return (networkkeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("my.network." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_storekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_storekeys(Locale locale, MessageSource messageSource) {
         Map<String, String> i18n = new HashMap<>();
         i18n.putAll(storekeys.stream().collect(Collectors.toMap(k -> k, k -> messageSource.getMessage("store." + k, new Object[0], locale))));
         i18n.putAll(storeInstallkeys.stream().collect(Collectors.toMap(k -> "install.org." + k,
@@ -175,42 +175,42 @@ public final class i18nMessages {
         return i18n;
     }
 
-    public static Map<String, String> getI18n_errors(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_errors(Locale locale, MessageSource messageSource) {
         return (errors.stream().collect(Collectors.toMap(k -> "error." + k, k -> messageSource.getMessage("error." + k, new Object[]{}, locale))));
     }
 
-    public static Map<String, String> getI18n_myApps(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_myApps(Locale locale, MessageSource messageSource) {
         return (myApps.stream().collect(Collectors.toMap(k -> "my.apps." + k, k -> messageSource.getMessage("my.apps." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_profilekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_profilekeys(Locale locale, MessageSource messageSource) {
         return (profilekeys.stream().collect(Collectors.toMap(k -> "my.profile." + k, k -> messageSource.getMessage("my.profile." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_languagekeys(Locale locale, MessageSource messageSource) {
         return (languagekeys.stream().collect(Collectors.toMap(k -> "store.language." + k, k -> messageSource.getMessage("store.language." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_franceconnectKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_franceconnectKeys(Locale locale, MessageSource messageSource) {
         return (franceconnectKeys.stream().collect(Collectors.toMap(k -> "franceconnect." +k, k -> messageSource.getMessage("franceconnect." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_organizationSearchKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_organizationSearchKeys(Locale locale, MessageSource messageSource) {
         return (organizationSearchKeys.stream().collect(Collectors.toMap(k -> "organization.search." +k,
                 k -> messageSource.getMessage("organization.search." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_organizationFormKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_organizationFormKeys(Locale locale, MessageSource messageSource) {
         return (organizationFormKeys.stream().collect(Collectors.toMap(k -> "organization.form." +k,
                 k -> messageSource.getMessage("organization.form." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_organizationDescKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_organizationDescKeys(Locale locale, MessageSource messageSource) {
         return (organizationDescKeys.stream().collect(Collectors.toMap(k -> "organization.desc." +k,
                 k -> messageSource.getMessage("organization.desc." + k, new Object[0], locale))));
     }
 
-    public static Map<String, String> getI18n_tooltipKeys(Locale locale, MessageSource messageSource) throws JsonProcessingException {
+    public static Map<String, String> getI18n_tooltipKeys(Locale locale, MessageSource messageSource) {
         return (tooltipKeys.stream().collect(Collectors.toMap(k -> "tooltip." +k,
                 k -> messageSource.getMessage("tooltip." + k, new Object[0], locale))));
     }

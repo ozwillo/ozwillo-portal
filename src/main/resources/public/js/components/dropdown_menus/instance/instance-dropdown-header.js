@@ -7,6 +7,7 @@ import CustomTooltip from '../../custom-tooltip';
 
 //Config
 import Config from '../../../config/config';
+
 const instanceStatus = Config.instanceStatus;
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes
@@ -55,7 +56,7 @@ class InstanceDropdownHeader extends React.Component {
         const now = Date.now();
         const deletionDate = new Date(this.props.instance.deletion_planned).getTime();
 
-        const days = Math.round((deletionDate - now ) / TIME_DAY);
+        const days = Math.round((deletionDate - now) / TIME_DAY);
 
         return days;
     }
@@ -70,7 +71,7 @@ class InstanceDropdownHeader extends React.Component {
         return <header className="dropdown-header">
             <form className="form flex-row"
                   onSubmit={(isRunning && this.onRemoveInstance) ||
-                            (isStopped && this.onCancelRemoveInstance) || null}>
+                  (isStopped && this.onCancelRemoveInstance) || null}>
                 <span className="dropdown-name">{instance.name}</span>
 
                 <div className="options flex-row end">
@@ -105,7 +106,7 @@ class InstanceDropdownHeader extends React.Component {
                         [
 
                             <span key={`${instance.id}-message`} className="message delete">
-                                { this.context.t('ui.message.will-be-deleted').format(this.numberOfDaysBeforeDeletion) }
+                                {this.context.t('ui.message.will-be-deleted').format(this.numberOfDaysBeforeDeletion)}
                             </span>,
                             <button key={`${instance.id}-submit`} type="submit" className="btn btn-default-inverse">
                                 {this.context.t('ui.cancel')}

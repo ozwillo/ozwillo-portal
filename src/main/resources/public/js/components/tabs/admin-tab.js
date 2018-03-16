@@ -1,15 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 //Components
 import OrganizationForm from '../forms/organization-form';
 
 //actions
-import { fetchCountries } from '../../actions/config';
-import { updateOrganizationForm } from '../../actions/components/organization-form';
-import { fetchUpdateOrganization } from '../../actions/organization';
+import {fetchCountries} from '../../actions/config';
+import {updateOrganizationForm} from '../../actions/components/organization-form';
+import {fetchUpdateOrganization} from '../../actions/organization';
 
 class AdminTabHeader extends React.Component {
 
@@ -26,6 +26,7 @@ class AdminTabHeader extends React.Component {
     }
 
 }
+
 const AdminTabHeaderWithRedux = connect(state => {
     return {
         organization: state.organization.current

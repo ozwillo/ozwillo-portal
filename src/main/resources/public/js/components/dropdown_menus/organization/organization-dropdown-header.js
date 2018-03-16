@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Popup from 'react-popup';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom'
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom'
 import CustomTooltip from '../../custom-tooltip';
 
 import Config from '../../../config/config';
+
 const organizationStatus = Config.organizationStatus;
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes
@@ -36,27 +37,31 @@ class OrganizationDropdownHeader extends React.Component {
     onRemoveOrganization(e) {
         e.preventDefault();
         this.props.onRemoveOrganization(this.props.organization)
-            .then(() => { this.setState({ error: '' }); })
+            .then(() => {
+                this.setState({error: ''});
+            })
             .catch(err => {
-                if( err.status === 403 ) {
-                    this.setState({ error: '' });
+                if (err.status === 403) {
+                    this.setState({error: ''});
                     const lines = err.error.split('\n');
 
                     Popup.create({
                         title: this.props.organization.name,
                         content: <p className="alert-message">
-                            { lines.map((msg, i) => <span key={i} className="line">{ msg }</span>) }
+                            {lines.map((msg, i) => <span key={i} className="line">{msg}</span>)}
                         </p>,
                         buttons: {
                             right: [{
                                 text: this.context.t('ui.ok'),
-                                action: () => { Popup.close(); }
+                                action: () => {
+                                    Popup.close();
+                                }
                             }]
                         }
 
                     });
                 } else {
-                    this.setState({ error: err.error });
+                    this.setState({error: err.error});
                 }
             });
     }
@@ -64,15 +69,19 @@ class OrganizationDropdownHeader extends React.Component {
     onCancelRemoveOrganization(e) {
         e.preventDefault();
         this.props.onCancelRemoveOrganization(this.props.organization)
-            .then(() => { this.setState({ error: '' }); })
-            .catch(err => { this.setState({ error: err.error }); });
+            .then(() => {
+                this.setState({error: ''});
+            })
+            .catch(err => {
+                this.setState({error: err.error});
+            });
     }
 
     get numberOfDaysBeforeDeletion() {
         const now = Date.now();
         const deletionDate = new Date(this.props.organization.deletion_planned).getTime();
 
-        const days = Math.round((deletionDate - now ) / TIME_DAY);
+        const days = Math.round((deletionDate - now) / TIME_DAY);
 
         return days;
     }
@@ -84,7 +93,7 @@ class OrganizationDropdownHeader extends React.Component {
 
         return <header className="dropdown-header">
             <form className="form flex-row"
-                  onSubmit={ (isAvailable && this.onRemoveOrganization) || this.onCancelRemoveOrganization }>
+                  onSubmit={(isAvailable && this.onRemoveOrganization) || this.onCancelRemoveOrganization}>
                 <span className="dropdown-name">
                     <Link className="link" to={`/my/organization/${org.id}/`}>
                         {org.name}
@@ -94,7 +103,7 @@ class OrganizationDropdownHeader extends React.Component {
                 {
                     this.state.error &&
                     <span className="error-message ">
-                        { this.state.error }
+                        {this.state.error}
                     </span>
                 }
 
@@ -104,8 +113,8 @@ class OrganizationDropdownHeader extends React.Component {
                             <CustomTooltip key={`${org.id}-instance-tab`}
                                            title={this.context.t('tooltip.instances')}>
                                 <Link className="btn icon"
-                                      to={`/my/organization/${org.id}/instances`} >
-                                        <i className="fa fa-list-alt option-icon"/>
+                                      to={`/my/organization/${org.id}/instances`}>
+                                    <i className="fa fa-list-alt option-icon"/>
                                 </Link>
                             </CustomTooltip>,
 

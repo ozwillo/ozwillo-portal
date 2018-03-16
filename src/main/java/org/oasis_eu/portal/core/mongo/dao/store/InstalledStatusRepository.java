@@ -10,6 +10,6 @@ import org.springframework.data.mongodb.repository.MongoRepository;
  */
 public interface InstalledStatusRepository extends MongoRepository<InstalledStatus, String> {
 
-    public InstalledStatus findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType catalogEntryType, String catalogEntryId, String userId);
+    InstalledStatus findByCatalogEntryTypeAndCatalogEntryIdAndUserId(CatalogEntryType catalogEntryType, String catalogEntryId, String userId);
 
 }

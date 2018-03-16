@@ -45,12 +45,12 @@ class LegalNameAutosuggest extends React.Component {
         $.ajax({
             url: "/my/api/network/search-organizations",
             dataType: 'json',
-            data: { country_uri: this.props.countryUri, query: query },
+            data: {country_uri: this.props.countryUri, query: query},
             type: 'get',
-            success: function(data) {
-                this.setState({ suggestions : data });
+            success: function (data) {
+                this.setState({suggestions: data});
             }.bind(this),
-            error: function(xhr, status, err) {
+            error: function (xhr, status, err) {
                 console.error("Error while searching for organizations with query " + query, status, err.toString())
             }
         })
@@ -65,7 +65,7 @@ class LegalNameAutosuggest extends React.Component {
         )
     }
 
-    onSuggestionsFetchRequested ({ value, reason }) {
+    onSuggestionsFetchRequested({value, reason}) {
         if (reason !== 'enter' && reason !== 'click') {
             debounce(this.searchOrganizations(value), 500);
         }
@@ -73,15 +73,16 @@ class LegalNameAutosuggest extends React.Component {
     }
 
     onSuggestionsClearRequested() {
-        this.setState({ suggestions: [] })
+        this.setState({suggestions: []})
     }
 
-    onSuggestionSelected(event, { suggestion }) {
+    onSuggestionSelected(event, {suggestion}) {
         this.props.onOrganizationSelected(suggestion);
     }
 
     shouldRenderSuggestions(input) {
-        return input && (input.trim().length >= sizeQueryBeforeFetch);;
+        return input && (input.trim().length >= sizeQueryBeforeFetch);
+        ;
     }
 
     getSuggestionValue(suggestion) {

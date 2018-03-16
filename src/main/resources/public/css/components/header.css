@@ -38,7 +38,7 @@
     padding: 3px;
     background-color: var(--white-color);
     box-shadow: -1px 4px 4px rgba(0, 0, 0, 0.2),
-                1px -1px 4px rgba(0, 0, 0, 0.1);
+    1px -1px 4px rgba(0, 0, 0, 0.1);
 }
 
 .oz-header .navbar-container {
@@ -101,6 +101,5 @@
     .oz-header .welcome {
         margin: 8px 0;
     }
-
 
 }

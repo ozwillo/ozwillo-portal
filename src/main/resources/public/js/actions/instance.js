@@ -39,13 +39,13 @@ export const fetchUsersOfInstance = (instance) => {
     };
 };
 
-export const fetchUpdateInstanceStatus = ({ applicationInstance }, status) => {
+export const fetchUpdateInstanceStatus = ({applicationInstance}, status) => {
     return (dispatch) => {
         return customFetch(`/my/api/instance/${applicationInstance.id}/status`, {
             method: 'POST',
-            json: { applicationInstance: { id: applicationInstance.id, status } }
-        }).then(({ id, applicationInstance, deletion_planned }) => {
-            return dispatch(fetchUpdateInstanceStatusAction({ id, applicationInstance, deletion_planned }));
+            json: {applicationInstance: {id: applicationInstance.id, status}}
+        }).then(({id, applicationInstance, deletion_planned}) => {
+            return dispatch(fetchUpdateInstanceStatusAction({id, applicationInstance, deletion_planned}));
         });
     };
 };

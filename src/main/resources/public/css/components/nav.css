@@ -62,7 +62,7 @@
 
 .navbar-toggle.collapsed,
 .navbar-toggle .icon-bar,
-.navbar-toggle:hover .icon-bar{
+.navbar-toggle:hover .icon-bar {
     background-color: var(--white-color) !important;
 }
 
@@ -74,11 +74,9 @@
     background-color: var(--white-color);
 }
 
-
 #oz-nav .dropdown-menu > .menu > .link {
     color: var(--purple-color);
 }
-
 
 @media (min-width: 768px) {
     #oz-nav.navbar {

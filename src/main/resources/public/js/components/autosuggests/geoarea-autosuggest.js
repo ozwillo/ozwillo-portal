@@ -38,26 +38,26 @@ class GeoAreaAutosuggest extends Component {
         $.ajax({
             url: `/api/store${this.props.endpoint}`,
             dataType: 'json',
-            data: { country_uri: this.props.countryUri, q: query },
+            data: {country_uri: this.props.countryUri, q: query},
             type: 'get',
-            success: function(data) {
-                this.setState({ suggestions : data.areas });
+            success: function (data) {
+                this.setState({suggestions: data.areas});
             }.bind(this),
-            error: function(xhr, status, err) {
+            error: function (xhr, status, err) {
                 console.error("Error while searching for cities with query " + query, status, err.toString())
             }
         })
     }
 
-    onSuggestionsFetchRequested = ({ value }) => {
+    onSuggestionsFetchRequested = ({value}) => {
         this.searchCities(value);
     };
 
     onSuggestionsClearRequested = () => {
-        this.setState({ suggestions: [] })
+        this.setState({suggestions: []})
     };
 
-    onSuggestionSelected = (event, { suggestion }) => {
+    onSuggestionSelected = (event, {suggestion}) => {
         this.props.onGeoAreaSelected(suggestion);
     };
 
@@ -81,14 +81,14 @@ class GeoAreaAutosuggest extends Component {
 
 
         return <Autosuggest
-                    suggestions={this.state.suggestions}
-                    onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                    onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                    onSuggestionSelected={this.onSuggestionSelected}
-                    getSuggestionValue={this.getSuggestionValue}
-                    renderSuggestion={renderSuggestion}
-                    inputProps={inputProps}
-                    shouldRenderSuggestions={this.shouldRenderSuggestions}/>
+            suggestions={this.state.suggestions}
+            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+            onSuggestionSelected={this.onSuggestionSelected}
+            getSuggestionValue={this.getSuggestionValue}
+            renderSuggestion={renderSuggestion}
+            inputProps={inputProps}
+            shouldRenderSuggestions={this.shouldRenderSuggestions}/>
     }
 }
 

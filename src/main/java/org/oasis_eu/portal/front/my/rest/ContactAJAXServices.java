@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.front.my.services;
+package org.oasis_eu.portal.front.my.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.google.common.base.Strings;
@@ -61,7 +61,7 @@ public class ContactAJAXServices extends BaseController {
     private String captchaUrl;
 
     @RequestMapping(value = "/send", method = RequestMethod.POST)
-    public ResponseEntity<String> send(@RequestBody @Valid ContactRequest contactRequest, Locale locale) throws MessagingException {
+    public ResponseEntity<String> send(@RequestBody @Valid ContactRequest contactRequest, Locale locale) {
         logger.debug("send {}'s contact type with subject {}, body {}", contactRequest.motive, contactRequest.subject, contactRequest.body);
 
         HttpHeaders headers = new HttpHeaders();

@@ -1,8 +1,6 @@
 /* GLOBAL STYLES */
-
 @import 'variables.css';
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,700);
-
 /* Components */
 @import 'components/btn.css';
 @import 'components/custom-tooltip.css';
@@ -22,16 +20,13 @@
 @import 'components/side-menu.css';
 @import 'components/table.css';
 @import 'components/tabs.css';
-
 @import 'components/tabs/admin-tab.css';
 @import 'components/tabs/instances-tab.css';
 @import 'components/tabs/members-tab.css';
-
 @import 'components/forms/form.css';
 @import 'components/forms/instance-config-form.css';
 @import 'components/forms/instance-invitation-form.css';
 @import 'components/forms/organization-invitation-form.css';
-
 /* Pages */
 @import 'pages/dashboard.css';
 @import 'pages/notifications.css';
@@ -41,7 +36,6 @@
 @import 'pages/profile.css';
 @import 'pages/store.css';
 @import 'pages/synchronize-fc-profile.css';
-
 /* Helper */
 @import './helper.css';
 
@@ -49,7 +43,9 @@
      while having main content (with page-row-expanded class) taking up all available space */
 
 html,
-body { height: 100%; }
+body {
+    height: 100%;
+}
 
 #root {
     display: flex;
@@ -89,7 +85,10 @@ label.required {
     display: table-row;
 }
 
-.page-row-expanded { height: 100%; }
+.page-row-expanded {
+    height: 100%;
+}
+
 /* END page-row */
 
 /* oz-body */
@@ -107,9 +106,9 @@ label.required {
 }
 
 .oz-body h1 {
-    font-size:36px;
+    font-size: 36px;
     margin: 30px 0 30px 0;
-    display:block;
+    display: block;
     vertical-align: middle;
 }
 
@@ -118,8 +117,8 @@ label.required {
 }
 
 .oz-body h2 {
-    font-size:20px;
-    display:block;
+    font-size: 20px;
+    display: block;
     margin-bottom: 20px;
 }
 
@@ -131,6 +130,7 @@ label.required {
     padding: 20px 0;
     height: 100%;
 }
+
 /* END oz-body */
 
 .top {
@@ -148,7 +148,7 @@ label.required {
 }
 
 .text-align-middle {
-    padding-top:0.5em;
+    padding-top: 0.5em;
 }
 
 .error-message {
@@ -170,7 +170,7 @@ label.required {
     margin: 10px 5px;
     padding: 5px 20px;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
-                4px 3px 3px rgba(0, 0, 0, 0.2);
+    4px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
 .alert-message {

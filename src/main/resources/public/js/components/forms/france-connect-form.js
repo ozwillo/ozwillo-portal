@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { SubmitButton } from "./form";
+import {SubmitButton} from "./form";
 
 class FranceConnectForm extends React.Component {
 
@@ -28,9 +28,9 @@ class FranceConnectForm extends React.Component {
             {
                 userProfile.franceconnect_sub && userProfile.email_verified &&
                 <div className="text-center">
-                   <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-submit">
-                       {this.context.t("franceconnect.form.desynchronize")}
-                   </a>
+                    <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-submit">
+                        {this.context.t("franceconnect.form.desynchronize")}
+                    </a>
                 </div>
 
             }

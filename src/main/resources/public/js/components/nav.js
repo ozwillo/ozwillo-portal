@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from "prop-types";
 
 
@@ -12,9 +12,9 @@ class Nav extends React.Component {
                     <button type="button" className="navbar-toggle collapsed" data-toggle="collapse"
                             data-target="#ozwillo-navbar" aria-expanded="false" aria-controls="navbar">
                         <span className="sr-only">Toggle navigation</span>
-                        <span className="icon-bar" />
-                        <span className="icon-bar" />
-                        <span className="icon-bar" />
+                        <span className="icon-bar"/>
+                        <span className="icon-bar"/>
+                        <span className="icon-bar"/>
                     </button>
                 </div>
 
@@ -24,27 +24,28 @@ class Nav extends React.Component {
                             this.props.siteMapHeader && this.props.siteMapHeader.contentItems.map((item, index) => {
                                 const isSubMenu = item.type === 'submenu';
                                 return <li className={`menu ${(isSubMenu && 'dropdown') || ''}`} key={index}>
-                                        {
-                                            isSubMenu &&
-                                            <a href="#" className="link dropdown-toggle" data-toggle="dropdown" role="button"
-                                               aria-expanded="false" aria-haspopup="true" href={item.url}>
-                                                <span data-th-text="${item.label}">{item.label}</span>
-                                                <span className="caret" />
-                                            </a>
-                                        }
-                                        {
-                                            isSubMenu &&
-                                            <ul className="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                                {
-                                                    item.items.map((subMenu, index) => {
-                                                        return <li className="menu" role="presentation" key={index}>
-                                                            <a className="link" role="menuitem" tabIndex="-1"
-                                                               href={subMenu.url}>{subMenu.label}</a>
-                                                        </li>
-                                                    })
-                                                }
-                                            </ul>
-                                        }
+                                    {
+                                        isSubMenu &&
+                                        <a href="#" className="link dropdown-toggle" data-toggle="dropdown"
+                                           role="button"
+                                           aria-expanded="false" aria-haspopup="true" href={item.url}>
+                                            <span data-th-text="${item.label}">{item.label}</span>
+                                            <span className="caret"/>
+                                        </a>
+                                    }
+                                    {
+                                        isSubMenu &&
+                                        <ul className="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+                                            {
+                                                item.items.map((subMenu, index) => {
+                                                    return <li className="menu" role="presentation" key={index}>
+                                                        <a className="link" role="menuitem" tabIndex="-1"
+                                                           href={subMenu.url}>{subMenu.label}</a>
+                                                    </li>
+                                                })
+                                            }
+                                        </ul>
+                                    }
                                     {
                                         !isSubMenu &&
                                         <a className="link" role="menuitem" tabIndex="-1" href={item.url}>
@@ -79,7 +80,7 @@ class Nav extends React.Component {
                         <li className="menu dropdown">
                             <a href="#" className="link nav-link dropdown-toggle" data-toggle="dropdown">
                                 <span>{this.props.language}</span>
-                                <i className="caret" />
+                                <i className="caret"/>
                             </a>
                             <ul className="dropdown-menu">
                                 <li className="menu">
@@ -100,6 +101,7 @@ class Nav extends React.Component {
     }
 
 }
+
 Nav.contextTypes = {
     t: PropTypes.func.isRequired
 };

@@ -6,11 +6,11 @@
     border: none;
 }
 
-#dashboard .all-apps .list{
+#dashboard .all-apps .list {
     flex-wrap: wrap;
 }
 
-#dashboard .all-apps .list > .item{
+#dashboard .all-apps .list > .item {
     margin: 0.4em;
 }
 
@@ -45,7 +45,7 @@
     background-color: var(--white-color);
     padding-left: 0;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
-                4px 3px 3px rgba(0, 0, 0, 0.2);
+    4px 3px 3px rgba(0, 0, 0, 0.2);
 
 }
 
@@ -72,7 +72,7 @@
     border-radius: 3px;
     text-align: center;
     padding: 10px;
-    position:relative;
+    position: relative;
 
     color: var(--dark-purple-color);
     text-transform: uppercase;
@@ -88,14 +88,14 @@
 
 #dashboard .appzone .app span.badge-notifications {
     position: absolute;
-    right:17px;
-    top:0;
+    right: 17px;
+    top: 0;
     background: var(--red-color);
     text-align: center;
     border-radius: 30px 30px 30px 30px;
     color: var(--white-color);
-    padding:5px 8px;
-    font-size:12px;
+    padding: 5px 8px;
+    font-size: 12px;
 }
 
 #dashboard .appzone .app.pending {
@@ -127,7 +127,6 @@
 #dashboard .app:hover .action-icon a {
     color: var(--white-color);
 }
-
 
 #dashboard .top-menu {
     display: flex;
@@ -167,6 +166,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
     }
+
     #dashboard .appzone .app p:after {
         display: none;
     }

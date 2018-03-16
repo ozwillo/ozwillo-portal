@@ -1,4 +1,4 @@
-import customFetch, { urlBuilder } from '../util/custom-fetch';
+import customFetch, {urlBuilder} from '../util/custom-fetch';
 
 export const FETCH_APPLICATIONS = 'FETCH_APPLICATIONS';
 export const FETCH_ADD_INSTANCE_TO_ORG = 'FETCH_ADD_INSTANCE_TO_ORG';
@@ -28,12 +28,12 @@ export const fetchApplications = () => {
             free: true,
             paid: true
         })).then((data) => {
-           return dispatch(fetchApplicationsAction(data.apps));
+            return dispatch(fetchApplicationsAction(data.apps));
         });
     };
 };
 
-export const fetchAddInstanceToOrg = (organizationId, { id }, members) => {
+export const fetchAddInstanceToOrg = (organizationId, {id}, members) => {
     return (dispatch) => {
         return customFetch('/api/store/buy/application', {
             method: 'POST',

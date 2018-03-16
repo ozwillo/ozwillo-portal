@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import Popup from 'react-popup';
 
@@ -11,16 +11,17 @@ import InstanceConfigForm from '../../forms/instance-config-form';
 import CustomTooltip from '../../custom-tooltip';
 
 //action
-import { fetchDeleteAcl } from '../../../actions/acl';
-import { fetchCreateSubscription, fetchDeleteSubscription } from '../../../actions/subscription';
-import { fetchUpdateInstanceStatus } from '../../../actions/instance';
+import {fetchDeleteAcl} from '../../../actions/acl';
+import {fetchCreateSubscription, fetchDeleteSubscription} from '../../../actions/subscription';
+import {fetchUpdateInstanceStatus} from '../../../actions/instance';
 
 //Config
 import Config from '../../../config/config';
+
 const instanceStatus = Config.instanceStatus;
 
 //Action
-import { fetchUpdateServiceConfig } from '../../../actions/instance';
+import {fetchUpdateServiceConfig} from '../../../actions/instance';
 
 class InstanceDropdown extends React.Component {
 
@@ -38,7 +39,7 @@ class InstanceDropdown extends React.Component {
         isAdmin: false
     };
 
-    constructor(props){
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -88,7 +89,7 @@ class InstanceDropdown extends React.Component {
     }
 
     filterMemberWithoutAccess(member) {
-        if(!this.props.instance.users) {
+        if (!this.props.instance.users) {
             return true;
         }
 
@@ -105,14 +106,14 @@ class InstanceDropdown extends React.Component {
             .then(() => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [member.id]: { error: null }
+                        [member.id]: {error: null}
                     })
                 });
             })
             .catch((err) => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [member.id]: { error: err.error }
+                        [member.id]: {error: err.error}
                     })
                 });
             });
@@ -125,22 +126,22 @@ class InstanceDropdown extends React.Component {
 
         this.setState({
             status: Object.assign({}, this.state.status, {
-                [userId]: { isLoading: true }
+                [userId]: {isLoading: true}
             })
         });
 
-        this.props.fetchCreateSubscription(this.props.instance.id , { user_id: userId, service_id: serviceId })
+        this.props.fetchCreateSubscription(this.props.instance.id, {user_id: userId, service_id: serviceId})
             .then(() => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [userId]: { error: null, isLoading: false }
+                        [userId]: {error: null, isLoading: false}
                     })
                 });
             })
             .catch((err) => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [userId]: { error: err.error, isLoading: false}
+                        [userId]: {error: err.error, isLoading: false}
                     })
                 });
             });
@@ -154,22 +155,22 @@ class InstanceDropdown extends React.Component {
 
         this.setState({
             status: Object.assign({}, this.state.status, {
-                [userId]: { isLoading: true }
+                [userId]: {isLoading: true}
             })
         });
 
-        this.props.fetchDeleteSubscription(this.props.instance.id , { id: subId, user_id: userId, service_id: serviceId })
+        this.props.fetchDeleteSubscription(this.props.instance.id, {id: subId, user_id: userId, service_id: serviceId})
             .then(() => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [userId]: { error: null, isLoading: false }
+                        [userId]: {error: null, isLoading: false}
                     })
                 });
             })
             .catch((err) => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
-                        [userId]: { error: err.error, isLoading: false }
+                        [userId]: {error: err.error, isLoading: false}
                     })
                 });
             });
@@ -193,11 +194,11 @@ class InstanceDropdown extends React.Component {
 
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
         const Header = <InstanceDropdownHeader
-                            isAdmin={isAdmin}
-                            instance={instance}
-                            onClickConfigIcon={this.onClickConfigIcon}
-                            onRemoveInstance={this.onRemoveInstance}
-                            onCancelRemoveInstance={this.onCancelRemoveInstance}/>;
+            isAdmin={isAdmin}
+            instance={instance}
+            onClickConfigIcon={this.onClickConfigIcon}
+            onRemoveInstance={this.onRemoveInstance}
+            onCancelRemoveInstance={this.onCancelRemoveInstance}/>;
         const Footer = (isAvailable && <footer>
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
@@ -206,107 +207,107 @@ class InstanceDropdown extends React.Component {
             <section className='dropdown-content'>
                 <table className="oz-table">
                     <thead>
-                        {/*
+                    {/*
                             Header: size: 3+ n (services)
                             user's name; error message; n services; options
                         */}
-                        <tr>
-                            <th className="fill-content" colSpan={2}/>
-                            {
-                                instance.services.map((service) => {
-                                    return <th key={service.catalogEntry.id} className="center">
-                                        <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
-                                    </th>
-                                })
-                            }
-                            <th/>
-                        </tr>
-                    </thead>
-                    <tbody>
+                    <tr>
+                        <th className="fill-content" colSpan={2}/>
                         {
-                            instance.users && instance.users.map((user, i) => {
-                                const status = this.state.status[user.id];
-
-                                return <tr key={user.id || user.email}>
-                                    <td className="fill-content">
-                                        <article className="item flex-row">
-                                            <span className="name">{`${(user.id && user.name) || user.email}`}</span>
-                                        </article>
-                                    </td>
-
-                                    {/* error messages */}
-                                    <td className="fill-content">
-                                        {
-                                            status && status.error &&
-                                            <span className="error">{status.error}</span>
-                                        }
-                                    </td>
-
-
-                                    {/* Services */}
-                                    {
-                                        user.id &&
-                                        instance.services.map((service) => {
-                                            const sub = this.searchSubForUser(user, service);
-                                            return <td key={service.catalogEntry.id} className="center">
-                                                {
-                                                    !sub &&
-                                                    <CustomTooltip title={this.context.t('tooltip.add.icon')}>
-                                                        <button className="btn icon" onClick={this.createSubscription}
-                                                                disabled={status && status.isLoading}
-                                                                data-user={user.id} data-service={service.catalogEntry.id}>
-                                                            <i className="fas fa-times option-icon service"/>
-                                                        </button>
-                                                    </CustomTooltip>
-                                                }
-
-                                                {
-                                                    sub &&
-                                                    <CustomTooltip title={this.context.t('tooltip.remove.icon')}>
-                                                        <button className="btn icon" onClick={this.deleteSubscription}
-                                                                disabled={status && status.isLoading}
-                                                                data-sub={sub.id}
-                                                                data-user={user.id} data-service={service.catalogEntry.id}>
-                                                            <i className="fas fa-home option-icon service"/>
-                                                        </button>
-                                                    </CustomTooltip>
-                                                }
-                                            </td>
-                                        })
-                                    }
-
-
-                                    {/* Options */}
-                                    {
-                                        !user.id &&
-                                        <td colSpan={instance.services.length + 1} className="right">
-                                            <CustomTooltip title={this.context.t('tooltip.pending')}>
-                                                <i className="fa fa-stopwatch option-icon loading"/>
-                                            </CustomTooltip>
-
-                                            <CustomTooltip title={this.context.t('tooltip.remove.member')}>
-                                                <button className="btn icon" data-member={i}
-                                                        onClick={this.removeUserAccessToInstance}>
-                                                    <i className="fa fa-trash option-icon delete"/>
-                                                </button>
-                                            </CustomTooltip>
-                                        </td>
-                                    }
-
-                                    {
-                                        user.id &&
-                                        <td colSpan={instance.services.length} className="right">
-                                            <CustomTooltip title={this.context.t('tooltip.remove.member')}>
-                                                <button className="btn icon" data-member={i}
-                                                        onClick={this.removeUserAccessToInstance}>
-                                                    <i className="fa fa-trash option-icon delete"/>
-                                                </button>
-                                            </CustomTooltip>
-                                        </td>
-                                    }
-                                </tr>
+                            instance.services.map((service) => {
+                                return <th key={service.catalogEntry.id} className="center">
+                                    <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
+                                </th>
                             })
                         }
+                        <th/>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {
+                        instance.users && instance.users.map((user, i) => {
+                            const status = this.state.status[user.id];
+
+                            return <tr key={user.id || user.email}>
+                                <td className="fill-content">
+                                    <article className="item flex-row">
+                                        <span className="name">{`${(user.id && user.name) || user.email}`}</span>
+                                    </article>
+                                </td>
+
+                                {/* error messages */}
+                                <td className="fill-content">
+                                    {
+                                        status && status.error &&
+                                        <span className="error">{status.error}</span>
+                                    }
+                                </td>
+
+
+                                {/* Services */}
+                                {
+                                    user.id &&
+                                    instance.services.map((service) => {
+                                        const sub = this.searchSubForUser(user, service);
+                                        return <td key={service.catalogEntry.id} className="center">
+                                            {
+                                                !sub &&
+                                                <CustomTooltip title={this.context.t('tooltip.add.icon')}>
+                                                    <button className="btn icon" onClick={this.createSubscription}
+                                                            disabled={status && status.isLoading}
+                                                            data-user={user.id} data-service={service.catalogEntry.id}>
+                                                        <i className="fas fa-times option-icon service"/>
+                                                    </button>
+                                                </CustomTooltip>
+                                            }
+
+                                            {
+                                                sub &&
+                                                <CustomTooltip title={this.context.t('tooltip.remove.icon')}>
+                                                    <button className="btn icon" onClick={this.deleteSubscription}
+                                                            disabled={status && status.isLoading}
+                                                            data-sub={sub.id}
+                                                            data-user={user.id} data-service={service.catalogEntry.id}>
+                                                        <i className="fas fa-home option-icon service"/>
+                                                    </button>
+                                                </CustomTooltip>
+                                            }
+                                        </td>
+                                    })
+                                }
+
+
+                                {/* Options */}
+                                {
+                                    !user.id &&
+                                    <td colSpan={instance.services.length + 1} className="right">
+                                        <CustomTooltip title={this.context.t('tooltip.pending')}>
+                                            <i className="fa fa-stopwatch option-icon loading"/>
+                                        </CustomTooltip>
+
+                                        <CustomTooltip title={this.context.t('tooltip.remove.member')}>
+                                            <button className="btn icon" data-member={i}
+                                                    onClick={this.removeUserAccessToInstance}>
+                                                <i className="fa fa-trash option-icon delete"/>
+                                            </button>
+                                        </CustomTooltip>
+                                    </td>
+                                }
+
+                                {
+                                    user.id &&
+                                    <td colSpan={instance.services.length} className="right">
+                                        <CustomTooltip title={this.context.t('tooltip.remove.member')}>
+                                            <button className="btn icon" data-member={i}
+                                                    onClick={this.removeUserAccessToInstance}>
+                                                <i className="fa fa-trash option-icon delete"/>
+                                            </button>
+                                        </CustomTooltip>
+                                    </td>
+                                }
+                            </tr>
+                        })
+                    }
                     </tbody>
                 </table>
             </section>

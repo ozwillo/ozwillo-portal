@@ -8,7 +8,7 @@ import {FETCH_UPDATE_SERVICE_CONFIG} from "../../actions/instance";
 export default (state = {}, action) => {
     let nextState = Object.assign({}, state);
 
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_UPDATE_SERVICE_CONFIG:
             nextState = action.service;
             break;
@@ -21,7 +21,7 @@ export default (state = {}, action) => {
                 return sub.id === action.sub.id;
             });
 
-            if(i < 0){
+            if (i < 0) {
                 return state;
             }
 

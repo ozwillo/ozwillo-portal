@@ -1,5 +1,5 @@
 import {setLanguage, setTranslations} from "redux-i18n";
-import customFetch, { urlBuilder } from "../util/custom-fetch";
+import customFetch, {urlBuilder} from "../util/custom-fetch";
 
 export const FETCH_CONFIG = 'FETCH_CONFIG';
 export const FETCH_COUNTRIES = 'FETCH_COUNTRIES';
@@ -41,9 +41,9 @@ export const fetchMyConfig = () => {
 
 export const fetchCountries = (q = '') => {
     return (dispatch) => {
-        return customFetch(urlBuilder('/api/store/dc-countries', { q }))
+        return customFetch(urlBuilder('/api/store/dc-countries', {q}))
             .then((res) => {
-                dispatch(fetchConfigAction({ countries: res.areas }));
+                dispatch(fetchConfigAction({countries: res.areas}));
             });
     };
 };

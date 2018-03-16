@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
-import { createOrganizationInvitation } from '../../actions/invitation';
+import {createOrganizationInvitation} from '../../actions/invitation';
 
 class OrganizationInvitationForm extends React.Component {
 
@@ -46,7 +46,7 @@ class OrganizationInvitationForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
 
-        this.setState({ isLoading: true });
+        this.setState({isLoading: true});
         this.props.createOrganizationInvitation(this.props.organization.id, this.state.email, this.state.admin)
             .then(() => {
                 this.setState({

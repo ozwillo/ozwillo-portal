@@ -22,17 +22,17 @@ class AddInstanceDropdownFooter extends React.Component {
     }
 
     onOptionChange(selectedOption) {
-        this.setState({ selectedOption });
+        this.setState({selectedOption});
     }
 
     onAddMember(e) {
         e.preventDefault();
 
-        if(!this.state.selectedOption) {
+        if (!this.state.selectedOption) {
             return;
         }
 
-        this.setState({ selectedOption: null });
+        this.setState({selectedOption: null});
         this.props.onAddMember(this.state.selectedOption);
     }
 
@@ -45,7 +45,7 @@ class AddInstanceDropdownFooter extends React.Component {
                 onChange={this.onOptionChange}
                 options={this.props.members}
                 labelKey="name"
-                placeholder="Members" />
+                placeholder="Members"/>
 
             <div className="options flex-row end">
                 <button className="btn icon" onClick={this.onAddMember}>

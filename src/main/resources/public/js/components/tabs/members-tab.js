@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 //Components
 import OrganizationInvitationForm from '../forms/organization-invitation-form';
@@ -23,6 +23,7 @@ class MembersTabHeader extends React.Component {
     }
 
 }
+
 const MembersTabHeaderWithRedux = connect(state => {
     return {
         organization: state.organization.current
@@ -48,7 +49,7 @@ class MembersTab extends React.Component {
 
     handleChange(e) {
         const el = e.currentTarget;
-        this.setState({ [el.name]: el.value });
+        this.setState({[el.name]: el.value});
     }
 
     filterMembers(members, filter) {

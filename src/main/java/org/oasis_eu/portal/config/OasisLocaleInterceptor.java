@@ -19,8 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 public class OasisLocaleInterceptor extends HandlerInterceptorAdapter {
 
     @Override
-    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
-        throws ServletException {
+    public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {
 
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication instanceof OpenIdCAuthentication) {

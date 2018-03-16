@@ -15,7 +15,6 @@
     width: 100%;
 }
 
-
 .organization-search .search .field {
     margin: auto;
 
@@ -37,14 +36,19 @@
     color: white;
 }
 
-
 .organization-search .action-icon {
     font-size: 2.4em;
     color: white;
 }
 
-.organization-search .organization-invitation-form .error { color: var(--red-color); }
-.organization-search .organization-invitation-form .success { color: var(--green-color); }
+.organization-search .organization-invitation-form .error {
+    color: var(--red-color);
+}
+
+.organization-search .organization-invitation-form .success {
+    color: var(--green-color);
+}
+
 .organization-search .organization-invitation-form .wrapper {
     flex-wrap: wrap;
 }

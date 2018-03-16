@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Components
 import DropDownMenu from '../../dropdown-menu';
@@ -7,11 +7,12 @@ import AddInstanceDropdownHeader from './add-instance-dropdown-header';
 /*import AddInstanceDropdownFooter from './add-instance-dropdown-footer';*/
 
 //Action
-import { fetchAddInstanceToOrg } from '../../../actions/app-store';
+import {fetchAddInstanceToOrg} from '../../../actions/app-store';
 
 //config
 import Config from '../../../config/config';
 import PropTypes from 'prop-types';
+
 const AppTypes = Config.appTypes;
 
 class AddInstanceDropdown extends React.Component {
@@ -41,7 +42,7 @@ class AddInstanceDropdown extends React.Component {
     }
 
     onAddInstance() {
-        if(!this.state.app) {
+        if (!this.state.app) {
             return;
         }
 
@@ -58,18 +59,18 @@ class AddInstanceDropdown extends React.Component {
     onAddMember(member) {
         const members = Object.assign([], this.state.members);
         members.push(member);
-        this.setState({ members });
+        this.setState({members});
     }
 
     onRemoveMember(e) {
         const memberIndex = parseInt(e.currentTarget.dataset.member, 10);
         const members = Object.assign([], this.state.members);
         members.splice(memberIndex, 1);
-        this.setState({ members: members });
+        this.setState({members: members});
     }
 
     onChangeApp(app) {
-        this.setState({ app });
+        this.setState({app});
     }
 
     filterMembersWithoutAccess(member) {
@@ -91,14 +92,14 @@ class AddInstanceDropdown extends React.Component {
             return app.id === instance.applicationInstance.application_id;
         });
 
-        if(instance) {
+        if (instance) {
             return false;
         }
 
         //Check types
-        return (app.target_publicbodies &&  org.type === 'PUBLIC_BODY') ||
-            (app.target_companies &&  org.type === 'COMPANY') ||
-            (app.target_citizens && !org.type) ;
+        return (app.target_publicbodies && org.type === 'PUBLIC_BODY') ||
+            (app.target_companies && org.type === 'COMPANY') ||
+            (app.target_citizens && !org.type);
     }
 
     render() {
@@ -159,4 +160,4 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps) (AddInstanceDropdown);
+export default connect(mapStateToProps, mapDispatchToProps)(AddInstanceDropdown);

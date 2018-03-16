@@ -4,7 +4,7 @@ import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 
-const Form = ({ id, onSubmit, children }) =>
+const Form = ({id, onSubmit, children}) =>
     <form id={id} onSubmit={onSubmit} className="oz-form">
         {children}
     </form>;
@@ -14,12 +14,13 @@ Form.propTypes = {
     onSubmit: PropTypes.func.isRequired
 };
 
-const InputText = ({ name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled }) =>
+const InputText = ({name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled}) =>
     <div className={`flex-row ${(error && 'has-error') || ''}`}>
         <label htmlFor={name} className={`label ${labelClassName} ${(isRequired && 'required') || ''}`}>
             {label} {isRequired ? '* ' : ' '}
         </label>
-        <input className="form-control field" name={name} type="text" value={value} onChange={onChange} disabled={disabled} />
+        <input className="form-control field" name={name} type="text" value={value} onChange={onChange}
+               disabled={disabled}/>
         {
             renderIf(error && errorMsg)(
                 <span className="help-block">{errorMsg}</span>
@@ -32,7 +33,8 @@ InputText.defaultProps = {
     labelClassName: 'control-label col-sm-3',
     disabled: false,
     value: ''
-};``
+};
+``
 
 InputText.propTypes = {
     name: PropTypes.string.isRequired,
@@ -47,7 +49,7 @@ InputText.propTypes = {
     disabled: PropTypes.bool
 };
 
-const SubmitButton = ({ label, className }) =>
+const SubmitButton = ({label, className}) =>
     <div className="flex-row">
         <button type="submit" className={`submit btn-submit ${className || ''}`}>{label}</button>
     </div>
@@ -58,7 +60,7 @@ SubmitButton.propTypes = {
 };
 
 
-const InputDatePicker = ({ label, name, value, onChange, dropdownMode }) =>
+const InputDatePicker = ({label, name, value, onChange, dropdownMode}) =>
     <div className='flex-row'>
         <label htmlFor={name} className='label'>
             {label}
@@ -69,7 +71,7 @@ const InputDatePicker = ({ label, name, value, onChange, dropdownMode }) =>
                     peekNextMonth
                     showMonthDropdown
                     showYearDropdown
-                    className="form-control field" name={name} />
+                    className="form-control field" name={name}/>
     </div>;
 
 InputDatePicker.propTypes = {
@@ -108,7 +110,7 @@ class CountrySelector extends React.Component {
         t: PropTypes.func.isRequired
     };
 
-    componentWillMount () {
+    componentWillMount() {
         // get countries from DC
         $.ajax({
             url: this.props.url,
@@ -118,20 +120,21 @@ class CountrySelector extends React.Component {
         }).done(data => {
             let options = data.areas
                 .filter(n => n !== null)
-                .map((area, key) => Object.assign({}, {key:key ,value: area.uri, label: area.name}))
+                .map((area, key) => Object.assign({}, {key: key, value: area.uri, label: area.name}))
 
-            this.setState({ countries: options });
+            this.setState({countries: options});
         })
-        .fail((xhr, status, err) => {
-                this.setState({ error : "Unable to retrieve countries info" + err.toString() })
-            }
-        )
+            .fail((xhr, status, err) => {
+                    this.setState({error: "Unable to retrieve countries info" + err.toString()})
+                }
+            )
     }
+
     render() {
         return (
             <div className='flex-row'>
                 <label htmlFor="gender" className="label">
-                    { this.context.t('my.profile.personal.country') }
+                    {this.context.t('my.profile.personal.country')}
                 </label>
                 <Select name="country" value={this.props.value} placeholder=""
                         onChange={this.props.onChange} className="select field"
@@ -171,7 +174,7 @@ class GenderSelector extends React.Component {
         return [{
             label: context.t('my.profile.personal.gender.male'),
             value: 'male'
-        },{
+        }, {
             label: context.t('my.profile.personal.gender.female'),
             value: 'female'
         }];
@@ -180,7 +183,7 @@ class GenderSelector extends React.Component {
     render() {
         return <div className='flex-row'>
             <label htmlFor="gender" className="label">
-                { this.context.t('my.profile.personal.gender') }
+                {this.context.t('my.profile.personal.gender')}
             </label>
             <Select name="gender" value={this.props.value} placeholder=""
                     clearable={false} options={this.state.options}
@@ -189,4 +192,4 @@ class GenderSelector extends React.Component {
     }
 }
 
-export { Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector }
+export {Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector}

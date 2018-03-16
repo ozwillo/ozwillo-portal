@@ -35,13 +35,13 @@ class AddInstanceDropdownHeader extends React.Component {
     onSubmit(e) {
         e.preventDefault();
 
-        this.setState({ isLoading: true });
+        this.setState({isLoading: true});
 
         this.props.onAddInstance()
-            .then(() => this.setState({ error: '', isLoading: false }))
+            .then(() => this.setState({error: '', isLoading: false}))
             .catch(err => {
                 console.error(err);
-                this.setState({ error: this.context.t('ui.error'), isLoading: false });
+                this.setState({error: this.context.t('ui.error'), isLoading: false});
             });
     }
 

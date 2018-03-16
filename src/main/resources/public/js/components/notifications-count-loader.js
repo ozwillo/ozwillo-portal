@@ -1,10 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Actions
-import { fetchNotificationsCount } from '../actions/notifications';
+import {fetchNotificationsCount} from '../actions/notifications';
 
 import config from '../config/config';
+
 const notificationsCountInterval = config.notificationsCountInterval;
 
 class NotificationsCountLoader extends React.Component {
@@ -18,10 +19,10 @@ class NotificationsCountLoader extends React.Component {
     }
 
     componentWillReceiveProps(nextProps) {
-        if(nextProps.notificationsEnabled && !this.state.intervalId) {
+        if (nextProps.notificationsEnabled && !this.state.intervalId) {
             this.props.fetchNotificationsCount();
             const intervalId = setInterval(this.props.fetchNotificationsCount, notificationsCountInterval);
-            this.setState({ intervalId: intervalId });
+            this.setState({intervalId: intervalId});
         }
     }
 
@@ -41,11 +42,11 @@ const mapStateToProps = dispatch => {
     return {
         notificationsEnabled: dispatch.config.notificationsEnabled
     }
-} ;
+};
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchNotificationsCount () {
+        fetchNotificationsCount() {
             return dispatch(fetchNotificationsCount());
         }
     }

@@ -14,7 +14,7 @@ div.organization .organization-header .title {
     font-size: 1.2em;
 }
 
-div.organization .organization-member{
+div.organization .organization-member {
     padding: 5px 15px;
     margin: 0 10px 0 10px;
     border-bottom: 1px solid var(--light-2-gray-color);
@@ -25,12 +25,9 @@ div.organization .organization-member{
 div.organization .organization-member .name,
 div.organization .organization-member .status,
 div.organization .organization-member .actions,
-div.organization .organization-member .empty-space
-{
+div.organization .organization-member .empty-space {
     width: 100%;
 }
-
-
 
 div.organization .organization-pending-member-row {
     font-style: italic;

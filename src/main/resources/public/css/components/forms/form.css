@@ -32,7 +32,7 @@
     margin: 0 0 0 -20px;
 }
 
-.oz-form .flex-row  .field.radio-inline,
+.oz-form .flex-row .field.radio-inline,
 .oz-form .flex-row .field[type="checkbox"] {
     width: auto;
     margin: 4px 10px;
@@ -43,7 +43,6 @@
 .oz-form .flex-row .field {
     margin: auto 10px;
 }
-
 
 .oz-form textarea.field {
     resize: none;

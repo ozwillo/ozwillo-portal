@@ -62,7 +62,8 @@ const Modal = createClass({
                 label = this.context.t('ui.close');
             }
             buttons = [
-                <button type="button" key="close" className="btn btn-default-inverse" onClick={this.close}>{label}</button>
+                <button type="button" key="close" className="btn btn-default-inverse"
+                        onClick={this.close}>{label}</button>
             ];
         } else {
             var cancelLabel, saveLabel;
@@ -76,8 +77,10 @@ const Modal = createClass({
             var saveButtonClass = this.props.saveButtonClass ? "btn " + this.props.saveButtonClass : "btn btn-submit";
 
             buttons = [
-                <button type="button" key="cancel" className="btn btn-default-inverse" onClick={this.close}>{cancelLabel}</button>,
-                <button type="submit" key="success" className={saveButtonClass} onClick={this.props.successHandler}>{saveLabel}</button>
+                <button type="button" key="cancel" className="btn btn-default-inverse"
+                        onClick={this.close}>{cancelLabel}</button>,
+                <button type="submit" key="success" className={saveButtonClass}
+                        onClick={this.props.successHandler}>{saveLabel}</button>
             ];
         }
 
@@ -88,8 +91,9 @@ const Modal = createClass({
                 <div className={className} role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><i className="fas fa-times icon" /></span>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close"
+                                    onClick={this.close}>
+                                <span aria-hidden="true"><i className="fas fa-times icon"/></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{this.props.title}</h4>
                         </div>
@@ -161,8 +165,10 @@ const ModalWithForm = createClass({
         }
 
         buttons = [
-            <button type="button" key="cancel" className="btn btn-default-inverse" onClick={this.close}>{cancelLabel}</button>,
-            <button type="submit" key="success" className="btn btn-submit" onClick={this.props.successHandler}>{saveLabel}</button>
+            <button type="button" key="cancel" className="btn btn-default-inverse"
+                    onClick={this.close}>{cancelLabel}</button>,
+            <button type="submit" key="success" className="btn btn-submit"
+                    onClick={this.props.successHandler}>{saveLabel}</button>
         ];
 
         return (
@@ -170,8 +176,9 @@ const ModalWithForm = createClass({
                 <div className="modal-dialog" role="document">
                     <div className="modal-content">
                         <div className="modal-header">
-                            <button type="button" className="close" data-dismiss="modal" aria-label="Close" onClick={this.close}>
-                                <span aria-hidden="true"><i className="fas fa-times icon" /></span>
+                            <button type="button" className="close" data-dismiss="modal" aria-label="Close"
+                                    onClick={this.close}>
+                                <span aria-hidden="true"><i className="fas fa-times icon"/></span>
                             </button>
                             <h4 className="modal-title" id="modalLabel">{this.props.title}</h4>
                         </div>
@@ -193,4 +200,4 @@ ModalWithForm.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-module.exports = { Modal, ModalWithForm };
+module.exports = {Modal, ModalWithForm};

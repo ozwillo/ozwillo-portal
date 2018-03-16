@@ -1,10 +1,10 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 class IfUser extends React.Component {
 
     render() {
-        if(!this.props.userInfo.sub) {
+        if (!this.props.userInfo.sub) {
             return null;
         }
 
@@ -13,9 +13,9 @@ class IfUser extends React.Component {
 }
 
 const mapStateToProps = state => {
-  return {
-      userInfo: state.userInfo
-  };
+    return {
+        userInfo: state.userInfo
+    };
 };
 
 export default connect(mapStateToProps)(IfUser);

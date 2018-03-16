@@ -41,7 +41,7 @@
 }
 
 .organization-invitation-form .error,
-.organization-invitation-form .success{
+.organization-invitation-form .success {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -60,7 +60,6 @@
 .organization-invitation-form .wrapper {
     width: 100%;
 }
-
 
 @media (max-width: 425px) {
     .organization-invitation-form .field {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Components
 import Header from './header';
@@ -16,7 +16,7 @@ class Layout extends React.Component {
             {
                 (isLogged && <MyNav/>) || <Nav/>
             }
-            { this.props.children }
+            {this.props.children}
             <Footer/>
         </section>
     }

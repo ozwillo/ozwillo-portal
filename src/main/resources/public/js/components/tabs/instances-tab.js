@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import {connect} from 'react-redux';
+import {Link} from 'react-router-dom';
 
 //Components
 import AddInstanceDropdown from '../dropdown_menus/instance/add-instance-dropdown';
@@ -21,6 +21,7 @@ class InstancesTabHeader extends React.Component {
         </Link>;
     }
 }
+
 const InstancesTabHeaderWithRedux = connect(state => {
     return {
         organization: state.organization.current
@@ -74,7 +75,7 @@ class InstancesTab extends React.Component {
                 org.admin &&
                 <section className="add-instance">
                     <header className="sub-title">{this.context.t('organization.desc.add-application')}</header>
-                    <AddInstanceDropdown />
+                    <AddInstanceDropdown/>
                 </section>
             }
 

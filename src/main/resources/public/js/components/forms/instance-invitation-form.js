@@ -1,11 +1,11 @@
 import React from 'react';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 
 //Action
-import { fetchCreateAcl } from "../../actions/acl";
+import {fetchCreateAcl} from "../../actions/acl";
 
 class InstanceInvitationForm extends React.Component {
     static contextTypes = {
@@ -36,7 +36,7 @@ class InstanceInvitationForm extends React.Component {
     }
 
     onOptionChange(selectedOption) {
-        this.setState({ selectedOption: selectedOption })
+        this.setState({selectedOption: selectedOption})
     }
 
     handleChange(e) {
@@ -49,9 +49,9 @@ class InstanceInvitationForm extends React.Component {
     onSubmit(e) {
         e.preventDefault();
 
-        this.setState({ isLoading: true });
+        this.setState({isLoading: true});
 
-        const user = this.state.selectedOption || { email: this.state.email };
+        const user = this.state.selectedOption || {email: this.state.email};
         this.props.fetchCreateAcl(user, this.props.instance)
             .then(() => {
                 this.setState({
@@ -92,8 +92,9 @@ class InstanceInvitationForm extends React.Component {
                 <div className="new-user-fieldset flex-row">
                     <label className="label">
                         {this.context.t('organization.form.email')}
-                        <input name="email" type="email" className="form-control field" required={!this.state.selectedOption}
-                               value={this.state.email} onChange={this.handleChange} />
+                        <input name="email" type="email" className="form-control field"
+                               required={!this.state.selectedOption}
+                               value={this.state.email} onChange={this.handleChange}/>
                     </label>
 
 
@@ -123,11 +124,11 @@ class InstanceInvitationForm extends React.Component {
                 <span className="error">
                     {this.state.error}
                 </span>
-                }
+            }
 
-                {
-                    this.state.success &&
-                    <span className="success">
+            {
+                this.state.success &&
+                <span className="success">
                     {this.state.success}
                 </span>
             }

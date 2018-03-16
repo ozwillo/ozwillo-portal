@@ -42,20 +42,20 @@ class TaxRegActivityAutosuggest extends React.Component {
         this.shouldRenderSuggestions = this.shouldRenderSuggestions.bind(this);
     }
 
-    componentWillReceiveProps (nextProps) {
-        this.setState({ value: nextProps.initialValue });
+    componentWillReceiveProps(nextProps) {
+        this.setState({value: nextProps.initialValue});
     }
 
-    searchTaxRegActivities (query) {
+    searchTaxRegActivities(query) {
         $.ajax({
             url: "/api/store/dc-taxRegActivity",
             dataType: "json",
-            data: { country_uri: this.props.countryUri, q: query },
+            data: {country_uri: this.props.countryUri, q: query},
             type: 'get',
-            success: function(data) {
-                this.setState({ suggestions : data.areas });
+            success: function (data) {
+                this.setState({suggestions: data.areas});
             }.bind(this),
-            error: function(xhr, status, err) {
+            error: function (xhr, status, err) {
                 console.error("Error while searching for tax reg activities with query " + query, status, err.toString())
             }
         })
@@ -69,16 +69,16 @@ class TaxRegActivityAutosuggest extends React.Component {
         )
     }
 
-    onSuggestionsFetchRequested({ value, reason }) {
+    onSuggestionsFetchRequested({value, reason}) {
         if (reason !== 'enter' && reason !== 'click')
             debounce(this.searchTaxRegActivities(value), 500);
     }
 
     onSuggestionsClearRequested() {
-        this.setState({ suggestions: [] })
+        this.setState({suggestions: []})
     }
 
-    onSuggestionSelected(event, { suggestion }) {
+    onSuggestionSelected(event, {suggestion}) {
         this.props.onTaxRegActivitySelected(suggestion);
     }
 
@@ -102,14 +102,14 @@ class TaxRegActivityAutosuggest extends React.Component {
         };
 
         return <Autosuggest
-                        suggestions={this.state.suggestions}
-                        onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
-                        onSuggestionsClearRequested={this.onSuggestionsClearRequested}
-                        onSuggestionSelected={this.onSuggestionSelected}
-                        renderSuggestion={this.renderSuggestion}
-                        getSuggestionValue={this.getSuggestionValue}
-                        inputProps={inputProps}
-                        shouldRenderSuggestions={this.shouldRenderSuggestions}/>
+            suggestions={this.state.suggestions}
+            onSuggestionsFetchRequested={this.onSuggestionsFetchRequested}
+            onSuggestionsClearRequested={this.onSuggestionsClearRequested}
+            onSuggestionSelected={this.onSuggestionSelected}
+            renderSuggestion={this.renderSuggestion}
+            getSuggestionValue={this.getSuggestionValue}
+            inputProps={inputProps}
+            shouldRenderSuggestions={this.shouldRenderSuggestions}/>
     }
 }
 

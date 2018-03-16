@@ -1,4 +1,4 @@
-import customFetch, { urlBuilder } from '../util/custom-fetch';
+import customFetch, {urlBuilder} from '../util/custom-fetch';
 
 export const FETCH_ORGANIZATION_WITH_ID = 'FETCH_ORGANIZATION_WITH_ID';
 export const FETCH_USER_ORGANIZATIONS = 'FETCH_USER_ORGANIZATIONS';
@@ -78,7 +78,7 @@ export const fetchCreateOrganization = (info) => {
 
         return customFetch('/my/api/network/create-dc-organization', {
             method: 'POST',
-            json: { ...info }
+            json: {...info}
         }).then((org) => {
             dispatch(fetchCreateOrganizationAction(org));
         });
@@ -108,7 +108,7 @@ export const fetchUpdateOrganization = (info) => {
 
 export const fetchOrganizationInfo = (dcId) => {
     return dispatch => {
-        return customFetch(urlBuilder('/my/api/organization/info', { dcId }))
+        return customFetch(urlBuilder('/my/api/organization/info', {dcId}))
             .then((info) => {
                 return dispatch(fetchOrganizationInfoAction(info));
             });
@@ -120,8 +120,8 @@ export const fetchUpdateStatusOrganization = (organization) => {
         return customFetch(`/my/api/organization/${organization.id}/status`, {
             method: 'PUT',
             json: organization
-        }).then(({ id, status }) => {
-            return dispatch(fetchUpdateStatusOrganizationAction({ id, status }));
+        }).then(({id, status}) => {
+            return dispatch(fetchUpdateStatusOrganizationAction({id, status}));
         });
     };
 };

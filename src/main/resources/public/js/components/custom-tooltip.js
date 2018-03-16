@@ -1,6 +1,6 @@
 import React from 'react';
-import { PropTypes } from 'prop-types';
-import { Tooltip } from 'react-tippy';
+import {PropTypes} from 'prop-types';
+import {Tooltip} from 'react-tippy';
 
 
 class CustomTooltip extends React.Component {
@@ -15,8 +15,8 @@ class CustomTooltip extends React.Component {
 
     render() {
         return <Tooltip title={this.props.title} className={this.props.className}
-            arrow={true}
-            size="big">
+                        arrow={true}
+                        size="big">
             {this.props.children}
         </Tooltip>;
     }

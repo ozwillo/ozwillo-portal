@@ -1,14 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Component
 import OrganizationForm from '../components/forms/organization-form';
 import UpdateTitle from '../components/update-title';
 
 //Action
-import { fetchCreateOrganization } from '../actions/organization';
-import { fetchCountries } from '../actions/config';
+import {fetchCreateOrganization} from '../actions/organization';
+import {fetchCountries} from '../actions/config';
 
 class OrganizationCreate extends React.Component {
 
@@ -33,7 +33,7 @@ class OrganizationCreate extends React.Component {
     }
 
     onSubmit(organization) {
-        this.setState({ isLoading: true });
+        this.setState({isLoading: true});
 
         this.props.fetchCreateOrganization(organization)
             .then(() => {

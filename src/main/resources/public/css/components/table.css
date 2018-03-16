@@ -11,13 +11,12 @@
 }
 
 .oz-table tr {
-  border-bottom: solid 1px var(--gray-color);
+    border-bottom: solid 1px var(--gray-color);
 }
 
 .oz-table tr:last-child {
     border: none;
 }
-
 
 .oz-table th {
     min-width: 80px;

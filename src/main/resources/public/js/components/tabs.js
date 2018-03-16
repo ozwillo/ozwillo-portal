@@ -37,7 +37,7 @@ class Tabs extends React.Component {
                 </ul>
             </header>
             <article className="tab-content">
-                { tabName && <Component/> }
+                {tabName && <Component/>}
             </article>
 
         </section>
