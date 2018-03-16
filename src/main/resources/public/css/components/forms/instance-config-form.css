@@ -22,7 +22,7 @@
 
 .instance-config-form .field .desc-field > .desc {
     font-size: 0.9em;
-    color: var(--dark-purple-color);
+    color: var(--secondary-color);
 }
 
 .instance-config-form .btn {

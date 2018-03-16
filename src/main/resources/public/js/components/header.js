@@ -17,13 +17,13 @@ class Header extends React.Component {
                 {
                     isLogged &&
                     <Link to='/my/dashboard'>
-                        <img src="/img/logo-ozwillo.png" alt="Logo Ozwillo"/>
+                        <img className="logo" alt="Logo Ozwillo"/>
                     </Link>
                 }
                 {
                     !isLogged &&
                     <a href={`https://www.ozwillo.com/${this.props.config.language}/`}>
-                        <img src="/img/logo-ozwillo.png" alt="Logo Ozwillo"/>
+                        <img className="logo" alt="Logo Ozwillo"/>
                     </a>
                 }
             </div>

@@ -22,8 +22,8 @@
 #dashboard ul.nav.nav-tabs > li > a {
     font-size: 20px;
     border-radius: 0;
-    color: var(--white-color);
-    background-color: var(--purple-color);
+    color: var(--tertiary-color);
+    background-color: var(--primary-color);
     border-color: transparent;
     border-width: 2px 0 0 0;
     margin: 0;
@@ -31,9 +31,9 @@
 
 #dashboard ul.nav.nav-tabs > li > a.over,
 #dashboard ul.nav.nav-tabs > li.active > a {
-    color: var(--dark-purple-color);
-    background-color: var(--white-color);
-    border-color: var(--purple-color);
+    color: var(--secondary-color);
+    background-color: var(--tertiary-color);
+    border-color: var(--primary-color);
 }
 
 #dashboard ul.nav.nav-tabs > li > a i {
@@ -42,7 +42,7 @@
 
 #dashboard .all-apps {
     height: 100%;
-    background-color: var(--white-color);
+    background-color: var(--tertiary-color);
     padding-left: 0;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
     4px 3px 3px rgba(0, 0, 0, 0.2);
@@ -74,7 +74,7 @@
     padding: 10px;
     position: relative;
 
-    color: var(--dark-purple-color);
+    color: var(--secondary-color);
     text-transform: uppercase;
     font-weight: bold;
     font-size: 0.8em;
@@ -82,24 +82,23 @@
 
 #dashboard .appzone .dropzone.dragover .app,
 #dashboard .appzone .app:hover {
-    color: var(--white-color);
-    background-color: var(--purple-color);
+    color: var(--tertiary-color);
+    background-color: var(--primary-color);
 }
 
 #dashboard .appzone .app span.badge-notifications {
     position: absolute;
     right: 17px;
     top: 0;
-    background: var(--red-color);
     text-align: center;
     border-radius: 30px 30px 30px 30px;
-    color: var(--white-color);
+    color: var(--tertiary-color);
     padding: 5px 8px;
     font-size: 12px;
 }
 
 #dashboard .appzone .app.pending {
-    background-color: var(--light-2-gray-color);
+    background-color: var(--gray-color);
     filter: grayscale(100%);
     -webkit-filter: grayscale(50%);
     -moz-filter: grayscale(100%);
@@ -107,7 +106,7 @@
 }
 
 #dashboard .appzone .app.pending:hover {
-    color: var(--dark-purple-color);
+    color: var(--secondary-color);
 }
 
 #dashboard .appzone .app .action-icon {
@@ -121,11 +120,11 @@
 }
 
 #dashboard .action-icon a {
-    color: var(--purple-color);
+    color: var(--primary-color);
 }
 
 #dashboard .app:hover .action-icon a {
-    color: var(--white-color);
+    color: var(--tertiary-color);
 }
 
 #dashboard .top-menu {
@@ -140,17 +139,17 @@
 }
 
 #dashboard .top-menu .action-icon.delete-app {
-    color: var(--red-color);
+    color: var(--alert-color);
 }
 
 #dashboard .action-icon .fa-trash {
-    color: var(--purple-color);
-    border-color: var(--purple-color);
+    color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 #dashboard .app:hover .action-icon .fa-trash {
-    color: var(--white-color);
-    border-color: var(--white-color);
+    color: var(--tertiary-color);
+    border-color: var(--tertiary-color);
 }
 
 #dashboard .appzone .app p {

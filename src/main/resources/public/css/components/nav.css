@@ -1,8 +1,8 @@
 #oz-nav {
     width: 100%;
     margin: 0 !important;
-    background: var(--light-3-gray-color);
-    border-bottom: solid 2px var(--purple-color);
+    background: var(--nav-color);
+    border-bottom: solid 2px var(--primary-color);
     box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
     min-height: auto;
 }
@@ -24,19 +24,19 @@
 }
 
 #oz-nav .navbar-nav > .menu:hover {
-    border-color: var(--purple-color);
+    border-color: var(--primary-color);
 }
 
 #oz-nav .dropdown.open > .link,
 #oz-nav .dropdown-menu.open > .link,
 #oz-nav .dropdown-menu > .menu > .link:hover,
 #oz-nav .navbar-nav > .menu > .link:hover {
-    border-color: var(--purple-color);
+    border-color: var(--primary-color);
 }
 
 #oz-nav .navbar-nav > .menu > .link {
     display: flex;
-    color: var(--dark-purple-color);
+    color: var(--secondary-color);
     padding: 0;
     margin: auto;
     align-items: center;
@@ -56,14 +56,14 @@
 .navbar-toggle:hover,
 .navbar-toggle.collapsed:hover,
 .navbar-toggle.collapsed .icon-bar {
-    background-color: var(--dark-purple-color) !important;
-    color: var(--white-color);
+    background-color: var(--secondary-color) !important;
+    color: var(--tertiary-color);
 }
 
 .navbar-toggle.collapsed,
 .navbar-toggle .icon-bar,
 .navbar-toggle:hover .icon-bar {
-    background-color: var(--white-color) !important;
+    background-color: var(--tertiary-color) !important;
 }
 
 #ozwillo-navbar {
@@ -71,11 +71,11 @@
 }
 
 #oz-nav .dropdown-menu {
-    background-color: var(--white-color);
+    background-color: var(--tertiary-color);
 }
 
 #oz-nav .dropdown-menu > .menu > .link {
-    color: var(--purple-color);
+    color: var(--primary-color);
 }
 
 @media (min-width: 768px) {
@@ -90,11 +90,11 @@
     }
 
     #oz-nav .navbar-nav > .menu:hover {
-        background-color: var(--purple-color);
+        background-color: var(--primary-color);
     }
 
     #oz-nav .navbar-nav > .menu:hover .link {
-        color: var(--white-color);
+        color: var(--tertiary-color);
     }
 }
 

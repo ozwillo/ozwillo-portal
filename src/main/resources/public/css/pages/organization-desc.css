@@ -1,7 +1,7 @@
 .organization-desc .header .title {
     width: 100%;
     text-align: center;
-    color: var(--purple-color);
+    color: var(--primary-color);
     font-weight: bold !important;
 }
 

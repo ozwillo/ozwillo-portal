@@ -2,7 +2,7 @@
 #legal {
     font-size: smaller;
     margin-top: 30px;
-    color: var(--black-2-color);
+    color: var(--secondary-color);
 }
 
 #profile .change-password {
@@ -14,7 +14,7 @@
 }
 
 #profile .sub-title {
-    color: var(--purple-color);
+    color: var(--primary-color);
     font-weight: bold !important;
     margin: 5px 0;
     font-size: 1.4em;

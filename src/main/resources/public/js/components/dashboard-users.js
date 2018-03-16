@@ -93,9 +93,9 @@ var DashboardUsersManagement = createClass({
                             <UsersList users={this.state.users} removeUser={this.removeUser}/>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" key="cancel" className="btn oz-btn-cancel"
+                            <button type="button" key="cancel" className="btn btn-default"
                                     onClick={this.close}>{this.context.t('ui.cancel')}</button>
-                            <button type="submit" key="success" className="btn oz-btn-save"
+                            <button type="submit" key="success" className="btn btn-default"
                                     onClick={this.savePushToDash}>{this.context.t('ui.save')}</button>
                         </div>
                     </div>

@@ -202,13 +202,13 @@ var Button = createClass({
         if (this.props.activeTab === 2) {
             if (this.props.inModification) {
                 return (
-                    <button type="submit" key="success" className="btn oz-btn-save" onClick={this.props.onCreate}>
+                    <button type="submit" key="success" className="btn btn-default" onClick={this.props.onCreate}>
                         {this.context.t('ui.edit')}
                     </button>
                 )
             } else {
                 return (
-                    <button type="submit" key="success" className="btn oz-btn-save" onClick={this.props.onCreate}>
+                    <button type="submit" key="success" className="btn btn-default" onClick={this.props.onCreate}>
                         {this.context.t('ui.create')}
                     </button>
                 )
@@ -218,7 +218,7 @@ var Button = createClass({
     render: function () {
         return (
             <div>
-                <button type="button" key="cancel" className="btn oz-btn-cancel" onClick={this.props.onCancel}>
+                <button type="button" key="cancel" className="btn btn-default" onClick={this.props.onCancel}>
                     {this.context.t('ui.cancel')}
                 </button>
                 {this.renderStepSwitcherButton()}

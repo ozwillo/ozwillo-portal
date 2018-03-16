@@ -7,7 +7,7 @@ class Footer extends React.Component {
         return <footer className="oz-footer">
             <div className="flex-row">
                 <section className="logo">
-                    <img className="image" src="/img/logo-ozwillo-footer.png"/>
+                    <img className="image" />
                 </section>
                 <section className="flex-row outer-links">
                     {

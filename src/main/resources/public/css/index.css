@@ -12,7 +12,6 @@
 @import 'components/layout.css';
 @import 'components/modal.css';
 @import 'components/nav.css';
-@import 'components/notification.css';
 @import 'components/popup.css';
 @import 'components/react-autosuggest.css';
 @import 'components/select.css';
@@ -54,6 +53,7 @@ body {
 
 body {
     width: 100%;
+    background-color: var(--tertiary-color);
 }
 
 body, h1, h2 {
@@ -63,7 +63,7 @@ body, h1, h2 {
 
 h4 {
     font-weight: 300 !important;
-    color: #333 !important;
+    color: var(--secondary-color) !important;
 }
 
 label {
@@ -75,7 +75,7 @@ label.required {
 }
 
 .title {
-    color: var(--purple-color);
+    color: var(--primary-color);
     font-weight: bold;
     font-size: 0.8em;
 }
@@ -93,11 +93,11 @@ label.required {
 
 /* oz-body */
 .oz-body {
-    background: var(--light-2-gray-color);
+    background: var(--bg-content-color);
 }
 
 .oz-body.light {
-    background: var(--white-color);
+    background: var(--tertiary-color);
 }
 
 .oz-body.wrapper {
@@ -152,7 +152,7 @@ label.required {
 }
 
 .error-message {
-    color: var(--red-color);
+    color: var(--alert-color);
     width: 100%;
     text-align: left;
     margin: auto 5px;
@@ -166,7 +166,7 @@ label.required {
 }
 
 .box {
-    background-color: white;
+    background-color: var(--tertiary-color);
     margin: 10px 5px;
     padding: 5px 20px;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
@@ -174,7 +174,7 @@ label.required {
 }
 
 .alert-message {
-    color: var(--dark-purple-color);
+    color: var(--secondary-color);
     font-size: 1.2em;
 }
 
@@ -194,7 +194,11 @@ label.required {
 }
 
 .loading {
-    color: var(--purple-color);
+    color: var(--primary-color);
+}
+
+a {
+    color: var(--secondary-color);
 }
 
 /* tablet */

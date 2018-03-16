@@ -1,10 +1,11 @@
 
 .arrow-regular {
-    border-top-color: var(--dark-purple-color) !important;
+    border-top-color: var(--secondary-color) !important;
 }
 
 .tippy-popper[x-placement^=top] [data-animation=shift].enter {
-    background-color: var(--dark-purple-color);
+    background-color: var(--secondary-color);
+    color: var(--tertiary-color);
 }
 
 .tippy-tooltip {

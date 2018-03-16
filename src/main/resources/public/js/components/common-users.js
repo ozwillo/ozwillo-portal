@@ -69,7 +69,7 @@ var User = createClass({
                         <small> ({moment(this.props.user.created).format('lll')})</small>)}
                 </td>
                 <td>
-                    <button className="btn oz-btn-danger" onClick={this.props.removeUser}>
+                    <button className="btn icon delete" onClick={this.props.removeUser}>
                         <i className="fa fa-trash"></i>
                     </button>
                 </td>

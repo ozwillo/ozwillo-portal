@@ -110,9 +110,9 @@ var ApplicationUsersManagement = createClass({
                             <UsersList users={this.state.users} removeUser={this.removeUser}/>
                         </div>
                         <div className="modal-footer">
-                            <button type="button" key="cancel" className="btn oz-btn-cancel"
+                            <button type="button" key="cancel" className="btn btn-default"
                                     onClick={this.close}>{this.context.t('ui.cancel')}</button>
-                            <button type="submit" key="success" className="btn oz-btn-save"
+                            <button type="submit" key="success" className="btn btn-default"
                                     onClick={this.saveUsers}>{this.context.t('ui.save')}</button>
                         </div>
                     </div>
@@ -165,7 +165,7 @@ var UsersEmailSelector = createClass({
                               value={this.state.userInput} onChange={this.updateUserInput}/>
                 </div>
                 <div className="col-sm-2">
-                    <button type="submit" className="btn oz-btn-save"
+                    <button type="submit" className="btn btn-default"
                             onClick={this.handleAddUsers}>{this.context.t('ui.add')}</button>
                 </div>
             </div>

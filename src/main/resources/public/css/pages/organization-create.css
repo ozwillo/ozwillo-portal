@@ -16,7 +16,7 @@
 }
 
 .organization-create .error {
-    color: var(--red-color);
+    color: var(--alert-color);
     text-align: center;
     font-size: 1.2em;
 }

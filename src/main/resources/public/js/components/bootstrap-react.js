@@ -14,7 +14,7 @@ import PropTypes from 'prop-types';
  *  - successHandler (optional) - callback that is called on validation (not required if infobox is true)
  *  - cancelHandler (optional) - callback that is called on cancel
  *  - buttonLabels (optional) - a map of strings with keys "save", "cancel". By default will map to this.context.t('ui.save'), this.context.t('ui.cancel')
- *  - saveButtonClass (optional) - a additional CSS class to apply to the "save" button (defaults to oz-btn-save)
+ *  - saveButtonClass (optional) - a additional CSS class to apply to the "save" button (defaults to btn-default)
  *  - large (optional) - if true, will use the modal-lg class on the dialog
  *  - infobox (optional) - if true, will display only a single inverted OK button (label key = 'ok') rather than save / cancel
  *                         also, successHandler has no meaning in that context.

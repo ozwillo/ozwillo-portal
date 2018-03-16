@@ -1,6 +1,6 @@
 
 .synchronize-fc-profile > form legend {
-    color: var(--purple-color);
+    color: var(--primary-color);
     margin: 0;
     border: none;
     text-transform: uppercase;
@@ -28,10 +28,10 @@
     margin: 0 10px;
     font-size: 1.5em;
     cursor: pointer;
-    border: solid 1px var(--dark-purple-color);
+    border: solid 1px var(--secondary-color);
     padding: 5px;
-    background-color: var(--purple-color);
-    color: var(--white-color);
+    background-color: var(--primary-color);
+    color: var(--tertiary-color);
     font-weight: normal;
     box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3), -1px -1px 2px rgba(0, 0, 0, 0.2);
 }

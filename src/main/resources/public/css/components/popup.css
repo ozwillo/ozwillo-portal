@@ -99,8 +99,8 @@
 
 .mm-popup__box__header {
     padding: 15px 20px;
-    background: var(--purple-color);
-    color: var(--white-color);
+    background: var(--primary-color);
+    color: var(--tertiary-color);
 }
 
 .mm-popup__box__header__title {

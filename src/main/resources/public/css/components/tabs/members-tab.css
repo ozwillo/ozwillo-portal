@@ -1,11 +1,11 @@
 .members-tab .sub-title {
-    color: var(--dark-purple-color);
+    color: var(--secondary-color);
     text-transform: uppercase;
     font-weight: bold;
 }
 
 .members-tab .btn-submit {
-    background-color: var(--white-color);
+    background-color: var(--tertiary-color);
 }
 
 .members-tab .add-member {

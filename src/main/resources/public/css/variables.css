@@ -1,27 +1,38 @@
 :root {
+    --primary-color: #6f438e;
+    --secondary-color: #4c2d62;
+    --tertiary-color: #FFF;
+
+    --separator-color: #CCC;
+    --footer-color: #EEE;
+    --nav-color: #FBFBFB;
+    --bg-content-color: #f4f4f4;
+
+    /* STORE */
+    --buy-color: #ff4d37e8;
+    --buy-dark-color: rgba(150, 0, 42, 1);
+
+    --free-color: #f8ba03;
+    --free-dark-color: #f69b04;
+
+    --installed-color: #43a047;
+    --installed-dark-color: #2e7d32;
+
+    /* BUTTON */
+    --button-primary-color: #6f438e; /* Border + text */
+    --button-secondary-color: #FFF; /* background */
+    --button-tertiary-color: #4c2d62; /* background on hover */
+
+
     /* COLOR */
     --black-color: #4c4c4c;
-    --black-2-color: #545454;
-    --white-color: white;
-    --red-color: #ff4d37e8;
-    --dark-red-color: rgba(150, 0, 42, 1);
-    --dark-blue-color: rgba(31, 36, 136, 1);
-    --light-blue-color: rgba(70, 171, 226, 1);
-    --gray-color: #CCC;
-    --light-gray-color: #EEE;
-    --light-2-gray-color: #f4f4f4;
-    --light-3-gray-color: #FBFBFB;
-    --dark-gray-color: #999;
-    --light-pink-color: rgba(232, 84, 150, 0.95);
-    --yellow-color: #f8ba03;
-    --orange-color: #f69b04;
-    --dark-orange-color: #D67b00;
-    --green-color: #43a047;
-    --dark-green-color: #2e7d32;
+    --alert-color: #ff4d37e8;
+    --gray-color: #e4e4e4;
 
-    --dark-purple-color: #4c2d62;
-    --purple-color: #6f438e;
-    --light-purple-color: #dfcae2;
+
+    /* LOGO */
+    --logo-url: url("/img/logo-ozwillo.png");
+    --footer-logo-url: url("/img/logo-ozwillo-footer.png");
 
     /* SCREEN SIZE
     --sm-phone-width: 320;

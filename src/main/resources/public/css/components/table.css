@@ -3,15 +3,15 @@
 }
 
 .oz-table thead {
-    color: var(--dark-purple-color);
+    color: var(--secondary-color);
 }
 
 .oz-table thead .icon {
-    color: var(--purple-color);
+    color: var(--primary-color);
 }
 
 .oz-table tr {
-    border-bottom: solid 1px var(--gray-color);
+    border-bottom: solid 1px var(--separator-color);
 }
 
 .oz-table tr:last-child {

@@ -1,6 +1,6 @@
 
 .organization-search .title {
-    color: var(--purple-color);
+    color: var(--primary-color);
     font-weight: bold !important;
     text-align: center;
     font-size: 2em;
@@ -42,7 +42,7 @@
 }
 
 .organization-search .organization-invitation-form .error {
-    color: var(--red-color);
+    color: var(--alert-color);
 }
 
 .organization-search .organization-invitation-form .success {
