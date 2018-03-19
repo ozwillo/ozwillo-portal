@@ -122,7 +122,7 @@ const NotificationTable = createClass({
 
         if (notificationNodes.length == 0) {
             notificationNodes = <tr>
-                <td className="message" colSpan="4">{this.context.t('no-notification')}</td>
+                <td className="message" colSpan="4">{this.context.t('notif.no-notification')}</td>
             </tr>;
         }
 
@@ -137,11 +137,11 @@ const NotificationTable = createClass({
                     <table className="oz-table table">
                         <thead>
                         <tr>
-                            <SortableHeader name="date" label="date" size="2" sortBy={this.sortBy}
+                            <SortableHeader name="date" label={this.context.t('notif.date')} size="2" sortBy={this.sortBy}
                                             sort={this.state.currentSort}/>
-                            <SortableHeader name="appName" size="2" label="app" sortBy={this.sortBy}
+                            <SortableHeader name="appName" size="2" label={this.context.t('notif.app')} sortBy={this.sortBy}
                                             sort={this.state.currentSort}/>
-                            <th className="col-sm-5">{this.context.t('message')}</th>
+                            <th className="col-sm-5">{this.context.t('notif.message')}</th>
                             <th className="col-sm-3"></th>
                         </tr>
                         </thead>
@@ -212,9 +212,9 @@ const NotificationHeader = createClass({
                     </div>
                     <div className="form-group">
                         <select name="status" className="form-control" onChange={this.props.updateStatus}>
-                            <option value="UNREAD">{this.context.t('unread')}</option>
-                            <option value="READ">{this.context.t('read')}</option>
-                            <option value="ANY">{this.context.t('any')}</option>
+                            <option value="UNREAD">{this.context.t('notif.unread')}</option>
+                            <option value="READ">{this.context.t('notif.read')}</option>
+                            <option value="ANY">{this.context.t('notif.any')}</option>
                         </select>
                     </div>
                 </form>
@@ -233,7 +233,7 @@ const AppFilter = createClass({
         });
         return (
             <select name="app" className="form-control" onChange={this.props.onChange}>
-                <option value="all">{this.context.t('all-apps')}</option>
+                <option value="all">{this.context.t('notif.all-apps')}</option>
                 {options}
             </select>
         );
@@ -259,7 +259,7 @@ const Notification = createClass({
         }
         if (this.props.notif.status !== "READ") {
             action_archive = <a href="#" className="btn btn-default pull-right"
-                                onClick={this.removeNotif}>{this.context.t('archive')}</a>;
+                                onClick={this.removeNotif}>{this.context.t('notif.archive')}</a>;
         }
 
         return (

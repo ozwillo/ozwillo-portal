@@ -98,6 +98,10 @@ public final class i18nMessages {
             "delete.organization", "delete.instance", "delete.member", "remove.right", "remove.icon",
             "remove.right.admin", "add.right.admin", "add.icon", "remove.instance", "remove.member");
 
+    private static final List<String> notificationKeys = Arrays.asList("date", "app", "message", "archive", "manage",
+            "no-notification", "unread", "read", "any", "all-apps");
+
+
     /* Messages Handlers  */
     public static Map<String, String> getI18n_all(Locale locale, MessageSource messageSource) throws JsonProcessingException {
         Map<String, String> i18n = new HashMap<>();
@@ -120,6 +124,7 @@ public final class i18nMessages {
         i18n.putAll(i18nMessages.getI18n_organizationFormKeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_organizationDescKeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_tooltipKeys(locale, messageSource));
+        i18n.putAll(i18nMessages.getI18n_notificationKeys(locale, messageSource));
 
         return i18n;
     }
@@ -213,5 +218,10 @@ public final class i18nMessages {
     public static Map<String, String> getI18n_tooltipKeys(Locale locale, MessageSource messageSource) {
         return (tooltipKeys.stream().collect(Collectors.toMap(k -> "tooltip." +k,
                 k -> messageSource.getMessage("tooltip." + k, new Object[0], locale))));
+    }
+
+    public static Map<String, String> getI18n_notificationKeys(Locale locale, MessageSource messageSource) {
+        return (notificationKeys.stream().collect(Collectors.toMap(k -> "notif." +k,
+                k -> messageSource.getMessage("notif." + k, new Object[0], locale))));
     }
 }
