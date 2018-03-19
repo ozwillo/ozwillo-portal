@@ -221,8 +221,7 @@ public class NetworkService {
                 .stream()
                 .map(this::toUIOrganizationMember)
                 // NB. self is among returned admins
-                .sorted((member1, member2) -> member1.isSelf() ? -1 : (member2.isSelf() ? 1
-                    : member1.getNonNullName().compareToIgnoreCase(member2.getNonNullName()))) // #171 old accounts may not have a name before it was required
+                .sorted(Comparator.comparing(UIOrganizationMember::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
         } else {
             // return self in first position

@@ -244,9 +244,7 @@ public class ApplicationService {
 
         List<User> users = getAppUsers(instanceId, false)
                 .stream()
-                .sorted(Comparator.comparing(User::getUserid,
-                            (id1, id2) -> (userId.equals(id1)) ? -1 : (userId.equals(id2))? 1 : 0
-                ).thenComparing(Comparator.comparing(User::getName, String.CASE_INSENSITIVE_ORDER)))
+                .sorted(Comparator.comparing(User::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
 
         users.addAll(getPendingAppUsers(instanceId));
