@@ -50,6 +50,7 @@
 }
 
 #dashboard .appzone {
+    position: relative;
     height: 100%;
 }
 
@@ -72,7 +73,6 @@
     border-radius: 3px;
     text-align: center;
     padding: 10px;
-    position: relative;
 
     color: var(--secondary-color);
     text-transform: uppercase;
@@ -80,10 +80,37 @@
     font-size: 0.8em;
 }
 
+#dashboard .appzone .container-icon {
+    position: relative;
+}
+
+#dashboard .appzone .container-icon > .filter {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+#dashboard .appzone .container-icon > .filter .icon.pending {
+    font-size: 3em;
+    color: var(--secondary-color);
+}
+
 #dashboard .appzone .dropzone.dragover .app,
 #dashboard .appzone .app:hover {
     color: var(--tertiary-color);
     background-color: var(--primary-color);
+}
+
+#dashboard .appzone .app.pending:hover {
+    color: var(--primary-color);
+    background-color: var(--tertiary-color);
 }
 
 #dashboard .appzone .app span.badge-notifications {
@@ -95,18 +122,6 @@
     color: var(--tertiary-color);
     padding: 5px 8px;
     font-size: 12px;
-}
-
-#dashboard .appzone .app.pending {
-    background-color: var(--gray-color);
-    filter: grayscale(100%);
-    -webkit-filter: grayscale(50%);
-    -moz-filter: grayscale(100%);
-    -ms-filter: grayscale(100%);
-}
-
-#dashboard .appzone .app.pending:hover {
-    color: var(--secondary-color);
 }
 
 #dashboard .appzone .app .action-icon {
