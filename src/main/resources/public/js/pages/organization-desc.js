@@ -68,8 +68,8 @@ class OrganizationDesc extends React.Component {
 
             <UpdateTitle title={this.props.organization.name}/>
 
-            <header className="header flex-row">
-                <h1 className="title">{this.props.organization.name}</h1>
+            <header className="title">
+                <span>{this.props.organization.name}</span>
             </header>
 
             <Tabs className="content" headers={tabsHeaders} tabs={tabs} tabToDisplay={tabToDisplay}/>

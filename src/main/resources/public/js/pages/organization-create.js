@@ -56,10 +56,12 @@ class OrganizationCreate extends React.Component {
     render() {
         return <section className="organization-create oz-body wrapper flex-col">
             <UpdateTitle title={this.context.t('organization.form.create')}/>
+
+            <header className="title">
+                <span>{this.context.t('organization.form.create')}</span>
+            </header>
+
             <div className="box">
-                <header className="header flex-row">
-                    <h1 className="title">{this.context.t('organization.form.create')}</h1>
-                </header>
                 <div className="error">
                     <span>{this.state.error}</span>
                 </div>

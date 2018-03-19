@@ -9,10 +9,6 @@
     text-align: center;
 }
 
-#profile .title {
-    font-size: 2em;
-}
-
 #profile .sub-title {
     color: var(--primary-color);
     font-weight: bold !important;

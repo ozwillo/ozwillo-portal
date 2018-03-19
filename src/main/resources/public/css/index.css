@@ -74,12 +74,6 @@ label.required {
     font-weight: 700;
 }
 
-.title {
-    color: var(--primary-color);
-    font-weight: bold;
-    font-size: 0.8em;
-}
-
 /* page-row */
 .page-row {
     display: table-row;
@@ -105,11 +99,15 @@ label.required {
     height: 100%;
 }
 
-.oz-body h1 {
-    font-size: 36px;
-    margin: 30px 0 30px 0;
-    display: block;
+.oz-body .title{
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 2em;
+    text-transform: uppercase;
     vertical-align: middle;
+    text-align: center;
+    margin: 20px 0;
+
 }
 
 .oz-body h1 span {
@@ -124,11 +122,6 @@ label.required {
 
 .oz-body h3 {
     font-size: 18px;
-}
-
-.oz-body div.oz-body-content {
-    padding: 20px 0;
-    height: 100%;
 }
 
 /* END oz-body */
@@ -168,7 +161,7 @@ label.required {
 .box {
     background-color: var(--tertiary-color);
     margin: 10px 5px;
-    padding: 5px 20px;
+    padding: 10px 20px;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
     4px 3px 3px rgba(0, 0, 0, 0.2);
 }

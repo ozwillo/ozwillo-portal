@@ -129,10 +129,6 @@ const NotificationTable = createClass({
         return (
             <section id="notifications" className="box">
                 <div className="flex-col">
-                    <h1 className="text-center">
-                        <span className="title">{this.context.t('ui.notifications')}</span>
-                    </h1>
-
                     <div className="flex-row end">
                         <NotificationHeader filter={this.state.filter} updateStatus={this.filterByStatus}
                                             updateAppFilter={this.filterByApp} apps={this.state.apps}/>
@@ -294,9 +290,11 @@ class NotificationTableWrapper extends React.Component {
 
             <UpdateTitle title={this.context.t('ui.notifications')}/>
 
-            <div className="oz-body-content">
-                <NotificationTableWithRedux/>
-            </div>
+            <header className="title">
+                <span>{this.context.t('ui.notifications')}</span>
+            </header>
+
+            <NotificationTableWithRedux/>
 
             <div className="push"/>
         </div>;

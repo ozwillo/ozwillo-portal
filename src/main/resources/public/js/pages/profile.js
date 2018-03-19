@@ -91,11 +91,11 @@ class Profile extends React.Component {
     render() {
         const userProfile = this.state.userProfile;
         return (
-            <div className="container" id="profile">
+            <section id="profile">
+                <header className="title">
+                    <span>{this.context.t('my.profile')}</span>
+                </header>
                 <section className="box">
-                    <header className="text-center">
-                        <span className="title">{this.context.t('my.profile')}</span>
-                    </header>
                     <Form id="account" onSubmit={this.onSubmit.bind(this)}>
                         {renderIf(this.state.updateSucceeded)(
                             <div className="alert alert-success" role="alert">
@@ -122,7 +122,7 @@ class Profile extends React.Component {
                                    linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
                                    unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
                                    userProfile={userProfile} className="box"/>
-            </div>
+            </section>
         )
     }
 }
@@ -360,12 +360,9 @@ class ProfileWrapper extends React.Component {
     };
 
     render() {
-        return <section className="oz-body">
+        return <section className="oz-body wrapper">
             <UpdateTitle title={this.context.t('my.profile')}/>
-            <div className="oz-body-content">
-                <Profile/>
-            </div>
-
+            <Profile/>
             <div className="push"></div>
         </section>;
     }

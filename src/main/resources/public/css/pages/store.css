@@ -3,13 +3,6 @@
     height: auto;
 }
 
-#store .title {
-    color: var(--primary-color);
-    font-weight: bold !important;
-    text-align: center;
-    font-size: 2em;
-}
-
 #store-search {
     margin-top: 30px;
 }

@@ -196,10 +196,6 @@ var SearchAppsForm = createClass({
 
         return (
             <section className="box">
-                <header className="text-center">
-                    <span className="title">{this.context.t('ui.appstore')}</span>
-                </header>
-
                 <div className="row form-horizontal" id="store-search">
                     <div className="col-md-6">
                         <div className="form-group">
@@ -443,11 +439,14 @@ class AppStoreWrapper extends React.Component {
     };
 
     render() {
-        return <div className="oz-body wrapper page-row page-row-expanded">
+        return <div className="oz-body wrapper">
             <UpdateTitle title={this.context.t('ui.appstore')}/>
-            <div className="oz-body-content">
-                <AppStoreWithRedux/>
-            </div>
+
+            <header className="title">
+                <span>{this.context.t('ui.appstore')}</span>
+            </header>
+
+            <AppStoreWithRedux/>
             <div className="push"/>
         </div>;
     }

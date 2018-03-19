@@ -78,8 +78,8 @@ class OrganizationSearch extends React.Component {
             </div>
 
             <section>
-                <header>
-                    <h1 className="title">{this.context.t('organization.search.title')}</h1>
+                <header className="title">
+                    <span>{this.context.t('organization.search.title')}</span>
                 </header>
 
                 <form className="search oz-form">

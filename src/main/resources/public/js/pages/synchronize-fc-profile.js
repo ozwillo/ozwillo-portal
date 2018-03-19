@@ -153,19 +153,11 @@ class SynchronizeFCProfileWrapper extends React.Component {
 
             <UpdateTitle title={this.context.t('my.profile')}/>
 
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            <span className="title">{this.context.t('my.profile')}</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
+            <header className="title">
+                <span>{this.context.t('my.profile')}</span>
+            </header>
 
-            <div className="oz-body-content">
-                <SynchronizeFCProfileWithRouter/>
-            </div>
+            <SynchronizeFCProfileWithRouter/>
 
             <div className="push"/>
         </div>;

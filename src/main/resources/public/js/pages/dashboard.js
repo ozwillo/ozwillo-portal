@@ -690,17 +690,12 @@ class DashboardWrapper extends React.Component {
     render() {
         return <section className="oz-body wrapper flex-col">
             <UpdateTitle title={this.context.t('my.dashboard')}/>
-            <div className="container-fluid">
-                <div className="col-md-12">
-                    <h1 className="text-center">
-                        <span className="title">{this.context.t('my.dashboard')}</span>
-                    </h1>
-                </div>
-            </div>
 
-            <div className="oz-body-content">
-                <Dashboard/>
-            </div>
+            <header className="title">
+                <span>{this.context.t('my.dashboard')}</span>
+            </header>
+
+            <Dashboard/>
 
             <div className="push"/>
         </section>;
