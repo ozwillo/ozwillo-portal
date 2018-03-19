@@ -191,7 +191,7 @@ var SearchAppsForm = createClass({
     },
     render: function () {
         var languageComponents = this.props.languages.map(language =>
-            <option key={language} value={language}>{this.context.t(language)}</option>
+            <option key={language} value={language}>{this.context.t(`store.language.${language}`)}</option>
         );
 
         return (
