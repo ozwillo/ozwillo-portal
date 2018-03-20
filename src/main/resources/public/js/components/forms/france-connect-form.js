@@ -22,7 +22,7 @@ class FranceConnectForm extends React.Component {
                      method="post" action={this.props.linkFranceConnectEndpoint}
                      className={`oz-form ${this.props.className}`}>
             <div>
-                <h2 className="sub-title">France Connect</h2>
+                <h2 className="sub-title">{this.context.t("franceconnect.name")}</h2>
             </div>
 
             {

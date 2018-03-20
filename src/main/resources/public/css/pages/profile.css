@@ -13,7 +13,8 @@
     color: var(--primary-color);
     font-weight: bold !important;
     margin: 5px 0;
-    font-size: 1.4em;
+    font-size: 1.2em;
+    text-transform: uppercase;
 }
 
 #profile .btn {
