@@ -24,7 +24,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 @RequestMapping("/my/api/dashboard")
-public class DashboardAJAXServices extends BaseController {
+public class DashboardController extends BaseController {
 
     @Autowired
     private DashboardService dashboardService;

@@ -23,7 +23,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.mail.MessagingException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.ArrayList;
@@ -32,9 +31,9 @@ import java.util.Locale;
 
 @RestController
 @RequestMapping("/my/api/contact")
-public class ContactAJAXServices extends BaseController {
+public class ContactController extends BaseController {
 
-    private static final Logger logger = LoggerFactory.getLogger(ContactAJAXServices.class);
+    private static final Logger logger = LoggerFactory.getLogger(ContactController.class);
 
     @Autowired
     private MailSender mailSender;

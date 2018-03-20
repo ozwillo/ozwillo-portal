@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.front.my.rest;
+package org.oasis_eu.portal.front;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -23,7 +23,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("my/api")
-public class MyOzwilloAJAXServices extends BaseController {
+public class ConfigController extends BaseController {
 
     @Autowired
     private MessageSource messageSource;
