@@ -8,7 +8,7 @@ import OrganizationForm from '../forms/organization-form';
 
 //actions
 import {fetchCountries} from '../../actions/config';
-import {updateOrganizationForm} from '../../actions/components/organization-form';
+import {updateOrganizationFormAction} from '../../actions/components/organization-form';
 import {fetchUpdateOrganization} from '../../actions/organization';
 
 class AdminTabHeader extends React.Component {
@@ -109,7 +109,7 @@ const mapDispatchToProps = dispatch => {
             return dispatch(fetchCountries());
         },
         updateOrganizationForm(info) {
-            return dispatch(updateOrganizationForm(info))
+            return dispatch(updateOrganizationFormAction(info))
         },
         fetchUpdateOrganization(info) {
             return dispatch(fetchUpdateOrganization(info));

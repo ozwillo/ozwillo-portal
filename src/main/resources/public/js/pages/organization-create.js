@@ -9,6 +9,7 @@ import UpdateTitle from '../components/update-title';
 //Action
 import {fetchCreateOrganization} from '../actions/organization';
 import {fetchCountries} from '../actions/config';
+import {resetOrganizationFormAction} from '../actions/components/organization-form';
 
 class OrganizationCreate extends React.Component {
 
@@ -37,7 +38,10 @@ class OrganizationCreate extends React.Component {
 
         this.props.fetchCreateOrganization(organization)
             .then(() => {
-                this.props.history.push('/my/organization');
+                return this.props.resetOrganizationForm();
+            })
+            .then(() => {
+                this.props.history.push('/my/organization')
             })
             .catch((err) => {
                 //scroll to top
@@ -88,6 +92,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchCreateOrganization(organization) {
             return dispatch(fetchCreateOrganization(organization))
+        },
+        resetOrganizationForm() {
+            return dispatch(resetOrganizationFormAction())
         }
     };
 };

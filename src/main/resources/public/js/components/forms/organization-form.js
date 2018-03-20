@@ -9,7 +9,7 @@ import TaxRegActivityAutosuggest from '../autosuggests/tax-reg-activity-autosugg
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
 
 //Actions
-import {updateOrganizationForm, resetOrganizationForm} from '../../actions/components/organization-form';
+import {updateOrganizationFormAction, resetOrganizationFormAction} from '../../actions/components/organization-form';
 
 class OrganizationForm extends React.Component {
 
@@ -385,10 +385,10 @@ const mapStateToProps = state => {
 const mapDispatchToProps = dispatch => {
     return {
         updateOrganizationForm(organization) {
-            return dispatch(updateOrganizationForm(organization));
+            return dispatch(updateOrganizationFormAction(organization));
         },
         resetOrganizationForm() {
-            return dispatch(resetOrganizationForm());
+            return dispatch(resetOrganizationFormAction());
         }
     }
 };

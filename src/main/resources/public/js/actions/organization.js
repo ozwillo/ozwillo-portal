@@ -76,7 +76,7 @@ export const fetchCreateOrganization = (info) => {
             info[key] = info[key] || null;
         });
 
-        return customFetch('/my/api/network/create-dc-organization', {
+        return customFetch('/my/api/organization', {
             method: 'POST',
             json: {...info}
         }).then((org) => {
