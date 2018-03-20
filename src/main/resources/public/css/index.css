@@ -190,6 +190,10 @@ label.required {
     color: var(--primary-color);
 }
 
+.caret {
+    margin-left: 10px !important;
+}
+
 a {
     color: var(--secondary-color);
 }

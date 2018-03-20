@@ -28,23 +28,33 @@ class RouterWithUser extends React.Component {
     render() {
         return <IfUser>
             <NotificationsCount/>
-            <Switch>
-                {/* Redirect old pages */}
-                <Redirect from="/my/network" to="/my/organization"/>
-                <Redirect from="/my/apps" to="/my/organization"/>
+            <Layout>
+                <Switch>
+                    {/* Redirect old pages */}
+                    <Redirect from="/my/network" to="/my/organization"/>
+                    <Redirect from="/my/apps" to="/my/organization"/>
 
-                {/* Routes */}
-                <Route path="/my/profile/franceconnect" component={SynchroniseFCProfile}/>
-                <Route path="/my/profile" component={Profile}/>
-                <Route path="/my/notif" component={Notification}/>
-                <Route path="/my/organization/create" component={OrganizationCreate}/>
-                <Route path="/my/organization/:id/:tab?" component={OrganizationDesc}/>
-                <Route path="/my/organization" component={OrganizationSearch}/>
-                <Route path="/my/dashboard/:id?" component={Dashboard}/>
-                <Route path="/my/" component={Dashboard}/>
-                <Redirect to="/my/"/>
-            </Switch>
+                    {/* Routes */}
+                    <Route path="/my/profile/franceconnect" component={SynchroniseFCProfile}/>
+                    <Route path="/my/profile" component={Profile}/>
+                    <Route path="/my/notif" component={Notification}/>
+                    <Route path="/my/organization/create" component={OrganizationCreate}/>
+                    <Route path="/my/organization/:id/:tab?" component={OrganizationDesc}/>
+                    <Route path="/my/organization" component={OrganizationSearch}/>
+                    <Route path="/my/dashboard/:id?" component={Dashboard}/>
+                    <Route path="/my/" component={Dashboard}/>
+                    <Redirect to="/my/"/>
+                </Switch>
+            </Layout>
         </IfUser>;
+    }
+}
+
+class RouterWithoutUser extends React.Component {
+    render() {
+        return <Layout>
+            <Store/>
+        </Layout>;
     }
 }
 
@@ -65,14 +75,12 @@ class AppRouter extends React.Component {
     render() {
         return <Router history={history}>
             <BootLoader>
-                <Layout>
-                    <Popup/>
-                    <Switch>
-                        <Route path="/my" component={RouterWithUser}/>
-                        <Route path="/:lang/store" component={Store}/>
-                        <Redirect to="/my/"/>
-                    </Switch>
-                </Layout>
+                <Popup/>
+                <Switch>
+                    <Route path="/my" component={RouterWithUser}/>
+                    <Route path="/:lang/store" component={RouterWithoutUser}/>
+                    <Redirect to="/my"/>
+                </Switch>
             </BootLoader>
         </Router>;
     }

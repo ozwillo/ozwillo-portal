@@ -433,6 +433,8 @@ Indicator.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
+import { withRouter } from 'react-router';
+
 class AppStoreWrapper extends React.Component {
     static contextTypes = {
         t: PropTypes.func.isRequired
@@ -452,4 +454,4 @@ class AppStoreWrapper extends React.Component {
     }
 }
 
-export default AppStoreWrapper;
+export default withRouter(AppStoreWrapper);

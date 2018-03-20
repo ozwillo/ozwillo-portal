@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -81,6 +82,16 @@ public class OzwilloController {
         config.devMode = devMode;
         config.notificationsEnabled = notificationsEnabled;
 
+        return config;
+    }
+
+    @GetMapping("/config/language/{lang}")
+    public Config getLanguage(@PathVariable String lang) throws JsonProcessingException {
+        Map<String, Map<String, String>> i18n = new HashMap<>();
+        i18n.put(lang, i18nMessages.getI18n_all(new Locale(lang) , messageSource));
+
+        Config config = new Config();
+        config.i18n = i18n;
         return config;
     }
 

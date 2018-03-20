@@ -1,9 +1,18 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
-import PropTypes from "prop-types";
+import { withRouter } from 'react-router';
+import {Link} from 'react-router-dom';
+import {fetchSetLanguage} from '../actions/config';
 
 
 class Nav extends React.Component {
+
+    componentWillReceiveProps(nextProps) {
+        if(this.props.language != nextProps.match.params.lang) {
+            this.props.fetchSetLanguage(nextProps.match.params.lang);
+        }
+    }
 
     render() {
         return <nav className="navbar navbar-default navbar-noauth" id="oz-nav">
@@ -86,8 +95,8 @@ class Nav extends React.Component {
                                 <li className="menu">
                                     {
                                         this.props.languages && this.props.languages.map((lang, index) => {
-                                            return <a className="link" key={index} href={`${lang}/store`}
-                                                      data-th-text="${lang.name}">{lang}</a>
+                                            return <Link className="link" key={index} to={`/${lang}/store`}
+                                                      data-th-text="${lang.name}">{lang}</Link>
                                         })
                                     }
                                 </li>
@@ -115,4 +124,12 @@ const mapStateToProps = state => {
     };
 };
 
-export default connect(mapStateToProps)(Nav);
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchSetLanguage(lang) {
+            return dispatch(fetchSetLanguage(lang));
+        }
+    };
+};
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(Nav));
