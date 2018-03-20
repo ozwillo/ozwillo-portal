@@ -56,7 +56,6 @@ public class UserMembershipService {
         String uriString = UriComponentsBuilder.fromHttpUrl(userMembershipEndpoint)
                 .path("/memberships/user/{user_id}")
                 .queryParam("start", "0")
-                .queryParam("limit",maxUserMembershipsPerPage.trim())
                 .buildAndExpand(userId)
                 .toUriString();
 
