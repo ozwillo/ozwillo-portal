@@ -17,7 +17,7 @@ class Header extends React.Component {
                 {
                     isLogged &&
                     <Link to='/my/dashboard'>
-                        <img className="logo" alt="Logo Ozwillo"/>
+                        <img className="logo"/>
                     </Link>
                 }
                 {

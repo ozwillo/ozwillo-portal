@@ -3,7 +3,7 @@
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
 }
 
-.oz-footer .logo .image {
+.oz-footer .logo .image:after {
     content: var(--footer-logo-url);
 }
 
