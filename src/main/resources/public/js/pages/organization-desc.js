@@ -51,7 +51,9 @@ class OrganizationDesc extends React.Component {
                         });
                     }
 
-                    requests.push(this.props.fetchOrganizationInfo(org.dc_id));
+                    if (!this.isPersonal) {
+                        requests.push(this.props.fetchOrganizationInfo(org.dc_id));
+                    }
 
                     return Promise.all(requests);
                 }),
@@ -61,6 +63,10 @@ class OrganizationDesc extends React.Component {
         });
     }
 
+    get isPersonal() {
+        return this.props.organization.id === this.props.userInfo.sub;
+    }
+
     render() {
         const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
 
@@ -68,11 +74,29 @@ class OrganizationDesc extends React.Component {
 
             <UpdateTitle title={this.props.organization.name}/>
 
-            <header className="title">
-                <span>{this.props.organization.name}</span>
-            </header>
 
-            <Tabs className="content" headers={tabsHeaders} tabs={tabs} tabToDisplay={tabToDisplay}/>
+
+            {
+                !this.isPersonal && <React.Fragment>
+                    <header className="title">
+                        <span>{this.props.organization.name}</span>
+                    </header>
+                    <Tabs className="content" headers={tabsHeaders} tabs={tabs} tabToDisplay={tabToDisplay}/>
+                </React.Fragment>
+
+            }
+
+            {
+                this.isPersonal && <React.Fragment>
+                    <header className="title">
+                        <span>{this.context.t('organization.desc.applications')}</span>
+                    </header>
+
+                    <section className="box">
+                        <tabs.instances />
+                    </section>
+                </React.Fragment>
+            }
 
         </section>;
     }
@@ -80,7 +104,8 @@ class OrganizationDesc extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        organization: state.organization.current
+        organization: state.organization.current,
+        userInfo: state.userInfo
     };
 };
 

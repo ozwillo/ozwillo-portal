@@ -6,7 +6,7 @@ import appStore from './app-store';
 import config from './config';
 import notifications from './notifications';
 import organization from './organization';
-import userInfo from './userInfo';
+import userInfo from './user-info';
 
 //Components
 import organizationForm from './components/organization-form';

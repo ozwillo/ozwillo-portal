@@ -127,6 +127,13 @@ public class NetworkService {
     }
 
     public UIOrganization getOrganization(String organizationId) {
+        String userId = userInfoService.currentUser().getUserId();
+
+        // Personal organization
+        if (userId.equals(organizationId)) {
+            return fetchOrganizationWithInstances(organizationId, false);
+        }
+
         return fetchOrganizationWithInstances(organizationId, true);
     }
 
