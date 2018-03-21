@@ -8,6 +8,7 @@
     margin-left: 10px;
 }
 
+.oz-header .logo-home img.logo,
 .oz-header .logo-home img.logo:after {
     display: block;
     content: var(--logo-url);
