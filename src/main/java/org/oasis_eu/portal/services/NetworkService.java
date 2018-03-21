@@ -77,6 +77,29 @@ public class NetworkService {
     @Autowired
     private SubscriptionStore subscriptionStore;
 
+    public List<UIOrganization> getMyOrganizationsInLazyMode() {
+        List<UIOrganization> organizations = new ArrayList<>();
+        String userId = userInfoService.currentUser().getUserId();
+
+        //build Organizations
+        List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
+        for (UserMembership u : userMemberships) {
+            Organization org = organizationStore.find(u.getOrganizationId());
+            UIOrganization uiOrg = fillUIOrganization(org);
+            organizations.add(uiOrg);
+        }
+
+        UIOrganization uiOrganization = new UIOrganization();
+        uiOrganization.setId(userId);
+        uiOrganization.setName("Personal");
+        organizations.add(uiOrganization);
+
+        return organizations.stream()
+                .sorted(Comparator.comparing(UIOrganization::getId,
+                        (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2))? -1 : 0)
+                        .thenComparing(Comparator.comparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER)))
+                .collect(Collectors.toList());
+    }
 
     public List<UIOrganization> getMyOrganizations() {
         List<UIOrganization> organizations = new ArrayList<>();

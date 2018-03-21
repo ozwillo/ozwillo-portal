@@ -33,6 +33,9 @@ class OrganizationController extends BaseController {
         return networkService.getMyOrganizations();
     }
 
+    @GetMapping(value = "/lazy")
+    public List<UIOrganization> getOrganizationsInLazyMode() { return networkService.getMyOrganizationsInLazyMode(); }
+
     @GetMapping ("/{organizationId}")
     public UIOrganization organization(@PathVariable String organizationId) {
         return networkService.getOrganization(organizationId);
