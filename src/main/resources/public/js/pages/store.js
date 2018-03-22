@@ -366,7 +366,7 @@ var App = createClass({
             <div className="public-service-indicator">
                 <div className="triangle"></div>
                 <div className="label">
-                    <i className="triangle fa fa-institution"></i>
+                    <i className="triangle fas fa-university" />
                 </div>
             </div> : null;
 
