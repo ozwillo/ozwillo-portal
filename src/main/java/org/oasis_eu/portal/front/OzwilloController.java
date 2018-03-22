@@ -90,7 +90,13 @@ public class OzwilloController {
         Map<String, Map<String, String>> i18n = new HashMap<>();
         i18n.put(lang, i18nMessages.getI18n_all(new Locale(lang) , messageSource));
 
+        //Site map
+        Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter(lang);
+        SiteMapMenuSet siteMapHeader = navigationService.getSiteMapHeader(lang);
+
         Config config = new Config();
+        config.siteMapFooter = siteMapFooter;
+        config.siteMapHeader = siteMapHeader;
         config.i18n = i18n;
         return config;
     }

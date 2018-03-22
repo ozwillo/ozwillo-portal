@@ -40,8 +40,20 @@ public class MyNavigationService {
     public Map<Integer, List<SiteMapEntry>> getSiteMapFooter() {
         List<SiteMapEntry> siteMapEntries =
             siteMapService.getSiteMapFooter(RequestContextUtils.getLocale(httpRequest).getLanguage());
-        if (siteMapEntries == null)
+        if (siteMapEntries == null) {
             return Collections.emptyMap();
+        }
+
+        return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
+    }
+
+    public Map<Integer, List<SiteMapEntry>> getSiteMapFooter(String language) {
+        List<SiteMapEntry> siteMapEntries = siteMapService.getSiteMapFooter(language);
+
+        if (siteMapEntries == null) {
+            return Collections.emptyMap();
+        }
+
 
         return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
     }
@@ -49,4 +61,9 @@ public class MyNavigationService {
     public SiteMapMenuSet getSiteMapHeader() {
         return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
     }
+
+    public SiteMapMenuSet getSiteMapHeader(String language) {
+        return siteMapService.getSiteMapHeader(language);
+    }
+
 }

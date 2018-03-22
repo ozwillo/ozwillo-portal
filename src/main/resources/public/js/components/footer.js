@@ -54,7 +54,7 @@ class Footer extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        siteMapFooter: state.config.siteMapFooter
+        siteMapFooter: state.config.currentSiteMapFooter
     }
 }
 

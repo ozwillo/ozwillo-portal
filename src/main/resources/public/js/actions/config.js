@@ -12,6 +12,13 @@ export const fetchConfigAction = (config) => {
     };
 };
 
+export const setLanguageAction = (config) => {
+    return {
+        type: FETCH_SET_LANGUAGE,
+        config
+    };
+};
+
 // Async methods
 export const fetchConfig = () => {
     return (dispatch) => {
@@ -59,21 +66,22 @@ export const fetchSetLanguage= (language) => {
         }
 
         if(state.i18nState.translations[language]) {
+            //Config
+            dispatch(setLanguageAction({ language }));
+
+            //i18n-redux
             dispatch(setLanguage(language));
-            dispatch(fetchConfigAction({ language }));
             return;
         }
 
         return customFetch(`/api/config/language/${language}`)
-            .then(({ i18n }) => {
+            .then(({ i18n, siteMapFooter, siteMapHeader }) => {
                 //Config
-                dispatch(fetchConfigAction({ language }));
+                dispatch(fetchConfigAction({ language, siteMapFooter, siteMapHeader }));
 
+                //i18n-redux
                 dispatch(setLanguage(language));
                 dispatch(setTranslations(i18n, {preserveExisting: true}));
-
-
-
             });
     };
 };

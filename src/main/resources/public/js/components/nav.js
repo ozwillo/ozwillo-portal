@@ -88,7 +88,7 @@ class Nav extends React.Component {
                         </li>
                         <li className="menu dropdown">
                             <a href="#" className="link nav-link dropdown-toggle" data-toggle="dropdown">
-                                <span>{this.props.language}</span>
+                                <span>{this.context.t(`store.language.${this.props.language}`)}</span>
                                 <i className="caret"/>
                             </a>
                             <ul className="dropdown-menu">
@@ -96,7 +96,7 @@ class Nav extends React.Component {
                                     {
                                         this.props.languages && this.props.languages.map((lang, index) => {
                                             return <Link className="link" key={index} to={`/${lang}/store`}
-                                                      data-th-text="${lang.name}">{lang}</Link>
+                                                      data-th-text="${lang.name}">{this.context.t(`store.language.${lang}`)}</Link>
                                         })
                                     }
                                 </li>
@@ -119,7 +119,7 @@ const mapStateToProps = state => {
     return {
         language: state.config.language,
         languages: state.config.languages,
-        siteMapHeader: state.config.siteMapHeader,
+        siteMapHeader: state.config.currentSiteMapHeader,
         opendatEndPoint: state.config.opendatEndPoint
     };
 };
