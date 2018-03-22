@@ -23,7 +23,6 @@ class InstanceInvitationForm extends React.Component {
         this.state = {
             selectedOption: null,
             email: '',
-            addToOrganization: false,
             isLoading: false,
             error: '',
             success: ''
@@ -95,13 +94,6 @@ class InstanceInvitationForm extends React.Component {
                         <input name="email" type="email" className="form-control field"
                                required={!this.state.selectedOption}
                                value={this.state.email} onChange={this.handleChange}/>
-                    </label>
-
-
-                    <label className="label">
-                        <input name="addInOrganization" type="checkbox" className="field"
-                               checked={this.state.addToOrganization} onChange={this.handleChange}/>
-                        {this.context.t('organization.desc.add-in-organization')}
                     </label>
                 </div>
 
