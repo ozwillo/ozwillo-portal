@@ -85,11 +85,28 @@
     -ms-user-select: none;
 }
 
+#dashboard .appzone .app .image {
+    margin-bottom: 5px;
+}
+
 
 #dashboard .appzone .dropzone.dragover .app,
 #dashboard .appzone .app:hover {
     color: var(--tertiary-color);
     background-color: var(--primary-color);
+}
+
+#dashboard .appzone {
+    position: relative;
+}
+
+#dashboard .appzone .icon {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    font-size: 1.6em;
+    color: var(--secondary-color);
+    z-index: 1;
 }
 
 #dashboard .appzone .app.pending:hover {

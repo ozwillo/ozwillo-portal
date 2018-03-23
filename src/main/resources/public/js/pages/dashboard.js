@@ -622,14 +622,11 @@ const PendingApp = createClass({
             <div className="appzone">
                 <div className="app pending disabled" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
                      onDragEnd={this.props.endDrag}>
-                    <div className="container-icon">
-                        <img src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
+                    <img className="image" src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
 
-
-                    </div>
                     <p>{this.props.app.name}</p>
+                    <i className="fa fa-stopwatch icon"/>
                 </div>
-                <div className="filter"/>
             </div>
         );
     }
@@ -669,7 +666,7 @@ const AppIcon = createClass({
             <div className="app" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
                  onDragEnd={this.props.endDrag}>
                 <a href={url} target="_blank" rel="noopener" className="app-link" draggable="false">
-                    <img src={this.props.app.icon} alt={this.props.app.name}/>
+                    <img className="image" src={this.props.app.icon} alt={this.props.app.name}/>
                 </a>
                 <p>{this.props.app.name}</p>
             </div>
