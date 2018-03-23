@@ -275,13 +275,13 @@ public class ApplicationService {
             return;
         }
 
-        //Delete ACL
-        instanceACLStore.deleteACL(instanceId, user);
-
         //Delete user's subscriptions for services of instance
         List<ServiceEntry> instanceServices = catalogStore.findServicesOfInstance(instanceId);
         instanceServices.forEach(service ->
                 subscriptionStore.unsubscribe(user.getUserid(), service.getId(), SubscriptionType.ORGANIZATION));
+
+        //Delete ACL
+        instanceACLStore.deleteACL(instanceId, user);
     }
 
     public MyAppsInstance setInstanceStatus(MyAppsInstance uiInstance) {

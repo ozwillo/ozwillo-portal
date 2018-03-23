@@ -118,7 +118,6 @@ public class CatalogStoreImpl implements CatalogStore {
         }
 
         return serviceEntry;
-
     }
 
     @Override

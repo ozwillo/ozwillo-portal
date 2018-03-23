@@ -113,20 +113,11 @@ public class DashboardService {
 
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
+        // apps in mongodb and kernel
         List<UIApp> apps = userContext.getSubscriptions()
             .stream()
             .filter(us -> subscriptionById.containsKey(us.getId()))
-            .map(us -> {
-                try {
-                    return subscriptionById.get(us.getId());
-                } catch(WrongQueryException e) {
-                    logger.debug(e.getMessage());
-                    logger.debug("Delete subscription " + us.getId() + " in mongoDB");
-                    return null;
-                }
-            })
-            .filter(app -> app != null)
-            .map(this::toDashboardApp)
+            .map(us -> this.toDashboardApp(subscriptionById.get(us.getId())))
             .filter(app -> app != null)
             .collect(Collectors.toList());
 
@@ -234,7 +225,6 @@ public class DashboardService {
 
     }
 
-
     public void moveAppTo(String subjectId, String targetContextId) {
         Dashboard dash = getDash();
 
@@ -279,7 +269,6 @@ public class DashboardService {
 
 
     public Dashboard getDash() {
-
         UserInfo user = userInfoHelper.currentUser();
         Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
         if (dashboard != null) {
