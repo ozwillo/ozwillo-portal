@@ -39,10 +39,8 @@ public class UserMembershipService {
     @Value("${kernel.user_membership_endpoint}")
     private String userMembershipEndpoint;
 
-    @Value("${kernel.maxUserMembershipsPerPage: 100}")
-    private String maxUserMembershipsPerPage;
-
-    @Autowired private Kernel kernel;
+    @Autowired
+    private Kernel kernel;
 
     @Autowired
     private MessageSource messageSource;
