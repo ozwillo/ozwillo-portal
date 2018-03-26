@@ -227,11 +227,17 @@ class InstanceDropdown extends React.Component {
                     {
                         instance.users && instance.users.map((user, i) => {
                             const status = this.state.status[user.id];
-
                             return <tr key={user.id || user.email}>
                                 <td className="fill-content">
                                     <article className="item flex-row">
-                                        <span className="name">{`${(user.id && user.name) || user.email}`}</span>
+                                        {
+                                            user.id &&
+                                            <span className="name">{user.name}</span>
+                                        }
+                                        {
+                                            user.email &&
+                                            <span className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
+                                        }
                                     </article>
                                 </td>
 

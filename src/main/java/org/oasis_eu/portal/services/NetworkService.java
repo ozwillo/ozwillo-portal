@@ -9,6 +9,7 @@ import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.authority.AuthorityType;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.model.user.UserGeneralInfo;
+import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.ui.UIOrganizationMember;
 import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
@@ -249,7 +250,13 @@ public class NetworkService {
             // Add organization members :
             return userMembershipService.getMembershipsOfOrganization(organizationId)
                 .stream()
-                .map(this::toUIOrganizationMember)
+                .map(membership -> {
+                    String email = userProfileService.findUserProfile(membership.getAccountId()).getEmail();
+
+                    UIOrganizationMember uiOrganizationMember = toUIOrganizationMember(membership);
+                    uiOrganizationMember.setEmail(email);
+                    return uiOrganizationMember;
+                })
                 // NB. self is among returned admins
                 .sorted(Comparator.comparing(UIOrganizationMember::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());

@@ -12,6 +12,8 @@ public class UIOrganizationMember {
     @JsonProperty
     String name;
     @JsonProperty
+    String email;
+    @JsonProperty
     boolean admin;
     @JsonProperty
     boolean self;
@@ -57,6 +59,14 @@ public class UIOrganizationMember {
 
     public void setSelf(boolean self) {
         this.self = self;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     @Override

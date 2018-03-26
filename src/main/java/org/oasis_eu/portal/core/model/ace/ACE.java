@@ -34,7 +34,7 @@ public class ACE {
     private String userId;
     @JsonProperty("user_name")
     private String userName;
-    @JsonProperty("email")
+    @JsonProperty("user_email_address")
     private String email;
     @JsonProperty("creator_id")
     private String creatorId;

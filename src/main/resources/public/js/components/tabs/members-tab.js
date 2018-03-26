@@ -56,11 +56,12 @@ class MembersTab extends React.Component {
         if (!filter) {
             return members;
         }
-        const regex = new RegExp(`(\\w|\\S)*${filter.toUpperCase()}(\\w|\\S)*`);
+
+        const filterUpperCase = filter.toUpperCase();
 
         return members.filter((member) => {
-            return member.name && regex.test(member.name.toUpperCase()) ||
-                !member.name && regex.test(member.email.toUpperCase());
+            return member.name && member.name.toUpperCase().indexOf(filterUpperCase) >= 0 ||
+                member.email && member.email.toUpperCase().indexOf(filterUpperCase) >= 0
         });
     }
 

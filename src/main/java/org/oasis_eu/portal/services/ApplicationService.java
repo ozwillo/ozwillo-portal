@@ -228,7 +228,7 @@ public class ApplicationService {
         return instanceACLStore.getACL(instanceId)
             .stream()
             .filter(ace -> ace.isAppUser() || appAdmin && ace.isAppAdmin()) // #157 Delete and re-add a service icon to my desk K#90
-            .map(ace -> new User(ace.getUserId(), null, ace.getUserName(), ace.getCreated(), false))
+            .map(ace -> new User(ace.getUserId(), ace.getEmail(), ace.getUserName(), ace.getCreated(), false))
             .collect(Collectors.toList());
     }
 
@@ -240,8 +240,6 @@ public class ApplicationService {
     }
 
     public List<User> getAllAppUsers(String instanceId) {
-        String userId = userInfoService.currentUser().getUserId();
-
         List<User> users = getAppUsers(instanceId, false)
                 .stream()
                 .sorted(Comparator.comparing(User::getName, String.CASE_INSENSITIVE_ORDER))
@@ -249,14 +247,6 @@ public class ApplicationService {
 
         users.addAll(getPendingAppUsers(instanceId));
         return users;
-    }
-
-    public void saveAppUsers(String instanceId, List<User> users) {
-        if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(instanceId).getProviderId())) {
-            throw new AccessDeniedException("Unauthorized access");
-        }
-
-        instanceACLStore.saveACL(instanceId, users);
     }
 
     public void createAcl(String instanceId, User user) {

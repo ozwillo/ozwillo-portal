@@ -131,7 +131,7 @@ class MemberDropdown extends React.Component {
                         memberInstances.map((instance, i) => {
                             return <li key={instance.id}>
                                 <article className="item flex-row">
-                                    <p className="name">{instance.name}</p>
+                                    <span className="name">{instance.name}</span>
                                     <span className="error-message">{this.state.errors[instance.id]}</span>
                                     <div className="options flex-row">
                                         <CustomTooltip title={this.context.t('tooltip.remove.instance')}>

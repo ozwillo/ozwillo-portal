@@ -71,7 +71,11 @@ class MemberDropdownHeader extends React.Component {
         const isPending = !member.name;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
-                <span className="dropdown-name">{member.name || member.email}</span>
+                <p className="dropdown-name">
+                    <span>{member.name}</span>
+                    <span className={`email ${(member.name && 'separator') || ''}`}>{member.email}</span>
+                </p>
+
                 <span className="error-message">{this.state.error}</span>
                 <div className="options flex-row end">
 

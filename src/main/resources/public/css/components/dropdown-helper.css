@@ -68,12 +68,20 @@
     content: none;
 }
 
+.dropdown-content .list .item .email,
 .dropdown-content .list .item .name {
     width: 100%;
     min-width: 180px;
     margin: 0;
     text-align: left;
 }
+
+.dropdown-header .email.separator:before,
+.dropdown-content .email.separator:before {
+    content: '-';
+    margin: 0 5px;
+}
+
 
 .dropdown-content .flex-row.container {
     align-items: center;
