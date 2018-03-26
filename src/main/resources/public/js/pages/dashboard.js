@@ -624,8 +624,8 @@ const PendingApp = createClass({
                      onDragEnd={this.props.endDrag}>
                     <img className="image" src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
 
-                    <p>{this.props.app.name}</p>
-                    <i className="fa fa-stopwatch icon"/>
+                    <p>{this.props.app.name} <i className="fa fa-stopwatch"/></p>
+
                 </div>
             </div>
         );

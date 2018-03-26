@@ -45,6 +45,11 @@
     flex-wrap: wrap;
 }
 
+.organization-search .dropdown-content ul.list > li:after {
+    display: none;
+}
+
+
 @media (max-width: 425px) {
     .organization-search .options {
         margin: 5px 0;

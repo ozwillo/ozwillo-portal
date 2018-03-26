@@ -371,7 +371,8 @@ var App = createClass({
             </div> : null;
 
         return (
-            <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12">
+            <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12 container-app {
+">
                 <AppModal ref="appmodal" app={this.props.app}/>
                 <div className="app">
                     <div className="logo">
