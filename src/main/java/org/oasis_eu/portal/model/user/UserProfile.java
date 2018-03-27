@@ -2,11 +2,13 @@ package org.oasis_eu.portal.model.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.spring.kernel.model.Address;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.oasis_eu.portal.config.LocalDateSerializer;
 import org.oasis_eu.spring.kernel.model.BaseUserInfo;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.time.LocalDate;
 
 /**
  * Data holder for the info returned by the Ozwillo kernel's user directory endpoint.
@@ -25,6 +27,11 @@ public class UserProfile extends BaseUserInfo implements Serializable {
     private Boolean emailVerified;
     @JsonProperty("created_at")
     private Long createdAt;
+
+
+    // TODO: Remove that and add a json serializer in org.oasis_eu.spring.kernel.model.BaseUserInfo
+    @JsonSerialize(using = LocalDateSerializer.class)
+    private LocalDate birthdate;
 
     public String getUserId() {
         return userId;
@@ -77,5 +84,15 @@ public class UserProfile extends BaseUserInfo implements Serializable {
         if (getGivenName() != null && getFamilyName() != null)
             return String.format("%s %s", getGivenName(), getFamilyName());
         return getEmail() != null ? getEmail() : userId;
+    }
+
+    @Override
+    public LocalDate getBirthdate() {
+        return birthdate;
+    }
+
+    @Override
+    public void setBirthdate(LocalDate birthdate) {
+        this.birthdate = birthdate;
     }
 }
