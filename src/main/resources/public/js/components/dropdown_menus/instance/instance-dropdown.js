@@ -216,7 +216,10 @@ class InstanceDropdown extends React.Component {
                         {
                             instance.services.map((service) => {
                                 return <th key={service.catalogEntry.id} className="center">
-                                    <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
+                                        {
+                                            instance.services.length > 1 &&
+                                            <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
+                                        }
                                 </th>
                             })
                         }
@@ -255,9 +258,9 @@ class InstanceDropdown extends React.Component {
                                     user.id &&
                                     instance.services.map((service) => {
                                         const sub = this.searchSubForUser(user, service);
-                                        return <td key={service.catalogEntry.id} className="center">
+                                        return <td key={service.catalogEntry.id} className="fill-content center">
                                             {
-                                                !sub &&
+                                                 !sub &&
                                                 <CustomTooltip title={this.context.t('tooltip.add.icon')}>
                                                     <button className="btn icon" onClick={this.createSubscription}
                                                             disabled={status && status.isLoading}
@@ -284,7 +287,7 @@ class InstanceDropdown extends React.Component {
 
 
                                 {/* Options */}
-                                {
+                                {/*{
                                     !user.id &&
                                     <td colSpan={instance.services.length + 1} className="right">
                                         <CustomTooltip title={this.context.t('tooltip.pending')}>
@@ -310,7 +313,33 @@ class InstanceDropdown extends React.Component {
                                             </button>
                                         </CustomTooltip>
                                     </td>
+                                }*/}
+
+                                {
+                                    !user.id &&
+                                    <React.Fragment>
+                                        {/* empty space to replace services */}
+                                        {
+                                            (instance.services.length - 1) > 0 &&
+                                            <td className="fill-content center empty" colSpan={instance.services.length - 1} />
+                                        }
+
+                                        <td className="fill-content center">
+                                            <CustomTooltip title={this.context.t('tooltip.pending')}>
+                                                <i className="fa fa-stopwatch option-icon loading"/>
+                                            </CustomTooltip>
+                                        </td>
+                                    </React.Fragment>
                                 }
+
+                                <td className="fill-content center">
+                                    <CustomTooltip title={this.context.t('tooltip.remove.member')}>
+                                        <button className="btn icon" data-member={i}
+                                                onClick={this.removeUserAccessToInstance}>
+                                            <i className="fa fa-trash option-icon delete"/>
+                                        </button>
+                                    </CustomTooltip>
+                                </td>
                             </tr>
                         })
                     }
