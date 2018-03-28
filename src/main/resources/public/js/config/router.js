@@ -53,7 +53,10 @@ class RouterWithUser extends React.Component {
 class RouterWithoutUser extends React.Component {
     render() {
         return <Layout>
-            <Store/>
+            <Switch>
+                <Route path="/:lang/store/:type?/:id?" component={Store}/>
+                <Route path="/:lang/store" component={Store}/>
+            </Switch>
         </Layout>;
     }
 }

@@ -9,9 +9,8 @@ import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import AppModal from '../components/store-install-app'
 import UpdateTitle from '../components/update-title';
 
-const default_app = null;
 
-var AppStore = createClass({
+const AppStore = createClass({
     getInitialState: function () {
         return {
             defaultApp: null,
@@ -34,22 +33,31 @@ var AppStore = createClass({
             }
         };
     },
-    componentDidMount: function () {
+    componentDidMount() {
         this.updateApps();
     },
-    mergeAppsWithDefaultAppFirst: function () {
-        if (!this.state.defaultApp) {
-            return this.state.apps;
+    componentWillReceiveProps: function (nextProps) {
+        if (nextProps.defaultApp && (!this.state.defaultApp || this.state.defaultApp.id != nextProps.defaultApp.id)) {
+            $.ajax({
+                url: "/api/store/application/" + nextProps.defaultApp.type + "/" + nextProps.defaultApp.id,
+                type: 'get',
+                dataType: 'json',
+                success: function (data) {
+                    const state = this.state;
+                    state.defaultApp = data;
+                    state.defaultApp.isDefault = true; // triggers opening modal
+                    this.setState(state);
+                }.bind(this),
+                error: function (xhr, status, err) {
+                    console.error(status, err.toString());
+                }.bind(this)
+            });
         }
-        return $.merge([this.state.defaultApp], $.map(this.state.apps, function (app, i) {
-            if (app.id == this.state.defaultApp.id) return;
-            return app;
-        }.bind(this)));
     },
     updateFilter: function (category, key, value) {
-        var filter = this.state.filter;
+        const filter = this.state.filter;
         if (category) {
-            var filterCategory = filter[category];
+            const filterCategory = filter[category];
             filterCategory[key] = value;
         } else {
             filter[key] = value;
@@ -58,11 +66,11 @@ var AppStore = createClass({
         this.updateApps();
     },
     getSearchFilters: function () {
-        var supported_locales = [];
+        const supported_locales = [];
         if (this.state.filter.selectedLanguage !== 'all') {
             supported_locales.push(this.state.filter.selectedLanguage);
         }
-        var filter = this.state.filter;
+        const filter = this.state.filter;
         return {
             target_citizens: filter.audience.citizens,
             target_publicbodies: filter.audience.publicbodies,
@@ -76,26 +84,6 @@ var AppStore = createClass({
         };
     },
     updateApps: function () {
-        if (default_app) {
-            $.ajax({
-                url: "/api/store/application/" + default_app.type + "/" + default_app.id,
-                type: 'get',
-                dataType: 'json',
-                success: function (data) {
-                    default_app = null; // only once
-                    var state = this.state;
-                    state.defaultApp = data;
-                    state.defaultApp.isDefault = true; // triggers opening modal
-                    this.setState(state);
-                }.bind(this),
-                error: function (xhr, status, err) {
-                    console.error(status, err.toString());
-                }.bind(this)
-            });
-        } else {
-            this.setState({defaultApp: null});
-        }
-
         $.ajax({
             url: "/api/store/applications",
             data: this.getSearchFilters(),
@@ -118,7 +106,7 @@ var AppStore = createClass({
     loadMoreApps: function () {
         this.setState({loading: true});
 
-        var searchFilters = this.getSearchFilters();
+        const searchFilters = this.getSearchFilters();
         searchFilters.last = this.state.apps.length;
         $.ajax({
             url: "/api/store/applications",
@@ -126,7 +114,7 @@ var AppStore = createClass({
             type: 'get',
             dataType: 'json',
             success: function (data) {
-                var state = this.state;
+                const state = this.state;
                 state.apps = state.apps.concat(data.apps);
                 state.loading = false;
                 state.maybeMoreApps = data.maybeMoreApps;
@@ -134,15 +122,26 @@ var AppStore = createClass({
             }.bind(this),
             error: function (data) {
                 // maybe not such an error, could be there's no more data to get...
-                var state = this.state;
+                const state = this.state;
                 state.loading = false;
                 state.maybeMoreApps = false;
                 this.setState(state);
             }.bind(this)
         });
     },
+    mergeAppsWithDefaultAppFirst: function () {
+        if (!this.state.defaultApp) {
+            return this.state.apps;
+        }
+
+        const apps = this.state.apps.map(app => {
+            return (app.id === this.state.defaultApp.id) ? this.state.defaultApp : app;
+        });
+
+        return apps;
+    },
     render: function () {
-        var languagesAndAll = Object.assign([], this.props.config.languages);
+        const languagesAndAll = Object.assign([], this.props.config.languages);
         languagesAndAll.unshift('all');
 
         return (
@@ -173,7 +172,7 @@ const mapStateToProps = state => {
 const AppStoreWithRedux = connect(mapStateToProps)(AppStore)
 
 
-var SearchAppsForm = createClass({
+const SearchAppsForm = createClass({
     handleLanguageClicked: function (event) {
         this.props.updateFilter(null, "selectedLanguage", event.target.value);
     },
@@ -190,7 +189,7 @@ var SearchAppsForm = createClass({
         this.props.updateFilter("payment", event.target.name, event.target.checked);
     },
     render: function () {
-        var languageComponents = this.props.languages.map(language =>
+        const languageComponents = this.props.languages.map(language =>
             <option key={language} value={language}>{this.context.t(`store.language.${language}`)}</option>
         );
 
@@ -285,7 +284,7 @@ SearchAppsForm.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var AppList = createClass({
+const AppList = createClass({
     renderApps: function () {
         return this.props.apps.map(function (app) {
             return (
@@ -311,7 +310,7 @@ var AppList = createClass({
     }
 });
 
-var LoadMore = createClass({
+const LoadMore = createClass({
     renderLoading: function () {
         if (this.props.loading) {
             return (
@@ -347,33 +346,35 @@ LoadMore.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var App = createClass({
-    componentDidMount: function () {
-        if (this.props.app.isDefault) {
+const App = createClass({
+    getInitialState: function () {
+        return {
+            isOpen: false
+        };
+    },
+    componentWillReceiveProps: function (nextProps) {
+        if (!this.state.isOpen && nextProps.app.isDefault) {
             this.openApp();
+            this.setState({ isOpen: true });
         }
     },
     openApp: function () {
-        /*
-            getWrappedInstance allow to recup the componnent wrapped by Redux
-        */
-        const modal = this.refs.appmodal.getWrappedInstance()
-        modal.open();
+        this.modal.open();
     },
     render: function () {
-        var indicatorStatus = this.props.app.installed ? "installed" : (this.props.app.paid ? "paid" : "free");
-        var pubServiceIndicator = this.props.app.public_service ?
+        const indicatorStatus = this.props.app.installed ? "installed" : (this.props.app.paid ? "paid" : "free");
+        const pubServiceIndicator = this.props.app.public_service ?
             <div className="public-service-indicator">
-                <div className="triangle"></div>
+                <div className="triangle"/>
                 <div className="label">
                     <i className="triangle fas fa-university" />
                 </div>
             </div> : null;
 
         return (
-            <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12 container-app {
-">
-                <AppModal ref="appmodal" app={this.props.app}/>
+            <div className="col-lg-2 col-md-3 col-sm-6 col-xs-12 container-app">
+                <AppModal app={this.props.app} wrappedComponentRef={
+                    c => { this.modal = c && c.getWrappedInstance() }}/>
                 <div className="app">
                     <div className="logo">
                         <img src={this.props.app.icon}/>
@@ -393,16 +394,16 @@ var App = createClass({
     }
 });
 
-var Indicator = createClass({
+const Indicator = createClass({
     render: function () {
-        var btns;
-        var status = this.props.status;
+        let btns;
+        const status = this.props.status;
         if (status === "installed") {
             btns = [
                 <button type="button" key="indicator_button"
                         className="btn btn-lg btn-installed">{this.context.t('installed')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-installed-indicator">
-                    <i className="fa fa-check"></i>
+                    <i className="fa fa-check" />
                 </button>
             ];
         } else if (status === "free") {
@@ -410,7 +411,7 @@ var Indicator = createClass({
                 <button type="button" key="indicator_button"
                         className="btn btn-lg btn-free">{this.context.t('free')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-free-indicator">
-                    <i className="fa fa-gift"></i>
+                    <i className="fa fa-gift" />
                 </button>
             ];
         } else {
@@ -418,7 +419,7 @@ var Indicator = createClass({
                 <button type="button" key="indicator_button"
                         className="btn btn-lg btn-buy">{this.context.t('paid')}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
-                    <i className="fa fas fa-euro-sign"></i>
+                    <i className="fa fas fa-euro-sign" />
                 </button>
             ];
         }
@@ -441,6 +442,25 @@ class AppStoreWrapper extends React.Component {
         t: PropTypes.func.isRequired
     };
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            defaultApp: null
+        };
+    }
+
+    componentWillReceiveProps(nextProps) {
+        let defaultApp = null;
+        const urlParams = nextProps.match.params;
+
+        if (urlParams.id) {
+            defaultApp = { type: urlParams.type, id: urlParams.id }
+        }
+
+        this.setState({ defaultApp });
+    }
+
     render() {
         return <div className="oz-body wrapper">
             <UpdateTitle title={this.context.t('ui.appstore')}/>
@@ -449,7 +469,7 @@ class AppStoreWrapper extends React.Component {
                 <span>{this.context.t('ui.appstore')}</span>
             </header>
 
-            <AppStoreWithRedux/>
+            <AppStoreWithRedux defaultApp={this.state.defaultApp} />
             <div className="push"/>
         </div>;
     }

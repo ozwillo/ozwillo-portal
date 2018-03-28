@@ -5,16 +5,17 @@ import ReactDOM from 'react-dom';
 import {connect} from 'react-redux';
 import createClass from 'create-react-class';
 import PropTypes from 'prop-types'
+import { withRouter } from 'react-router-dom';
 
-var Showdown = require('showdown');
-var converter = new Showdown.Converter({tables: true});
+const Showdown = require('showdown');
+const converter = new Showdown.Converter({tables: true});
 
 import {Modal} from './bootstrap-react';
 import {RatingWrapper} from './rating';
 import GeoAreaAutosuggest from './autosuggests/geoarea-autosuggest';
 import {CreateOrModifyOrganizationForm} from './create-or-modify-organization';
 
-var default_org_data = {
+const default_org_data = {
     organization: {
         exist: false,
         legal_name: '',
@@ -39,8 +40,39 @@ var default_org_data = {
     }, errors: [[], []], typeRestriction: ''
 };
 
-var AppModal = createClass({
-    getInitialState: function () {
+class AppModal extends React.Component {
+
+    static contextTypes = {
+        t: PropTypes.func.isRequired
+    };
+
+    constructor(props) {
+        super(props);
+
+        this.state = this.initialState;
+
+        // Bind methods
+        this.loadApp = this.loadApp.bind(this);
+        this.loadOrgs = this.loadOrgs.bind(this);
+        this.open = this.open.bind(this);
+        this.close = this.close.bind(this);
+        this.doInstallApp = this.doInstallApp.bind(this);
+        this.orgCreated = this.orgCreated.bind(this);
+        this.cancelCreateOrg = this.cancelCreateOrg.bind(this);
+        this.rateApp = this.rateApp.bind(this);
+        this.displayInstallForm = this.displayInstallForm.bind(this);
+        this.displaySucessfulInstallForm = this.displaySucessfulInstallForm.bind(this);
+        this.continueInstallProcess = this.continueInstallProcess.bind(this);
+        this.orgTypeRestriction = this.orgTypeRestriction.bind(this);
+        this.onStepChange = this.onStepChange.bind(this);
+        this.renderCreateNewOrganization = this.renderCreateNewOrganization.bind(this);
+        this.renderBuying = this.renderBuying.bind(this);
+        this.renderInstallingForm = this.renderInstallingForm.bind(this);
+        this.renderAppDescription = this.renderAppDescription.bind(this);
+        this.renderSucessfulInstallationForm = this.renderSucessfulInstallationForm.bind(this);
+    }
+
+    get initialState () {
         return {
             app: {rating: 0, rateable: true, tos: '', policy: '', longdescription: '', screenshots: null},
             orgs: [],
@@ -52,54 +84,50 @@ var AppModal = createClass({
             error: false,
             step: 1
         };
-    },
-    componentDidMount: function () {
-        const storeUrl = `/${this.props.config.language}/api/store`;
-        $(ReactDOM.findDOMNode(this)).on("hide.bs.modal", function (event) {
-            history.pushState({}, "store", storeUrl);
-        }.bind(this));
-    },
-    componentDidUpdate: function () {
-        var desc = $(ReactDOM.findDOMNode(this)).find(".app-description table");
+    }
+
+    componentDidUpdate() {
+        const desc = $(ReactDOM.findDOMNode(this)).find(".app-description table");
         desc.addClass("table table-bordered table-condensed table-striped");
-    },
-    loadApp: function () {
+    }
+
+    loadApp() {
         $.ajax({
             url: "/api/store/details/" + this.props.app.type + "/" + this.props.app.id,
             type: 'get',
             dataType: 'json',
-            success: function (data) {
-                var state = this.state;
+            success: (data) => {
+                const state = this.state;
                 state.app = data;
                 this.setState(state);
-            }.bind(this),
-            error: function (xhr, status, err) {
+            },
+            error: (xhr, status, err) => {
                 console.error(status, err.toString());
-            }.bind(this)
+            }
         });
-    },
-    loadOrgs: function () {
+    }
+
+    loadOrgs() {
         $.ajax({
             url: "/api/store/organizations/" + this.props.app.type + "/" + this.props.app.id,
             type: 'get',
             dataType: 'json',
-            success: function (data) {
-                var state = this.state;
+            success: (data) => {
+                const state = this.state;
                 state.orgs = data;
                 this.setState(state);
-            }.bind(this),
-            error: function (xhr, status, err) {
+            },
+            error: (xhr, status, err) => {
                 console.error(status, err.toString());
-            }.bind(this)
+            }
         });
-    },
-    open: function () {
-        this.setState(this.getInitialState());
-        const storeUrl = `/${this.props.config.language}/api/store`;
-        var href = storeUrl + "/" + this.props.app.type + "/" + this.props.app.id;
-        if (typeof history.pushState == "function") {
-            history.pushState({}, "application", href);
-        }
+    }
+
+    open() {
+        this.setState(this.initialState);
+
+        const href = `/${this.props.config.language}/store/${this.props.app.type}/${this.props.app.id}`;
+        this.props.history.replace(href);
 
         this.loadApp();
         const isLogged = !!this.props.userInfo.sub;
@@ -108,21 +136,24 @@ var AppModal = createClass({
         }
 
         this.refs.modal.open();
-    },
-    close: function () {
+    }
+
+    close () {
+        this.props.history.replace(`/${this.props.config.language}/store`);
+
         if (this.state.isInstalled) {
-            // redirect to the Dashboard
-            window.location = "/my/dashboard";
+            this.props.history.push('/my/dashboard');
         }
-    },
-    doInstallApp: function (organization, updateUserData) {
-        var state = this.state;
+    }
+
+    doInstallApp (organization, updateUserData) {
+        const state = this.state;
         state.installing = false;
         state.buying = true; //set it to display the spinner until any below ajax response is received.
 
         this.setState(state);
 
-        var request;
+        let request;
         if (updateUserData) {
             request = updateUserData;
             request.appId = this.props.app.id;
@@ -144,7 +175,7 @@ var AppModal = createClass({
                 if (data.success) {
                     this.displaySucessfulInstallForm();
                 } else {
-                    var state = this.state;
+                    const state = this.state;
                     state.buying = false;
                     state.error = true;
                     this.setState(state);
@@ -152,34 +183,37 @@ var AppModal = createClass({
             }.bind(this),
             error: function (xhr, status, err) {
                 console.error(status, err.toString());
-                var state = this.state;
+                const state = this.state;
                 state.buying = false;
                 this.setState(state);
             }.bind(this)
         });
 
-    },
-    orgCreated: function (org) {
-        var state = this.state;
+    }
+
+    orgCreated(org) {
+        const state = this.state;
         state.createOrg = false;
         if (org) {
             this.doInstallApp(org.id);
         }
         this.setState(state);
-    },
-    cancelCreateOrg: function () {
-        var state = this.state;
+    }
+
+    cancelCreateOrg() {
+        const state = this.state;
         state.createOrg = false;
         this.setState(state);
-    },
-    rateApp: function (rate) {
+    }
+
+    rateApp(rate) {
         $.ajax({
             url: "/api/store/rate/" + this.props.app.type + "/" + this.props.app.id,
             type: 'post',
             contentType: 'application/json',
             data: JSON.stringify({rate: rate}),
             success: function () {
-                var state = this.state;
+                const state = this.state;
                 state.app.rateable = false;
                 state.app.rating = rate;
                 this.setState(state);
@@ -188,28 +222,31 @@ var AppModal = createClass({
                 console.error(status, err.toString());
             }.bind(this)
         });
-    },
-    displayInstallForm: function () {
-        var state = this.state;
+    }
+
+    displayInstallForm() {
+        const state = this.state;
         state.installing = true;
         this.setState(state);
-    },
-    displaySucessfulInstallForm: function () {
-        var state = this.state;
+    }
+
+    displaySucessfulInstallForm() {
+        const state = this.state;
         state.buying = false;
         state.isInstalled = true;
         this.setState(state);
-    },
-    continueInstallProcess: function () { /* set data and display CreateOrgForm OR Install for personal apps */
-        var state = this.state;
+    }
+
+    continueInstallProcess() { /* set data and display CreateOrgForm OR Install for personal apps */
+        const state = this.state;
         state.installType = this.refs.instalForm.getInstallType();
 
         // preparing data to be transmitted
-        var installData = this.refs.instalForm.getInstallData();
+        const installData = this.refs.instalForm.getInstallData();
 
         if (state.installType === 'ORG') {
 
-            var orgSearchData = this.refs.instalForm.getOrgSearchData();
+            const orgSearchData = this.refs.instalForm.getOrgSearchData();
             orgSearchData.contact_name = installData.contact.contact_name;
             orgSearchData.contact_lastname = installData.contact.contact_lastname;
 
@@ -237,7 +274,7 @@ var AppModal = createClass({
                     }.bind(this),
                     error: function (xhr, status, err) {
                         console.error(status, err.toString());
-                        var state = this.state;
+                        const state = this.state;
                         state.errors = ["general"];
                         this.setState(state);
                     }.bind(this)
@@ -247,24 +284,27 @@ var AppModal = createClass({
                 this.doInstallApp(orgSearchData.selectedOrgId, orgSearchData);
             }
         } else { // PERSONAL
-            var orgSearchData = this.refs.instalForm.state.installData.address;//this.refs.addressComponent.props.addressContainer;
+            const orgSearchData = this.refs.instalForm.state.installData.address;//this.refs.addressComponent.props.addressContainer;
             orgSearchData.contact_name = installData.contact.contact_name;
             orgSearchData.contact_lastname = installData.contact.contact_lastname;
 
             // call method to update data user while calling the Installation Process
             this.doInstallApp(null, orgSearchData);
         }
-    },
-    orgTypeRestriction: function () {
+    }
+
+    orgTypeRestriction() {
         return {
             company: this.props.app.target_companies,
             public_body: this.props.app.target_publicbodies
         };
-    },
-    onStepChange: function (stepId) {
+    }
+
+    onStepChange(stepId) {
         this.setState({step: stepId});
-    },
-    renderCreateNewOrganization: function () {
+    }
+
+    renderCreateNewOrganization() {
         return (
             <div>
                 <h4>{this.context.t('my.network.organization.step') + " " + this.state.step + " / 2"}</h4>
@@ -276,25 +316,29 @@ var AppModal = createClass({
                                                 fromStore={true}/>
             </div>
         );
-    },
-    renderBuying: function () {
+    }
+
+    renderBuying() {
         return (<h3><i className="fa fa-spinner fa-spin loading"/> {this.context.t('buying')}</h3>);
-    },
-    renderInstallingForm: function () {
+    }
+
+    renderInstallingForm() {
         return (<InstallForm ref='instalForm'
                              installApp={this.installApp} url={this.state.app.serviceUrl}
                              app={this.props.app} orgs={this.state.orgs}
                              continueInstallProcess={this.continueInstallProcess}
         />);
-    },
-    renderAppDescription: function () {
+    }
+
+    renderAppDescription() {
         return (
             <AppDescriptionComponentWithRedux app={this.props.app} stateApp={this.state.app}
                                               rateApp={this.rateApp} onInstallButton={this.displayInstallForm}
                                               error={this.state.error}/>
         );
-    },
-    renderSucessfulInstallationForm: function () {
+    }
+
+    renderSucessfulInstallationForm() {
         return (<div>
                 <div className='form-horizontal'>
                     <i id="success-app-install" className="fa fa-check pull-left col-sm-offset-1"></i>
@@ -317,11 +361,11 @@ var AppModal = createClass({
                 </div>
             </div>
         );
-    },
+    }
 
-    render: function () {
-        var title = this.props.app.name;
-        var content = null;
+    render() {
+        let title = this.props.app.name;
+        let content = null;
         if (this.state.buying) {
             content = this.renderBuying();
         } else if (this.state.createOrg) {
@@ -346,23 +390,22 @@ var AppModal = createClass({
                 </Modal>
             </div>);
     }
-});
-AppModal.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+}
+
+
 
 /** PROPS: app{}, stateApp{}, rateApp(), onInstallButton(), errors[] */
-var AppDescriptionComponent = createClass({
+const AppDescriptionComponent = createClass({
     render: function () {
-        var stateApp = this.props.stateApp;
+        const stateApp = this.props.stateApp;
 
-        var carousel = (stateApp.screenshots && stateApp.screenshots.length > 0)
+        const carousel = (stateApp.screenshots && stateApp.screenshots.length > 0)
             ? (<div className="row">
                 <Carousel images={stateApp.screenshots}/>
             </div>)
             : null;
 
-        var error = (this.props.error)
+        const error = (this.props.error)
             ? (<div className="alert alert-danger alert-dismissible" role="alert">
                 <button type="button" className="close" data-dismiss="alert">
                     <span aria-hidden="true">&times;</span>
@@ -372,15 +415,16 @@ var AppDescriptionComponent = createClass({
             </div>)
             : null;
 
-        var rateInfo = null;
+        let rateInfo = null;
         const isLogged = !!this.props.userInfo.sub;
         if (isLogged && !stateApp.rateable) {
             rateInfo = (<p>{this.context.t('already-rated')}</p>);
         }
 
-        var description = converter.makeHtml(stateApp.longdescription);
+        const description = converter.makeHtml(stateApp.longdescription);
 
-        var launchOrInstallButton;
+        let launchOrInstallButton;
+
         if (this.props.app.type == "service" && this.props.app.installed) {
             if (this.props.stateApp && this.props.stateApp.serviceUrl) {
                 launchOrInstallButton =
@@ -390,14 +434,13 @@ var AppDescriptionComponent = createClass({
                 launchOrInstallButton = (<label> <i className="fa fa-spinner fa-spin loading"/> </label>);
             }
         } else {
-            const storeUrl = `/${this.props.config.language}/api/store`;
+            const storeUrl = `/${this.props.config.language}/store`;
             launchOrInstallButton = !isLogged
                 ? (<a className="btn btn-default btn-lg pull-right"
                       href={storeUrl + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{this.context.t('install')}</a>)
                 : (<button type="button" className="btn btn-default btn-lg pull-right"
                            onClick={this.props.onInstallButton}>{this.context.t('install')}</button>)
         }
-
 
         return (
             <div className="store-app-card">
@@ -455,7 +498,7 @@ const AppDescriptionComponentWithRedux = connect(mapStateToProps)(AppDescription
 // INSTALLATION PROCESS
 
 /** PROPS: app{}, errors[], url, orgs[], continueInstallProcess() */
-var InstallForm = createClass({
+const InstallForm = createClass({
     getInitialState: function () {
         this.getProfileInfo();
         return ({
@@ -481,7 +524,7 @@ var InstallForm = createClass({
             type: 'get',
             contentType: 'json',
             success: function (data) {
-                var state = this.state;
+                const state = this.state;
                 state.installData.contact.contact_name = data.user_name;
                 state.installData.contact.contact_lastname = data.user_lastname;
                 if (data.address) {
@@ -498,7 +541,7 @@ var InstallForm = createClass({
         });
     },
     getInstallType: function () {
-        var installTypeRestrictions = {personal: this.hasCitizens(), org: this.hasOrganizations()};
+        const installTypeRestrictions = {personal: this.hasCitizens(), org: this.hasOrganizations()};
         if (this.state.installType === 'PERSONAL' && installTypeRestrictions.personal === false) {
             return 'ORG';
         }
@@ -525,15 +568,14 @@ var InstallForm = createClass({
         return (this.props.app.target_companies) || (this.props.app.target_publicbodies);
     },
     toggleType: function (event) {
-        var installType = this.state.installType;
-        installType = event.target.value;
+        const installType = event.target.value;
         this.setState({installType: installType});
     },
     renderInstallType: function () {
-        var installTypeRestrictions = {personal: this.hasCitizens(), org: this.hasOrganizations()};
-        var installType = this.getInstallType();
+        const installTypeRestrictions = {personal: this.hasCitizens(), org: this.hasOrganizations()};
+        const installType = this.getInstallType();
 
-        var personal = !installTypeRestrictions.personal ? null
+        const personal = !installTypeRestrictions.personal ? null
             : (<div className='radio col-sm-offset-3 col-sm-8'>
                     <label>
                         <input type="radio" value="PERSONAL" checked={installType == 'PERSONAL'}
@@ -543,7 +585,7 @@ var InstallForm = createClass({
             );
 
 
-        var org = !installTypeRestrictions.org ? null
+        const org = !installTypeRestrictions.org ? null
             : (<div className='radio col-sm-offset-3 col-sm-8'>
                     <label>
                         <input type="radio" value="ORG" checked={installType == 'ORG'}
@@ -569,13 +611,13 @@ var InstallForm = createClass({
     },
     changeInputContact: function (fieldname) {
         return function (event) {
-            var org = this.state.installData;
+            const org = this.state.installData;
             org.contact[fieldname] = event.target.value;
             this.setState({installData: org, errors: []});
         }.bind(this);
     },
     changeInputAddress: function (fieldname, value, isNumericField) {
-        var org = Object.assign({address: {}}, this.state.installData);
+        const org = Object.assign({address: {}}, this.state.installData);
         if (isNumericField && value !== '') {
             org.address[fieldname] = value.trim().search(/^\d+$/) !== -1 ? value.trim() : org.address[fieldname];
         } else {
@@ -584,8 +626,8 @@ var InstallForm = createClass({
         this.setState({installData: org, errors: []});
     },
     validateContact: function () {
-        var errs = [];
-        var contact = this.state.installData.contact;
+        const errs = [];
+        const contact = this.state.installData.contact;
         if (!contact.contact_name || contact.contact_name.trim() == '') {
             errs.push('name');
         }
@@ -597,8 +639,8 @@ var InstallForm = createClass({
         return errs.length <= 0;
     },
     validateAddress: function () {
-        var errs = this.state.errors;
-        var address = this.state.installData.address;
+        const errs = this.state.errors;
+        const address = this.state.installData.address;
         if (!address.city || address.city.trim() == '') {
             errs.push('city');
         }
@@ -613,7 +655,7 @@ var InstallForm = createClass({
         return errs.length <= 0;
     },
     validateAndContinue: function () {
-        var installType = this.getInstallType();
+        const installType = this.getInstallType();
         if (installType === 'PERSONAL') {
             if ((this.validateContact() && this.validateAddress())) {
                 this.props.continueInstallProcess();
@@ -624,7 +666,7 @@ var InstallForm = createClass({
     },
 
     render: function () {
-        var installType = this.getInstallType();
+        const installType = this.getInstallType();
 
         return (
             <div className='form-horizontal'>
@@ -663,12 +705,11 @@ InstallForm.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var ContactSearchFormControl = createClass({
+const ContactSearchFormControl = createClass({
     render: function () {
-        var formDivClassName = this.props.error ? "form-group has-error" : "form-group";
+        const formDivClassName = this.props.error ? "form-group has-error" : "form-group";
 
         return (
-
             <div>
                 <div className={formDivClassName}>
                     {this.props.renderLabel("contact-name", 'control-label col-sm-3 required', this.context.t('search.contact.name'), true)}
@@ -696,11 +737,11 @@ ContactSearchFormControl.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var OrganizationSearchFormControl = createClass({
+const OrganizationSearchFormControl = createClass({
     renderType: function () {
-        var restriction = this.props.typeRestriction ? this.props.typeRestriction : {company: true, public_body: true};
+        const restriction = this.props.typeRestriction ? this.props.typeRestriction : {company: true, public_body: true};
 
-        var public_body = null;
+        let public_body = null;
         if (restriction.public_body) {
             public_body = (
                 <label className="radio-inline col-sm-3">
@@ -711,7 +752,7 @@ var OrganizationSearchFormControl = createClass({
             );
         }
 
-        var company = null;
+        let company = null;
         if (restriction.company) {
             company = (
                 <label className="radio-inline col-sm-3">
@@ -721,7 +762,7 @@ var OrganizationSearchFormControl = createClass({
             );
         }
 
-        var formGroupClass = ($.inArray('sector_type', this.props.errors) != -1) ? 'form-group has-error' : 'form-group';
+        const formGroupClass = ($.inArray('sector_type', this.props.errors) != -1) ? 'form-group has-error' : 'form-group';
 
         return (
             <div className={formGroupClass}>
@@ -736,7 +777,7 @@ var OrganizationSearchFormControl = createClass({
     },
 
     render: function () {
-        var label_regNum;
+        let label_regNum;
         switch (this.props.orgSearchData.country) {
             case 'България' :
                 label_regNum = this.context.t('search.organization.business-id.bg');
@@ -799,9 +840,9 @@ OrganizationSearchFormControl.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var AddressComponent = createClass({
+const AddressComponent = createClass({
     changeInput: function (fieldname, isNumericField) {
-        var changeInput = this.props.changeInput;
+        const changeInput = this.props.changeInput;
         return function (event) {
             if (event.added) {
                 changeInput(fieldname, event.added.name, isNumericField);
@@ -829,8 +870,8 @@ var AddressComponent = createClass({
         this.props.changeInput('city', el.value, false);
     },
     render: function () {
-        var address = this.props.addressContainer;
-        var addressType = this.props.addressType ? this.props.addressType : '';
+        const address = this.props.addressContainer;
+        const addressType = this.props.addressType ? this.props.addressType : '';
 
         return (
             <div>
@@ -880,16 +921,16 @@ AddressComponent.contextTypes = {
 };
 
 /* PROPS: name, className, class_name_div, error, isRequired, (children)*/
-var Field = createClass({
+const Field = createClass({
     renderLabel: function (htmlFor, class_name, label, isRequired) {
-        var cn = isRequired ? class_name + ' required' : class_name;
+        const cn = isRequired ? class_name + ' required' : class_name;
         return (
             <label htmlFor={htmlFor} className={cn}>{label} {isRequired ? '*' : ''}</label>
         );
     },
     render: function () {
-        var className = "control-label col-sm-3";
-        var classNameDiv = "col-sm-7";
+        let className = "control-label col-sm-3";
+        let classNameDiv = "col-sm-7";
         if (this.props.class_name) {
             className = this.props.class_name;
         }
@@ -915,7 +956,7 @@ Field.contextTypes = {
 
 //http://stackoverflow.com/questions/25793918/creating-select-elements-in-react-js
 /** PROPS: onChange(), url */
-var CountrySelect = createClass({
+const CountrySelect = createClass({
     propTypes: {url: PropTypes.string.isRequired},
     getInitialState: function () {
         return {options: [], countries: []}
@@ -924,7 +965,6 @@ var CountrySelect = createClass({
         this.props.onChange(event);
     },
     componentDidMount: function () {
-        //var userCurrentLanguge = currentLanguage;
         if (this.props.url) {
             // get country dc data
             $.ajax({
@@ -933,12 +973,12 @@ var CountrySelect = createClass({
                 dataType: 'json',
                 data: {q: ' '},
                 success: function (data) {
-                    var areas = data.areas;
-                    var options = [{value: '', label: ''}];
+                    let areas = data.areas;
+                    const options = [{value: '', label: ''}];
                     areas = areas.filter(function (n) {
                         return n !== null;
                     });
-                    for (var i = 0; i < areas.length; i++) {
+                    for (let i = 0; i < areas.length; i++) {
                         options.push({value: areas[i].uri, label: areas[i].name})
                     }
                     this.state.countries = options;
@@ -952,8 +992,8 @@ var CountrySelect = createClass({
     },
     successHandler: function (data) {
         // assuming data is an array of {name: "foo", value: "bar"}
-        for (var i = 0; i < data.length; i++) {
-            var option = data[i];
+        for (let i = 0; i < data.length; i++) {
+            const option = data[i];
             this.state.options.push(<option key={i} value={option.value}>{option.label}</option>);
         }
         this.setState(this.state);
@@ -961,7 +1001,7 @@ var CountrySelect = createClass({
     },
     getValue: function (label) {
         if (!label || label !== "") {
-            for (var i = 0; i < this.state.countries.length; i++) {
+            for (let i = 0; i < this.state.countries.length; i++) {
                 if (this.state.countries[i].label === label) {
                     return this.state.countries[i].value;
                 }
@@ -971,12 +1011,6 @@ var CountrySelect = createClass({
     },
 
     render: function () {
-        /*
-        var label = this.props.defLabel;
-        if(label && (!this.props.value || this.props.value === "") ){
-            //This is to load the country_uri that couldn't be set |
-            this.props.value = (this.getValue(label)); // decodeURIComponent()
-        }*/
         const value = (!this.props.value || this.props.value === "") ? this.getValue(this.props.defLabel) : this.props.value;
 
         // the parameter "value=" is selected option. Default selected option can either be set here. Using browser-base fonctuion decodeURIComponent()
@@ -990,7 +1024,7 @@ var CountrySelect = createClass({
 });
 
 /** PROPS: app{}, orgs[], url, isOnlyForCitizens() */
-var SetOrganizationComponent = createClass({
+const SetOrganizationComponent = createClass({
     getInitialState: function () {
         return {
             orgSearchData: {
@@ -1013,7 +1047,7 @@ var SetOrganizationComponent = createClass({
     },
     onChangeOrgInput: function (fieldname) {
         return function (event) {
-            var org = this.state.orgSearchData;
+            const org = this.state.orgSearchData;
             if (fieldname === "country") {
                 org[fieldname + "_uri"] = event.target.value;
                 org[fieldname] = event.target.selectedOptions[0].label;
@@ -1027,23 +1061,23 @@ var SetOrganizationComponent = createClass({
         }.bind(this);
     },
     toggleInstallOrgType: function (event) {
-        var org = this.state.orgSearchData;
+        const org = this.state.orgSearchData;
         org.typeInstallOrg = event.target.value;
         this.setState({orgSearchData: org, errors: []});
     },
     toggleSectorType: function (event) {
-        var org = this.state.orgSearchData;
+        const org = this.state.orgSearchData;
         org.sector_type = event.target.value;
         this.setState({orgSearchData: org, errors: []});
     },
     renderOrganizations: function () {
-        var opts = [];
+        const opts = [];
         opts.push(<option key={-1} value=""></option>);
         this.props.orgs.map(function (org) {
             opts.push(<option key={org.id} value={org.id}>{org.name}</option>);
         });
 
-        var formGroupClass = ($.inArray('typeInstallOrg', this.state.errors) != -1) ? 'form-group has-error' : 'form-group';
+        const formGroupClass = ($.inArray('typeInstallOrg', this.state.errors) != -1) ? 'form-group has-error' : 'form-group';
 
         return (
             <div className={formGroupClass}>
@@ -1059,9 +1093,9 @@ var SetOrganizationComponent = createClass({
         );
     },
     validate: function () {
-        var state = this.state;
-        var errors = [];
-        var orgSearchData = state.orgSearchData;
+        const state = this.state;
+        const errors = [];
+        const orgSearchData = state.orgSearchData;
         if (orgSearchData.typeInstallOrg === 'EXISTING-ORGS') {
             if (orgSearchData.selectedOrgId.trim() === '') {
                 errors.push('typeInstallOrg');
@@ -1086,7 +1120,7 @@ var SetOrganizationComponent = createClass({
         return state.errors.length <= 0;
     },
     renderLabel: function (htmlFor, label, isRequired) {
-        var labelClass = isRequired ? 'col-sm-3 control-label required' : 'col-sm-3 control-label';
+        const labelClass = isRequired ? 'col-sm-3 control-label required' : 'col-sm-3 control-label';
         return (
             <label htmlFor={htmlFor} className={labelClass}>{label} {isRequired ? '*' : ''}</label>
         );
@@ -1138,17 +1172,17 @@ SetOrganizationComponent.contextTypes = {
 //END NEW INSTALL PROCESS
 
 /** PROPS: images */
-var Carousel = createClass({
+const Carousel = createClass({
     getInitialState: function () {
         return {index: 0};
     },
     back: function () {
-        var index = this.state.index;
+        let index = this.state.index;
         index = Math.max(0, index - 1);
         this.setState({index: index});
     },
     forward: function () {
-        var index = this.state.index;
+        let index = this.state.index;
         index = Math.min(this.props.images.length, index + 1);
         this.setState({index: index});
     },
@@ -1158,14 +1192,14 @@ var Carousel = createClass({
             return null;
         }
 
-        var back = null;
+        let back = null;
         if (this.state.index > 0) {
             back = <a className="back" onClick={this.back}>
                 <i className="fa fa-chevron-left"></i>
             </a>;
         }
 
-        var forward = null;
+        let forward = null;
         if (this.state.index < this.props.images.length - 1) {
             forward = <a className="forward" onClick={this.forward}>
                 <i className="fa fa-chevron-right"></i>
@@ -1184,9 +1218,9 @@ var Carousel = createClass({
     }
 });
 
-export default connect(state => {
+export default withRouter(connect(state => {
     return {
         config: state.config,
         userInfo: state.userInfo
     }
-}, null, null, {withRef: true})(AppModal);
+}, null, null, {withRef: true})(AppModal));
