@@ -35,35 +35,11 @@ public interface InstanceACLStore {
      */
     void saveACL(String instanceId, List<User> userIds);
 
-    /**
-     * Create ACL to allow an user to use an instance.
-     *
-     * @param instanceId
-     * @param user
-     */
     void createACL(String instanceId, User user);
 
-    /**
-     * Create ACL to invite a future user to use an instance.
-     *
-     * @param instanceId
-     * @param email
-     */
     void createACL(String instanceId, String email);
 
-    /**
-     * Delete ACL
-     *
-     * @param instanceId
-     * @param user
-     */
     void deleteACL(String instanceId, User user);
 
-    /**
-     * Delete ACL sent by email
-     *
-     * @param instanceId
-     * @param email
-     */
     void deleteACL(String instanceId, String email);
 }

@@ -4,7 +4,7 @@ package org.oasis_eu.portal.ui;
  * User: schambon
  * Date: 11/19/14
  */
-public class UIApp {
+public class DashboardApp {
 
     private String id;
     private String name;
@@ -73,7 +73,7 @@ public class UIApp {
 
     @Override
     public String toString() {
-        return "UIApp{" +
+        return "DashboardApp{" +
             "id='" + id + '\'' +
             ", name='" + name + '\'' +
             ", serviceId='" + serviceId + '\'' +

@@ -4,7 +4,7 @@ package org.oasis_eu.portal.ui;
  * User: schambon
  * Date: 12/16/14
  */
-public class UIPendingApp {
+public class DashboardPendingApp {
 
     private String id;
     private String name;

@@ -16,8 +16,8 @@ import org.oasis_eu.portal.core.mongo.model.my.HiddenPendingApps;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.ui.UIApp;
-import org.oasis_eu.portal.ui.UIPendingApp;
+import org.oasis_eu.portal.ui.DashboardApp;
+import org.oasis_eu.portal.ui.DashboardPendingApp;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -25,10 +25,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -96,11 +94,11 @@ public class DashboardService {
             .collect(Collectors.toList());
     }
 
-    public List<UIApp> getMainDashboardApps() {
+    public List<DashboardApp> getMainDashboardApps() {
         return getDashboardApps(getPrimaryUserContext().getId());
     }
 
-    public List<UIApp> getDashboardApps(String userContextId) {
+    public List<DashboardApp> getDashboardApps(String userContextId) {
         Dashboard dash = getDash();
 
         UserContext userContext = dash.getContexts().stream().filter(uc -> uc.getId().equals(userContextId)).findFirst().orElse(null);
@@ -114,7 +112,7 @@ public class DashboardService {
         Map<String, Subscription> subscriptionById = actualSubscriptions.stream().collect(Collectors.toMap(GenericEntity::getId, s -> s));
 
         // apps in mongodb and kernel
-        List<UIApp> apps = userContext.getSubscriptions()
+        List<DashboardApp> apps = userContext.getSubscriptions()
             .stream()
             .filter(us -> subscriptionById.containsKey(us.getId()))
             .map(us -> this.toDashboardApp(subscriptionById.get(us.getId())))
@@ -134,14 +132,14 @@ public class DashboardService {
         return apps;
     }
 
-    private UIApp toDashboardApp(Subscription sub) {
+    private DashboardApp toDashboardApp(Subscription sub) {
         try {
             ServiceEntry service = catalogStore.findService(sub.getServiceId());
             if (service == null) {
                 return null;
             }
 
-            UIApp app = new UIApp();
+            DashboardApp app = new DashboardApp();
             app.setId(sub.getId());
             app.setServiceId(sub.getServiceId());
             app.setName(service.getName(RequestContextUtils.getLocale(request)));
@@ -160,14 +158,14 @@ public class DashboardService {
         }
     }
 
-    private UserSubscription toUserSubscription(UIApp app) {
+    private UserSubscription toUserSubscription(DashboardApp app) {
         UserSubscription result = new UserSubscription();
         result.setId(app.getId());
         result.setServiceId(app.getServiceId());
         return result;
     }
 
-    public void setAppsInContext(String contextId, List<UIApp> apps) {
+    public void setAppsInContext(String contextId, List<DashboardApp> apps) {
         logger.debug("Updating apps in context {} with list {}", contextId, apps);
 
         Dashboard dash = getDash();
@@ -295,19 +293,19 @@ public class DashboardService {
         }
     }
 
-    public List<UIPendingApp> getPendingApps() {
+    public List<DashboardPendingApp> getPendingApps() {
 
         HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
         List<ApplicationInstance> pendingInstances = applicationInstanceStore.findPendingInstances(userInfoHelper.currentUser().getUserId());
 
-        List<UIPendingApp> UIPendingAppLst = pendingInstances.stream()
+        List<DashboardPendingApp> DashboardPendingAppLst = pendingInstances.stream()
             // filter on "deleted" a.k.a portal-side hidden app : (#156 Possibility to delete "pending app instances" icons)
             .filter(instance -> (hidden == null || !hidden.getHiddenApps().contains(instance.getInstanceId())))
             .map(this::toPendingApp)
             .filter(app -> app != null)
             .collect(Collectors.toList());
 
-        return UIPendingAppLst;
+        return DashboardPendingAppLst;
     }
 
     public void removePendingApp(String appId) {
@@ -320,7 +318,7 @@ public class DashboardService {
         hiddenPendingAppsRepository.save(hidden);
     }
 
-    private UIPendingApp toPendingApp(ApplicationInstance instance) {
+    private DashboardPendingApp toPendingApp(ApplicationInstance instance) {
         try {
 
             CatalogEntry appCatalog = catalogStore.findApplication(instance.getApplicationId());
@@ -332,7 +330,7 @@ public class DashboardService {
                 imageUrl = appCatalog.getIcon(RequestContextUtils.getLocale(request));
             } // #220 The app could be deleted or stopped
 
-            UIPendingApp dashPendingApp = new UIPendingApp();
+            DashboardPendingApp dashPendingApp = new DashboardPendingApp();
             dashPendingApp.setId(instance.getInstanceId());
             dashPendingApp.setIcon(imageService.getImageForURL(imageUrl, ImageFormat.PNG_64BY64, false));
             //dashPendingApp.setIcon(imageService.getImageForURL(instance.getIcon(

@@ -287,34 +287,6 @@ class InstanceDropdown extends React.Component {
 
 
                                 {/* Options */}
-                                {/*{
-                                    !user.id &&
-                                    <td colSpan={instance.services.length + 1} className="right">
-                                        <CustomTooltip title={this.context.t('tooltip.pending')}>
-                                            <i className="fa fa-stopwatch option-icon loading"/>
-                                        </CustomTooltip>
-
-                                        <CustomTooltip title={this.context.t('tooltip.remove.member')}>
-                                            <button className="btn icon" data-member={i}
-                                                    onClick={this.removeUserAccessToInstance}>
-                                                <i className="fa fa-trash option-icon delete"/>
-                                            </button>
-                                        </CustomTooltip>
-                                    </td>
-                                }
-
-                                {
-                                    user.id &&
-                                    <td colSpan={instance.services.length} className="right">
-                                        <CustomTooltip title={this.context.t('tooltip.remove.member')}>
-                                            <button className="btn icon" data-member={i}
-                                                    onClick={this.removeUserAccessToInstance}>
-                                                <i className="fa fa-trash option-icon delete"/>
-                                            </button>
-                                        </CustomTooltip>
-                                    </td>
-                                }*/}
-
                                 {
                                     !user.id &&
                                     <React.Fragment>

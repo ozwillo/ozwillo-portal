@@ -3,8 +3,8 @@ package org.oasis_eu.portal.front.my.rest;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.core.mongo.model.my.UserContext;
 import org.oasis_eu.portal.front.generic.BaseController;
-import org.oasis_eu.portal.ui.UIApp;
-import org.oasis_eu.portal.ui.UIPendingApp;
+import org.oasis_eu.portal.ui.DashboardApp;
+import org.oasis_eu.portal.ui.DashboardPendingApp;
 import org.oasis_eu.portal.services.DashboardService;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,17 +38,17 @@ public class DashboardController extends BaseController {
     }
 
     @RequestMapping(value = "/apps", method = GET)
-    private List<UIApp> getAppsForMainContext() {
+    private List<DashboardApp> getAppsForMainContext() {
         return dashboardService.getMainDashboardApps();
     }
 
     @RequestMapping(value = "/apps/{contextId}", method = GET)
-    public List<UIApp> getAppsForContext(@PathVariable String contextId) {
+    public List<DashboardApp> getAppsForContext(@PathVariable String contextId) {
         return dashboardService.getDashboardApps(contextId);
     }
 
     @RequestMapping(value = "/apps/{contextId}", method = PUT)
-    public void updateApps(@PathVariable String contextId, @RequestBody List<UIApp> apps) {
+    public void updateApps(@PathVariable String contextId, @RequestBody List<DashboardApp> apps) {
         dashboardService.setAppsInContext(contextId, apps);
     }
 
@@ -68,7 +68,7 @@ public class DashboardController extends BaseController {
     }
 
     @RequestMapping(value = "/pending-apps", method = GET)
-    public List<UIPendingApp> pendingApps() {
+    public List<DashboardPendingApp> pendingApps() {
         return dashboardService.getPendingApps();
     }
 
