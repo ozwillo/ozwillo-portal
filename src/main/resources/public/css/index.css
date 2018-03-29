@@ -152,7 +152,7 @@ label.required {
 }
 
 .success-message {
-    color: var(--green-color);
+    color: var(--primary-color);
     width: 100%;
     text-align: left;
     margin: auto 5px;

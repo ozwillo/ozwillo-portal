@@ -6,6 +6,8 @@
 
 .members-tab .btn-submit {
     background-color: var(--tertiary-color);
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
 }
 
 .members-tab .add-member {
@@ -28,6 +30,10 @@
 
 .members-tab .select {
     min-width: 250px;
+}
+
+.members-tab .organization-invitation-form {
+    font-size: 1.2em;
 }
 
 .members-tab .organization-invitation-form > fieldset {

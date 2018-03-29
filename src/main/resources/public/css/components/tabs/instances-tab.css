@@ -25,6 +25,18 @@
     color: var(--primary-color);
 }
 
+.instances-tab .btn-submit {
+    background-color: var(--tertiary-color);
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+}
+
+.instances-tab .btn-submit {
+    background-color: var(--tertiary-color);
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+}
+
 @media (max-width: 425px) {
     .instances-tab .oz-table .option-icon {
         font-size: 1.6em;

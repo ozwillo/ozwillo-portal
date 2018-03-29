@@ -69,7 +69,9 @@ class MembersTab extends React.Component {
         const org = this.props.organization;
         const membersFilter = this.state.membersFilter;
 
-        const header = <OrganizationInvitationForm organization={this.props.organization} hideTitle={true}/>;
+        const header = <header className="dropdown-header">
+            <OrganizationInvitationForm organization={this.props.organization} hideTitle={true}/>
+        </header>;
 
         return <article className="members-tab">
             <section className="add-member">

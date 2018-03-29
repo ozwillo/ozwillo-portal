@@ -83,7 +83,8 @@ class OrganizationDropdownHeader extends React.Component {
 
         const days = Math.round((deletionDate - now) / TIME_DAY);
 
-        return days;
+        return (days > 0) ? this.context.t('ui.message.will-be-deleted-plural').format(days) :
+            this.context.t('ui.message.will-be-deleted');
     }
 
     render() {
@@ -147,7 +148,7 @@ class OrganizationDropdownHeader extends React.Component {
                         !isAvailable && !isPersonal && org.admin &&
                         [
                             <span key={`${org.id}-message`} className="message delete">
-                                {this.context.t('ui.message.will-be-deleted').format(this.numberOfDaysBeforeDeletion)}
+                                {this.numberOfDaysBeforeDeletion}
                             </span>,
                             <button key={`${org.id}-btn`} type="submit" className="btn btn-default-inverse">
                                 {this.context.t('ui.cancel')}

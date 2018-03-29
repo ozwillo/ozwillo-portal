@@ -59,7 +59,7 @@ class MemberDropdownFooter extends React.Component {
                 <span className="error-message">{this.state.error}</span>
 
                 <div className="flex-row end">
-                    <button type="submit" className="btn btn-submit icon">{this.context.t('ui.send')}</button>
+                    <button type="submit" className="btn btn-submit icon">{this.context.t('ui.add')}</button>
                 </div>
             </form>
         </header>;

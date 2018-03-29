@@ -58,7 +58,8 @@ class InstanceDropdownHeader extends React.Component {
 
         const days = Math.round((deletionDate - now) / TIME_DAY);
 
-        return days;
+        return (days > 0) ? this.context.t('ui.message.will-be-deleted-plural').format(days) :
+                            this.context.t('ui.message.will-be-deleted');
     }
 
     render() {
@@ -106,7 +107,7 @@ class InstanceDropdownHeader extends React.Component {
                         [
 
                             <span key={`${instance.id}-message`} className="message delete">
-                                {this.context.t('ui.message.will-be-deleted').format(this.numberOfDaysBeforeDeletion)}
+                                {this.numberOfDaysBeforeDeletion}
                             </span>,
                             <button key={`${instance.id}-submit`} type="submit" className="btn btn-default-inverse">
                                 {this.context.t('ui.cancel')}

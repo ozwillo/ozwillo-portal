@@ -64,7 +64,7 @@ class AdminTab extends React.Component {
             .then(() => {
                 this.setState({
                     isLoading: false,
-                    success: this.context.t('ui.form.send')
+                    success: this.context.t('organization.desc.form.success')
                 })
             })
             .catch(err => {

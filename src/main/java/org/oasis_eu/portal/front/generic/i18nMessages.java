@@ -21,8 +21,8 @@ public final class i18nMessages {
     private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
-        "no-matches-found", "yes", "datastore", "login", "logout", "notifications", "message.will-be-deleted", "or", "request.send",
-            "form.send","error", "ok");
+        "no-matches-found", "yes", "datastore", "login", "logout", "notifications", "message.will-be-deleted",
+        "message.will-be-deleted-plural", "or", "request.send", "error", "ok");
 
     private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "network", "apps", "create", "confirm-delete-dash",
         "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
@@ -90,7 +90,7 @@ public final class i18nMessages {
             "title", "contact-information", "admin");
 
     private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
-            "add-application", "add-in-organization", "send-invitation");
+            "add-application", "add-in-organization", "send-invitation", "form.success");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 

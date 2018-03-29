@@ -30,6 +30,7 @@ class OrganizationCreate extends React.Component {
     }
 
     componentDidMount() {
+        this.props.resetOrganizationForm();
         this.props.fetchCountries();
     }
 

@@ -47,10 +47,17 @@ class MemberDropdownHeader extends React.Component {
         this.props.onUpdateRoleMember(!this.props.member.admin)
             .catch((err) => {
                 if (err.status === 403) {
+
+                    const error = err.error.format(this.props.member.name);
+
                     Popup.create({
                         title: this.props.organization.name,
                         content: <p className="alert-message">
-                            {err.error}
+                            {
+                                error.split('\n').map(line => {
+                                    return <span className="line">{line}</span>
+                                })
+                            }
                         </p>,
                         buttons: {
                             right: [{

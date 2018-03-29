@@ -64,10 +64,10 @@ class AddInstanceDropdownHeader extends React.Component {
                 }
 
                 <div className="options flex-row end">
-                    <button type="submit" className="btn icon" disabled={this.state.isLoading}>
+                    <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                         {
                             !this.state.isLoading &&
-                            <i className="fa fa-plus option-icon"/>
+                            this.context.t('ui.send')
                         }
 
                         {
