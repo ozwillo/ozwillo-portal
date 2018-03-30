@@ -15,9 +15,21 @@
     width: 160px;
 }
 
+/* IE10+ */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .oz-header .logo-home img.logo,
+    .oz-header .logo-home img.logo:after {
+        content: '';
+        background: var(--logo-url) no-repeat;
+        width: 160px;
+        height: 80px;
+    }
+}
+
 .my-oasis {
     width: 100%;
     position: absolute;
+    left: 0;
 }
 
 .oz-header .welcome {

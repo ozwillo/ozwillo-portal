@@ -6,7 +6,7 @@
 .tabs .tabs-headers .header {
     background-color: var(--primary-color);
     width: 100%;
-    min-height: 30px;
+    min-height: 40px;
     text-align: center;
     margin: 0 4px;
 }

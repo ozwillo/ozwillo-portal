@@ -50,7 +50,7 @@
 }
 
 .instance-invitation-form .success {
-    color: var(--green-color);
+    color: var(--primary-color);
 }
 
 .instance-invitation-form .btn-submit {

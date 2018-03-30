@@ -1,3 +1,5 @@
+import 'isomorphic-fetch';
+
 /*
 * Custom fetch
 *

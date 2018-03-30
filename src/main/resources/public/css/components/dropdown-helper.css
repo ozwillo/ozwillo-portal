@@ -133,7 +133,7 @@
 }
 
 .dropdown-content .success {
-    color: var(--green-color);
+    color: var(--primary-color);
 }
 
 .dropdown-header .delete {

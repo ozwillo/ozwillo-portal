@@ -6,6 +6,18 @@
 .oz-footer .logo .image,
 .oz-footer .logo .image:after {
     content: var(--footer-logo-url);
+
+}
+
+/* IE10+ */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .oz-footer .logo .image,
+    .oz-footer .logo .image:after {
+        content: '';
+        background: var(--footer-logo-url) no-repeat;
+        width: 100%;
+        height: 100%;
+    }
 }
 
 .oz-footer .image {
@@ -26,11 +38,11 @@
 }
 
 .oz-footer > .flex-row:first-child {
-    position: relative;
+    position: relative !important;
     margin-top: 40px;
 }
 
-.oz-footer > .flex-row:first-child:after {
+.oz-footer > .flex-row:first-child:before {
     content: '';
     position: absolute;
     bottom: 0;

@@ -1,10 +1,11 @@
+
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const DashboardPlugin = require('webpack-dashboard/plugin');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
@@ -23,11 +24,13 @@ const extractCSS = new ExtractTextPlugin({ filename: 'bundle.css' });
 
 const common = {
     entry: {
-        index: [path.join(PATHS.app, 'js/main.js'), path.join(PATHS.app, 'css/index.css')].concat(commonEntryPointsLoadersAndServers)
+        index: ['babel-polyfill', path.join(PATHS.app, 'js/main.js'), path.join(PATHS.app, 'css/index.css')]
+            .concat(commonEntryPointsLoadersAndServers)
     },
     output: {
         path: PATHS.build,
-        filename: "bundle.js",
+
+        filename: 'bundle.js',
         publicPath: '/build/'
     },
     plugins: [
@@ -43,7 +46,13 @@ const common = {
             { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports-loader?$=jquery' },
 
             /* loaders for urls */
-            { test: /\.png$/, loader: "url-loader?limit=10000" }
+            { test: /\.png$/, loader: "url-loader?limit=10000" },
+
+            {
+                test: /\.(js|jsx)$/,
+                loader: 'babel',
+                exclude: /node_modules/
+            }
         ],
         rules: [
             // JS
@@ -54,7 +63,7 @@ const common = {
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['react', 'stage-0',
+                        presets: ['es2015', 'react', 'stage-0',
                             ["env", {
                                 "targets": {
                                     "browsers": ["last 2 Chrome versions"]
@@ -109,7 +118,10 @@ if(TARGET === 'start' || !TARGET) {
                     test: /\.css$/,
                     use: ['css-hot-loader'].concat(extractCSS.extract({
                         fallback: 'style-loader',
-                        use: [ 'css-loader' ]
+                        use: [
+                            { loader: 'css-loader', options: { importLoaders: 1 } },
+                            'postcss-loader'
+                        ]
                     }))
                 },
                 {
