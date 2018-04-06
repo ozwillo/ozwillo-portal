@@ -87,15 +87,6 @@ class AddInstanceDropdown extends React.Component {
             return false;
         }
 
-        //already install
-        const instance = org.instances.find((instance) => {
-            return app.id === instance.applicationInstance.application_id;
-        });
-
-        if (instance) {
-            return false;
-        }
-
         //Check types
         return (app.target_publicbodies && org.type === 'PUBLIC_BODY') ||
             (app.target_companies && org.type === 'COMPANY') ||
