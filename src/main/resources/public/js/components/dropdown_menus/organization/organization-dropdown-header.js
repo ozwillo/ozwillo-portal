@@ -110,7 +110,7 @@ class OrganizationDropdownHeader extends React.Component {
 
                 <div className="options flex-row end">
                     {
-                        (isAvailable || isPersonal) && [
+                        (isAvailable && !isPersonal) && [
                             <CustomTooltip key={`${org.id}-instance-tab`}
                                            title={this.context.t('tooltip.instances')}>
                                 <Link className="btn icon"
@@ -134,6 +134,7 @@ class OrganizationDropdownHeader extends React.Component {
                                     <i className="fa fa-info-circle option-icon"/>
                                 </Link>
                             </CustomTooltip>,
+
                             <CustomTooltip key={`${org.id}-delete`} className={`${!org.admin && 'invisible' || ''}`}
                                            title={this.context.t('tooltip.delete.organization')}>
                                 <button type="submit"
@@ -142,6 +143,17 @@ class OrganizationDropdownHeader extends React.Component {
                                 </button>
                             </CustomTooltip>
                         ]
+                    }
+
+                    {
+                        isPersonal &&
+                            <CustomTooltip key={`${org.id}-instance-tab`}
+                                           title={this.context.t('tooltip.instances')}>
+                                <Link className="btn icon"
+                                      to={`/my/organization/${org.id}/instances`}>
+                                    <i className="fa fa-list-alt option-icon"/>
+                                </Link>
+                            </CustomTooltip>
                     }
 
                     {
