@@ -101,6 +101,7 @@ class OrganizationDesc extends React.Component {
 
     render() {
         const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
+        const isOrgAdmin = this.props.organization.admin
 
         return <section className="organization-desc oz-body wrapper flex-col">
 
@@ -127,11 +128,23 @@ class OrganizationDesc extends React.Component {
                     <UpdateTitle title={this.props.organization.name}/>
 
                     {
-                        !this.isPersonal && <React.Fragment>
+                        !this.isPersonal && isOrgAdmin && <React.Fragment>
                             <header className="title">
                                 <span>{this.props.organization.name}</span>
                             </header>
                             <Tabs className="content" headers={tabsHeaders} tabs={tabs} tabToDisplay={tabToDisplay}/>
+                        </React.Fragment>
+
+                    }
+
+                    {
+                        !this.isPersonal && !isOrgAdmin && <React.Fragment>
+                            <header className="title">
+                                <span>{this.props.organization.name}</span>
+                            </header>
+                            <section className="box">
+                                <tabs.members />
+                            </section>
                         </React.Fragment>
 
                     }

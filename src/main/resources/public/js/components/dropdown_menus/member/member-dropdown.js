@@ -112,41 +112,41 @@ class MemberDropdown extends React.Component {
         const member = this.props.member;
         const isPending = !member.name;
         const org = this.props.organization;
-        const memberInstances = this.memberInstances();
-        const instancesWithoutAccess = org.instances.filter(this.filterInstanceWithoutAccess);
 
         const Header = <MemberDropdownHeader member={member}
                                              organization={org}
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
                                              onUpdateRoleMember={this.onUpdateRoleMember}
                                              onRemoveInvitationToJoinAnOrg={this.removeInvitationToJoinAnOrg}/>;
-        const Footer = !isPending && <MemberDropdownFooter member={member}
-                                                           instances={instancesWithoutAccess}
+        const Footer = !isPending && org.admin && <MemberDropdownFooter member={member}
+                                                           instances={org.instances.filter(this.filterInstanceWithoutAccess)}
                                                            onAddAccessToInstance={this.addAccessToInstance}/>;
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={!isPending}>
-            <section className='dropdown-content'>
-                <ul className="list undecorated-list flex-col">
-                    {
-                        memberInstances.map((instance, i) => {
-                            return <li key={instance.id}>
-                                <article className="item flex-row">
-                                    <span className="name">{instance.name}</span>
-                                    <span className="error-message">{this.state.errors[instance.id]}</span>
-                                    <div className="options flex-row">
-                                        <CustomTooltip title={this.context.t('tooltip.remove.instance')}>
-                                            <button className="btn icon"
-                                                    onClick={this.removeAccessToInstance} data-instance={instance.id}>
-                                                <i className="fa fa-trash option-icon delete"/>
-                                            </button>
-                                        </CustomTooltip>
-                                    </div>
-                                </article>
-                            </li>;
-                        })
-                    }
-                </ul>
-            </section>
+            { org.admin &&
+                <section className='dropdown-content'>
+                    <ul className="list undecorated-list flex-col">
+                        {
+                            this.memberInstances().map((instance, i) => {
+                                return <li key={instance.id}>
+                                    <article className="item flex-row">
+                                        <span className="name">{instance.name}</span>
+                                        <span className="error-message">{this.state.errors[instance.id]}</span>
+                                        <div className="options flex-row">
+                                            <CustomTooltip title={this.context.t('tooltip.remove.instance')}>
+                                                <button className="btn icon"
+                                                        onClick={this.removeAccessToInstance} data-instance={instance.id}>
+                                                    <i className="fa fa-trash option-icon delete"/>
+                                                </button>
+                                            </CustomTooltip>
+                                        </div>
+                                    </article>
+                                </li>;
+                            })
+                        }
+                    </ul>
+                </section>
+            }
         </DropDownMenu>
     }
 }

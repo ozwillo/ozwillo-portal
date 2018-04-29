@@ -76,11 +76,14 @@ class MemberDropdownHeader extends React.Component {
     render() {
         const member = this.props.member;
         const isPending = !member.name;
+        const isOrgAdmin = this.props.organization.admin;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <p className="dropdown-name">
                     <span>{member.name}</span>
-                    <span className={`email ${(member.name && 'separator') || ''}`}>{member.email}</span>
+                    {isOrgAdmin &&
+                        <span className={`email ${(member.name && 'separator') || ''}`}>{member.email}</span>
+                    }
                 </p>
 
                 <span className="error-message">{this.state.error}</span>
@@ -99,28 +102,31 @@ class MemberDropdownHeader extends React.Component {
                         member.admin &&
                         <CustomTooltip title={this.context.t('tooltip.remove.right.admin')}>
                             <button type="button" className="btn icon"
-                                    onClick={!isPending && this.memberRoleToggle || null}>
+                                    onClick={!isPending && isOrgAdmin && this.memberRoleToggle || null}>
                                 <i className="fa fa-chess-king option-icon"/>
                             </button>
                         </CustomTooltip>
                     }
 
                     {
-                        !member.admin &&
+                        !member.admin && !isPending &&
                         <CustomTooltip title={this.context.t('tooltip.add.right.admin')}>
                             <button type="button" className="btn icon"
-                                    onClick={!isPending && this.memberRoleToggle || null}>
+                                    onClick={!isPending && isOrgAdmin && this.memberRoleToggle || null}>
                                 <i className="fa fa-chess-pawn option-icon"/>
                             </button>
                         </CustomTooltip>
                     }
 
-                    <CustomTooltip title={this.context.t('tooltip.delete.member')}>
-                        <button type="button" className="btn icon"
-                                onClick={!isPending && this.onRemoveMemberInOrganization || this.onRemoveInvitationToJoinAnOrg}>
-                            <i className="fa fa-trash option-icon"/>
-                        </button>
-                    </CustomTooltip>
+                    {
+                        isOrgAdmin &&
+                        <CustomTooltip title={this.context.t('tooltip.delete.member')}>
+                            <button type="button" className="btn icon"
+                                    onClick={!isPending && this.onRemoveMemberInOrganization || this.onRemoveInvitationToJoinAnOrg}>
+                                <i className="fa fa-trash option-icon"/>
+                            </button>
+                        </CustomTooltip>
+                    }
                 </div>
             </form>
         </header>;

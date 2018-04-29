@@ -74,10 +74,13 @@ class MembersTab extends React.Component {
         </header>;
 
         return <article className="members-tab">
-            <section className="add-member">
-                <header className="sub-title">{this.context.t('organization.desc.send-invitation')}</header>
-                <DropDownMenu header={header}/>
-            </section>
+            {
+                org.admin &&
+                <section className="add-member">
+                    <header className="sub-title">{this.context.t('organization.desc.send-invitation')}</header>
+                    <DropDownMenu header={header}/>
+                </section>
+            }
             <section className="search-member">
                 <form className="search oz-form">
                     <input name="membersFilter" className="field form-control" type="text"

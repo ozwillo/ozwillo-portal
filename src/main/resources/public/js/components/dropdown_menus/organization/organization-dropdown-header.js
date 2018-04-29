@@ -110,7 +110,7 @@ class OrganizationDropdownHeader extends React.Component {
 
                 <div className="options flex-row end">
                     {
-                        (isAvailable && !isPersonal) && [
+                        isAvailable && !isPersonal && org.admin && [
                             <CustomTooltip key={`${org.id}-instance-tab`}
                                            title={this.context.t('tooltip.instances')}>
                                 <Link className="btn icon"
@@ -143,6 +143,18 @@ class OrganizationDropdownHeader extends React.Component {
                                 </button>
                             </CustomTooltip>
                         ]
+                    }
+
+                    {
+                        isAvailable && !isPersonal && !org.admin &&
+                            <CustomTooltip key={`${org.id}-member-tab`}
+                                           title={this.context.t('tooltip.members')}>
+                                <Link className="btn icon"
+                                      to={`/my/organization/${org.id}/members`}>
+                                    <i className="fa fa-users option-icon"/>
+                                </Link>
+                            </CustomTooltip>
+
                     }
 
                     {

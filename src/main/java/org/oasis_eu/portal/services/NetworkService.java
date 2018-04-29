@@ -169,13 +169,15 @@ public class NetworkService {
 
         //Build UIOrganization
         UIOrganization uiOrg = fillUIOrganization(org);
-        uiOrg.setAdmin(userIsAdmin(organizationId));
-        uiOrg.setInstances(getOrganizationInstances(org.getId(), uiOrg.isAdmin()));
-
+        boolean isAdmin = userIsAdmin(organizationId);
+        uiOrg.setAdmin(isAdmin);
+        if (isAdmin)
+            uiOrg.setInstances(getOrganizationInstances(org.getId(), uiOrg.isAdmin()));
 
         if(fetchMembers && !isPersonal) {
             List<UIOrganizationMember> members = getOrganizationMembers(org.getId());
-            members.addAll(getOrganizationPendingMembers(org.getId()));
+            if (isAdmin)
+               members.addAll(getOrganizationPendingMembers(org.getId()));
             uiOrg.setMembers(members);
         }
 
@@ -524,9 +526,6 @@ public class NetworkService {
     /**
      * Verify if the current user is an administrator for a given organization.<br/>
      * NOTE: This does not work for "personal" organization, use rather userIsAdminOrPersonalAppInstance()
-     *
-     * @param organizationId
-     * @return Boolean : True if is organization administrator, False otherwise.
      */
     public boolean userIsAdmin(String organizationId) {
         String userId = userInfoService.currentUser().getUserId();
