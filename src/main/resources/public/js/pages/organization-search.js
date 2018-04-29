@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 // Components
-import SideMenu from '../components/side-menu';
 import OrganizationDropdown from '../components/dropdown_menus/organization/organization-dropdown';
 import UpdateTitle from '../components/update-title';
 
@@ -21,14 +20,11 @@ class OrganizationSearch extends React.Component {
         super(props);
 
         this.state = {
-            sideMenuIsOpen: false,
             organizationsFilter: '',
             userOrganizationsFilter: '',
             isLoading: true
         };
 
-        //bind methods
-        this.sideMenuToogle = this.sideMenuToogle.bind(this);
         this.handleChange = this.handleChange.bind(this);
         this.filterOrganizations = this.filterOrganizations.bind(this);
     }
@@ -38,12 +34,6 @@ class OrganizationSearch extends React.Component {
             .then(() => {
                 this.setState({isLoading: false});
             });
-    }
-
-    sideMenuToogle() {
-        this.setState({
-            sideMenuIsOpen: !this.state.sideMenuIsOpen
-        });
     }
 
     handleChange(e) {
@@ -108,10 +98,6 @@ class OrganizationSearch extends React.Component {
                 }
             </section>
 
-
-            <SideMenu isOpen={this.state.sideMenuIsOpen} onClickBackground={this.sideMenuToogle}>
-                <h1>Menu !!!</h1>
-            </SideMenu>
         </section>;
     }
 
