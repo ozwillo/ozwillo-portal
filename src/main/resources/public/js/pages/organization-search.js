@@ -20,7 +20,6 @@ class OrganizationSearch extends React.Component {
         super(props);
 
         this.state = {
-            organizationsFilter: '',
             userOrganizationsFilter: '',
             isLoading: true
         };
