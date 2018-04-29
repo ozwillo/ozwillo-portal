@@ -36,7 +36,7 @@ public class NotificationsController extends BaseController {
     @ResponseBody
     public NotificationData getNotificationData(HttpServletRequest request) {
         int count = portalNotificationService.countNotifications();
-        return new NotificationData(count, messageSource.getMessage("my.n_notifications", new Object[]{Integer.valueOf(count)}, RequestContextUtils.getLocale(request)));
+        return new NotificationData(count, messageSource.getMessage("my.n_notifications", new Object[]{count}, RequestContextUtils.getLocale(request)));
     }
 
     private static class NotificationData {
