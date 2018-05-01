@@ -55,6 +55,7 @@ dependencies {
     compile('org.apache.httpcomponents:httpclient')
     compile('org.apache.httpcomponents:httpcore')
     compile('org.thymeleaf.extras:thymeleaf-extras-conditionalcomments')
+    compile('org.apache.commons:commons-csv:1.5')
 
     compile('com.ozwillo:ozwillo-java-spring-integration:1.25.7')
 

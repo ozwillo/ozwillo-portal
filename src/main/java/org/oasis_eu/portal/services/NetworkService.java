@@ -615,7 +615,8 @@ public class NetworkService {
 
     public UIOrganization createOrganization(String name, String type, URI territoryId, URI dcId) {
         logger.info("Request to create an organization: {} of type {} from user {} ({})", name, type,
-            userInfoService.currentUser().getUserId(), userInfoService.currentUser().getEmail());
+            userInfoService.currentUser() != null ? userInfoService.currentUser().getUserId() : "SystemAdminUser",
+            userInfoService.currentUser() != null ? userInfoService.currentUser().getEmail() : "no_email");
 
         //NB. If territory(jurisdiction) is an optional field (is set when sector type is public, so then it will be provided)...
         if (type == null || dcId == null /*&&territoryId==null*/) {

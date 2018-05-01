@@ -48,7 +48,7 @@ class OrganizationController extends BaseController {
 
     @PostMapping
     public UIOrganization createOrganization(@RequestBody DCOrganization dcOrganization) {
-        return organizationService.create(dcOrganization);
+        return organizationService.create(dcOrganization, true);
     }
 
     @PutMapping

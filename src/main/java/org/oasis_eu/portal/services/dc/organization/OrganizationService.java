@@ -140,13 +140,13 @@ public class OrganizationService {
     /**
      * Create organization in DC and create/update data in kernel
      */
-    public UIOrganization create(DCOrganization dcOrganization) {
+    public UIOrganization create(DCOrganization dcOrganization, boolean updateUserInfo) {
         if (dcOrganization.getLang() == null || dcOrganization.getLang().isEmpty()) {
             dcOrganization.setLang(RequestContextUtils.getLocale(request).getLanguage());
         }
         // create DC Organization
         DCResource dcResource = dcOrganizationService.create(dcOrganization);
-        updateUserInfo(dcOrganization);
+        if (updateUserInfo) updateUserInfo(dcOrganization);
         if (dcResource != null && !dcOrganization.isExist()) {
             UIOrganization uiOrganization = createOrUpdateKernelOrganization(dcOrganization);
             if (uiOrganization == null) { // if null, then the organization exists in kernel.
