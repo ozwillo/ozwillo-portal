@@ -50,6 +50,16 @@ class RouterWithUser extends React.Component {
     }
 }
 
+class SinglePageRouterWithUser extends React.Component {
+    render() {
+        return <IfUser>
+            <Switch>
+                <Route path="/sp/profile" component={Profile}/>
+            </Switch>
+        </IfUser>;
+    }
+}
+
 class RouterWithoutUser extends React.Component {
     render() {
         return <Layout>
@@ -81,6 +91,7 @@ class AppRouter extends React.Component {
                 <Popup/>
                 <Switch>
                     <Route path="/my" component={RouterWithUser}/>
+                    <Route path="/sp" component={SinglePageRouterWithUser}/>
                     <Route path="/:lang/store" component={RouterWithoutUser}/>
                     <Redirect to="/my"/>
                 </Switch>

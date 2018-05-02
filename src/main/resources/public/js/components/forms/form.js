@@ -14,11 +14,14 @@ Form.propTypes = {
     onSubmit: PropTypes.func.isRequired
 };
 
+const Label = ({ children, required, ...rest }) => 
+    <label {...rest}>{children + (required ? ' *' : '')}</label>
+
 const InputText = ({name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled}) =>
     <div className={`flex-row ${(error && 'has-error') || ''}`}>
-        <label htmlFor={name} className={`label ${labelClassName} ${(isRequired && 'required') || ''}`}>
-            {label} {isRequired ? '* ' : ' '}
-        </label>
+        <Label htmlFor={name} required={isRequired} className={`label ${labelClassName} ${(isRequired && 'required') || ''}`}>
+            {label}
+        </Label>
         <input className="form-control field" name={name} type="text" value={value} onChange={onChange}
                disabled={disabled}/>
         {
@@ -60,11 +63,11 @@ SubmitButton.propTypes = {
 };
 
 
-const InputDatePicker = ({label, name, value, onChange, dropdownMode}) =>
+const InputDatePicker = ({label, name, value, onChange, dropdownMode, required = false}) =>
     <div className='flex-row'>
-        <label htmlFor={name} className='label'>
+        <Label htmlFor={name} className='label' required={required}>
             {label}
-        </label>
+        </Label>
         <DatePicker selected={value}
                     onChange={onChange}
                     dropdownMode={dropdownMode}
@@ -103,7 +106,11 @@ class CountrySelector extends React.Component {
         value: PropTypes.string,
         url: PropTypes.string.isRequired,
         onChange: PropTypes.func.isRequired,
-        label: PropTypes.string
+        label: PropTypes.string,
+        required: PropTypes.bool
+    };
+    static defaultProps = {
+        required: false
     };
 
     static contextTypes = {
@@ -133,9 +140,9 @@ class CountrySelector extends React.Component {
     render() {
         return (
             <div className='flex-row'>
-                <label htmlFor="gender" className="label">
+                <Label htmlFor="gender" className="label" required={this.props.required}>
                     {this.context.t('my.profile.personal.country')}
-                </label>
+                </Label>
                 <Select name="country" value={this.props.value} placeholder=""
                         onChange={this.props.onChange} className="select field"
                         options={this.state.countries}/>
@@ -147,7 +154,11 @@ class CountrySelector extends React.Component {
 class GenderSelector extends React.Component {
     static propTypes = {
         value: PropTypes.string,
-        onChange: PropTypes.func.isRequired
+        onChange: PropTypes.func.isRequired,
+        required: PropTypes.bool
+    };
+    static defaultProps = {
+        required: false
     };
 
     static contextTypes = {
@@ -182,9 +193,9 @@ class GenderSelector extends React.Component {
 
     render() {
         return <div className='flex-row'>
-            <label htmlFor="gender" className="label">
+            <Label htmlFor="gender" className="label" required={this.props.required}>
                 {this.context.t('my.profile.personal.gender')}
-            </label>
+            </Label>
             <Select name="gender" value={this.props.value} placeholder=""
                     clearable={false} options={this.state.options}
                     onChange={this.props.onChange} className="select field"/>
@@ -192,4 +203,4 @@ class GenderSelector extends React.Component {
     }
 }
 
-export {Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector}
+export {Form, InputText, SubmitButton, InputDatePicker, CountrySelector, GenderSelector, Label}
