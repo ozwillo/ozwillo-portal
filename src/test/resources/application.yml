@@ -60,6 +60,7 @@ application:
     country: adrpost:country
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
+  importPassword: importPassword
 
 web:
   home: http://www.ozwillo-dev.eu
