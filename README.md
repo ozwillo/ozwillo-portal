@@ -12,11 +12,10 @@ Building requires **Java 8**.
 
 ## Installation
 
-* After cloning this repository, install the npm packages
+* After cloning this repository, install the js packages
 
 ```
-nvm install 5.6.0 (or nvm use 5.6.0 if you already have Node 5.6.0 installed)
-npm install
+yarn install
 ```
 
 * Configure your application's environment
@@ -56,7 +55,7 @@ spring.data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal
 * Run webpack-dev-server
 
 ```
-npm run start
+yarn start
 ```
 
 Open http://localhost:8080/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
@@ -87,6 +86,6 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 
 =====================================================
 
-Copyright (c) 2013-2016 Open Wide & Ozwillo - http://www.openwide.fr - https://www.ozwillo.com
+Copyright (c) 2013-2018 Open Wide & Ozwillo - http://www.openwide.fr - https://www.ozwillo.com
 
 =====================================================
