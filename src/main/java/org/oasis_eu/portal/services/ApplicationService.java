@@ -124,10 +124,8 @@ public class ApplicationService {
     private MyAppsInstance fillUIInstance(MyAppsInstance uiInstance) {
         ApplicationInstance instance = uiInstance.getApplicationInstance();
         if (instance.getStatusChanged() != null) {
-            //TODO check if computeDeletionPlanned() in NetworkService is required here
-            Instant deletionPlanned = instance.getStatusChanged()
-                .plus(applicationInstanceDaysTillDeletedFromTrash, ChronoUnit.DAYS);
-            uiInstance.setDeletionPlanned(deletionPlanned);
+            LocalDateTime statusChangedDate = LocalDateTime.ofInstant(instance.getStatusChanged(), ZoneOffset.UTC);
+            uiInstance.setDeletionPlanned(statusChangedDate.plusDays(applicationInstanceDaysTillDeletedFromTrash).toInstant(ZoneOffset.UTC));
         }
         if (instance.getStatusChangeRequesterId() != null) {
             uiInstance.setStatusChangeRequesterLabel(userProfileService.findUserProfile(instance.getStatusChangeRequesterId()).getDisplayName()); // TODO protected ?? then from membership
