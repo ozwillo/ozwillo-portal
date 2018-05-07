@@ -21,15 +21,15 @@ apply plugin: 'com.moowork.node'
 
 jar {
     baseName = 'ozwillo-portal'
-    version = '1.48.0'
+    version = '1.50.0'
 }
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 node {
-    version = '7.4.0'
-    yarnVersion = '0.18.0'
+    version = '9.4.0'
+    yarnVersion = '1.3.2'
     download = true
 }
 
@@ -55,8 +55,9 @@ dependencies {
     compile('org.apache.httpcomponents:httpclient')
     compile('org.apache.httpcomponents:httpcore')
     compile('org.thymeleaf.extras:thymeleaf-extras-conditionalcomments')
+    compile('org.apache.commons:commons-csv:1.5')
 
-    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.3')
+    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.7')
 
     /* Our specific dependencies */
     compile('de.javakaffee.msm:memcached-session-manager:2.1.1')
@@ -75,9 +76,6 @@ dependencies {
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
     runtime('com.google.code.gson:gson:2.8.2')
     runtime('com.ibm.icu:icu4j:60.1')
-
-    // TODO : upgrade to a recent version
-    runtime('com.nimbusds:nimbus-jose-jwt:2.22.1')
 }
 
 task wrapper(type: Wrapper) {
@@ -104,7 +102,7 @@ springBoot {
 
 configure(tasks.processResources) {
     // we don't want source JSX in the jar, we only need their transpiled, bundled version in build/
-    exclude 'public/jsx/'
+    exclude 'public/js/'
     exclude 'public/css/'
 }
 

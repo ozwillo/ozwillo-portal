@@ -1,0 +1,107 @@
+
+.oz-dropdown-menu {
+    background-color: var(--primary-color);
+    color: var(--secondary-color);
+}
+
+.oz-dropdown-menu > .header {
+    display: flex;
+    flex-direction: row;
+    padding: 5px 10px;
+    align-items: center;
+
+    color: var(--tertiary-color);
+    background-color: var(--primary-color);
+}
+
+.oz-dropdown-menu > .header .content {
+    width: 100%;
+}
+
+.oz-dropdown-menu > .header .arrow-icon {
+    font-size: 2em;
+    cursor: pointer;
+    padding: 0.2em 0.5em;
+    border-radius: 50%;
+}
+
+/*  */
+.oz-dropdown-menu > .header .arrow-icon.fa-caret-down {
+    padding: 0.2em 0.4em;
+}
+
+.oz-dropdown-menu > .header .arrow-icon:hover {
+    background-color: var(--secondary-color);
+}
+
+.oz-dropdown-menu > .content,
+.oz-dropdown-menu > .footer {
+    background-color: var(--tertiary-color);
+    padding: 5px 10px;
+}
+
+.oz-dropdown-menu > .content.empty {
+    padding: 0px;
+}
+
+/* shadow */
+.oz-dropdown-menu {
+    box-shadow: 2px 2px 2px rgba(0, 0, 0, 0.3),
+    -1px -1px 2px rgba(0, 0, 0, 0.2);
+}
+
+/* Service dropdown */
+.dropdown-header .form .dropdown-name {
+    height: 100%;
+    width: auto;
+    align-items: center;
+}
+
+/* Organization dropdown */
+
+.dropdown-content .apps {
+    align-items: center;
+    width: 100%;
+}
+
+.dropdown-content .apps > .list {
+    flex-wrap: wrap;
+}
+
+.dropdown-content .apps > .empty-message {
+    font-size: 1.1em;
+
+}
+
+.dropdown-content .apps .app {
+    margin: 10px;
+    width: 100px;
+}
+
+.dropdown-content .apps .app .launcher .name {
+    font-size: 0.9em;
+}
+
+.dropdown-content .invitation {
+    margin: auto 0;
+}
+
+.dropdown-content .invitation .organization-invitation-form .label {
+    width: auto;
+}
+
+.dropdown-content .btn.btn-submit {
+    padding: 3px 6px;
+    font-size: 0.9em;
+}
+
+@media (max-width: 425px) {
+    .dropdown-content .invitation .organization-invitation-form .label,
+    .dropdown-content .invitation {
+        width: 100%;
+    }
+
+    .dropdown-header {
+        padding: 0 !important;
+    }
+}

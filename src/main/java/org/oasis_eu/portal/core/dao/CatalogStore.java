@@ -29,7 +29,9 @@ public interface CatalogStore {
         List<Locale> supportedLocales, List<String> geographicalAreas,
         List<String> categoryIds, String q, String hl, int from);
 
-    void instantiate(String appId, ApplicationInstantiationRequest instancePattern);
+    ApplicationInstance instantiate(String appId, ApplicationInstantiationRequest instancePattern);
+
+    ApplicationInstance findApplicationInstanceOrNull(String instanceId);
 
     ServiceEntry updateService(String serviceId, ServiceEntry service);
 
@@ -38,8 +40,8 @@ public interface CatalogStore {
      *
      * @param instanceId
      * @param status
-     * @return optional (error, warning...) message returned by Kernel
+     * @return ApplicationInstance
      */
-    String setInstanceStatus(String instanceId, InstantiationStatus status);
+    ApplicationInstance setInstanceStatus(String instanceId, InstantiationStatus status);
 
 }

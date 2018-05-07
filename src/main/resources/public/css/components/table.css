@@ -1,0 +1,40 @@
+.oz-table {
+    width: 100%;
+}
+
+.oz-table thead {
+    color: var(--secondary-color);
+}
+
+.oz-table thead .icon {
+    color: var(--primary-color);
+}
+
+.oz-table tr {
+    border-bottom: solid 1px var(--separator-color);
+}
+
+.oz-table tr:last-child {
+    border: none;
+}
+
+.oz-table th {
+    min-width: 80px;
+    white-space: nowrap;
+}
+
+.oz-table tr > td {
+    vertical-align: middle;
+}
+
+.oz-table .fill-content {
+    width: 100%;
+}
+
+.oz-table .center {
+    text-align: center;
+}
+
+.oz-table .right {
+    text-align: right;
+}

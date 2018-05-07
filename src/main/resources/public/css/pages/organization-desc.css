@@ -1,0 +1,18 @@
+.organization-desc > .header,
+.organization-desc > .content {
+    margin: 10px 0;
+}
+
+.organization-desc .container-loading {
+    margin: 20px 0;
+}
+
+.organization-desc .container-loading > .loading {
+    font-size: 2.5em;
+}
+
+.organization-desc .select {
+    width: 25%;
+    min-width: 250px;
+    align-self: flex-end;
+}

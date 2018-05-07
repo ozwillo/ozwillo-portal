@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.model.kernel.UserProfile;
+import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

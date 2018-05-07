@@ -1,12 +1,13 @@
 package org.oasis_eu.portal.services.kernel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.EntityNotFoundException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
-import org.oasis_eu.portal.model.kernel.OrgMembership;
-import org.oasis_eu.portal.model.kernel.PendingOrgMembership;
-import org.oasis_eu.portal.model.kernel.UserMembership;
+import org.oasis_eu.portal.model.organization.OrgMembership;
+import org.oasis_eu.portal.model.organization.PendingOrgMembership;
+import org.oasis_eu.portal.model.organization.UserMembership;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,13 +15,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.context.MessageSource;
+import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -35,10 +39,14 @@ public class UserMembershipService {
     @Value("${kernel.user_membership_endpoint}")
     private String userMembershipEndpoint;
 
-    @Value("${kernel.maxUserMembershipsPerPage: 100}")
-    private String maxUserMembershipsPerPage;
+    @Autowired
+    private Kernel kernel;
 
-    @Autowired private Kernel kernel;
+    @Autowired
+    private MessageSource messageSource;
+
+    @Autowired
+    private HttpServletRequest request;
 
     @Cacheable("user-memberships")
     public List<UserMembership> getMembershipsOfUser(String userId) throws WrongQueryException {
@@ -46,7 +54,6 @@ public class UserMembershipService {
         String uriString = UriComponentsBuilder.fromHttpUrl(userMembershipEndpoint)
                 .path("/memberships/user/{user_id}")
                 .queryParam("start", "0")
-                .queryParam("limit",maxUserMembershipsPerPage.trim())
                 .buildAndExpand(userId)
                 .toUriString();
 
@@ -80,7 +87,7 @@ public class UserMembershipService {
 
         String uri = builder.buildAndExpand(organizationId).toUriString();
 
-        OrgMembership[] response = kernel.getEntityOrNull(uri, OrgMembership[].class, user());
+        OrgMembership[] response = kernel.getEntityOrException(uri, OrgMembership[].class, user());
         return Arrays.asList(response);
     }
 
@@ -90,8 +97,7 @@ public class UserMembershipService {
                 .buildAndExpand(organizationId)
                 .toUriString();
 
-        OrgMembership[] omsArray = kernel.getEntityOrNull(uri, OrgMembership[].class, user());
-        return Arrays.asList(omsArray);
+        return Arrays.asList(kernel.getEntityOrException(uri, OrgMembership[].class, user()));
     }
 
     @CacheEvict(value = "org-memberships", key = "#organizationId")
@@ -110,9 +116,20 @@ public class UserMembershipService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", membershipEtag);
 
-        ResponseEntity<Void> kernelResp = kernel.exchange(membershipUri, HttpMethod.PUT, new HttpEntity<>(request, headers), Void.class, user());
-        // validate response body
-        kernel.getBodyUnlessClientError(kernelResp, Void.class, membershipUri);
+        try {
+            ResponseEntity<Void> kernelResp = kernel.exchange(membershipUri, HttpMethod.PUT, new HttpEntity<>(request, headers), Void.class, user());
+            // validate response body
+            kernel.getBodyUnlessClientError(kernelResp, Void.class, membershipUri);
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
+                String translatedBusinessMessage = messageSource.getMessage("error.msg.update-membership",
+                        new Object[]{}, RequestContextUtils.getLocale(this.request));
+
+                throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
+            }
+
+            throw e;
+        }
     }
 
     @CacheEvict(value = "org-memberships", key = "#organizationId")
@@ -136,32 +153,44 @@ public class UserMembershipService {
         kernel.getBodyUnlessClientError(kernelResp, Void.class, uriString );
     }
 
-    public void createMembership(String email, String organizationId) throws EntityNotFoundException,
-            ForbiddenException, WrongQueryException {
-
-        class MembershipRequest {
-            @JsonProperty
-            String email;
-            @JsonProperty
-            boolean admin = false;
-        }
+    public UIPendingOrganizationMember createMembership(String email, boolean isAdmin, String organizationId) throws WrongQueryException {
 
         String uriString = UriComponentsBuilder.fromHttpUrl(userMembershipEndpoint)
                 .path("/memberships/org/{organization_id}").build().expand(organizationId).toUriString();
 
         MembershipRequest request = new MembershipRequest();
         request.email = email;
+        request.admin = isAdmin;
 
-        ResponseEntity<Void> kernelResp = kernel.exchange(uriString, HttpMethod.POST, new HttpEntity<Object>(request),
-                Void.class, user());
+        ResponseEntity<MembershipResponse> kernelResp = kernel.exchange(uriString, HttpMethod.POST, new HttpEntity<Object>(request),
+                MembershipResponse.class, user());
+
         // validate response body (business message is set to a more specific
         // one in CONFLICT case in portal service)
-        kernel.getBodyUnlessClientError(kernelResp, Void.class, uriString);
+        MembershipResponse response = kernel.getBodyUnlessClientError(kernelResp, MembershipResponse.class, uriString);
+
+        UIPendingOrganizationMember pendingOrganizationMember = new UIPendingOrganizationMember();
+        pendingOrganizationMember.setId(response.id);
+        pendingOrganizationMember.setEmail(email);
+        pendingOrganizationMember.setPendingMembershipEtag(kernelResp.getHeaders().getETag());
+        pendingOrganizationMember.setAdmin(isAdmin);
+        return pendingOrganizationMember;
+    }
+
+    private static class MembershipRequest {
+        @JsonProperty
+        String email;
+        @JsonProperty
+        boolean admin;
+    }
+
+    private static class MembershipResponse {
+        @JsonProperty
+        String id;
     }
 
     @CacheEvict(value = "pending-memberships", key = "#pendingMembershipId")
-    public void removePendingMembership(String pendingMembershipId, String pendingMembershipETag)
-            throws EntityNotFoundException, ForbiddenException, WrongQueryException {
+    public void removePendingMembership(String pendingMembershipId, String pendingMembershipETag) throws WrongQueryException {
         String uriString = UriComponentsBuilder.fromHttpUrl(userMembershipEndpoint)
                 .path("/pending-memberships/membership/{membership_id}").build().expand(pendingMembershipId)
                 .toUriString();
@@ -194,7 +223,6 @@ public class UserMembershipService {
 
         String uri = builder.buildAndExpand(organizationId).toUriString();
 
-        PendingOrgMembership[] response = kernel.getEntityOrNull(uri, PendingOrgMembership[].class, user());
-        return Arrays.asList(response);
+        return Arrays.asList(kernel.getEntityOrException(uri, PendingOrgMembership[].class, user()));
     }
 }

@@ -4,17 +4,19 @@ import '../util/csrf';
 
 import React from 'react';
 import PropTypes from "prop-types";
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 import createClass from 'create-react-class';
 
 import config from '../config/config';
+
 const notificationInterval = config.notificationsInterval;
+import UpdateTitle from '../components/update-title';
 
 //actions
-import { fetchNotifications, deleteNotification } from "../actions/notifications";
+import {fetchNotifications, deleteNotification} from "../actions/notifications";
 
-var NotificationTable = createClass({
-    getInitialState: function() {
+const NotificationTable = createClass({
+    getInitialState: function () {
         return {
             n: this.props.notifications || [],
             apps: this.props.apps || [],
@@ -29,16 +31,16 @@ var NotificationTable = createClass({
             intervalId: 0
         };
     },
-    componentWillReceiveProps(nextProps){
+    componentWillReceiveProps(nextProps) {
         this.setState({
             n: nextProps.notifications.sort(this.sortElement),
             apps: nextProps.apps
         });
     },
-    loadNotifications: function() {
+    loadNotifications: function () {
         this.props.fetchNotifications(this.state.filter.status);
     },
-    componentDidMount: function() {
+    componentDidMount: function () {
         this.loadNotifications();
         const intervalId = setInterval(this.loadNotifications, notificationInterval);
 
@@ -49,7 +51,7 @@ var NotificationTable = createClass({
     componentWillUnmount() {
         clearInterval(this.state.intervalId);
     },
-    sortBy: function(criterion) {
+    sortBy: function (criterion) {
         return () => {
             const currentSort = this.state.currentSort;
 
@@ -67,7 +69,7 @@ var NotificationTable = createClass({
             });
         };
     },
-    sortElement: function(a,b){
+    sortElement: function (a, b) {
         var currentSort = this.state.currentSort;
 
         if (typeof a[currentSort.prop] == typeof b[currentSort.prop]) {
@@ -81,28 +83,28 @@ var NotificationTable = createClass({
             }
         }
 
-        if (typeof a[currentSort.prop] == "undefined"){
+        if (typeof a[currentSort.prop] == "undefined") {
             return -currentSort.dir;
         }
-        if (typeof b[currentSort.prop] == "undefined"){
+        if (typeof b[currentSort.prop] == "undefined") {
             return currentSort.dir;
         }
 
         // In all other case, a basic and hazardous comparaison
-        return  (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
+        return (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
 
     },
     filterByStatus: function (event) {
         event.preventDefault();
-        var state = this.state;
+        const state = this.state;
         state.filter.status = event.target.value;
         this.setState(state);
         this.loadNotifications();
     },
     filterByApp: function (event) {
         event.preventDefault();
-        var state = this.state;
-        var appId = event.target.value;
+        const state = this.state;
+        let appId = event.target.value;
         if (appId == "all") {
             appId = null;
         }
@@ -110,42 +112,43 @@ var NotificationTable = createClass({
         this.setState(state);
     },
     render: function () {
-        var callback = this.props.deleteNotification;
-        var appId = this.state.filter.appId;
-        var status = this.state.filter.status;
-        var notificationNodes = this.state.n
+        const callback = this.props.deleteNotification;
+        const appId = this.state.filter.appId;
+        const status = this.state.filter.status;
+        let notificationNodes = this.state.n
             .filter(notif => appId == null || notif.applicationId == appId)
             .map(notif => <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={callback}/>
             );
 
         if (notificationNodes.length == 0) {
-            notificationNodes = <tr><td className="message" colSpan="4">{this.context.t('no-notification')}</td></tr>;
+            notificationNodes = <tr>
+                <td className="message" colSpan="4">{this.context.t('notif.no-notification')}</td>
+            </tr>;
         }
 
         return (
-            <section className="container" id="notifications">
-                <div className="row">
-                    <div className="col-md-12">
+            <section id="notifications" className="box">
+                <div className="flex-col">
+                    <div className="flex-row end">
                         <NotificationHeader filter={this.state.filter} updateStatus={this.filterByStatus}
                                             updateAppFilter={this.filterByApp} apps={this.state.apps}/>
                     </div>
-                    <div className="col-md-12">
-                        <table className="table">
-                            <thead>
-                            <tr>
-                                <SortableHeader name="date" label="date" size="2" sortBy={this.sortBy}
-                                                sort={this.state.currentSort}/>
-                                <SortableHeader name="appName" size="2" label="app" sortBy={this.sortBy}
-                                                sort={this.state.currentSort}/>
-                                <th className="col-sm-5">{this.context.t('message')}</th>
-                                <th className="col-sm-3"></th>
-                            </tr>
-                            </thead>
-                            <tbody>
-                            {notificationNodes}
-                            </tbody>
-                        </table>
-                    </div>
+
+                    <table className="oz-table table">
+                        <thead>
+                        <tr>
+                            <SortableHeader name="date" label={this.context.t('notif.date')} size="2" sortBy={this.sortBy}
+                                            sort={this.state.currentSort}/>
+                            <SortableHeader name="appName" size="2" label={this.context.t('notif.app')} sortBy={this.sortBy}
+                                            sort={this.state.currentSort}/>
+                            <th className="col-sm-5">{this.context.t('notif.message')}</th>
+                            <th className="col-sm-3"></th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {notificationNodes}
+                        </tbody>
+                    </table>
                 </div>
             </section>
         );
@@ -176,10 +179,10 @@ const mapDispatchToProps = dispatch => {
 
 const NotificationTableWithRedux = connect(mapStateToProps, mapDispatchToProps)(NotificationTable)
 
-var SortableHeader = createClass({
+const SortableHeader = createClass({
     render: function () {
-        var className = "col-sm-" + this.props.size + " sortable color";
-        var sortIcon = <i className="fa fa-sort"></i>;
+        const className = "col-sm-" + this.props.size + " sortable color";
+        let sortIcon = <i className="fa fa-sort"></i>;
         if (this.props.sort.prop == this.props.name) {
             if (this.props.sort.dir == -1) {
                 sortIcon = <i className="fa fa-sort-desc"></i>;
@@ -189,7 +192,8 @@ var SortableHeader = createClass({
         }
 
         return (
-            <th className={className} onClick={this.props.sortBy(this.props.name)}>{this.context.t(this.props.label)} {sortIcon}</th>
+            <th className={className}
+                onClick={this.props.sortBy(this.props.name)}>{this.context.t(this.props.label)} {sortIcon}</th>
         );
     }
 
@@ -198,7 +202,7 @@ SortableHeader.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var NotificationHeader = createClass({
+const NotificationHeader = createClass({
     render: function () {
         return (
             <div className="pull-right">
@@ -208,9 +212,9 @@ var NotificationHeader = createClass({
                     </div>
                     <div className="form-group">
                         <select name="status" className="form-control" onChange={this.props.updateStatus}>
-                            <option value="UNREAD">{this.context.t('unread')}</option>
-                            <option value="READ">{this.context.t('read')}</option>
-                            <option value="ANY">{this.context.t('any')}</option>
+                            <option value="UNREAD">{this.context.t('notif.unread')}</option>
+                            <option value="READ">{this.context.t('notif.read')}</option>
+                            <option value="ANY">{this.context.t('notif.any')}</option>
                         </select>
                     </div>
                 </form>
@@ -222,14 +226,14 @@ NotificationHeader.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var AppFilter = createClass({
+const AppFilter = createClass({
     render: function () {
-        var options = this.props.apps.map(function (app) {
+        const options = this.props.apps.map(function (app) {
             return <option key={app.id} value={app.id}>{app.name}</option>;
         });
         return (
             <select name="app" className="form-control" onChange={this.props.onChange}>
-                <option value="all">{this.context.t('all-apps')}</option>
+                <option value="all">{this.context.t('notif.all-apps')}</option>
                 {options}
             </select>
         );
@@ -239,35 +243,36 @@ AppFilter.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
-var Notification = createClass({
+const Notification = createClass({
     displayName: "Notification",
     removeNotif: function () {
         this.props.onRemoveNotif(this.props.notif.id);
     },
-    render: function() {
-        var action_by_url = null;
-        var action_archive = null;
+    render: function () {
+        let action_by_url = null;
+        let action_archive = null;
 
         if (this.props.notif.url) {
-            var className = "btn btn-default pull-right";
-            if (this.props.notif.status !== "READ")
-                className = className + " btn-line";
-            action_by_url = <a href={this.props.notif.url} target="_new" className={className} >{this.props.notif.actionText}</a>;
+            const className = "btn btn-default pull-right";
+            action_by_url =
+                <a href={this.props.notif.url} target="_new" className={className}>{this.props.notif.actionText}</a>;
         }
-        if(this.props.notif.status !== "READ") {
-            action_archive = <a href="#" className="btn btn-default pull-right" onClick={this.removeNotif}>{this.context.t('archive')}</a>;
+        if (this.props.notif.status !== "READ") {
+            action_archive = <a href="#" className="btn btn-default pull-right"
+                                onClick={this.removeNotif}>{this.context.t('notif.archive')}</a>;
         }
 
         return (
             <tr>
                 <td className="col-sm-2 date">{this.props.notif.dateText}</td>
                 <td className="col-sm-2 app">{this.props.notif.appName}</td>
-                <td className="col-sm-5 message" dangerouslySetInnerHTML={{__html: this.props.notif.formattedText}}></td>
+                <td className="col-sm-5 message"
+                    dangerouslySetInnerHTML={{__html: this.props.notif.formattedText}}></td>
                 <td className="col-sm-3">
                     {action_archive} {action_by_url}
                 </td>
             </tr>
-            );
+        );
     }
 });
 Notification.contextTypes = {
@@ -281,24 +286,17 @@ class NotificationTableWrapper extends React.Component {
     };
 
     render() {
-        return <div className="oz-body page-row page-row-expanded">
+        return <div className="oz-body wrapper flex-col">
 
-            <div className="container-fluid">
-                <div className="row">
-                    <div className="col-md-12">
-                        <h1 className="text-center">
-                            <img src="/img/bell.png" />
-                            <span>{this.context.t('ui.notifications')}</span>
-                        </h1>
-                    </div>
-                </div>
-            </div>
+            <UpdateTitle title={this.context.t('ui.notifications')}/>
 
-            <div className="oz-body-content">
-                <NotificationTableWithRedux/>
-            </div>
+            <header className="title">
+                <span>{this.context.t('ui.notifications')}</span>
+            </header>
 
-            <div className="push"></div>
+            <NotificationTableWithRedux/>
+
+            <div className="push"/>
         </div>;
     }
 }

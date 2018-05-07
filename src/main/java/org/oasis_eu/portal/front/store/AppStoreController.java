@@ -6,12 +6,9 @@ import org.oasis_eu.portal.front.generic.PortalController;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.oasis_eu.portal.services.MyNavigationService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -31,9 +28,6 @@ public class AppStoreController extends PortalController {
     @Autowired
     private MyNavigationService myNavigationService;
 
-    @Autowired
-    private MessageSource messageSource;
-
     @ModelAttribute("navigation")
     public List<MyNavigation> getNavigation() {
         return myNavigationService.getNavigation(null);
@@ -46,7 +40,7 @@ public class AppStoreController extends PortalController {
 
 
     @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
-    public String main(@PathVariable String lang, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public String main(@PathVariable String lang, HttpServletRequest request) {
         if (requiresLogout()) {
             return "redirect:/logout";
         }
@@ -61,46 +55,32 @@ public class AppStoreController extends PortalController {
             return "redirect:/" + requestLanguage + "/store";
         }
 
-//        model.addAttribute("defaultApp", null);
-
-        return "/index";
+        return "index";
     }
 
 
     @RequestMapping(value = {"/service/{serviceId}", "/service/{serviceId}/*"}, method = RequestMethod.GET)
-    public String service(@PathVariable String lang, @PathVariable String serviceId, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public String service(@PathVariable String lang, @PathVariable String serviceId, HttpServletRequest request) {
         String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
         if (!lang.equals(requestLanguage)) {
             return "redirect:/" + requestLanguage + "/store/service/" + serviceId;
         }
 
-        /*Map<String, String> defaultApp = new HashMap<>();
-        defaultApp.put("type", "service");
-        defaultApp.put("id", serviceId);
-
-        model.addAttribute("defaultApp", defaultApp);*/
-
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(value = {"/application/{applicationId}", "/application/{applicationId}/*"}, method = RequestMethod.GET)
-    public String application(@PathVariable String lang, @PathVariable String applicationId, HttpServletRequest request, Model model, RedirectAttributes redirectAttributes) {
+    public String application(@PathVariable String lang, @PathVariable String applicationId, HttpServletRequest request) {
         String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
         if (!lang.equals(requestLanguage)) {
             return "redirect:/" + requestLanguage + "/store/application/" + applicationId;
         }
 
-        /*Map<String, String> defaultApp = new HashMap<>();
-        defaultApp.put("type", "application");
-        defaultApp.put("id", applicationId);
-
-        model.addAttribute("defaultApp", defaultApp);*/
-
-        return "/index";
+        return "index";
     }
 
     @RequestMapping(method = RequestMethod.GET, value = "/login")
-    public String login(HttpServletRequest request, HttpSession session, RedirectAttributes redirectAttributes, @RequestParam(required = false) String appId, @RequestParam(required = false) String appType) {
+    public String login(HttpServletRequest request, HttpSession session, @RequestParam(required = false) String appId, @RequestParam(required = false) String appType) {
         AppStoreNavigationStatus status = new AppStoreNavigationStatus();
         if (appId != null && appType != null) {
             status.setAppId(appId);
@@ -129,4 +109,3 @@ public class AppStoreController extends PortalController {
     }
 
 }
-

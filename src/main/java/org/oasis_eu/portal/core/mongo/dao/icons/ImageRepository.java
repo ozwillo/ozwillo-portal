@@ -13,7 +13,7 @@ import java.util.List;
  */
 public interface ImageRepository extends MongoRepository<Image, String> {
 
-    public Image findByUrl(String url);
+    Image findByUrl(String url);
 
-    public List<Image> findByDownloadedTimeBefore(DateTime before, Pageable page);
+    List<Image> findByDownloadedTimeBefore(DateTime before, Pageable page);
 }

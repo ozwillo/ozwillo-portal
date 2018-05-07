@@ -1,0 +1,14 @@
+
+.arrow-regular {
+    border-top-color: var(--secondary-color) !important;
+}
+
+.tippy-popper[x-placement^=top] [data-animation=shift].enter {
+    background-color: var(--secondary-color);
+    color: var(--tertiary-color);
+}
+
+.tippy-tooltip {
+    -webkit-font-smoothing: initial !important;
+    -moz-osx-font-smoothing: initial !important;
+}

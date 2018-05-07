@@ -1,0 +1,86 @@
+
+.instance-invitation-form .content {
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+}
+
+.instance-invitation-form .select,
+.instance-invitation-form .new-user-fieldset {
+    width: 100%;
+}
+
+.instance-invitation-form .sep-text {
+    margin: 0 10px;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    color: var(--secondary-color)
+}
+
+.instance-invitation-form .label {
+    color: var(--secondary-color);
+    font-size: 0.8em;
+    margin: 0;
+}
+
+.instance-invitation-form .field {
+    display: inline;
+    margin: 0 5px;
+}
+
+.instance-invitation-form .send-icon {
+    color: var(--primary-color);
+    font-size: 1.6em;
+}
+
+.instance-invitation-form .new-user-fieldset {
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.instance-invitation-form .error,
+.instance-invitation-form .success {
+    font-size: 1.1em;
+    align-self: center;
+    margin: 2px 0;
+}
+
+.instance-invitation-form .error {
+    color: var(--alert-color);
+}
+
+.instance-invitation-form .success {
+    color: var(--primary-color);
+}
+
+.instance-invitation-form .btn-submit {
+    padding: 3px 6px;
+    font-size: 0.9em;
+}
+
+.instance-invitation-form .form-control {
+    width: auto !important;
+}
+
+@media (max-width: 425px) {
+
+    .instance-invitation-form .content {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .instance-invitation-form .sep-text {
+        margin: 5px auto;
+    }
+
+    .instance-invitation-form .label,
+    .instance-invitation-form .form-control {
+        width: 100% !important;
+    }
+
+    .instance-invitation-form .label {
+        display: flex;
+        align-items: center;
+        justify-content: flex-end;
+    }
+}

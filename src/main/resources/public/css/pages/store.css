@@ -1,5 +1,6 @@
 #store {
     padding-bottom: 0 !important;
+    height: auto;
 }
 
 #store-search {
@@ -10,43 +11,50 @@
     font-weight: 300;
 }
 
-#store-apps {
-    background-color: #fff;
+#store-search .right .form-group label {
+    width: auto;
+}
+
+#store-search .control-label {
+    color: var(--secondary-color);
+}
+
+#store-apps .container-app {
+    min-width: 230px;
 }
 
 #store-apps .app {
-    margin-bottom: 92px;
-    margin-top: 25px;
+    position: relative;
+    padding-top: calc(25px + (64px / 2)); /* padding top + (image width / 2)  */
     overflow: visible;
     cursor: pointer;
 }
 
 #store-apps .logo {
-    background: url("/img/cercle.png");
+    display: flex;
     position: absolute;
-    top: 25px;
-    z-index: 99;
-    width: 164px !important;
-    height: 164px !important;
-    display: block;
-    margin-left: -82px;
-    left: 50%;
+    top: calc((64px / 2) - 25px); /* (image size / 2)  - padding top */
+    z-index: 1;
+    background-color: var(--tertiary-color);
+    border: solid 1px var(--gray-color);
+    border-radius: 100%;
+    left: calc(50% - (64px / 2) - 25px); /* (width / 2) - (image width / 2) - padding left */
+    padding: 25px;
 }
 
-@media (max-width: 990px) {
-    #store-apps .logo {
-        top: 5px;
-    }
-}
 #store-apps .logo img {
-    margin: 50px 0 0 50px;
+    margin: auto;
+    width: 64px;
+    height: 64px;
 }
 
 #store-apps .app .description {
-    border: 1px solid #d3d2d2;
+    background-color: var(--tertiary-color);
+    border: 1px solid var(--gray-color);
     display: block;
-    top: 82px;
     position: relative;
+    border-radius: 5px;
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2)
 }
 
 #store-apps .app .description .app-header {
@@ -55,7 +63,7 @@
 }
 
 #store-apps .app .description .app-name {
-    color: #4c4c4c;
+    color: var(--secondary-color);
     font-size: 24px;
     margin: 90px 0 10px 0;
     text-align: center;
@@ -63,14 +71,14 @@
 }
 
 #store-apps .app .description .app-provider {
-    color: #545454;
+    color: var(--primary-color);
     font-size: 15px;
     text-align: center;
     display: block;
 }
 
 #store-apps .app .description .app-description {
-    color: #545454;
+    color: var(--black-color);
     font-size: 15px;
     margin: 0 40px 28px 40px;
     text-align: center;
@@ -110,28 +118,42 @@
     margin-bottom: 15px;
 }
 
+#store-apps .app .description .app-status .btn {
+    border-radius: 0;
+}
+
 #store-apps .app .description .app-status .btn-buy {
-    background-color: #e91659;
+    background-color: var(--buy-color);
 }
 
 #store-apps .app .description .app-status .btn-buy-indicator {
-    background-color: #ce124f;
+    background-color: var(--buy-dark-color);
 }
 
 #store-apps .app .description .app-status .btn-free {
-    background-color: #f8ba03;
+    background-color: var(--free-color);
 }
 
 #store-apps .app .description .app-status .btn-free-indicator {
-    background-color: #f69b04;
+    background-color: var(--free-dark-color)
 }
 
 #store-apps .app .description .app-status .btn-installed {
-    background-color: #43a047;
+    background-color: var(--installed-color);
 }
 
 #store-apps .app .description .app-status .btn-installed-indicator {
-    background-color: #2e7d32;
+    background-color: var(--installed-dark-color);
+}
+
+#store-apps .app .description .app-status .btn-buy,
+#store-apps .app .description .app-status .btn-buy-indicator,
+#store-apps .app .description .app-status .btn-free,
+#store-apps .app .description .app-status .btn-free-indicator,
+#store-apps .app .description .app-status .btn-installed,
+#store-apps .app .description .app-status .btn-installed-indicator {
+    margin: 0;
+    color: var(--tertiary-color);
 }
 
 #store-apps .oz-simple-modal .next {
@@ -147,12 +169,11 @@
     display: inline-block;
     width: 26px;
     font-size: 2em;
-    background-color: white;
+    background-color: var(--tertiary-color);
 }
 
 #store-loadmore {
     padding: 30px 0 30px 0;
-    background-color: #fff;
 }
 
 #store-loadmore .oz-btn-loadmore {
@@ -168,7 +189,11 @@
     margin: 24px auto;
 }
 
-@media (max-width: 991px) {
+#store-apps > .row {
+    flex-wrap: wrap;
+}
+
+@media (max-width: var(m-tablet-width)) {
     #store div.app-screenshots {
         left: 0;
         width: 100%;

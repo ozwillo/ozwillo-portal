@@ -15,7 +15,7 @@ const defaultState = {
 export default (state = defaultState, action) => {
     const nextState = Object.assign({}, state);
 
-    switch(action.type) {
+    switch (action.type) {
         case FETCH_NOTIFICATIONS_COUNT:
             nextState.message = action.message;
             nextState.count = action.count;

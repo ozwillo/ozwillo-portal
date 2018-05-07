@@ -1,7 +1,8 @@
 spring:
   output.ansi.enabled: DETECT
   # only for 64x64 pngs which should be mostly below 5000B
-  http.multipart.max-file-size: 20KB
+  # now also for CSV of organizations to import, so upgraded to 200KB
+  http.multipart.max-file-size: 200KB
   # mandatory since 1.4 even if we do not use it directly
   session.store-type: none
   # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
@@ -65,6 +66,7 @@ application:
     country: adrpost:country
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
+  importPassword: $2a$10$E7r2ThFeUbaW0NIBWyPuI.1t5ZrrSaRu8tWkt1/KjgHFJSn0BDkvm
 
 # some switches:
 # devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
@@ -119,7 +121,6 @@ kernel:
   client_secret: changeit
   # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
   scopes_to_require: openid profile email address phone datacore
-  maxUserMembershipsPerPage: 20
   portal_endpoints:
     subscriptions: ${kernel.base_uri}/apps/subscriptions
     catalog: ${kernel.base_uri}/m

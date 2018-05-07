@@ -1,0 +1,34 @@
+.flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-row.end {
+    justify-content: flex-end;
+}
+
+.flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+.flex-col.end {
+    justify-content: flex-end;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.hidden {
+    display: none;
+}
+
+.undecorated-list {
+    list-style: none;
+    padding: 0;
+}
+
+.undecorated-link {
+    text-decoration: none !important;
+}

@@ -15,8 +15,8 @@ logger("org.oasis_eu.portal.services", DEBUG)
 
 // Integration - kernel
 logger("org.oasis_eu.spring", INFO)
-logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", INFO) // ERROR, WARN (prod), INFO (preprod, dev), DEBUG
-logger("kernelLogging.logFullErrorResponses", INFO) // DEBUG logs any response, INFO only error ones
+logger("org.oasis_eu.spring.util.KernelLoggingInterceptor", DEBUG) // ERROR, WARN (prod), INFO (preprod, dev), DEBUG
+logger("kernelLogging.logFullErrorResponses", DEBUG) // DEBUG logs any response, INFO only error ones
 logger("kernelLogging.logRequestTimings", INFO)
 logger("org.oasis_eu.spring.kernel.security.OasisAuthenticationFilter", INFO)
 

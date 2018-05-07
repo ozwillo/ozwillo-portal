@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.services.kernel;
 
-import org.oasis_eu.portal.model.kernel.UserProfile;
+import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;

@@ -1,39 +1,61 @@
 /* GLOBAL STYLES */
-
+@import 'variables.css';
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,700);
-
 /* Components */
 @import 'components/btn.css';
+@import 'components/custom-tooltip.css';
 @import 'components/datepicker.css';
+@import 'components/dropdown-helper.css';
+@import 'components/dropdown-menu.css';
 @import 'components/footer.css';
 @import 'components/header.css';
 @import 'components/layout.css';
 @import 'components/modal.css';
 @import 'components/nav.css';
-@import 'components/notification.css';
+@import 'components/popup.css';
 @import 'components/react-autosuggest.css';
 @import 'components/select.css';
-
-
+@import 'components/service.css';
+@import 'components/table.css';
+@import 'components/tabs.css';
+@import 'components/tabs/admin-tab.css';
+@import 'components/tabs/instances-tab.css';
+@import 'components/tabs/members-tab.css';
+@import 'components/forms/form.css';
+@import 'components/forms/instance-config-form.css';
+@import 'components/forms/instance-invitation-form.css';
+@import 'components/forms/organization-invitation-form.css';
 /* Pages */
 @import 'pages/dashboard.css';
-@import 'pages/my-apps.css';
 @import 'pages/notifications.css';
-@import 'pages/organization.css';
+@import 'pages/organization-create.css';
+@import 'pages/organization-search.css';
+@import 'pages/organization-desc.css';
 @import 'pages/profile.css';
 @import 'pages/store.css';
 @import 'pages/synchronize-fc-profile.css';
+/* Helper */
+@import './helper.css';
 
 /* styles needed to have a responsive fixed footer
      while having main content (with page-row-expanded class) taking up all available space */
 
 html,
-body, #root { height: 100%; }
+body {
+    height: 100%;
+    margin: 0;
+
+}
+
+#root {
+    display: flex;
+    min-height: 100%;
+}
 
 body {
-    display: table;
     width: 100%;
-    color: #fff !important;
+    min-height: 100vh;
+    background-color: var(--tertiary-color);
 }
 
 body, h1, h2 {
@@ -43,7 +65,7 @@ body, h1, h2 {
 
 h4 {
     font-weight: 300 !important;
-    color: #333 !important;
+    color: var(--secondary-color) !important;
 }
 
 label {
@@ -59,19 +81,35 @@ label.required {
     display: table-row;
 }
 
-.page-row-expanded { height: 100%; }
+.page-row-expanded {
+    height: 100%;
+}
+
 /* END page-row */
 
 /* oz-body */
 .oz-body {
-    background: #6f438e;
+    background: var(--bg-content-color);
 }
 
-.oz-body h1 {
-    font-size:36px;
-    margin: 30px 0 30px 0;
-    display:block;
+.oz-body.light {
+    background: var(--tertiary-color);
+}
+
+.oz-body.wrapper {
+    padding: 20px 100px;
+    height: 100%;
+}
+
+.oz-body .title{
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 2em;
+    text-transform: uppercase;
     vertical-align: middle;
+    text-align: center;
+    margin: 20px 0;
+
 }
 
 .oz-body h1 span {
@@ -79,8 +117,8 @@ label.required {
 }
 
 .oz-body h2 {
-    font-size:20px;
-    display:block;
+    font-size: 20px;
+    display: block;
     margin-bottom: 20px;
 }
 
@@ -88,12 +126,8 @@ label.required {
     font-size: 18px;
 }
 
-.oz-body div.oz-body-content {
-    padding-bottom: 30px;
-}
 /* END oz-body */
 
-/* helper */
 .top {
     margin-top: 25px;
 }
@@ -109,16 +143,74 @@ label.required {
 }
 
 .text-align-middle {
-    padding-top:0.5em;
+    padding-top: 0.5em;
 }
 
-.flex-row {
-    display: flex;
-    flex-direction: row;
+.error-message {
+    color: var(--alert-color);
+    width: 100%;
+    text-align: left;
+    margin: auto 5px;
 }
 
-.flex-col {
-    display: flex;
-    flex-direction: column;
+.success-message {
+    color: var(--primary-color);
+    width: 100%;
+    text-align: left;
+    margin: auto 5px;
 }
-/* end helper */
+
+.box {
+    background-color: var(--tertiary-color);
+    margin: 10px 5px;
+    padding: 10px 20px;
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
+    4px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.alert-message {
+    color: var(--secondary-color);
+    font-size: 1.2em;
+}
+
+.alert-message > .line {
+    display: block;
+    width: 100%;
+    margin: 5px 0;
+}
+
+/* Loading */
+.loading-container {
+    text-align: center;
+}
+
+.loading-container .loading {
+    font-size: 2.5em;
+}
+
+.loading {
+    color: var(--primary-color);
+}
+
+.caret {
+    margin-left: 10px !important;
+}
+
+a {
+    color: var(--secondary-color);
+}
+
+/* tablet */
+@media (max-width: 768px) {
+    .oz-body.wrapper {
+        padding: 20px 50px;
+    }
+}
+
+/* phone */
+@media (max-width: 425px) {
+    .oz-body.wrapper {
+        padding: 0px;
+    }
+}
+

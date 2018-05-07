@@ -25,9 +25,9 @@ var RatingWrapper = createClass({
 
         return (
             <Rating start={0} stop={5} step={1} readonly={!this.props.rateable} initialRate={this.props.rating}
-                    onChange={(rate) => this.props.rate(rate)} empty={empty} full={full} />
+                    onChange={(rate) => this.props.rate(rate)} empty={empty} full={full}/>
         );
     }
 });
 
-module.exports = { RatingWrapper };
+module.exports = {RatingWrapper};

@@ -2,15 +2,14 @@ package org.oasis_eu.portal.services.dc.organization;
 
 import com.google.common.base.Strings;
 import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.model.kernel.UserProfile;
-import org.oasis_eu.portal.model.network.UIOrganization;
+import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.portal.services.NetworkService;
+import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
-import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -141,13 +140,13 @@ public class OrganizationService {
     /**
      * Create organization in DC and create/update data in kernel
      */
-    public UIOrganization create(DCOrganization dcOrganization) {
+    public UIOrganization create(DCOrganization dcOrganization, boolean updateUserInfo) {
         if (dcOrganization.getLang() == null || dcOrganization.getLang().isEmpty()) {
             dcOrganization.setLang(RequestContextUtils.getLocale(request).getLanguage());
         }
         // create DC Organization
         DCResource dcResource = dcOrganizationService.create(dcOrganization);
-        updateUserInfo(dcOrganization);
+        if (updateUserInfo) updateUserInfo(dcOrganization);
         if (dcResource != null && !dcOrganization.isExist()) {
             UIOrganization uiOrganization = createOrUpdateKernelOrganization(dcOrganization);
             if (uiOrganization == null) { // if null, then the organization exists in kernel.
@@ -187,12 +186,12 @@ public class OrganizationService {
                     dcOrganization.getTax_reg_num(), dcOrganization.getCountry_uri());
                 dcResource.setVersion(Integer.parseInt(dcOrganization.getVersion()));
 
-                if (dcOrganizationService.changeDCOrganizationRights(dcResource, uiOrganization.getId())) {
+                //if (dcOrganizationService.changeDCOrganizationRights(dcResource, uiOrganization.getId())) {
                     //If rights have changed, then the version has increased in DC, so we increase it here as well.
-                    dcOrganization.setVersion(String.valueOf(Integer.parseInt(dcOrganization.getVersion()) + 1));
+                    //dcOrganization.setVersion(String.valueOf(Integer.parseInt(dcOrganization.getVersion()) + 1));
                     // now it can (by right) update an DC Organization
                     dcOrganizationService.update(dcOrganization);
-                }
+                //}
             } else { // Not updated
                 String message = String.format("Kernel Organization (%s) had been edited since you've started filling in the form.",
                     dcOrganization.getAlt_name());
@@ -234,7 +233,7 @@ public class OrganizationService {
         if (knOrganization == null) {
             // org not found in kernel
             UIOrganization createdKOrg =
-                networkService.createOrganization(dcOrganization.getLegal_name(), sectorType.name(), territoryId, dcId);
+                    networkService.createOrganization(dcOrganization.getLegal_name(), sectorType.name(), territoryId, dcId);
             if (createdKOrg != null && createdKOrg.getId() != null) {
                 return createdKOrg;
             }

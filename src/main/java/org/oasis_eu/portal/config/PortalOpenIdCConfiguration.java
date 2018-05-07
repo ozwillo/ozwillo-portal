@@ -16,7 +16,12 @@ public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
 
     @Override
     public boolean requireAuthenticationForPath(String path) {
-        return path.contains("/my/api/"
-            + ((noauthdevmode && devmode) ? "nothing" : ""));
+        return path.contains("/my/api/" + ((noauthdevmode && devmode) ? "nothing" : ""))
+            && !path.contains("/api/organization/import");
+    }
+
+    @Override
+    public boolean skipAuthenticationForPath(String path) {
+        return path.contains("/api/organization/import");
     }
 }

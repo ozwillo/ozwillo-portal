@@ -1,22 +1,26 @@
-#profile h2 {
-    padding-bottom: 15px;
-    border-bottom: 1px solid #9271a9;
-}
-
-#profile form label {
-    color: #dcd9d9;
-}
-
-#profile form span.form-value {
-    font-size: 16px;
-}
-
-#profile form a.change-password {
-    text-decoration: underline;
-    color: #add8e6;
-}
 
 #legal {
     font-size: smaller;
     margin-top: 30px;
+    color: var(--secondary-color);
+}
+
+#profile .change-password {
+    text-align: center;
+}
+
+#profile .sub-title {
+    color: var(--primary-color);
+    font-weight: bold !important;
+    margin: 5px 0;
+    font-size: 1.2em;
+    text-transform: uppercase;
+}
+
+#profile .btn {
+    min-width: 200px;
+    font-size: 1.2em;
+    margin: 5px auto;
+    white-space: normal;
+    font-weight: inherit;
 }

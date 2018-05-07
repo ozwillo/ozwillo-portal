@@ -1,13 +1,23 @@
 .modal-header .modal-title {
     font-size: 26px;
-    color: #333;
+    color: var(--secondary-color);
     margin: 0 0 20px 0;
 }
 
 .modal-content {
-    color: #333;
+    color: var(--secondary-color);
+    background-color: var(--tertiary-color) !important;
 }
 
 .oz-simple-modal .modal-footer {
     border-top: none;
+}
+
+.modal-header .close {
+    opacity: 1;
+}
+
+.modal-header .close .icon {
+    color: var(--secondary-color);
+    font-size: 1.2em;
 }

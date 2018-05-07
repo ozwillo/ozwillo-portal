@@ -1,6 +1,5 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import {connect} from 'react-redux';
 
 //Actions
 import {
@@ -11,7 +10,7 @@ import {
 class BootLoader extends React.Component {
 
     componentDidMount() {
-        if(this.props.user.sub){
+        if (this.props.user.sub) {
             this.props.fetchMyConfig();
         } else {
             this.props.fetchConfig();

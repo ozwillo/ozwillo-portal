@@ -1,47 +1,55 @@
+#dashboard {
+    height: 100%;
+}
+
 #dashboard .nav-tabs {
-    border-bottom-color: #4c2d62;
+    border: none;
+}
+
+#dashboard .all-apps .list {
+    flex-wrap: wrap;
+}
+
+#dashboard .all-apps .list > .item {
+    margin: 0.4em;
 }
 
 #dashboard ul.nav.nav-tabs > li {
-    margin-right: 10px;
+    margin-right: 0.7em;
+    box-shadow: -1px -1px 3px -1px rgba(0, 0, 0, 0.2)
 }
 
 #dashboard ul.nav.nav-tabs > li > a {
     font-size: 20px;
-    color: #fff;
     border-radius: 0;
-    border: 1px solid #4c2d62;
+    color: var(--tertiary-color);
+    background-color: var(--primary-color);
+    border-color: transparent;
+    border-width: 2px 0 0 0;
+    margin: 0;
 }
 
+#dashboard ul.nav.nav-tabs > li > a.over,
 #dashboard ul.nav.nav-tabs > li.active > a {
-    background-color: #4c2d62;
-}
-
-#dashboard ul.nav.nav-tabs > li > a:hover {
-    background-color: #fff;
-    color: #6f438e;
-    border-color: #fff;
+    color: var(--secondary-color);
+    background-color: var(--tertiary-color);
+    border-color: var(--primary-color);
 }
 
 #dashboard ul.nav.nav-tabs > li > a i {
     margin-left: 5px;
 }
 
-#dashboard div.all-apps {
+#dashboard .all-apps {
+    height: 100%;
+    background-color: var(--tertiary-color);
     padding-left: 0;
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
+    4px 3px 3px rgba(0, 0, 0, 0.2);
+
 }
 
-#dashboard div.appzone {
-    position: relative;
-    float: left;
-    margin-top: 1em;
-    margin-bottom: 1em;
-}
-
-#dashboard div.appzone div.dropzone {
-    float: left;
-    height: 160px;
-    width: 20px;
+#dashboard .appzone .dropzone {
     transition: width 0.2s;
     -moz-transition: width 0.2s;
     -webkit-transition: width 0.2s;
@@ -49,73 +57,120 @@
     -ms-transition: width 0.2s;
 }
 
-#dashboard div.appzone div.app {
-    float: left;
+#dashboard .appzone .app {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
     overflow: hidden;
-    height: 160px;
-    width: 120px;
-    padding-top: 10px;
-    border-radius: 5px;
-    text-align:center;
-    position:relative;
-    display:inline-block;
-}
-
-#dashboard div.appzone div.app span.badge-notifications {
-    position: absolute;
-    right:17px;
-    top:0;
-    background:red;
+    width: 130px;
+    height: 100%;
+    border-radius: 3px;
     text-align: center;
-    border-radius: 30px 30px 30px 30px;
-    color:white;
-    padding:5px 8px;
-    font-size:12px;
+    padding: 10px;
+
+    color: var(--secondary-color);
+    font-size: 0.8em;
 }
 
-#dashboard div.appzone div.app.pending img {
-    filter: grayscale(100%);
-    -webkit-filter: grayscale(50%);
-    -moz-filter: grayscale(100%);
-    -ms-filter: grayscale(100%);
+#dashboard .appzone .app.disabled {
+    opacity: 0.5;
+    user-drag: none;
+    user-select: none;
+    -moz-user-select: none;
+    -webkit-user-drag: none;
+    -webkit-user-select: none;
+    -ms-user-select: none;
 }
 
-#dashboard div.appzone div.app.pending p {
-    color: #d3d3d3;
+#dashboard .appzone .app .image {
+    margin-bottom: 5px;
 }
 
-#dashboard div.appzone div.app:hover {
-    background: #4c2d62;
+
+#dashboard .appzone .dropzone.dragover .app,
+#dashboard .appzone .app:hover {
+    color: var(--tertiary-color);
+    background-color: var(--primary-color);
 }
 
-#dashboard div.appzone.delete-app {
-    width: 140px;
+#dashboard .appzone {
+    position: relative;
 }
 
-#dashboard div.appzone.delete-app div.app {
-    margin-left: 20px;
+#dashboard .appzone .app.pending:hover {
+    color: var(--primary-color);
+    background-color: var(--tertiary-color);
 }
 
-#dashboard div.appzone div.app div.action-icon {
+#dashboard .appzone .app .action-icon {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
     height: 64px;
     width: 64px;
     margin: auto;
 }
 
-#dashboard div.appzone div.app div.action-icon a {
-    color: #fff;
+#dashboard .action-icon a {
+    color: var(--primary-color);
+}
+
+#dashboard .app:hover .action-icon a {
+    color: var(--tertiary-color);
+}
+
+#dashboard .top-menu {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-end;
+}
+
+#dashboard .top-menu .action-icon {
+    font-size: 0.8em;
+    margin: 0 2px;
+}
+
+#dashboard .top-menu .action-icon.delete-app {
+    color: var(--alert-color);
+}
+
+#dashboard .action-icon .fa-trash {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+#dashboard .app:hover .action-icon .fa-trash {
+    color: var(--tertiary-color);
+    border-color: var(--tertiary-color);
+}
+
+#dashboard .appzone .app p {
+    margin: 0;
 }
 
 /* See non-webkit sol : http://codepen.io/anon/pen/oXxKpE?editors=110 */
 @supports (-webkit-line-clamp: 4) {
-    #dashboard div.appzone div.app p {
+    #dashboard .appzone .app p {
         display: -webkit-box;
         -webkit-line-clamp: 4;
         -webkit-box-orient: vertical;
         text-overflow: ellipsis;
         overflow: hidden;
     }
-    #dashboard div.appzone div.app p:after {
+
+    #dashboard .appzone .app p:after {
         display: none;
+    }
+}
+
+@media (max-width: 425px) {
+    #dashboard ul.nav.nav-tabs > li {
+        width: 100%;
+    }
+
+    #dashboard .all-apps .list {
+        justify-content: center;
     }
 }

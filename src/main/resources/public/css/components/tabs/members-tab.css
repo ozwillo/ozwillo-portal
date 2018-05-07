@@ -1,0 +1,48 @@
+.members-tab .sub-title {
+    color: var(--secondary-color);
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+.members-tab .btn-submit {
+    background-color: var(--tertiary-color);
+    padding: 3px 6px !important;
+    border-radius: 4px !important;
+}
+
+.members-tab .add-member {
+    margin: 30px 0;
+}
+
+.members-tab .search {
+    margin-bottom: 20px;
+}
+
+.add-member .label,
+.add-member .action-icon,
+.add-member .legend {
+    color: white !important;
+}
+
+.members-tab .search-member .members-list > .member {
+    margin: 10px 0;
+}
+
+.members-tab .select {
+    min-width: 250px;
+}
+
+.members-tab .organization-invitation-form {
+    font-size: 1.2em;
+}
+
+.members-tab .organization-invitation-form > fieldset {
+    width: 100%;
+}
+
+@media (max-width: 425px) {
+    .members-tab .select {
+        min-width: auto;
+        width: 100%;
+    }
+}

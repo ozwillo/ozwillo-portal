@@ -34,7 +34,7 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
     @Override
     @Cacheable("user-instances")
     public List<ApplicationInstance> findByUserId(String userId) {
-        return Arrays.asList(kernel.getEntityOrNull(appsEndpoint + "/instance/user/{user_id}",
+        return Arrays.asList(kernel.getEntityOrException(appsEndpoint + "/instance/user/{user_id}",
             ApplicationInstance[].class, user(), userId));
 
     }
@@ -58,7 +58,7 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
             .expand(userId)
             .toUriString();
 
-        List<ApplicationInstance> appInstancesList = Arrays.asList(kernel.getEntityOrNull(uriString, ApplicationInstance[].class, user()));
+        List<ApplicationInstance> appInstancesList = Arrays.asList(kernel.getEntityOrException(uriString, ApplicationInstance[].class, user()));
         logger.debug("Found {} pending instances", appInstancesList.size());
         return appInstancesList;
     }

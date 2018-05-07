@@ -29,7 +29,7 @@ public class ApplicationInstanceCreationException extends RuntimeException {
     }
 
 
-    public static enum ApplicationInstanceErrorType {
+    public enum ApplicationInstanceErrorType {
         TECHNICAL_ERROR,
         INVALID_REQUEST
     }

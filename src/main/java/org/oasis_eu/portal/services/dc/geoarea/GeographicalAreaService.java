@@ -56,7 +56,7 @@ public class GeographicalAreaService {
     }
 
     /**
-     * @param q
+     * @param queryTerms
      * @param start
      * @param limit ex. 11 then return 10
      * @return
@@ -69,12 +69,9 @@ public class GeographicalAreaService {
 
     /**
      * @param q
-     * @param start
-     * @param limit ex. 11 then return 10
      * @return
      */
-    public List<GeographicalArea> findCountries(String q, int start, int limit) {
-        //return geographicalDAO.searchCountries(RequestContextUtils.getLocale(request).getLanguage(), queryTerms, start, limit);
+    public List<GeographicalArea> findCountries(String q) {
         String[] queryTerms = null;
         if (q != null && !q.isEmpty()) {
             List<String> termsLst = tokenizer.tokenize(q).stream().collect(Collectors.toList());

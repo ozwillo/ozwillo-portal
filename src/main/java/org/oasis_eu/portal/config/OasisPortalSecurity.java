@@ -52,8 +52,10 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(logoutHandler()).and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint()).and()
                 .authorizeRequests()
+                .antMatchers("/api/organization/import").permitAll()
                 .antMatchers("/my/**").authenticated()
                 .anyRequest().permitAll().and()
+                .csrf().ignoringAntMatchers("/api/organization/import").and()
                 .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);
         }
         http
