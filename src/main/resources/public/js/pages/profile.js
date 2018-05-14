@@ -86,15 +86,18 @@ class Profile extends React.Component {
         })
             .done(function (data) {
                 this.setState({updateSucceeded: true});
+                const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
+                if (!!voluntaryClaims.length || !!essentialClaims.length) {
+                    window.opener.postMessage('updated', '*');
+                    window.close()
+                }
                 this.componentDidMount();
             }.bind(this))
     }
 
     render() {
         const userProfile = this.state.userProfile;
-        const searchParams = new URLSearchParams(this.props.location.search)
-        const voluntaryClaims = searchParams.get('voluntary_claims') ? searchParams.get('voluntary_claims').split(' ') : [];
-        const essentialClaims = searchParams.get('essential_claims') ? searchParams.get('essential_claims').split(' ') : [];
+        const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
         return (
             <section id="profile">
                 <header className="title">
@@ -433,6 +436,13 @@ const ConditionalClaimsForm = ({ children, voluntaryClaims = [], essentialClaims
 
 const conditionalClaimsRequired = (field, defaultRequired, essentialClaims = []) =>
     (!!essentialClaims.length && essentialClaims.includes(field)) || defaultRequired
+
+const getConditionalClaims = (searchLocation) => {
+    const searchParams = new URLSearchParams(searchLocation);
+    const voluntaryClaims = searchParams.get('voluntary_claims') ? searchParams.get('voluntary_claims').split(' ') : [];
+    const essentialClaims = searchParams.get('essential_claims') ? searchParams.get('essential_claims').split(' ') : [];
+    return { voluntaryClaims, essentialClaims }
+}
 
 class ProfileWrapper extends React.Component {
 
