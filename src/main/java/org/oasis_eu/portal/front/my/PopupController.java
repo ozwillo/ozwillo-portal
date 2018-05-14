@@ -5,13 +5,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
-/**
- * User: schambon
- * Date: 6/11/14
- */
 @Controller
-@RequestMapping("/sp")
-public class SinglePageOzwilloController extends PortalController {
+@RequestMapping("/popup")
+public class PopupController extends PortalController {
 
     @RequestMapping(method = RequestMethod.GET, value = "/**")
     public String show() {

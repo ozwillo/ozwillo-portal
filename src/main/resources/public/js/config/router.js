@@ -50,11 +50,11 @@ class RouterWithUser extends React.Component {
     }
 }
 
-class SinglePageRouterWithUser extends React.Component {
+class PopupRouterWithUser extends React.Component {
     render() {
         return <IfUser>
             <Switch>
-                <Route path="/sp/profile" component={Profile}/>
+                <Route path="/popup/profile" component={Profile}/>
             </Switch>
         </IfUser>;
     }
@@ -91,7 +91,7 @@ class AppRouter extends React.Component {
                 <Popup/>
                 <Switch>
                     <Route path="/my" component={RouterWithUser}/>
-                    <Route path="/sp" component={SinglePageRouterWithUser}/>
+                    <Route path="/popup" component={PopupRouterWithUser}/>
                     <Route path="/:lang/store" component={RouterWithoutUser}/>
                     <Redirect to="/my"/>
                 </Switch>

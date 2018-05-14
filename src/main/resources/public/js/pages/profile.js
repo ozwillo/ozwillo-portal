@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import renderIf from 'render-if';
 import moment from 'moment';
 import Select from 'react-select';
+import URLSearchParams from'url-search-params'
 
 // Component
 import FranceConnectForm from '../components/forms/france-connect-form';
@@ -189,28 +190,28 @@ class ProfileAccount extends React.Component {
     render() {
         const { voluntaryClaims, essentialClaims } = this.props;
         return (
-            <ConditionnalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} fields={['nickname']}>
+            <ConditionalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} fields={['nickname']}>
                 <fieldset className="oz-fieldset">
                     <legend className="oz-legend">{this.context.t('my.profile.title.account')}</legend>
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}>
                         <div className="flex-row">
                             <Label className="label" required>
                                 {this.context.t('my.profile.account.email')}
                             </Label>
                             <span className="field">{this.props.userProfile.email_address}</span>
                         </div>
-                    </ConditionnalClaimsField>
+                    </ConditionalClaimsField>
 
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='nickname'>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='nickname'>
                         <InputText name="nickname" value={this.props.userProfile.nickname} 
-                                isRequired={conditionnalClaimsRequired('nickname', true, essentialClaims)}
+                                isRequired={conditionalClaimsRequired('nickname', true, essentialClaims)}
                                 onChange={e => this.props.onValueChange('nickname', e.target.value)}
                                 label={this.context.t('my.profile.personal.nickname')}/>
-                    </ConditionnalClaimsField>
+                    </ConditionalClaimsField>
 
                     {/*<LanguageSelector value={this.props.userProfile.locale} languages={this.props.languages}
                                     onChange={e => this.props.onValueChange('locale', e.target.value)}/>*/}
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}>
                         <div className="flex-row">
                             <Label htmlFor="language" className="label" required>
                                 {this.context.t('my.profile.account.language')}
@@ -219,9 +220,9 @@ class ProfileAccount extends React.Component {
                                     onChange={this.handleSelectChange} placeholder=""
                                     options={this.state.options} clearable={false} required={true}/>
                         </div>
-                    </ConditionnalClaimsField>
+                    </ConditionalClaimsField>
                 </fieldset>
-            </ConditionnalClaimsForm>
+            </ConditionalClaimsForm>
         )
     }
 }
@@ -252,48 +253,48 @@ class IdentityAccount extends React.Component {
         const birthdate = moment.utc(this.props.userProfile.birthdate);
 
         return (
-            <ConditionnalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}
+            <ConditionalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}
                     fields={['given_name', 'middle_name', 'family_name', 'birthdate', 'phone_number', 'gender']}>
                 <fieldset className="oz-fieldset">
                     <legend className="oz-legend">{this.context.t('my.profile.personal.identity')}</legend>
 
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='given_name'>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='given_name'>
                         <InputText name="given_name" value={this.props.userProfile.given_name}
-                                isRequired={conditionnalClaimsRequired('given_name', false, essentialClaims)}
+                                isRequired={conditionalClaimsRequired('given_name', false, essentialClaims)}
                                 onChange={e => this.props.onValueChange('given_name', e.target.value)}
                                 label={this.context.t('my.profile.personal.firstname')}/>
-                    </ConditionnalClaimsField>
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='middle_name'>
+                    </ConditionalClaimsField>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='middle_name'>
                         <InputText name="middle_name" value={this.props.userProfile.middle_name}
-                                isRequired={conditionnalClaimsRequired('middle_name', false, essentialClaims)}
+                                isRequired={conditionalClaimsRequired('middle_name', false, essentialClaims)}
                                 label={this.context.t('my.profile.personal.middlename')}
                                 onChange={e => this.props.onValueChange('middle_name', e.target.value)}/>
-                    </ConditionnalClaimsField>
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='family_name'>
+                    </ConditionalClaimsField>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='family_name'>
                         <InputText name="family_name" value={this.props.userProfile.family_name}
-                                isRequired={conditionnalClaimsRequired('family_name', false, essentialClaims)}
+                                isRequired={conditionalClaimsRequired('family_name', false, essentialClaims)}
                                 label={this.context.t('my.profile.personal.lastname')}
                                 onChange={e => this.props.onValueChange('family_name', e.target.value)}/>
-                    </ConditionnalClaimsField>
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='birthdate'>
+                    </ConditionalClaimsField>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='birthdate'>
                         <InputDatePicker name="birthdate" label={this.context.t('my.profile.personal.birthdate')}
-                                required={conditionnalClaimsRequired('birthdate', false, essentialClaims)}
+                                required={conditionalClaimsRequired('birthdate', false, essentialClaims)}
                                 onChange={this.handleChange.bind(this)} onSubmit={this.handleChange.bind(this)}
                                 value={birthdate} dropdownMode="select"/>
-                    </ConditionnalClaimsField>
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='phone_number'>
+                    </ConditionalClaimsField>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='phone_number'>
                         <InputText name="phone_number" value={this.props.userProfile.phone_number}
-                                isRequired={conditionnalClaimsRequired('phone_number', false, essentialClaims)}
+                                isRequired={conditionalClaimsRequired('phone_number', false, essentialClaims)}
                                 label={this.context.t('my.profile.personal.phonenumber')}
                                 onChange={e => this.props.onValueChange('phone_number', e.target.value)}/>
-                    </ConditionnalClaimsField>
-                    <ConditionnalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='gender'>
+                    </ConditionalClaimsField>
+                    <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='gender'>
                         <GenderSelector value={this.props.userProfile.gender}
-                                required={conditionnalClaimsRequired('gender', false, essentialClaims)}
+                                required={conditionalClaimsRequired('gender', false, essentialClaims)}
                                 onChange={value => this.props.onValueChange('gender', value)}/>
-                    </ConditionnalClaimsField>
+                    </ConditionalClaimsField>
                 </fieldset>
-            </ConditionnalClaimsForm>
+            </ConditionalClaimsForm>
         )
     }
 }
@@ -346,9 +347,9 @@ class AddressAccount extends React.Component {
 
     render() {
         const { address, voluntaryClaims, essentialClaims } = this.props;
-        const required = conditionnalClaimsRequired('address', false, essentialClaims)
+        const required = conditionalClaimsRequired('address', false, essentialClaims)
         return (
-            <ConditionnalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} fields={['address']}>
+            <ConditionalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} fields={['address']}>
                 <fieldset className="oz-fieldset">
                     <legend className="oz-legend">{this.context.t('my.profile.personal.address')}</legend>
                     <CountrySelector value={address.country || ''}
@@ -387,7 +388,7 @@ class AddressAccount extends React.Component {
                     }
 
                 </fieldset>
-            </ConditionnalClaimsForm>
+            </ConditionalClaimsForm>
         )
     }
 }
@@ -422,15 +423,15 @@ class PasswordAccount extends React.Component {
     }
 }
 
-const ConditionnalClaimsField = ({ children, voluntaryClaims = [], essentialClaims = [], field }) =>
+const ConditionalClaimsField = ({ children, voluntaryClaims = [], essentialClaims = [], field }) =>
     ((!voluntaryClaims.length && !essentialClaims.length) || voluntaryClaims.includes(field) || essentialClaims.includes(field)) &&
         children;
 
-const ConditionnalClaimsForm = ({ children, voluntaryClaims = [], essentialClaims = [], fields }) =>
+const ConditionalClaimsForm = ({ children, voluntaryClaims = [], essentialClaims = [], fields }) =>
     ((!voluntaryClaims.length && !essentialClaims.length) || fields.some(item => voluntaryClaims.includes(item) || essentialClaims.includes(item))) &&
         children;
 
-const conditionnalClaimsRequired = (field, defaultRequired, essentialClaims = []) =>
+const conditionalClaimsRequired = (field, defaultRequired, essentialClaims = []) =>
     (!!essentialClaims.length && essentialClaims.includes(field)) || defaultRequired
 
 class ProfileWrapper extends React.Component {
