@@ -88,6 +88,7 @@
     "redux-i18n": "^1.5.11",
     "redux-thunk": "^2.2.0",
     "render-if": "^0.1.1",
-    "showdown": "^1.8.3"
+    "showdown": "^1.8.3",
+    "url-search-params": "^0.10.0"
   }
 }
