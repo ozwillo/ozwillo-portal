@@ -15,7 +15,7 @@ Form.propTypes = {
 };
 
 const Label = ({ children, required, ...rest }) => 
-    <label {...rest}>{children + (required ? ' *' : '')}</label>
+    <label {...rest}>{children}{required && ' *'}</label>
 
 const InputText = ({name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled}) =>
     <div className={`flex-row ${(error && 'has-error') || ''}`}>
