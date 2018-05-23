@@ -68,13 +68,15 @@ const InputDatePicker = ({label, name, value, onChange, dropdownMode, required =
         <Label htmlFor={name} className='label' required={required}>
             {label}
         </Label>
-        <DatePicker selected={value}
-                    onChange={onChange}
-                    dropdownMode={dropdownMode}
-                    peekNextMonth
-                    showMonthDropdown
-                    showYearDropdown
-                    className="form-control field" name={name}/>
+        <div className="field">
+            <DatePicker selected={value}
+                        onChange={onChange}
+                        dropdownMode={dropdownMode}
+                        peekNextMonth
+                        showMonthDropdown
+                        showYearDropdown
+                        className="form-control" name={name}/>
+        </div>
     </div>;
 
 InputDatePicker.propTypes = {
