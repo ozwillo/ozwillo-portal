@@ -54,6 +54,7 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
                 .authorizeRequests()
                 .antMatchers("/api/organization/import").permitAll()
                 .antMatchers("/my/**").authenticated()
+                .antMatchers("/popup/**").authenticated()
                 .anyRequest().permitAll().and()
                 .csrf().ignoringAntMatchers("/api/organization/import").and()
                 .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);
