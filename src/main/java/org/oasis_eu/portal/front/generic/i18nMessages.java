@@ -22,7 +22,7 @@ public final class i18nMessages {
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
         "no-matches-found", "yes", "datastore", "login", "logout", "notifications", "message.will-be-deleted",
-        "message.will-be-deleted-plural", "or", "request.send", "error", "ok");
+        "message.will-be-deleted-plural", "or", "request.send", "error", "ok", "invite");
 
     private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "network", "apps", "create", "confirm-delete-dash",
         "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
@@ -86,7 +86,7 @@ public final class i18nMessages {
 
     private static final List<String> organizationSearchKeys = Arrays.asList("title", "new", "no-apps-installed");
 
-    private static final List<String> organizationFormKeys = Arrays.asList("invite-new-collaborator", "email", "create",
+    private static final List<String> organizationFormKeys = Arrays.asList("email", "create",
             "title", "contact-information", "admin");
 
     private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
