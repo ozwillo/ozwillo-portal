@@ -5,14 +5,21 @@
     width: 100%;
 }
 
+.instance-invitation-form legend {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    font-size: 1em;
+    font-weight: 400;
+}
+
 .instance-invitation-form .select,
 .instance-invitation-form .new-user-fieldset {
     width: 100%;
+    align-self: center !important;
 }
 
 .instance-invitation-form .sep-text {
     margin: 0 10px;
-    text-transform: uppercase;
     font-size: 0.8em;
     color: var(--secondary-color)
 }
@@ -20,6 +27,7 @@
 .instance-invitation-form .label {
     color: var(--secondary-color);
     font-size: 0.8em;
+    font-weight: 300;
     margin: 0;
 }
 

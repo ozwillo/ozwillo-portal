@@ -1,26 +1,22 @@
 package org.oasis_eu.portal.front.my.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.dc.organization.OrganizationService;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.dc.organization.DCOrganization;
 import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @RestController
 @RequestMapping("/my/api/organization")
 class OrganizationController extends BaseController {
-
-    private static final Logger logger = LoggerFactory.getLogger(OrganizationController.class);
 
     @Autowired
     private NetworkService networkService;

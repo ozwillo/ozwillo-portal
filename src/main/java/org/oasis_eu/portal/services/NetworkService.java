@@ -9,7 +9,6 @@ import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.authority.AuthorityType;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.model.user.UserGeneralInfo;
-import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.ui.UIOrganizationMember;
 import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
@@ -30,7 +29,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -98,7 +96,7 @@ public class NetworkService {
         return organizations.stream()
                 .sorted(Comparator.comparing(UIOrganization::getId,
                         (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2))? -1 : 0)
-                        .thenComparing(Comparator.comparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER)))
+                        .thenComparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
     }
 
@@ -111,7 +109,7 @@ public class NetworkService {
         Map<String, List<InstanceService>> instanceServices = subs
                 .stream()
                 .map(this::getServiceBySub)
-                .filter(sub -> sub != null)
+                .filter(Objects::nonNull)
                 .filter(is -> is.getCatalogEntry().getProviderId() != null)
                 .collect(Collectors.groupingBy(is -> is.getCatalogEntry().getProviderId()));
 
@@ -134,7 +132,7 @@ public class NetworkService {
         return organizations.stream()
                 .sorted(Comparator.comparing(UIOrganization::getId,
                         (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2))? -1 : 0)
-                .thenComparing(Comparator.comparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER)))
+                .thenComparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
     }
 

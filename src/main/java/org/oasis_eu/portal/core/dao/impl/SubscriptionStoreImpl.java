@@ -65,6 +65,11 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
     }
 
     @Override
+    public List<Subscription> findByServiceId(String serviceId) {
+        return Arrays.asList(kernel.getEntityOrException(endpoint + "/service/{service_id}", Subscription[].class, user(), serviceId));
+    }
+
+    @Override
     public Subscription create(String userId, Subscription subscription) throws WrongQueryException {
 
         logger.debug("Subscribing user {} to service {}", userId, subscription.getServiceId());
@@ -93,12 +98,6 @@ public class SubscriptionStoreImpl implements SubscriptionStore {
 
         return newSub;
 
-    }
-
-
-    @Override
-    public List<Subscription> findByServiceId(String serviceId) {
-        return Arrays.asList(kernel.getEntityOrException(endpoint + "/service/{service_id}", Subscription[].class, user(), serviceId));
     }
 
     @Override

@@ -90,7 +90,8 @@ public final class i18nMessages {
             "title", "contact-information", "admin");
 
     private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
-            "add-application", "add-in-organization", "send-invitation", "form.success");
+            "add-application", "add-in-organization", "send-invitation", "form.success", "add-to-instance-from-members",
+            "add-to-instance-by-email", "add-user-to-instance");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden");
 
