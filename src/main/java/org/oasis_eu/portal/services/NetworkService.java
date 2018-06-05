@@ -1,8 +1,10 @@
 package org.oasis_eu.portal.services;
 
+import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
+import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.dao.SubscriptionStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
+import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
@@ -76,6 +78,12 @@ public class NetworkService {
     @Autowired
     private SubscriptionStore subscriptionStore;
 
+    @Autowired
+    private ApplicationInstanceStore applicationInstanceStore;
+
+    @Autowired
+    private CatalogStore catalogStore;
+
     public List<UIOrganization> getMyOrganizationsInLazyMode() {
         List<UIOrganization> organizations = new ArrayList<>();
         String userId = userInfoService.currentUser().getUserId();
@@ -105,10 +113,15 @@ public class NetworkService {
         String userId = userInfoService.currentUser().getUserId();
 
         //Fetch all user's services
-        List<Subscription> subs = subscriptionStore.findByUserId(userId);
-        Map<String, List<InstanceService>> instanceServices = subs
+        List<ApplicationInstance> userInstances = applicationInstanceStore.findByUserId(userId, true);
+        List<ServiceEntry> userServices = userInstances.stream()
+                .map(applicationInstance -> catalogStore.findServicesOfInstance(applicationInstance.getInstanceId()))
+                .flatMap(List::stream)
+                .collect(Collectors.toList());
+
+        Map<String, List<InstanceService>> instanceServices = userServices
                 .stream()
-                .map(this::getServiceBySub)
+                .map(userService -> getServiceBySub(userService.getId()))
                 .filter(Objects::nonNull)
                 .filter(is -> is.getCatalogEntry().getProviderId() != null)
                 .collect(Collectors.groupingBy(is -> is.getCatalogEntry().getProviderId()));
@@ -137,9 +150,9 @@ public class NetworkService {
     }
 
 
-    private InstanceService getServiceBySub(Subscription sub) {
+    private InstanceService getServiceBySub(String serviceId) {
         try {
-            return applicationService.getService(sub.getServiceId());
+            return applicationService.getService(serviceId);
         } catch (WrongQueryException e) {
             if (HttpStatus.FORBIDDEN.value() != e.getStatusCode()) {
                 throw e;

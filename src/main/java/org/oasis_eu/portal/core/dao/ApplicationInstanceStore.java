@@ -10,7 +10,7 @@ import java.util.List;
  */
 public interface ApplicationInstanceStore {
 
-    List<ApplicationInstance> findByUserId(String userId);
+    List<ApplicationInstance> findByUserId(String userId, boolean includeOrgs);
 
     List<ApplicationInstance> findByOrganizationId(String organizationId);
 
