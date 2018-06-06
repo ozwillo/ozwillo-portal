@@ -63,19 +63,13 @@ class OrganizationInvitationForm extends React.Component {
     render() {
         return <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
             <fieldset className="flex-col">
-                <div className="flex-row">
+                <div className="flex-row-mobile-column">
                     <div className="flex-row wrapper">
                         <div className="flex-row">
                             <label className="label">
                                 {this.context.t('organization.form.email')}
-                                <input name="email" type="email" className="field form-control" required={true}
+                                <input name="email" type="email" className="field form-control no-auto" required={true}
                                        onChange={this.handleChange} value={this.state.email}/>
-                            </label>
-
-                            <label className="label">
-                                {this.context.t('organization.form.admin')}
-                                <input name="admin" type="checkbox" className="field"
-                                       onChange={this.handleChange} checked={this.state.admin}/>
                             </label>
                         </div>
 
@@ -96,6 +90,11 @@ class OrganizationInvitationForm extends React.Component {
 
 
                     <div className="options flex-row end">
+                        <label className="label">
+                            {this.context.t('organization.form.admin')}
+                            <input name="admin" type="checkbox" className="field"
+                                onChange={this.handleChange} checked={this.state.admin}/>
+                        </label>
                         <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                             {
                                 !this.state.isLoading &&
