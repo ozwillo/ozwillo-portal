@@ -3,6 +3,18 @@
     flex-direction: row;
 }
 
+.flex-row-mobile-column {
+    display: flex;
+    flex-direction: row;
+}
+
+@media (max-width: 425px) {
+    .flex-row-mobile-column {
+        display: flex;
+        flex-direction: column;
+    }
+}
+
 .flex-row.end {
     justify-content: flex-end;
 }
