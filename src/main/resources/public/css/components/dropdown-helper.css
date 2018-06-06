@@ -37,6 +37,7 @@
 .dropdown-header .link {
     font-size: 1.1em;
     color: var(--tertiary-color) !important;
+    text-transform: uppercase;
 }
 
 .dropdown-header .form {
