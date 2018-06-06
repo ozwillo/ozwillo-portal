@@ -24,7 +24,7 @@ public final class i18nMessages {
         "no-matches-found", "yes", "datastore", "login", "logout", "notifications", "message.will-be-deleted",
         "message.will-be-deleted-plural", "or", "request.send", "error", "ok", "invite");
 
-    private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "network", "apps", "create", "confirm-delete-dash",
+    private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "organization", "create", "confirm-delete-dash",
         "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
 
     private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",
