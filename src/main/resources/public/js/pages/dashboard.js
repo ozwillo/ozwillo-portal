@@ -465,7 +465,7 @@ const CreateDashboard = createClass({
                                buttonLabels={buttonLabels} ref="modal">
                     <div className={formGroupClass}>
                         <label htmlFor="dashboardName" className="col-sm-4 control-label required">
-                            {this.context.t('name')} *
+                            {this.context.t('my.name')} *
                         </label>
                         <div className="col-sm-8">
                             <input type="text" id="dashboardName" className="form-control"
