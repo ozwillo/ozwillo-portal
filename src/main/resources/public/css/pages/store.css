@@ -279,6 +279,15 @@
     border-bottom: 1px solid #d4d2d2;
 }
 
+@media (max-width: 990px) {
+    #store .store-app-card div.app-description {
+        width: 100%;
+    }
+    #store .store-app-card div.app-tos {
+        width: 100%;
+    }
+}
+
 #store-ad {
     padding: 0 0 35px 35px;
     background-color: #faf8f8;
