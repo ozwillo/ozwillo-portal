@@ -59,7 +59,7 @@ class OrganizationForm extends React.Component {
         }
 
         let lang = '';
-        switch (this.props.country) {
+        switch (this.props.organization.country) {
             case 'България' :
                 lang = 'bg';
                 break;
