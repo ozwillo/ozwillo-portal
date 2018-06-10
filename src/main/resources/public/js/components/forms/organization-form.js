@@ -100,7 +100,6 @@ class OrganizationForm extends React.Component {
     }
 
     onSubmit(e) {
-        e.preventDefault();
         this.props.onSubmit(this.props.organization, e);
     }
 
