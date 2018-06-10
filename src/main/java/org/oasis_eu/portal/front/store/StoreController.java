@@ -5,6 +5,7 @@ import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationExcept
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
+import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
@@ -252,6 +253,9 @@ public class StoreController extends BaseController {
         applicationDetails.longdescription = hit.getLongDescription();
 //		}
 
+        if (hit.catalogEntry instanceof ServiceEntry) {
+            applicationDetails.serviceUrl = ((ServiceEntry) hit.getCatalogEntry()).getUrl();
+        }
         applicationDetails.policy = hit.getCatalogEntry().getPolicyUri();
         applicationDetails.tos = hit.getCatalogEntry().getTosUri();
         applicationDetails.rating = ratingService.getRating(hit.getType(), hit.getId());
