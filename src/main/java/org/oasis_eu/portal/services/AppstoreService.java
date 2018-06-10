@@ -13,7 +13,6 @@ import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.store.AppstoreHit;
 import org.oasis_eu.portal.model.app.store.InstallationOption;
-import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.portal.services.dc.geoarea.GeographicalAreaService;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.model.Organization;
@@ -53,9 +52,6 @@ public class AppstoreService {
 
     @Autowired
     private UserInfoService userInfoService;
-
-    @Autowired
-    private UserProfileService userProfileService;
 
     @Autowired
     private ImageService imageService;
@@ -175,33 +171,6 @@ public class AppstoreService {
         subscription.setServiceId(appId);
 
         return subscriptionStore.create(userInfoService.currentUser().getUserId(), subscription);
-    }
-
-    public void updateUserInfo(String name, String lastName, String email, String street, String zip, String city, String country) {
-        boolean proceedUpdate = false;
-        UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
-        if ((name != null || lastName != null || email != null)
-            && (!name.isEmpty() || !lastName.isEmpty() || !email.isEmpty())
-            && (!userProfile.getGivenName().equals(name) || !userProfile.getFamilyName().equals(lastName))) {
-            userProfile.setGivenName(name);
-            userProfile.setFamilyName(lastName);
-            proceedUpdate = true;
-        }
-
-        if ((zip != null && city != null && country != null)
-            && (!zip.isEmpty() && !city.isEmpty() && !country.isEmpty())) { // not always as a required value
-            org.oasis_eu.spring.kernel.model.Address address = userProfile.getAddress();
-            address.setStreetAddress(street);
-            address.setPostalCode(zip);
-            address.setLocality(city);
-            address.setCountry(country);
-            userProfile.setAddress(address);
-            proceedUpdate = true;
-        }
-
-        if (proceedUpdate && userInfoService.isAuthenticated()) {
-            userProfileService.saveUserProfile(userProfile);
-        }
     }
 
     private InstallationOption getInstallationOption(CatalogEntry entry) {
