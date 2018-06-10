@@ -14,7 +14,6 @@ import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.store.AppstoreHit;
 import org.oasis_eu.portal.model.app.store.InstallationOption;
-import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.AppstoreService;
@@ -277,29 +276,6 @@ public class StoreController extends BaseController {
         String appType;
         @JsonProperty
         String organizationId;
-        //to update user details
-        @JsonProperty
-        String contact_name;
-        @JsonProperty
-        String contact_lastname;
-        @JsonProperty
-        String contact_email;
-        @JsonProperty
-        String additional_address_field;
-        @JsonProperty
-        String street_and_number;
-        @JsonProperty
-        String city_uri;
-        @JsonProperty
-        String city;
-        @JsonProperty
-        String zip;
-        @JsonProperty
-        String country_uri;
-        @JsonProperty
-        String country;
-        @JsonProperty
-        List<User> members;
     }
 
     private static class StoreBuyResponse {
