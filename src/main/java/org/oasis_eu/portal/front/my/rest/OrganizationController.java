@@ -24,6 +24,11 @@ class OrganizationController extends BaseController {
     @Autowired
     private OrganizationService organizationService;
 
+    @GetMapping(value = "/search")
+    public List<DCOrganization> searchOrganizations(@RequestParam String country_uri, @RequestParam String query) {
+        return organizationService.findOrganizations(country_uri, query);
+    }
+
     @GetMapping
     public List<UIOrganization> organizations() {
         return networkService.getMyOrganizations();
