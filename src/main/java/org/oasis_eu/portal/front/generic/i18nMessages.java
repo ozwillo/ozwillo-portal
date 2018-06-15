@@ -81,7 +81,7 @@ public final class i18nMessages {
         "personal.streetaddress", "personal.country", "personal.locality", "personal.middlename", "account.update");
 
     private static final List<String> franceconnectKeys = Arrays.asList("name", "form.your-profile", "form.synchronise", "form.desynchronize",
-            "form.desynchronize-without-pwd");
+            "form.desynchronize-without-pwd", "form.desynchronize-without-pwd-help");
 
 
     private static final List<String> organizationSearchKeys = Arrays.asList("title", "new", "no-apps-installed");

@@ -37,7 +37,7 @@ public class ProfileController extends BaseController {
     @Value("${kernel.france_connect.unlink_endpoint:''}")
     private String unlinkFranceConnectEndpoint;
 
-    @RequestMapping(method = RequestMethod.GET, value = "")
+    @GetMapping
     public UIUserProfile userInfos() {
         UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         List<String> languages = OasisLocales.locales().stream().map(Locale::getLanguage).collect(Collectors.toList());

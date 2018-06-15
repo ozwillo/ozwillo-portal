@@ -60,7 +60,7 @@ SubmitButton.propTypes = {
 };
 
 
-const InputDatePicker = ({label, name, value, onChange, dropdownMode}) =>
+const InputDatePicker = ({label, name, value, onChange, dropdownMode, disabled}) =>
     <div className='flex-row'>
         <label htmlFor={name} className='label'>
             {label}
@@ -71,7 +71,9 @@ const InputDatePicker = ({label, name, value, onChange, dropdownMode}) =>
                     peekNextMonth
                     showMonthDropdown
                     showYearDropdown
-                    className="form-control field" name={name}/>
+                    className="form-control field"
+                    name={name}
+                    disabled={disabled}/>
     </div>;
 
 InputDatePicker.propTypes = {
@@ -79,16 +81,13 @@ InputDatePicker.propTypes = {
     value: PropTypes.object,
     dropdownMode: PropTypes.string,
     label: PropTypes.string.isRequired,
-    startDate: PropTypes.object,
-    labelClassName: PropTypes.string,
-    divClassName: PropTypes.string,
-    onChange: PropTypes.func
+    onChange: PropTypes.func,
+    disabled: PropTypes.bool
 };
 
 InputDatePicker.defaultProps = {
-    divClassName: 'col-sm-7',
-    labelClassName: 'control-label col-sm-3',
-    dropdownMode: 'select'
+    dropdownMode: 'select',
+    disabled: false
 };
 
 class CountrySelector extends React.Component {

@@ -51,7 +51,6 @@ class Profile extends React.Component {
             .fail((xhr, status, err) => {
                 this.setState({error: "Unable to retrieve profile info"})
             })
-
     }
 
     onValueChange(field, value) {
@@ -82,10 +81,10 @@ class Profile extends React.Component {
             contentType: 'application/json',
             data: JSON.stringify(this.state.userProfile)
         })
-            .done(function (data) {
+            .done(() => {
                 this.setState({updateSucceeded: true});
                 this.componentDidMount();
-            }.bind(this))
+            })
     }
 
     render() {
@@ -219,16 +218,20 @@ class IdentityAccount extends React.Component {
                 <legend className="oz-legend">{this.context.t('my.profile.personal.identity')}</legend>
                 <InputText name="given_name" value={this.props.userProfile.given_name}
                            onChange={e => this.props.onValueChange('given_name', e.target.value)}
-                           label={this.context.t('my.profile.personal.firstname')}/>
+                           label={this.context.t('my.profile.personal.firstname')}
+                           disabled={this.props.userProfile.franceconnect_sub} />
                 <InputText name="middle_name" value={this.props.userProfile.middle_name}
                            label={this.context.t('my.profile.personal.middlename')}
-                           onChange={e => this.props.onValueChange('middle_name', e.target.value)}/>
+                           onChange={e => this.props.onValueChange('middle_name', e.target.value)}
+                           disabled={this.props.userProfile.franceconnect_sub} />
                 <InputText name="family_name" value={this.props.userProfile.family_name}
                            label={this.context.t('my.profile.personal.lastname')}
-                           onChange={e => this.props.onValueChange('family_name', e.target.value)}/>
+                           onChange={e => this.props.onValueChange('family_name', e.target.value)}
+                           disabled={this.props.userProfile.franceconnect_sub} />
                 <InputDatePicker name="birthdate" label={this.context.t('my.profile.personal.birthdate')}
                                  onChange={this.handleChange.bind(this)} onSubmit={this.handleChange.bind(this)}
-                                 value={birthdate} dropdownMode="select"/>
+                                 value={birthdate} dropdownMode="select"
+                                 disabled={this.props.userProfile.franceconnect_sub} />
                 <InputText name="phone_number" value={this.props.userProfile.phone_number}
                            label={this.context.t('my.profile.personal.phonenumber')}
                            onChange={e => this.props.onValueChange('phone_number', e.target.value)}/>
