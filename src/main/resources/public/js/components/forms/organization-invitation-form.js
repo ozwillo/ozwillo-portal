@@ -90,11 +90,13 @@ class OrganizationInvitationForm extends React.Component {
 
 
                     <div className="options flex-row end">
+{/*
                         <label className="label">
                             {this.context.t('organization.form.admin')}
                             <input name="admin" type="checkbox" className="field"
                                 onChange={this.handleChange} checked={this.state.admin}/>
                         </label>
+*/}
                         <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                             {
                                 !this.state.isLoading &&
