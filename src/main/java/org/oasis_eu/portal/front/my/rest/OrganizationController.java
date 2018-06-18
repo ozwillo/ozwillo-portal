@@ -29,6 +29,11 @@ class OrganizationController extends BaseController {
         return organizationService.findOrganizations(country_uri, query);
     }
 
+    @GetMapping(value = "/kernel")
+    public boolean existsInKernel(@RequestParam String countryUri, String taxRegNumber) {
+        return organizationService.existsInKernel(countryUri, taxRegNumber);
+    }
+
     @GetMapping
     public List<UIOrganization> organizations() {
         return networkService.getMyOrganizations();
@@ -49,7 +54,7 @@ class OrganizationController extends BaseController {
 
     @PostMapping
     public UIOrganization createOrganization(@RequestBody DCOrganization dcOrganization) {
-        return organizationService.create(dcOrganization, true);
+        return organizationService.create(dcOrganization);
     }
 
     @PutMapping

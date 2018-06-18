@@ -16,7 +16,7 @@ public final class i18nMessages {
         "leave", "invite", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave", "no-information-available",
         "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create",
         "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
-        "organization.pending-invitation");
+        "organization.pending-invitation", "organization.not-registrable");
 
     private static final List<String> generickeys = Arrays.asList("save", "create", "cancel", "close", "appstore", "confirm", "delete",
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
