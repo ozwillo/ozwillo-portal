@@ -37,12 +37,15 @@ public class ProfileController extends BaseController {
     @Value("${kernel.france_connect.unlink_endpoint:''}")
     private String unlinkFranceConnectEndpoint;
 
+    @Value("${kernel.france_connect.enabled:''}")
+    private boolean franceConnectEnabled;
+
     @GetMapping
     public UIUserProfile userInfos() {
         UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         List<String> languages = OasisLocales.locales().stream().map(Locale::getLanguage).collect(Collectors.toList());
         return new UIUserProfile(userProfile, languages, passwordChangeEndpoint,
-                linkFranceConnectEndpoint, unlinkFranceConnectEndpoint);
+                linkFranceConnectEndpoint, unlinkFranceConnectEndpoint, franceConnectEnabled);
     }
 
     @RequestMapping(method = RequestMethod.POST)

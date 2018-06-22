@@ -35,7 +35,8 @@ class Profile extends React.Component {
         languages: [],
         passwordChangeEndpoint: '',
         unlinkFranceConnectEndpoint: '',
-        linkFranceConnectEndpoint: ''
+        linkFranceConnectEndpoint: '',
+        franceConnectEnabled: false
     };
 
     static contextTypes = {
@@ -117,10 +118,13 @@ class Profile extends React.Component {
 
                 <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint}
                                  passwordExist={!!userProfile.email_verified}/>
-                <FranceConnectForm passwordChangeEndpoint={this.state.passwordChangeEndpoint}
-                                   linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
-                                   unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
-                                   userProfile={userProfile} className="box"/>
+                {
+                    this.state.franceConnectEnabled &&
+                        <FranceConnectForm passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                                           linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
+                                           unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
+                                           userProfile={userProfile} className="box"/>
+                }
             </section>
         )
     }
