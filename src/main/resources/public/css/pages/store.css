@@ -183,8 +183,9 @@
 
 #store div.app-screenshots {
     position: relative;
-    width: 800px;
-    height: 451px;
+    max-width: 800px;
+    width: auto;
+    height: auto;
     border: 1px #5b5f84 solid;
     margin: 24px auto;
 }
@@ -208,7 +209,6 @@
 }
 
 #store div.app-screenshots > img {
-    position: absolute;
     top: 0;
     left: 0;
     padding: 0;
@@ -277,6 +277,15 @@
     width: 800px;
     margin: 15px auto;
     border-bottom: 1px solid #d4d2d2;
+}
+
+@media (max-width: 990px) {
+    #store .store-app-card div.app-description {
+        width: 100%;
+    }
+    #store .store-app-card div.app-tos {
+        width: 100%;
+    }
 }
 
 #store-ad {

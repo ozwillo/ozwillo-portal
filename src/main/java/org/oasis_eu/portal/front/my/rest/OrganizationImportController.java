@@ -138,7 +138,7 @@ class OrganizationImportController extends BaseController {
                             .append(dcOrganization.getLegal_name())
                             .append(" (").append(dcOrganization.getTax_reg_num()).append(")");
                         try {
-                            organizationService.create(dcOrganization, false);
+                            organizationService.create(dcOrganization);
                         } catch (Exception e) {
                             log
                                 .append("\nError while trying to create the organization ")

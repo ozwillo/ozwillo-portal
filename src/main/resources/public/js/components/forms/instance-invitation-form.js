@@ -74,7 +74,11 @@ class InstanceInvitationForm extends React.Component {
     render() {
         return <form className={`instance-invitation-form flex-col end ${this.props.className || ''}`}
                      onSubmit={this.onSubmit}>
+            <legend>{this.context.t('organization.desc.add-user-to-instance')}</legend>
             <div className="content flex-row">
+                <label className="label">
+                    {this.context.t('organization.desc.add-to-instance-from-members')}
+                </label>
                 <Select
                     className="select"
                     name="members"
@@ -86,11 +90,11 @@ class InstanceInvitationForm extends React.Component {
                     placeholder={this.context.t('organization.desc.members')}
                     required={!this.state.email}/>
 
-                <em className="sep-text">or</em>
+                <em className="sep-text">{this.context.t('ui.or')}</em>
 
                 <div className="new-user-fieldset flex-row">
                     <label className="label">
-                        {this.context.t('organization.form.email')}
+                        {this.context.t('organization.desc.add-to-instance-by-email')}
                         <input name="email" type="email" className="form-control field"
                                required={!this.state.selectedOption}
                                value={this.state.email} onChange={this.handleChange}/>
@@ -100,7 +104,7 @@ class InstanceInvitationForm extends React.Component {
                 <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                     {
                         !this.state.isLoading &&
-                        this.context.t('ui.send')
+                        this.context.t('ui.invite')
                     }
 
                     {

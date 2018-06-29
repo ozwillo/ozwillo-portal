@@ -1,18 +1,16 @@
 package org.oasis_eu.portal.front.my.rest;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.dc.organization.OrganizationService;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.dc.organization.DCOrganization;
 import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
 
@@ -20,13 +18,21 @@ import java.util.List;
 @RequestMapping("/my/api/organization")
 class OrganizationController extends BaseController {
 
-    private static final Logger logger = LoggerFactory.getLogger(OrganizationController.class);
-
     @Autowired
     private NetworkService networkService;
 
     @Autowired
     private OrganizationService organizationService;
+
+    @GetMapping(value = "/search")
+    public List<DCOrganization> searchOrganizations(@RequestParam String country_uri, @RequestParam String query) {
+        return organizationService.findOrganizations(country_uri, query);
+    }
+
+    @GetMapping(value = "/kernel")
+    public boolean existsInKernel(@RequestParam String countryUri, String taxRegNumber) {
+        return organizationService.existsInKernel(countryUri, taxRegNumber);
+    }
 
     @GetMapping
     public List<UIOrganization> organizations() {
@@ -48,7 +54,7 @@ class OrganizationController extends BaseController {
 
     @PostMapping
     public UIOrganization createOrganization(@RequestBody DCOrganization dcOrganization) {
-        return organizationService.create(dcOrganization, true);
+        return organizationService.create(dcOrganization);
     }
 
     @PutMapping

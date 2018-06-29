@@ -38,9 +38,10 @@ class FranceConnectForm extends React.Component {
             {
                 userProfile.franceconnect_sub && !userProfile.email_verified &&
                 <div className="text-center">
-                    <a href={this.props.passwordChangeEndpoint} className="btn btn-submit">
+                    <a className="btn btn-submit disabled">
                         {this.context.t("franceconnect.form.desynchronize-without-pwd")}
                     </a>
+                    <span className="help-block">{this.context.t("franceconnect.form.desynchronize-without-pwd-help")}</span>
                 </div>
             }
 

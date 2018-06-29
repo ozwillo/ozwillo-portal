@@ -26,7 +26,7 @@ export default (state = defaultState, action) => {
             break;
         case DELETE_NOTIFICATION:
             nextState.notifications = state.notifications.filter((n) => {
-                return n.id === action.id;
+                return n.id !== action.id;
             });
             break;
         default:

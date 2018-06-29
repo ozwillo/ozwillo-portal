@@ -191,6 +191,7 @@ class InstanceDropdown extends React.Component {
         const instance = this.props.instance;
         const isRunning = instance.applicationInstance.status === instanceStatus.running;
         const isAvailable = isAdmin && !instance.isPublic && isRunning;
+        const isOpen = isAvailable;
 
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
         const Header = <InstanceDropdownHeader
@@ -203,7 +204,7 @@ class InstanceDropdown extends React.Component {
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen}>
             <section className='dropdown-content'>
                 <table className="oz-table">
                     <thead>
@@ -223,7 +224,10 @@ class InstanceDropdown extends React.Component {
                                 </th>
                             })
                         }
-                        <th/>
+                        {
+                            status && status.error &&
+                            <th/>
+                        }
                     </tr>
                     </thead>
                     <tbody>
@@ -232,7 +236,7 @@ class InstanceDropdown extends React.Component {
                             const status = this.state.status[user.id];
                             return <tr key={user.id || user.email}>
                                 <td className="fill-content">
-                                    <article className="item flex-row">
+                                    <article className="item flex-row-mobile-column">
                                         {
                                             user.id &&
                                             <span className="name">{user.name}</span>
@@ -245,12 +249,12 @@ class InstanceDropdown extends React.Component {
                                 </td>
 
                                 {/* error messages */}
-                                <td className="fill-content">
-                                    {
-                                        status && status.error &&
+                                {
+                                    status && status.error &&
+                                    <td className="fill-content">
                                         <span className="error">{status.error}</span>
-                                    }
-                                </td>
+                                    </td>
+                                }
 
 
                                 {/* Services */}

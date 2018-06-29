@@ -153,7 +153,7 @@ public class DashboardService {
             return app;
 
         } catch (WrongQueryException e) {
-            logger.debug(e.getMessage());
+            logger.error(e.getMessage());
             return null;
         }
     }

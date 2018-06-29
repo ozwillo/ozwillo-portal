@@ -12,16 +12,18 @@ public class UIUserProfile {
     private String passwordChangeEndpoint;
     private String unlinkFranceConnectEndpoint;
     private String linkFranceConnectEndpoint;
+    private boolean franceConnectEnabled;
 
     public UIUserProfile() { }
 
     public UIUserProfile(UserProfile userProfile, List<String> languages, String passwordChangeEndpoint,
-                         String linkFranceConnectEndpoint, String unlinkFranceConnectEndpoint) {
+                         String linkFranceConnectEndpoint, String unlinkFranceConnectEndpoint, boolean franceConnectEnabled) {
         this.userProfile = userProfile;
         this.languages = languages;
         this.passwordChangeEndpoint = passwordChangeEndpoint;
         this.unlinkFranceConnectEndpoint = unlinkFranceConnectEndpoint;
         this.linkFranceConnectEndpoint = linkFranceConnectEndpoint;
+        this.franceConnectEnabled = franceConnectEnabled;
     }
 
     public UIUserProfile(UserProfile userProfile, UserProfile franceConnectProfile, List<String> languages) {
@@ -52,5 +54,9 @@ public class UIUserProfile {
 
     public String getLinkFranceConnectEndpoint() {
         return linkFranceConnectEndpoint;
+    }
+
+    public boolean isFranceConnectEnabled() {
+        return franceConnectEnabled;
     }
 }

@@ -1,23 +1,19 @@
 package org.oasis_eu.portal.front.store;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.appstore.ApplicationInstanceCreationException;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.core.model.catalog.Audience;
 import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.core.model.catalog.PaymentOption;
+import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.core.model.subscription.Subscription;
 import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
 import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
 import org.oasis_eu.portal.core.services.icons.ImageService;
 import org.oasis_eu.portal.front.generic.BaseController;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
-import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.app.store.AppstoreHit;
 import org.oasis_eu.portal.model.app.store.InstallationOption;
-import org.oasis_eu.portal.model.user.User;
-import org.oasis_eu.portal.services.ApplicationService;
 import org.oasis_eu.portal.ui.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.AppstoreService;
@@ -75,12 +71,6 @@ public class StoreController extends BaseController {
 
     @Autowired
     private DCOrganizationService organizationService;
-
-    @Autowired
-    private ApplicationService applicationService;
-
-    @Autowired
-    private CatalogStore catalogStore;
 
     @Value("${application.store.load_size:20}")
     private int loadSize;
@@ -173,20 +163,17 @@ public class StoreController extends BaseController {
         return toApplicationDetails(hit);
     }
 
-    @RequestMapping(value = "/buy", method = RequestMethod.POST)
-    public void buy(@RequestBody StoreBuyRequest request) {
-        appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
+    @PostMapping(value = "/buy")
+    public StoreBuyResponse buy(@RequestBody StoreBuyRequest request) {
+        StoreBuyResponse response = new StoreBuyResponse();
+        try {
+            appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
+            response.success = true;
+        } catch (ApplicationInstanceCreationException | WrongQueryException e) {
+            response.success = false;
+        }
 
-        //Update user details contained in StoreBuyRequest, usually contact & address (address if personal service install)
-        appstoreService.updateUserInfo(request.contact_name, request.contact_lastname, request.contact_email,
-            request.street_and_number, request.zip, request.city, request.country);
-
-        //Create ACLs
-        //TODO may be for next feature: Add an instance to an organization and create in same time ACLs for users
-        //
-        /*if (request.members != null) {
-           request.members.forEach( user -> applicationService.createAcl(request.appId, user));
-        }*/
+        return response;
     }
 
     @PostMapping("/buy/application")
@@ -265,6 +252,9 @@ public class StoreController extends BaseController {
         applicationDetails.longdescription = hit.getLongDescription();
 //		}
 
+        if (hit.catalogEntry instanceof ServiceEntry) {
+            applicationDetails.serviceUrl = ((ServiceEntry) hit.getCatalogEntry()).getUrl();
+        }
         applicationDetails.policy = hit.getCatalogEntry().getPolicyUri();
         applicationDetails.tos = hit.getCatalogEntry().getTosUri();
         applicationDetails.rating = ratingService.getRating(hit.getType(), hit.getId());
@@ -286,31 +276,12 @@ public class StoreController extends BaseController {
         String appType;
         @JsonProperty
         String organizationId;
-        //to update user details
-        @JsonProperty
-        String contact_name;
-        @JsonProperty
-        String contact_lastname;
-        @JsonProperty
-        String contact_email;
-        @JsonProperty
-        String additional_address_field;
-        @JsonProperty
-        String street_and_number;
-        @JsonProperty
-        String city_uri;
-        @JsonProperty
-        String city;
-        @JsonProperty
-        String zip;
-        @JsonProperty
-        String country_uri;
-        @JsonProperty
-        String country;
-        @JsonProperty
-        List<User> members;
     }
 
+    private static class StoreBuyResponse {
+        @JsonProperty
+        boolean success;
+    }
 
     private static class RateRequest {
         @JsonProperty

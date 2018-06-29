@@ -43,11 +43,9 @@ class AdminTab extends React.Component {
         super(props);
 
         this.state = {
-
             isLoading: false
         };
 
-        //bind methods
         this.onSubmit = this.onSubmit.bind(this);
     }
 
@@ -59,8 +57,10 @@ class AdminTab extends React.Component {
         this.props.fetchCountries();
     }
 
-    onSubmit(info) {
-        this.props.fetchUpdateOrganization(info)
+    onSubmit(org) {
+        this.setState({isLoading: true});
+
+        this.props.fetchUpdateOrganization(org)
             .then(() => {
                 this.setState({
                     isLoading: false,
@@ -79,8 +79,10 @@ class AdminTab extends React.Component {
     render() {
         return <article className="admin-tab">
             <OrganizationForm onSubmit={this.onSubmit} countries={this.props.countries}
-                              isLoading={this.state.isLoading} countryFieldIsDisabled={true}
-                              label={this.context.t('ui.save')}/>
+                              isLoading={this.state.isLoading}
+                              label={this.context.t('ui.save')}
+                              alreadyRegistered={true}
+                              initialTaxRegNum={this.props.orgInfo.tax_reg_num}  />
 
             <div className="text-center">
                 {
@@ -111,8 +113,8 @@ const mapDispatchToProps = dispatch => {
         updateOrganizationForm(info) {
             return dispatch(updateOrganizationFormAction(info))
         },
-        fetchUpdateOrganization(info) {
-            return dispatch(fetchUpdateOrganization(info));
+        fetchUpdateOrganization(org) {
+            return dispatch(fetchUpdateOrganization(org));
         }
     };
 };

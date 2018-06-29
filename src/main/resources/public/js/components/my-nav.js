@@ -36,24 +36,10 @@ class MyNav extends React.Component {
                                 <span>{this.context.t('my.profile')}</span>
                             </Link>
                         </li>
-                        <li className="menu hidden">
-                            <Link className="link" to="/my/network">
-                                <img className="icon" src="/img/network.png"
-                                     alt={this.context.t('my.network')}/>
-                                <span>{this.context.t('my.network')}</span>
-                            </Link>
-                        </li>
-                        <li className="menu hidden">
-                            <Link className="link" to="/my/apps">
-                                <img className="icon" src="/img/apps.png"
-                                     alt={this.context.t('my.apps')}/>
-                                <span>{this.context.t('my.apps')}</span>
-                            </Link>
-                        </li>
                         <li className="menu">
                             <Link className="link" to="/my/organization">
-                                <i className="fa fa-building icon" alt={this.context.t('my.apps')}/>
-                                <span>{this.context.t('organization.form.title')}</span>
+                                <i className="fa fa-building icon" alt={this.context.t('my.organization')}/>
+                                <span>{this.context.t('my.organization')}</span>
                             </Link>
                         </li>
                     </ul>

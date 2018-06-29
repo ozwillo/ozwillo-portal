@@ -109,8 +109,8 @@ public class CatalogStoreImpl implements CatalogStore {
         try {
             serviceEntry = kernel.getEntityOrException(appsEndpoint + "/service/{id}",
                     ServiceEntry.class, userIfExists(), id);
-        } catch(HttpClientErrorException e) {
-            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
+        } catch (HttpClientErrorException e) {
+            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode()) || HttpStatus.NOT_FOUND.equals(e.getStatusCode())) {
                 throw new WrongQueryException(e.getResponseBodyAsString(), e.getStatusCode().value());
             }
 

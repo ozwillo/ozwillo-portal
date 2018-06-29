@@ -89,7 +89,7 @@ public class ApplicationService {
     }
 
     private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority, boolean fetchServices) {
-        return applicationInstanceStore.findByUserId(personalAuthority.getId())
+        return applicationInstanceStore.findByUserId(personalAuthority.getId(), false)
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
                     .thenComparing(Comparator.comparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER)))

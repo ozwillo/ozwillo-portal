@@ -43,7 +43,7 @@ class LegalNameAutosuggest extends React.Component {
 
     searchOrganizations(query) {
         $.ajax({
-            url: "/my/api/network/search-organizations",
+            url: "/my/api/organization/search",
             dataType: 'json',
             data: {country_uri: this.props.countryUri, query: query},
             type: 'get',

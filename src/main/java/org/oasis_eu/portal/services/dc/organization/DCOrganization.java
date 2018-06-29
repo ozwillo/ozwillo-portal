@@ -57,17 +57,6 @@ public class DCOrganization {
     private String country;
     @JsonProperty
     private String country_uri;
-    //@JsonProperty
-    private String longitude;
-    //@JsonProperty
-    private String latitude;
-
-    @JsonProperty
-    private String contact_name;
-    @JsonProperty
-    private String contact_lastName;
-    @JsonProperty
-    private String contact_email;
 
     @JsonProperty
     private String iconUrl;
@@ -282,46 +271,6 @@ public class DCOrganization {
         this.country_uri = country_uri;
     }
 
-    public String getLongitude() {
-        return longitude;
-    }
-
-    public void setLongitude(String longitude) {
-        this.longitude = longitude;
-    }
-
-    public String getLatitude() {
-        return latitude;
-    }
-
-    public void setLatitude(String latitude) {
-        this.latitude = latitude;
-    }
-
-    public String getContact_name() {
-        return contact_name;
-    }
-
-    public void setContact_name(String contact_name) {
-        this.contact_name = contact_name;
-    }
-
-    public String getContact_lastName() {
-        return contact_lastName;
-    }
-
-    public void setContact_lastName(String contact_lastName) {
-        this.contact_lastName = contact_lastName;
-    }
-
-    public String getContact_email() {
-        return contact_email;
-    }
-
-    public void setContact_email(String contact_email) {
-        this.contact_email = contact_email;
-    }
-
     public String getIconUrl() {
         return iconUrl;
     }
@@ -345,6 +294,4 @@ public class DCOrganization {
     public void setVersion(String version) {
         this.version = version;
     }
-
-
 }

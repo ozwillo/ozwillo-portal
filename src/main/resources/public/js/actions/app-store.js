@@ -33,13 +33,12 @@ export const fetchApplications = () => {
     };
 };
 
-export const fetchAddInstanceToOrg = (organizationId, {id}, members) => {
+export const fetchAddInstanceToOrg = (organizationId, {id}) => {
     return (dispatch) => {
         return customFetch('/api/store/buy/application', {
             method: 'POST',
             json: {
                 organizationId,
-                members,
                 appId: id
             }
         }).then((instance) => {

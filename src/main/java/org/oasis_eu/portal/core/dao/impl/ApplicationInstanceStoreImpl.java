@@ -33,9 +33,9 @@ public class ApplicationInstanceStoreImpl implements ApplicationInstanceStore {
 
     @Override
     @Cacheable("user-instances")
-    public List<ApplicationInstance> findByUserId(String userId) {
-        return Arrays.asList(kernel.getEntityOrException(appsEndpoint + "/instance/user/{user_id}",
-            ApplicationInstance[].class, user(), userId));
+    public List<ApplicationInstance> findByUserId(String userId, boolean include_orgs) {
+        return Arrays.asList(kernel.getEntityOrException(appsEndpoint + "/instance/user/{user_id}?include_orgs={include_orgs}",
+            ApplicationInstance[].class, user(), userId, include_orgs));
 
     }
 

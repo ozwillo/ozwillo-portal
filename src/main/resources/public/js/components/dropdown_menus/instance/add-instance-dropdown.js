@@ -47,7 +47,7 @@ class AddInstanceDropdown extends React.Component {
         }
 
         const orgId = this.props.organization.id;
-        return this.props.fetchAddInstanceToOrg(orgId, this.state.app, this.state.members)
+        return this.props.fetchAddInstanceToOrg(orgId, this.state.app)
             .then(() => {
                 this.setState({
                     app: null,
@@ -145,8 +145,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchAddInstanceToOrg(orgId, app, members) {
-            return dispatch(fetchAddInstanceToOrg(orgId, app, members));
+        fetchAddInstanceToOrg(orgId, app) {
+            return dispatch(fetchAddInstanceToOrg(orgId, app));
         }
     };
 };

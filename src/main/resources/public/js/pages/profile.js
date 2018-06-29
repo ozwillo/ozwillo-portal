@@ -37,7 +37,8 @@ class Profile extends React.Component {
         languages: [],
         passwordChangeEndpoint: '',
         unlinkFranceConnectEndpoint: '',
-        linkFranceConnectEndpoint: ''
+        linkFranceConnectEndpoint: '',
+        franceConnectEnabled: false
     };
 
     static contextTypes = {
@@ -53,7 +54,6 @@ class Profile extends React.Component {
             .fail((xhr, status, err) => {
                 this.setState({error: "Unable to retrieve profile info"})
             })
-
     }
 
     onValueChange(field, value) {
@@ -84,7 +84,7 @@ class Profile extends React.Component {
             contentType: 'application/json',
             data: JSON.stringify(this.state.userProfile)
         })
-            .done(function (data) {
+            .done(() => {
                 this.setState({updateSucceeded: true});
                 const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
                 if (!!voluntaryClaims.length || !!essentialClaims.length) {
@@ -92,7 +92,7 @@ class Profile extends React.Component {
                     window.close()
                 }
                 this.componentDidMount();
-            }.bind(this))
+            })
     }
 
     render() {
@@ -133,10 +133,12 @@ class Profile extends React.Component {
                     <Fragment>
                         <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint}
                                         passwordExist={!!userProfile.email_verified}/>
-                        <FranceConnectForm passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                        { this.state.franceConnectEnabled &&
+                              <FranceConnectForm passwordChangeEndpoint={this.state.passwordChangeEndpoint}
                                         linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
                                         unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
                                         userProfile={userProfile} className="box"/>
+                        }
                     </Fragment>
                 }
             </section>
@@ -265,25 +267,29 @@ class IdentityAccount extends React.Component {
                         <InputText name="given_name" value={this.props.userProfile.given_name}
                                 isRequired={conditionalClaimsRequired('given_name', false, essentialClaims)}
                                 onChange={e => this.props.onValueChange('given_name', e.target.value)}
-                                label={this.context.t('my.profile.personal.firstname')}/>
+                                label={this.context.t('my.profile.personal.firstname')}
+                                disabled={this.props.userProfile.franceconnect_sub} />
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='middle_name'>
                         <InputText name="middle_name" value={this.props.userProfile.middle_name}
                                 isRequired={conditionalClaimsRequired('middle_name', false, essentialClaims)}
                                 label={this.context.t('my.profile.personal.middlename')}
-                                onChange={e => this.props.onValueChange('middle_name', e.target.value)}/>
+                                onChange={e => this.props.onValueChange('middle_name', e.target.value)}
+                                disabled={this.props.userProfile.franceconnect_sub} />
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='family_name'>
                         <InputText name="family_name" value={this.props.userProfile.family_name}
                                 isRequired={conditionalClaimsRequired('family_name', false, essentialClaims)}
                                 label={this.context.t('my.profile.personal.lastname')}
-                                onChange={e => this.props.onValueChange('family_name', e.target.value)}/>
+                                onChange={e => this.props.onValueChange('family_name', e.target.value)}
+                                disabled={this.props.userProfile.franceconnect_sub} />
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='birthdate'>
                         <InputDatePicker name="birthdate" label={this.context.t('my.profile.personal.birthdate')}
                                 required={conditionalClaimsRequired('birthdate', false, essentialClaims)}
                                 onChange={this.handleChange.bind(this)} onSubmit={this.handleChange.bind(this)}
-                                value={birthdate} dropdownMode="select"/>
+                                value={birthdate} dropdownMode="select"
+                                disabled={this.props.userProfile.franceconnect_sub} />
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='phone_number'>
                         <InputText name="phone_number" value={this.props.userProfile.phone_number}
