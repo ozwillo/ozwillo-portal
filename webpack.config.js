@@ -1,69 +1,96 @@
+
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
-const autoprefixer = require('autoprefixer');
 const DashboardPlugin = require('webpack-dashboard/plugin');
+const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
     app: path.join(__dirname, 'src/main/resources/public'),
-    build: path.join(__dirname, 'src/main/resources/public/build')
+    build: path.join(__dirname, 'src/main/resources/public/build'),
+    nodeModules: path.join(__dirname, 'node_modules')
 };
 
-const commonEntryPointsLoadersAndServers = ['bootstrap-loader', 'font-awesome-webpack'];
+const commonEntryPointsLoadersAndServers = ['bootstrap-loader', /*'font-awesome-webpack',*/
+    path.join(PATHS.nodeModules, 'react-select/dist/react-select.css'),
+    path.join(PATHS.nodeModules, 'react-datepicker/dist/react-datepicker.css'),
+    path.join(PATHS.nodeModules, 'react-tippy/dist/tippy.css')];
 const devEntryPointsLoadersAndServers = ['webpack-dev-server/client?http://localhost:3000', 'webpack/hot/only-dev-server'];
+
+const extractCSS = new ExtractTextPlugin({ filename: 'bundle.css' });
 
 const common = {
     entry: {
-        dashboard:      [path.join(PATHS.app, 'jsx/dashboard/dashboard.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        profile:        [path.join(PATHS.app, 'jsx/profile/profile.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        network:        [path.join(PATHS.app, 'jsx/network/network.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        myapps:         [path.join(PATHS.app, 'jsx/appmanagement/myapps.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        appstore:       [path.join(PATHS.app, 'jsx/store/store.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        notifications:  [path.join(PATHS.app, 'jsx/notifications.jsx.js')].concat(commonEntryPointsLoadersAndServers),
-        contact:        [path.join(PATHS.app, 'jsx/contact.jsx.js')].concat(commonEntryPointsLoadersAndServers)
+        index: ['babel-polyfill', path.join(PATHS.app, 'js/main.js'), path.join(PATHS.app, 'css/index.css')]
+            .concat(commonEntryPointsLoadersAndServers)
     },
     output: {
         path: PATHS.build,
-        filename: "[name].bundle.js",
-        chunkFilename: "[id].chunk.js",
+
+        filename: 'bundle.js',
         publicPath: '/build/'
     },
     plugins: [
-        new webpack.optimize.CommonsChunkPlugin({
-            names: ["commons", "manifest"],
-            minChunks: 3
-        }),
         new webpack.ProvidePlugin({
             $: "jquery",
             jQuery: "jquery"
         }),
         new webpack.ContextReplacementPlugin(/moment[\\\/]locale$/, /^\.\/(bg|ca|en|es|fr|it|tr)$/)
     ],
-    // we have no .jsx for now but planned to rename from .jsx.js to .jsx
-    resolve: { extensions: [ '', '.js', '.jsx' ] },
     module: {
         loaders: [
+            /* bootstrap-sass-loader */
+            { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports-loader?$=jquery' },
+
+            /* loaders for urls */
             { test: /\.png$/, loader: "url-loader?limit=10000" },
-            /* loaders for Font Awesome */
-            { test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "url-loader?limit=10000&mimetype=application/font-woff" },
-            { test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/, loader: "file-loader" },
-            /* to ensure jQuery is loaded before Bootstrap */
-            { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports?jQuery=jquery' },
-            /* loader for JSX / ES6 */
-            { test: /\.jsx?$/, loaders: ['react-hot', 'babel?cacheDirectory,presets[]=react,presets[]=es2015,presets[]=stage-0'], include: path.join(PATHS.app, 'jsx')}
+
+            {
+                test: /\.(js|jsx)$/,
+                loader: 'babel',
+                exclude: /node_modules/
+            }
+        ],
+        rules: [
+            // JS
+            { test: require.resolve("jquery"), use: "imports-loader?$=jquery" },
+            {
+                test: /\.(js|jsx)$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: 'babel-loader',
+                    options: {
+                        presets: ['es2015', 'react', 'stage-0',
+                            ["env", {
+                                "targets": {
+                                    "browsers": ["last 2 Chrome versions"]
+                                }
+                            }]]
+                    }
+                }
+            },
+
+            //Ressources
+            {
+                test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                use: [{
+                    loader: 'file-loader',
+                    options: {
+                        name: '[name].[ext]',
+                        outputPath: 'fonts/',    // where the fonts will go
+                    }
+                }]
+            }
         ]
-    },
-    postcss: [ autoprefixer ],
-    debug: true
+    }
 };
 
 // Default configuration
 if(TARGET === 'start' || !TARGET) {
     module.exports = merge(common, {
-        devtool: 'eval-source-map',
         devServer: {
             publicPath: common.output.publicPath,
             contentBase: '/build',
@@ -76,37 +103,41 @@ if(TARGET === 'start' || !TARGET) {
                 "*": "http://localhost:8080"
             }
         },
+        devtool: 'source-map',
         entry: {
-            dashboard:      common.entry.dashboard.concat(devEntryPointsLoadersAndServers),
-            profile:        common.entry.profile.concat(devEntryPointsLoadersAndServers),
-            network:        common.entry.network.concat(devEntryPointsLoadersAndServers),
-            myapps:         common.entry.myapps.concat(devEntryPointsLoadersAndServers),
-            store:          common.entry.appstore.concat(devEntryPointsLoadersAndServers),
-            notifications:  common.entry.notifications.concat(devEntryPointsLoadersAndServers),
-            contact:        common.entry.contact.concat(devEntryPointsLoadersAndServers)
+            index: devEntryPointsLoadersAndServers
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
-            new DashboardPlugin()
+            new DashboardPlugin(),
+            extractCSS
         ],
         module: {
-            loaders: [
-                {test: /\.css$/, loaders: ['style', 'css', 'postcss']},
-                /* loaders for Bootstrap */
-                {test: /\.scss$/, loaders: ['style', 'css', 'postcss', 'sass']}
+            rules: [
+                {
+                    test: /\.css$/,
+                    use: ['css-hot-loader'].concat(extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [
+                            { loader: 'css-loader', options: { importLoaders: 1 } },
+                            'postcss-loader'
+                        ]
+                    }))
+                },
+                {
+                    test: /\.scss$/,
+                    use: ['css-hot-loader'].concat(extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [ 'css-loader', 'sass-loader' ]
+                    }))
+                }
             ]
         }
     });
 }
+
 if(TARGET === 'build' || TARGET === 'stats') {
     module.exports = merge(common, {
-        module: {
-            loaders: [
-                {test: /\.css$/, loader: ExtractTextPlugin.extract('style', 'css!postcss')},
-                /* loaders for Bootstrap */
-                {test: /\.scss$/, loader: ExtractTextPlugin.extract('style', 'css!postcss!sass')}
-            ]
-        },
         plugins: [
             new CleanPlugin([PATHS.build]),
             // Setting DefinePlugin affects React library size!
@@ -115,15 +146,37 @@ if(TARGET === 'build' || TARGET === 'stats') {
             new webpack.DefinePlugin({
                 'process.env.NODE_ENV': '"production"'
             }),
-            new webpack.optimize.UglifyJsPlugin({
-                compress: {
-                    warnings: false
+            new UglifyJsPlugin(),
+            extractCSS
+        ],
+        module: {
+            rules: [
+                {
+                    test: /\.css$/,
+                    use: extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [
+                            { loader: 'css-loader', options: { importLoaders: 1, minimize: true } },
+                            'postcss-loader'
+                        ]
+                    })
+                },
+                {
+                    test: /\.scss$/,
+                    use: extractCSS.extract({
+                        fallback: 'style-loader',
+                        use: [
+                            {
+                                loader: "css-loader", // translates CSS into CommonJS
+                                options: { minimize: true }
+                            },{
+                                loader: 'sass-loader'
+                            }
+                        ]
+                    })
                 }
-            }),
-            new ExtractTextPlugin('[name].min.css', {
-                allChunks: true
-            })
-        ]
+            ]
+        }
     });
 }
 

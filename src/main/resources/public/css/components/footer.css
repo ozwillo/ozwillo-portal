@@ -1,0 +1,136 @@
+.oz-footer {
+    background: var(--footer-color);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+}
+
+.oz-footer .logo .image,
+.oz-footer .logo .image:after {
+    content: var(--footer-logo-url);
+
+}
+
+/* IE10+ */
+@media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
+    .oz-footer .logo .image,
+    .oz-footer .logo .image:after {
+        content: '';
+        background: var(--footer-logo-url) no-repeat;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+.oz-footer .image {
+    max-height: 48px;
+    margin: 5px 10px;
+}
+
+.oz-footer .link {
+    color: var(--primary-color);
+    font-size: 0.9em;
+    margin: 4px 0;
+    text-align: left;
+    display: block;
+}
+
+.oz-footer .link:hover {
+    color: var(--primary-color);
+}
+
+.oz-footer > .flex-row:first-child {
+    position: relative !important;
+    margin-top: 1em;
+}
+
+.oz-footer > .flex-row:first-child:before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    height: 2px;
+    background-color: var(--primary-color);
+}
+
+.oz-footer > .flex-row {
+    margin: 20px 0;
+}
+
+.oz-footer .outer-links-list,
+.oz-footer .logo,
+.oz-footer .outer-links,
+.oz-footer .partners,
+.oz-footer .social-network {
+    width: 100%;
+}
+
+.oz-footer .logo {
+    display: flex;
+    align-items: center;
+}
+
+.oz-footer .logo > .image {
+    max-height: 120px;
+    margin: 0 1em 1em 1em;
+}
+
+.oz-footer .twitter {
+    display: inline-block;
+    padding: 10px;
+
+    font-size: 2em !important;
+    color: var(--tertiary-color);
+    background-color: #6f438e;
+    border: solid 1px #4c2d62;
+    border-radius: 30px;
+}
+
+@media (max-width: 425px) {
+
+    .oz-footer > .flex-row {
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .oz-footer .logo {
+        margin: 20px 0;
+    }
+
+    .oz-footer .logo > .image {
+        max-height: initial;
+        margin: auto;
+    }
+
+    .oz-footer .twitter {
+        font-size: 1.5em !important;
+        padding: 6px;
+    }
+
+    .oz-footer .image {
+        max-height: 32px;
+    }
+
+    .oz-footer .outer-links {
+        flex-wrap: wrap;
+        margin: 10px 0;
+    }
+
+    .oz-footer .outer-links-list {
+        width: 50%;
+        margin: 0;
+    }
+
+    .oz-footer .link {
+        text-align: center;
+    }
+
+    .oz-footer .partners,
+    .oz-footer .social-network {
+        width: auto;
+    }
+}
+
+@media (max-width: 425px) {
+    .oz-footer .outer-links {
+        display: none;
+    }
+}

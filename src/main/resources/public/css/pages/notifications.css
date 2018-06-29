@@ -1,0 +1,9 @@
+
+#notifications > .row {
+    display: flex;
+    flex-direction: column;
+}
+
+#notifications .btn {
+    margin: 2px;
+}

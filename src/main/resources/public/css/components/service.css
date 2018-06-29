@@ -1,0 +1,21 @@
+
+.service-icon {
+    text-align: center;
+}
+
+.service-icon .icon {
+    width: 64px;
+    height: 64px;
+}
+
+.service-icon .name {
+    color: var(--secondary-color);
+    margin: 0;
+}
+
+@media (max-width: 425px) {
+    .service-icon .icon {
+        width: 42px;
+        height: 42px;
+    }
+}

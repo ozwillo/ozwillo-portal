@@ -2,18 +2,23 @@ package org.oasis_eu.portal.services.dc.organization;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.oasis_eu.portal.core.exception.EntityNotFoundException;
 import org.oasis_eu.portal.services.PortalSystemUserService;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.*;
+import org.oasis_eu.spring.kernel.exception.EntityNotFoundException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.servlet.support.RequestContextUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -51,6 +56,12 @@ public class DCOrganizationService {
     private String dcOrgSearchCountry;
     @Value("${application.dcOrgSearch.useTypeAsModel:false}")
     private boolean useTypeAsModel;
+
+    @Autowired
+    private HttpServletRequest request;
+
+    @Autowired
+    private MessageSource messageSource;
 
     public DCOrganization searchOrganization(String lang, String country_uri, String sector, String regNumber) {
 
@@ -159,7 +170,7 @@ public class DCOrganizationService {
         DCResult result = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcId);
         if (!result.getType().equals(DCResultType.SUCCESS)) {
             logger.error("Unable to retrieve resource {}", dcId);
-            throw new EntityNotFoundException();
+            throw new EntityNotFoundException(HttpStatus.NOT_FOUND.value());
         }
 
         DCResource orgResource = result.getResource();
@@ -169,45 +180,54 @@ public class DCOrganizationService {
     /**
      * Creates a new DC Organization. It fetch last DC org, then merge it with current data, update it in DC OR create it if it doesn't exist
      *
-     * @param dcOrganization
-     * @return DCResource
      * @throws ForbiddenException if operation not authorized by Datacore, probably because
      *                            user organizations have been changed see #264 & DC#100
      */
-    public DCResource create(DCOrganization dcOrganization) throws ForbiddenException {
+    public DCResource createOrUpdate(DCOrganization dcOrganization) throws ForbiddenException {
         // re-get DC resource before creation to validate that it doesn't exist
         String dcId = dcOrganization.getId() != null ? dcOrganization.getId() :
             generateDcId(dcOrganization.getCountry_uri(), dcOrganization.getTax_reg_num());
         DCResource dcResource = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcId).getResource();
 
-        // if found check that version hasn't changed since filling the form (i.e. since clicking on "search"),
-        if (dcResource != null && dcResource.getVersion() == Integer.parseInt(dcOrganization.getVersion())) { //found in DC
+
+        // if found check that version hasn't changed since filling the form (i.e. since clicking on "search")
+        if (dcResource != null && dcResource.getVersion() != Integer.parseInt(dcOrganization.getVersion())) {
+            String translatedBusinessMessage = messageSource.getMessage("my.network.organization.error.already_exist",
+                    new Object[]{}, RequestContextUtils.getLocale(request));
+            throw new WrongQueryException(translatedBusinessMessage, HttpStatus.BAD_REQUEST.value());
+        }
+
+        if (dcResource != null) { //found in DC
             logger.debug("It exists, and there are no previous updates. Merging it from form fields, and doing a datacoreClient.updateResource()");
             mergeDCOrgToDCResources(dcOrganization, dcResource);
             DCResult dcResult = datacore.updateResource(dcOrgProjectName.trim(), dcResource); // to test locally, you must change url as datacore namespace (plnm-dev-dc)
-            if (dcResult.getType() == DCResultType.FORBIDDEN) {
-                throw new ForbiddenException();
+
+            if (dcResult.getErrorMessages() != null && !dcResult.getErrorMessages().isEmpty()) {
+                dcResult.getErrorMessages().forEach(logger::info);
+                throw new WrongQueryException(HttpStatus.BAD_REQUEST.value());
             }
+
             return dcResource;
-        } else if (dcResource == null || dcResource.isNew()) {  // still doesn't exist in DC
+        } else {  // still doesn't exist in DC
             logger.debug("It doesn't exist in DC Doing a datacore.saveResource() with : {},{}", dcOrgProjectName.trim(), dcOrganization);
             DCResult newCreatedDCRes = datacore.saveResource(dcOrgProjectName.trim(), toNewDCResource(dcOrganization));
-            if (newCreatedDCRes.getResource() != null) {
-                logger.debug("Setting the new DC URI into the dcOrganization : {}", newCreatedDCRes.getResource().getUri());
-                dcOrganization.setId(newCreatedDCRes.getResource().getUri());
-                return newCreatedDCRes.getResource();
-            }
-        }
 
-        // if version has changed : "Sorry, did change while you were editing it, please copy your fields, close and restart the wizard"
-        return null;
+            if (newCreatedDCRes.getResource() == null) {
+                newCreatedDCRes.getErrorMessages().forEach(logger::info);
+                throw new WrongQueryException(HttpStatus.BAD_REQUEST.value());
+            }
+
+            logger.debug("Setting the new DC URI into the dcOrganization : {}", newCreatedDCRes.getResource().getUri());
+            dcOrganization.setId(newCreatedDCRes.getResource().getUri());
+            return newCreatedDCRes.getResource();
+        }
     }
 
     /**
      * Update DC Organization data re-using this.create(DCOrganization) method.
      */
     public DCResource update(DCOrganization dcOrganization) {
-        return this.create(dcOrganization);
+        return this.createOrUpdate(dcOrganization);
     }
 
     /**
@@ -301,7 +321,8 @@ public class DCOrganizationService {
             toRes.set("org:country", fromOrg.getCountry_uri());
 
         toRes.set("org:status", fromOrg.isIn_activity() ? dcOrgStatusActive : dcOrgStatusInactive);
-        toRes.setMappedList("org:altName", valueAsDCList(fromOrg.getAlt_name(), fromOrg.getLang())); //list
+        if (fromOrg.getAlt_name() != null)
+            toRes.setMappedList("org:altName", valueAsDCList(fromOrg.getAlt_name(), fromOrg.getLang())); //list
         toRes.set("org:type", fromOrg.getOrg_type());
         toRes.set("org:regNumber", fromOrg.getTax_reg_num());
         toRes.set("orgpu:officialId", fromOrg.getTax_reg_official_id()); /* Only for Public organizations*/
@@ -319,11 +340,6 @@ public class DCOrganizationService {
         toRes.set("adrpost:postCode", fromOrg.getZip());
         toRes.set("adrpost:cedex", fromOrg.getCedex());
         toRes.set("adrpost:country", fromOrg.getCountry_uri());
-
-        //toRes.set("org:latitude", fromOrg.getLatitude());   //use once mapping localization is ready
-        //toRes.set("org:longitude", fromOrg.getLongitude()); //use once mapping localization is ready
-
-        //toRes.setLastModified(ZonedDateTime.now().toInstant());
 
         return toRes;
     }
@@ -354,8 +370,10 @@ public class DCOrganizationService {
 
         dcResource.setBaseUri(dcBaseUri.trim());
         dcResource.setType(orgModelType);
-        dcResource.setIri(cx.toUpperCase() // country acronym has no characters requiring encoding
+        // country acronym has no characters requiring encoding
+        dcResource.setIri(cx.toUpperCase()
             + "/" + DCResource.encodeUriPathSegment(regNumber));
+
         return dcResource;
     }
 
@@ -387,20 +405,13 @@ public class DCOrganizationService {
 
     private static final String dcOrgStatusActive = "Normal Activity";
     private static final String dcOrgStatusInactive = "Inactive";
-    private static final List<String> dcOrgStatusInactiveList = new ImmutableList.Builder<String>()
-        .add(dcOrgStatusInactive) // translation of portal's "false"
-        // original list of inactive statuses :
-        .add("Insolvent")
-        .add("Bankrupt")
-        .add("In Receivership")
-        .build();
 
     public DCOrganization toDCOrganization(DCResource res, String language) {
 
         String legalName = getBestI18nValue(res, language, "org:legalName", null); //Mapped list
 
         String in_activity_val = getBestI18nValue(res, language, "org:status", null);
-        boolean in_activity = (in_activity_val != null && dcOrgStatusActive.equals(in_activity_val));
+        boolean in_activity = (dcOrgStatusActive.equals(in_activity_val));
 
         String sector = getBestI18nValue(res, language, "org:sector", null);
         String altName = getBestI18nValue(res, language, "org:altName", null); //Mapped list
@@ -431,9 +442,6 @@ public class DCOrganizationService {
 
         String country_uri = getBestI18nValue(res, language, "adrpost:country", null);
         String country = getRemoteBestI18nValue(country_uri, dcOrgProjectName, language, "geo:name", null);
-
-        //String longitude=	 getBestI18nValue(res, "org:longitude", null);
-        //String latitude =	 getBestI18nValue(res, "org:latitude", null);
 
         DCOrganization dcOrg = new DCOrganization();
         dcOrg.setLegal_name(legalName);

@@ -1,0 +1,70 @@
+a.btn {
+    text-decoration: none;
+}
+
+.btn {
+    display: inline-block;
+    font-weight: normal;
+    text-align: center;
+    vertical-align: middle;
+    touch-action: manipulation;
+    cursor: pointer;
+    border: 1px solid transparent;
+    border-radius: 0;
+    white-space: normal;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.42857;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    margin: 0 2px;
+}
+
+.btn.focus, .btn:focus, .btn:hover {
+    color: var(--button-secondary-color);
+}
+
+.btn-line {
+    margin-right: 10px;
+}
+
+.btn.icon {
+    background-color: transparent;
+}
+
+.mm-popup__btn,
+.btn-submit,
+.btn-default {
+    color: var(--button-primary-color) !important;
+    border-color: var(--button-primary-color) !important;
+    background-color: var(--button-secondary-color);
+}
+
+.mm-popup__btn:hover,
+.mm-popup__btn:focus,
+.mm-popup__btn:active,
+.btn-submit:hover,
+.btn-submit:focus,
+.btn-submit:active,
+.btn-default:hover,
+.btn-default:focus,
+.btn-default:active {
+    color: var(--button-secondary-color) !important;
+    border-color: var(--button-secondary-color) !important;
+    background-color: var(--button-primary-color) !important;
+}
+
+.btn-default-inverse {
+    color: var(--button-secondary-color) !important;
+    border-color: var(--button-tertiary-color) !important;
+    background-color: var(--button-tertiary-color) !important;
+}
+
+.btn-default-inverse:hover,
+.btn-default-inverse:focus,
+.btn-default-inverse:active {
+    color: var(--button-tertiary-color) !important;
+    background-color: var(--button-secondary-color) !important;
+}

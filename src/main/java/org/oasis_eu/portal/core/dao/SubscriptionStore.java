@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface SubscriptionStore {
 
-    void create(String userId, Subscription object);
+    Subscription create(String userId, Subscription object);
 
 
     /**
@@ -21,7 +21,7 @@ public interface SubscriptionStore {
      * @param userId
      * @return
      */
-    public List<Subscription> findByUserId(String userId);
+    List<Subscription> findByUserId(String userId);
 
     /**
      * Used by push to dashboard by an (for now orga) admin
@@ -29,9 +29,9 @@ public interface SubscriptionStore {
      * @param serviceId
      * @return
      */
-    public List<Subscription> findByServiceId(String serviceId);
+    List<Subscription> findByServiceId(String serviceId);
 
-    public void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType);
+    void unsubscribe(String userId, String serviceId, SubscriptionType subscriptionType);
 
-    public void unsubscribe(String subscriptionId);
+    void unsubscribe(String subscriptionId);
 }

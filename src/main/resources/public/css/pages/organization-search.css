@@ -1,0 +1,57 @@
+.organization-search form.search {
+    margin: 20px auto;
+    text-align: center;
+}
+
+.organization-search form.search {
+    width: 100%;
+}
+
+.organization-search .search .field {
+    margin: auto;
+
+    width: 50%;
+    min-width: 300px;
+}
+
+.organization-search .organisations-list .organization {
+    margin: 15px 0;
+}
+
+.link {
+    text-decoration: none;
+    color: white;
+}
+
+.link:hover {
+    text-decoration: underline;
+    color: white;
+}
+
+.organization-search .action-icon {
+    font-size: 2.4em;
+    color: white;
+}
+
+.organization-search .organization-invitation-form .error {
+    color: var(--alert-color);
+}
+
+.organization-search .organization-invitation-form .success {
+    color: var(--primary-color);
+}
+
+.organization-search .organization-invitation-form .wrapper {
+    flex-wrap: wrap;
+}
+
+.organization-search .dropdown-content ul.list > li:after {
+    display: none;
+}
+
+
+@media (max-width: 425px) {
+    .organization-search .options {
+        margin: 5px 0;
+    }
+}

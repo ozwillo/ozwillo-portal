@@ -1,7 +1,8 @@
 spring:
   output.ansi.enabled: DETECT
   # only for 64x64 pngs which should be mostly below 5000B
-  http.multipart.max-file-size: 20KB
+  # now also for CSV of organizations to import, so upgraded to 200KB
+  http.multipart.max-file-size: 200KB
   # mandatory since 1.4 even if we do not use it directly
   session.store-type: none
   # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
@@ -65,6 +66,7 @@ application:
     country: adrpost:country
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
+  importPassword: $2a$10$E7r2ThFeUbaW0NIBWyPuI.1t5ZrrSaRu8tWkt1/KjgHFJSn0BDkvm
 
 # some switches:
 # devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
@@ -91,6 +93,7 @@ rest:
 
 kernel:
   base_uri: https://kernel.ozwillo.com
+  account_uri: https://accounts.ozwillo.com
   alt_uri: ${kernel.base_uri}
   auth:
     issuer: ${kernel.base_uri}/
@@ -103,6 +106,13 @@ kernel:
     logout_endpoint: ${kernel.alt_uri}/a/logout
     callback_uri: ${application.url}/callback
     home_uri: ${application.url}/my
+  account_france_connect_uri: ${kernel.account_uri}/a/franceconnect
+  kernel_france_connect_uri: ${kernel.base_uri}/a/franceconnect
+  france_connect:
+    link_endpoint: ${kernel.account_france_connect_uri}/login
+    unlink_endpoint: ${kernel.account_france_connect_uri}/unlink
+    userinfo_endpoint: ${kernel.kernel_france_connect_uri}/userinfo
+    enabled: false
   user_profile_endpoint: ${kernel.base_uri}/d/user
   user_membership_endpoint: ${kernel.base_uri}/d
   organization_endpoint: ${kernel.base_uri}/d/org
@@ -112,7 +122,6 @@ kernel:
   client_secret: changeit
   # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
   scopes_to_require: openid profile email address phone datacore
-  maxUserMembershipsPerPage: 20
   portal_endpoints:
     subscriptions: ${kernel.base_uri}/apps/subscriptions
     catalog: ${kernel.base_uri}/m
@@ -129,7 +138,7 @@ datacore:
   # (or execute /usr/libexec/java_home to find where Java is installed on your MacOS system)
   #url: https://data.ozwillo-dev.eu    # dev, doesn't work with current gen'd cert
   # alt_uri ??
-  systemAdminUser:  #Get it using Node.js lib / with portal clientId
+  systemAdminUser:  #Get it using Node.js util / with portal clientId
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 
@@ -145,3 +154,8 @@ cache:
   hosts:
     - 192.168.56.1
     - 192.168.56.102
+
+captcha:
+  url: https://www.google.com/recaptcha/api/siteverify
+  secret: changeit #The shared key between portal and google reCAPTCHA
+  sitekey: changeit

@@ -195,9 +195,7 @@ abstract public class PortalController {
 
             OpenIdCAuthentication openIdCAuthentication = (OpenIdCAuthentication) authentication;
 
-            if (openIdCService.getUserInfo(openIdCAuthentication) == null) {
-                return true;
-            }
+            return openIdCService.getUserInfo(openIdCAuthentication) == null;
         }
         return false;
     }

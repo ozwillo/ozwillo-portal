@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.services;
 
 import com.google.common.base.Strings;
-import org.joda.time.format.DateTimeFormat;
 import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.core.dao.CatalogStore;
 import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
@@ -24,10 +23,11 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.Collections;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
+import java.time.format.FormatStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -55,9 +55,6 @@ public class PortalNotificationService {
     @Value("${application.notificationsEnabled:true}")
     private boolean notificationsEnabled;
 
-    @Value("${application.devmode:false}")
-    private boolean devmode;
-
     @Autowired
     private MessageSource messageSource;
 
@@ -67,9 +64,8 @@ public class PortalNotificationService {
         }
         // TODO NB. In case the user has +300 notifications, it will be fetch ALL the notification content each time,
         // this to be filtered and counted at the end, which implies use of unnecessary networking/processing tasks
-        return (int) notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
-            .stream()
-            .count();
+        return notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+                .size();
     }
 
     public UserNotificationResponse getNotifications(NotificationStatus status) {
@@ -107,25 +103,21 @@ public class PortalNotificationService {
                 if (n.getServiceId() != null) {
                     serviceEntry = catalogStore.findService(n.getServiceId());
                     if (serviceEntry == null) {
+                        logger.warn("Service {} not found or no longer authorized", n.getServiceId());
+                        archive(n.getId());
                         return null; // skip deleted service, probable (?) companion case to #179 Bug with notifications referring destroyed app instances
-                        // TODO LATER keep service but with "deleted" flag so it doesn't happen (rather than auto deleting this portal data)
                     }
                     notif.setAppName(serviceEntry.getName(locale));
                     notif.setServiceId(n.getServiceId());
                     notif.setApplicationId(serviceEntry.getId());
 
                 } else if (n.getInstanceId() != null) {
-                    ApplicationInstance instance = catalogStore.findApplicationInstance(n.getInstanceId());
+                    ApplicationInstance instance = catalogStore.findApplicationInstanceOrNull(n.getInstanceId());
                     if (instance == null) {
                         // case of #179 Bug with notifications referring destroyed app instances or #206 500 on portal notification api
-                        // LATER we could keep app instance with a "deleted" flag so it doesn't happen (rather than auto deleting this portal data),
-                        // but this wouldn't address the Forbidden case)
-                        if (devmode) {
-                            notif.setAppName("Application with deleted or forbidden instance"); // to help debug
-                            notif.setServiceId("");
-                        } else {
-                            return null; // skip deleted or (newly) Forbidden app instance (rather than displaying no name)
-                        }
+                        logger.warn("Instance {} not found or no longer authorized", n.getInstanceId());
+                        archive(n.getId());
+                        return null; // skip deleted or (newly) Forbidden app instance (rather than displaying no name)
                     } else {
                         CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
                         notif.setAppName(application.getName(locale));
@@ -135,7 +127,7 @@ public class PortalNotificationService {
                 }
 
                 notif.setDate(n.getTime());
-                notif.setDateText(DateTimeFormat.forPattern(DateTimeFormat.patternForStyle("MS", locale)).print(n.getTime()));
+                notif.setDateText(DateTimeFormatter.ofLocalizedDate(FormatStyle.MEDIUM).withLocale(locale).format(LocalDateTime.ofInstant(n.getTime(), ZoneOffset.UTC)));
 
                 notif.setFormattedText(getFormattedText(n, locale));
                 notif.setId(n.getId());
@@ -158,7 +150,7 @@ public class PortalNotificationService {
 
                 return notif;
             })
-            .filter(n -> n != null) // case of deleted or Forbidden app instance, see above
+            .filter(Objects::nonNull) // case of deleted or Forbidden app instance, see above
             .sorted((n1, n2) -> n1.getDate() != null && (n2.getDate() == null // some old notif, but would mean "now" for joda time
                 || n1.getDate().isAfter(n2.getDate())) ? -1 : 1)
             .collect(Collectors.toList());

@@ -1,13 +1,20 @@
 spring:
-  server:
-    tomcat.accesslog.enabled: true
   output.ansi.enabled: DETECT
+  # only for 64x64 pngs which should be mostly below 5000B
+  http.multipart.max-file-size: 20KB
+  data.mongodb.uri: mongodb://localhost/portal_test
+  mail:
+    host: smtp.mydomain.eu
+    port: 25
+    protocol: smtp
+    properties:
+      mail.smtp:
+        auth: false
+        starttls.enable: true
 
 server:
   compression.enabled: true
-
-# only for 64x64 pngs which should be mostly below 5000B
-multipart.max-file-size: 20KB
+  tomcat.accesslog.enabled: true
 
 ha:
   enabled: false
@@ -53,6 +60,7 @@ application:
     country: adrpost:country
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
+  importPassword: importPassword
 
 web:
   home: http://www.ozwillo-dev.eu
@@ -65,6 +73,7 @@ kernel:
   token:
     expiry: 300
   base_uri: http://kernel.ozwillo-dev.eu
+  account_uri: https://accounts.ozwillo-dev.eu
   auth:
     issuer: ${kernel.base_uri}/
     auth_endpoint: ${kernel.base_uri}/a/auth
@@ -74,6 +83,13 @@ kernel:
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.base_uri}/a/logout
     callback_uri: ${application.url}/login
+  account_france_connect_uri: ${kernel.account_uri}/a/franceconnect
+  kernel_france_connect_uri: ${kernel.base_uri}/a/franceconnect
+  france_connect:
+    link_endpoint: ${kernel.account_france_connect_uri}/login
+    unlink_endpoint: ${kernel.account_france_connect_uri}/unlink
+    userinfo_endpoint: ${kernel.kernel_france_connect_uri}/userinfo
+    enabled: false
   user_profile_endpoint: ${kernel.base_uri}/d/user
   user_membership_endpoint: ${kernel.base_uri}/d
   organization_endpoint: ${kernel.base_uri}/d/org
@@ -95,30 +111,23 @@ datacore:
   url: https://plnm-dev-dc # dev, requires installing gen'd cert
   #url: https://data.ozwillo-dev.eu # dev, doesn't work with current gen'd cert
   # alt_uri ??
-  systemAdminUser:  #Get it using Node.js lib / with portal clientId
+  systemAdminUser:  #Get it using Node.js util / with portal clientId
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
 
 opendata:
   url: https://opendata-preprod.data-ozwillo.org
 
-persistence:
-  mongohosts:
-   - localhost
-  mongodatabase: portal_test
-  #login: portal
-  #password: portal
+mail:
+  contact:
+    from: Contact Ozwillo <contact@mydomain.eu>
+    to: contact@mydomain.eu
 
 cache:
   hosts:
     - 127.0.0.1
 
-mail:
-  host: changeit
-  port: 587
-  starttls: true
-  smtps: false
-  login: changeit
-  password: changeit
-  # Recipient of contact form requests sent by users
-  contact: contact@ozwillo.com
+captcha:
+  url: https://www.google.com/recaptcha/api/siteverify
+  secret: changeit #The shared key between portal and google reCAPTCHA
+  sitekey: changeit

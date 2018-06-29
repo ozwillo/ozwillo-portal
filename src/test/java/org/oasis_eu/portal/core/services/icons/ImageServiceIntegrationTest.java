@@ -49,9 +49,6 @@ public class ImageServiceIntegrationTest {
 	@Value("${application.url}")
 	private String applicationUrl;
 
-	@Value("${persistence.mongodatabase}")
-	private String databaseName;
-
 	@Autowired
 	private ImageService imageService;
 

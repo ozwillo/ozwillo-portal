@@ -1,6 +1,9 @@
 package org.oasis_eu.portal.model.notifications;
 
-import org.joda.time.Instant;
+import java.time.Instant;
+
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 
 /**
@@ -10,6 +13,7 @@ import org.oasis_eu.spring.kernel.model.NotificationStatus;
 public class UserNotification {
     private String appName;
     private String formattedText;
+    @JsonSerialize(using = CustomInstantSerializer.class)
     private Instant date;
     private String dateText;
     private String id;
