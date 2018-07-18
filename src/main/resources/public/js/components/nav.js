@@ -75,7 +75,7 @@ class Nav extends React.Component {
                             </a>
                         </li>
                         <li className="menu">
-                            <a className="link" href={`${this.props.opendatEndPoint}/${this.props.language}`}>
+                            <a className="link" href={`${this.props.opendataEndPoint}/${this.props.language}`}>
                                 <i className="fa fa-signal icon" alt="Data icon"/>
                                 <span>{this.context.t('ui.datastore')}</span>
                             </a>

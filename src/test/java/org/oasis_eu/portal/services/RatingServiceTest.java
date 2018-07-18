@@ -3,8 +3,8 @@ package org.oasis_eu.portal.services;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.core.mongo.dao.store.RatingRepository;
-import org.oasis_eu.portal.OasisPortal;
+import org.oasis_eu.portal.dao.portal.store.RatingRepository;
+import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.slf4j.Logger;
@@ -27,7 +27,7 @@ import static org.mockito.Mockito.when;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringBootTest(classes = {OasisPortal.class, MockServletContext.class})
+@SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
 public class RatingServiceTest {
 
 	static Logger logger = LoggerFactory.getLogger(RatingServiceTest.class);

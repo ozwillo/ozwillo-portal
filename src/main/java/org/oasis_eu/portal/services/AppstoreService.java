@@ -1,20 +1,19 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.core.model.catalog.*;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
-import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
-import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
-import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.model.appstore.ApplicationInstantiationRequest;
+import org.oasis_eu.portal.model.catalog.*;
+import org.oasis_eu.portal.model.subscription.Subscription;
+import org.oasis_eu.portal.model.subscription.SubscriptionType;
+import org.oasis_eu.portal.dao.portal.store.InstalledStatusRepository;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.store.InstalledStatus;
+import org.oasis_eu.portal.services.icons.ImageService;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.store.AppstoreHit;
 import org.oasis_eu.portal.model.app.store.InstallationOption;
-import org.oasis_eu.portal.services.dc.geoarea.GeographicalAreaService;
-import org.oasis_eu.portal.services.kernel.UserProfileService;
+import org.oasis_eu.portal.dao.dc.GeographicalAreaService;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -42,13 +41,13 @@ public class AppstoreService {
     private HttpServletRequest request;
 
     @Autowired
-    private CatalogStore catalogStore;
+    private CatalogStoreImpl catalogStore;
 
     @Autowired
     private OrganizationStore organizationStore;
 
     @Autowired
-    private SubscriptionStore subscriptionStore;
+    private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
     private UserInfoService userInfoService;

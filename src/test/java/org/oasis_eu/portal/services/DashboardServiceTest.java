@@ -3,10 +3,9 @@ package org.oasis_eu.portal.services;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
-import org.oasis_eu.portal.core.mongo.model.my.UserContext;
-import org.oasis_eu.portal.OasisPortal;
+import org.oasis_eu.portal.dao.portal.my.DashboardRepository;
+import org.oasis_eu.portal.model.my.UserContext;
+import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +27,7 @@ import static org.springframework.test.web.client.response.MockRestResponseCreat
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringBootTest(classes = {OasisPortal.class, MockServletContext.class})
+@SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
 public class DashboardServiceTest {
 
 	// well-known "alice" user id
@@ -42,9 +41,6 @@ public class DashboardServiceTest {
 
 	@Autowired
 	private DashboardRepository dashboardRepository;
-
-	@Autowired
-	private SubscriptionStore subscriptionStore;
 
 	@Before
 	public void setUp() {

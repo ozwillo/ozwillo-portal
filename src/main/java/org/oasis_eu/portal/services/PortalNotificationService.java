@@ -2,10 +2,10 @@ package org.oasis_eu.portal.services;
 
 import com.google.common.base.Strings;
 import org.markdown4j.Markdown4jProcessor;
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
+import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.model.notifications.NotifApp;
 import org.oasis_eu.portal.model.notifications.UserNotification;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
@@ -44,7 +44,7 @@ public class PortalNotificationService {
     private NotificationService notificationService;
 
     @Autowired
-    private CatalogStore catalogStore;
+    private CatalogStoreImpl catalogStore;
 
     @Autowired
     private UserInfoService userInfoHelper;

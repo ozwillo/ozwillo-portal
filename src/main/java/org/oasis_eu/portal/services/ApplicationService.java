@@ -1,22 +1,21 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.dao.InstanceACLStore;
-import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
-import org.oasis_eu.portal.core.services.icons.ImageService;
+import org.oasis_eu.portal.dao.kernel.ApplicationInstanceStoreImpl;
+import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.dao.kernel.InstanceACLStoreImpl;
+import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.model.catalog.ServiceEntry;
+import org.oasis_eu.portal.model.subscription.Subscription;
+import org.oasis_eu.portal.model.subscription.SubscriptionType;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.services.icons.ImageService;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.user.User;
-import org.oasis_eu.portal.services.kernel.UserProfileService;
-import org.oasis_eu.portal.ui.UIOrganization;
+import org.oasis_eu.portal.dao.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
@@ -30,11 +29,9 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 /**
@@ -50,19 +47,19 @@ public class ApplicationService {
     private int applicationInstanceDaysTillDeletedFromTrash;
 
     @Autowired
-    private CatalogStore catalogStore;
+    private CatalogStoreImpl catalogStore;
 
     @Autowired
-    private SubscriptionStore subscriptionStore;
+    private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
-    private ApplicationInstanceStore applicationInstanceStore;
+    private ApplicationInstanceStoreImpl applicationInstanceStore;
 
     @Autowired
     private HttpServletRequest request;
 
     @Autowired
-    private InstanceACLStore instanceACLStore;
+    private InstanceACLStoreImpl instanceACLStore;
 
     @Autowired
     private ImageService imageService;

@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.model.app.store;
 
-import org.oasis_eu.portal.core.model.catalog.Audience;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.model.catalog.Audience;
+import org.oasis_eu.portal.model.catalog.CatalogEntry;
 
 import java.util.List;
 import java.util.Locale;

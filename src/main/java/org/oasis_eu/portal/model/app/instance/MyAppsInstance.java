@@ -3,7 +3,7 @@ package org.oasis_eu.portal.model.app.instance;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.oasis_eu.portal.config.CustomInstantSerializer;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.model.catalog.ApplicationInstance;
 import org.oasis_eu.portal.model.app.service.InstanceService;
 
 import java.time.Instant;

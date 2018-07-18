@@ -9,7 +9,7 @@ const defaultState = {
     languages: ['en'],
     kernelEndPoint: '',
     accountEndPoint: '',
-    opendatEndPoint: '',
+    opendataEndPoint: '',
     countries: []
 };
 
@@ -19,6 +19,7 @@ export default (state = defaultState, action) => {
         case FETCH_CONFIG:
             nextState.siteMapFooter = { ...state.siteMapFooter, [action.config.language]: action.config.siteMapFooter };
             nextState.siteMapHeader = { ...state.siteMapHeader, [action.config.language]: action.config.siteMapHeader };
+            break;
         case FETCH_SET_LANGUAGE:
             nextState.currentSiteMapFooter = nextState.siteMapFooter[nextState.language];
             nextState.currentSiteMapHeader = nextState.siteMapHeader[nextState.language];

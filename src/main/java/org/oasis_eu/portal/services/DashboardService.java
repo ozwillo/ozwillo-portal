@@ -1,23 +1,23 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.appstore.GenericEntity;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
-import org.oasis_eu.portal.core.mongo.dao.my.HiddenPendingAppsRepository;
-import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
-import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
-import org.oasis_eu.portal.core.mongo.model.my.HiddenPendingApps;
-import org.oasis_eu.portal.core.mongo.model.my.UserContext;
-import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
-import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.ui.DashboardApp;
-import org.oasis_eu.portal.ui.DashboardPendingApp;
+import org.oasis_eu.portal.dao.kernel.ApplicationInstanceStoreImpl;
+import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.model.appstore.GenericEntity;
+import org.oasis_eu.portal.model.catalog.ApplicationInstance;
+import org.oasis_eu.portal.model.catalog.CatalogEntry;
+import org.oasis_eu.portal.model.catalog.ServiceEntry;
+import org.oasis_eu.portal.model.subscription.Subscription;
+import org.oasis_eu.portal.dao.portal.my.DashboardRepository;
+import org.oasis_eu.portal.dao.portal.my.HiddenPendingAppsRepository;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.my.Dashboard;
+import org.oasis_eu.portal.model.my.HiddenPendingApps;
+import org.oasis_eu.portal.model.my.UserContext;
+import org.oasis_eu.portal.model.my.UserSubscription;
+import org.oasis_eu.portal.services.icons.ImageService;
+import org.oasis_eu.portal.model.ui.DashboardApp;
+import org.oasis_eu.portal.model.ui.DashboardPendingApp;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -55,13 +55,13 @@ public class DashboardService {
     private HiddenPendingAppsRepository hiddenPendingAppsRepository;
 
     @Autowired
-    private SubscriptionStore subscriptionStore;
+    private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
-    private CatalogStore catalogStore;
+    private CatalogStoreImpl catalogStore;
 
     @Autowired
-    private ApplicationInstanceStore applicationInstanceStore;
+    private ApplicationInstanceStoreImpl applicationInstanceStore;
 
     @Autowired
     private UserInfoService userInfoHelper;

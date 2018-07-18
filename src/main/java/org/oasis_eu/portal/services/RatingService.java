@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.model.catalog.CatalogEntryType;
-import org.oasis_eu.portal.core.mongo.dao.store.RatingRepository;
-import org.oasis_eu.portal.core.mongo.model.store.AvgRating;
-import org.oasis_eu.portal.core.mongo.model.store.Rating;
+import org.oasis_eu.portal.model.catalog.CatalogEntryType;
+import org.oasis_eu.portal.dao.portal.store.RatingRepository;
+import org.oasis_eu.portal.model.store.AvgRating;
+import org.oasis_eu.portal.model.store.Rating;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

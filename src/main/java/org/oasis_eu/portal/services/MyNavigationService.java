@@ -1,8 +1,8 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapEntry;
-import org.oasis_eu.portal.core.mongo.model.sitemap.SiteMapMenuSet;
-import org.oasis_eu.portal.core.services.sitemap.SiteMapService;
+import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
+import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
+import org.oasis_eu.portal.services.sitemap.SiteMapService;
 import org.oasis_eu.portal.model.MyNavigation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
