@@ -35,7 +35,7 @@ class Nav extends React.Component {
                                 return <li className={`menu ${(isSubMenu && 'dropdown') || ''}`} key={index}>
                                     {
                                         isSubMenu &&
-                                        <a href="#" className="link dropdown-toggle" data-toggle="dropdown"
+                                        <a className="link dropdown-toggle" data-toggle="dropdown"
                                            role="button"
                                            aria-expanded="false" aria-haspopup="true" href={item.url}>
                                             <span data-th-text="${item.label}">{item.label}</span>
@@ -120,7 +120,7 @@ const mapStateToProps = state => {
         language: state.config.language,
         languages: state.config.languages,
         siteMapHeader: state.config.currentSiteMapHeader,
-        opendatEndPoint: state.config.opendatEndPoint
+        opendataEndPoint: state.config.opendataEndPoint
     };
 };
 

@@ -76,7 +76,7 @@ MyNav.contextTypes = {
 const mapStateToProps = state => {
     return {
         language: state.config.language,
-        opendatEndPoint: state.config.opendatEndPoint
+        opendataEndPoint: state.config.opendataEndPoint
     };
 };
 
