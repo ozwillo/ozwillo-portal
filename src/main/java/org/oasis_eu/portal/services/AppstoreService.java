@@ -2,17 +2,20 @@ package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
-import org.oasis_eu.portal.model.appstore.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.model.catalog.*;
-import org.oasis_eu.portal.model.subscription.Subscription;
-import org.oasis_eu.portal.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.dao.portal.store.InstalledStatusRepository;
+import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
+import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.store.Audience;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
+import org.oasis_eu.portal.model.kernel.store.PaymentOption;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
+import org.oasis_eu.portal.dao.portal.InstalledStatusRepository;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.model.store.InstalledStatus;
-import org.oasis_eu.portal.services.icons.ImageService;
-import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
-import org.oasis_eu.portal.model.app.store.AppstoreHit;
-import org.oasis_eu.portal.model.app.store.InstallationOption;
+import org.oasis_eu.portal.model.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.store.AppstoreHit;
+import org.oasis_eu.portal.model.store.InstallationOption;
 import org.oasis_eu.portal.dao.dc.GeographicalAreaService;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
@@ -84,8 +87,8 @@ public class AppstoreService {
      * @return
      */
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
-        List<Locale> supportedLocales, List<String> geographicalAreas,
-        List<String> categoryIds, String q, int from) {
+                                    List<Locale> supportedLocales, List<String> geographicalAreas,
+                                    List<String> categoryIds, String q, int from) {
 
         if (addCurrentToSupportedLocalesIfNone) {
             supportedLocales = (supportedLocales == null || supportedLocales.isEmpty()) ?

@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.model.store;
 
-import org.oasis_eu.portal.model.catalog.CatalogEntryType;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 
 /**
  * User: schambon

@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.dao.kernel;
 
-import org.oasis_eu.portal.model.ace.ACE;
+import org.oasis_eu.portal.model.kernel.instance.ACE;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.service.Kernel;

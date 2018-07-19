@@ -10,10 +10,12 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.sitemap.SiteMapHeaderRepository;
+import org.oasis_eu.portal.dao.portal.SiteMapHeaderRepository;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuItem;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
-import org.oasis_eu.portal.services.sitemap.xml.HeaderMenuSet;
+import org.oasis_eu.portal.services.SiteMapService;
+import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
+import org.oasis_eu.portal.model.sitemap.HeaderMenuSet;
 import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;

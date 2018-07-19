@@ -2,7 +2,7 @@ package org.oasis_eu.portal.controller;
 
 import org.oasis_eu.portal.model.OasisLocales;
 import org.oasis_eu.portal.model.user.UserProfile;
-import org.oasis_eu.portal.model.ui.UIUserProfile;
+import org.oasis_eu.portal.model.user.UIUserProfile;
 import org.oasis_eu.portal.services.FranceConnectService;
 import org.oasis_eu.portal.dao.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;

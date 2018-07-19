@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.dao.dc;
 
 import org.oasis_eu.portal.model.geo.GeographicalArea;
-import org.oasis_eu.portal.services.search.Tokenizer;
+import org.oasis_eu.portal.model.search.Tokenizer;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

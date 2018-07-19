@@ -1,10 +1,9 @@
 package org.oasis_eu.portal.services;
 
 import com.google.common.base.Strings;
-import org.oasis_eu.portal.services.icons.ImageService;
 import org.oasis_eu.portal.dao.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
-import org.oasis_eu.portal.model.ui.UIOrganization;
+import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.kernel.model.DCOrganizationType;
 import org.oasis_eu.spring.kernel.model.OrganizationType;

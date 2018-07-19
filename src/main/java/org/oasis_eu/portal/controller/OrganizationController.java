@@ -3,9 +3,9 @@ package org.oasis_eu.portal.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.OrganizationService;
-import org.oasis_eu.portal.model.ui.UIOrganization;
+import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.dc.DCOrganization;
-import org.oasis_eu.portal.model.ui.UIPendingOrganizationMember;
+import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -2,7 +2,7 @@ package org.oasis_eu.portal.controller;
 
 import com.google.common.io.ByteStreams;
 import org.oasis_eu.portal.model.images.Image;
-import org.oasis_eu.portal.services.icons.ImageService;
+import org.oasis_eu.portal.services.ImageService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.subscription.Subscription;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
 import org.oasis_eu.portal.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;

@@ -3,6 +3,7 @@ package org.oasis_eu.portal.services.icons;
 import com.google.common.io.ByteStreams;
 import org.junit.Test;
 import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.services.ImageService;
 
 import java.io.IOException;
 import java.io.InputStream;

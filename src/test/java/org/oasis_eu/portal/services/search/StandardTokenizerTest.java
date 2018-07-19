@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.services.search;
 
 import org.junit.Test;
+import org.oasis_eu.portal.model.search.StandardTokenizer;
 
 import java.util.Arrays;
 import java.util.List;

@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.my.UserContext;
-import org.oasis_eu.portal.model.ui.DashboardApp;
-import org.oasis_eu.portal.model.ui.DashboardPendingApp;
+import org.oasis_eu.portal.model.dashboard.UserContext;
+import org.oasis_eu.portal.model.dashboard.DashboardApp;
+import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.portal.services.DashboardService;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.springframework.beans.factory.annotation.Autowired;

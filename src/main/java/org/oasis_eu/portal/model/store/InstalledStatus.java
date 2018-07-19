@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.model.store;
 
 import org.joda.time.DateTime;
-import org.oasis_eu.portal.model.catalog.CatalogEntryType;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.CompoundIndex;
 import org.springframework.data.mongodb.core.index.CompoundIndexes;

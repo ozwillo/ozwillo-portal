@@ -1,12 +1,12 @@
 package org.oasis_eu.portal.dao.kernel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.ui.UIPendingOrganizationMember;
+import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
-import org.oasis_eu.portal.model.organization.OrgMembership;
-import org.oasis_eu.portal.model.organization.PendingOrgMembership;
-import org.oasis_eu.portal.model.organization.UserMembership;
+import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
+import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
+import org.oasis_eu.portal.model.kernel.organization.UserMembership;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

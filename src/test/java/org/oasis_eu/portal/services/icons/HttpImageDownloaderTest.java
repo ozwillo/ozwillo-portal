@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.services.icons;
 
 import org.junit.Test;
+import org.oasis_eu.portal.services.HttpImageDownloader;
 
 import static org.junit.Assert.assertNull;
 

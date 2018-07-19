@@ -2,7 +2,7 @@ package org.oasis_eu.portal.services.geoarea;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.geo.GeographicalAreaCache;
+import org.oasis_eu.portal.dao.portal.GeographicalAreaCache;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;

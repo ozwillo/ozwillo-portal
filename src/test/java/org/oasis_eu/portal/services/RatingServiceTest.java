@@ -3,7 +3,7 @@ package org.oasis_eu.portal.services;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.store.RatingRepository;
+import org.oasis_eu.portal.dao.portal.RatingRepository;
 import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
