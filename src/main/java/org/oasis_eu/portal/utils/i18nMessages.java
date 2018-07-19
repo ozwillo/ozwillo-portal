@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.controller.generic;
+package org.oasis_eu.portal.utils;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.context.MessageSource;

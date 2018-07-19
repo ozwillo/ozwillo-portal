@@ -3,9 +3,8 @@ package org.oasis_eu.portal.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
-import org.oasis_eu.portal.controller.generic.BaseController;
-import org.oasis_eu.portal.controller.generic.i18nMessages;
 import org.oasis_eu.portal.services.MyNavigationService;
+import org.oasis_eu.portal.utils.i18nMessages;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -23,7 +22,7 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("my/api")
-public class ConfigController extends BaseController {
+public class ConfigController {
 
     @Autowired
     private MessageSource messageSource;

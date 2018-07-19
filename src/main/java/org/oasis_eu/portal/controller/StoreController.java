@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.controller.store;
+package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.appstore.ApplicationInstanceCreationException;
@@ -7,10 +7,8 @@ import org.oasis_eu.portal.model.catalog.CatalogEntryType;
 import org.oasis_eu.portal.model.catalog.PaymentOption;
 import org.oasis_eu.portal.model.catalog.ServiceEntry;
 import org.oasis_eu.portal.model.subscription.Subscription;
-import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.services.icons.ImageService;
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.app.store.AppstoreHit;
 import org.oasis_eu.portal.model.app.store.InstallationOption;
@@ -18,7 +16,6 @@ import org.oasis_eu.portal.model.ui.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.AppstoreService;
 import org.oasis_eu.portal.services.RatingService;
-import org.oasis_eu.portal.dao.dc.GeographicalAreaService;
 import org.oasis_eu.portal.dao.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
 import org.oasis_eu.portal.model.dc.DCRegActivityResponse;
@@ -40,13 +37,9 @@ import java.util.stream.Collectors;
 
 import static org.springframework.web.bind.annotation.RequestMethod.GET;
 
-/**
- * User: schambon
- * Date: 10/29/14
- */
 @RestController
 @RequestMapping("/api/store")
-public class StoreController extends BaseController {
+public class StoreController {
 
     private static final Logger logger = LoggerFactory.getLogger(StoreController.class);
 
@@ -67,24 +60,10 @@ public class StoreController extends BaseController {
     private RatingService ratingService;
 
     @Autowired
-    private GeographicalAreaService geographicalAreaService;
-
-    @Autowired
     private DCOrganizationService organizationService;
 
     @Value("${application.store.load_size:20}")
     private int loadSize;
-
-
-    @RequestMapping(value = "/geographicalAreas", method = RequestMethod.GET)
-    public GeographicalAreaResponse geographicalAreas(@RequestParam String country_uri, @RequestParam String q) {
-        int areaLoadSize = 10;
-        int areaDcLoadSize = areaLoadSize + 1;
-        List<GeographicalArea> areas = geographicalAreaService.find(country_uri, null, q, 0, areaDcLoadSize);
-
-        return new GeographicalAreaResponse(areas.stream()
-            .limit(areaLoadSize).collect(Collectors.toList()), areas.size() == areaDcLoadSize);
-    }
 
     @RequestMapping(value = "/dc-taxRegActivity", method = GET)
     public DCRegActivityResponse searchTaxRegActivity(@RequestParam String country_uri, @RequestParam String q) {
@@ -92,25 +71,6 @@ public class StoreController extends BaseController {
         List<DCRegActivity> TaxRegActivityLst = organizationService.searchTaxRegActivity(country_uri, q, 0, 10);
         return new DCRegActivityResponse(TaxRegActivityLst);
     }
-
-    @RequestMapping(value = "/dc-cities", method = RequestMethod.GET)
-    public GeographicalAreaResponse dcCities(@RequestParam String country_uri, @RequestParam String q) {
-        int loadSize = 10;
-        List<GeographicalArea> cities = geographicalAreaService.findCities(q, country_uri, 0, loadSize + 1);
-
-        return new GeographicalAreaResponse(
-            cities.stream().limit(loadSize).collect(Collectors.toList()), (cities.size() == loadSize + 1));
-    }
-
-    @RequestMapping(value = "/dc-countries", method = RequestMethod.GET)
-    public GeographicalAreaResponse dcCountries(@RequestParam String q) {
-        int loadSize = 10;
-        List<GeographicalArea> countries = geographicalAreaService.findCountries(q);
-
-        return new GeographicalAreaResponse(
-            countries.stream().limit(loadSize).collect(Collectors.toList()), (countries.size() == loadSize + 1));
-    }
-
 
     @RequestMapping(value = "/applications", method = RequestMethod.GET)
     public StoreAppResponse applications(
@@ -170,6 +130,7 @@ public class StoreController extends BaseController {
             appstoreService.buy(request.appId, CatalogEntryType.valueOf(request.appType.toUpperCase()), request.organizationId);
             response.success = true;
         } catch (ApplicationInstanceCreationException | WrongQueryException e) {
+            // TODO : retrieve info about real error and display it to user
             response.success = false;
         }
 
@@ -286,5 +247,94 @@ public class StoreController extends BaseController {
     private static class RateRequest {
         @JsonProperty
         double rate;
+    }
+
+    /**
+     * User: schambon
+     * Date: 12/16/14
+     */
+    public static class StoreAppResponse {
+
+        @JsonProperty("apps")
+        private List<StoreApplication> apps;
+        @JsonProperty("maybeMoreApps")
+        private boolean maybeMoreApps;
+
+
+        public StoreAppResponse(List<StoreApplication> apps, boolean maybeMoreApps) {
+            this.apps = apps;
+            this.maybeMoreApps = maybeMoreApps;
+        }
+
+        public List<StoreApplication> getApps() {
+            return apps;
+        }
+
+        public boolean isMaybeMoreApps() {
+            return maybeMoreApps;
+        }
+
+    }
+
+    /**
+     * User: schambon
+     * Date: 10/29/14
+     */
+    public static class StoreApplication {
+
+        @JsonProperty
+        String id;
+        @JsonProperty
+        String name;
+        @JsonProperty
+        Type type;
+        @JsonProperty
+        String icon;
+        @JsonProperty("public_service")
+        boolean publicService;
+        @JsonProperty
+        String description;
+        @JsonProperty("provider")
+        String providerName;
+        @JsonProperty
+        boolean paid;
+        @JsonProperty("target_citizens")
+        boolean audienceCitizens;
+        @JsonProperty("target_publicbodies")
+        boolean audiencePublicBodies;
+        @JsonProperty("target_companies")
+        boolean audienceCompanies;
+
+        @JsonProperty
+        boolean installed;
+
+        public enum Type {
+            service,
+            application
+        }
+
+    }
+
+    /**
+     * User: schambon
+     * Date: 10/29/14
+     */
+    public static class ApplicationDetails {
+        @JsonProperty
+        double rating;
+        @JsonProperty
+        boolean rateable = true;
+        @JsonProperty
+        String policy;
+        @JsonProperty
+        String tos;
+        @JsonProperty
+        String longdescription;
+        @JsonProperty
+        List<String> screenshots;
+
+        @JsonProperty
+        String serviceUrl;
+
     }
 }

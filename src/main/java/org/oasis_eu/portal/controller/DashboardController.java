@@ -1,8 +1,7 @@
-package org.oasis_eu.portal.controller.my.rest;
+package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.my.UserContext;
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.model.ui.DashboardApp;
 import org.oasis_eu.portal.model.ui.DashboardPendingApp;
 import org.oasis_eu.portal.services.DashboardService;
@@ -24,7 +23,7 @@ import static org.springframework.web.bind.annotation.RequestMethod.*;
  */
 @RestController
 @RequestMapping("/my/api/dashboard")
-public class DashboardController extends BaseController {
+public class DashboardController {
 
     @Autowired
     private DashboardService dashboardService;

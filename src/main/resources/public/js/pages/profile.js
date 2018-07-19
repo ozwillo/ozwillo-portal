@@ -364,7 +364,7 @@ class AddressAccount extends React.Component {
                     <CountrySelector value={address.country || ''}
                             required={required}
                             onChange={this.onCountryChange}
-                            url="/api/store/dc-countries"/>
+                            url="/api/geo/countries"/>
 
                     {
                         address.country && [
@@ -376,7 +376,7 @@ class AddressAccount extends React.Component {
                                                     onGeoAreaSelected={this.onGeoAreaSelected}
                                                     onChange={this.onGeoAreaChange}
                                                     countryUri={address.country || ''}
-                                                    endpoint="/dc-cities"
+                                                    endpoint="cities"
                                                     placeholder={this.context.t('my.profile.personal.locality')}
                                                     value={address.locality || ''}/>
                             </div>,

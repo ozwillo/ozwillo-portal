@@ -3,7 +3,6 @@ package org.oasis_eu.portal.services;
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
 import org.oasis_eu.portal.services.sitemap.SiteMapService;
-import org.oasis_eu.portal.model.MyNavigation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -24,12 +23,6 @@ public class MyNavigationService {
 
     @Autowired
     private HttpServletRequest httpRequest;
-
-    private List<String> pages = Arrays.asList("dashboard", "profile", "network", "apps");
-
-    public List<MyNavigation> getNavigation(String pagename) {
-        return pages.stream().map(id -> new MyNavigation(id, id.equals(pagename))).collect(Collectors.toList());
-    }
 
     /**
      * @return a map of {@link SiteMapEntry} values keyed by the row in which they have to appear

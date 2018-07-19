@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.controller.status;
+package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.dao.portal.my.DashboardRepository;

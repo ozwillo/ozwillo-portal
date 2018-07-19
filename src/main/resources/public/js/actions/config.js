@@ -50,7 +50,7 @@ export const fetchMyConfig = () => {
 
 export const fetchCountries = (q = '') => {
     return (dispatch) => {
-        return customFetch(urlBuilder('/api/store/dc-countries', {q}))
+        return customFetch(urlBuilder('/api/geo/countries', {q}))
             .then((res) => {
                 dispatch(fetchConfigAction({countries: res.areas}));
             });

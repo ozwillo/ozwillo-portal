@@ -181,7 +181,7 @@ class InstanceConfigForm extends React.Component {
                         <div className="flex-row">
                             <label htmlFor="area" className="label">Geographical area of interest</label>
                             <GeoAreaAutosuggest name="area" countryUri=""
-                                                endpoint="/geographicalAreas"
+                                                endpoint="areas"
                                                 onChange={this.onGeoAreaChange}
                                                 onGeoAreaSelected={this.onGeoAreaSelected}
                                                 value={this.state.area}/>

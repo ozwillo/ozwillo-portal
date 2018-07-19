@@ -1,8 +1,7 @@
-package org.oasis_eu.portal.controller.my.rest;
+package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.subscription.Subscription;
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.services.ApplicationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -11,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/my/api/subscription")
-public class SubscriptionController extends BaseController {
+public class SubscriptionController {
 
     @Autowired
     private ApplicationService applicationService;

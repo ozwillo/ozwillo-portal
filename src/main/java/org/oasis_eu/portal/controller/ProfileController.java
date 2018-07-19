@@ -1,6 +1,5 @@
-package org.oasis_eu.portal.controller.my.rest;
+package org.oasis_eu.portal.controller;
 
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.model.OasisLocales;
 import org.oasis_eu.portal.model.user.UserProfile;
 import org.oasis_eu.portal.model.ui.UIUserProfile;
@@ -17,7 +16,7 @@ import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/my/api/profile")
-public class ProfileController extends BaseController {
+public class ProfileController {
 
     @Autowired
     private UserInfoService userInfoService;

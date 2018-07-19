@@ -36,7 +36,7 @@ class GeoAreaAutosuggest extends Component {
 
     searchCities(query) {
         $.ajax({
-            url: `/api/store${this.props.endpoint}`,
+            url: `/api/geo/${this.props.endpoint}`,
             dataType: 'json',
             data: {country_uri: this.props.countryUri, q: query},
             type: 'get',

@@ -1,7 +1,6 @@
-package org.oasis_eu.portal.controller.my.rest;
+package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.OrganizationService;
 import org.oasis_eu.portal.model.ui.UIOrganization;
@@ -16,7 +15,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/my/api/organization")
-class OrganizationController extends BaseController {
+class OrganizationController {
 
     @Autowired
     private NetworkService networkService;

@@ -135,7 +135,6 @@ public class CatalogStoreImpl {
                 throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
             }
         } catch (TechnicalErrorException _502) { // as thrown by the kernel when a HttpServerErrorException 502 occurs
-            //} catch (HttpServerErrorException _502) {
             logger.error("Could not create an instance of application " + appId + " - " + instancePattern.getName(), _502);
             throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
         }

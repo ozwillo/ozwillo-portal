@@ -1,6 +1,5 @@
-package org.oasis_eu.portal.controller.my.rest;
+package org.oasis_eu.portal.controller;
 
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.ApplicationService;
@@ -12,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/my/api/instance")
-public class InstanceController extends BaseController {
+public class InstanceController {
 
     @Autowired
     private ApplicationService applicationService;

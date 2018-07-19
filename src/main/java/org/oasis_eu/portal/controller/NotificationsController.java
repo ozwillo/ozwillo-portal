@@ -1,11 +1,11 @@
-package org.oasis_eu.portal.controller.my.rest;
+package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
 import org.oasis_eu.portal.services.PortalNotificationService;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -17,7 +17,10 @@ import javax.servlet.http.HttpServletRequest;
  */
 @RestController
 @RequestMapping("/my/api/notifications")
-public class NotificationsController extends BaseController {
+public class NotificationsController {
+
+    @Autowired
+    protected MessageSource messageSource;
 
     @Autowired
     private PortalNotificationService portalNotificationService;

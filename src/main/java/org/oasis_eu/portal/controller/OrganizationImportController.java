@@ -1,10 +1,9 @@
-package org.oasis_eu.portal.controller.my.rest;
+package org.oasis_eu.portal.controller;
 
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
-import org.oasis_eu.portal.controller.generic.BaseController;
 import org.oasis_eu.portal.dao.dc.GeographicalAreaService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.dao.dc.DCOrganizationService;
@@ -37,7 +36,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/organization/import")
-class OrganizationImportController extends BaseController {
+class OrganizationImportController {
 
     private static final Logger logger = LoggerFactory.getLogger(OrganizationImportController.class);
 
