@@ -5,7 +5,6 @@
   "private": true,
   "scripts": {
     "start": "webpack-dev-server",
-    "start-dashboard": "webpack-dashboard -- webpack-dev-server",
     "lint": "eslint src/main/resources/public/jsx",
     "build": "NODE_ENV=production webpack --progress",
     "stats": "webpack --profile --json > stats.json"

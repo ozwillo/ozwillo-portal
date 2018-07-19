@@ -4,7 +4,6 @@ const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
-const DashboardPlugin = require('webpack-dashboard/plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 
 const TARGET = process.env.npm_lifecycle_event;
@@ -109,7 +108,6 @@ if(TARGET === 'start' || !TARGET) {
         },
         plugins: [
             new webpack.HotModuleReplacementPlugin(),
-            new DashboardPlugin(),
             extractCSS
         ],
         module: {
