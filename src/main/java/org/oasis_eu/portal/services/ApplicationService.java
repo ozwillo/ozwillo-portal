@@ -146,17 +146,6 @@ public class ApplicationService {
         return fetchService(catalogStore.updateService(serviceId, serviceEntry));
     }
 
-    /**
-     * @param serviceId
-     * @return users (including some that are app_admin)
-     */
-    public List<User> getSubscribedUsersOfService(String serviceId) {
-        return subscriptionStore.findByServiceId(serviceId)
-            .stream()
-            .map(s -> new User(s.getUserId(), s.getUserName(), false))
-            .collect(Collectors.toList());
-    }
-
     public Subscription subscribeUser(String userId, String serviceId) {
         Subscription s = new Subscription();
         s.setSubscriptionType(SubscriptionType.ORGANIZATION);
@@ -203,29 +192,29 @@ public class ApplicationService {
         return users;
     }
 
-    public void createAcl(String instanceId, User user) {
-        if(user.getUserid() != null && !user.getUserid().isEmpty()){
-            instanceACLStore.createACL(instanceId, user);
+    public void createAcl(String instanceId, String userId, String email) {
+        if(userId != null && !userId.isEmpty()){
+            instanceACLStore.createACLForMember(instanceId, userId);
         } else {
-            instanceACLStore.createACL(instanceId, user.getEmail());
+            instanceACLStore.createACLForExternal(instanceId, email);
         }
 
     }
 
-    public void deleteAcl(String instanceId, User user) {
+    public void deleteAcl(String instanceId, String userId, String email) {
         //Delete pending ACL
-        if(user.getUserid() == null || user.getUserid().isEmpty()){
-            instanceACLStore.deleteACL(instanceId, user.getEmail());
+        if(userId == null || userId.isEmpty()){
+            instanceACLStore.deletePendingACL(instanceId, email);
             return;
         }
 
         //Delete user's subscriptions for services of instance
         List<ServiceEntry> instanceServices = catalogStore.findServicesOfInstance(instanceId);
         instanceServices.forEach(service ->
-                subscriptionStore.unsubscribe(user.getUserid(), service.getId(), SubscriptionType.ORGANIZATION));
+                subscriptionStore.unsubscribe(userId, service.getId(), SubscriptionType.ORGANIZATION));
 
         //Delete ACL
-        instanceACLStore.deleteACL(instanceId, user);
+        instanceACLStore.deleteACL(instanceId, userId);
     }
 
     public MyAppsInstance setInstanceStatus(MyAppsInstance uiInstance) {

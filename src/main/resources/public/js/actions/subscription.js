@@ -25,9 +25,8 @@ export const fetchDeleteSubscriptionAction = (instanceId, sub) => {
 /* Async methods */
 export const fetchCreateSubscription = (instanceId, sub) => {
     return dispatch => {
-        return customFetch('/my/api/subscription', {
-            method: 'POST',
-            json: {userId: sub.user_id, serviceId: sub.service_id}
+        return customFetch(`/my/api/service/${sub.service_id}/subscription/${sub.user_id}`, {
+            method: 'POST'
         }).then(newSub => {
             return dispatch(fetchCreateSubscriptionAction(instanceId, newSub));
         })
@@ -36,9 +35,8 @@ export const fetchCreateSubscription = (instanceId, sub) => {
 
 export const fetchDeleteSubscription = (instanceId, sub) => {
     return dispatch => {
-        return customFetch('/my/api/subscription', {
-            method: 'DELETE',
-            json: {userId: sub.user_id, serviceId: sub.service_id}
+        return customFetch(`/my/api/service/${sub.service_id}/subscription/${sub.user_id}`, {
+            method: 'DELETE'
         }).then(() => {
             return dispatch(fetchDeleteSubscriptionAction(instanceId, sub));
         })
