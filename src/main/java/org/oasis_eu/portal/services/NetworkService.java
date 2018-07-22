@@ -1,8 +1,8 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.dao.kernel.ApplicationInstanceStoreImpl;
-import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
-import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.services.kernel.ApplicationInstanceStoreImpl;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
@@ -14,8 +14,8 @@ import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.authority.UIOrganizationMember;
 import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
-import org.oasis_eu.portal.dao.kernel.UserMembershipService;
-import org.oasis_eu.portal.dao.kernel.UserProfileService;
+import org.oasis_eu.portal.services.kernel.UserMembershipService;
+import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.*;

@@ -2,7 +2,7 @@ package org.oasis_eu.portal.services;
 
 import com.google.common.base.Strings;
 import org.markdown4j.Markdown4jProcessor;
-import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
@@ -11,7 +11,6 @@ import org.oasis_eu.portal.model.notifications.UserNotification;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
 import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
-import org.oasis_eu.spring.kernel.service.NotificationService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -34,14 +33,14 @@ import java.util.stream.Collectors;
  * User: schambon
  * Date: 6/13/14
  */
-@Service
-public class PortalNotificationService {
+@Service(value = "portalNotificationService")
+public class NotificationService {
 
     @SuppressWarnings("unused")
-    private static final Logger logger = LoggerFactory.getLogger(PortalNotificationService.class);
+    private static final Logger logger = LoggerFactory.getLogger(NotificationService.class);
 
     @Autowired
-    private NotificationService notificationService;
+    private org.oasis_eu.spring.kernel.service.NotificationService knNotificationService;
 
     @Autowired
     private CatalogStoreImpl catalogStore;
@@ -64,7 +63,7 @@ public class PortalNotificationService {
         }
         // TODO NB. In case the user has +300 notifications, it will be fetch ALL the notification content each time,
         // this to be filtered and counted at the end, which implies use of unnecessary networking/processing tasks
-        return notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+        return knNotificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
                 .size();
     }
 
@@ -78,7 +77,7 @@ public class PortalNotificationService {
         }
 
         List<InboundNotification> notifications =
-            notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), status);
+            knNotificationService.getNotifications(userInfoHelper.currentUser().getUserId(), status);
 
         List<UserNotification> notifs = extractNotifications(locale, status, notifications);
 
@@ -159,7 +158,7 @@ public class PortalNotificationService {
     public Map<String, Integer> getAppNotificationCounts() {
 
         List<InboundNotification> inboundNotifications =
-            notificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+            knNotificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
                 .stream()
                 .filter(inboundNotification -> inboundNotification.getServiceId() != null || inboundNotification.getInstanceId() != null)
                 .collect(Collectors.toList());
@@ -188,7 +187,7 @@ public class PortalNotificationService {
         if (!notificationsEnabled) {
             return;
         }
-        notificationService.setMessageStatus(userInfoHelper.currentUser().getUserId(),
+        knNotificationService.setMessageStatus(userInfoHelper.currentUser().getUserId(),
             Collections.singletonList(notificationId), NotificationStatus.READ);
     }
 }

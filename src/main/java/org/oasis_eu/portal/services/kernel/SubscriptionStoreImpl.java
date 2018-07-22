@@ -1,9 +1,9 @@
-package org.oasis_eu.portal.dao.kernel;
+package org.oasis_eu.portal.services.kernel;
 
 import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.model.kernel.instance.Subscription;
 import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
-import org.oasis_eu.portal.dao.portal.InstalledStatusRepository;
+import org.oasis_eu.portal.dao.InstalledStatusRepository;
 import org.oasis_eu.portal.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;

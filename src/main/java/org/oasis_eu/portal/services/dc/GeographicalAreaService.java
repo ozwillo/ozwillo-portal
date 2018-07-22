@@ -1,6 +1,6 @@
-package org.oasis_eu.portal.dao.dc;
+package org.oasis_eu.portal.services.dc;
 
-import org.oasis_eu.portal.dao.portal.GeographicalAreaCache;
+import org.oasis_eu.portal.dao.GeographicalAreaCache;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.search.Tokenizer;
 import org.springframework.beans.factory.annotation.Autowired;

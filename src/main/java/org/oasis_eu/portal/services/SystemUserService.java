@@ -9,7 +9,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 @Service
-public class PortalSystemUserService {
+public class SystemUserService {
 
     @Value("${datacore.systemAdminUser.refreshToken:GET IT USING NODE LIB}")
     private String refreshToken;

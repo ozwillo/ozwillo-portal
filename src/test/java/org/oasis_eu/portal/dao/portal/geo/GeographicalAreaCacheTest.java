@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import org.joda.time.Instant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.GeographicalAreaCache;
+import org.oasis_eu.portal.dao.GeographicalAreaCache;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.model.search.Tokenizer;

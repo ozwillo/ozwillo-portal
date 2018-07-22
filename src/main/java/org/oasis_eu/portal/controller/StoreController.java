@@ -16,7 +16,7 @@ import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.AppstoreService;
 import org.oasis_eu.portal.services.RatingService;
-import org.oasis_eu.portal.dao.dc.DCOrganizationService;
+import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
 import org.oasis_eu.portal.model.dc.DCRegActivityResponse;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;

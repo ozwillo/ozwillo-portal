@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.dao.portal;
+package org.oasis_eu.portal.dao;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;

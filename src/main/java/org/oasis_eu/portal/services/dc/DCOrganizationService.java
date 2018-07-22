@@ -1,8 +1,8 @@
-package org.oasis_eu.portal.dao.dc;
+package org.oasis_eu.portal.services.dc;
 
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
-import org.oasis_eu.portal.services.PortalSystemUserService;
+import org.oasis_eu.portal.services.SystemUserService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
 import org.oasis_eu.spring.datacore.DatacoreClient;
@@ -37,7 +37,7 @@ public class DCOrganizationService {
     @Autowired
     private DatacoreClient datacore;
     @Autowired
-    private PortalSystemUserService portalSystemUserService;
+    private SystemUserService systemUserService;
 
     @Value("${application.dcOrg.project: org_0}")
     private String dcOrgProjectName;// = "org_0";
@@ -240,7 +240,7 @@ public class DCOrganizationService {
         final List<String> dcResultErrOutter = new ArrayList<>();
 
         //get admin authentication and change organization rights
-        portalSystemUserService.runAs(
+        systemUserService.runAs(
             () -> {
                 DCRights dcRights = datacore.getRightsOnResource(dcOrgProjectName, dcResource).getRights();
                 dcRights.addOwners(newRights);

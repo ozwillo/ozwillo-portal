@@ -2,7 +2,7 @@ package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
-import org.oasis_eu.portal.services.PortalNotificationService;
+import org.oasis_eu.portal.services.NotificationService;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
@@ -23,22 +23,22 @@ public class NotificationsController {
     protected MessageSource messageSource;
 
     @Autowired
-    private PortalNotificationService portalNotificationService;
+    private NotificationService notificationService;
 
     @RequestMapping(value = {"", "/"}, method = RequestMethod.GET)
     public UserNotificationResponse getNotifications(@RequestParam(value = "status", required = false, defaultValue = "UNREAD") NotificationStatus status) {
-        return portalNotificationService.getNotifications(status);
+        return notificationService.getNotifications(status);
     }
 
     @RequestMapping(value = "/{notificationId}", method = RequestMethod.DELETE)
     public void archive(@PathVariable String notificationId) {
-        portalNotificationService.archive(notificationId);
+        notificationService.archive(notificationId);
     }
 
     @RequestMapping(value = "summary", method = RequestMethod.GET)
     @ResponseBody
     public NotificationData getNotificationData(HttpServletRequest request) {
-        int count = portalNotificationService.countNotifications();
+        int count = notificationService.countNotifications();
         return new NotificationData(count, messageSource.getMessage("my.n_notifications", new Object[]{count}, RequestContextUtils.getLocale(request)));
     }
 

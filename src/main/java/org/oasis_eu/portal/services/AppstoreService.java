@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
-import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
 import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.store.Audience;
@@ -10,13 +10,13 @@ import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.model.kernel.store.PaymentOption;
 import org.oasis_eu.portal.model.kernel.instance.Subscription;
 import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
-import org.oasis_eu.portal.dao.portal.InstalledStatusRepository;
+import org.oasis_eu.portal.dao.InstalledStatusRepository;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.model.store.InstalledStatus;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.store.AppstoreHit;
 import org.oasis_eu.portal.model.store.InstallationOption;
-import org.oasis_eu.portal.dao.dc.GeographicalAreaService;
+import org.oasis_eu.portal.services.dc.GeographicalAreaService;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserInfoService;

@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.dao.kernel;
+package org.oasis_eu.portal.services.kernel;
 
 import org.oasis_eu.portal.model.kernel.user.UserProfile;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;

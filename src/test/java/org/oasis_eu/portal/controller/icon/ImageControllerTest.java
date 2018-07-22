@@ -6,8 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.ImageRepository;
+import org.oasis_eu.portal.dao.ImageRepository;
 import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.services.HttpImageDownloader;
 import org.oasis_eu.portal.services.ImageService;
 import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
@@ -81,7 +82,7 @@ public class ImageControllerTest {
 	@Test
 	public void testGetImage() throws Exception {
 		// First the root controller will download the icon
-		ImageDownloader imageDownloader = mock(ImageDownloader.class);
+		HttpImageDownloader imageDownloader = mock(HttpImageDownloader.class);
 		byte[] bytes = load("images/64.png");
 		when(imageDownloader.download(ICON_URL)).thenReturn(bytes);
 

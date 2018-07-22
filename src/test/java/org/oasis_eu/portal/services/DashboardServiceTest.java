@@ -3,7 +3,7 @@ package org.oasis_eu.portal.services;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.DashboardRepository;
+import org.oasis_eu.portal.dao.DashboardRepository;
 import org.oasis_eu.portal.model.dashboard.UserContext;
 import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;

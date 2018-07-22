@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services.initializers;
 
-import org.oasis_eu.portal.dao.portal.SiteMapHeaderRepository;
-import org.oasis_eu.portal.dao.portal.SiteMapRepository;
+import org.oasis_eu.portal.dao.SiteMapHeaderRepository;
+import org.oasis_eu.portal.dao.SiteMapRepository;
 import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

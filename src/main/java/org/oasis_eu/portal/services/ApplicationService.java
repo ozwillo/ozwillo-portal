@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.dao.kernel.ApplicationInstanceStoreImpl;
-import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
-import org.oasis_eu.portal.dao.kernel.InstanceACLStoreImpl;
-import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.services.kernel.ApplicationInstanceStoreImpl;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.InstanceACLStoreImpl;
+import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
@@ -14,7 +14,7 @@ import org.oasis_eu.portal.model.instance.InstanceService;
 import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.user.User;
-import org.oasis_eu.portal.dao.kernel.UserProfileService;
+import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

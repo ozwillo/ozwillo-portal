@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.dao.portal;
+package org.oasis_eu.portal.dao;
 
 import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.model.store.Rating;

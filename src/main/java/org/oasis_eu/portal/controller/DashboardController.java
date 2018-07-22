@@ -5,7 +5,7 @@ import org.oasis_eu.portal.model.dashboard.UserContext;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.portal.services.DashboardService;
-import org.oasis_eu.portal.services.PortalNotificationService;
+import org.oasis_eu.portal.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +29,7 @@ public class DashboardController {
     private DashboardService dashboardService;
 
     @Autowired
-    private PortalNotificationService portalNotificationService;
+    private NotificationService notificationService;
 
     @RequestMapping(value = "/dashboards", method = GET)
     public List<UserContext> getContexts() {
@@ -95,7 +95,7 @@ public class DashboardController {
 
     @RequestMapping(value = "/notifications", method = GET)
     public Map<String, Integer> getAppNotificationCounts() {
-        return portalNotificationService.getAppNotificationCounts();
+        return notificationService.getAppNotificationCounts();
     }
 
 }

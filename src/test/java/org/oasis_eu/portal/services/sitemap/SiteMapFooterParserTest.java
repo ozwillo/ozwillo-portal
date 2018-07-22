@@ -10,7 +10,7 @@ import java.io.InputStream;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.SiteMapRepository;
+import org.oasis_eu.portal.dao.SiteMapRepository;
 import org.oasis_eu.portal.model.sitemap.SiteMap;
 import org.oasis_eu.portal.services.SiteMapService;
 import org.oasis_eu.portal.services.jobs.SiteMapUpdater;

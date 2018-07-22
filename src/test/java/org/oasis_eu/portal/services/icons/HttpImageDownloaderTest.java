@@ -9,7 +9,7 @@ public class HttpImageDownloaderTest {
 
 	// Note: it's harder to check that downloads do happen...
 
-	ImageDownloader downloader = new HttpImageDownloader();
+	HttpImageDownloader downloader = new HttpImageDownloader();
 
 	@Test
 	public void testNull() {

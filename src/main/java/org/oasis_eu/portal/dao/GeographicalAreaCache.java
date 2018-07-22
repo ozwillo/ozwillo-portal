@@ -1,12 +1,12 @@
-package org.oasis_eu.portal.dao.portal;
+package org.oasis_eu.portal.dao;
 
 import com.mongodb.*;
 import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.model.search.Tokenizer;
-import org.oasis_eu.portal.services.PortalSystemUserService;
-import org.oasis_eu.portal.dao.dc.GeographicalDAO;
+import org.oasis_eu.portal.services.SystemUserService;
+import org.oasis_eu.portal.services.dc.GeographicalDAO;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.DCOperator;
 import org.oasis_eu.spring.datacore.model.DCOrdering;
@@ -94,7 +94,7 @@ public class GeographicalAreaCache {
     @Autowired
     private Tokenizer tokenizer;
     @Autowired
-    PortalSystemUserService portalSystemUserService;
+    SystemUserService systemUserService;
 
     public Stream<GeographicalArea> search(String country_uri, String modelType, String lang, String name, int start, int limit) {
 
@@ -298,7 +298,7 @@ public class GeographicalAreaCache {
         // 1. fetch all the resources from the data core and insert them with status "incoming" in the cache
         try {
             //Since there is not admin user connected, is necessary to get its admin authorization object in order to send the request
-            portalSystemUserService.runAs(() -> {
+            systemUserService.runAs(() -> {
                 String lastDCIdFetched = null;
                 do {
                     logger.debug("Fetching batches of areas");

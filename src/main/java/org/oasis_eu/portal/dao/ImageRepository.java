@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.dao.portal;
+package org.oasis_eu.portal.dao;
 
 import org.joda.time.DateTime;
 import org.oasis_eu.portal.model.images.Image;

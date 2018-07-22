@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.services;
+package org.oasis_eu.portal.services.kernel;
 
 import org.oasis_eu.portal.model.kernel.user.UserProfile;
 import org.oasis_eu.spring.kernel.service.Kernel;
@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
+import java.util.Collections;
 
 import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
@@ -22,13 +22,11 @@ public class FranceConnectService {
 
     public UserProfile getFranceConnectInfo() {
         HttpHeaders headers = new HttpHeaders();
-        headers.setAccept(Arrays.asList(MediaType.APPLICATION_JSON));
+        headers.setAccept(Collections.singletonList(MediaType.APPLICATION_JSON));
 
         ResponseEntity<UserProfile> kernelResp = kernel.exchange(userProfileEndpoint, HttpMethod.GET, new HttpEntity<>(headers),
                 UserProfile.class, user());
 
-        UserProfile userProfile = kernel.getBodyUnlessClientError(kernelResp, UserProfile.class, userProfileEndpoint);
-        return  userProfile;
+        return kernel.getBodyUnlessClientError(kernelResp, UserProfile.class, userProfileEndpoint);
     }
-
 }

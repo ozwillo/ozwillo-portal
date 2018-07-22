@@ -5,10 +5,11 @@ import com.mongodb.DBCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.portal.ImageDownloadAttemptRepository;
-import org.oasis_eu.portal.dao.portal.ImageRepository;
+import org.oasis_eu.portal.dao.ImageDownloadAttemptRepository;
+import org.oasis_eu.portal.dao.ImageRepository;
 import org.oasis_eu.portal.model.images.Image;
 import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.services.HttpImageDownloader;
 import org.oasis_eu.portal.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -76,7 +77,7 @@ public class ImageServiceIntegrationTest {
 	public void testIconService() throws IOException {
 		assertNotNull(imageService);
 
-		ImageDownloader downloader = mock(ImageDownloader.class);
+		HttpImageDownloader downloader = mock(HttpImageDownloader.class);
 		when(downloader.download("http://www.citizenkin.com/icon/one.png")).thenReturn(load("images/64.png"));
 
 		ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
@@ -101,7 +102,7 @@ public class ImageServiceIntegrationTest {
 
 	@Test
 	public void testBlacklisting() throws Exception {
-		ImageDownloader downloader = mock(ImageDownloader.class);
+		HttpImageDownloader downloader = mock(HttpImageDownloader.class);
 		when(downloader.download("http://www.citizenkin.com/icon/fake.png")).thenReturn(null);
 		when(downloader.download("http://www.citizenkin.com/icon/rectangular.png")).thenReturn(load("images/rectangular.png"));
 		when(downloader.download("http://www.citizenkin.com/icon/icon.tiff")).thenReturn(load("images/img-test.tiff"));

@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.dao.dc.GeographicalAreaService;
+import org.oasis_eu.portal.services.dc.GeographicalAreaService;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;

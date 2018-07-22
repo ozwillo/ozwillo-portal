@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.dao.portal.SiteMapHeaderRepository;
-import org.oasis_eu.portal.dao.portal.SiteMapRepository;
+import org.oasis_eu.portal.dao.SiteMapHeaderRepository;
+import org.oasis_eu.portal.dao.SiteMapRepository;
 import org.oasis_eu.portal.model.sitemap.SiteMap;
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuItem;

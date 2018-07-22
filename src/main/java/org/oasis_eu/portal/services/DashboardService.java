@@ -1,15 +1,15 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.dao.kernel.ApplicationInstanceStoreImpl;
-import org.oasis_eu.portal.dao.kernel.CatalogStoreImpl;
-import org.oasis_eu.portal.dao.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.services.kernel.ApplicationInstanceStoreImpl;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
 import org.oasis_eu.portal.model.GenericEntity;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.kernel.instance.Subscription;
-import org.oasis_eu.portal.dao.portal.DashboardRepository;
-import org.oasis_eu.portal.dao.portal.HiddenPendingAppsRepository;
+import org.oasis_eu.portal.dao.DashboardRepository;
+import org.oasis_eu.portal.dao.HiddenPendingAppsRepository;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.model.dashboard.Dashboard;
 import org.oasis_eu.portal.model.dashboard.HiddenPendingApps;

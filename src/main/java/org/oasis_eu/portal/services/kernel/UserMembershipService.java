@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.dao.kernel;
+package org.oasis_eu.portal.services.kernel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;

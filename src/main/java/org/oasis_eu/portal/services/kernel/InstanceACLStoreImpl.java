@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.dao.kernel;
+package org.oasis_eu.portal.services.kernel;
 
 import org.oasis_eu.portal.model.kernel.instance.ACE;
 import org.oasis_eu.portal.model.user.User;

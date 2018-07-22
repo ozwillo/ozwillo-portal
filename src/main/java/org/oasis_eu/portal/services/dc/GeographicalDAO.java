@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.dao.dc;
+package org.oasis_eu.portal.services.dc;
 
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.search.Tokenizer;

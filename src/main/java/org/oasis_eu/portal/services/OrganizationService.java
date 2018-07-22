@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services;
 
 import com.google.common.base.Strings;
-import org.oasis_eu.portal.dao.dc.DCOrganizationService;
+import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.spring.datacore.model.DCResource;
