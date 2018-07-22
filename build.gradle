@@ -55,7 +55,7 @@ dependencies {
     compile('org.apache.httpcomponents:httpcore')
     compile('org.apache.commons:commons-csv:1.5')
 
-    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.7')
+    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.8')
 
     /* Our specific dependencies */
     compile('de.javakaffee.msm:memcached-session-manager:2.1.1')
