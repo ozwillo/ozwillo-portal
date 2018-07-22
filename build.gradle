@@ -43,7 +43,6 @@ dependencies {
          do not specify a version to let them live along with Spring Boot without extra hassle */
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
     compile('org.springframework.boot:spring-boot-devtools')
-    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('com.fasterxml.jackson.dataformat:jackson-dataformat-xml')
@@ -54,7 +53,6 @@ dependencies {
     compile('joda-time:joda-time')
     compile('org.apache.httpcomponents:httpclient')
     compile('org.apache.httpcomponents:httpcore')
-    compile('org.thymeleaf.extras:thymeleaf-extras-conditionalcomments')
     compile('org.apache.commons:commons-csv:1.5')
 
     compile('com.ozwillo:ozwillo-java-spring-integration:1.25.7')

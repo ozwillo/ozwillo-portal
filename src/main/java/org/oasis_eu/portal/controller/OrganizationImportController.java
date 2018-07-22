@@ -22,16 +22,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-import org.thymeleaf.util.StringUtils;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -116,7 +117,7 @@ class OrganizationImportController {
                 if (!StringUtils.isEmpty(name) && !StringUtils.isEmpty(siren) && !StringUtils.isEmpty(nic) &&
                     !StringUtils.isEmpty(cityCSV) && !StringUtils.isEmpty(city.toString()) &&
                     !StringUtils.isEmpty(city_uri.toString())) {
-                    String siret = siren + StringUtils.repeat("0", 5 - nic.length()) + nic;
+                    String siret = siren + String.join("", Collections.nCopies(5 - nic.length(), "0")) + nic;
                     DCOrganization dcOrganization = new DCOrganization();
                     dcOrganization.setId(dcOrganizationService.generateDcId(country_uri.toString(), siret));
                     dcOrganization.setLegal_name(name);

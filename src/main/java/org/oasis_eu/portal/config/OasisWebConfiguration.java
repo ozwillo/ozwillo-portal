@@ -18,7 +18,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
-import org.thymeleaf.extras.conditionalcomments.dialect.ConditionalCommentsDialect;
 
 import java.util.Collections;
 
@@ -56,11 +55,6 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
     @Bean
     public LocaleResolver localeResolver() {
         return new OasisLocaleResolver();
-    }
-
-    @Bean
-    public ConditionalCommentsDialect conditionalCommentsDialect() {
-        return new ConditionalCommentsDialect();
     }
 
     @Bean
