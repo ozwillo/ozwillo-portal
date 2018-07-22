@@ -16,7 +16,6 @@ import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.dao.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
-import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,13 +29,8 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
-/**
- * User: schambon
- * Date: 7/29/14
- */
 @Service
 public class ApplicationService {
 
@@ -65,9 +59,6 @@ public class ApplicationService {
 
     @Autowired
     private NetworkService networkService;
-
-    @Autowired
-    private UserInfoService userInfoService;
 
     @Autowired
     private UserProfileService userProfileService;
@@ -166,29 +157,6 @@ public class ApplicationService {
             .collect(Collectors.toList());
     }
 
-
-    /**
-     * Used to save subscriptions but also to pushToDashboard
-     * (only new subscriptions are pushed to dashboard, so to push to dashboard
-     * an existing one it must be removed in a first step)
-     *
-     * @param serviceId
-     * @param usersToSubscribe (including some that are app_admin)
-     */
-    public void updateSubscriptions(String serviceId, Set<String> usersToSubscribe) {
-        if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(catalogStore.findService(serviceId).getInstanceId()).getProviderId())) {
-            throw new AccessDeniedException("Unauthorized access");
-        }
-
-
-        Set<String> existing = getSubscribedUsersOfService(serviceId).stream().map(User::getUserid).collect(Collectors.toSet());
-
-        // which ones must we add?
-        subscribeUsers(usersToSubscribe.stream().filter(s -> !existing.contains(s)).collect(Collectors.toSet()), serviceId);
-        // which ones must we remove?
-        unsubscribeUsers(existing.stream().filter(s -> !usersToSubscribe.contains(s)).collect(Collectors.toSet()), serviceId);
-    }
-
     public Subscription subscribeUser(String userId, String serviceId) {
         Subscription s = new Subscription();
         s.setSubscriptionType(SubscriptionType.ORGANIZATION);
@@ -198,18 +166,8 @@ public class ApplicationService {
         return subscriptionStore.create(userId, s);
     }
 
-    public List<Subscription> subscribeUsers(Set<String> users, String serviceId) {
-        return users.stream()
-            .map(u -> subscribeUser(u, serviceId))
-            .collect(Collectors.toList());
-    }
-
     public void unsubscribeUser(String userId, String serviceId) {
         subscriptionStore.unsubscribe(userId, serviceId, SubscriptionType.ORGANIZATION);
-    }
-
-    public void unsubscribeUsers(Set<String> users, String serviceId) {
-        users.forEach(u -> unsubscribeUser(u, serviceId));
     }
 
     /**

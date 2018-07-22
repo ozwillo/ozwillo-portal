@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.controller;
 
-import org.oasis_eu.portal.config.AppStoreNavigationStatus;
+import org.oasis_eu.portal.model.store.AppStoreNavigationStatus;
 import org.oasis_eu.portal.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;

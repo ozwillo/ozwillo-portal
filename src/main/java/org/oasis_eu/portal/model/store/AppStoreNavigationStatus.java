@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.config;
+package org.oasis_eu.portal.model.store;
 
 /**
  * User: schambon

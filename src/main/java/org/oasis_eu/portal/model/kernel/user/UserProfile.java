@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.model.user;
+package org.oasis_eu.portal.model.kernel.user;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;

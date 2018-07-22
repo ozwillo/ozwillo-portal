@@ -42,10 +42,6 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-/**
- * User: schambon
- * Date: 9/29/14
- */
 @Service
 public class NetworkService {
 

@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.model.user;
 
-import org.oasis_eu.portal.model.user.UserProfile;
+import org.oasis_eu.portal.model.kernel.user.UserProfile;
 
 import java.util.List;
 
