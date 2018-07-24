@@ -58,7 +58,7 @@ public class ApplicationService {
     private ImageService imageService;
 
     @Autowired
-    private NetworkService networkService;
+    private OrganizationService organizationService;
 
     @Autowired
     private UserProfileService userProfileService;
@@ -79,7 +79,7 @@ public class ApplicationService {
         return applicationInstanceStore.findByUserId(personalAuthority.getId(), false)
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
-                    .thenComparing(Comparator.comparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER)))
+                    .thenComparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER))
             .map(i -> fetchInstance(i, fetchServices))
             .filter(i -> i != null) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .collect(Collectors.toList());
@@ -89,7 +89,7 @@ public class ApplicationService {
         return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
-                    .thenComparing(Comparator.comparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER)))
+                    .thenComparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER))
             .map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .filter(i -> i != null)
             .collect(Collectors.toList());
@@ -138,7 +138,7 @@ public class ApplicationService {
 
     public InstanceService updateService(String serviceId, ServiceEntry serviceEntry) {
         ApplicationInstance appInstance = catalogStore.findApplicationInstance(serviceEntry.getInstanceId());
-        if (!networkService.userIsAdminOrPersonalAppInstance(appInstance)) {
+        if (!organizationService.userIsAdminOrPersonalAppInstance(appInstance)) {
             // let it with the default forbidden error message
             throw new ForbiddenException();
         }
@@ -219,7 +219,7 @@ public class ApplicationService {
 
     public MyAppsInstance setInstanceStatus(MyAppsInstance uiInstance) {
         ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());
-        if (!networkService.userIsAdminOrPersonalAppInstance(existingInstance)) {
+        if (!organizationService.userIsAdminOrPersonalAppInstance(existingInstance)) {
             throw new AccessDeniedException("Unauthorized access");
         }
 

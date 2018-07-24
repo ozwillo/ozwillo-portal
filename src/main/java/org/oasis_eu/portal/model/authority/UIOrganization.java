@@ -6,6 +6,7 @@ import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.instance.InstanceService;
+import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 
@@ -85,6 +86,28 @@ public class UIOrganization {
 
     @JsonProperty
     boolean admin;
+
+    public static UIOrganization fromKernelOrganization(Organization organization, Instant deletionPlannedTime, String userName) {
+        UIOrganization uiOrg = new UIOrganization();
+        uiOrg.setId(organization.getId());
+        uiOrg.setName(organization.getName());
+        uiOrg.setType(organization.getType());
+        if (organization.getTerritoryId() != null) {
+            uiOrg.setTerritoryId(organization.getTerritoryId());
+            uiOrg.setTerritoryLabel(String.valueOf(organization.getTerritoryId())); // TODO if any get label from cache with user locale (?????????!!!!!!!!!!!!!!!!)
+        }
+        uiOrg.setDcId(organization.getDcId());
+        uiOrg.setStatus(organization.getStatus());
+        uiOrg.setStatusChanged(organization.getStatusChanged());
+        uiOrg.setDeletionPlanned(deletionPlannedTime);
+
+        if (organization.getStatusChangeRequesterId() != null) {
+            uiOrg.setStatusChangeRequesterId(organization.getStatusChangeRequesterId());
+            uiOrg.setStatusChangeRequesterLabel(userName); // TODO protected ?? then from membership
+        }
+
+        return uiOrg;
+    }
 
 
 

@@ -57,10 +57,6 @@ public class DCOrganization {
     private String country;
     @JsonProperty
     private String country_uri;
-
-    @JsonProperty
-    private String iconUrl;
-
     @JsonProperty
     private boolean exist = false;
 
@@ -269,14 +265,6 @@ public class DCOrganization {
 
     public void setCountry_uri(String country_uri) {
         this.country_uri = country_uri;
-    }
-
-    public String getIconUrl() {
-        return iconUrl;
-    }
-
-    public void setIconUrl(String iconUrl) {
-        this.iconUrl = iconUrl;
     }
 
     public boolean isExist() {

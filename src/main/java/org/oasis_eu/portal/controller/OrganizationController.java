@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.services.NetworkService;
 import org.oasis_eu.portal.services.OrganizationService;
 import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.dc.DCOrganization;
@@ -18,9 +17,6 @@ import java.util.List;
 class OrganizationController {
 
     @Autowired
-    private NetworkService networkService;
-
-    @Autowired
     private OrganizationService organizationService;
 
     @GetMapping(value = "/search")
@@ -35,15 +31,15 @@ class OrganizationController {
 
     @GetMapping
     public List<UIOrganization> organizations() {
-        return networkService.getMyOrganizations();
+        return organizationService.getMyOrganizations();
     }
 
     @GetMapping(value = "/lazy")
-    public List<UIOrganization> getOrganizationsInLazyMode() { return networkService.getMyOrganizationsInLazyMode(); }
+    public List<UIOrganization> getOrganizationsInLazyMode() { return organizationService.getMyOrganizationsInLazyMode(); }
 
     @GetMapping ("/{organizationId}")
     public UIOrganization organization(@PathVariable String organizationId) {
-        return networkService.getOrganization(organizationId);
+        return organizationService.getOrganizationFromKernel(organizationId);
     }
 
     @GetMapping(value = "/info")
@@ -63,28 +59,28 @@ class OrganizationController {
 
     @PutMapping(value = "/{organizationId}/status")
     public UIOrganization setOrganizationStatus(@RequestBody UIOrganization organization) {
-        return networkService.setOrganizationStatus(organization);
+        return organizationService.setOrganizationStatus(organization);
     }
 
     @PostMapping ("/invite/{organizationId}")
     public UIPendingOrganizationMember invite(@PathVariable String organizationId, @RequestBody InvitationRequest invitation) {
-        return networkService.invite(invitation.email, invitation.admin, organizationId);
+        return organizationService.invite(invitation.email, invitation.admin, organizationId);
     }
 
     @PutMapping("/{organizationId}/membership/{accountId}/role/{isAdmin}")
     public void updateRoleMember(@PathVariable String organizationId, @PathVariable String accountId,
                              @PathVariable boolean isAdmin) {
-        networkService.updateMember(organizationId, accountId, isAdmin);
+        organizationService.updateMember(organizationId, accountId, isAdmin);
     }
 
     @DeleteMapping("/{organizationId}/membership/{accountId}")
     public void removeMember(@PathVariable String organizationId, @PathVariable String accountId) {
-        networkService.removeMember(organizationId, accountId);
+        organizationService.removeMember(organizationId, accountId);
     }
 
     @DeleteMapping(value = "/{organizationId}/invitation/{invitationId}")
     public void removeInvitation(@PathVariable String organizationId, @RequestBody UIPendingOrganizationMember member) {
-        networkService.removeInvitation(organizationId, member.getId(), member.getPendingMembershipEtag());
+        organizationService.removeInvitation(organizationId, member.getId(), member.getPendingMembershipEtag());
     }
 
     private static class InvitationRequest {

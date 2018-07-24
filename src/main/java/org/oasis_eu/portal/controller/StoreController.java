@@ -8,14 +8,11 @@ import org.oasis_eu.portal.model.kernel.store.PaymentOption;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.kernel.instance.Subscription;
 import org.oasis_eu.portal.model.images.ImageFormat;
-import org.oasis_eu.portal.services.ImageService;
+import org.oasis_eu.portal.services.*;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.store.AppstoreHit;
 import org.oasis_eu.portal.model.store.InstallationOption;
 import org.oasis_eu.portal.model.authority.UIOrganization;
-import org.oasis_eu.portal.services.NetworkService;
-import org.oasis_eu.portal.services.AppstoreService;
-import org.oasis_eu.portal.services.RatingService;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
 import org.oasis_eu.portal.model.dc.DCRegActivityResponse;
@@ -51,7 +48,7 @@ public class StoreController {
     private OrganizationStore organizationStore;
 
     @Autowired
-    private NetworkService networkService;
+    private OrganizationService organizationService;
 
     @Autowired
     private ImageService imageService;
@@ -60,7 +57,7 @@ public class StoreController {
     private RatingService ratingService;
 
     @Autowired
-    private DCOrganizationService organizationService;
+    private DCOrganizationService dcOrganizationService;
 
     @Value("${application.store.load_size:20}")
     private int loadSize;
@@ -68,7 +65,7 @@ public class StoreController {
     @RequestMapping(value = "/dc-taxRegActivity", method = GET)
     public DCRegActivityResponse searchTaxRegActivity(@RequestParam String country_uri, @RequestParam String q) {
         logger.debug("Searching for RegActivity {} from {} ", q, country_uri);
-        List<DCRegActivity> TaxRegActivityLst = organizationService.searchTaxRegActivity(country_uri, q, 0, 10);
+        List<DCRegActivity> TaxRegActivityLst = dcOrganizationService.searchTaxRegActivity(country_uri, q, 0, 10);
         return new DCRegActivityResponse(TaxRegActivityLst);
     }
 
@@ -159,7 +156,7 @@ public class StoreController {
     public List<UIOrganization> organizations(@PathVariable String appType, @PathVariable String appId) {
 
         AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType.toUpperCase())); // #152 services can also be installed
-        List<UIOrganization> organizations = networkService.getMyOrganizations();
+        List<UIOrganization> organizations = organizationService.getMyOrganizations();
 
         return organizations.stream()
             .filter(o -> o.isAdmin())

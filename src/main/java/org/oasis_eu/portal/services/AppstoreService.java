@@ -65,7 +65,7 @@ public class AppstoreService {
     private ApplicationService applicationService;
 
     @Autowired
-    private NetworkService networkService;
+    private OrganizationService organizationService;
 
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
@@ -204,7 +204,7 @@ public class AppstoreService {
             return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
                 PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         } else {
-            return networkService.getMyAuthorities(true).stream()
+            return organizationService.getMyAuthorities(true).stream()
                 .flatMap(authority -> applicationService.getMyInstances(authority, false).stream())
                 .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
                 ? InstallationOption.INSTALLED :

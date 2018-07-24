@@ -37,14 +37,6 @@ public class UIOrganizationMember {
         this.name = name;
     }
 
-    /**
-     * @return name or, if null, id ; so NetworkService.toUIOrganization() can order old accounts
-     * before nickname was required #171
-     */
-    public String getNonNullName() {
-        return name == null ? id : name;
-    }
-
     public boolean isAdmin() {
         return admin;
     }
