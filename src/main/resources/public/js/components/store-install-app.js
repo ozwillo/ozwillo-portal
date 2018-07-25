@@ -12,6 +12,7 @@ const converter = new Showdown.Converter({tables: true});
 
 import {Modal} from './bootstrap-react';
 import {RatingWrapper} from './rating';
+import customFetch from '../util/custom-fetch';
 
 class AppModal extends React.Component {
 
@@ -55,31 +56,13 @@ class AppModal extends React.Component {
     }
 
     loadApp() {
-        $.ajax({
-            url: "/api/store/details/" + this.props.app.type + "/" + this.props.app.id,
-            type: 'get',
-            dataType: 'json',
-            success: (data) => {
-                this.setState({ app: data });
-            },
-            error: (xhr, status, err) => {
-                console.error(status, err.toString());
-            }
-        });
+        customFetch(`/api/store/details/${this.props.app.type}/${this.props.app.id}`)
+            .then((data) => this.setState({ app: data }));
     }
 
     loadOrgs() {
-        $.ajax({
-            url: "/api/store/organizations/" + this.props.app.type + "/" + this.props.app.id,
-            type: 'get',
-            dataType: 'json',
-            success: (data) => {
-                this.setState({ orgs: data });
-            },
-            error: (xhr, status, err) => {
-                console.error(status, err.toString());
-            }
-        });
+        customFetch(`/api/store/organizations/${this.props.app.type}/${this.props.app.id}`)
+            .then((data) => this.setState({ orgs: data }));
     }
 
     open() {
@@ -115,41 +98,28 @@ class AppModal extends React.Component {
             request.organizationId = organizationId;
         }
 
-        $.ajax({
-            url: '/api/store/buy',
-            type: 'post',
-            data: JSON.stringify(request),
-            contentType: 'application/json',
-            success: (data) => {
-                if (data.success) {
-                    this.setState({ buying: false, isInstalled: true });
-                } else {
-                    this.setState({ buying: false, error: true });
-                }
-            },
-            error: (xhr, status, err) => {
-                console.error(status, err.toString());
+        customFetch('/api/store/buy', {
+            method: 'POST',
+            json: request
+        }).then((data) => {
+            if (data.success) {
+                this.setState({ buying: false, isInstalled: true });
+            } else {
                 this.setState({ buying: false, error: true });
             }
-        });
+        }).catch(() => this.setState({ buying: false, error: true }))
     }
 
     rateApp(rate) {
-        $.ajax({
-            url: "/api/store/rate/" + this.props.app.type + "/" + this.props.app.id,
-            type: 'post',
-            contentType: 'application/json',
-            data: JSON.stringify({rate: rate}),
-            success: () => {
-                const state = this.state;
-                state.app.rateable = false;
-                state.app.rating = rate;
-                this.setState(state);
-            },
-            error: (xhr, status, err) => {
-                console.error(status, err.toString());
-            }
-        });
+        customFetch(`/api/store/rate/${this.props.app.type}/${this.props.app.id}`, {
+            method: 'POST',
+            json: { "rate": rate }
+        }).then(() => {
+            const state = this.state;
+            state.app.rateable = false;
+            state.app.rating = rate;
+            this.setState(state);
+        })
     }
 
     continueInstallProcess(installType, selectedOrgId) {

@@ -10,7 +10,9 @@ const defaultState = {
     kernelEndPoint: '',
     accountEndPoint: '',
     opendataEndPoint: '',
-    countries: []
+    countries: [],
+    csrfHeader: '',
+    csrfToken: ''
 };
 
 export default (state = defaultState, action) => {

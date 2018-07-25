@@ -85,3 +85,14 @@ export const fetchSetLanguage= (language) => {
             });
     };
 };
+
+export const fetchCsrf = () => {
+    return (dispatch) => {
+        return fetch('/api/csrf-token', {
+            credentials : 'same-origin'
+        }).then((res) => {
+            dispatch(fetchConfigAction({'csrfHeader': res.headers.get('X-CSRF-HEADER'),
+                'csrfToken': res.headers.get('X-CSRF-TOKEN')}));
+        })
+    };
+};

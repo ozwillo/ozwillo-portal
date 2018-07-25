@@ -1,4 +1,5 @@
 import 'isomorphic-fetch';
+import store from './store'
 
 /*
 * Custom fetch
@@ -26,11 +27,11 @@ export default (url, params = {headers: {}}) => {
         params.headers = {};
     }
 
-    //Add csrf
-    const token = document.querySelector("meta[name='_csrf']").content;
-    const headerField = document.querySelector("meta[name='_csrf_header']").content;
+    if (store && store.getState().config.csrfHeader) {
+        let csrfHeader = store.getState().config.csrfHeader;
+        params.headers[csrfHeader] = store.getState().config.csrfToken;
+    }
 
-    params.headers[headerField] = token;
     params.credentials = 'same-origin';
 
     if (params.json) {

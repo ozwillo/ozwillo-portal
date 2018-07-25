@@ -4,7 +4,8 @@ import {connect} from 'react-redux';
 //Actions
 import {
     fetchConfig,
-    fetchMyConfig
+    fetchMyConfig,
+    fetchCsrf
 } from "../actions/config";
 
 class BootLoader extends React.Component {
@@ -15,7 +16,7 @@ class BootLoader extends React.Component {
         } else {
             this.props.fetchConfig();
         }
-
+        this.props.fetchCsrf();
     }
 
     render() {
@@ -27,7 +28,8 @@ class BootLoader extends React.Component {
 const mapStateToProps = state => {
     return {
         user: state.userInfo,
-        config: state.config
+        config: state.config,
+        csrf: state.csrf
     };
 };
 
@@ -38,6 +40,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchConfig() {
             return dispatch(fetchConfig());
+        },
+        fetchCsrf() {
+            return dispatch(fetchCsrf());
         }
     };
 };

@@ -17,7 +17,7 @@ public class AppStoreController {
     @Autowired
     public UserService userService;
 
-    @RequestMapping(method = RequestMethod.GET, value = {"", "/"})
+    @GetMapping(value = {"", "/"})
     public String main(@PathVariable String lang, HttpServletRequest request) {
         if (userService.requiresLogout()) {
             return "redirect:/logout";
@@ -33,28 +33,28 @@ public class AppStoreController {
             return "redirect:/" + requestLanguage + "/store";
         }
 
-        return "index";
+        return "forward:/index.html";
     }
 
 
-    @RequestMapping(value = {"/service/{serviceId}", "/service/{serviceId}/*"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/service/{serviceId}", "/service/{serviceId}/*"})
     public String service(@PathVariable String lang, @PathVariable String serviceId, HttpServletRequest request) {
         String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
         if (!lang.equals(requestLanguage)) {
             return "redirect:/" + requestLanguage + "/store/service/" + serviceId;
         }
 
-        return "index";
+        return "forward:/index.html";
     }
 
-    @RequestMapping(value = {"/application/{applicationId}", "/application/{applicationId}/*"}, method = RequestMethod.GET)
+    @GetMapping(value = {"/application/{applicationId}", "/application/{applicationId}/*"})
     public String application(@PathVariable String lang, @PathVariable String applicationId, HttpServletRequest request) {
         String requestLanguage = RequestContextUtils.getLocale(request).getLanguage();
         if (!lang.equals(requestLanguage)) {
             return "redirect:/" + requestLanguage + "/store/application/" + applicationId;
         }
 
-        return "index";
+        return "forward:/index.html";
     }
 
     @GetMapping(value = "/login")

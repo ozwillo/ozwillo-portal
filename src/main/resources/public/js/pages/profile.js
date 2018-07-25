@@ -20,6 +20,7 @@ import {
 } from '../components/forms/form';
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import UpdateTitle from '../components/update-title';
+import customFetch from "../util/custom-fetch";
 
 class Profile extends React.Component {
     state = {
@@ -46,14 +47,7 @@ class Profile extends React.Component {
     };
 
     componentDidMount() {
-        $.ajax({
-            url: '/my/api/profile'
-        }).done(data => {
-            this.setState(data);
-        })
-            .fail((xhr, status, err) => {
-                this.setState({error: "Unable to retrieve profile info"})
-            })
+        customFetch('/my/api/profile').then(data => this.setState(data));
     }
 
     onValueChange(field, value) {
@@ -78,21 +72,19 @@ class Profile extends React.Component {
     onSubmit(e) {
         e.preventDefault();
 
-        $.ajax({
-            url: '/my/api/profile',
+        customFetch('/my/api/profile', {
             method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(this.state.userProfile)
+            json: this.state.userProfile
         })
-            .done(() => {
-                this.setState({updateSucceeded: true});
-                const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
-                if (!!voluntaryClaims.length || !!essentialClaims.length) {
-                    window.opener.postMessage('updated', '*');
-                    window.close()
-                }
-                this.componentDidMount();
-            })
+        .then(() => {
+            this.setState({updateSucceeded: true});
+            const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
+            if (!!voluntaryClaims.length || !!essentialClaims.length) {
+                window.opener.postMessage('updated', '*');
+                window.close()
+            }
+            this.componentDidMount();
+        })
     }
 
     render() {

@@ -17,6 +17,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
 import java.util.Collections;
@@ -45,6 +46,19 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
         registry.addInterceptor(new OasisLocaleInterceptor());
         registry.addInterceptor(tokenRefreshInterceptor());
         registry.addInterceptor(new ResponseProviderInterceptor()); // provides HTTP response as request attribute
+    }
+
+    @Override
+    public void addViewControllers(ViewControllerRegistry registry) {
+        registry.addViewController("/").setViewName("forward:/index.html");
+        registry.addViewController("/my").setViewName("forward:/index.html");
+        registry.addViewController("/my/organization/**").setViewName("forward:/index.html");
+        registry.addViewController("/my/profile").setViewName("forward:/index.html");
+        registry.addViewController("/my/notif").setViewName("forward:/index.html");
+        registry.addViewController("/my/dashboard").setViewName("forward:/index.html");
+        registry.addViewController("/my/dashboard/**").setViewName("forward:/index.html");
+        registry.addViewController("/**/store").setViewName("forward:/index.html");
+        registry.addViewController("/**/store/**").setViewName("forward:/index.html");
     }
 
     @Bean

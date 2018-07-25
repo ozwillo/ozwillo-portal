@@ -2,11 +2,10 @@
 
 import React from "react";
 import {withRouter} from 'react-router';
-import "../util/csrf";
 
 import PropTypes from "prop-types";
 import UpdateTitle from '../components/update-title';
-
+import customFetch from "../util/custom-fetch";
 
 const languageData = {
     'given_name': 'my.profile.personal.firstname',
@@ -83,17 +82,13 @@ class SynchronizeFCProfile extends React.Component {
         }
 
         //Update user's data
-        $.ajax({
-            url: '/my/api/profile',
+        customFetch('/my/api/profile', {
             method: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(jsonData)
-        }).done(() => {
-            this.props.history.push('/my/profile');
-        }).fail((xhr, status, err) => {
-            console.error('Update user\'s data: ', err);
+            json: jsonData
         })
-
+        .then(() => {
+            this.props.history.push('/my/profile');
+        })
     }
 
     render() {
