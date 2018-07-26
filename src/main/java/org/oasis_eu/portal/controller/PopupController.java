@@ -10,15 +10,18 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @RequestMapping("/popup")
 public class PopupController {
 
+    private final UserService userService;
+
     @Autowired
-    public UserService userService;
+    public PopupController(UserService userService) {
+        this.userService = userService;
+    }
 
     @RequestMapping(method = RequestMethod.GET, value = "/**")
     public String show() {
         if (userService.requiresLogout()) {
             return "redirect:/logout";
         }
-        return "index";
+        return "forward:/index.html";
     }
-
 }
