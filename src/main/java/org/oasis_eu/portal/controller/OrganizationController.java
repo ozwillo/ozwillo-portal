@@ -16,8 +16,12 @@ import java.util.List;
 @RequestMapping("/my/api/organization")
 class OrganizationController {
 
+    private final OrganizationService organizationService;
+
     @Autowired
-    private OrganizationService organizationService;
+    public OrganizationController(OrganizationService organizationService) {
+        this.organizationService = organizationService;
+    }
 
     @GetMapping(value = "/search")
     public List<DCOrganization> searchOrganizations(@RequestParam String country_uri, @RequestParam String query) {
@@ -67,6 +71,11 @@ class OrganizationController {
         return organizationService.invite(invitation.email, invitation.admin, organizationId);
     }
 
+    @DeleteMapping(value = "/{organizationId}/invitation/{invitationId}")
+    public void removeInvitation(@PathVariable String organizationId, @RequestBody UIPendingOrganizationMember member) {
+        organizationService.removeInvitation(organizationId, member.getId(), member.getPendingMembershipEtag());
+    }
+
     @PutMapping("/{organizationId}/membership/{accountId}/role/{isAdmin}")
     public void updateRoleMember(@PathVariable String organizationId, @PathVariable String accountId,
                              @PathVariable boolean isAdmin) {
@@ -76,11 +85,6 @@ class OrganizationController {
     @DeleteMapping("/{organizationId}/membership/{accountId}")
     public void removeMember(@PathVariable String organizationId, @PathVariable String accountId) {
         organizationService.removeMember(organizationId, accountId);
-    }
-
-    @DeleteMapping(value = "/{organizationId}/invitation/{invitationId}")
-    public void removeInvitation(@PathVariable String organizationId, @RequestBody UIPendingOrganizationMember member) {
-        organizationService.removeInvitation(organizationId, member.getId(), member.getPendingMembershipEtag());
     }
 
     private static class InvitationRequest {

@@ -1,20 +1,16 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.services.kernel.ApplicationInstanceStoreImpl;
-import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
-import org.oasis_eu.portal.services.kernel.InstanceACLStoreImpl;
-import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
-import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
-import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
-import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
-import org.oasis_eu.portal.model.kernel.instance.Subscription;
-import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
+import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.model.instance.InstanceService;
-import org.oasis_eu.portal.model.authority.Authority;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
+import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.user.User;
-import org.oasis_eu.portal.services.kernel.UserProfileService;
+import org.oasis_eu.portal.services.kernel.*;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,6 +25,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -63,35 +60,30 @@ public class ApplicationService {
     @Autowired
     private UserProfileService userProfileService;
 
-    public List<MyAppsInstance> getMyInstances(Authority authority, boolean fetchServices) {
-        switch (authority.getType()) {
-            case INDIVIDUAL:
-                return getPersonalInstances(authority, fetchServices);
-            case ORGANIZATION:
-                return getOrganizationInstances(authority, fetchServices);
-        }
-
-        logger.error("Should never be here - authority is neither an individual or an organization: {}", authority.getType());
-        return null;
+    public List<MyAppsInstance> getMyInstances(UIOrganization uiOrganization, boolean fetchServices) {
+        if (uiOrganization.isPersonal())
+            return getPersonalInstances(uiOrganization.getId(), fetchServices);
+        else
+            return getOrganizationInstances(uiOrganization.getId(), fetchServices);
     }
 
-    private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority, boolean fetchServices) {
-        return applicationInstanceStore.findByUserId(personalAuthority.getId(), false)
+    private List<MyAppsInstance> getPersonalInstances(String knOrganizationId, boolean fetchServices) {
+        return applicationInstanceStore.findByUserId(knOrganizationId, false)
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
                     .thenComparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER))
             .map(i -> fetchInstance(i, fetchServices))
-            .filter(i -> i != null) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
+            .filter(Objects::nonNull) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .collect(Collectors.toList());
     }
 
-    private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority, boolean fetchServices) {
-        return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
+    private List<MyAppsInstance> getOrganizationInstances(String knOrganizationId, boolean fetchServices) {
+        return applicationInstanceStore.findByOrganizationId(knOrganizationId)
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
                     .thenComparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER))
             .map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
-            .filter(i -> i != null)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 

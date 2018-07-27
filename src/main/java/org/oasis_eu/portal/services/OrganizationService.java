@@ -320,6 +320,7 @@ public class OrganizationService {
         UIOrganization uiOrganization = new UIOrganization();
         uiOrganization.setId(userId);
         uiOrganization.setName("Personal");
+        uiOrganization.setPersonal(true);
         organizations.add(uiOrganization);
 
         return organizations.stream()
@@ -382,6 +383,18 @@ public class OrganizationService {
         }
     }
 
+    private UIOrganization getKernelOrganization(String organizationId) {
+        String userId = userInfoService.currentUser().getUserId();
+        boolean isPersonal = userId.equals(organizationId);
+
+        Organization org = (isPersonal)? getPersonalOrganization() : organizationStore.find(organizationId);
+
+        UIOrganization uiOrganization = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
+        boolean isAdmin = userIsAdmin(organizationId);
+        uiOrganization.setAdmin(isAdmin);
+        return uiOrganization;
+    }
+
     public UIOrganization getOrganizationFromKernel(String organizationId) {
         String userId = userInfoService.currentUser().getUserId();
 
@@ -394,22 +407,14 @@ public class OrganizationService {
     }
 
     private UIOrganization fetchOrganizationWithInstances(String organizationId, boolean fetchMembers) {
-        String userId = userInfoService.currentUser().getUserId();
-        boolean isPersonal = userId.equals(organizationId);
+        UIOrganization uiOrg = getKernelOrganization(organizationId);
+        if (uiOrg.isAdmin())
+            uiOrg.setInstances(getOrganizationInstances(uiOrg.getId(), uiOrg.isAdmin()));
 
-        Organization org = (isPersonal)? getPersonalOrganization() : organizationStore.find(organizationId);
-
-        //Build UIOrganization
-        UIOrganization uiOrg = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
-        boolean isAdmin = userIsAdmin(organizationId);
-        uiOrg.setAdmin(isAdmin);
-        if (isAdmin)
-            uiOrg.setInstances(getOrganizationInstances(org.getId(), uiOrg.isAdmin()));
-
-        if(fetchMembers && !isPersonal) {
-            List<UIOrganizationMember> members = getOrganizationMembers(org.getId());
-            if (isAdmin)
-                members.addAll(getOrganizationPendingMembers(org.getId()));
+        if(fetchMembers && !uiOrg.isPersonal()) {
+            List<UIOrganizationMember> members = getOrganizationMembers(uiOrg.getId());
+            if (uiOrg.isAdmin())
+                members.addAll(getOrganizationPendingMembers(uiOrg.getId()));
             uiOrg.setMembers(members);
         }
 
@@ -427,8 +432,8 @@ public class OrganizationService {
     }
 
     private List<MyAppsInstance> getOrganizationInstances(String organizationId, boolean isAdmin) {
-        Authority authority = getOrganizationAuthority(organizationId);
-        List<MyAppsInstance> instances = applicationService.getMyInstances(authority, true);
+        UIOrganization uiOrganization = getKernelOrganization(organizationId);
+        List<MyAppsInstance> instances = applicationService.getMyInstances(uiOrganization, true);
 
         //Fetch subscriptions
         if (isAdmin) {
@@ -625,56 +630,6 @@ public class OrganizationService {
     public UserGeneralInfo getCurrentUser() {
         UserInfo userInfo = userInfoService.currentUser();
         return new UserGeneralInfo(userInfo.getGivenName(), userInfo.getFamilyName(), userInfo.getEmail(), userInfo.getAddress());
-    }
-
-    public List<Authority> getMyAuthorities(boolean includePersonal) {
-        String userId = userInfoService.currentUser().getUserId();
-
-        List<Authority> authorities = new ArrayList<>();
-        if (includePersonal) {
-            authorities.add(new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true));
-        }
-
-        authorities.addAll(userMembershipService.getMembershipsOfUser(userId)
-                .stream()
-                .filter(UserMembership::isAdmin)
-                .map(this::toAuthority)
-                .collect(Collectors.toList()));
-
-        Collections.sort(authorities, (one, two) -> {
-            if (one.getType().ordinal() != two.getType().ordinal())
-                return one.getType().ordinal() - two.getType().ordinal();
-            else return one.getName().compareTo(two.getName());
-        });
-
-        return authorities;
-    }
-
-    public Authority getOrganizationAuthority(String organizationId) {
-        String userId = userInfoService.currentUser().getUserId();
-
-        if (userId.equals(organizationId)) {
-            return new Authority(AuthorityType.INDIVIDUAL, i18nPersonal(), userId, true);
-        }
-
-        List<UserMembership> orgMemberships = userMembershipService.getMembershipsOfUser(userId);
-        UserMembership currentMember = null;
-        for(UserMembership member : orgMemberships) {
-            if(member.getOrganizationId().equals(organizationId)){
-                currentMember = member;
-                break;
-            }
-        }
-
-        return (currentMember != null)? toAuthority(currentMember) : null;
-    }
-
-    private Authority toAuthority(UserMembership userMembership) {
-        return new Authority(AuthorityType.ORGANIZATION, userMembership.getOrganizationName(), userMembership.getOrganizationId(), userMembership.isAdmin());
-    }
-
-    private String i18nPersonal() {
-        return messageSource.getMessage("my.apps.personal", new Object[0], RequestContextUtils.getLocale(request));
     }
 
     private String getUserName(String accountId) {

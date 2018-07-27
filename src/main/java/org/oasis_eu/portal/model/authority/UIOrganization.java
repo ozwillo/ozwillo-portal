@@ -85,7 +85,10 @@ public class UIOrganization {
     private List<UIOrganizationMember> members;
 
     @JsonProperty
-    boolean admin;
+    private boolean admin;
+
+    @JsonProperty
+    private boolean personal = false;
 
     public static UIOrganization fromKernelOrganization(Organization organization, Instant deletionPlannedTime, String userName) {
         UIOrganization uiOrg = new UIOrganization();
@@ -108,8 +111,6 @@ public class UIOrganization {
 
         return uiOrg;
     }
-
-
 
     public String getId() {
         return id;
@@ -229,6 +230,14 @@ public class UIOrganization {
 
     public void setInstances(List<MyAppsInstance> instances) {
         this.instances = instances;
+    }
+
+    public boolean isPersonal() {
+        return personal;
+    }
+
+    public void setPersonal(boolean personal) {
+        this.personal = personal;
     }
 
     @Override
