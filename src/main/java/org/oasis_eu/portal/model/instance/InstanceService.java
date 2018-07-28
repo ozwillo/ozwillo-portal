@@ -12,7 +12,6 @@ import java.util.List;
 public class InstanceService {
 
     private CatalogEntry catalogEntry;
-    private SubscriptionStatus subscriptionStatus;
 
     private String name;
 
@@ -26,15 +25,6 @@ public class InstanceService {
 
     public InstanceService setCatalogEntry(CatalogEntry catalogEntry) {
         this.catalogEntry = catalogEntry;
-        return this;
-    }
-
-    public SubscriptionStatus getSubscriptionStatus() {
-        return subscriptionStatus;
-    }
-
-    public InstanceService setSubscriptionStatus(SubscriptionStatus subscriptionStatus) {
-        this.subscriptionStatus = subscriptionStatus;
         return this;
     }
 
