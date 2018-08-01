@@ -38,9 +38,6 @@ class OrganizationController {
         return organizationService.getMyOrganizations();
     }
 
-    @GetMapping(value = "/lazy")
-    public List<UIOrganization> getOrganizationsInLazyMode() { return organizationService.getMyOrganizationsInLazyMode(); }
-
     @GetMapping ("/{organizationId}")
     public UIOrganization organization(@PathVariable String organizationId) {
         return organizationService.getOrganizationFromKernel(organizationId);

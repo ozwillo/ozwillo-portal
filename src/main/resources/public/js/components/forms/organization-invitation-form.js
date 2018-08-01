@@ -72,20 +72,6 @@ class OrganizationInvitationForm extends React.Component {
                                        onChange={this.handleChange} value={this.state.email}/>
                             </label>
                         </div>
-
-                        {
-                            this.state.error &&
-                            <div className="error">
-                                <span>{this.state.error}</span>
-                            </div>
-                        }
-
-                        {
-                            this.state.success &&
-                            <div className="success">
-                                <span>{this.state.success}</span>
-                            </div>
-                        }
                     </div>
 
 
@@ -108,6 +94,20 @@ class OrganizationInvitationForm extends React.Component {
                                 <i className="fa fa-spinner fa-spin action-icon loading"/>
                             }
                         </button>
+
+                        {
+                            this.state.error &&
+                            <div className="error">
+                                <span>{this.state.error}</span>
+                            </div>
+                        }
+
+                        {
+                            this.state.success &&
+                            <div className="success">
+                                <span>{this.state.success}</span>
+                            </div>
+                        }
                     </div>
                 </div>
             </fieldset>

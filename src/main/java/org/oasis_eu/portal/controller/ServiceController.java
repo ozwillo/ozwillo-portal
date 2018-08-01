@@ -13,8 +13,12 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/my/api/service")
 public class ServiceController {
 
+    private final ApplicationService applicationService;
+
     @Autowired
-    private ApplicationService applicationService;
+    public ServiceController(ApplicationService applicationService) {
+        this.applicationService = applicationService;
+    }
 
     @PutMapping(value = "/{serviceId}")
     public InstanceService saveService(@PathVariable String serviceId, @RequestBody ServiceEntry serviceEntry) {

@@ -49,38 +49,13 @@ class OrganizationDropdown extends React.Component {
 
         return <DropdownMenu header={Header} isOpen={true}>
             {
-                (org.admin || org.services || null) &&
+                (org.admin || null) &&
                 <section className='dropdown-content flex-row'>
-                    <section className="apps flex-row">
-                        {
-                            org.services &&
-                            <ul className="list undecorated-list flex-row">
-                                {
-                                    org.services.map((service) => {
-                                        return <li key={service.catalogEntry.id} className="app">
-                                            <Service service={service} className="launcher"/>
-                                        </li>;
-                                    })
-                                }
-                            </ul> || null
-                        }
-
-                        {
-                            !org.services &&
-                            <span className="empty-message">
-                                {this.context.t('organization.search.no-apps-installed')}
-                            </span>
-                        }
-                    </section>
-
                     {
                         org.admin &&
-                        [
-                            <div key={`sep-${org.id}`} className="sep"/>,
                             <section key={`invitation-${org.id}`} className="invitation">
                                 <OrganizationInvitationForm organization={org}/>
                             </section>
-                        ]
                     }
 
                 </section>

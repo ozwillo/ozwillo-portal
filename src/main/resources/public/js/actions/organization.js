@@ -70,7 +70,7 @@ export const fetchOrganizationWithId = (id) => {
 
 export const fetchUserOrganizations = () => {
     return dispatch => {
-        return customFetch('/my/api/organization.json')
+        return customFetch('/my/api/organization')
             .then((organizations) => {
                 dispatch(fetchUserOrganizationsAction(organizations));
             });
@@ -85,7 +85,7 @@ export const fetchUserOrganizationsLazyMode = () => {
             return Promise.resolve(organizations);
         }
 
-        return customFetch('/my/api/organization/lazy.json')
+        return customFetch('/my/api/organization')
             .then((organizations) => {
                 dispatch(fetchUserOrganizationsLazyModeAction(organizations));
             });

@@ -208,7 +208,7 @@ public class AppstoreService {
             return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
                 PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         } else {
-            return organizationService.getMyOrganizationsInLazyMode()
+            return organizationService.getMyOrganizations()
                     .stream()
                     .flatMap(uiOrganization -> applicationService.getMyInstances(uiOrganization, false).stream())
                     .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))

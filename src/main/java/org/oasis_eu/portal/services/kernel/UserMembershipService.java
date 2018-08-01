@@ -145,7 +145,7 @@ public class UserMembershipService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", userMembership.getMembershipEtag());
         String uriString = userMembership.getMembershipUri();
-        ResponseEntity<Void> kernelResp = kernel.exchange(uriString, HttpMethod.DELETE, new HttpEntity<Object>(headers), Void.class, user());
+        ResponseEntity<Void> kernelResp = kernel.exchange(uriString, HttpMethod.DELETE, new HttpEntity<>(headers), Void.class, user());
         // validate response body
         kernel.getBodyUnlessClientError(kernelResp, Void.class, uriString );
     }

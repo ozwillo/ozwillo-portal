@@ -2,13 +2,11 @@ package org.oasis_eu.portal.services;
 
 import com.google.common.base.Strings;
 import org.oasis_eu.portal.model.authority.*;
-import org.oasis_eu.portal.model.instance.InstanceService;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
-import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
@@ -67,16 +65,7 @@ public class OrganizationService {
     private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
-    private ApplicationInstanceStoreImpl applicationInstanceStore;
-
-    @Autowired
-    private CatalogStoreImpl catalogStore;
-
-    @Autowired
     private DCOrganizationService dcOrganizationService;
-
-    @Autowired
-    private ImageService imageService;
 
     @Value("${application.dcOrg.baseUri: http://data.ozwillo.com/dc/type}")
     private String dcBaseUri;
@@ -305,15 +294,15 @@ public class OrganizationService {
         return result;
     }
 
-    public List<UIOrganization> getMyOrganizationsInLazyMode() {
+    public List<UIOrganization> getMyOrganizations() {
         List<UIOrganization> organizations = new ArrayList<>();
         String userId = userInfoService.currentUser().getUserId();
 
-        //build Organizations
         List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
         for (UserMembership u : userMemberships) {
             Organization org = organizationStore.find(u.getOrganizationId());
             UIOrganization uiOrg = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
+            uiOrg.setAdmin(u.isAdmin());
             organizations.add(uiOrg);
         }
 
@@ -328,59 +317,6 @@ public class OrganizationService {
                         (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2))? -1 : 0)
                         .thenComparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
-    }
-
-    public List<UIOrganization> getMyOrganizations() {
-        List<UIOrganization> organizations = new ArrayList<>();
-        String userId = userInfoService.currentUser().getUserId();
-
-        //Fetch all user's services
-        List<ApplicationInstance> userInstances = applicationInstanceStore.findByUserId(userId, true);
-        List<ServiceEntry> userServices = userInstances.stream()
-                .map(applicationInstance -> catalogStore.findServicesOfInstance(applicationInstance.getInstanceId()))
-                .flatMap(List::stream)
-                .collect(Collectors.toList());
-
-        Map<String, List<InstanceService>> instanceServices = userServices
-                .stream()
-                .map(userService -> getServiceBySub(userService.getId()))
-                .filter(Objects::nonNull)
-                .filter(is -> is.getCatalogEntry().getProviderId() != null)
-                .collect(Collectors.groupingBy(is -> is.getCatalogEntry().getProviderId()));
-
-        //build Organizations
-        List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
-        for (UserMembership u : userMemberships) {
-            Organization org = organizationStore.find(u.getOrganizationId());
-            UIOrganization uiOrg = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
-            uiOrg.setServices(instanceServices.get(org.getId()));
-            uiOrg.setAdmin(userIsAdmin(org.getId()));
-            organizations.add(uiOrg);
-        }
-
-        UIOrganization uiOrganization = new UIOrganization();
-        uiOrganization.setId(userId);
-        uiOrganization.setName("Personal");
-        uiOrganization.setServices(instanceServices.get(userId));
-        organizations.add(uiOrganization);
-
-        return organizations.stream()
-                .sorted(Comparator.comparing(UIOrganization::getId,
-                        (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2))? -1 : 0)
-                        .thenComparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER))
-                .collect(Collectors.toList());
-    }
-
-
-    private InstanceService getServiceBySub(String serviceId) {
-        try {
-            return applicationService.getService(serviceId);
-        } catch (WrongQueryException e) {
-            if (HttpStatus.FORBIDDEN.value() != e.getStatusCode()) {
-                throw e;
-            }
-            return null;
-        }
     }
 
     private UIOrganization getKernelOrganization(String organizationId) {
@@ -647,8 +583,9 @@ public class OrganizationService {
     private boolean userIsAdmin(String organizationId) {
         String userId = userInfoService.currentUser().getUserId();
 
-        return userMembershipService.getMembershipsOfUser(userId).stream()
-                .anyMatch(um -> um.getOrganizationId().equals(organizationId) && um.isAdmin());
+        return userMembershipService.getAdminsOfOrganization(organizationId)
+                .stream()
+                .anyMatch(orgMembership -> orgMembership.getAccountId().equals(userId));
     }
 
     public boolean userIsAdminOrPersonalAppInstance(ApplicationInstance existingInstance) {
@@ -700,11 +637,10 @@ public class OrganizationService {
 
 
     public void leave(String organizationId) {
-        // prevent the last admin from deleting themselves
+        // prevent the last admin from deleting himself
         if (userIsAdmin(organizationId)) {
-            if (userMembershipService.getMembershipsOfOrganization(organizationId).stream().filter(OrgMembership::isAdmin).count() == 1) {
+            if (userMembershipService.getAdminsOfOrganization(organizationId).size() == 1)
                 throw new ForbiddenException();
-            }
         }
 
         userMembershipService.getMembershipsOfUser(userInfoService.currentUser().getUserId()).stream()
