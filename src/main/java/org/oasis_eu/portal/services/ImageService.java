@@ -16,9 +16,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.mongodb.core.MongoOperations;
-import org.springframework.data.mongodb.core.query.Criteria;
-import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -64,13 +61,6 @@ public class ImageService {
 
     @Autowired
     private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
-
-    /**
-     * to avoid writing a custom spring repository for exists(url) only
-     */
-    @Autowired
-    private MongoOperations mgo;
-
 
     @Value("${application.baseImageUrl}")
     private String baseImageUrl;
@@ -138,7 +128,7 @@ public class ImageService {
      * @param objectId of object whose icon we're trying to build the virtual URL
      * @return URL that is unique for mongo, but not where this image will be served
      */
-    public String buildObjectIconImageVirtualUrl(String objectId) {
+    private String buildObjectIconImageVirtualUrl(String objectId) {
         return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
             .path("/")
             .path(OBJECTICONIMAGE_PATHELEMENT)
@@ -148,20 +138,6 @@ public class ImageService {
             .path(ICONIMAGE_NAME) // .path(image.getFilename())
             .build()
             .toUriString();
-    }
-
-    /**
-     * @param objectId
-     * @return null if none, allowing caller to rather use business object default url
-     */
-    public String buildObjectIconImageVirtualUrlOrNullIfNone(String objectId) {
-        String url = buildObjectIconImageVirtualUrl(objectId);
-        Image image = mgo.findOne(new Query(new Criteria("url").is(url)), Image.class);
-        if (image != null) {
-            return this.buildImageServedUrl(image);
-        } else {
-            return null;
-        }
     }
 
     /**
