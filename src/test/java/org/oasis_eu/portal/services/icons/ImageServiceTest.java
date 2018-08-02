@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.services.icons;
 
-import com.google.common.io.ByteStreams;
 import org.junit.Test;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.services.ImageService;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -97,6 +97,6 @@ public class ImageServiceTest {
 
 	private byte[] load(String name) throws IOException {
 		InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
-		return ByteStreams.toByteArray(stream);
+		return StreamUtils.copyToByteArray(stream);
 	}
 }

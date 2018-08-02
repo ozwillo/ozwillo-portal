@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.dao;
 
-import com.mongodb.*;
 import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.geo.GeographicalAreaReplicationStatus;
@@ -17,8 +16,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.mongodb.core.BulkOperations;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.data.mongodb.core.convert.MappingMongoConverter;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
@@ -55,9 +54,6 @@ public class GeographicalAreaCache {
 
     @Autowired
     private MongoTemplate mongoTemplate;
-
-    @Autowired
-    private MappingMongoConverter mappingMongoConverter;
 
     @Autowired
     private GeographicalDAO geographicalDAO;
@@ -255,8 +251,8 @@ public class GeographicalAreaCache {
         mongoTemplate.save(area);
     }
 
-    public int deleteByStatus(GeographicalAreaReplicationStatus status) {
-        return mongoTemplate.remove(query(where("status").is(status)), GeographicalArea.class).getN();
+    public long deleteByStatus(GeographicalAreaReplicationStatus status) {
+        return mongoTemplate.remove(query(where("status").is(status)), GeographicalArea.class).getDeletedCount();
     }
 
     /**
@@ -288,8 +284,6 @@ public class GeographicalAreaCache {
 
         logger.info("Starting replication of geographical data from data core");
 
-        DBCollection collection = mongoTemplate.getCollection("geographical_area");
-
         Set<String> loadedUris = new HashSet<>();
 
         // 0. remove all pre-existing INCOMING records created but never changed to ONLINE
@@ -302,7 +296,7 @@ public class GeographicalAreaCache {
                 String lastDCIdFetched = null;
                 do {
                     logger.debug("Fetching batches of areas");
-                    lastDCIdFetched = fetchBatches(collection, loadedUris, lastDCIdFetched);
+                    lastDCIdFetched = fetchBatches(loadedUris, lastDCIdFetched);
                 } while (lastDCIdFetched != null);
             });
 
@@ -316,7 +310,7 @@ public class GeographicalAreaCache {
             long switchStart = System.currentTimeMillis();
             this.switchToOnline();
             logger.debug("Switched to online in {} ms", System.currentTimeMillis() - switchStart);
-            logger.info("Finish replication of {} geographical records from data core", collection.getCount());
+            logger.info("Finish replication of {} geographical records from data core", mongoTemplate.getCollection("geographical_area").count());
         } catch (RestClientException e) {
             logger.error("Error while updating the geo area cache", e);
 
@@ -326,9 +320,9 @@ public class GeographicalAreaCache {
 
     }
 
-    private String fetchBatches(DBCollection collection, Set<String> loadedUris, String lastDCIdFetched) {
+    private String fetchBatches(Set<String> loadedUris, String lastDCIdFetched) {
 
-        BulkWriteOperation builder = collection.initializeUnorderedBulkOperation();
+        BulkOperations bulkOperations = mongoTemplate.bulkOps(BulkOperations.BulkMode.ORDERED, "geographical_area");
         String prevDcId = lastDCIdFetched;
 
         DCQueryParameters params;
@@ -345,6 +339,7 @@ public class GeographicalAreaCache {
 
         boolean hasOne = false;
 
+        List<GeographicalArea> geographicalAreas = new ArrayList<>();
         for (DCResource res : resources) {
             String name = null;
 
@@ -362,11 +357,7 @@ public class GeographicalAreaCache {
                         //logger.debug("{} - {}", name, area.getUri());
                     }
 
-                    DBObject dbObject = new BasicDBObject();
-                    mappingMongoConverter.write(area, dbObject);
-
-                    builder.insert(dbObject);
-
+                    geographicalAreas.add(area);
                     loadedUris.add(language.getLanguage() + area.getUri());
                 } else {
                     if (name == null) {
@@ -385,7 +376,8 @@ public class GeographicalAreaCache {
 
         if (hasOne) {
             long st = System.currentTimeMillis();
-            builder.execute();
+            bulkOperations.insert(geographicalAreas);
+            bulkOperations.execute();
             long durationSave = System.currentTimeMillis() - st;
             logger.debug("Saved resources; total save time={} ms (avg = {} ms)", durationSave, durationSave / resources.size());
         }

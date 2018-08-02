@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.services.icons;
 
-import com.google.common.io.ByteStreams;
-import com.mongodb.DBCollection;
+import com.mongodb.client.MongoCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -22,12 +21,13 @@ import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
+import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.UnknownHostException;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -41,7 +41,7 @@ import static org.mockito.Mockito.*;
 @ComponentScan(basePackages = "org.oasis_eu.portal")
 public class ImageServiceIntegrationTest {
 
-	private DBCollection blacklist;
+	private MongoCollection blacklist;
 
 	@Bean
 	public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
@@ -64,7 +64,7 @@ public class ImageServiceIntegrationTest {
 	private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
 	@Before
-	public void clean() throws UnknownHostException {
+	public void clean() {
 		blacklist = mongoTemplate.getCollection("image_download_attempt");
 
 		imageRepository.deleteAll();
@@ -96,8 +96,9 @@ public class ImageServiceIntegrationTest {
 		assertNotNull(hash);
 		assertEquals("b357025fb8c2027cae8550b2e33df8f924d1aae35e2e5de4d4c14430636be6ab", hash);
 
-		Image image = imageService.getImage(id);
-		assertEquals(hash, image.getHash());
+		Optional<Image> image = imageService.getImage(id);
+		assertTrue(image.isPresent());
+		assertEquals(hash, image.get().getHash());
 	}
 
 	@Test
@@ -138,14 +139,14 @@ public class ImageServiceIntegrationTest {
 	}
 
 	@Test
-	public void testDummyData() throws Exception {
+	public void testDummyData() {
 		assertNull(imageService.getHash(UUID.randomUUID().toString()));
-		assertNull(imageService.getImage(UUID.randomUUID().toString()));
+		assertFalse(imageService.getImage(UUID.randomUUID().toString()).isPresent());
 	}
 
 	private byte[] load(String name) throws IOException {
 		InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
-		return ByteStreams.toByteArray(stream);
+        return StreamUtils.copyToByteArray(stream);
 	}
 
 	private String defaultIcon() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {

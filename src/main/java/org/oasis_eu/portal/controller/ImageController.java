@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.controller;
 
-import com.google.common.io.ByteStreams;
 import org.oasis_eu.portal.model.images.Image;
 import org.oasis_eu.portal.services.ImageService;
 import org.slf4j.Logger;
@@ -10,6 +9,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -66,27 +66,21 @@ public class ImageController {
             }
         }
         ServletOutputStream outputStream = response.getOutputStream();
-        ByteStreams.copy(new ByteArrayInputStream(entity.getBody()), outputStream);
+        StreamUtils.copy(new ByteArrayInputStream(entity.getBody()), outputStream);
         outputStream.close();
     }
 
     private ResponseEntity<byte[]> getIconBody(String id) {
-        Image image = imageService.getImage(id);
-        return toIconBodyResponse(image);
+        return imageService.getImage(id).map(this::toIconBodyResponse).orElseThrow(IconNotFound::new);
     }
 
     private ResponseEntity<byte[]> toIconBodyResponse(Image image) {
-        if (image != null) {
-            HttpHeaders headers = new HttpHeaders();
-            headers.add("ETag", image.getHash());
-            headers.add("Content-Type", "image/png");
-            headers.add("Content-Length", Integer.toString(image.getBytes().length));
-            headers.put("Cache-Control", Arrays.asList("public, max-age=31536000")); // one year
-            ResponseEntity<byte[]> res = new ResponseEntity<>(image.getBytes(), headers, HttpStatus.OK);
-            return res;
-        } else {
-            throw new IconNotFound();
-        }
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("ETag", image.getHash());
+        headers.add("Content-Type", "image/png");
+        headers.add("Content-Length", Integer.toString(image.getBytes().length));
+        headers.put("Cache-Control", Arrays.asList("public, max-age=31536000")); // one year
+        return new ResponseEntity<>(image.getBytes(), headers, HttpStatus.OK);
     }
 
     @ExceptionHandler(IconNotFound.class)
@@ -118,11 +112,7 @@ public class ImageController {
 
     /**
      * @param objectId whose icon we're POSTing
-     * @param filename (Optional) overrides body file's name. Set it to "icon.png" if the
-     *                 image served url is not stored in the business object to that the image url
-     *                 can be computed from imageService.buildObjectIconImageVirtualUrlOrNullIfNone()
      * @param iconFile has also filename, size etc.
-     * @return
      */
     @RequestMapping(value = "/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}", method = RequestMethod.POST)
     public

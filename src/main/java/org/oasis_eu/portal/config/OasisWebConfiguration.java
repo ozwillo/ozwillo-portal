@@ -7,18 +7,16 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.context.embedded.ConfigurableEmbeddedServletContainer;
-import org.springframework.boot.context.embedded.EmbeddedServletContainerCustomizer;
-import org.springframework.boot.context.embedded.MimeMappings;
-import org.springframework.boot.context.embedded.tomcat.TomcatContextCustomizer;
-import org.springframework.boot.context.embedded.tomcat.TomcatEmbeddedServletContainerFactory;
+import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
+import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
+import org.springframework.boot.web.server.WebServerFactoryCustomizer;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
-import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import java.util.Collections;
 
@@ -27,7 +25,7 @@ import java.util.Collections;
  * Date: 6/11/14
  */
 @Configuration
-public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
+public class OasisWebConfiguration implements WebMvcConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(OasisWebConfiguration.class);
 
@@ -72,13 +70,13 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
     }
 
     @Bean
-    public EmbeddedServletContainerCustomizer containerCustomizer() {
-        if (highAvailability) {
-            logger.info("Setting up high availability configuration");
-            return factory -> {
-                logger.info("Customizing Tomcat container");
+    public WebServerFactoryCustomizer containerCustomizer() {
+        return factory -> {
+            logger.info("Customizing Tomcat container");
 
-                TomcatEmbeddedServletContainerFactory containerFactory = (TomcatEmbeddedServletContainerFactory) factory;
+            if (highAvailability) {
+                logger.info("Setting up high availability configuration");
+                TomcatServletWebServerFactory containerFactory = (TomcatServletWebServerFactory) factory;
                 TomcatContextCustomizer tomcatContextCustomizer = context -> {
                     context.setSessionTimeout(30);
                     context.setManager(new MemcachedBackupSessionManager() {{
@@ -88,22 +86,9 @@ public class OasisWebConfiguration extends WebMvcConfigurerAdapter {
                     }});
                 };
                 containerFactory.setTomcatContextCustomizers(Collections.singletonList(tomcatContextCustomizer));
-
-                setMimeMappings(factory);
-            };
-        } else {
-            logger.info("Skipping HA configuration");
-            return this::setMimeMappings;
-        }
+            } else {
+                logger.info("Skipping HA configuration");
+            }
+        };
     }
-
-    // FIXME : probably not needed anymore since webfonts are loaded from Google
-    private void setMimeMappings(ConfigurableEmbeddedServletContainer factory) {
-        MimeMappings mm = new MimeMappings(MimeMappings.DEFAULT);
-        mm.add("woff", "application/font-woff");
-        mm.add("woff2", "application/font-woff2;");
-
-        factory.setMimeMappings(mm);
-    }
-
 }

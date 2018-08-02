@@ -22,21 +22,22 @@ export const setLanguageAction = (config) => {
 // Async methods
 export const fetchConfig = () => {
     return (dispatch) => {
-        return customFetch('/api/config.json')
+        return customFetch('/api/config')
             .then((res) => {
-                // Language
-                dispatch(setLanguage(res.language));
-                dispatch(setTranslations(res.i18n));
-
                 //Config
                 dispatch(fetchConfigAction(res));
+
+                // Language
+                dispatch(setLanguage(res.language));
+                dispatch(setLanguageAction(res.language));
+                dispatch(setTranslations(res.i18n));
             })
     };
 };
 
 export const fetchMyConfig = () => {
     return (dispatch) => {
-        return customFetch('/my/api/config.json')
+        return customFetch('/my/api/config')
             .then((res) => {
                 // Language
                 dispatch(setLanguage(res.language));
@@ -81,6 +82,7 @@ export const fetchSetLanguage= (language) => {
 
                 //i18n-redux
                 dispatch(setLanguage(language));
+                dispatch(setLanguageAction(language));
                 dispatch(setTranslations(i18n, {preserveExisting: true}));
             });
     };

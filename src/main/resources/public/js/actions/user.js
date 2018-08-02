@@ -11,7 +11,7 @@ export const fetchUserInfoAction = (userInfo) => {
 
 export const fetchUserInfo = () => {
     return (dispatch) => {
-        return customFetch('/api/user.json')
+        return customFetch('/api/user')
             .then((userInfo) => {
                 return dispatch(fetchUserInfoAction(userInfo));
             });

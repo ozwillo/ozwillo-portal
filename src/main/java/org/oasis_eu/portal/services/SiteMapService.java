@@ -82,7 +82,7 @@ public class SiteMapService {
     public void updateSiteMapHeader(String language, SiteMapMenuSet siteMapheadaer) {
         SiteMapMenuSet old = headerRepository.findByLanguage(language);
         if (old != null) {
-            headerRepository.delete(old.getId());
+            headerRepository.deleteById(old.getId());
         }
 
         siteMapheadaer.setLanguage(language);
@@ -116,7 +116,7 @@ public class SiteMapService {
     public void updateSiteMapFooter(String language, SiteMap siteMap) {
         SiteMap old = footerRepository.findByLanguage(language);
         if (old != null) {
-            footerRepository.delete(old.getId());
+            footerRepository.deleteById(old.getId());
         }
 
         siteMap.setLanguage(language);

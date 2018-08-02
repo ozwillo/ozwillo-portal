@@ -30,6 +30,7 @@ import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -222,8 +223,8 @@ public class ImageService {
         return buildImageServedUrl(image);
     }
 
-    public Image getImage(String id) {
-        return imageRepository.findOne(id);
+    public Optional<Image> getImage(String id) {
+        return imageRepository.findById(id);
     }
 
     public String getHash(String id) {
@@ -235,7 +236,7 @@ public class ImageService {
         logger.debug("Refreshing images");
 
         // every 10 minutes, try to download the 10 oldest images not already downloaded in the last 60 minutes (phew)
-        List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), new PageRequest(0, 10, Sort.Direction.ASC, "downloadedTime"));
+        List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), PageRequest.of(0, 10, Sort.Direction.ASC, "downloadedTime"));
 
         logger.debug("Found {} image(s) to refresh", images.size());
 

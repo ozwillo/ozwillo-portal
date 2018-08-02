@@ -267,9 +267,9 @@ public class DashboardService {
 
     public Dashboard getDash() {
         UserInfo user = userInfoHelper.currentUser();
-        Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
-        if (dashboard != null) {
-
+        Optional<Dashboard> optDashboard = dashboardRepository.findById(user.getUserId());
+        if (optDashboard.isPresent()) {
+            Dashboard dashboard = optDashboard.get();
             // at one point we didn't store the service id in the subscription object. Now that we do, maybe some migration is needed
             boolean needsMigrate = dashboard.getContexts().stream().flatMap(uc -> uc.getSubscriptions().stream()).anyMatch(us -> us.getServiceId() == null);
             if (needsMigrate) {
@@ -285,7 +285,7 @@ public class DashboardService {
         } else {
             logger.info("Creating dashboard for user {} ({}) using locale: {}", user.getName(), user.getUserId(), RequestContextUtils.getLocale(request));
 
-            dashboard = new Dashboard();
+            Dashboard dashboard = new Dashboard();
             dashboard.setUserId(user.getUserId());
             dashboard.getContexts().add(new UserContext().setId(UUID.randomUUID().toString()).setName(messageSource.getMessage("my.default-dashboard-name", new Object[]{}, RequestContextUtils.getLocale(request))).setPrimary(true));
             return dashboardRepository.save(dashboard);
@@ -294,12 +294,12 @@ public class DashboardService {
 
     public List<DashboardPendingApp> getPendingApps() {
 
-        HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
+        Optional<HiddenPendingApps> optionalHiddenPendingApps = hiddenPendingAppsRepository.findById(userInfoHelper.currentUser().getUserId());
         List<ApplicationInstance> pendingInstances = applicationInstanceStore.findPendingInstances(userInfoHelper.currentUser().getUserId());
 
         List<DashboardPendingApp> DashboardPendingAppLst = pendingInstances.stream()
             // filter on "deleted" a.k.a portal-side hidden app : (#156 Possibility to delete "pending app instances" icons)
-            .filter(instance -> (hidden == null || !hidden.getHiddenApps().contains(instance.getInstanceId())))
+            .filter(instance -> (!optionalHiddenPendingApps.isPresent() || !optionalHiddenPendingApps.get().getHiddenApps().contains(instance.getInstanceId())))
             .map(this::toPendingApp)
             .filter(app -> app != null)
             .collect(Collectors.toList());
@@ -308,13 +308,16 @@ public class DashboardService {
     }
 
     public void removePendingApp(String appId) {
-        HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
-        if (hidden == null) {
-            hidden = new HiddenPendingApps();
-            hidden.setUserId(userInfoHelper.currentUser().getUserId());
+        Optional<HiddenPendingApps> optionalHiddenPendingApps = hiddenPendingAppsRepository.findById(userInfoHelper.currentUser().getUserId());
+        HiddenPendingApps hiddenPendingApps;
+        if (!optionalHiddenPendingApps.isPresent()) {
+            hiddenPendingApps = new HiddenPendingApps();
+            hiddenPendingApps.setUserId(userInfoHelper.currentUser().getUserId());
+        } else {
+            hiddenPendingApps = optionalHiddenPendingApps.get();
         }
-        hidden.hideApp(appId);
-        hiddenPendingAppsRepository.save(hidden);
+        hiddenPendingApps.hideApp(appId);
+        hiddenPendingAppsRepository.save(hiddenPendingApps);
     }
 
     private DashboardPendingApp toPendingApp(ApplicationInstance instance) {

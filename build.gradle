@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.4.2.RELEASE'
+        springBootVersion = '2.0.4.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -17,12 +17,10 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.moowork.node'
 
-jar {
-    baseName = 'ozwillo-portal'
-    version = '1.51.0-dev'
-}
+version = '1.51.0-dev'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -80,24 +78,17 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+    gradleVersion = '4.7'
 }
 
 bootRun {
-    // needed for hot reload of thymeleaf templates
-    addResources = true
-
     environment SPRING_PROFILES_ACTIVE: environment.SPRING_PROFILES_ACTIVE ?: "dev"
 }
 
-springBoot {
-    // exclude Spring Boot Devtools from the fat jar
-    excludeDevtools = true
-    executable = true
-    embeddedLaunchScriptProperties =
-            [initInfoDescription: 'Ozwillo Portal',
-             initInfoShortDescription: 'Ozwillo Portal',
-             initInfoProvides: 'ozwillo-portal']
+bootJar {
+    launchScript {
+        properties 'initInfoProvides': 'ozwillo-portal'
+    }
 }
 
 configure(tasks.processResources) {

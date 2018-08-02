@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.controller.icon;
 
-import com.google.common.io.ByteStreams;
-import com.mongodb.DBCollection;
+import com.mongodb.client.MongoCollection;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,11 +22,11 @@ import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.util.StreamUtils;
 import org.springframework.web.context.WebApplicationContext;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.UnknownHostException;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.Map;
@@ -59,10 +58,10 @@ public class ImageControllerTest {
 	private MongoTemplate mongoTemplate;
 
 	private MockMvc mockMvc;
-	private DBCollection collection;
+	private MongoCollection collection;
 
 	@Before
-	public void setup() throws UnknownHostException {
+	public void setup() {
 		collection = mongoTemplate.getCollection("image");
 		collection.drop();
 
@@ -113,7 +112,7 @@ public class ImageControllerTest {
 		mockMvc.perform(get(iconUri).header("If-None-Match", values.get("etag")))
 				.andExpect(status().is(304));
 
-		verify(fakeRepo, never()).findOne(anyString());
+		verify(fakeRepo, never()).findById(anyString());
 
 		assertEquals(1, collection.count());
 	}
@@ -121,6 +120,6 @@ public class ImageControllerTest {
 
 	private byte[] load(String name) throws IOException {
 		InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
-		return ByteStreams.toByteArray(stream);
+		return StreamUtils.copyToByteArray(stream);
 	}
 }
