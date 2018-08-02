@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.services;
 
+import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
 import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
@@ -210,6 +211,7 @@ public class AppstoreService {
         } else {
             return organizationService.getMyOrganizations()
                     .stream()
+                    .filter(UIOrganization::isAdmin)
                     .flatMap(uiOrganization -> applicationService.getMyInstances(uiOrganization, false).stream())
                     .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
                         ? InstallationOption.INSTALLED : PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
