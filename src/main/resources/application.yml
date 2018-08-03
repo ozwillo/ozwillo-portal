@@ -2,7 +2,7 @@ spring:
   output.ansi.enabled: DETECT
   # only for 64x64 pngs which should be mostly below 5000B
   # now also for CSV of organizations to import, so upgraded to 200KB
-  http.multipart.max-file-size: 200KB
+  servlet.multipart.max-file-size: 200KB
   # mandatory since 1.4 even if we do not use it directly
   session.store-type: none
   # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
