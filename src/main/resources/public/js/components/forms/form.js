@@ -199,7 +199,7 @@ class GenderSelector extends React.Component {
             </Label>
             <Select name="gender" value={this.props.value} placeholder=""
                     clearable={false} options={this.state.options}
-                    onChange={this.props.onChange} className="select field"/>
+                    onChange={option => this.props.onChange(option.value)} className="select field"/>
         </div>;
     }
 }
