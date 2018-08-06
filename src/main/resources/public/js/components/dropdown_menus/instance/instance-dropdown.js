@@ -269,7 +269,7 @@ class InstanceDropdown extends React.Component {
                                                     <button className="btn icon" onClick={this.createSubscription}
                                                             disabled={status && status.isLoading}
                                                             data-user={user.id} data-service={service.catalogEntry.id}>
-                                                        <i className="fas fa-times option-icon service"/>
+                                                        <i className="fas fa-plus option-icon service"/>
                                                     </button>
                                                 </CustomTooltip>
                                             }
