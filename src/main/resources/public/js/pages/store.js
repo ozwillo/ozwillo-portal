@@ -179,8 +179,8 @@ const SearchAppsForm = createClass({
     fullTextSearchChanged: function (event) {
         this.props.updateFilter(null, "searchText", event.target.value);
     },
-    onGeoChange: function (geoArea) {
-        this.props.updateFilter(null, "geoAreaAncestorsUris", geoArea.ancestors);
+    onGeoChange: function (event, newValue) {
+        this.props.updateFilter(null, "geoAreaAncestorsUris", newValue);
     },
     onAudienceChange: function (event) {
         this.props.updateFilter("audience", event.target.name, event.target.checked);
@@ -218,7 +218,9 @@ const SearchAppsForm = createClass({
                                 <GeoAreaAutosuggest name="geoSearch"
                                                     countryUri=""
                                                     endpoint="areas"
-                                                    onChange={this.onGeoChange}/>
+                                                    onChange={this.onGeoChange}
+                                                    onGeoAreaSelected={this.onGeoChange}
+                                                    />
                             </div>
                         </div>
                         <div className="form-group">
