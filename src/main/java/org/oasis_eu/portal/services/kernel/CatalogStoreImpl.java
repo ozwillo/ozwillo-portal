@@ -130,14 +130,14 @@ public class CatalogStoreImpl {
 
             newInstance = responseEntity.getBody();
 
-            // specific error handling, TODO LATER make it more consistent with generic error handling
-            if (responseEntity.getStatusCode().is4xxClientError()) {
+            // specific error handling
+            if (responseEntity.getStatusCode().is4xxClientError() || responseEntity.getStatusCode().is5xxServerError()) {
                 logger.error("Got a client error when creating an instance of application {} ({}): {}", appId, instancePattern.getName(), responseEntity.getStatusCode().getReasonPhrase());
-                throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
+                throw new ApplicationInstanceCreationException(appId,responseEntity.getStatusCode().value(),instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
             }
         } catch (TechnicalErrorException _502) { // as thrown by the kernel when a HttpServerErrorException 502 occurs
             logger.error("Could not create an instance of application " + appId + " - " + instancePattern.getName(), _502);
-            throw new ApplicationInstanceCreationException(appId, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
+            throw new ApplicationInstanceCreationException(appId, 502, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
         }
 
         return newInstance;
