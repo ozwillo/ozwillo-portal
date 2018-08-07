@@ -41,7 +41,16 @@ class AddInstanceDropdownHeader extends React.Component {
             .then(() => this.setState({error: '', isLoading: false}))
             .catch(err => {
                 console.error(err);
-                this.setState({error: this.context.t('ui.error'), isLoading: false});
+                let message = '';
+                if(err.status.toString().startsWith('4')) {
+                    message = this.context.t('could-not-install-app-400')
+                }else if(err.status.toString().startsWith('5')){
+                    message = this.context.t('could-not-install-app-500')
+                }else{
+                    message = this.context.t('ui.error')
+                }
+
+                this.setState({error: message, isLoading: false});
             });
     }
 
@@ -64,17 +73,17 @@ class AddInstanceDropdownHeader extends React.Component {
                 }
 
                 <div className="options flex-row end">
-                    <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
-                        {
-                            !this.state.isLoading &&
-                            this.context.t('ui.send')
-                        }
+                    {
+                        !this.state.isLoading ?
+                        < button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
+                            {this.context.t('ui.send')}
+                        </button> : null
+                    }
 
-                        {
-                            this.state.isLoading &&
-                            <i className="fa fa-spinner fa-spin option-icon"/>
-                        }
-                    </button>
+                    {
+                        this.state.isLoading &&
+                        <i className="fa fa-spinner fa-spin option-icon"/>
+                    }
                 </div>
             </form>
         </header>;
