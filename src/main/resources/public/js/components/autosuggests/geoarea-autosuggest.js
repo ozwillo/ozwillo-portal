@@ -58,7 +58,7 @@ class GeoAreaAutosuggest extends Component {
     };
 
     onSuggestionSelected = (event, {suggestion}) => {
-        this.props.onGeoAreaSelected(suggestion);
+        this.props.onGeoAreaSelected(event, suggestion);
     };
 
     getSuggestionValue = suggestion => {
@@ -71,13 +71,15 @@ class GeoAreaAutosuggest extends Component {
 
     handleOnChange = (event, {newValue}) => {
         GeoAreaAutosuggest.defaultProps.value = newValue;
-        this.props.onChange(event, newValue);
+        if(newValue === ""){
+            this.props.onChange(event, newValue);
+        }
     };
 
     render() {
         const inputProps = {
             name: this.props.name,
-            value: this.props.value || GeoAreaAutosuggest.defaultProps.value,
+            value: GeoAreaAutosuggest.defaultProps.value,
             onChange: this.handleOnChange,
             onBlur: this.props.onBlur,
             type: 'search',

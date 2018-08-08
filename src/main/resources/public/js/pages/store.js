@@ -180,7 +180,7 @@ const SearchAppsForm = createClass({
         this.props.updateFilter(null, "searchText", event.target.value);
     },
     onGeoChange: function (event, newValue) {
-        this.props.updateFilter(null, "geoAreaAncestorsUris", newValue);
+        this.props.updateFilter(null, "geoAreaAncestorsUris", newValue.ancestors);
     },
     onAudienceChange: function (event) {
         this.props.updateFilter("audience", event.target.name, event.target.checked);
