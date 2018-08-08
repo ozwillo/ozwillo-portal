@@ -101,12 +101,8 @@ class AppModal extends React.Component {
         customFetch('/api/store/buy', {
             method: 'POST',
             json: request
-        }).then((data) => {
-            if (data.status === 200) {
+        }).then(() => {
                 this.setState({ buying: false, isInstalled: true });
-            } else {
-                this.setState({ buying: false, error: {status: true, http_status: data.status}});
-            }
         }).catch((error) =>{
             this.setState({ buying: false, error: {status: true, http_status: error.status} })})
     }
@@ -232,9 +228,7 @@ const AppDescriptionComponent = createClass({
                         <span className="sr-only">{this.context.t('ui.close')}</span>
                     </button>
                     <strong>{this.context.t('sorry')}</strong>
-                    &nbsp;{message}
-                    <br/>
-                    <strong>{this.context.t('error-code')+' : ' + http_status}</strong>
+                    &nbsp;{message +' ('+ this.context.t('error-code')+' : ' + http_status+')'}
                 </div>
             )
         }

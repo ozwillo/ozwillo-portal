@@ -16,8 +16,6 @@ import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
 import org.oasis_eu.portal.model.dc.DCRegActivityResponse;
-import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
-import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
@@ -239,14 +237,6 @@ public class StoreController {
         String organizationId;
     }
 
-    private static class StoreBuyResponse {
-        @JsonProperty
-        boolean success;
-        @JsonProperty
-        String message;
-        @JsonProperty
-        int status_code;
-    }
 
     private static class RateRequest {
         @JsonProperty
