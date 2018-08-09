@@ -144,14 +144,14 @@ class OrganizationForm extends React.Component {
         });
     }
 
-    handleJurisdictionChange(jurisdiction) {
+    handleJurisdictionChange(e,jurisdiction) {
         this.props.updateOrganizationForm({
             jurisdiction_uri: jurisdiction.uri,
             jurisdiction: jurisdiction.name
         });
     }
 
-    handleCityChange(city) {
+    handleCityChange(e,city) {
         this.props.updateOrganizationForm({
             city_uri: city.uri,
             city: city.name,
@@ -363,9 +363,12 @@ class OrganizationForm extends React.Component {
                     <div className="flex-row">
                         <label htmlFor="city"
                                className="label">{this.context.t('my.network.organization.city')} *</label>
-                        <GeoAreaAutosuggest name="city" required={true} countryUri={organization.country_uri}
-                                            endpoint="cities" onChange={this.handleFieldChange}
-                                            onGeoAreaSelected={this.handleCityChange} value={organization.city}
+                        <GeoAreaAutosuggest name="city" required={true}
+                                            countryUri={organization.country_uri}
+                                            endpoint="cities"
+                                            onChange={this.handleFieldChange}
+                                            onGeoAreaSelected={this.handleCityChange}
+                                            value={organization.city}
                                             onBlur={this.verifyCountry}/>
                     </div>
 

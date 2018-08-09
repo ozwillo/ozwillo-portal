@@ -337,11 +337,11 @@ class AddressAccount extends React.Component {
     }
 
 
-    onGeoAreaChange(e) {
-        this.props.onValueChange('address.locality', e.currentTarget.value);
+    onGeoAreaChange(e, value) {
+        this.props.onValueChange('address.locality', value);
     }
 
-    onGeoAreaSelected(locality) {
+    onGeoAreaSelected(e, locality) {
         this.props.onValueChange('address.locality', locality.name);
         this.props.onValueChange('address.postal_code', locality.postalCode);
     }
