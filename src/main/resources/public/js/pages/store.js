@@ -173,14 +173,22 @@ const AppStoreWithRedux = connect(mapStateToProps)(AppStore)
 
 
 const SearchAppsForm = createClass({
+    getInitialState () {
+        return {
+            geoArea: ''
+        };
+    },
     handleLanguageClicked: function (event) {
         this.props.updateFilter(null, "selectedLanguage", event.target.value);
     },
     fullTextSearchChanged: function (event) {
         this.props.updateFilter(null, "searchText", event.target.value);
     },
-    onGeoChange: function (event, newValue) {
-        this.props.updateFilter(null, "geoAreaAncestorsUris", newValue.ancestors);
+    onGeoSelected: function(event, value){
+        this.props.updateFilter(null, "geoAreaAncestorsUris", value.ancestors);
+    },
+    onGeoChange: function (event, value) {
+        this.setState({geoArea: value})
     },
     onAudienceChange: function (event) {
         this.props.updateFilter("audience", event.target.name, event.target.checked);
@@ -219,7 +227,8 @@ const SearchAppsForm = createClass({
                                                     countryUri=""
                                                     endpoint="areas"
                                                     onChange={this.onGeoChange}
-                                                    onGeoAreaSelected={this.onGeoChange}
+                                                    onGeoAreaSelected={this.onGeoSelected}
+                                                    value={this.state.geoArea}
                                                     />
                             </div>
                         </div>

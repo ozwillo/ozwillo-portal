@@ -144,7 +144,7 @@ class OrganizationForm extends React.Component {
         });
     }
 
-    handleJurisdictionChange(jurisdiction) {
+    handleJurisdictionChange(e,jurisdiction) {
         this.props.updateOrganizationForm({
             jurisdiction_uri: jurisdiction.uri,
             jurisdiction: jurisdiction.name
