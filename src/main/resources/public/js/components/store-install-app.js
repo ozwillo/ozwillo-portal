@@ -46,7 +46,7 @@ class AppModal extends React.Component {
             buying: false,
             installing: false,
             isInstalled: false,
-            error: false
+            error: {status : false, http_status : 200}
         };
     }
 
@@ -101,13 +101,10 @@ class AppModal extends React.Component {
         customFetch('/api/store/buy', {
             method: 'POST',
             json: request
-        }).then((data) => {
-            if (data.success) {
+        }).then(() => {
                 this.setState({ buying: false, isInstalled: true });
-            } else {
-                this.setState({ buying: false, error: true });
-            }
-        }).catch(() => this.setState({ buying: false, error: true }))
+        }).catch((error) =>{
+            this.setState({ buying: false, error: {status: true, http_status: error.status} })})
     }
 
     rateApp(rate) {
@@ -210,6 +207,34 @@ class AppModal extends React.Component {
 
 /** PROPS: app{}, stateApp{}, rateApp(), onInstallButton(), errors[] */
 const AppDescriptionComponent = createClass({
+
+    handleError: function() {
+        let {status, http_status} = this.props.error;
+
+        if(status &&  http_status){
+            let message = '';
+            if(http_status.toString().startsWith('4')) {
+                message = this.context.t('could-not-install-app-400')
+            }else if(http_status.toString().startsWith('5')){
+                message = this.context.t('could-not-install-app-500')
+            }else{
+                message = this.context.t('could-not-install-app')
+            }
+
+            return (
+                <div className="alert alert-danger alert-dismissible" role="alert">
+                    <button type="button" className="close" data-dismiss="alert">
+                        <span aria-hidden="true">&times;</span>
+                        <span className="sr-only">{this.context.t('ui.close')}</span>
+                    </button>
+                    <strong>{this.context.t('sorry')}</strong>
+                    &nbsp;{message +' ('+ this.context.t('error-code')+' : ' + http_status+')'}
+                </div>
+            )
+        }
+
+
+    },
     render: function () {
         const stateApp = this.props.stateApp;
 
@@ -219,15 +244,7 @@ const AppDescriptionComponent = createClass({
             </div>)
             : null;
 
-        const error = (this.props.error)
-            ? (<div className="alert alert-danger alert-dismissible" role="alert">
-                <button type="button" className="close" data-dismiss="alert">
-                    <span aria-hidden="true">&times;</span>
-                    <span className="sr-only">{this.context.t('ui.close')}</span>
-                </button>
-                <strong>{this.context.t('sorry')}</strong> {this.context.t('could-not-install-app')}
-            </div>)
-            : null;
+        const error = this.handleError();
 
         let rateInfo = null;
         const isLogged = !!this.props.userInfo.sub;
