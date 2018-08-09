@@ -1,8 +1,8 @@
 spring:
   output.ansi.enabled: DETECT
   # only for 64x64 pngs which should be mostly below 5000B
-  http.multipart.max-file-size: 20KB
   data.mongodb.uri: mongodb://localhost/portal_test
+  servlet.multipart.max-file-size: 20KB
   mail:
     host: smtp.mydomain.eu
     port: 25
