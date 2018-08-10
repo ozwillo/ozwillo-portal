@@ -100,7 +100,7 @@ public class OrganizationService {
             // An organization who has changed of regNumber is not retrieved with a classical search
             // So try to load it directly instead
             Optional<DCOrganization> optOrg =
-                dcOrganizationService.findOrganizationById(dcOrganizationService.generateDcId(countryUri, regNumber), localLang);
+                    dcOrganizationService.findOrganizationById(dcOrganizationService.generateDcId(countryUri, regNumber), localLang);
             if (optOrg.isPresent())
                 dcOrganization = optOrg.get();
         }
@@ -143,17 +143,17 @@ public class OrganizationService {
     public List<DCOrganization> findOrganizations(String country_uri, String query) {
         String lang = RequestContextUtils.getLocale(request).getLanguage();
         List<DCOrganization> organizations =
-            dcOrganizationService.searchOrganizations(lang, country_uri, query);
+                dcOrganizationService.searchOrganizations(lang, country_uri, query);
         // transform DC representation of sector to UI ones before returning organizations
         // otherwise, public sector organizations won't be correctly managed during creation
         organizations.forEach(dcOrganization ->
-            dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name()));
+                dcOrganization.setSector_type(OrganizationType.getOrganizationType(dcOrganization.getSector_type()).name()));
         return organizations;
     }
 
     public DCOrganization getOrganization(String dcId) {
         Optional<DCOrganization> optionalDcOrganization =
-            dcOrganizationService.findOrganizationById(dcId, RequestContextUtils.getLocale(request).getLanguage());
+                dcOrganizationService.findOrganizationById(dcId, RequestContextUtils.getLocale(request).getLanguage());
         if (optionalDcOrganization.isPresent()) {
             DCOrganization dcOrganization = optionalDcOrganization.get();
             dcOrganization.setSector_type(OrganizationType.getOrganizationType(optionalDcOrganization.get().getSector_type()).name());
@@ -230,7 +230,7 @@ public class OrganizationService {
             dcId = new URI(dcOrganization.getId());
         } catch (URISyntaxException e) {
             logger.error("The Jurisdiction \"{}\" or DCOrganization ID \"{}\" can't be parsed into URI. "
-                + "Verify that they are defined correctly.", dcOrganization.getJurisdiction_uri(), dcOrganization.getId());
+                    + "Verify that they are defined correctly.", dcOrganization.getJurisdiction_uri(), dcOrganization.getId());
             logger.error("Error : {}", e.getMessage());
             throw new IllegalArgumentException(e);
         }
@@ -314,7 +314,7 @@ public class OrganizationService {
 
         return organizations.stream()
                 .sorted(Comparator.comparing(UIOrganization::getId,
-                        (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2))? -1 : 0)
+                        (id1, id2) -> (userId.equals(id1)) ? 1 : (userId.equals(id2)) ? -1 : 0)
                         .thenComparing(UIOrganization::getName, String.CASE_INSENSITIVE_ORDER))
                 .collect(Collectors.toList());
     }
@@ -323,7 +323,7 @@ public class OrganizationService {
         String userId = userInfoService.currentUser().getUserId();
         boolean isPersonal = userId.equals(organizationId);
 
-        Organization org = (isPersonal)? getPersonalOrganization() : organizationStore.find(organizationId);
+        Organization org = (isPersonal) ? getPersonalOrganization() : organizationStore.find(organizationId);
 
         UIOrganization uiOrganization = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
         boolean isAdmin = userIsAdmin(organizationId);
@@ -334,25 +334,13 @@ public class OrganizationService {
     public UIOrganization getOrganizationFromKernel(String organizationId) {
         String userId = userInfoService.currentUser().getUserId();
 
-        // Personal organization
-        if (userId.equals(organizationId)) {
-            return fetchOrganizationWithInstances(organizationId, false);
-        }
-
-        return fetchOrganizationWithInstances(organizationId, true);
+        return fetchOrganizationWithInstances(organizationId);
     }
 
-    private UIOrganization fetchOrganizationWithInstances(String organizationId, boolean fetchMembers) {
+    private UIOrganization fetchOrganizationWithInstances(String organizationId) {
         UIOrganization uiOrg = getKernelOrganization(organizationId);
         if (uiOrg.isAdmin())
-            uiOrg.setInstances(getOrganizationInstances(uiOrg.getId(), uiOrg.isAdmin()));
-
-        if(fetchMembers && !uiOrg.isPersonal()) {
-            List<UIOrganizationMember> members = getOrganizationMembers(uiOrg.getId());
-            if (uiOrg.isAdmin())
-                members.addAll(getOrganizationPendingMembers(uiOrg.getId()));
-            uiOrg.setMembers(members);
-        }
+            uiOrg.setInstances(getOrganizationInstances(uiOrg.getId()));
 
         return uiOrg;
     }
@@ -367,17 +355,9 @@ public class OrganizationService {
         return org;
     }
 
-    private List<MyAppsInstance> getOrganizationInstances(String organizationId, boolean isAdmin) {
+    private List<MyAppsInstance> getOrganizationInstances(String organizationId) {
         UIOrganization uiOrganization = getKernelOrganization(organizationId);
-        List<MyAppsInstance> instances = applicationService.getMyInstances(uiOrganization, true);
-
-        //Fetch subscriptions
-        if (isAdmin) {
-            instances.forEach(instance -> instance.getServices().forEach(s -> {
-                s.setSubscriptions(subscriptionStore.findByServiceId(s.getCatalogEntry().getId()));
-            }));
-        }
-
+        List<MyAppsInstance> instances = applicationService.getMyInstances(uiOrganization, false);
         return instances;
     }
 
@@ -391,7 +371,20 @@ public class OrganizationService {
         return possibleDeletionAskedDate.plus(organizationDaysTillDeletedFromTrash, ChronoUnit.DAYS);
     }
 
-    private List<UIOrganizationMember> getOrganizationMembers(String organizationId) {
+
+    public List<UIOrganizationMember> getOrganizationMembers(String organizationId) {
+        //if(fetchMembers && !uiOrg.isPersonal()) {
+        UIOrganization uiOrganization = getKernelOrganization(organizationId);
+        List<UIOrganizationMember> members = fetchOrganizationMembers(uiOrganization.getId());
+        if (uiOrganization.isAdmin()) {
+            members.addAll(getOrganizationPendingMembers(uiOrganization.getId()));
+        }
+
+        return members;
+
+    }
+
+    private List<UIOrganizationMember> fetchOrganizationMembers(String organizationId) {
         UserInfo currentUser = userInfoService.currentUser();
         List<OrgMembership> orgAdmins = userMembershipService.getAdminsOfOrganization(organizationId);
         boolean isAdmin =
@@ -539,7 +532,7 @@ public class OrganizationService {
         try {
             organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
         } catch (HttpClientErrorException e) {
-            if( HttpStatus.FORBIDDEN.equals(e.getStatusCode()) ) {
+            if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
                 String translatedBusinessMessage = messageSource.getMessage("error.msg.delete-organization",
                         new Object[]{}, RequestContextUtils.getLocale(request));
                 throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
