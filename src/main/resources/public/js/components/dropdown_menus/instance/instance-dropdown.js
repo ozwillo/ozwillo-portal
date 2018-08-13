@@ -215,14 +215,17 @@ class InstanceDropdown extends React.Component {
                     <tr>
                         <th className="fill-content" colSpan={2}/>
                         {
-                            instance.services.map((service) => {
-                                return <th key={service.catalogEntry.id} className="center">
+                            instance.services ?
+                                instance.services.map((service) => {
+                                    return <th key={service.catalogEntry.id} className="center">
                                         {
                                             instance.services.length > 1 &&
-                                            <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
+                                            <span className="service"
+                                                  title={service.name}>{service.name.toAcronyme()}</span>
                                         }
-                                </th>
-                            })
+                                    </th>
+                                })
+                                : null
                         }
                         {
                             status && status.error &&
@@ -243,7 +246,8 @@ class InstanceDropdown extends React.Component {
                                         }
                                         {
                                             user.email &&
-                                            <span className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
+                                            <span
+                                                className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
                                         }
                                     </article>
                                 </td>
@@ -259,12 +263,12 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Services */}
                                 {
-                                    user.id &&
+                                    user.id && instance.services &&
                                     instance.services.map((service) => {
                                         const sub = this.searchSubForUser(user, service);
                                         return <td key={service.catalogEntry.id} className="fill-content center">
                                             {
-                                                 !sub &&
+                                                !sub &&
                                                 <CustomTooltip title={this.context.t('tooltip.add.icon')}>
                                                     <button className="btn icon" onClick={this.createSubscription}
                                                             disabled={status && status.isLoading}
@@ -292,12 +296,13 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Options */}
                                 {
-                                    !user.id &&
+                                    !user.id && instance.services &&
                                     <React.Fragment>
                                         {/* empty space to replace services */}
                                         {
                                             (instance.services.length - 1) > 0 &&
-                                            <td className="fill-content center empty" colSpan={instance.services.length - 1} />
+                                            <td className="fill-content center empty"
+                                                colSpan={instance.services.length - 1}/>
                                         }
 
                                         <td className="fill-content center">
