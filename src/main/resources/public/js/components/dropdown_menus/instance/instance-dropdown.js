@@ -13,7 +13,7 @@ import CustomTooltip from '../../custom-tooltip';
 //action
 import {fetchDeleteAcl} from '../../../actions/acl';
 import {fetchCreateSubscription, fetchDeleteSubscription} from '../../../actions/subscription';
-import {fetchUpdateInstanceStatus} from '../../../actions/instance';
+import {fetchUpdateInstanceStatus, fetchUsersOfInstance} from '../../../actions/instance';
 
 //Config
 import Config from '../../../config/config';
@@ -44,7 +44,8 @@ class InstanceDropdown extends React.Component {
 
         this.state = {
             error: null,
-            status: {}
+            status: {},
+            isLoading: false
         };
 
         //bind methods
@@ -59,12 +60,26 @@ class InstanceDropdown extends React.Component {
         this.searchSubForUser = this.searchSubForUser.bind(this);
     }
 
+    componentDidMount() {
+        //Fetch users for each instance
+        if (this.props.isAdmin) {
+            this.setState({isLoading: true});
+            this.props.fetchUsersOfInstance(this.props.instance)
+        }
+
+    }
+
     componentWillReceiveProps(nextProps) {
         this.setState({
             instance: nextProps.instance,
             members: nextProps.members
         });
+        if (nextProps.members) {
+            this.setState({isLoading: false})
+        }
+
     }
+
 
     fetchUpdateServiceConfig(instanceId, catalogEntry) {
         return this.props.fetchUpdateServiceConfig(instanceId, catalogEntry)
@@ -206,6 +221,12 @@ class InstanceDropdown extends React.Component {
 
         return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen}>
             <section className='dropdown-content'>
+                {
+                    !instance.users &&
+                    <div className="container-loading text-center">
+                        <i className="fa fa-spinner fa-spin loading"/>
+                    </div>
+                }
                 <table className="oz-table">
                     <thead>
                     {/*
@@ -235,6 +256,7 @@ class InstanceDropdown extends React.Component {
                     </thead>
                     <tbody>
                     {
+
                         instance.users && instance.users.map((user, i) => {
                             const status = this.state.status[user.id];
                             return <tr key={user.id || user.email}>
@@ -348,6 +370,9 @@ const mapDispatchToProps = dispatch => {
         fetchDeleteSubscription(instanceId, sub) {
             return dispatch(fetchDeleteSubscription(instanceId, sub));
         },
+        fetchUsersOfInstance(instance) {
+            return dispatch(fetchUsersOfInstance(instance));
+        }
     };
 };
 

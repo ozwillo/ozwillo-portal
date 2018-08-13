@@ -55,20 +55,8 @@ class OrganizationDesc extends React.Component {
             //this.props.fetchUserOrganizationsLazyMode(),
             this.props.fetchOrganizationWithId(id)
                 .then(() => {
-                    const org = this.props.organization;
-                    const requests = [];
-
                     // Update selector
-                    this.setState({orgSelected: org});
-
-                    //Fetch users for each instance
-                    if (org.admin) {
-                        org.instances.forEach((instance) => {
-                            this.props.fetchUsersOfInstance(instance);
-                        });
-                    }
-
-                    return Promise.all(requests);
+                    this.setState({orgSelected:  this.props.organization});
                 }),
             this.props.fetchApplications()
         ])
