@@ -10,6 +10,7 @@ import DropDownMenu from '../dropdown-menu';
 import {
     fetchOrganizationMembers,
 } from "../../actions/organization";
+import {fetchUsersOfInstance} from "../../actions/instance";
 
 
 class MembersTabHeader extends React.Component {
@@ -53,6 +54,12 @@ class MembersTab extends React.Component {
     }
 
     componentDidMount() {
+        //TODO find a solution to supress that (new method in the kernel which allow to get all the instances of one user) cf: TODO in MemberDropdown
+        if (this.props.organization.admin) {
+            this.props.organization.instances.forEach((instance) => {
+                this.props.fetchUsersOfInstance(instance);
+            });
+        }
         if(this.props.organization.id) {
             if (!this.props.organization.members) {
                 this.setState({isLoading: true});
@@ -141,6 +148,9 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchOrganizationMembers(organizationId) {
             return dispatch(fetchOrganizationMembers(organizationId));
+        },
+        fetchUsersOfInstance(instance){
+            return dispatch(fetchUsersOfInstance(instance));
         }
     };
 };

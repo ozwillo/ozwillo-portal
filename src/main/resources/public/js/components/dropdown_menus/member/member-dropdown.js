@@ -110,7 +110,7 @@ class MemberDropdown extends React.Component {
 
     handleDropDown = (dropDownState) => {
         if(dropDownState){
-            //TODO fetch instances of users
+            //TODO fetch instances of the specific user, currently we need to fetch all the users of all the instances, then check in which instance is our user
         }
     };
 
