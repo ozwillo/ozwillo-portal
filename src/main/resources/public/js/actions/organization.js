@@ -150,7 +150,7 @@ export const fetchOrganizationInfo = (dcId) => {
 
 export const fetchOrganizationMembers = (organizationId) => {
     return (dispatch => {
-        return customFetch('/my/api/organization/'+organizationId+'/members')
+        return customFetch(`/my/api/organization/${organizationId}/members`)
             .then(members => {
                 return dispatch(fetchOrganizationMembersAction(members));
             })
