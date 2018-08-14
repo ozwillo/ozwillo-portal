@@ -108,6 +108,12 @@ class MemberDropdown extends React.Component {
         return this.props.fetchUpdateRoleMember(this.props.organization.id, this.props.member.id, isAdmin);
     }
 
+    handleDropDown = (dropDownState) => {
+        if(dropDownState){
+            //TODO fetch instances of users
+        }
+    };
+
     render() {
         const member = this.props.member;
         const isPending = !member.name;
@@ -122,7 +128,7 @@ class MemberDropdown extends React.Component {
                                                            instances={org.instances.filter(this.filterInstanceWithoutAccess)}
                                                            onAddAccessToInstance={this.addAccessToInstance}/>;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={!isPending}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={!isPending} dropDownChange={this.handleDropDown}>
             { org.admin &&
                 <section className='dropdown-content'>
                     <ul className="list undecorated-list flex-col">

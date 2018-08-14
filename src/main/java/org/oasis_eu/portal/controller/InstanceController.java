@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.portal.model.instance.InstanceService;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.ApplicationService;
@@ -21,6 +22,11 @@ public class InstanceController {
     @GetMapping("/{instanceId}/users")
     public List<User> getUsersOfService(@PathVariable String instanceId) {
         return applicationService.getAllAppUsers(instanceId);
+    }
+
+    @GetMapping("/{instanceId}/services")
+    public List<InstanceService> getServices(@PathVariable String instanceId){
+        return applicationService.getServices(instanceId);
     }
 
     /**

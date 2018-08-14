@@ -60,14 +60,6 @@ class InstanceDropdown extends React.Component {
         this.searchSubForUser = this.searchSubForUser.bind(this);
     }
 
-    componentDidMount() {
-        //Fetch users for each instance
-        if (this.props.isAdmin) {
-            this.setState({isLoading: true});
-            this.props.fetchUsersOfInstance(this.props.instance)
-        }
-
-    }
 
     componentWillReceiveProps(nextProps) {
         this.setState({
@@ -201,12 +193,23 @@ class InstanceDropdown extends React.Component {
         });
     }
 
+    handleDropDown = (dropDownState) => {
+      if(dropDownState){
+          //Fetch users for the instance
+          if (this.props.isAdmin) {
+              this.setState({isLoading: true});
+              this.props.fetchUsersOfInstance(this.props.instance)
+          }
+      }
+
+    };
+
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
         const isRunning = instance.applicationInstance.status === instanceStatus.running;
         const isAvailable = isAdmin && !instance.isPublic && isRunning;
-        const isOpen = isAvailable;
+        const isOpen = false;
 
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
         const Header = <InstanceDropdownHeader
@@ -219,7 +222,7 @@ class InstanceDropdown extends React.Component {
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen} dropDownChange={this.handleDropDown}>
             <section className='dropdown-content'>
                 {
                     !instance.users &&
