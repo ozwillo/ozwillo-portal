@@ -13,6 +13,12 @@
     width: 50%;
     min-width: 300px;
 }
+.organization-search .search .react-autosuggest__suggestions-container--open{
+    margin: auto;
+    left: 25%;
+    width: 50%;
+    min-width: 300px;
+}
 
 .organization-search .organisations-list .organization {
     margin: 15px 0;

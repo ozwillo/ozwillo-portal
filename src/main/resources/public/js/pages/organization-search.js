@@ -4,11 +4,12 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 // Components
-import OrganizationDropdown from '../components/dropdown_menus/organization/organization-dropdown';
 import UpdateTitle from '../components/update-title';
 
 //action
 import {fetchUserOrganizations} from '../actions/organization';
+import OrganizationAutoSuggest from "../components/autosuggests/organization-autosuggest";
+import {Redirect} from "react-router";
 
 class OrganizationSearch extends React.Component {
 
@@ -21,7 +22,9 @@ class OrganizationSearch extends React.Component {
 
         this.state = {
             userOrganizationsFilter: '',
-            isLoading: true
+            isLoading: true,
+            inputValue: '',
+            organizationSelected: {}
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -53,6 +56,10 @@ class OrganizationSearch extends React.Component {
     }
 
     render() {
+        let {organization_id} = this.state.organizationSelected;
+        if (organization_id) {
+            return <Redirect to={`/my/organization/${organization_id}/`} />
+        }
         const userOrganizations = this.props.userOrganizations;
         const userOrganizationsFilter = this.state.userOrganizationsFilter;
 
@@ -72,21 +79,26 @@ class OrganizationSearch extends React.Component {
                 </header>
 
                 <form className="search oz-form">
-                    <input name="userOrganizationsFilter" className="field form-control" type="text"
-                           placeholder={this.context.t('ui.search')} value={userOrganizationsFilter}
-                           onChange={this.handleChange}/>
+                    <OrganizationAutoSuggest
+                        className={"field"}
+                        value={this.state.inputValue}
+                        name={"orga-auto-suggest"}
+                        onChange={(event, value) =>  this.setState({inputValue: value})}
+                        onOrganizationSelected={(value) => {this.setState({organizationSelected: value})}}
+                        placeholder={this.context.t('ui.search')}
+                    />
                 </form>
 
-                <ul className="organisations-list undecorated-list">
-                    {
-                        !this.state.isLoading &&
-                        this.filterOrganizations(userOrganizations, userOrganizationsFilter).map((org) => {
-                            return <li key={org.id} className="organization">
-                                <OrganizationDropdown organization={org}/>
-                            </li>;
-                        })
-                    }
-                </ul>
+                {/*<ul className="organisations-list undecorated-list">*/}
+                    {/*{*/}
+                        {/*!this.state.isLoading &&*/}
+                        {/*this.filterOrganizations(userOrganizations, userOrganizationsFilter).map((org) => {*/}
+                            {/*return <li key={org.id} className="organization">*/}
+                                {/*<OrganizationDropdown organization={org}/>*/}
+                            {/*</li>;*/}
+                        {/*})*/}
+                    {/*}*/}
+                {/*</ul>*/}
 
 
                 {
