@@ -217,7 +217,7 @@ const SearchAppsForm = createClass({
                             <div className="col-sm-8">
                                 <GeoAreaAutosuggest name="geoSearch"
                                                     countryUri=""
-                                                    endpoint="/geographicalAreas"
+                                                    endpoint="areas"
                                                     onChange={this.onGeoChange}/>
                             </div>
                         </div>

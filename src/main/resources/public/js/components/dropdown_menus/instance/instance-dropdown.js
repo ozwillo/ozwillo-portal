@@ -13,7 +13,7 @@ import CustomTooltip from '../../custom-tooltip';
 //action
 import {fetchDeleteAcl} from '../../../actions/acl';
 import {fetchCreateSubscription, fetchDeleteSubscription} from '../../../actions/subscription';
-import {fetchUpdateInstanceStatus} from '../../../actions/instance';
+import {fetchUpdateInstanceStatus, fetchUsersOfInstance} from '../../../actions/instance';
 
 //Config
 import Config from '../../../config/config';
@@ -44,7 +44,8 @@ class InstanceDropdown extends React.Component {
 
         this.state = {
             error: null,
-            status: {}
+            status: {},
+            isLoading: false
         };
 
         //bind methods
@@ -59,12 +60,18 @@ class InstanceDropdown extends React.Component {
         this.searchSubForUser = this.searchSubForUser.bind(this);
     }
 
+
     componentWillReceiveProps(nextProps) {
         this.setState({
             instance: nextProps.instance,
             members: nextProps.members
         });
+        if (nextProps.members) {
+            this.setState({isLoading: false})
+        }
+
     }
+
 
     fetchUpdateServiceConfig(instanceId, catalogEntry) {
         return this.props.fetchUpdateServiceConfig(instanceId, catalogEntry)
@@ -186,12 +193,23 @@ class InstanceDropdown extends React.Component {
         });
     }
 
+    handleDropDown = (dropDownState) => {
+      if(dropDownState){
+          //Fetch users for the instance
+          if (this.props.isAdmin) {
+              this.setState({isLoading: true});
+              this.props.fetchUsersOfInstance(this.props.instance)
+          }
+      }
+
+    };
+
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
         const isRunning = instance.applicationInstance.status === instanceStatus.running;
         const isAvailable = isAdmin && !instance.isPublic && isRunning;
-        const isOpen = isAvailable;
+        const isOpen = false;
 
         const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
         const Header = <InstanceDropdownHeader
@@ -204,8 +222,14 @@ class InstanceDropdown extends React.Component {
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen} dropDownChange={this.handleDropDown}>
             <section className='dropdown-content'>
+                {
+                    !instance.users &&
+                    <div className="container-loading text-center">
+                        <i className="fa fa-spinner fa-spin loading"/>
+                    </div>
+                }
                 <table className="oz-table">
                     <thead>
                     {/*
@@ -215,14 +239,17 @@ class InstanceDropdown extends React.Component {
                     <tr>
                         <th className="fill-content" colSpan={2}/>
                         {
-                            instance.services.map((service) => {
-                                return <th key={service.catalogEntry.id} className="center">
+                            instance.services ?
+                                instance.services.map((service) => {
+                                    return <th key={service.catalogEntry.id} className="center">
                                         {
                                             instance.services.length > 1 &&
-                                            <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
+                                            <span className="service"
+                                                  title={service.name}>{service.name.toAcronyme()}</span>
                                         }
-                                </th>
-                            })
+                                    </th>
+                                })
+                                : null
                         }
                         {
                             status && status.error &&
@@ -232,6 +259,7 @@ class InstanceDropdown extends React.Component {
                     </thead>
                     <tbody>
                     {
+
                         instance.users && instance.users.map((user, i) => {
                             const status = this.state.status[user.id];
                             return <tr key={user.id || user.email}>
@@ -243,7 +271,8 @@ class InstanceDropdown extends React.Component {
                                         }
                                         {
                                             user.email &&
-                                            <span className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
+                                            <span
+                                                className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
                                         }
                                     </article>
                                 </td>
@@ -259,12 +288,12 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Services */}
                                 {
-                                    user.id &&
+                                    user.id && instance.services &&
                                     instance.services.map((service) => {
                                         const sub = this.searchSubForUser(user, service);
                                         return <td key={service.catalogEntry.id} className="fill-content center">
                                             {
-                                                 !sub &&
+                                                !sub &&
                                                 <CustomTooltip title={this.context.t('tooltip.add.icon')}>
                                                     <button className="btn icon" onClick={this.createSubscription}
                                                             disabled={status && status.isLoading}
@@ -292,12 +321,13 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Options */}
                                 {
-                                    !user.id &&
+                                    !user.id && instance.services &&
                                     <React.Fragment>
                                         {/* empty space to replace services */}
                                         {
                                             (instance.services.length - 1) > 0 &&
-                                            <td className="fill-content center empty" colSpan={instance.services.length - 1} />
+                                            <td className="fill-content center empty"
+                                                colSpan={instance.services.length - 1}/>
                                         }
 
                                         <td className="fill-content center">
@@ -343,6 +373,9 @@ const mapDispatchToProps = dispatch => {
         fetchDeleteSubscription(instanceId, sub) {
             return dispatch(fetchDeleteSubscription(instanceId, sub));
         },
+        fetchUsersOfInstance(instance) {
+            return dispatch(fetchUsersOfInstance(instance));
+        }
     };
 };
 

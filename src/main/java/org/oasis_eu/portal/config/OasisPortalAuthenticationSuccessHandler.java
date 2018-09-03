@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.config;
 
 import org.oasis_eu.portal.model.Languages;
+import org.oasis_eu.portal.model.store.AppStoreNavigationStatus;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.security.core.Authentication;

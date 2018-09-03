@@ -1,24 +1,17 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.dao.InstanceACLStore;
-import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
-import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.model.app.service.InstanceService;
-import org.oasis_eu.portal.model.authority.Authority;
-import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.authority.UIOrganization;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.instance.InstanceService;
+import org.oasis_eu.portal.model.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
+import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.user.User;
-import org.oasis_eu.portal.services.kernel.UserProfileService;
-import org.oasis_eu.portal.ui.UIOrganization;
+import org.oasis_eu.portal.services.kernel.*;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
-import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,17 +23,11 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collector;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-/**
- * User: schambon
- * Date: 7/29/14
- */
 @Service
 public class ApplicationService {
 
@@ -50,61 +37,53 @@ public class ApplicationService {
     private int applicationInstanceDaysTillDeletedFromTrash;
 
     @Autowired
-    private CatalogStore catalogStore;
+    private CatalogStoreImpl catalogStore;
 
     @Autowired
-    private SubscriptionStore subscriptionStore;
+    private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
-    private ApplicationInstanceStore applicationInstanceStore;
+    private ApplicationInstanceStoreImpl applicationInstanceStore;
 
     @Autowired
     private HttpServletRequest request;
 
     @Autowired
-    private InstanceACLStore instanceACLStore;
+    private InstanceACLStoreImpl instanceACLStore;
 
     @Autowired
     private ImageService imageService;
 
     @Autowired
-    private NetworkService networkService;
-
-    @Autowired
-    private UserInfoService userInfoService;
+    private OrganizationService organizationService;
 
     @Autowired
     private UserProfileService userProfileService;
 
-    public List<MyAppsInstance> getMyInstances(Authority authority, boolean fetchServices) {
-        switch (authority.getType()) {
-            case INDIVIDUAL:
-                return getPersonalInstances(authority, fetchServices);
-            case ORGANIZATION:
-                return getOrganizationInstances(authority, fetchServices);
-        }
-
-        logger.error("Should never be here - authority is neither an individual or an organization: {}", authority.getType());
-        return null;
+    public List<MyAppsInstance> getMyInstances(UIOrganization uiOrganization, boolean fetchServices) {
+        if (uiOrganization.isPersonal())
+            return getPersonalInstances(uiOrganization.getId(), fetchServices);
+        else
+            return getOrganizationInstances(uiOrganization.getId(), fetchServices);
     }
 
-    private List<MyAppsInstance> getPersonalInstances(Authority personalAuthority, boolean fetchServices) {
-        return applicationInstanceStore.findByUserId(personalAuthority.getId(), false)
+    private List<MyAppsInstance> getPersonalInstances(String knOrganizationId, boolean fetchServices) {
+        return applicationInstanceStore.findByUserId(knOrganizationId, false)
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
-                    .thenComparing(Comparator.comparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER)))
+                    .thenComparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER))
             .map(i -> fetchInstance(i, fetchServices))
-            .filter(i -> i != null) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
+            .filter(Objects::nonNull) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .collect(Collectors.toList());
     }
 
-    private List<MyAppsInstance> getOrganizationInstances(Authority orgAuthority, boolean fetchServices) {
-        return applicationInstanceStore.findByOrganizationId(orgAuthority.getId())
+    private List<MyAppsInstance> getOrganizationInstances(String knOrganizationId, boolean fetchServices) {
+        return applicationInstanceStore.findByOrganizationId(knOrganizationId)
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
-                    .thenComparing(Comparator.comparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER)))
+                    .thenComparing(ApplicationInstance::getDefaultName, String.CASE_INSENSITIVE_ORDER))
             .map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
-            .filter(i -> i != null)
+            .filter(Objects::nonNull)
             .collect(Collectors.toList());
     }
 
@@ -143,54 +122,21 @@ public class ApplicationService {
             .setIconUrl(imageService.getImageForURL(service.getIcon(), ImageFormat.PNG_64BY64, false));
     }
 
-    public InstanceService getService(String serviceId) {
-
-        return fetchService(catalogStore.findService(serviceId));
-
+    public List<InstanceService> getServices(String instanceId) {
+        return catalogStore.findServicesOfInstance(instanceId)
+                .stream()
+                .map(this::fetchService)
+                .collect(Collectors.toList());
     }
 
     public InstanceService updateService(String serviceId, ServiceEntry serviceEntry) {
         ApplicationInstance appInstance = catalogStore.findApplicationInstance(serviceEntry.getInstanceId());
-        if (!networkService.userIsAdminOrPersonalAppInstance(appInstance)) {
+        if (!organizationService.userIsAdminOrPersonalAppInstance(appInstance)) {
             // let it with the default forbidden error message
             throw new ForbiddenException();
         }
 
         return fetchService(catalogStore.updateService(serviceId, serviceEntry));
-    }
-
-    /**
-     * @param serviceId
-     * @return users (including some that are app_admin)
-     */
-    public List<User> getSubscribedUsersOfService(String serviceId) {
-        return subscriptionStore.findByServiceId(serviceId)
-            .stream()
-            .map(s -> new User(s.getUserId(), s.getUserName(), false))
-            .collect(Collectors.toList());
-    }
-
-
-    /**
-     * Used to save subscriptions but also to pushToDashboard
-     * (only new subscriptions are pushed to dashboard, so to push to dashboard
-     * an existing one it must be removed in a first step)
-     *
-     * @param serviceId
-     * @param usersToSubscribe (including some that are app_admin)
-     */
-    public void updateSubscriptions(String serviceId, Set<String> usersToSubscribe) {
-        if (!networkService.userIsAdmin(catalogStore.findApplicationInstance(catalogStore.findService(serviceId).getInstanceId()).getProviderId())) {
-            throw new AccessDeniedException("Unauthorized access");
-        }
-
-
-        Set<String> existing = getSubscribedUsersOfService(serviceId).stream().map(User::getUserid).collect(Collectors.toSet());
-
-        // which ones must we add?
-        subscribeUsers(usersToSubscribe.stream().filter(s -> !existing.contains(s)).collect(Collectors.toSet()), serviceId);
-        // which ones must we remove?
-        unsubscribeUsers(existing.stream().filter(s -> !usersToSubscribe.contains(s)).collect(Collectors.toSet()), serviceId);
     }
 
     public Subscription subscribeUser(String userId, String serviceId) {
@@ -202,18 +148,8 @@ public class ApplicationService {
         return subscriptionStore.create(userId, s);
     }
 
-    public List<Subscription> subscribeUsers(Set<String> users, String serviceId) {
-        return users.stream()
-            .map(u -> subscribeUser(u, serviceId))
-            .collect(Collectors.toList());
-    }
-
     public void unsubscribeUser(String userId, String serviceId) {
         subscriptionStore.unsubscribe(userId, serviceId, SubscriptionType.ORGANIZATION);
-    }
-
-    public void unsubscribeUsers(Set<String> users, String serviceId) {
-        users.forEach(u -> unsubscribeUser(u, serviceId));
     }
 
     /**
@@ -249,34 +185,34 @@ public class ApplicationService {
         return users;
     }
 
-    public void createAcl(String instanceId, User user) {
-        if(user.getUserid() != null && !user.getUserid().isEmpty()){
-            instanceACLStore.createACL(instanceId, user);
+    public void createAcl(String instanceId, String userId, String email) {
+        if(userId != null && !userId.isEmpty()){
+            instanceACLStore.createACLForMember(instanceId, userId);
         } else {
-            instanceACLStore.createACL(instanceId, user.getEmail());
+            instanceACLStore.createACLForExternal(instanceId, email);
         }
 
     }
 
-    public void deleteAcl(String instanceId, User user) {
+    public void deleteAcl(String instanceId, String userId, String email) {
         //Delete pending ACL
-        if(user.getUserid() == null || user.getUserid().isEmpty()){
-            instanceACLStore.deleteACL(instanceId, user.getEmail());
+        if(userId == null || userId.isEmpty()){
+            instanceACLStore.deletePendingACL(instanceId, email);
             return;
         }
 
         //Delete user's subscriptions for services of instance
         List<ServiceEntry> instanceServices = catalogStore.findServicesOfInstance(instanceId);
         instanceServices.forEach(service ->
-                subscriptionStore.unsubscribe(user.getUserid(), service.getId(), SubscriptionType.ORGANIZATION));
+                subscriptionStore.unsubscribe(userId, service.getId(), SubscriptionType.ORGANIZATION));
 
         //Delete ACL
-        instanceACLStore.deleteACL(instanceId, user);
+        instanceACLStore.deleteACL(instanceId, userId);
     }
 
     public MyAppsInstance setInstanceStatus(MyAppsInstance uiInstance) {
         ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());
-        if (!networkService.userIsAdminOrPersonalAppInstance(existingInstance)) {
+        if (!organizationService.userIsAdminOrPersonalAppInstance(existingInstance)) {
             throw new AccessDeniedException("Unauthorized access");
         }
 

@@ -24,11 +24,11 @@ const fetchDeleteAclAction = (instanceId, user) => {
 //Async methods
 export const fetchCreateAcl = (user, instance) => {
     return (dispatch) => {
-        return customFetch('/my/api/acl', {
+        return customFetch(`/my/api/instance/${instance.id}/acl`, {
             method: 'POST',
             json: {
-                user: user,
-                instanceId: instance.id
+                userId: user.id,
+                email: user.email
             }
         }).then(() => {
             return dispatch(fetchCreateAclAction(instance.id, user));
@@ -38,11 +38,11 @@ export const fetchCreateAcl = (user, instance) => {
 
 export const fetchDeleteAcl = (user, instance) => {
     return (dispatch) => {
-        return customFetch('/my/api/acl', {
+        return customFetch(`/my/api/instance/${instance.id}/acl`, {
             method: 'DELETE',
             json: {
-                user: user,
-                instanceId: instance.id
+                userId: user.id,
+                email: user.email
             }
         }).then(() => {
             return dispatch(fetchDeleteAclAction(instance.id, user));

@@ -1,13 +1,12 @@
 package org.oasis_eu.portal.services.kernel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.ui.UIPendingOrganizationMember;
-import org.oasis_eu.spring.kernel.exception.EntityNotFoundException;
+import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
-import org.oasis_eu.portal.model.organization.OrgMembership;
-import org.oasis_eu.portal.model.organization.PendingOrgMembership;
-import org.oasis_eu.portal.model.organization.UserMembership;
+import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
+import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
+import org.oasis_eu.portal.model.kernel.organization.UserMembership;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,8 +22,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.servlet.http.HttpServletRequest;
-import java.time.Instant;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -148,7 +145,7 @@ public class UserMembershipService {
         HttpHeaders headers = new HttpHeaders();
         headers.add("If-Match", userMembership.getMembershipEtag());
         String uriString = userMembership.getMembershipUri();
-        ResponseEntity<Void> kernelResp = kernel.exchange(uriString, HttpMethod.DELETE, new HttpEntity<Object>(headers), Void.class, user());
+        ResponseEntity<Void> kernelResp = kernel.exchange(uriString, HttpMethod.DELETE, new HttpEntity<>(headers), Void.class, user());
         // validate response body
         kernel.getBodyUnlessClientError(kernelResp, Void.class, uriString );
     }

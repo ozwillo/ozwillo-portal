@@ -1,7 +1,7 @@
 import customFetch from '../util/custom-fetch';
 
 export const fetchDashboards = () => {
-    return customFetch('/my/api/dashboard/dashboards.json');
+    return customFetch('/my/api/dashboard/dashboards');
 };
 
 export const fetchCreateDashboard = (name) => {
@@ -26,11 +26,11 @@ export const fetchDeleteDashboard = (dashId) => {
 };
 
 export const fetchApps = (dashId) => {
-    return customFetch(`/my/api/dashboard/apps${(dashId && `/${dashId}`) || ''}.json`);
+    return customFetch(`/my/api/dashboard/apps${(dashId && `/${dashId}`) || ''}`);
 };
 
 export const fetchPendingApps = () => {
-    return customFetch(`/my/api/dashboard/pending-apps.json`);
+    return customFetch(`/my/api/dashboard/pending-apps`);
 };
 
 export const fetchReorderApps = (dashId, apps) => {

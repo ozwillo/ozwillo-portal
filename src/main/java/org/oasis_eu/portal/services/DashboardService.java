@@ -1,23 +1,22 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.ApplicationInstanceStore;
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.appstore.GenericEntity;
-import org.oasis_eu.portal.core.model.catalog.ApplicationInstance;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.core.mongo.dao.my.DashboardRepository;
-import org.oasis_eu.portal.core.mongo.dao.my.HiddenPendingAppsRepository;
-import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
-import org.oasis_eu.portal.core.mongo.model.my.Dashboard;
-import org.oasis_eu.portal.core.mongo.model.my.HiddenPendingApps;
-import org.oasis_eu.portal.core.mongo.model.my.UserContext;
-import org.oasis_eu.portal.core.mongo.model.my.UserSubscription;
-import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.ui.DashboardApp;
-import org.oasis_eu.portal.ui.DashboardPendingApp;
+import org.oasis_eu.portal.services.kernel.ApplicationInstanceStoreImpl;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.model.GenericEntity;
+import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
+import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.dao.DashboardRepository;
+import org.oasis_eu.portal.dao.HiddenPendingAppsRepository;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.dashboard.Dashboard;
+import org.oasis_eu.portal.model.dashboard.HiddenPendingApps;
+import org.oasis_eu.portal.model.dashboard.UserContext;
+import org.oasis_eu.portal.model.dashboard.UserSubscription;
+import org.oasis_eu.portal.model.dashboard.DashboardApp;
+import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -55,13 +54,13 @@ public class DashboardService {
     private HiddenPendingAppsRepository hiddenPendingAppsRepository;
 
     @Autowired
-    private SubscriptionStore subscriptionStore;
+    private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
-    private CatalogStore catalogStore;
+    private CatalogStoreImpl catalogStore;
 
     @Autowired
-    private ApplicationInstanceStore applicationInstanceStore;
+    private ApplicationInstanceStoreImpl applicationInstanceStore;
 
     @Autowired
     private UserInfoService userInfoHelper;
@@ -268,9 +267,9 @@ public class DashboardService {
 
     public Dashboard getDash() {
         UserInfo user = userInfoHelper.currentUser();
-        Dashboard dashboard = dashboardRepository.findOne(user.getUserId());
-        if (dashboard != null) {
-
+        Optional<Dashboard> optDashboard = dashboardRepository.findById(user.getUserId());
+        if (optDashboard.isPresent()) {
+            Dashboard dashboard = optDashboard.get();
             // at one point we didn't store the service id in the subscription object. Now that we do, maybe some migration is needed
             boolean needsMigrate = dashboard.getContexts().stream().flatMap(uc -> uc.getSubscriptions().stream()).anyMatch(us -> us.getServiceId() == null);
             if (needsMigrate) {
@@ -286,7 +285,7 @@ public class DashboardService {
         } else {
             logger.info("Creating dashboard for user {} ({}) using locale: {}", user.getName(), user.getUserId(), RequestContextUtils.getLocale(request));
 
-            dashboard = new Dashboard();
+            Dashboard dashboard = new Dashboard();
             dashboard.setUserId(user.getUserId());
             dashboard.getContexts().add(new UserContext().setId(UUID.randomUUID().toString()).setName(messageSource.getMessage("my.default-dashboard-name", new Object[]{}, RequestContextUtils.getLocale(request))).setPrimary(true));
             return dashboardRepository.save(dashboard);
@@ -295,12 +294,12 @@ public class DashboardService {
 
     public List<DashboardPendingApp> getPendingApps() {
 
-        HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
+        Optional<HiddenPendingApps> optionalHiddenPendingApps = hiddenPendingAppsRepository.findById(userInfoHelper.currentUser().getUserId());
         List<ApplicationInstance> pendingInstances = applicationInstanceStore.findPendingInstances(userInfoHelper.currentUser().getUserId());
 
         List<DashboardPendingApp> DashboardPendingAppLst = pendingInstances.stream()
             // filter on "deleted" a.k.a portal-side hidden app : (#156 Possibility to delete "pending app instances" icons)
-            .filter(instance -> (hidden == null || !hidden.getHiddenApps().contains(instance.getInstanceId())))
+            .filter(instance -> (!optionalHiddenPendingApps.isPresent() || !optionalHiddenPendingApps.get().getHiddenApps().contains(instance.getInstanceId())))
             .map(this::toPendingApp)
             .filter(app -> app != null)
             .collect(Collectors.toList());
@@ -309,13 +308,16 @@ public class DashboardService {
     }
 
     public void removePendingApp(String appId) {
-        HiddenPendingApps hidden = hiddenPendingAppsRepository.findOne(userInfoHelper.currentUser().getUserId());
-        if (hidden == null) {
-            hidden = new HiddenPendingApps();
-            hidden.setUserId(userInfoHelper.currentUser().getUserId());
+        Optional<HiddenPendingApps> optionalHiddenPendingApps = hiddenPendingAppsRepository.findById(userInfoHelper.currentUser().getUserId());
+        HiddenPendingApps hiddenPendingApps;
+        if (!optionalHiddenPendingApps.isPresent()) {
+            hiddenPendingApps = new HiddenPendingApps();
+            hiddenPendingApps.setUserId(userInfoHelper.currentUser().getUserId());
+        } else {
+            hiddenPendingApps = optionalHiddenPendingApps.get();
         }
-        hidden.hideApp(appId);
-        hiddenPendingAppsRepository.save(hidden);
+        hiddenPendingApps.hideApp(appId);
+        hiddenPendingAppsRepository.save(hiddenPendingApps);
     }
 
     private DashboardPendingApp toPendingApp(ApplicationInstance instance) {

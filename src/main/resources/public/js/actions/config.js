@@ -22,21 +22,22 @@ export const setLanguageAction = (config) => {
 // Async methods
 export const fetchConfig = () => {
     return (dispatch) => {
-        return customFetch('/api/config.json')
+        return customFetch('/api/config')
             .then((res) => {
-                // Language
-                dispatch(setLanguage(res.language));
-                dispatch(setTranslations(res.i18n));
-
                 //Config
                 dispatch(fetchConfigAction(res));
+
+                // Language
+                dispatch(setLanguage(res.language));
+                dispatch(setLanguageAction(res.language));
+                dispatch(setTranslations(res.i18n));
             })
     };
 };
 
 export const fetchMyConfig = () => {
     return (dispatch) => {
-        return customFetch('/my/api/config.json')
+        return customFetch('/my/api/config')
             .then((res) => {
                 // Language
                 dispatch(setLanguage(res.language));
@@ -50,7 +51,7 @@ export const fetchMyConfig = () => {
 
 export const fetchCountries = (q = '') => {
     return (dispatch) => {
-        return customFetch(urlBuilder('/api/store/dc-countries', {q}))
+        return customFetch(urlBuilder('/api/geo/countries', {q}))
             .then((res) => {
                 dispatch(fetchConfigAction({countries: res.areas}));
             });
@@ -81,7 +82,19 @@ export const fetchSetLanguage= (language) => {
 
                 //i18n-redux
                 dispatch(setLanguage(language));
+                dispatch(setLanguageAction(language));
                 dispatch(setTranslations(i18n, {preserveExisting: true}));
             });
+    };
+};
+
+export const fetchCsrf = () => {
+    return (dispatch) => {
+        return fetch('/api/csrf-token', {
+            credentials : 'same-origin'
+        }).then((res) => {
+            dispatch(fetchConfigAction({'csrfHeader': res.headers.get('X-CSRF-HEADER'),
+                'csrfToken': res.headers.get('X-CSRF-TOKEN')}));
+        })
     };
 };

@@ -306,7 +306,7 @@ class OrganizationForm extends React.Component {
                                                 value={organization.jurisdiction}
                                                 onChange={this.handleFieldChange}
                                                 onGeoAreaSelected={this.handleJurisdictionChange}
-                                                endpoint="/geographicalAreas"
+                                                endpoint="areas"
                                                 countryUri={organization.country_uri}/>
                         </div>
 
@@ -364,7 +364,7 @@ class OrganizationForm extends React.Component {
                         <label htmlFor="city"
                                className="label">{this.context.t('my.network.organization.city')} *</label>
                         <GeoAreaAutosuggest name="city" required={true} countryUri={organization.country_uri}
-                                            endpoint="/dc-cities" onChange={this.handleFieldChange}
+                                            endpoint="cities" onChange={this.handleFieldChange}
                                             onGeoAreaSelected={this.handleCityChange} value={organization.city}
                                             onBlur={this.verifyCountry}/>
                     </div>

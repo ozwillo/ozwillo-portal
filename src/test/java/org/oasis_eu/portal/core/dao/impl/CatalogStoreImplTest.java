@@ -4,11 +4,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.model.catalog.Audience;
-import org.oasis_eu.portal.core.model.catalog.CatalogEntry;
-import org.oasis_eu.portal.core.model.catalog.PaymentOption;
-import org.oasis_eu.portal.core.model.catalog.ServiceEntry;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.model.kernel.store.Audience;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
+import org.oasis_eu.portal.model.kernel.store.PaymentOption;
+import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.spring.config.KernelConfiguration;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +47,7 @@ public class CatalogStoreImplTest {
 	private RestTemplate kernelRestTemplate;
 
 	@Autowired
-	private CatalogStore catalogStore;
+	private CatalogStoreImpl catalogStore;
 
 	@Before
 	public void setupAuthenticationContext() {

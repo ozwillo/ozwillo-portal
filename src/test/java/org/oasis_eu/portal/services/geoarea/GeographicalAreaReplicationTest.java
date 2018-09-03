@@ -2,9 +2,9 @@ package org.oasis_eu.portal.services.geoarea;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.core.mongo.dao.geo.GeographicalAreaCache;
-import org.oasis_eu.portal.core.mongo.model.geo.GeographicalArea;
-import org.oasis_eu.portal.OasisPortal;
+import org.oasis_eu.portal.dao.GeographicalAreaCache;
+import org.oasis_eu.portal.model.geo.GeographicalArea;
+import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -26,7 +26,7 @@ import static org.junit.Assert.assertNotEquals;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
-@SpringBootTest(classes = {OasisPortal.class}, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(classes = {OzwilloPortal.class}, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class GeographicalAreaReplicationTest {
 
 	@Autowired

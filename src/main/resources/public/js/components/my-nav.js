@@ -51,7 +51,7 @@ class MyNav extends React.Component {
                             </Link>
                         </li>
                         <li className="menu">
-                            <a className="link" href={`${this.props.opendatEndPoint}/${this.props.language}`}>
+                            <a className="link" href={`${this.props.opendataEndPoint}/${this.props.language}`}>
                                 <i className="fa fa-signal icon" alt="Data icon"/>
                                 <span>{this.context.t('ui.datastore')}</span>
                             </a>
@@ -76,7 +76,7 @@ MyNav.contextTypes = {
 const mapStateToProps = state => {
     return {
         language: state.config.language,
-        opendatEndPoint: state.config.opendatEndPoint
+        opendataEndPoint: state.config.opendataEndPoint
     };
 };
 

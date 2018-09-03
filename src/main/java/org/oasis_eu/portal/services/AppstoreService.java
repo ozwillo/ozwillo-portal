@@ -1,20 +1,23 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.core.dao.CatalogStore;
-import org.oasis_eu.portal.core.dao.SubscriptionStore;
-import org.oasis_eu.portal.core.model.appstore.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.core.model.catalog.*;
-import org.oasis_eu.portal.core.model.subscription.Subscription;
-import org.oasis_eu.portal.core.model.subscription.SubscriptionType;
-import org.oasis_eu.portal.core.mongo.dao.store.InstalledStatusRepository;
-import org.oasis_eu.portal.core.mongo.model.images.ImageFormat;
-import org.oasis_eu.portal.core.mongo.model.store.InstalledStatus;
-import org.oasis_eu.portal.core.services.icons.ImageService;
-import org.oasis_eu.portal.model.app.instance.MyAppsInstance;
-import org.oasis_eu.portal.model.app.store.AppstoreHit;
-import org.oasis_eu.portal.model.app.store.InstallationOption;
-import org.oasis_eu.portal.services.dc.geoarea.GeographicalAreaService;
-import org.oasis_eu.portal.services.kernel.UserProfileService;
+import org.oasis_eu.portal.model.authority.UIOrganization;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
+import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.store.Audience;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
+import org.oasis_eu.portal.model.kernel.store.PaymentOption;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
+import org.oasis_eu.portal.dao.InstalledStatusRepository;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.store.InstalledStatus;
+import org.oasis_eu.portal.model.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.store.AppstoreHit;
+import org.oasis_eu.portal.model.store.InstallationOption;
+import org.oasis_eu.portal.services.dc.GeographicalAreaService;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -42,13 +45,13 @@ public class AppstoreService {
     private HttpServletRequest request;
 
     @Autowired
-    private CatalogStore catalogStore;
+    private CatalogStoreImpl catalogStore;
 
     @Autowired
     private OrganizationStore organizationStore;
 
     @Autowired
-    private SubscriptionStore subscriptionStore;
+    private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
     private UserInfoService userInfoService;
@@ -63,7 +66,7 @@ public class AppstoreService {
     private ApplicationService applicationService;
 
     @Autowired
-    private NetworkService networkService;
+    private OrganizationService organizationService;
 
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
@@ -85,8 +88,8 @@ public class AppstoreService {
      * @return
      */
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
-        List<Locale> supportedLocales, List<String> geographicalAreas,
-        List<String> categoryIds, String q, int from) {
+                                    List<Locale> supportedLocales, List<String> geographicalAreas,
+                                    List<String> categoryIds, String q, int from) {
 
         if (addCurrentToSupportedLocalesIfNone) {
             supportedLocales = (supportedLocales == null || supportedLocales.isEmpty()) ?
@@ -198,15 +201,20 @@ public class AppstoreService {
 
     private InstallationOption computeInstallationOption(CatalogEntry entry) {
         if (CatalogEntryType.SERVICE.equals(entry.getType())) {
-            Set<String> subscriptions = subscriptionStore.findByUserId(userInfoService.currentUser().getUserId()).stream().map(Subscription::getServiceId).collect(Collectors.toSet());
+            Set<String> subscriptions =
+                    subscriptionStore.findByUserId(userInfoService.currentUser().getUserId())
+                            .stream()
+                            .map(Subscription::getServiceId)
+                            .collect(Collectors.toSet());
             return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
                 PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         } else {
-            return networkService.getMyAuthorities(true).stream()
-                .flatMap(authority -> applicationService.getMyInstances(authority, false).stream())
-                .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
-                ? InstallationOption.INSTALLED :
-                PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
+            return organizationService.getMyOrganizations()
+                    .stream()
+                    .filter(UIOrganization::isAdmin)
+                    .flatMap(uiOrganization -> applicationService.getMyInstances(uiOrganization, false).stream())
+                    .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
+                        ? InstallationOption.INSTALLED : PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         }
     }
 }

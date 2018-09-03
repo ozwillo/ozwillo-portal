@@ -1,6 +1,6 @@
 buildscript {
     ext {
-        springBootVersion = '1.4.2.RELEASE'
+        springBootVersion = '2.0.4.RELEASE'
     }
     repositories {
         mavenCentral()
@@ -17,12 +17,10 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'org.springframework.boot'
+apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.moowork.node'
 
-jar {
-    baseName = 'ozwillo-portal'
-    version = '1.50.1'
-}
+version = '1.51.0-dev'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -43,7 +41,6 @@ dependencies {
          do not specify a version to let them live along with Spring Boot without extra hassle */
     compile('org.springframework.boot:spring-boot-starter-data-mongodb')
     compile('org.springframework.boot:spring-boot-devtools')
-    compile('org.springframework.boot:spring-boot-starter-thymeleaf')
     compile('org.springframework.boot:spring-boot-starter-web')
     compile('org.springframework.boot:spring-boot-starter-security')
     compile('com.fasterxml.jackson.dataformat:jackson-dataformat-xml')
@@ -54,10 +51,9 @@ dependencies {
     compile('joda-time:joda-time')
     compile('org.apache.httpcomponents:httpclient')
     compile('org.apache.httpcomponents:httpcore')
-    compile('org.thymeleaf.extras:thymeleaf-extras-conditionalcomments')
     compile('org.apache.commons:commons-csv:1.5')
 
-    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.7')
+    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.8')
 
     /* Our specific dependencies */
     compile('de.javakaffee.msm:memcached-session-manager:2.1.1')
@@ -72,6 +68,9 @@ dependencies {
 
     runtime('commons-fileupload:commons-fileupload:1.3.3')
 
+    // required to parse logback-spring.groovy
+    // TODO : quite a fat dependency for a configuration file
+    runtime('org.codehaus.groovy:groovy:2.4.7')
 
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
     runtime('com.google.code.gson:gson:2.8.2')
@@ -79,24 +78,17 @@ dependencies {
 }
 
 task wrapper(type: Wrapper) {
-    gradleVersion = '3.2.1'
+    gradleVersion = '4.7'
 }
 
 bootRun {
-    // needed for hot reload of thymeleaf templates
-    addResources = true
-
     environment SPRING_PROFILES_ACTIVE: environment.SPRING_PROFILES_ACTIVE ?: "dev"
 }
 
-springBoot {
-    // exclude Spring Boot Devtools from the fat jar
-    excludeDevtools = true
-    executable = true
-    embeddedLaunchScriptProperties =
-            [initInfoDescription: 'Ozwillo Portal',
-             initInfoShortDescription: 'Ozwillo Portal',
-             initInfoProvides: 'ozwillo-portal']
+bootJar {
+    launchScript {
+        properties 'initInfoProvides': 'ozwillo-portal'
+    }
 }
 
 configure(tasks.processResources) {

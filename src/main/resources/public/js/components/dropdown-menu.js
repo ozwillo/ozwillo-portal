@@ -7,7 +7,8 @@ class DropDownMenu extends React.Component {
         header: PropTypes.node,
         footer: PropTypes.node,
         isOpen: PropTypes.bool,
-        isAvailable: PropTypes.bool
+        isAvailable: PropTypes.bool,
+        dropDownChange: PropTypes.func
     };
 
     static defaultProps = {
@@ -27,8 +28,9 @@ class DropDownMenu extends React.Component {
     }
 
     dropDownToggle() {
-        this.setState({
-            isOpen: !this.state.isOpen
+        this.setState({isOpen: !this.state.isOpen}, () => {
+            if(this.props.dropDownChange)
+                this.props.dropDownChange(this.state.isOpen);
         });
     }
 
