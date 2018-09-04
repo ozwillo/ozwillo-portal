@@ -45,8 +45,15 @@ class OrganizationSearch extends React.Component {
     _handleOrganizationsHistory = () => {
         customFetch("/my/api/organizationHistory")
             .then(res => {
+               this._sortOrganizationHistoryByDate(res);
                this.setState({organizationsHistory: res})
             });
+    };
+
+    _sortOrganizationHistoryByDate = (array) =>{
+        array.sort(function(a,b){
+            return new Date(b.date) - new Date(a.date);
+        });
     };
 
     handleChange(e) {

@@ -62,8 +62,15 @@
 }
 .organization-search .container-organization-history .content{
     width: 50%;
+    flex-wrap: wrap;
     flex-direction: row;
     display: flex;
+    justify-content: center;
+
+}
+
+.organization-search .container-organization-history .content>*{
+  margin-top:10px;
 
 }
 
