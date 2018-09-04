@@ -51,6 +51,8 @@ public class OasisWebConfiguration implements WebMvcConfigurer {
         registry.addViewController("/").setViewName("forward:/index.html");
         registry.addViewController("/my").setViewName("forward:/index.html");
         registry.addViewController("/my/organization/**").setViewName("forward:/index.html");
+        registry.addViewController("/my/network").setViewName("forward:/index.html");
+        registry.addViewController("/my/apps").setViewName("forward:/index.html");
         registry.addViewController("/my/profile").setViewName("forward:/index.html");
         registry.addViewController("/my/notif").setViewName("forward:/index.html");
         registry.addViewController("/my/dashboard").setViewName("forward:/index.html");
