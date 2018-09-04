@@ -14,6 +14,7 @@ import UpdateTitle from '../components/update-title';
 import {fetchOrganizationWithId, fetchOrganizationInfo, fetchUserOrganizationsLazyMode} from "../actions/organization";
 import {fetchUsersOfInstance} from "../actions/instance";
 import {fetchApplications} from "../actions/app-store";
+import customFetch from "../util/custom-fetch";
 
 const tabsHeaders = {
     instances: InstancesTabHeader,
@@ -50,6 +51,11 @@ class OrganizationDesc extends React.Component {
 
     initialize(id) {
         this.setState({isLoading: true});
+        customFetch("/my/api/organizationHistory",
+            {
+                method: "POST",
+                json: {id: id}
+            });
         this.props.fetchOrganizationWithId(id)
             .then(() => {
                 // Update selector
