@@ -55,6 +55,20 @@
     display: none;
 }
 
+.organization-search .container-organization-history{
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+}
+.organization-search .container-organization-history .content{
+    width: 50%;
+    flex-direction: row;
+    display: flex;
+
+}
+
+
+
 
 @media (max-width: 425px) {
     .organization-search .options {
