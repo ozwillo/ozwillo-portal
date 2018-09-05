@@ -68,3 +68,7 @@ a.btn {
     color: var(--button-tertiary-color) !important;
     background-color: var(--button-secondary-color) !important;
 }
+
+.btn-pill {
+    border-radius: 50px !important;
+}

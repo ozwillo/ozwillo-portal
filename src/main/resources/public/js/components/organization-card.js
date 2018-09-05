@@ -20,7 +20,7 @@ export default class OrganizationCard extends React.Component {
         if (organizationId) {
             return (
                 <div>
-                    <Link className="btn btn-default undecorated-link" to={`/my/organization/${organizationId}/`}>
+                    <Link className="btn btn-default-inverse btn-pill" to={`/my/organization/${organizationId}/`}>
                         {name}
                     </Link>
                 </div>
