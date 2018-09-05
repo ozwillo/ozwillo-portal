@@ -20,6 +20,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -135,7 +136,7 @@ public class CatalogStoreImpl {
                 logger.error("Got a client error when creating an instance of application {} ({}): {}", appId, instancePattern.getName(), responseEntity.getStatusCode().getReasonPhrase());
                 throw new ApplicationInstanceCreationException(appId,responseEntity.getStatusCode().value(),instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.INVALID_REQUEST);
             }
-        } catch (TechnicalErrorException _502) { // as thrown by the kernel when a HttpServerErrorException 502 occurs
+        } catch (ResourceAccessException | TechnicalErrorException _502) { // as thrown by the kernel when a HttpServerErrorException 502 occurs
             logger.error("Could not create an instance of application " + appId + " - " + instancePattern.getName(), _502);
             throw new ApplicationInstanceCreationException(appId, 502, instancePattern, ApplicationInstanceCreationException.ApplicationInstanceErrorType.TECHNICAL_ERROR);
         }
