@@ -65,22 +65,19 @@ class OrganizationSearch extends React.Component {
     }
 
     _displayOrganizationsHistory = () => {
-        let {organizationsHistory} = this.state;
+        const {organizationsHistory} = this.state;
         let result = [];
-        if(organizationsHistory && organizationsHistory.length > 0) {
-            for (let organization of organizationsHistory) {
-                let dcOrganizationId = organization.dcOrganizationId;
-                let organizationCard = (
-                    <OrganizationCard key={dcOrganizationId} organization={organization}/>);
-                result.push(organizationCard)
-            }
-        }
-
+        organizationsHistory.map(organization => {
+            let dcOrganizationId = organization.dcOrganizationId;
+            let organizationCard = (
+                <OrganizationCard key={dcOrganizationId} organization={organization}/>);
+            result.push(organizationCard)
+        });
         return result;
     };
 
     render() {
-        let {organization_id} = this.state.organizationSelected;
+        const {organization_id} = this.state.organizationSelected;
         if (organization_id) {
             return <Redirect to={`/my/organization/${organization_id}/`}/>
         }
