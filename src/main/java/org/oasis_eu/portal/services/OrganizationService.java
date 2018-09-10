@@ -33,6 +33,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -166,10 +167,12 @@ public class OrganizationService {
     public List<UserMembership> searchUserMembershipsFromQuery(String query){
         String userId = userInfoService.currentUser().getUserId();
         List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
+        //permit to compare string from different language (cf : question 32117953 on stackoverflow)
+        Pattern p = Pattern.compile(query, Pattern.LITERAL | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 
         return userMemberships
                 .stream()
-                .filter(userMembership -> userMembership.getOrganizationName().toLowerCase().contains(query.toLowerCase()))
+                .filter(userMembership -> p.matcher(userMembership.getOrganizationName()).find())
                 .collect(Collectors.toList());
     }
 
