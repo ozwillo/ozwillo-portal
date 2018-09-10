@@ -34,12 +34,7 @@ class OrganizationSearch extends React.Component {
     }
 
     componentDidMount() {
-        this.props.fetchUserOrganizations()
-            .then(() => {
-                this.setState({isLoading: false});
-            });
         this._handleOrganizationsHistory();
-
     }
 
     _handleOrganizationsHistory = () => {
@@ -115,13 +110,6 @@ class OrganizationSearch extends React.Component {
                     {this._displayOrganizationsHistory()}
                     </div>
                 </div>
-
-                {
-                    this.state.isLoading &&
-                    <div className="loading-container">
-                        <i className="fa fa-spinner fa-spin loading"/>
-                    </div>
-                }
             </section>
 
         </section>;
