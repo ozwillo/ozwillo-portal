@@ -1,5 +1,4 @@
-package org.oasis_eu.portal.model.store;
-
+package org.oasis_eu.portal.model.history;
 import org.springframework.data.annotation.Id;
 
 import java.util.ArrayList;
@@ -9,7 +8,13 @@ public class UserOrganizationsHistory {
     @Id
     private String userId;
 
-    private List<OrganizationHistory> organizationsHistory = new ArrayList<OrganizationHistory>();
+    private List<OrganizationHistory> organizationsHistory = new ArrayList<>();
+
+    public UserOrganizationsHistory() {}
+
+    public UserOrganizationsHistory(String userId) {
+        this.userId = userId;
+    }
 
     public String getUserId() {
         return userId;
@@ -22,10 +27,5 @@ public class UserOrganizationsHistory {
     public List<OrganizationHistory> getOrganizationsHistory() {
         return organizationsHistory;
     }
-
-    public void setOrganizationsHistory(List<OrganizationHistory> organizationsHistory) {
-        this.organizationsHistory = organizationsHistory;
-    }
-
 
 }

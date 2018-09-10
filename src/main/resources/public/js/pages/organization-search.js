@@ -45,8 +45,10 @@ class OrganizationSearch extends React.Component {
     _handleOrganizationsHistory = () => {
         customFetch("/my/api/organizationHistory")
             .then(res => {
-               this._sortOrganizationHistoryByDate(res);
-               this.setState({organizationsHistory: res})
+                if(res){
+                    this._sortOrganizationHistoryByDate(res);
+                    this.setState({organizationsHistory: res});
+                }
             });
     };
 
@@ -67,9 +69,9 @@ class OrganizationSearch extends React.Component {
         let result = [];
         if(organizationsHistory && organizationsHistory.length > 0) {
             for (let organization of organizationsHistory) {
-                let organizationId = organization.organizationId;
+                let dcOrganizationId = organization.dcOrganizationId;
                 let organizationCard = (
-                    <OrganizationCard key={organizationId} organization={organization}/>);
+                    <OrganizationCard key={dcOrganizationId} organization={organization}/>);
                 result.push(organizationCard)
             }
         }

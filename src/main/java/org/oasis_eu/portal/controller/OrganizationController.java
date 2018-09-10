@@ -55,8 +55,8 @@ class OrganizationController {
         return organizationService.getOrganizationMembers(organizationId);
     }
 
-    @GetMapping(value = "/searchFromUserAndQuery")
-    public List<UserMembership> searchUserMembershipsFromQuery(@RequestParam String query) {
+    @GetMapping(value = "/memberships")
+    public List<UserMembership> memberships(@RequestParam String query) {
         return organizationService.searchUserMembershipsFromQuery(query);
     }
 

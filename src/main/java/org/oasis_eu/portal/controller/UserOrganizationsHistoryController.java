@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.controller;
 
-import org.oasis_eu.portal.model.dc.DCOrganization;
-import org.oasis_eu.portal.model.store.OrganizationHistory;
+import org.oasis_eu.portal.model.history.OrganizationHistory;
 import org.oasis_eu.portal.services.UserOrganizationsHistoryService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -19,14 +18,14 @@ public class UserOrganizationsHistoryController {
         this.userOrganizationsHistoryService = userOrganizationsHistoryService;
     }
 
-    @GetMapping(value = "")
+    @GetMapping()
     public List<OrganizationHistory> getOrganizationHistory() {
         return userOrganizationsHistoryService.getLastVistited();
     }
 
-    @PostMapping(value = "")
-    public List<OrganizationHistory> postOrganizationActivity(@RequestBody DCOrganization dcOrganization) {
-        return userOrganizationsHistoryService.addLastVisited(dcOrganization.getId());
+    @PostMapping(value = "/visit/{dcOrganizationId}")
+    public List<OrganizationHistory> postOrganizationActivity(@PathVariable String dcOrganizationId) {
+        return userOrganizationsHistoryService.addLastVisited(dcOrganizationId);
     }
 
 }

@@ -7,7 +7,6 @@ import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
-import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
@@ -31,7 +30,6 @@ import org.springframework.web.servlet.support.RequestContextUtils;
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.nio.channels.MembershipKey;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
@@ -166,15 +164,13 @@ public class OrganizationService {
     }
 
     public List<UserMembership> searchUserMembershipsFromQuery(String query){
-        List<UserMembership> organizations = new ArrayList<>();
         String userId = userInfoService.currentUser().getUserId();
         List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
-        for(UserMembership userMembership : userMemberships){
-            if(userMembership.getOrganizationName().toLowerCase().contains(query.toLowerCase())){
-                organizations.add(userMembership);
-            }
-        }
-        return organizations;
+
+        return userMemberships
+                .stream()
+                .filter(userMembership -> userMembership.getOrganizationName().toLowerCase().contains(query.toLowerCase()))
+                .collect(Collectors.toList());
     }
 
     public boolean existsOrganizationOrAliasesInKernel(String dcId) {

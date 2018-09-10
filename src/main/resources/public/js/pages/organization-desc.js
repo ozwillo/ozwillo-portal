@@ -51,10 +51,9 @@ class OrganizationDesc extends React.Component {
 
     initialize(id) {
         this.setState({isLoading: true});
-        customFetch("/my/api/organizationHistory",
+        customFetch(`/my/api/organizationHistory/visit/${id}`,
             {
                 method: "POST",
-                json: {id: id}
             });
         this.props.fetchOrganizationWithId(id)
             .then(() => {

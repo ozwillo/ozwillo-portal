@@ -3,12 +3,14 @@ import PropTypes from "prop-types";
 import Autosuggest from 'react-autosuggest';
 import debounce from "debounce";
 import Config from '../../config/config';
+import customFetch from "../../util/custom-fetch";
 
 const sizeQueryBeforeFetch = Config.sizeQueryBeforeFetch;
 
 
 export default class OrganizationAutoSuggest extends React.Component {
-    defaultProps = {
+
+    static defaultProps = {
         value: '',
         placeholder: '',
         required: false
@@ -23,19 +25,16 @@ export default class OrganizationAutoSuggest extends React.Component {
     }
 
     searchOrganizations(query) {
-        //TODO change all the $.ajax with fetch
-        $.ajax({
-            url: "/my/api/organization/searchFromUserAndQuery",
-            dataType: 'json',
-            data: {query: query},
-            type: 'get',
-            success: function (data) {
-                this.setState({suggestions: data});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error("Error while searching for organizations with query " + query, status, err.toString())
+        customFetch(
+            `/my/api/organization/memberships?query=${query}`,
+            {
+                "Content-Type": "application/json"
             }
-        })
+        ).then(res => {
+            this.setState({suggestions: res});
+        }).catch(err => {
+            console.error("Error while searching for organizations with query " + query, err.toString())
+        });
     }
 
     renderSuggestion = (data) => {
@@ -66,7 +65,7 @@ export default class OrganizationAutoSuggest extends React.Component {
     };
 
     getSuggestionValue = (suggestion) => {
-        return suggestion.legal_name || this.defaultProps.value;
+        return suggestion.legal_name || OrganizationAutoSuggest.defaultProps.value;
     };
 
     handleOnChange = (event, {newValue}) => {
@@ -76,7 +75,7 @@ export default class OrganizationAutoSuggest extends React.Component {
     render() {
         const inputProps = {
             name: this.props.name,
-            value: this.props.value || this.defaultProps.value,
+            value: this.props.value || OrganizationAutoSuggest.defaultProps.value,
             onChange: this.handleOnChange,
             type: 'search',
             placeholder: this.props.placeholder,

@@ -1,19 +1,23 @@
-package org.oasis_eu.portal.model.store;
+package org.oasis_eu.portal.model.history;
 
 
 import java.util.Date;
 
 public class OrganizationHistory implements Comparable<OrganizationHistory>{
-    private String organizationId;
+    private String dcOrganizationId;
     private String name;
     private Date date;
 
-    public String getOrganizationId() {
-        return organizationId;
+    public OrganizationHistory() {}
+
+    public OrganizationHistory(String dcOrganizationId, String name, Date date) {
+        this.dcOrganizationId = dcOrganizationId;
+        this.name = name;
+        this.date = date;
     }
 
-    public void setOrganizationId(String organizationId) {
-        this.organizationId = organizationId;
+    public String getDcOrganizationId() {
+        return dcOrganizationId;
     }
 
     public Date getDate() {

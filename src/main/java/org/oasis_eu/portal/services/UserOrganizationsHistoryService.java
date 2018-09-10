@@ -2,8 +2,8 @@ package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.dao.UserOrganizationsHistoryRepository;
 import org.oasis_eu.portal.model.authority.UIOrganization;
-import org.oasis_eu.portal.model.store.OrganizationHistory;
-import org.oasis_eu.portal.model.store.UserOrganizationsHistory;
+import org.oasis_eu.portal.model.history.OrganizationHistory;
+import org.oasis_eu.portal.model.history.UserOrganizationsHistory;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,59 +25,46 @@ public class UserOrganizationsHistoryService {
     public List<OrganizationHistory> getLastVistited() {
         String userId = userInfoService.currentUser().getUserId();
         Optional<UserOrganizationsHistory> userOrganizationsHistories = userOrganizationsHistoryRepository.findById(userId);
-        UserOrganizationsHistory userOrganizationsHistory = new UserOrganizationsHistory();
-        if (userOrganizationsHistories.isPresent()) {
-            userOrganizationsHistory = userOrganizationsHistories.get();
-            return userOrganizationsHistory.getOrganizationsHistory();
-        }else{
-            return null;
-        }
 
+        return userOrganizationsHistories
+                .map(UserOrganizationsHistory::getOrganizationsHistory)
+                .orElse(new ArrayList<>());
     }
 
-    public List<OrganizationHistory> addLastVisited(String organizationId) {
-        try {
+    public List<OrganizationHistory> addLastVisited(String organizationId){
             UIOrganization uiOrganization = organizationService.getOrganizationFromKernel(organizationId);
             String userId = userInfoService.currentUser().getUserId();
-            UserOrganizationsHistory userOrganizationsHistories = new UserOrganizationsHistory();
-            Optional<UserOrganizationsHistory> optionalUserOrganizationsHistory = userOrganizationsHistoryRepository.findById(userId);
-            if (optionalUserOrganizationsHistory.isPresent()) {
-                userOrganizationsHistories = optionalUserOrganizationsHistory.get();
-            } else {
-                userOrganizationsHistories.setUserId(userId);
-            }
+            UserOrganizationsHistory userOrganizationsHistories  = userOrganizationsHistoryRepository
+                    .findById(userId).orElse(new UserOrganizationsHistory(userId));
 
             List<OrganizationHistory> organizationHistories = userOrganizationsHistories.getOrganizationsHistory();
             Collections.sort(organizationHistories);
-            OrganizationHistory newOrganizationHistory = new OrganizationHistory();
 
             //check this line of history exist and update the date
             for (OrganizationHistory organizationHistory : organizationHistories) {
-                if (organizationHistory.getOrganizationId().equals(organizationId)) {
+                if (organizationHistory.getDcOrganizationId().equals(organizationId)) {
                     organizationHistory.setDate(new Date());
                     userOrganizationsHistoryRepository.save(userOrganizationsHistories);
                     return organizationHistories;
                 }
             }
 
-            newOrganizationHistory.setOrganizationId(organizationId);
-            newOrganizationHistory.setDate(new Date());
-            newOrganizationHistory.setName(uiOrganization.getName());
-
-            //list is smaller than 10 so we add a new line of history
-            if (organizationHistories.size() < MAX_ORGANIZATION_HISTORY) {
-                organizationHistories.add(newOrganizationHistory);
-                //list is full == 10 so we set the oldest one  by this new one
-            } else {
-                organizationHistories.set(0, newOrganizationHistory);
-            }
+            organizationHistories = updateOrganizationHistories(organizationId, uiOrganization.getName(), organizationHistories);
             userOrganizationsHistoryRepository.save(userOrganizationsHistories);
             return organizationHistories;
-        }catch(Exception e){
-            return null;
+    }
+
+    private List<OrganizationHistory> updateOrganizationHistories(String organizationId, String name, List<OrganizationHistory> organizationHistories){
+        OrganizationHistory newOrganizationHistory = new OrganizationHistory(organizationId, name, new Date());
+        //list is smaller than MAX_ORGANIZATION_HISTORY so we add a new line of history
+        if (organizationHistories.size() < MAX_ORGANIZATION_HISTORY) {
+            organizationHistories.add(newOrganizationHistory);
+            //list is full == MAX_ORGANIZATION_HISTORY so we set the oldest one  by this new one
+        } else {
+            organizationHistories.set(0, newOrganizationHistory);
         }
 
-
+        return organizationHistories;
     }
 
 
