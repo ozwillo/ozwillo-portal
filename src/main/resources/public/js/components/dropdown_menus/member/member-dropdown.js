@@ -124,11 +124,8 @@ class MemberDropdown extends React.Component {
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
                                              onUpdateRoleMember={this.onUpdateRoleMember}
                                              onRemoveInvitationToJoinAnOrg={this.removeInvitationToJoinAnOrg}/>;
-        const Footer = !isPending && org.admin && <MemberDropdownFooter member={member}
-                                                           instances={org.instances.filter(this.filterInstanceWithoutAccess)}
-                                                           onAddAccessToInstance={this.addAccessToInstance}/>;
-
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={!isPending} dropDownChange={this.handleDropDown}>
+        const dropDownicon = <i className="fa fa-list-alt option-icon"/>;
+        return <DropDownMenu header={Header} dropDownIcon={dropDownicon} isAvailable={!isPending} dropDownChange={this.handleDropDown}>
             { org.admin &&
                 <section className='dropdown-content'>
                     <ul className="list undecorated-list flex-col">
@@ -151,6 +148,9 @@ class MemberDropdown extends React.Component {
                             })
                         }
                     </ul>
+                    <MemberDropdownFooter member={member}
+                                          instances={org.instances.filter(this.filterInstanceWithoutAccess)}
+                                          onAddAccessToInstance={this.addAccessToInstance}/>
                 </section>
             }
         </DropDownMenu>
