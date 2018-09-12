@@ -34,6 +34,22 @@
     background-color: var(--secondary-color);
 }
 
+.oz-dropdown-menu > .header .dropdown-icons {
+    cursor: pointer;
+    border-radius: 50px;
+    font-size: 1.5em;
+    padding: 0.3em 0.5em;
+}
+
+.oz-dropdown-menu > .header .dropdown-icons > :last-child {
+    padding-left: 0.2em;
+}
+
+.oz-dropdown-menu > .header .dropdown-icons:hover {
+    background-color: var(--secondary-color);
+}
+
+
 .oz-dropdown-menu > .content,
 .oz-dropdown-menu > .footer {
     background-color: var(--tertiary-color);

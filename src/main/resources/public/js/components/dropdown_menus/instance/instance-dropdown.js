@@ -221,8 +221,11 @@ class InstanceDropdown extends React.Component {
         const Footer = (isAvailable && <footer>
             <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
         </footer>) || null;
+        const usersIconDropDown = <i className="fa fa-users"/>;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen} dropDownChange={this.handleDropDown}>
+        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen}
+                             dropDownIcon={usersIconDropDown}
+                             dropDownChange={this.handleDropDown}>
             <section className='dropdown-content'>
                 {
                     !instance.users &&

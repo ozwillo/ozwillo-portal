@@ -8,7 +8,8 @@ class DropDownMenu extends React.Component {
         footer: PropTypes.node,
         isOpen: PropTypes.bool,
         isAvailable: PropTypes.bool,
-        dropDownChange: PropTypes.func
+        dropDownChange: PropTypes.func,
+        dropDownIcon: PropTypes.node
     };
 
     static defaultProps = {
@@ -39,12 +40,15 @@ class DropDownMenu extends React.Component {
         const iconClassName = (this.state.isOpen && 'down') || 'right';
         const isAvailableClassName = (!this.props.isAvailable && 'invisible') || '';
         const isEmptyClassName = (!this.props.children && 'empty invisible') || '';
+        const {dropDownIcon} = this.props;
 
         return <section className={`oz-dropdown-menu flex-col ${this.props.className || ''}`}>
             <header className="header flex-row">
                 <div className="content">{this.props.header}</div>
-                <i onClick={this.dropDownToggle}
-                   className={`fa fa-caret-${iconClassName} arrow-icon ${isEmptyClassName} ${isAvailableClassName}`}/>
+                <div className={`dropdown-icons flex-row ${isAvailableClassName} ${isEmptyClassName}`} onClick={this.dropDownToggle}>
+                    {dropDownIcon}
+                    <i className={`fa fa-caret-${iconClassName}`}/>
+                </div>
             </header>
 
             <article className={`content ${isOpenClassName} ${isAvailableClassName} ${isEmptyClassName}`}>
