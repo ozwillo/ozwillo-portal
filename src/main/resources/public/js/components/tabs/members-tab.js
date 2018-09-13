@@ -7,6 +7,11 @@ import {Link} from 'react-router-dom';
 import OrganizationInvitationForm from '../forms/organization-invitation-form';
 import MemberDropdown from '../dropdown_menus/member/member-dropdown';
 import DropDownMenu from '../dropdown-menu';
+import {
+    fetchOrganizationMembers,
+} from "../../actions/organization";
+import {fetchUsersOfInstance} from "../../actions/instance";
+
 
 class MembersTabHeader extends React.Component {
 
@@ -40,11 +45,36 @@ class MembersTab extends React.Component {
         super(props);
 
         this.state = {
-            membersFilter: ''
+            membersFilter: '',
+            isLoading: false
         };
 
         this.handleChange = this.handleChange.bind(this);
         this.filterMembers = this.filterMembers.bind(this);
+    }
+
+    componentDidMount() {
+        //TODO find a solution to supress that (new method in the kernel which allow to get all the instances of one user) cf: TODO in MemberDropdown
+        if (this.props.organization.admin) {
+            this.props.organization.instances.forEach((instance) => {
+                this.props.fetchUsersOfInstance(instance);
+            });
+        }
+        if(this.props.organization.id) {
+            if (!this.props.organization.members) {
+                this.setState({isLoading: true});
+                this.props.fetchOrganizationMembers(this.props.organization.id);
+            } else {
+                //we have members to display BUT we want to check if new ones are available
+                this.props.fetchOrganizationMembers(this.props.organization.id);
+            }
+        }
+    }
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.members) {
+            this.setState({isLoading: false})
+        }
     }
 
     handleChange(e) {
@@ -89,11 +119,17 @@ class MembersTab extends React.Component {
 
                 <ul className="members-list undecorated-list flex-col">
                     {
-                        org.members && this.filterMembers(org.members, membersFilter).map((member) => {
+                        !this.state.isLoading && this.props.members && this.filterMembers(this.props.members, membersFilter).map((member) => {
                             return <li key={member.id} className="member">
                                 <MemberDropdown member={member} organization={this.props.organization}/>
                             </li>
                         })
+                    }
+                    {
+                        this.state.isLoading &&
+                        <div className="container-loading text-center">
+                            <i className="fa fa-spinner fa-spin loading"/>
+                        </div>
                     }
                 </ul>
             </section>
@@ -101,14 +137,31 @@ class MembersTab extends React.Component {
     }
 }
 
-const MemberTabWithRedux = connect(state => {
+const mapStateToProps = state => {
     return {
-        organization: state.organization.current
+        organization: state.organization.current,
+        members: state.organization.current.members
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchOrganizationMembers(organizationId) {
+            return dispatch(fetchOrganizationMembers(organizationId));
+        },
+        fetchUsersOfInstance(instance){
+            return dispatch(fetchUsersOfInstance(instance));
+        }
     };
-})(MembersTab);
+};
+
+const MemberTabWithRedux = connect(mapStateToProps, mapDispatchToProps)(MembersTab);
 
 
 export {
-    MemberTabWithRedux as MembersTab,
-    MembersTabHeaderWithRedux as MembersTabHeader
+    MembersTabHeaderWithRedux as MembersTabHeader,
+    MemberTabWithRedux as MembersTab
 };
+
+
+

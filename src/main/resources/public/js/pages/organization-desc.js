@@ -49,40 +49,18 @@ class OrganizationDesc extends React.Component {
     }
 
     initialize(id) {
-        this.setState({ isLoading: true });
-
-        Promise.all([
-            this.props.fetchUserOrganizationsLazyMode(),
-            this.props.fetchOrganizationWithId(id)
-                .then(() => {
-                    const org = this.props.organization;
-                    const requests = [];
-
-                    // Update selector
-                    this.setState({ orgSelected: org });
-
-                    // Fetch users for each instance
-                    if (org.admin) {
-                        org.instances.forEach((instance) => {
-                            this.props.fetchUsersOfInstance(instance);
-                        });
-                    }
-
-                    // Fetch information of current organization
-                    if (!this.isPersonal) {
-                        requests.push(this.props.fetchOrganizationInfo(org.dc_id));
-                    }
-
-                    return Promise.all(requests);
-                }),
-            this.props.fetchApplications()
-        ])
-        .catch((err) => { console.error(err); })
-        .then(() => { this.setState({ isLoading: false }); });
+        this.setState({isLoading: true});
+        this.props.fetchOrganizationWithId(id)
+            .then(() => {
+                // Update selector
+                this.setState({orgSelected: this.props.organization});
+                this.setState({isLoading: false});
+            });
     }
 
+
     onChangeOrganization(organization) {
-        this.setState({ orgSelected: organization });
+        this.setState({orgSelected: organization});
 
         // Update url
         this.props.history.replace(`/my/organization/${organization.id}/`);
@@ -93,6 +71,8 @@ class OrganizationDesc extends React.Component {
 
     componentDidMount() {
         this.initialize(this.props.match.params.id);
+        this.props.fetchUserOrganizationsLazyMode();
+        this.props.fetchApplications();
     }
 
     get isPersonal() {
@@ -101,13 +81,15 @@ class OrganizationDesc extends React.Component {
 
     render() {
         const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
-        const isOrgAdmin = this.props.organization.admin
+        const isOrgAdmin = this.props.organization.admin;
+
+        let {orgSelected} = this.state;
 
         return <section className="organization-desc oz-body wrapper flex-col">
 
             <Select
                 className="select"
-                value={this.state.orgSelected}
+                value={orgSelected}
                 labelKey="name"
                 valueKey="id"
                 onChange={this.onChangeOrganization}
@@ -132,7 +114,8 @@ class OrganizationDesc extends React.Component {
                             <header className="title">
                                 <span>{this.props.organization.name}</span>
                             </header>
-                            <Tabs className="content" headers={tabsHeaders} tabs={tabs} tabToDisplay={tabToDisplay}/>
+                            <Tabs className="content" headers={tabsHeaders} tabs={tabs}
+                                  tabToDisplay={tabToDisplay}/>
                         </React.Fragment>
 
                     }
@@ -143,7 +126,7 @@ class OrganizationDesc extends React.Component {
                                 <span>{this.props.organization.name}</span>
                             </header>
                             <section className="box">
-                                <tabs.members />
+                                <tabs.members/>
                             </section>
                         </React.Fragment>
 
@@ -156,7 +139,7 @@ class OrganizationDesc extends React.Component {
                             </header>
 
                             <section className="box">
-                                <tabs.instances />
+                                <tabs.instances/>
                             </section>
                         </React.Fragment>
                     }
@@ -167,32 +150,39 @@ class OrganizationDesc extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        organization: state.organization.current,
-        organizations: state.organization.organizations,
-        userInfo: state.userInfo,
+const
+    mapStateToProps = state => {
+        return {
+            organization: state.organization.current,
+            organizations: state.organization.organizations,
+            userInfo: state.userInfo,
+        };
     };
-};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchOrganizationWithId(id) {
-            return dispatch(fetchOrganizationWithId(id));
-        },
-        fetchUsersOfInstance(instance) {
-            return dispatch(fetchUsersOfInstance(instance));
-        },
-        fetchApplications() {
-            return dispatch(fetchApplications());
-        },
-        fetchOrganizationInfo(dcId) {
-            return dispatch(fetchOrganizationInfo(dcId));
-        },
-        fetchUserOrganizationsLazyMode() {
-            return dispatch(fetchUserOrganizationsLazyMode());
-        }
+const
+    mapDispatchToProps = dispatch => {
+        return {
+            fetchOrganizationWithId(id) {
+                return dispatch(fetchOrganizationWithId(id));
+            },
+            fetchUsersOfInstance(instance) {
+                return dispatch(fetchUsersOfInstance(instance));
+            },
+            fetchApplications() {
+                return dispatch(fetchApplications());
+            },
+            fetchOrganizationInfo(dcId) {
+                return dispatch(fetchOrganizationInfo(dcId));
+            },
+            fetchUserOrganizationsLazyMode() {
+                return dispatch(fetchUserOrganizationsLazyMode());
+            }
+        };
     };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationDesc);
+export default connect(mapStateToProps, mapDispatchToProps)
+
+(
+    OrganizationDesc
+)
+;

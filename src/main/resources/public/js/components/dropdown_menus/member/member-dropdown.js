@@ -108,6 +108,12 @@ class MemberDropdown extends React.Component {
         return this.props.fetchUpdateRoleMember(this.props.organization.id, this.props.member.id, isAdmin);
     }
 
+    handleDropDown = (dropDownState) => {
+        if(dropDownState){
+            //TODO fetch instances of the specific user, currently we need to fetch all the users of all the instances, then check in which instance is our user
+        }
+    };
+
     render() {
         const member = this.props.member;
         const isPending = !member.name;
@@ -118,11 +124,8 @@ class MemberDropdown extends React.Component {
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
                                              onUpdateRoleMember={this.onUpdateRoleMember}
                                              onRemoveInvitationToJoinAnOrg={this.removeInvitationToJoinAnOrg}/>;
-        const Footer = !isPending && org.admin && <MemberDropdownFooter member={member}
-                                                           instances={org.instances.filter(this.filterInstanceWithoutAccess)}
-                                                           onAddAccessToInstance={this.addAccessToInstance}/>;
-
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={!isPending}>
+        const dropDownicon = <i className="fa fa-list-alt option-icon"/>;
+        return <DropDownMenu header={Header} dropDownIcon={dropDownicon} isAvailable={!isPending} dropDownChange={this.handleDropDown}>
             { org.admin &&
                 <section className='dropdown-content'>
                     <ul className="list undecorated-list flex-col">
@@ -145,6 +148,9 @@ class MemberDropdown extends React.Component {
                             })
                         }
                     </ul>
+                    <MemberDropdownFooter member={member}
+                                          instances={org.instances.filter(this.filterInstanceWithoutAccess)}
+                                          onAddAccessToInstance={this.addAccessToInstance}/>
                 </section>
             }
         </DropDownMenu>

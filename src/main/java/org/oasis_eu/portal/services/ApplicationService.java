@@ -122,10 +122,11 @@ public class ApplicationService {
             .setIconUrl(imageService.getImageForURL(service.getIcon(), ImageFormat.PNG_64BY64, false));
     }
 
-    public InstanceService getService(String serviceId) {
-
-        return fetchService(catalogStore.findService(serviceId));
-
+    public List<InstanceService> getServices(String instanceId) {
+        return catalogStore.findServicesOfInstance(instanceId)
+                .stream()
+                .map(this::fetchService)
+                .collect(Collectors.toList());
     }
 
     public InstanceService updateService(String serviceId, ServiceEntry serviceEntry) {

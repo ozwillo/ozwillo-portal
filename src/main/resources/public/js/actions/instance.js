@@ -62,6 +62,14 @@ export const fetchUpdateServiceConfig = (instanceId, catalogEntry) => {
     };
 };
 
+export const fetchServicesOfInstance = (instanceId) => {
+    return customFetch(`/my/api/instance/${instanceId}/services`)
+        .then((services) => {
+            return (services);
+        });
+
+};
+
 
 
 

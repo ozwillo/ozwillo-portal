@@ -5,7 +5,7 @@ import {
     FETCH_CREATE_ORGANIZATION,
     FETCH_UPDATE_ORGANIZATION,
     FETCH_ORGANIZATION_INFO,
-    FETCH_UPDATE_STATUS_ORGANIZATION
+    FETCH_UPDATE_STATUS_ORGANIZATION, FETCH_ORGANIZATION_MEMBERS
 } from '../../actions/organization';
 
 import {
@@ -203,6 +203,9 @@ export default (state = defaultState, action) => {
         case FETCH_DELETE_ORGANIZATION_INVITATION:
         case FETCH_CREATE_ORGANIZATION_INVITATION:
             nextState.current = currentOrganizationState(state.current, action);
+            break;
+        case FETCH_ORGANIZATION_MEMBERS:
+            nextState.current.members = action.members;
             break;
         default:
             return state;

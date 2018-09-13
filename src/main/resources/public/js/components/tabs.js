@@ -28,7 +28,7 @@ class Tabs extends React.Component {
                     {
                         Object.keys(this.props.headers).map((tabName) => {
                             const Component = this.props.headers[tabName];
-                            return <li key={tabName} onClick={this.onChangeTab} data-tab={tabName}
+                            return <li key={tabName} data-tab={tabName}
                                        className={`header ${(tabName === tabToDisplay && 'active') || ''}`}>
                                 <Component/>
                             </li>

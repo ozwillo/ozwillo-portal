@@ -7,6 +7,7 @@ import CustomTooltip from '../../custom-tooltip';
 
 //Config
 import Config from '../../../config/config';
+import {fetchServicesOfInstance} from "../../../actions/instance";
 
 const instanceStatus = Config.instanceStatus;
 
@@ -49,7 +50,11 @@ class InstanceDropdownHeader extends React.Component {
     }
 
     onClickConfigIcon() {
-        this.props.onClickConfigIcon(this.props.instance);
+        fetchServicesOfInstance(this.props.instance.applicationInstance.id)
+            .then((services) => {
+                this.props.instance.services = services;
+                this.props.onClickConfigIcon(this.props.instance)
+            });
     }
 
     get numberOfDaysBeforeDeletion() {
@@ -59,7 +64,7 @@ class InstanceDropdownHeader extends React.Component {
         const days = Math.round((deletionDate - now) / TIME_DAY);
 
         return (days > 0) ? this.context.t('ui.message.will-be-deleted-plural').format(days) :
-                            this.context.t('ui.message.will-be-deleted');
+            this.context.t('ui.message.will-be-deleted');
     }
 
     render() {
