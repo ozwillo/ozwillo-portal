@@ -7,6 +7,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -57,5 +61,20 @@ public class ApplicationInstanceStoreImpl {
         List<ApplicationInstance> appInstancesList = Arrays.asList(kernel.getEntityOrException(uriString, ApplicationInstance[].class, user()));
         logger.debug("Found {} pending instances", appInstancesList.size());
         return appInstancesList;
+    }
+
+
+    public ApplicationInstance deletePendingInstance(String instanceId){
+        ResponseEntity<ApplicationInstance> respAppInstance = kernel.exchange(appsEndpoint + "/instance/{instance_id}",
+                HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
+        String eTag = respAppInstance.getHeaders().getETag();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("If-Match", eTag);
+
+        ResponseEntity<ApplicationInstance> object = kernel.exchange(appsEndpoint + "/instance/{instanceId}", HttpMethod.DELETE,
+                new HttpEntity<>(null,headers), ApplicationInstance.class, user(), instanceId);
+        logger.debug("Delete pending instance", object);
+        return object.getBody();
     }
 }
