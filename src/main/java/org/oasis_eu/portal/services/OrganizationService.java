@@ -557,7 +557,9 @@ public class OrganizationService {
         }
 
         org.setStatus(uiOrganization.getStatus());
-        return UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
+        UIOrganization uiOrganizationReturned =  UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
+        uiOrganizationReturned.setAdmin(true);
+        return uiOrganizationReturned;
     }
 
     private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) {

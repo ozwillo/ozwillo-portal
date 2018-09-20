@@ -25,6 +25,7 @@
 @import 'components/forms/instance-config-form.css';
 @import 'components/forms/instance-invitation-form.css';
 @import 'components/forms/organization-invitation-form.css';
+@import 'components/organization-card.css';
 /* Pages */
 @import 'pages/dashboard.css';
 @import 'pages/notifications.css';

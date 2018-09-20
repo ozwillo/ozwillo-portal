@@ -18,10 +18,15 @@ export default class OrganizationCard extends React.PureComponent {
 
     componentDidMount() {
         const {organization} = this.props;
-        customFetch(`/my/api/organization/light/${organization.dcOrganizationId}`)
+        this._getOrganizationDetails(organization.dcOrganizationId);
+    }
+
+
+    _getOrganizationDetails = (dcOrganizationId) => {
+        customFetch(`/my/api/organization/light/${dcOrganizationId}`)
             .then(res => this.setState({orgDetails: res, isLoading: false}))
             .catch(err => console.error(err))
-    }
+    };
 
     _numberOfDaysBeforeDeletion() {
         const now = Date.now();
@@ -36,12 +41,13 @@ export default class OrganizationCard extends React.PureComponent {
     _handleCancelRemoveOrganization = (e) => {
         e.preventDefault();
         const {orgDetails} = this.state;
-        const organizationToDelete = {id: orgDetails.id, status: Config.organizationStatus.available};
+        orgDetails.status = Config.organizationStatus.available;
+        let org = {id: orgDetails.id, status: Config.organizationStatus.available};
         customFetch(`/my/api/organization/${orgDetails.id}/status`, {
             method: 'PUT',
-            json: organizationToDelete
+            json: org
         }).then((res) => {
-            console.log(res);
+            console.log("delete", res);
             this.setState({error: '', orgDetails: res});
         })
             .catch(err => {
@@ -53,11 +59,12 @@ export default class OrganizationCard extends React.PureComponent {
     _handleRemoveOrganization = (e) => {
         e.preventDefault();
         const {orgDetails} = this.state;
-        const organizationToDelete = {id: orgDetails.id, status: Config.organizationStatus.deleted};
+        let org = {id: orgDetails.id, status: Config.organizationStatus.deleted};
         customFetch(`/my/api/organization/${orgDetails.id}/status`, {
             method: 'PUT',
-            json: organizationToDelete
+            json: org
         }).then((res) => {
+            console.log("delete", res);
             this.setState({error: '', orgDetails: res});
         })
             .catch(err => {
@@ -97,13 +104,15 @@ export default class OrganizationCard extends React.PureComponent {
 
         if (isLoading) {
             return (
-                <div className="container-loading text-center">
-                    <i className="fa fa-spinner fa-spin loading"/>
+                <div className="organization-card container-loading text-center">
+                    <div className={"content"}>
+                        <i className="fa fa-spinner fa-spin loading"/>
+                    </div>
                 </div>)
         }
 
-        if(orgDetails.personal){
-            return(
+        if (orgDetails.personal) {
+            return (
                 <CustomTooltip key={`${dcOrganizationId}-instance-tab`}
                                title={this.context.t('tooltip.instances')}>
                     <Link className="btn icon"
@@ -116,51 +125,43 @@ export default class OrganizationCard extends React.PureComponent {
 
         if (isAvailable) {
             return (
-                <div className={"btn btn-default-inverse btn-pill flex-row"}>
-                    <Link to={url}>
-                        {name}
-                    </Link>
-                    <div className={"flex-row"}>
-                        <RedirectButtonWithTooltip key={`${dcOrganizationId}-instance-tab`}
-                                                   link={url + 'instances'}
+                <Link to={url} className={"organization-card btn btn-default-inverse"}>
+                    <div className={"card-title"}>{name}</div>
+                    <div className={"content"}>
+                        <RedirectButtonWithTooltip link={url + 'instances'}
                                                    tooltipTitle={this.context.t('tooltip.instances')}>
                             <i className="fa fa-list-alt option-icon"/>
                         </RedirectButtonWithTooltip>
-                        <RedirectButtonWithTooltip key={`${dcOrganizationId}-member-tab`}
-                                                   link={url + 'members'}
+                        <RedirectButtonWithTooltip link={url + 'members'}
                                                    tooltipTitle={this.context.t('tooltip.members')}>
                             <i className="fa fa-users option-icon"/>
                         </RedirectButtonWithTooltip>
                         {isAdmin &&
-                        <RedirectButtonWithTooltip key={`${dcOrganizationId}-admin-tab`}
-                                                   link={url + 'admin'}
+                        <RedirectButtonWithTooltip link={url + 'admin'}
                                                    tooltipTitle={this.context.t('tooltip.admin')}>
                             <i className="fa fa-info-circle option-icon"/>
                         </RedirectButtonWithTooltip>
                         }
-                        <CustomTooltip key={`${dcOrganizationId}-delete`}
-                                       className={`${!dcOrganizationId && 'invisible' || ''}`}
-                                       title={this.context.t('tooltip.delete.organization')}>
-                            <button onClick={this._handleRemoveOrganization}
-                                    className="btn icon">
-                                <i className="fa fa-trash option-icon"/>
-                            </button>
-                        </CustomTooltip>
                     </div>
-                </div>
+                    <CustomTooltip
+                        className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
+                        title={this.context.t('tooltip.delete.organization')}>
+                        <i onClick={this._handleRemoveOrganization} className="fa fa-trash option-icon"/>
+                    </CustomTooltip>
+                </Link>
             )
         } else if (!isAvailable && isAdmin) {
             return (
-                <React.Fragment>
-                <span key={`${dcOrganizationId}-message`} className="message delete">
-                                {this._numberOfDaysBeforeDeletion()}
-                            </span>
-                    <button key={`${dcOrganizationId}-btn`}
+                <div className={"organization-card btn btn-default-inverse"}>
+                    <div className={"card-title"}>{this._numberOfDaysBeforeDeletion()}</div>
+                    <div className={"content"}>
+                        <button
                             onClick={this._handleCancelRemoveOrganization}
-                            className="btn btn-default-inverse">
-                        {this.context.t('ui.cancel')}
-                    </button>
-                </React.Fragment>
+                            className="btn btn-default">
+                            {this.context.t('ui.cancel')}
+                        </button>
+                    </div>
+                </div>
             )
         }
     }

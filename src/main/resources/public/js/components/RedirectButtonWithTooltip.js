@@ -10,7 +10,7 @@ export default class RedirectButtonWithTooltip extends React.PureComponent {
         const {tooltipTitle, link, children, ...rest} = this.props;
         return (
             <CustomTooltip title={tooltipTitle}>
-                <Link className="btn icon" to={link} {...rest}>
+                <Link to={link} {...rest}>
                     {children}
                 </Link>
             </CustomTooltip>
