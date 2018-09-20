@@ -45,6 +45,10 @@ class OrganizationController {
         return organizationService.getOrganizationFromKernel(organizationId);
     }
 
+    @GetMapping ("/light/{organizationId}")
+    public UIOrganization getLightOrganization(@PathVariable String organizationId) {
+        return organizationService.getOrganizationFromKernelWithoutInstances(organizationId);
+    }
     @GetMapping(value = "/info")
     public DCOrganization getOrganizationInfo(@RequestParam String dcId) {
         return organizationService.getOrganization(dcId);

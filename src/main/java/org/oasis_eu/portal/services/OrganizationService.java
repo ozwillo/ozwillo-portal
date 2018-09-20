@@ -345,9 +345,11 @@ public class OrganizationService {
     }
 
     public UIOrganization getOrganizationFromKernel(String organizationId) {
-        String userId = userInfoService.currentUser().getUserId();
-
         return fetchOrganizationWithInstances(organizationId);
+    }
+
+    public UIOrganization getOrganizationFromKernelWithoutInstances(String organizationId){
+        return  getKernelOrganization(organizationId);
     }
 
     private UIOrganization fetchOrganizationWithInstances(String organizationId) {
