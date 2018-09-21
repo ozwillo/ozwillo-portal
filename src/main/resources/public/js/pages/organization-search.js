@@ -27,7 +27,8 @@ class OrganizationSearch extends React.Component {
             isLoading: true,
             inputValue: '',
             organizationSelected: {},
-            organizationsHistory: []
+            organizationsHistory: [],
+            organizationHistoryMessage: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
@@ -40,9 +41,11 @@ class OrganizationSearch extends React.Component {
     _handleOrganizationsHistory = () => {
         customFetch("/my/api/organizationHistory")
             .then(res => {
-                if(res){
+                if(res && res.length >0){
                     this._sortOrganizationHistoryByDate(res);
-                    this.setState({organizationsHistory: res});
+                    this.setState({organizationsHistory: res, organizationHistoryMessage: ''});
+                } else {
+                    this.setState({organizationHistoryMessage: this.context.t("organization.search.history.empty")});
                 }
             });
     };
@@ -60,15 +63,19 @@ class OrganizationSearch extends React.Component {
     }
 
     _displayOrganizationsHistory = () => {
-        const {organizationsHistory} = this.state;
-        let result = [];
-        organizationsHistory.map(organization => {
-            let dcOrganizationId = organization.dcOrganizationId;
-            let organizationCard = (
-                <OrganizationCard key={dcOrganizationId} organization={organization}/>);
-            result.push(organizationCard)
-        });
-        return result;
+        const {organizationsHistory, organizationHistoryMessage} = this.state;
+        if (organizationsHistory.length > 0) {
+            let result = [];
+            organizationsHistory.map(organization => {
+                let dcOrganizationId = organization.dcOrganizationId;
+                let organizationCard = (
+                    <OrganizationCard key={dcOrganizationId} organization={organization}/>);
+                result.push(organizationCard)
+            });
+            return result;
+        }else{
+            return organizationHistoryMessage;
+        }
     };
 
     render() {
@@ -106,8 +113,9 @@ class OrganizationSearch extends React.Component {
                 </form>
 
                 <div className={"container-organization-history"}>
-                    <div className={"content"}>
-                    {this._displayOrganizationsHistory()}
+                    <p className={"history-title"}>{this.context.t("organization.search.history.description")} : </p>
+                    <div className={"content-card-history"}>
+                        {this._displayOrganizationsHistory()}
                     </div>
                 </div>
             </section>

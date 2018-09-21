@@ -55,22 +55,28 @@
     display: none;
 }
 
-.organization-search .container-organization-history{
-    flex-direction: row;
-    display: flex;
-    justify-content: center;
+.organization-search .history-title{
+    font-size: 1.25em;
 }
-.organization-search .container-organization-history .content{
+
+.organization-search .container-organization-history{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+.organization-search .container-organization-history .content-card-history{
     flex-wrap: wrap;
     flex-direction: row;
     display: flex;
     justify-content: center;
+    width: 80%;
 
 }
 
-.organization-search .container-organization-history .content>*{
+.organization-search .container-organization-history .content-card-history>*{
   margin-top:10px;
 }
+
 
 
 

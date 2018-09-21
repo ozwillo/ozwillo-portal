@@ -85,7 +85,7 @@ public final class i18nMessages {
             "form.desynchronize-without-pwd", "form.desynchronize-without-pwd-help");
 
 
-    private static final List<String> organizationSearchKeys = Arrays.asList("title", "new", "no-apps-installed");
+    private static final List<String> organizationSearchKeys = Arrays.asList("title", "new", "no-apps-installed", "history.description", "history.empty");
 
     private static final List<String> organizationFormKeys = Arrays.asList("email", "create",
             "title", "contact-information", "admin");

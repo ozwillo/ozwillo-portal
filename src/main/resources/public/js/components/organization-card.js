@@ -105,7 +105,7 @@ export default class OrganizationCard extends React.PureComponent {
         if (isLoading) {
             return (
                 <div className="organization-card container-loading text-center">
-                    <div className={"content"}>
+                    <div className={"content-card"}>
                         <i className="fa fa-spinner fa-spin loading"/>
                     </div>
                 </div>)
@@ -127,7 +127,7 @@ export default class OrganizationCard extends React.PureComponent {
             return (
                 <Link to={url} className={"organization-card btn btn-default-inverse"}>
                     <div className={"card-title"}>{name}</div>
-                    <div className={"content"}>
+                    <div className={"content-card"}>
                         <RedirectButtonWithTooltip link={url + 'instances'}
                                                    tooltipTitle={this.context.t('tooltip.instances')}>
                             <i className="fa fa-list-alt option-icon"/>
@@ -153,8 +153,8 @@ export default class OrganizationCard extends React.PureComponent {
         } else if (!isAvailable && isAdmin) {
             return (
                 <div className={"organization-card btn btn-default-inverse"}>
-                    <div className={"card-title"}>{this._numberOfDaysBeforeDeletion()}</div>
-                    <div className={"content"}>
+                    <div className={"text-center"}>{this._numberOfDaysBeforeDeletion()}</div>
+                    <div className={"card-title"}>
                         <button
                             onClick={this._handleCancelRemoveOrganization}
                             className="btn btn-default">

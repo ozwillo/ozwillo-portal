@@ -5,7 +5,11 @@
     flex-direction: column;
 }
 
-.organization-card .content {
+.organization-card .card-title{
+    text-align: center !important;
+}
+
+.organization-card .content-card {
     display: flex;
     justify-content: space-around !important;
     flex-direction: row;
@@ -18,17 +22,13 @@
     font-size: 1.5em;
 }
 
-.organization-card .card-title{
-    text-align: center;
-
-}
 
 .organization-card .delete .option-icon {
     color: var(--alert-color) !important;
 }
 
 
-.organization-card .content .option-icon{
+.organization-card .content-card .option-icon{
     font-size: 1.5em;
     padding: 0.2em;
     color: var(--tertiary-color);
@@ -40,7 +40,7 @@
     color: var(--secondary-color);
 }
 
-.organization-card .content .option-icon{
+.organization-card .content-card .option-icon{
     font-size: 1.5em;
     padding: 0.2em;
 }
