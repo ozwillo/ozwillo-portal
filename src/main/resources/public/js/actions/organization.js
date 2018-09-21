@@ -6,7 +6,6 @@ export const FETCH_USER_ORGANIZATIONS_LAZY_MODE = 'FETCH_USER_ORGANIZATIONS_LAZY
 export const FETCH_CREATE_ORGANIZATION = 'FETCH_CREATE_ORGANIZATION';
 export const FETCH_UPDATE_ORGANIZATION = 'FETCH_UPDATE_ORGANIZATION';
 export const FETCH_ORGANIZATION_INFO = 'FETCH_ORGANIZATION_INFO';
-export const FETCH_UPDATE_STATUS_ORGANIZATION = 'FETCH_UPDATE_STATUS_ORGANIZATION';
 export const FETCH_ORGANIZATION_MEMBERS = 'FETCH_ORGANIZATION_MEMBERS';
 
 // Actions
@@ -58,13 +57,6 @@ const fetchOrganizationMembersAction = (members) => {
         members
     };
 
-};
-
-const fetchUpdateStatusOrganizationAction = (organization) => {
-    return {
-        type: FETCH_UPDATE_STATUS_ORGANIZATION,
-        organization
-    };
 };
 
 // Async methods
@@ -155,15 +147,4 @@ export const fetchOrganizationMembers = (organizationId) => {
                 return dispatch(fetchOrganizationMembersAction(members));
             })
     })
-};
-
-export const fetchUpdateStatusOrganization = (organization) => {
-    return dispatch => {
-        return customFetch(`/my/api/organization/${organization.id}/status`, {
-            method: 'PUT',
-            json: organization
-        }).then(({id, status}) => {
-            return dispatch(fetchUpdateStatusOrganizationAction({id, status}));
-        });
-    };
 };
