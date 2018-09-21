@@ -1,6 +1,7 @@
 package org.oasis_eu.portal.services.kernel;
 
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
@@ -67,6 +69,11 @@ public class ApplicationInstanceStoreImpl {
     public ApplicationInstance deletePendingInstance(String instanceId){
         ResponseEntity<ApplicationInstance> respAppInstance = kernel.exchange(appsEndpoint + "/instance/{instance_id}",
                 HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
+
+        if(!Objects.requireNonNull(respAppInstance.getBody()).getStatus().equals(ApplicationInstance.InstantiationStatus.PENDING)){
+            throw new WrongQueryException("Instance is not pending");
+        }
+
         String eTag = respAppInstance.getHeaders().getETag();
 
         HttpHeaders headers = new HttpHeaders();
