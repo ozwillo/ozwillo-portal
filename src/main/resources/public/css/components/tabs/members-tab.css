@@ -18,13 +18,7 @@
     margin-bottom: 20px;
 }
 
-.add-member .label,
-.add-member .action-icon,
-.add-member .legend {
-    color: white !important;
-}
-
-.members-tab .search-member .members-list > .member {
+.members-tab .members-list > .member {
     margin: 10px 0;
 }
 

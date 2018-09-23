@@ -75,7 +75,7 @@ class OrganizationInvitationForm extends React.Component {
                     </div>
 
 
-                    <div className="options flex-row end">
+                    <div className="options flex-row">
 {/*
                         <label className="label">
                             {this.context.t('organization.form.admin')}
@@ -86,7 +86,7 @@ class OrganizationInvitationForm extends React.Component {
                         <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
                             {
                                 !this.state.isLoading &&
-                                this.context.t('ui.invite')
+                                this.context.t('my.network.invite-user')
                             }
                             {
 

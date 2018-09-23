@@ -110,7 +110,7 @@ class AddInstanceDropdown extends React.Component {
                 members={membersWithoutAccess}
                 onAddMember={this.onAddMember}/>;*/
 
-        return <DropDownMenu header={Header} /*footer={Footer}*/ isAvailable={false}>
+        return <DropDownMenu header={Header} /*footer={Footer}*/ isAvailable={false} className="action-header">
             {/*
             <section className='dropdown-content'>
                 <ul className="list undecorated-list flex-col">

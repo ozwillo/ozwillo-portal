@@ -73,11 +73,11 @@ class AddInstanceDropdownHeader extends React.Component {
                     <span className="error-message">{error.message + ' ('+ this.context.t('error-code')+' : ' + error.http_status+')'}</span>
                 }
 
-                <div className="options flex-row end">
+                <div className="options flex-row">
                     {
                         !this.state.isLoading ?
                         < button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
-                            {this.context.t('ui.send')}
+                            {this.context.t('install')}
                         </button> : null
                     }
 

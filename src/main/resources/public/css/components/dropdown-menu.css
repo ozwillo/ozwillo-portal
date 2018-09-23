@@ -7,11 +7,16 @@
 .oz-dropdown-menu > .header {
     display: flex;
     flex-direction: row;
-    padding: 5px 10px;
+    padding: 5px 8px;
     align-items: center;
 
-    color: var(--tertiary-color);
-    background-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: var(--tertiary-color);
+    border-left: 2px solid var(--primary-color);
+}
+
+.oz-dropdown-menu.action-header > .header {
+    border: none;
 }
 
 .oz-dropdown-menu > .header .content {
@@ -47,11 +52,12 @@
 
 .oz-dropdown-menu > .header .dropdown-icons:hover {
     background-color: var(--secondary-color);
+    color: var(--tertiary-color);
 }
-
 
 .oz-dropdown-menu > .content,
 .oz-dropdown-menu > .footer {
+    border-left: 2px solid var(--primary-color);
     background-color: var(--tertiary-color);
     padding: 5px 10px;
 }
@@ -67,10 +73,12 @@
 }
 
 /* Service dropdown */
+
 .dropdown-header .form .dropdown-name {
     height: 100%;
     width: auto;
     align-items: center;
+    color: var(--primary-color);
 }
 
 /* Organization dropdown */

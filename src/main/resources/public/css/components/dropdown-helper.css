@@ -24,7 +24,6 @@
 .dropdown-header .form .dropdown-name {
     min-width: 150px;
     margin: 0;
-    color: var(--tertiary-color);
 }
 
 .dropdown-content .message,
@@ -127,7 +126,9 @@
     font-size: 1.6em;
 }
 
-.dropdown-header .option-icon {
+.dropdown-header .option-icon:hover,
+.dropdown-content .option-icon:hover,
+.dropdown-footer .option-icon:hover {
     color: var(--tertiary-color);
 }
 
@@ -152,6 +153,7 @@
 
 .dropdown-header .btn.icon:hover {
     background-color: var(--secondary-color);
+    color: var(--tertiary-color);
 }
 
 @media (max-width: 425px) {
