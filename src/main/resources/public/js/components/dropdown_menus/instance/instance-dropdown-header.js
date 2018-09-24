@@ -29,7 +29,7 @@ class InstanceDropdownHeader extends React.Component {
     };
 
     state = {
-        error: {status : false, http_status : 200}
+        error: {status : false, http_status : 200, message: ''}
     };
 
     static defaultProps = {
@@ -55,7 +55,13 @@ class InstanceDropdownHeader extends React.Component {
         }).then((res) => {
             return res;
         }).catch(err => {
-            const error = {status: true ,http_status: err.status};
+            let message = '';
+            if(err.status !== 409){
+                message = 'ui.error';
+            }else{
+                message = 'error.msg.delete-pending-instance';
+            }
+            const error = {status: true ,http_status: err.status, message: message};
             this.setState({error: error})
         });
     };
@@ -84,7 +90,7 @@ class InstanceDropdownHeader extends React.Component {
     }
 
     _displayError = () => {
-        const {status, http_status} = this.state.error;
+        const {status, http_status, message} = this.state.error;
         const defaultError = {status: false, http_status: 200};
 
         if (status) {
@@ -93,7 +99,7 @@ class InstanceDropdownHeader extends React.Component {
                      style={{marginBottom: 0, alignItems: 'center'}}>
                     <strong>{this.context.t('sorry')}</strong>
                     &nbsp;
-                    {this.context.t('ui.error') + ' (' + this.context.t('error-code') + ' : ' + http_status + ')'}
+                    {this.context.t(message) + ' (' + this.context.t('error-code') + ' : ' + http_status + ')'}
                     &nbsp;
                     <button type="button" className="close" data-dismiss="alert"
                             onClick={() => this.setState({error: defaultError})}>

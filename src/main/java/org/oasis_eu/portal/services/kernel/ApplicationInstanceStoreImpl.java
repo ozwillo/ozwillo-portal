@@ -71,7 +71,7 @@ public class ApplicationInstanceStoreImpl {
                 HttpMethod.GET, null, ApplicationInstance.class, user(), instanceId);
 
         if(!Objects.requireNonNull(respAppInstance.getBody()).getStatus().equals(ApplicationInstance.InstantiationStatus.PENDING)){
-            throw new WrongQueryException("Instance is not pending");
+            throw new WrongQueryException("Instance is not pending",409);
         }
 
         String eTag = respAppInstance.getHeaders().getETag();

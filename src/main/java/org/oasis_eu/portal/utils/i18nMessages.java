@@ -94,7 +94,7 @@ public final class i18nMessages {
             "add-application", "add-in-organization", "send-invitation", "form.success", "add-to-instance-from-members",
             "add-to-instance-by-email", "add-user-to-instance");
 
-    private static final List<String> errors = Arrays.asList("datacore.forbidden");
+    private static final List<String> errors = Arrays.asList("datacore.forbidden", "msg.delete-pending-instance");
 
     private static final List<String> tooltipKeys = Arrays.asList("instances", "members", "admin", "config", "pending",
             "delete.organization", "delete.instance", "delete.member", "remove.right", "remove.icon",
