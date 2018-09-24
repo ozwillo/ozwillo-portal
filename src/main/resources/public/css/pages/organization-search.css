@@ -1,6 +1,9 @@
 .organization-search form.search {
     margin: 20px auto;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
 }
 
 .organization-search form.search {
@@ -9,9 +12,7 @@
 
 .organization-search .search .field {
     margin: auto;
-
-    width: 50%;
-    min-width: 300px;
+    min-width: 45vw;
 }
 .organization-search .search .react-autosuggest__suggestions-container--open{
     margin: auto;
@@ -59,6 +60,12 @@
     font-size: 1.25em;
 }
 
+
+.organization-search .history-title i{
+    padding-right: 0.5em;
+    color: var(--primary-color);
+}
+
 .organization-search .container-organization-history{
     flex-direction: column;
     display: flex;
@@ -69,13 +76,10 @@
     flex-direction: row;
     display: flex;
     justify-content: center;
-    width: 80%;
+    width: 90%;
 
 }
 
-.organization-search .container-organization-history .content-card-history>*{
-  margin-top:10px;
-}
 
 
 

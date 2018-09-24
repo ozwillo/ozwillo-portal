@@ -125,41 +125,45 @@ export default class OrganizationCard extends React.PureComponent {
 
         if (isAvailable) {
             return (
-                <Link to={url} className={"organization-card btn btn-default-inverse"}>
-                    <div className={"card-title"}>{name}</div>
-                    <div className={"content-card"}>
-                        <RedirectButtonWithTooltip link={url + 'instances'}
-                                                   tooltipTitle={this.context.t('tooltip.instances')}>
-                            <i className="fa fa-list-alt option-icon"/>
-                        </RedirectButtonWithTooltip>
-                        <RedirectButtonWithTooltip link={url + 'members'}
-                                                   tooltipTitle={this.context.t('tooltip.members')}>
-                            <i className="fa fa-users option-icon"/>
-                        </RedirectButtonWithTooltip>
-                        {isAdmin &&
-                        <RedirectButtonWithTooltip link={url + 'admin'}
-                                                   tooltipTitle={this.context.t('tooltip.admin')}>
-                            <i className="fa fa-info-circle option-icon"/>
-                        </RedirectButtonWithTooltip>
-                        }
+                <Link to={url} className={"btn btn-default wrap-organization-card"}>
+                    <div className={'organization-card'}>
+                        <p className={"card-title"}>{name}</p>
+                        <div className={"content-card"}>
+                            <RedirectButtonWithTooltip link={url + 'instances'}
+                                                       tooltipTitle={this.context.t('tooltip.instances')}>
+                                <i className="fa fa-list-alt option-icon"/>
+                            </RedirectButtonWithTooltip>
+                            <RedirectButtonWithTooltip link={url + 'members'}
+                                                       tooltipTitle={this.context.t('tooltip.members')}>
+                                <i className="fa fa-users option-icon"/>
+                            </RedirectButtonWithTooltip>
+                            {isAdmin &&
+                            <RedirectButtonWithTooltip link={url + 'admin'}
+                                                       tooltipTitle={this.context.t('tooltip.admin')}>
+                                <i className="fa fa-info-circle option-icon"/>
+                            </RedirectButtonWithTooltip>
+                            }
+                            <CustomTooltip
+                                className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
+                                title={this.context.t('tooltip.delete.organization')}>
+                                <i onClick={this._handleRemoveOrganization} className="fa fa-trash option-icon"/>
+                            </CustomTooltip>
+                        </div>
                     </div>
-                    <CustomTooltip
-                        className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
-                        title={this.context.t('tooltip.delete.organization')}>
-                        <i onClick={this._handleRemoveOrganization} className="fa fa-trash option-icon"/>
-                    </CustomTooltip>
                 </Link>
             )
         } else if (!isAvailable && isAdmin) {
             return (
-                <div className={"organization-card btn btn-default-inverse"}>
-                    <div className={"text-center"}>{this._numberOfDaysBeforeDeletion()}</div>
-                    <div className={"card-title"}>
-                        <button
-                            onClick={this._handleCancelRemoveOrganization}
-                            className="btn btn-default">
-                            {this.context.t('ui.cancel')}
-                        </button>
+                <div className={"wrap-organization-card btn btn-default"}>
+                    <div className={"organization-card"}>
+                        <div className={"card-title"}>{this._numberOfDaysBeforeDeletion()}</div>
+                        <div className={"content-card"}>
+                            <button
+                                onClick={this._handleCancelRemoveOrganization}
+                                className="btn btn-default-inverse">
+                                {this.context.t('ui.cancel')}
+                            </button>
+                        </div>
                     </div>
                 </div>
             )

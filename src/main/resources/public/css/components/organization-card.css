@@ -1,27 +1,34 @@
+.wrap-organization-card {
+    margin: 2em 1.5em 0 1.5em;
+    border-radius: 8px !important;
+}
+
 .organization-card {
-    width: 100%;
-    max-width: 150px;
+    height: 150px;
+    max-height: 150px;
+    width: 200px;
+    max-width: 200px;
+    flex: 0 1 auto;
+    flex-flow: column wrap;
+    justify-content: space-between;
     display: flex;
-    flex-direction: column;
 }
 
 .organization-card .card-title{
     text-align: center !important;
+    font-size: 1.2em;
+    white-space: normal;
+    margin-top: 1em;
 }
 
 .organization-card .content-card {
     display: flex;
-    justify-content: space-around !important;
     flex-direction: row;
     width: 100%;
+    justify-content: center;
+    align-self: flex-end;
     flex-wrap: wrap;
 }
-
-.organization-card .delete{
-    margin-top: 10%;
-    font-size: 1.5em;
-}
-
 
 .organization-card .delete .option-icon {
     color: var(--alert-color) !important;
@@ -31,13 +38,13 @@
 .organization-card .content-card .option-icon{
     font-size: 1.5em;
     padding: 0.2em;
-    color: var(--tertiary-color);
+    color: var(--primary-color);
 }
 
 .organization-card:active .option-icon,
 .organization-card:focus .option-icon,
 .organization-card:hover .option-icon{
-    color: var(--secondary-color);
+    color: var(--tertiary-color);
 }
 
 .organization-card .content-card .option-icon{

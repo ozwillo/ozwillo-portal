@@ -88,12 +88,6 @@ class OrganizationSearch extends React.Component {
 
             <UpdateTitle title={this.context.t('organization.search.title')}/>
 
-            <div className="flex-row end options">
-                <Link to="/my/organization/create" className="btn btn-default undecorated-link">
-                    {this.context.t('organization.search.new')}
-                </Link>
-            </div>
-
             <section>
                 <header className="title">
                     <span>{this.context.t('organization.search.title')}</span>
@@ -110,10 +104,18 @@ class OrganizationSearch extends React.Component {
                         }}
                         placeholder={this.context.t('ui.search')}
                     />
+                    <div className="flex-row end options">
+                        <Link to="/my/organization/create" className="btn btn-default-inverse undecorated-link">
+                            {this.context.t('organization.search.new')}
+                        </Link>
+                    </div>
                 </form>
 
                 <div className={"container-organization-history"}>
-                    <p className={"history-title"}>{this.context.t("organization.search.history.description")} : </p>
+                    <p className={"history-title"}>
+                        <i className={"fa fa-star"}/>
+                        {this.context.t("organization.search.history.description")} :
+                    </p>
                     <div className={"content-card-history"}>
                         {this._displayOrganizationsHistory()}
                     </div>
