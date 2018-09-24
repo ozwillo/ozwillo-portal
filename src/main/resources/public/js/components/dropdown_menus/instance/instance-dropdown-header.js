@@ -8,6 +8,7 @@ import CustomTooltip from '../../custom-tooltip';
 //Config
 import Config from '../../../config/config';
 import {fetchServicesOfInstance} from "../../../actions/instance";
+import customFetch from '../../../util/custom-fetch';
 
 const instanceStatus = Config.instanceStatus;
 
@@ -24,7 +25,11 @@ class InstanceDropdownHeader extends React.Component {
         onRemoveInstance: PropTypes.func.isRequired,
         onCancelRemoveInstance: PropTypes.func.isRequired,
         onClickConfigIcon: PropTypes.func.isRequired,
-        isAdmin: PropTypes.bool
+        isAdmin: PropTypes.bool,
+    };
+
+    state = {
+        error: {status : false, http_status : 200, message: ''}
     };
 
     static defaultProps = {
@@ -40,9 +45,26 @@ class InstanceDropdownHeader extends React.Component {
     }
 
     onRemoveInstance(e) {
-        e.preventDefault();
         this.props.onRemoveInstance(this.props.instance);
     }
+
+    onRemovePendingInstance = (e) => {
+        e.preventDefault();
+        customFetch(`/my/api/instance/${this.props.instance.id}`, {
+            method: 'DELETE',
+        }).then((res) => {
+            return res;
+        }).catch(err => {
+            let message = '';
+            if(err.status !== 409){
+                message = 'ui.error';
+            }else{
+                message = 'error.msg.delete-pending-instance';
+            }
+            const error = {status: true ,http_status: err.status, message: message};
+            this.setState({error: error})
+        });
+    };
 
     onCancelRemoveInstance(e) {
         e.preventDefault();
@@ -67,6 +89,28 @@ class InstanceDropdownHeader extends React.Component {
             this.context.t('ui.message.will-be-deleted');
     }
 
+    _displayError = () => {
+        const {status, http_status, message} = this.state.error;
+        const defaultError = {status: false, http_status: 200};
+
+        if (status) {
+            return (
+                <div className="alert alert-danger flex-row center end" role="alert"
+                     style={{marginBottom: 0, alignItems: 'center'}}>
+                    <strong>{this.context.t('sorry')}</strong>
+                    &nbsp;
+                    {this.context.t(message) + ' (' + this.context.t('error-code') + ' : ' + http_status + ')'}
+                    &nbsp;
+                    <button type="button" className="close" data-dismiss="alert"
+                            onClick={() => this.setState({error: defaultError})}>
+                        <span aria-hidden="true">&times;</span>
+                        <span className="sr-only">{this.context.t('ui.close')}</span>
+                    </button>
+                </div>
+            )
+        }
+    };
+
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
@@ -77,10 +121,13 @@ class InstanceDropdownHeader extends React.Component {
         return <header className="dropdown-header">
             <form className="form flex-row"
                   onSubmit={(isRunning && this.onRemoveInstance) ||
-                  (isStopped && this.onCancelRemoveInstance) || null}>
+                  (isStopped && this.onCancelRemoveInstance) || (isPending && this.onRemovePendingInstance)}>
                 <span className="dropdown-name">{instance.name}</span>
 
                 <div className="options flex-row end">
+
+                    {this._displayError()}
+
                     {
                         !isStopped && !isPending && isAdmin &&
                         <CustomTooltip title={this.context.t('tooltip.config')}>
@@ -100,7 +147,7 @@ class InstanceDropdownHeader extends React.Component {
                     }
 
                     <CustomTooltip title={this.context.t('tooltip.remove.instance')}
-                                   className={`${(isStopped || isPending || !isAdmin) ? 'invisible' : ''}`}>
+                                   className={`${(isStopped || !isAdmin) ? 'invisible' : ''}`}>
                         <button type="submit"
                                 className="btn icon">
                             <i className="fa fa-trash option-icon"/>
