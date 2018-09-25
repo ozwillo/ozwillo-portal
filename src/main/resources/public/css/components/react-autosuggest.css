@@ -45,3 +45,9 @@ ul.react-autosuggest__suggestions-list li p {
     font-style: italic;
     font-weight: 200;
 }
+
+.react-autosuggest__suggestion--highlighted, .react-autosuggest__suggestion:hover {
+    background-color: var(--primary-color);
+    width: 100%;
+    color: var(--tertiary-color);
+}

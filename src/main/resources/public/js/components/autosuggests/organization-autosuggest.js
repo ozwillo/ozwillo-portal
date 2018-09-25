@@ -65,7 +65,7 @@ export default class OrganizationAutoSuggest extends React.Component {
     };
 
     getSuggestionValue = (suggestion) => {
-        return suggestion.legal_name || OrganizationAutoSuggest.defaultProps.value;
+        return suggestion['organization_name'] || OrganizationAutoSuggest.defaultProps.value;
     };
 
     handleOnChange = (event, {newValue}) => {

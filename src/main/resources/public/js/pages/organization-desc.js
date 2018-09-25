@@ -11,7 +11,7 @@ import {AdminTabHeader, AdminTab} from '../components/tabs/admin-tab';
 import UpdateTitle from '../components/update-title';
 
 //actions
-import {fetchOrganizationWithId, fetchOrganizationInfo, fetchUserOrganizationsLazyMode} from "../actions/organization";
+import {fetchOrganizationWithId, fetchOrganizationInfo} from "../actions/organization";
 import {fetchUsersOfInstance} from "../actions/instance";
 import {fetchApplications} from "../actions/app-store";
 import customFetch from "../util/custom-fetch";
@@ -42,7 +42,8 @@ class OrganizationDesc extends React.Component {
 
         this.state = {
             isLoading: false,
-            orgSelected: null
+            orgSelected: null,
+            organizations: []
         };
 
         this.onChangeOrganization = this.onChangeOrganization.bind(this);
@@ -61,6 +62,10 @@ class OrganizationDesc extends React.Component {
                 this.setState({orgSelected: this.props.organization});
                 this.setState({isLoading: false});
             });
+        customFetch('/my/api/organization')
+            .then((organizations) => {
+                this.setState({organizations: organizations})
+            });
     }
 
 
@@ -76,7 +81,6 @@ class OrganizationDesc extends React.Component {
 
     componentDidMount() {
         this.initialize(this.props.match.params.id);
-        this.props.fetchUserOrganizationsLazyMode();
         this.props.fetchApplications();
     }
 
@@ -88,7 +92,7 @@ class OrganizationDesc extends React.Component {
         const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
         const isOrgAdmin = this.props.organization.admin;
 
-        let {orgSelected} = this.state;
+        let {orgSelected, organizations} = this.state;
 
         return <section className="organization-desc oz-body wrapper flex-col">
 
@@ -99,7 +103,7 @@ class OrganizationDesc extends React.Component {
                 valueKey="id"
                 onChange={this.onChangeOrganization}
                 clearable={false}
-                options={this.props.organizations}/>
+                options={organizations}/>
 
             {
                 this.state.isLoading &&
@@ -159,7 +163,6 @@ const
     mapStateToProps = state => {
         return {
             organization: state.organization.current,
-            organizations: state.organization.organizations,
             userInfo: state.userInfo,
         };
     };
@@ -179,9 +182,6 @@ const
             fetchOrganizationInfo(dcId) {
                 return dispatch(fetchOrganizationInfo(dcId));
             },
-            fetchUserOrganizationsLazyMode() {
-                return dispatch(fetchUserOrganizationsLazyMode());
-            }
         };
     };
 

@@ -47,7 +47,6 @@ export default class OrganizationCard extends React.PureComponent {
             method: 'PUT',
             json: org
         }).then((res) => {
-            console.log("delete", res);
             this.setState({error: '', orgDetails: res});
         })
             .catch(err => {
@@ -64,7 +63,6 @@ export default class OrganizationCard extends React.PureComponent {
             method: 'PUT',
             json: org
         }).then((res) => {
-            console.log("delete", res);
             this.setState({error: '', orgDetails: res});
         })
             .catch(err => {
@@ -129,25 +127,28 @@ export default class OrganizationCard extends React.PureComponent {
                     <div className={'organization-card'}>
                         <p className={"card-title"}>{name}</p>
                         <div className={"content-card"}>
-                            <RedirectButtonWithTooltip link={url + 'instances'}
-                                                       tooltipTitle={this.context.t('tooltip.instances')}>
-                                <i className="fa fa-list-alt option-icon"/>
-                            </RedirectButtonWithTooltip>
                             <RedirectButtonWithTooltip link={url + 'members'}
                                                        tooltipTitle={this.context.t('tooltip.members')}>
                                 <i className="fa fa-users option-icon"/>
                             </RedirectButtonWithTooltip>
+
                             {isAdmin &&
-                            <RedirectButtonWithTooltip link={url + 'admin'}
-                                                       tooltipTitle={this.context.t('tooltip.admin')}>
-                                <i className="fa fa-info-circle option-icon"/>
-                            </RedirectButtonWithTooltip>
+                            <React.Fragment>
+                                <RedirectButtonWithTooltip link={url + 'instances'}
+                                                           tooltipTitle={this.context.t('tooltip.instances')}>
+                                    <i className="fa fa-list-alt option-icon"/>
+                                </RedirectButtonWithTooltip>
+                                <RedirectButtonWithTooltip link={url + 'admin'}
+                                                           tooltipTitle={this.context.t('tooltip.admin')}>
+                                    <i className="fa fa-info-circle option-icon"/>
+                                </RedirectButtonWithTooltip>
+                                <CustomTooltip className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
+                                               title={this.context.t('tooltip.delete.organization')}>
+                                    <i onClick={this._handleRemoveOrganization} className="fa fa-trash option-icon"/>
+                                </CustomTooltip>
+                            </React.Fragment>
                             }
-                            <CustomTooltip
-                                className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
-                                title={this.context.t('tooltip.delete.organization')}>
-                                <i onClick={this._handleRemoveOrganization} className="fa fa-trash option-icon"/>
-                            </CustomTooltip>
+
                         </div>
                     </div>
                 </Link>
@@ -156,7 +157,8 @@ export default class OrganizationCard extends React.PureComponent {
             return (
                 <div className={"wrap-organization-card btn btn-default"}>
                     <div className={"organization-card"}>
-                        <div className={"card-title"}>{this._numberOfDaysBeforeDeletion()}</div>
+                        <div className={"card-title"}>{name}</div>
+                        <div className={"card-message"} >{this._numberOfDaysBeforeDeletion()}</div>
                         <div className={"content-card"}>
                             <button
                                 onClick={this._handleCancelRemoveOrganization}

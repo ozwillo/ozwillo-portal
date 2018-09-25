@@ -21,6 +21,10 @@
     margin-top: 1em;
 }
 
+.organization-card .card-message{
+    white-space: normal;
+}
+
 .organization-card .content-card {
     display: flex;
     flex-direction: row;

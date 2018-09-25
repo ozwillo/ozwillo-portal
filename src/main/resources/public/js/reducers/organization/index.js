@@ -1,6 +1,5 @@
 import {
     FETCH_USER_ORGANIZATIONS,
-    FETCH_USER_ORGANIZATIONS_LAZY_MODE,
     FETCH_ORGANIZATION_WITH_ID,
     FETCH_CREATE_ORGANIZATION,
     FETCH_UPDATE_ORGANIZATION,
@@ -154,9 +153,6 @@ const organizationsState = (state = [], action) => {
     let nextState = Object.assign([], state);
     switch (action.type) {
         case FETCH_USER_ORGANIZATIONS:
-        case FETCH_USER_ORGANIZATIONS_LAZY_MODE:
-            nextState = action.organizations;
-            break;
         case FETCH_CREATE_ORGANIZATION:
             nextState.push(action.organization);
             break;
@@ -171,7 +167,6 @@ export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
     switch (action.type) {
         case FETCH_USER_ORGANIZATIONS:
-        case FETCH_USER_ORGANIZATIONS_LAZY_MODE:
         case FETCH_CREATE_ORGANIZATION:
         case FETCH_CREATE_SUBSCRIPTION:
         case FETCH_DELETE_SUBSCRIPTION:
