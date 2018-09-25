@@ -52,10 +52,12 @@ class OrganizationDesc extends React.Component {
 
     initialize(id) {
         this.setState({isLoading: true});
-        customFetch(`/my/api/organizationHistory/visit/${id}`,
-            {
-                method: "POST",
-            });
+        if (!this.isPersonal()) {
+            customFetch(`/my/api/organizationHistory/visit/${id}`,
+                {
+                    method: "POST",
+                });
+        }
         this.props.fetchOrganizationWithId(id)
             .then(() => {
                 // Update selector
@@ -71,12 +73,12 @@ class OrganizationDesc extends React.Component {
 
     onChangeOrganization(organization) {
         this.setState({orgSelected: organization});
-
         // Update url
         this.props.history.replace(`/my/organization/${organization.id}/`);
-
         // Update page
         this.initialize(organization.id);
+
+
     }
 
     componentDidMount() {
@@ -84,9 +86,9 @@ class OrganizationDesc extends React.Component {
         this.props.fetchApplications();
     }
 
-    get isPersonal() {
+    isPersonal = () => {
         return this.props.organization.id === this.props.userInfo.sub;
-    }
+    };
 
     render() {
         const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
@@ -119,7 +121,7 @@ class OrganizationDesc extends React.Component {
                     <UpdateTitle title={this.props.organization.name}/>
 
                     {
-                        !this.isPersonal && isOrgAdmin && <React.Fragment>
+                        !this.isPersonal() && isOrgAdmin && <React.Fragment>
                             <header className="title">
                                 <span>{this.props.organization.name}</span>
                             </header>
@@ -130,7 +132,7 @@ class OrganizationDesc extends React.Component {
                     }
 
                     {
-                        !this.isPersonal && !isOrgAdmin && <React.Fragment>
+                        !this.isPersonal() && !isOrgAdmin && <React.Fragment>
                             <header className="title">
                                 <span>{this.props.organization.name}</span>
                             </header>
@@ -142,7 +144,7 @@ class OrganizationDesc extends React.Component {
                     }
 
                     {
-                        this.isPersonal && <React.Fragment>
+                        this.isPersonal() && <React.Fragment>
                             <header className="title">
                                 <span>{this.context.t('organization.desc.applications')}</span>
                             </header>

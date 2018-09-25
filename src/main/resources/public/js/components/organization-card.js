@@ -98,6 +98,7 @@ export default class OrganizationCard extends React.PureComponent {
 
         const isAvailable = orgDetails.status === Config.organizationStatus.available;
         const isAdmin = orgDetails.admin;
+        const isPersonal = orgDetails.personal;
 
 
         if (isLoading) {
@@ -109,15 +110,19 @@ export default class OrganizationCard extends React.PureComponent {
                 </div>)
         }
 
-        if (orgDetails.personal) {
+        if (isPersonal) {
             return (
-                <CustomTooltip key={`${dcOrganizationId}-instance-tab`}
-                               title={this.context.t('tooltip.instances')}>
-                    <Link className="btn icon"
-                          to={`/my/organization/${dcOrganizationId}/instances`}>
-                        <i className="fa fa-list-alt option-icon"/>
-                    </Link>
-                </CustomTooltip>
+                <Link to={url} className={"btn btn-default wrap-organization-card"}>
+                    <div className={'organization-card'}>
+                        <p className={"card-title"}>{name}</p>
+                        <div className={"content-card"}>
+                            <RedirectButtonWithTooltip link={url + 'instances'}
+                                                       tooltipTitle={this.context.t('tooltip.instances')}>
+                                <i className="fa fa-list-alt option-icon"/>
+                            </RedirectButtonWithTooltip>
+                        </div>
+                    </div>
+                </Link>
             )
         }
 

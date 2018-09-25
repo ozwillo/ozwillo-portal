@@ -166,7 +166,15 @@ public class OrganizationService {
 
     public List<UserMembership> searchUserMembershipsFromQuery(String query){
         String userId = userInfoService.currentUser().getUserId();
-        List<UserMembership> userMemberships = userMembershipService.getMembershipsOfUser(userId);
+        List<UserMembership> userMemberships = new ArrayList<>(userMembershipService.getMembershipsOfUser(userId));
+        //create a personal organization
+        UserMembership personalMembership = new UserMembership();
+        personalMembership.setId(userId);
+        personalMembership.setAdmin(true);
+        personalMembership.setOrganizationId(userId);
+        personalMembership.setOrganizationName("Personal");
+        userMemberships.add(personalMembership);
+
         //permit to compare string from different language (cf : question 32117953 on stackoverflow)
         Pattern p = Pattern.compile(query, Pattern.LITERAL | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
 
@@ -339,7 +347,8 @@ public class OrganizationService {
         Organization org = (isPersonal) ? getPersonalOrganization() : organizationStore.find(organizationId);
 
         UIOrganization uiOrganization = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
-        boolean isAdmin = userIsAdmin(organizationId);
+        boolean isAdmin = (isPersonal) ? true : userIsAdmin(organizationId);
+        uiOrganization.setPersonal(isPersonal);
         uiOrganization.setAdmin(isAdmin);
         return uiOrganization;
     }
