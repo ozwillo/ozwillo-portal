@@ -103,9 +103,9 @@ export default class OrganizationCard extends React.PureComponent {
 
         if (isLoading) {
             return (
-                <div className="organization-card container-loading text-center">
-                    <div className={"content-card"}>
-                        <i className="fa fa-spinner fa-spin loading"/>
+                <div className={"wrap-organization-card"}>
+                    <div className="card organization-card-spinner container-loading text-center">
+                            <i className="fa fa-spinner fa-spin loading"/>
                     </div>
                 </div>)
         }
@@ -113,9 +113,9 @@ export default class OrganizationCard extends React.PureComponent {
         if (isPersonal) {
             return (
                 <Link to={url} className={"btn btn-default wrap-organization-card"}>
-                    <div className={'organization-card'}>
+                    <div className={'card'}>
                         <p className={"card-title"}>{name}</p>
-                        <div className={"content-card"}>
+                        <div className={"card-body"}>
                             <RedirectButtonWithTooltip link={url + 'instances'}
                                                        tooltipTitle={this.context.t('tooltip.instances')}>
                                 <i className="fa fa-list-alt option-icon"/>
@@ -129,42 +129,44 @@ export default class OrganizationCard extends React.PureComponent {
         if (isAvailable) {
             return (
                 <Link to={url} className={"btn btn-default wrap-organization-card"}>
-                    <div className={'organization-card'}>
+                    <div className={"card"}>
                         <p className={"card-title"}>{name}</p>
-                        <div className={"content-card"}>
-                            <RedirectButtonWithTooltip link={url + 'members'}
-                                                       tooltipTitle={this.context.t('tooltip.members')}>
-                                <i className="fa fa-users option-icon"/>
-                            </RedirectButtonWithTooltip>
-
-                            {isAdmin &&
-                            <React.Fragment>
-                                <RedirectButtonWithTooltip link={url + 'instances'}
-                                                           tooltipTitle={this.context.t('tooltip.instances')}>
-                                    <i className="fa fa-list-alt option-icon"/>
+                        <div className={"card-body"}>
+                            <div className={"flex-row"}>
+                                <RedirectButtonWithTooltip link={url + 'members'}
+                                                           tooltipTitle={this.context.t('tooltip.members')}>
+                                    <i className="fa fa-users option-icon"/>
                                 </RedirectButtonWithTooltip>
-                                <RedirectButtonWithTooltip link={url + 'admin'}
-                                                           tooltipTitle={this.context.t('tooltip.admin')}>
-                                    <i className="fa fa-info-circle option-icon"/>
-                                </RedirectButtonWithTooltip>
-                                <CustomTooltip className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
-                                               title={this.context.t('tooltip.delete.organization')}>
-                                    <i onClick={this._handleRemoveOrganization} className="fa fa-trash option-icon"/>
-                                </CustomTooltip>
-                            </React.Fragment>
-                            }
 
+                                {isAdmin &&
+                                <React.Fragment>
+                                    <RedirectButtonWithTooltip link={url + 'instances'}
+                                                               tooltipTitle={this.context.t('tooltip.instances')}>
+                                        <i className="fa fa-list-alt option-icon"/>
+                                    </RedirectButtonWithTooltip>
+                                    <RedirectButtonWithTooltip link={url + 'admin'}
+                                                               tooltipTitle={this.context.t('tooltip.admin')}>
+                                        <i className="fa fa-info-circle option-icon"/>
+                                    </RedirectButtonWithTooltip>
+                                    <CustomTooltip className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
+                                                   title={this.context.t('tooltip.delete.organization')}>
+                                        <i onClick={this._handleRemoveOrganization}
+                                           className="fa fa-trash option-icon"/>
+                                    </CustomTooltip>
+                                </React.Fragment>
+                                }
+                            </div>
                         </div>
                     </div>
                 </Link>
             )
         } else if (!isAvailable && isAdmin) {
             return (
-                <div className={"wrap-organization-card btn btn-default"}>
-                    <div className={"organization-card"}>
+                <div className={"btn btn-default wrap-organization-card"}>
+                    <div className={"card"}>
                         <div className={"card-title"}>{name}</div>
-                        <div className={"card-message"} >{this._numberOfDaysBeforeDeletion()}</div>
-                        <div className={"content-card"}>
+                        <div className={"card-body"}>
+                            <div className={"card-message"}>{this._numberOfDaysBeforeDeletion()}</div>
                             <button
                                 onClick={this._handleCancelRemoveOrganization}
                                 className="btn btn-default-inverse">

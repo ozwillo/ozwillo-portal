@@ -1,59 +1,53 @@
 .wrap-organization-card {
-    margin: 2em 1.5em 0 1.5em;
+    margin: 2em 1em 0 1em;
     border-radius: 8px !important;
 }
 
-.organization-card {
-    height: 150px;
-    max-height: 150px;
-    width: 200px;
-    max-width: 200px;
-    flex: 0 1 auto;
+.wrap-organization-card .card{
+    height: 15rem;
+    width: 20rem;
+    display: flex;
     flex-flow: column wrap;
-    justify-content: space-between;
+    flex: 1;
+}
+
+
+.wrap-organization-card .card-body{
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: column;
     display: flex;
+    flex: 1;
 }
 
-.organization-card .card-title{
-    text-align: center !important;
-    font-size: 1.2em;
-    white-space: normal;
-    margin-top: 1em;
-}
-
-.organization-card .card-message{
-    white-space: normal;
-}
-
-.organization-card .content-card {
-    display: flex;
-    flex-direction: row;
-    width: 100%;
-    justify-content: center;
-    align-self: flex-end;
-    flex-wrap: wrap;
-}
-
-.organization-card .delete .option-icon {
-    color: var(--alert-color) !important;
-}
-
-
-.organization-card .content-card .option-icon{
+.wrap-organization-card .card-body .option-icon{
     font-size: 1.5em;
     padding: 0.2em;
     color: var(--primary-color);
 }
 
-.organization-card:active .option-icon,
-.organization-card:focus .option-icon,
-.organization-card:hover .option-icon{
+.wrap-organization-card .card-title{
+    font-size: 1.2em;
+    white-space: normal;
+    margin-top: 1em;
+}
+
+.wrap-organization-card .card-body .card-message{
+    margin-bottom: 1rem;
+}
+
+.wrap-organization-card .delete .option-icon {
+    color: var(--alert-color);
+}
+
+.wrap-organization-card:active .option-icon,
+.wrap-organization-card:focus .option-icon,
+.wrap-organization-card:hover .option-icon{
     color: var(--tertiary-color);
 }
 
-.organization-card .content-card .option-icon{
-    font-size: 1.5em;
-    padding: 0.2em;
+.organization-card-spinner{
+    justify-content: center;
 }
 
 
