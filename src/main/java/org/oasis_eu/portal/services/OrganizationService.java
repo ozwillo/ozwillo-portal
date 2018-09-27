@@ -33,6 +33,7 @@ import java.net.URISyntaxException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -161,6 +162,26 @@ public class OrganizationService {
         }
 
         return null;
+    }
+
+    public List<UserMembership> searchUserMembershipsFromQuery(String query){
+        String userId = userInfoService.currentUser().getUserId();
+        List<UserMembership> userMemberships = new ArrayList<>(userMembershipService.getMembershipsOfUser(userId));
+        //create a personal organization
+        UserMembership personalMembership = new UserMembership();
+        personalMembership.setId(userId);
+        personalMembership.setAdmin(true);
+        personalMembership.setOrganizationId(userId);
+        personalMembership.setOrganizationName("Personal");
+        userMemberships.add(personalMembership);
+
+        //permit to compare string from different language (cf : question 32117953 on stackoverflow)
+        Pattern p = Pattern.compile(query, Pattern.LITERAL | Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE);
+
+        return userMemberships
+                .stream()
+                .filter(userMembership -> p.matcher(userMembership.getOrganizationName()).find())
+                .collect(Collectors.toList());
     }
 
     public boolean existsOrganizationOrAliasesInKernel(String dcId) {
@@ -326,15 +347,18 @@ public class OrganizationService {
         Organization org = (isPersonal) ? getPersonalOrganization() : organizationStore.find(organizationId);
 
         UIOrganization uiOrganization = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
-        boolean isAdmin = userIsAdmin(organizationId);
+        boolean isAdmin = (isPersonal) ? true : userIsAdmin(organizationId);
+        uiOrganization.setPersonal(isPersonal);
         uiOrganization.setAdmin(isAdmin);
         return uiOrganization;
     }
 
     public UIOrganization getOrganizationFromKernel(String organizationId) {
-        String userId = userInfoService.currentUser().getUserId();
-
         return fetchOrganizationWithInstances(organizationId);
+    }
+
+    public UIOrganization getOrganizationFromKernelWithoutInstances(String organizationId){
+        return  getKernelOrganization(organizationId);
     }
 
     private UIOrganization fetchOrganizationWithInstances(String organizationId) {
@@ -542,7 +566,9 @@ public class OrganizationService {
         }
 
         org.setStatus(uiOrganization.getStatus());
-        return UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
+        UIOrganization uiOrganizationReturned =  UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
+        uiOrganizationReturned.setAdmin(true);
+        return uiOrganizationReturned;
     }
 
     private boolean shouldUpdateOrg(UIOrganization uiOrganization, Organization organization) {

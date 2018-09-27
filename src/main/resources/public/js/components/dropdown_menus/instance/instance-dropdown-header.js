@@ -52,8 +52,9 @@ class InstanceDropdownHeader extends React.Component {
         e.preventDefault();
         customFetch(`/my/api/instance/${this.props.instance.id}`, {
             method: 'DELETE',
-        }).then((res) => {
-            return res;
+        }).then(() => {
+            //TODO check if the complete pipe is correct
+            this.props.onRemoveInstance(this.props.instance);
         }).catch(err => {
             let message = '';
             if(err.status !== 409){
@@ -62,7 +63,7 @@ class InstanceDropdownHeader extends React.Component {
                 message = 'error.msg.delete-pending-instance';
             }
             const error = {status: true ,http_status: err.status, message: message};
-            this.setState({error: error})
+            this.setState({error: error});
         });
     };
 
