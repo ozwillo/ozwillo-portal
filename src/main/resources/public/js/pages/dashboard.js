@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {withRouter} from 'react-router';
 import createClass from 'create-react-class';
+import customFetch from "../util/custom-fetch";
 
 import {ModalWithForm, Modal} from '../components/bootstrap-react';
 import {
@@ -59,7 +60,32 @@ const Dashboard = withRouter(createClass({
                     pendingApps: data[1],
                     loadingApps: false
                 });
+                this.initNotificationsCheck();
             });
+    },
+    checkNotifications() {
+        if (this.state.apps) {
+            customFetch("/my/api/dashboard/notifications")
+                .then(appNotifs => {
+                    const apps = this.state.apps;
+                    for (let i = 0; i < apps.length; i++) {
+                        const app = apps[i];
+                        if (appNotifs[app.serviceId]) {
+                            app.notificationCount = appNotifs[app.serviceId];
+                        } else {
+                            app.notificationCount = 0;
+                        }
+                    }
+                    this.setState({ apps: apps });
+                }).catch(err => console.error("Cannot check notifications", status, err));
+        }
+        window.setTimeout(this.checkNotifications, 10000);
+    },
+    initNotificationsCheck() {
+        if (!this.notificationsChecked) {
+            this.notificationsChecked = true;
+            this.checkNotifications();
+        }
     },
     findById: function (array, obj) {
         return array.findIndex((item) => {
@@ -661,12 +687,19 @@ const DropZone = createClass({
 
 const AppIcon = createClass({
     render: function () {
+        let notif = null;
         const url = this.props.app.url;
+        if (this.props.app.notificationCount !== 0) {
+            notif = (
+                <span className="badge badge-notifications">{this.props.app.notificationCount}</span>
+            );
+        }
         return (
             <div className="app" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
                  onDragEnd={this.props.endDrag}>
                 <a href={url} target="_blank" rel="noopener" className="app-link" draggable="false">
                     <img className="image" src={this.props.app.icon} alt={this.props.app.name}/>
+                    {notif}
                 </a>
                 <p>{this.props.app.name}</p>
             </div>
