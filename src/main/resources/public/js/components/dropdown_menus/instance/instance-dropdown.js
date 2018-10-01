@@ -12,7 +12,6 @@ import CustomTooltip from '../../custom-tooltip';
 
 //action
 import {fetchDeleteAcl} from '../../../actions/acl';
-import {fetchCreateSubscription, fetchDeleteSubscription} from '../../../actions/subscription';
 import {fetchUpdateInstanceStatus, fetchUsersOfInstance} from '../../../actions/instance';
 
 //Config
@@ -22,6 +21,7 @@ const instanceStatus = Config.instanceStatus;
 
 //Action
 import {fetchUpdateServiceConfig} from '../../../actions/instance';
+import customFetch from '../../../util/custom-fetch';
 
 class InstanceDropdown extends React.Component {
 
@@ -45,7 +45,8 @@ class InstanceDropdown extends React.Component {
         this.state = {
             error: null,
             status: {},
-            isLoading: false
+            isLoading: false,
+            services: []
         };
 
         //bind methods
@@ -66,6 +67,7 @@ class InstanceDropdown extends React.Component {
             instance: nextProps.instance,
             members: nextProps.members
         });
+
         if (nextProps.members) {
             this.setState({isLoading: false})
         }
@@ -126,7 +128,8 @@ class InstanceDropdown extends React.Component {
             });
     }
 
-    createSubscription(e) {
+
+    createSubscription = async (e) => {
         const el = e.currentTarget;
         const userId = el.dataset.user;
         const serviceId = el.dataset.service;
@@ -137,28 +140,16 @@ class InstanceDropdown extends React.Component {
             })
         });
 
-        this.props.fetchCreateSubscription(this.props.instance.id, {user_id: userId, service_id: serviceId})
-            .then(() => {
-                this.setState({
-                    status: Object.assign({}, this.state.status, {
-                        [userId]: {error: null, isLoading: false}
-                    })
-                });
-            })
-            .catch((err) => {
-                this.setState({
-                    status: Object.assign({}, this.state.status, {
-                        [userId]: {error: err.error, isLoading: false}
-                    })
-                });
-            });
-    }
+        await this.fetchCreateSubscription(serviceId, userId);
+        const newServices = await this.fetchInstanceServicesSubscriptions();
+        this.setState({services: newServices})
 
-    deleteSubscription(e) {
+    };
+
+    deleteSubscription = async (e) => {
         const el = e.currentTarget;
         const userId = el.dataset.user;
         const serviceId = el.dataset.service;
-        const subId = el.dataset.sub;
 
         this.setState({
             status: Object.assign({}, this.state.status, {
@@ -166,14 +157,45 @@ class InstanceDropdown extends React.Component {
             })
         });
 
-        this.props.fetchDeleteSubscription(this.props.instance.id, {id: subId, user_id: userId, service_id: serviceId})
-            .then(() => {
-                this.setState({
-                    status: Object.assign({}, this.state.status, {
-                        [userId]: {error: null, isLoading: false}
-                    })
-                });
-            })
+        await this.fetchDeleteSubscription(serviceId, userId);
+        const newServices = await this.fetchInstanceServicesSubscriptions();
+        this.setState({services: newServices});
+    };
+
+    fetchInstanceServicesSubscriptions = async () => {
+        return await customFetch(`/my/api/instance/${this.props.instance.id}/services/subscription`).then(res => {
+            return res;
+        });
+    };
+
+    fetchCreateSubscription = async (serviceId, userId) => {
+        return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
+            method: 'POST'
+        }).then(() => {
+            this.setState({
+                status: Object.assign({}, this.state.status, {
+                    [userId]: {error: null, isLoading: false}
+                })
+            });
+        }).catch((err) => {
+            this.setState({
+                status: Object.assign({}, this.state.status, {
+                    [userId]: {error: err.error, isLoading: false}
+                })
+            });
+        });
+    };
+
+    fetchDeleteSubscription = async (serviceId, userId) => {
+        return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
+            method: 'DELETE'
+        }).then(() => {
+            this.setState({
+                status: Object.assign({}, this.state.status, {
+                    [userId]: {error: null, isLoading: false}
+                })
+            });
+        })
             .catch((err) => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
@@ -181,7 +203,7 @@ class InstanceDropdown extends React.Component {
                     })
                 });
             });
-    }
+    };
 
     searchSubForUser(user, service) {
         if (!service.subscriptions) {
@@ -193,20 +215,23 @@ class InstanceDropdown extends React.Component {
         });
     }
 
-    handleDropDown = (dropDownState) => {
-      if(dropDownState){
-          //Fetch users for the instance
-          if (this.props.isAdmin) {
-              this.setState({isLoading: true});
-              this.props.fetchUsersOfInstance(this.props.instance)
-          }
-      }
+    handleDropDown = async (dropDownState) => {
+        if (dropDownState) {
+            //Fetch users for the instance
+            if (this.props.isAdmin) {
+                this.setState({isLoading: true});
+                const newServices = await this.fetchInstanceServicesSubscriptions();
+                await this.props.fetchUsersOfInstance(this.props.instance);
+                this.setState({services: newServices, isLoading: false});
+            }
+        }
 
     };
 
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
+        const {services, isLoading} = this.state;
         const isRunning = instance.applicationInstance.status === instanceStatus.running;
         const isAvailable = isAdmin && !instance.isPublic && isRunning;
         const isOpen = false;
@@ -225,7 +250,7 @@ class InstanceDropdown extends React.Component {
                              dropDownChange={this.handleDropDown}>
             <section className='dropdown-content'>
                 {
-                    !instance.users &&
+                    !instance.users && isLoading &&
                     <div className="container-loading text-center">
                         <i className="fa fa-spinner fa-spin loading"/>
                     </div>
@@ -237,13 +262,13 @@ class InstanceDropdown extends React.Component {
                             user's name; error message; n services; options
                         */}
                     <tr>
-                        <th className="fill-content" colSpan={2}/>
+                        <th className="fill-content" colSpan={1}/>
                         {
-                            instance.services ?
-                                instance.services.map((service) => {
+                            services && services.length > 0 ?
+                                services.map((service) => {
                                     return <th key={service.catalogEntry.id} className="center">
                                         {
-                                            instance.services.length > 1 &&
+                                            services.length > 1 &&
                                             <span className="service"
                                                   title={service.name}>{service.name.toAcronyme()}</span>
                                         }
@@ -288,8 +313,8 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Services */}
                                 {
-                                    user.id && instance.services &&
-                                    instance.services.map((service) => {
+                                    user.id && services &&
+                                    services.map((service) => {
                                         const sub = this.searchSubForUser(user, service);
                                         return <td key={service.catalogEntry.id} className="fill-content center">
                                             {
@@ -321,13 +346,13 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Options */}
                                 {
-                                    !user.id && instance.services &&
+                                    !user.id && services &&
                                     <React.Fragment>
                                         {/* empty space to replace services */}
                                         {
-                                            (instance.services.length - 1) > 0 &&
+                                            (services.length - 1) > 0 &&
                                             <td className="fill-content center empty"
-                                                colSpan={instance.services.length - 1}/>
+                                                colSpan={services.length - 1}/>
                                         }
 
                                         <td className="fill-content center">
@@ -368,15 +393,10 @@ const mapDispatchToProps = dispatch => {
         fetchUpdateServiceConfig(instanceId, catalogEntry) {
             return dispatch(fetchUpdateServiceConfig(instanceId, catalogEntry));
         },
-        fetchCreateSubscription(instanceId, sub) {
-            return dispatch(fetchCreateSubscription(instanceId, sub));
-        },
-        fetchDeleteSubscription(instanceId, sub) {
-            return dispatch(fetchDeleteSubscription(instanceId, sub));
-        },
         fetchUsersOfInstance(instance) {
             return dispatch(fetchUsersOfInstance(instance));
         }
+
     };
 };
 
