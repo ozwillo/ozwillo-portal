@@ -102,10 +102,10 @@ class OrganizationSearch extends React.Component {
                         onOrganizationSelected={(value) => {
                             this.setState({organizationSelected: value})
                         }}
-                        placeholder={this.context.t('ui.search')}
+                        placeholder={this.context.t('search.organization.search-organization')}
                     />
-                    <div className="flex-row end options">
-                        <Link to="/my/organization/create" className="btn btn-default-inverse undecorated-link">
+                    <div className="flex-row options">
+                        <Link to="/my/organization/create" className={"new-organization"}>
                             {this.context.t('organization.search.new')}
                         </Link>
                     </div>

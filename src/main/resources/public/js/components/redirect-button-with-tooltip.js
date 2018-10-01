@@ -1,20 +1,26 @@
 import * as React from "react";
 import CustomTooltip from "./custom-tooltip";
-import {Link, withRouter} from "react-router-dom";
 import PropTypes from "prop-types";
+import Redirect from "react-router/es/Redirect";
 
 export default class RedirectButtonWithTooltip extends React.PureComponent {
 
-    pushToHistory = (link) => {
-        withRouter(({history}) => history.push(link));
+    state = {
+      isClicked: false
     };
-
 
     render() {
         const {tooltipTitle, link, children, ...rest} = this.props;
+        const {isClicked} = this.state;
+        let redirect = null;
+        if(isClicked){
+            redirect = <Redirect to={link}/>;
+        }
+
         return (
             <CustomTooltip title={tooltipTitle}>
-                <div {...rest} onClick={() => this.pushToHistory(link)}>
+                {redirect}
+                <div {...rest} onClick={() => this.setState({isClicked: true})}>
                     {children}
                 </div>
             </CustomTooltip>
