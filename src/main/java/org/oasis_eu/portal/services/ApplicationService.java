@@ -129,6 +129,16 @@ public class ApplicationService {
                 .collect(Collectors.toList());
     }
 
+    public List<InstanceService> getServicesWithSubscriptions(String instanceId) {
+        List<InstanceService> instanceServices =  catalogStore.findServicesOfInstance(instanceId)
+                .stream()
+                .map(this::fetchService)
+                .collect(Collectors.toList());
+
+        instanceServices.forEach(service -> service.setSubscriptions(subscriptionStore.findByServiceId(service.getCatalogEntry().getId())));
+        return instanceServices;
+    }
+
     public InstanceService updateService(String serviceId, ServiceEntry serviceEntry) {
         ApplicationInstance appInstance = catalogStore.findApplicationInstance(serviceEntry.getInstanceId());
         if (!organizationService.userIsAdminOrPersonalAppInstance(appInstance)) {
