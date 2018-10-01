@@ -12,10 +12,18 @@ import CustomTooltip from '../../custom-tooltip';
 
 //action
 import {fetchDeleteAcl} from '../../../actions/acl';
-import {fetchUpdateInstanceStatus, fetchUsersOfInstance} from '../../../actions/instance';
+import {fetchUpdateInstanceStatus} from '../../../actions/instance';
 
 //Config
 import Config from '../../../config/config';
+
+//Service
+import {
+    fetchCreateSubscription,
+    fetchDeleteSubscription,
+    fetchInstanceServicesSubscriptions,
+    fetchUsersOfInstance
+} from "../../../util/instance-service";
 
 const instanceStatus = Config.instanceStatus;
 
@@ -46,7 +54,8 @@ class InstanceDropdown extends React.Component {
             error: null,
             status: {},
             isLoading: false,
-            services: []
+            services: [],
+            members: null
         };
 
         //bind methods
@@ -55,8 +64,6 @@ class InstanceDropdown extends React.Component {
         this.onCancelRemoveInstance = this.onCancelRemoveInstance.bind(this);
         this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
         this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
-        this.createSubscription = this.createSubscription.bind(this);
-        this.deleteSubscription = this.deleteSubscription.bind(this);
         this.fetchUpdateServiceConfig = this.fetchUpdateServiceConfig.bind(this);
         this.searchSubForUser = this.searchSubForUser.bind(this);
     }
@@ -98,18 +105,20 @@ class InstanceDropdown extends React.Component {
     }
 
     filterMemberWithoutAccess(member) {
-        if (!this.props.instance.users) {
+        const {members} = this.state;
+        if (!members) {
             return true;
         }
 
-        return !this.props.instance.users.find((user) => {
+        return !members.find((user) => {
             return user.id === member.id;
         })
     }
 
     removeUserAccessToInstance(e) {
+        const {members} = this.state;
         const i = e.currentTarget.dataset.member;
-        const member = this.props.instance.users[i];
+        const member = members[i];
 
         this.props.fetchDeleteAcl(member, this.props.instance)
             .then(() => {
@@ -141,7 +150,7 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchCreateSubscription(serviceId, userId);
-        const newServices = await this.fetchInstanceServicesSubscriptions();
+        const newServices = await fetchInstanceServicesSubscriptions(this.props.instance.id);
         this.setState({services: newServices})
 
     };
@@ -158,20 +167,14 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchDeleteSubscription(serviceId, userId);
-        const newServices = await this.fetchInstanceServicesSubscriptions();
+        const newServices = await fetchInstanceServicesSubscriptions(this.props.instance.id);
         this.setState({services: newServices});
     };
 
-    fetchInstanceServicesSubscriptions = async () => {
-        return await customFetch(`/my/api/instance/${this.props.instance.id}/services/subscription`).then(res => {
-            return res;
-        });
-    };
+
 
     fetchCreateSubscription = async (serviceId, userId) => {
-        return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
-            method: 'POST'
-        }).then(() => {
+        fetchCreateSubscription(serviceId,userId).then(() => {
             this.setState({
                 status: Object.assign({}, this.state.status, {
                     [userId]: {error: null, isLoading: false}
@@ -187,9 +190,7 @@ class InstanceDropdown extends React.Component {
     };
 
     fetchDeleteSubscription = async (serviceId, userId) => {
-        return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
-            method: 'DELETE'
-        }).then(() => {
+        fetchDeleteSubscription(serviceId,userId).then(() => {
             this.setState({
                 status: Object.assign({}, this.state.status, {
                     [userId]: {error: null, isLoading: false}
@@ -204,6 +205,7 @@ class InstanceDropdown extends React.Component {
                 });
             });
     };
+
 
     searchSubForUser(user, service) {
         if (!service.subscriptions) {
@@ -220,9 +222,9 @@ class InstanceDropdown extends React.Component {
             //Fetch users for the instance
             if (this.props.isAdmin) {
                 this.setState({isLoading: true});
-                const newServices = await this.fetchInstanceServicesSubscriptions();
-                await this.props.fetchUsersOfInstance(this.props.instance);
-                this.setState({services: newServices, isLoading: false});
+                const newServices = await fetchInstanceServicesSubscriptions(this.props.instance.id);
+                const members = await fetchUsersOfInstance(this.props.instance.id);
+                this.setState({services: newServices, isLoading: false, members: members});
             }
         }
 
@@ -231,7 +233,7 @@ class InstanceDropdown extends React.Component {
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
-        const {services, isLoading} = this.state;
+        const {services, isLoading, members} = this.state;
         const isRunning = instance.applicationInstance.status === instanceStatus.running;
         const isAvailable = isAdmin && !instance.isPublic && isRunning;
         const isOpen = false;
@@ -250,7 +252,7 @@ class InstanceDropdown extends React.Component {
                              dropDownChange={this.handleDropDown}>
             <section className='dropdown-content'>
                 {
-                    !instance.users && isLoading &&
+                    !members && isLoading &&
                     <div className="container-loading text-center">
                         <i className="fa fa-spinner fa-spin loading"/>
                     </div>
@@ -285,7 +287,7 @@ class InstanceDropdown extends React.Component {
                     <tbody>
                     {
 
-                        instance.users && instance.users.map((user, i) => {
+                        members && members.map((user, i) => {
                             const status = this.state.status[user.id];
                             return <tr key={user.id || user.email}>
                                 <td className="fill-content">
@@ -392,9 +394,6 @@ const mapDispatchToProps = dispatch => {
         },
         fetchUpdateServiceConfig(instanceId, catalogEntry) {
             return dispatch(fetchUpdateServiceConfig(instanceId, catalogEntry));
-        },
-        fetchUsersOfInstance(instance) {
-            return dispatch(fetchUsersOfInstance(instance));
         }
 
     };
