@@ -122,20 +122,16 @@ public class ApplicationService {
             .setIconUrl(imageService.getImageForURL(service.getIcon(), ImageFormat.PNG_64BY64, false));
     }
 
-    public List<InstanceService> getServices(String instanceId) {
-        return catalogStore.findServicesOfInstance(instanceId)
-                .stream()
-                .map(this::fetchService)
-                .collect(Collectors.toList());
-    }
-
-    public List<InstanceService> getServicesWithSubscriptions(String instanceId) {
+    public List<InstanceService> getServices(String instanceId, Boolean withSubscriptions) {
         List<InstanceService> instanceServices =  catalogStore.findServicesOfInstance(instanceId)
                 .stream()
                 .map(this::fetchService)
                 .collect(Collectors.toList());
 
-        instanceServices.forEach(service -> service.setSubscriptions(subscriptionStore.findByServiceId(service.getCatalogEntry().getId())));
+        if(withSubscriptions) {
+            instanceServices.forEach(service -> service.setSubscriptions(subscriptionStore.findByServiceId(service.getCatalogEntry().getId())));
+        }
+
         return instanceServices;
     }
 

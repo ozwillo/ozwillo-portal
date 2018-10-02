@@ -1,7 +1,7 @@
 import customFetch from "./custom-fetch";
 
-export const fetchInstanceServicesSubscriptions = async (instanceId) => {
-    return await customFetch(`/my/api/instance/${instanceId}/services/subscription`);
+export const fetchInstanceServices = async (instanceId, withSubscriptions) => {
+    return await customFetch(`/my/api/instance/${instanceId}/services?withSubscriptions=${withSubscriptions}`);
 };
 
 export const fetchUsersOfInstance = async (instanceId) => {

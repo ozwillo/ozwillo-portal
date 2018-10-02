@@ -21,7 +21,7 @@ import Config from '../../../config/config';
 import {
     fetchCreateSubscription,
     fetchDeleteSubscription,
-    fetchInstanceServicesSubscriptions,
+    fetchInstanceServices,
     fetchUsersOfInstance
 } from "../../../util/instance-service";
 
@@ -150,7 +150,7 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchCreateSubscription(serviceId, userId);
-        const newServices = await fetchInstanceServicesSubscriptions(this.props.instance.id);
+        const newServices = await fetchInstanceServices(this.props.instance.id, true);
         this.setState({services: newServices})
 
     };
@@ -167,7 +167,7 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchDeleteSubscription(serviceId, userId);
-        const newServices = await fetchInstanceServicesSubscriptions(this.props.instance.id);
+        const newServices = await fetchInstanceServices(this.props.instance.id, true);
         this.setState({services: newServices});
     };
 
@@ -222,7 +222,7 @@ class InstanceDropdown extends React.Component {
             //Fetch users for the instance
             if (this.props.isAdmin) {
                 this.setState({isLoading: true});
-                const newServices = await fetchInstanceServicesSubscriptions(this.props.instance.id);
+                const newServices = await fetchInstanceServices(this.props.instance.id, true);
                 const members = await fetchUsersOfInstance(this.props.instance.id);
                 this.setState({services: newServices, isLoading: false, members: members});
             }

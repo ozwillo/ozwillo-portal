@@ -30,14 +30,11 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/services")
-    public List<InstanceService> getServices(@PathVariable String instanceId){
-        return applicationService.getServices(instanceId);
+    public List<InstanceService> getServices(@PathVariable String instanceId, @RequestParam Boolean withSubscriptions){
+            return applicationService.getServices(instanceId, withSubscriptions);
+
     }
 
-    @GetMapping("/{instanceId}/services/subscription")
-    public List<InstanceService> getServicesSubscriptions(@PathVariable String instanceId){
-        return applicationService.getServicesWithSubscriptions(instanceId);
-    }
     /**
      * (ideally should be {id}/set-status)
      */
