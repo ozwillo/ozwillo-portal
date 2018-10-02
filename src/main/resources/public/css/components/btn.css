@@ -20,6 +20,7 @@ a.btn {
     -ms-user-select: none;
     user-select: none;
     margin: 0 2px;
+    transition: all 0.5s;
 }
 
 .btn.focus, .btn:focus, .btn:hover {

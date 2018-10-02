@@ -1,6 +1,10 @@
 .wrap-organization-card {
     margin: 2em 1em 0 1em;
-    border-radius: 8px !important;
+    box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.wrap-organization-card:hover{
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
 }
 
 .wrap-organization-card .card{
