@@ -34,12 +34,12 @@
 
 .dropdown-header .error-message{
     font-size: 1.1em;
-    color: var(--tertiary-color) !important;
+    color: var(--primary-color) !important;
 }
 
 .dropdown-header .link {
     font-size: 1.1em;
-    color: var(--tertiary-color) !important;
+    color: var(--primary-color) !important;
     text-transform: uppercase;
 }
 
