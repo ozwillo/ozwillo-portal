@@ -70,6 +70,10 @@
     width: auto !important;
 }
 
+.instance-invitation-form .container-loading > .loading{
+    font-size: 1.5em !important;
+}
+
 @media (max-width: 425px) {
 
     .instance-invitation-form .content {

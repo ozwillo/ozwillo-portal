@@ -29,7 +29,6 @@ const instanceStatus = Config.instanceStatus;
 
 //Action
 import {fetchUpdateServiceConfig} from '../../../actions/instance';
-import customFetch from '../../../util/custom-fetch';
 
 class InstanceDropdown extends React.Component {
 
@@ -39,7 +38,7 @@ class InstanceDropdown extends React.Component {
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
-        members: PropTypes.array.isRequired,
+        organizationMembers: PropTypes.array,
         isAdmin: PropTypes.bool
     };
 
@@ -57,54 +56,45 @@ class InstanceDropdown extends React.Component {
             services: [],
             members: null
         };
-
-        //bind methods
-        this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
-        this.onRemoveInstance = this.onRemoveInstance.bind(this);
-        this.onCancelRemoveInstance = this.onCancelRemoveInstance.bind(this);
-        this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
-        this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
-        this.fetchUpdateServiceConfig = this.fetchUpdateServiceConfig.bind(this);
-        this.searchSubForUser = this.searchSubForUser.bind(this);
     }
 
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             instance: nextProps.instance,
-            members: nextProps.members
+            organizationMembers: nextProps.organizationMembers
         });
 
-        if (nextProps.members) {
+        if (nextProps.organizationMembers) {
             this.setState({isLoading: false})
         }
 
     }
 
 
-    fetchUpdateServiceConfig(instanceId, catalogEntry) {
+    fetchUpdateServiceConfig = (instanceId, catalogEntry) => {
         return this.props.fetchUpdateServiceConfig(instanceId, catalogEntry)
             .then(() => {
                 Popup.close();
             });
-    }
+    };
 
-    onClickConfigIcon(instance) {
+    onClickConfigIcon = (instance) => {
         Popup.create({
             title: instance.name,
             content: <InstanceConfigForm instance={instance} onSubmit={this.fetchUpdateServiceConfig}/>
         }, true);
-    }
+    };
 
-    onRemoveInstance(instance) {
+    onRemoveInstance = (instance) =>{
         this.props.fetchUpdateInstanceStatus(instance, instanceStatus.stopped);
-    }
+    };
 
-    onCancelRemoveInstance(instance) {
+    onCancelRemoveInstance = (instance) =>{
         this.props.fetchUpdateInstanceStatus(instance, instanceStatus.running);
-    }
+    };
 
-    filterMemberWithoutAccess(member) {
+    filterMemberWithoutAccess = (member) => {
         const {members} = this.state;
         if (!members) {
             return true;
@@ -113,9 +103,9 @@ class InstanceDropdown extends React.Component {
         return !members.find((user) => {
             return user.id === member.id;
         })
-    }
+    };
 
-    removeUserAccessToInstance(e) {
+    removeUserAccessToInstance = (e) => {
         const {members} = this.state;
         const i = e.currentTarget.dataset.member;
         const member = members[i];
@@ -135,8 +125,7 @@ class InstanceDropdown extends React.Component {
                     })
                 });
             });
-    }
-
+    };
 
     createSubscription = async (e) => {
         const el = e.currentTarget;
@@ -207,7 +196,7 @@ class InstanceDropdown extends React.Component {
     };
 
 
-    searchSubForUser(user, service) {
+    searchSubForUser = (user, service) => {
         if (!service.subscriptions) {
             return null;
         }
@@ -215,7 +204,7 @@ class InstanceDropdown extends React.Component {
         return service.subscriptions.find((sub) => {
             return sub.user_id === user.id;
         });
-    }
+    };
 
     handleDropDown = async (dropDownState) => {
         if (dropDownState) {
@@ -234,11 +223,12 @@ class InstanceDropdown extends React.Component {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
         const {services, isLoading, members} = this.state;
+        const {organizationMembers} = this.props;
         const isRunning = instance.applicationInstance.status === instanceStatus.running;
         const isAvailable = isAdmin && !instance.isPublic && isRunning;
         const isOpen = false;
 
-        const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
+        const membersWithoutAccess = organizationMembers ? organizationMembers.filter(this.filterMemberWithoutAccess) : null;
         const Header = <InstanceDropdownHeader
             isAdmin={isAdmin}
             instance={instance}

@@ -14,7 +14,7 @@ class InstanceInvitationForm extends React.Component {
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
-        members: PropTypes.array.isRequired
+        members: PropTypes.array
     };
 
     constructor(props) {
@@ -71,7 +71,30 @@ class InstanceInvitationForm extends React.Component {
             });
     }
 
+    _formatMembers = () => {
+        const {members} = this.props;
+        if(members) {
+            return members.map(member => {
+                if (member.name) {
+                    return {
+                        ...member,
+                        displayedInfo: member.name + ' - ' + member.email
+                    }
+                } else {
+                    return {
+                        ...member,
+                        displayedInfo: member.email
+                    }
+                }
+            });
+        }else{
+            return null;
+        }
+    };
+
     render() {
+        const formattedMembers = this._formatMembers();
+
         return <form className={`instance-invitation-form flex-col end ${this.props.className || ''}`}
                      onSubmit={this.onSubmit}>
             <legend>{this.context.t('organization.desc.add-user-to-instance')}</legend>
@@ -79,16 +102,22 @@ class InstanceInvitationForm extends React.Component {
                 <label className="label">
                     {this.context.t('organization.desc.add-to-instance-from-members')}
                 </label>
-                <Select
-                    className="select"
-                    name="members"
-                    value={this.state.selectedOption}
-                    labelKey="name"
-                    valueKey="id"
-                    onChange={this.onOptionChange}
-                    options={this.props.members}
-                    placeholder={this.context.t('organization.desc.members')}
-                    required={!this.state.email}/>
+                {this.props.members ?
+                    <Select
+                        className="select"
+                        name="members"
+                        value={this.state.selectedOption}
+                        labelKey="displayedInfo"
+                        valueKey="id"
+                        onChange={this.onOptionChange}
+                        options={formattedMembers}
+                        placeholder={this.context.t('organization.desc.members')}
+                        required={!this.state.email}/>
+                    :
+                    <div className="container-loading text-center">
+                        <i className="fa fa-spinner fa-spin loading"/>
+                    </div>
+                }
 
                 <em className="sep-text">{this.context.t('ui.or')}</em>
 
