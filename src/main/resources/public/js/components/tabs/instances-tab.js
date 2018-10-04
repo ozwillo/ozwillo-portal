@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 //Components
 import AddInstanceDropdown from '../dropdown_menus/instance/add-instance-dropdown';
 import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
+import customFetch from '../../util/custom-fetch';
 
 class InstancesTabHeader extends React.Component {
 
@@ -35,8 +36,24 @@ class InstancesTab extends React.Component {
         t: PropTypes.func.isRequired,
     };
 
+    state = {
+        organizationMembers: null
+    };
+
+    componentDidMount(){
+        this.fetchOrganizationMembers();
+    }
+
+    fetchOrganizationMembers = () => {
+        const {id} = this.props.organization;
+        customFetch(`/my/api/organization/${id}/members`).then(res => {
+            this.setState({organizationMembers: res});
+        })
+    };
+
     render() {
         const org = this.props.organization;
+        const {organizationMembers} = this.state;
 
         return <article className="instances-tab">
 
@@ -53,7 +70,7 @@ class InstancesTab extends React.Component {
                     {
                         org.instances.map(instance => {
                             return <li key={instance.id} className="instance">
-                                <InstanceDropdown instance={instance} members={org.members || []} isAdmin={org.admin}/>
+                                <InstanceDropdown instance={instance} organizationMembers={organizationMembers} isAdmin={org.admin}/>
                             </li>
                         })
                     }
