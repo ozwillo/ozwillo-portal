@@ -35,20 +35,6 @@ export const fetchConfig = () => {
     };
 };
 
-export const fetchMyConfig = () => {
-    return (dispatch) => {
-        return customFetch('/my/api/config')
-            .then((res) => {
-                // Language
-                dispatch(setLanguage(res.language));
-                dispatch(setTranslations(res.i18n));
-
-                //Config
-                dispatch(fetchConfigAction(res));
-            })
-    };
-};
-
 export const fetchCountries = (q = '') => {
     return (dispatch) => {
         return customFetch(urlBuilder('/api/geo/countries', {q}))
