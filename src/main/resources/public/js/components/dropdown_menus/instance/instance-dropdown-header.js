@@ -96,7 +96,7 @@ class InstanceDropdownHeader extends React.Component {
 
         if (status) {
             return (
-                <div className="alert alert-danger flex-row center end" role="alert"
+                <div className="alert alert-danger" role="alert"
                      style={{marginBottom: 0, alignItems: 'center'}}>
                     <strong>{this.context.t('sorry')}</strong>
                     &nbsp;
@@ -127,8 +127,6 @@ class InstanceDropdownHeader extends React.Component {
 
                 <div className="options flex-row end">
 
-                    {this._displayError()}
-
                     {
                         !isStopped && !isPending && isAdmin &&
                         <CustomTooltip title={this.context.t('tooltip.config')}>
@@ -149,9 +147,8 @@ class InstanceDropdownHeader extends React.Component {
 
                     <CustomTooltip title={this.context.t('tooltip.remove.instance')}
                                    className={`${(isStopped || !isAdmin) ? 'invisible' : ''}`}>
-                        <button type="submit"
-                                className="btn icon">
-                            <i className="fa fa-trash option-icon"/>
+                        <button type="submit" className="btn icon delete">
+                            <i className="fa fa-trash option-icon delete"/>
                         </button>
                     </CustomTooltip>
 
@@ -169,6 +166,9 @@ class InstanceDropdownHeader extends React.Component {
                     }
                 </div>
             </form>
+
+            {this._displayError()}
+
         </header>;
     }
 }

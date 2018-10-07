@@ -13,6 +13,5 @@
 
 .organization-desc .select {
     width: 25%;
-    min-width: 200px;
     align-self: flex-end;
 }

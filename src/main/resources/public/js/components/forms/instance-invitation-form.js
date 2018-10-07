@@ -1,7 +1,8 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+
+import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
 
 //Action
 import InstanceService from "../../util/instance-service";
@@ -101,7 +102,7 @@ export default class InstanceInvitationForm extends React.Component {
                 </label>
                 {this.props.members ?
                     <Select
-                        className="select"
+                        className="select add-member-instance-select"
                         name="members"
                         value={this.state.selectedOption}
                         labelKey="displayedInfo"
@@ -127,7 +128,7 @@ export default class InstanceInvitationForm extends React.Component {
                     </label>
                 </div>
 
-                <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
+                <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
                     {
                         !this.state.isLoading &&
                         this.context.t('ui.invite')
@@ -140,19 +141,12 @@ export default class InstanceInvitationForm extends React.Component {
                 </button>
             </div>
 
-
             {
-                this.state.error &&
-                <span className="error">
-                    {this.state.error}
-                </span>
+                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
             }
 
             {
-                this.state.success &&
-                <span className="success">
-                    {this.state.success}
-                </span>
+                this.state.success && <DropdownBlockSuccess successMessage={this.state.success} />
             }
         </form>;
     }

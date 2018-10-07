@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
+import { DropdownBlockError, DropdownBlockSuccess } from '../../notification-messages';
+
 
 class MemberDropdownFooter extends React.Component {
 
@@ -19,7 +21,8 @@ class MemberDropdownFooter extends React.Component {
 
         this.state = {
             selectedOption: null,
-            error: ''
+            error: '',
+            isLoading: false
         };
 
         //binds methods
@@ -35,12 +38,14 @@ class MemberDropdownFooter extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
+
+        this.setState({isLoading: true});
         this.props.onAddAccessToInstance(this.state.selectedOption)
             .then(() => {
-                this.setState({error: ''});
+                this.setState({ error: '', isLoading: false });
             })
             .catch(err => {
-                this.setState({error: err.error});
+                this.setState({ error: err.error, isLoading: false });
             });
     }
 
@@ -52,7 +57,7 @@ class MemberDropdownFooter extends React.Component {
         return <header className="dropdown-footer">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <Select
-                    className="select"
+                    className="select add-instance-member-select"
                     name="app"
                     value={this.state.selectedOption}
                     onChange={this.onOptionChange}
@@ -62,12 +67,22 @@ class MemberDropdownFooter extends React.Component {
                     labelKey="name"
                     placeholder="Instances"/>
 
-                <span className="error-message">{this.state.error}</span>
-
                 <div className="flex-row end">
-                    <button type="submit" className="btn btn-submit icon">{this.context.t('ui.add')}</button>
+                    <button type="submit" className="btn btn-submit">
+                        {
+                            !this.state.isLoading && this.context.t('ui.add')
+                        }
+                        {
+                            this.state.isLoading &&
+                                <i className="fa fa-spinner fa-spin action-icon" style={{ 'marginLeft': '1em' }}/>
+                        }
+                    </button>
                 </div>
             </form>
+
+            {
+                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
+            }
         </header>;
     }
 

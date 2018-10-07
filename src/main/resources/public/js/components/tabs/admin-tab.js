@@ -5,6 +5,7 @@ import {Link} from 'react-router-dom';
 
 //Components
 import OrganizationForm from '../forms/organization-form';
+import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
 
 //actions
 import {fetchCountries} from '../../actions/config';
@@ -101,11 +102,11 @@ class AdminTab extends React.Component {
                     <div className="text-center">
                         {
                             this.state.error &&
-                            <span className="error-message">{this.state.error}</span>
+                                <DropdownBlockError errorMessage={this.state.error}/>
                         }
                         {
                             this.state.success &&
-                            <span className="success-message">{this.state.success}</span>
+                                <DropdownBlockSuccess successMessage={this.state.success}/>
                         }
                     </div>
                 </article>

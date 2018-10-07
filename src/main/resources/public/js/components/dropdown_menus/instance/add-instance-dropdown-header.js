@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
+import { DropdownBlockError } from '../../notification-messages';
 
 class AddInstanceDropdownHeader extends React.Component {
 
@@ -59,7 +60,7 @@ class AddInstanceDropdownHeader extends React.Component {
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <Select
-                    className="select"
+                    className="select add-instance-select"
                     name="app"
                     value={this.props.app}
                     labelKey="name"
@@ -68,25 +69,26 @@ class AddInstanceDropdownHeader extends React.Component {
                     placeholder={this.context.t('organization.desc.applications')}
                     required={true}/>
 
-                {
-                    error.message &&
-                    <span className="error-message">{error.message + ' ('+ this.context.t('error-code')+' : ' + error.http_status+')'}</span>
-                }
-
                 <div className="options flex-row">
                     {
                         !this.state.isLoading ?
-                        < button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
+                        <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
                             {this.context.t('install')}
                         </button> : null
                     }
 
                     {
                         this.state.isLoading &&
-                        <i className="fa fa-spinner fa-spin option-icon"/>
+                        <i className="fa fa-spinner fa-spin option-icon" style={{ 'marginLeft': '1em' }}/>
                     }
                 </div>
+
             </form>
+            {
+                error.message &&
+                    <DropdownBlockError errorMessage={error.message + ' ('+ this.context.t('error-code')+' : ' + error.http_status+')'}/>
+            }
+
         </header>;
     }
 }

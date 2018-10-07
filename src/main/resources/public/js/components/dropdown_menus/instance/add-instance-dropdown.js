@@ -4,7 +4,6 @@ import {connect} from 'react-redux';
 //Components
 import DropDownMenu from '../../dropdown-menu';
 import AddInstanceDropdownHeader from './add-instance-dropdown-header';
-/*import AddInstanceDropdownFooter from './add-instance-dropdown-footer';*/
 
 //Action
 import {fetchAddInstanceToOrg} from '../../../actions/app-store';
@@ -96,8 +95,6 @@ class AddInstanceDropdown extends React.Component {
     render() {
         const apps = this.props.apps.filter(this.filterApps);
         const app = this.state.app;
-        const org = this.props.organization;
-        //const membersWithoutAccess = org.members.filter(this.filterMembersWithoutAccess);
 
         const Header = <AddInstanceDropdownHeader
             apps={apps}
@@ -105,32 +102,7 @@ class AddInstanceDropdown extends React.Component {
             onAddInstance={this.onAddInstance}
             onChangeInstance={this.onChangeApp}/>;
 
-        //TODO may be for next feature: Add an instance to an organization and create in same time ACLs for users
-        /*const Footer = <AddInstanceDropdownFooter
-                members={membersWithoutAccess}
-                onAddMember={this.onAddMember}/>;*/
-
-        return <DropDownMenu header={Header} /*footer={Footer}*/ isAvailable={false} className="action-header">
-            {/*
-            <section className='dropdown-content'>
-                <ul className="list undecorated-list flex-col">
-                    {
-                        this.state.members.map((member, i) => {
-                            return <li key={member.id}>
-                                <article className="item flex-row">
-                                    <p className="name">{member.name}</p>
-
-                                    <div className="options">
-                                        <button className="btn icon" onClick={this.onRemoveMember} data-member={i}>
-                                            <i className="fa fa-trash option-icon delete"/>
-                                        </button>
-                                    </div>
-                                </article>
-                            </li>;
-                        })
-                    }
-                </ul>
-            </section>*/}
+        return <DropDownMenu header={Header} isAvailable={false} className="action-header">
         </DropDownMenu>;
     }
 }

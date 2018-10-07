@@ -7,7 +7,6 @@
 .members-tab .btn-submit {
     background-color: var(--tertiary-color);
     padding: 3px 6px !important;
-    border-radius: 4px !important;
 }
 
 .members-tab .add-member {

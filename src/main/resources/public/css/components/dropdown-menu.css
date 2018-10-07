@@ -1,7 +1,6 @@
 
 .oz-dropdown-menu {
     background-color: var(--primary-color);
-    color: var(--secondary-color);
 }
 
 .oz-dropdown-menu > .header {
@@ -12,7 +11,7 @@
 
     color: var(--primary-color);
     background-color: var(--tertiary-color);
-    border-left: 2px solid var(--primary-color);
+    border-left: 2px solid var(--secondary-color);
 }
 
 .oz-dropdown-menu.action-header > .header {
@@ -51,14 +50,14 @@
 }
 
 .oz-dropdown-menu > .header .dropdown-icons:hover {
-    background-color: var(--secondary-color);
-    color: var(--tertiary-color);
+    background-color: var(--primary-color);
+    color: #fff;
 }
 
 .oz-dropdown-menu > .content,
 .oz-dropdown-menu > .footer {
-    border-left: 2px solid var(--primary-color);
-    background-color: var(--tertiary-color);
+    border-left: 2px solid var(--secondary-color);
+    background-color: #fff;
     padding: 5px 10px;
 }
 
@@ -78,7 +77,6 @@
     height: 100%;
     width: auto;
     align-items: center;
-    color: var(--primary-color);
 }
 
 /* Organization dropdown */

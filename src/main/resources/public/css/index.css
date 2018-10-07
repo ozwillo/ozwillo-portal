@@ -15,7 +15,6 @@
 @import 'components/popup.css';
 @import 'components/react-autosuggest.css';
 @import 'components/service.css';
-@import 'components/table.css';
 @import 'components/tabs.css';
 @import 'components/tabs/admin-tab.css';
 @import 'components/tabs/instances-tab.css';
@@ -55,7 +54,7 @@ body {
 body {
     width: 100%;
     min-height: 100vh;
-    background-color: var(--tertiary-color);
+    background-color: var(--bg-content-color);
 }
 
 body, h1, h2 {
@@ -65,7 +64,7 @@ body, h1, h2 {
 
 h4 {
     font-weight: 300 !important;
-    color: var(--secondary-color) !important;
+    color: var(--primary-color) !important;
 }
 
 label {
@@ -92,16 +91,12 @@ label.required {
     background: var(--bg-content-color);
 }
 
-.oz-body.light {
-    background: var(--tertiary-color);
-}
-
 .oz-body.wrapper {
     padding: 20px 100px;
     height: 100%;
 }
 
-.oz-body .title{
+.oz-body .title {
     color: var(--primary-color);
     font-weight: bold;
     font-size: 2em;
@@ -124,6 +119,10 @@ label.required {
 
 .oz-body h3 {
     font-size: 18px;
+}
+
+.oz-body .label {
+    color: inherit;
 }
 
 /* END oz-body */
@@ -168,8 +167,42 @@ label.required {
     4px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
+.oz-body .alert {
+    margin: 1em auto;
+    padding: 10px;
+    background-color: transparent;
+    border-radius: 0;
+    white-space: normal;
+}
+
+.oz-body .alert .close {
+    opacity: 1;
+    margin-left: 1em;
+}
+
+.oz-body .alert-danger {
+    color: var(--alert-color);
+    border-color: var(--alert-color);
+}
+
+.oz-body .alert-danger .close {
+    color: var(--alert-color);
+}
+
+.oz-body .alert-success {
+    color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.oz-body .alert-success .close {
+    color: var(--success-color);
+}
+
+form .alert {
+    margin: 1em 25%;
+}
+
 .alert-message {
-    color: var(--secondary-color);
     font-size: 1.2em;
 }
 
@@ -194,10 +227,6 @@ label.required {
 
 .caret {
     margin-left: 10px !important;
-}
-
-a {
-    color: var(--secondary-color);
 }
 
 /* tablet */

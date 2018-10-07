@@ -21,6 +21,7 @@ import {
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import UpdateTitle from '../components/update-title';
 import customFetch from "../util/custom-fetch";
+import { DropdownBlockSuccess } from '../components/notification-messages';
 
 class Profile extends React.Component {
     state = {
@@ -97,14 +98,6 @@ class Profile extends React.Component {
                 </header>
                 <section className="box">
                     <Form id="account" onSubmit={this.onSubmit.bind(this)}>
-                        {renderIf(this.state.updateSucceeded)(
-                            <div className="alert alert-success" role="alert">
-                                <button type="button" className="close" data-dismiss="alert" aria-label="Close">
-                                    <span aria-hidden="true">&times;</span>
-                                </button>
-                                {this.context.t('my.profile.account.update')}
-                            </div>
-                        )}
                         <ProfileAccount userProfile={userProfile} languages={this.state.languages}
                                         onValueChange={this.onValueChange.bind(this)}
                                         voluntaryClaims={voluntaryClaims}
@@ -118,6 +111,9 @@ class Profile extends React.Component {
                                         voluntaryClaims={voluntaryClaims}
                                         essentialClaims={essentialClaims} />
                         <SubmitButton label={this.context.t('ui.save')} className="btn-lg"/>
+                        {renderIf(this.state.updateSucceeded)(
+                            <DropdownBlockSuccess successMessage={this.context.t('my.profile.account.update')}/>
+                        )}
                     </Form>
                 </section>
 

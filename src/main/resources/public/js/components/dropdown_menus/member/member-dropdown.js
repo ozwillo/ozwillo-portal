@@ -149,30 +149,30 @@ class MemberDropdown extends React.Component {
         const dropDownicon = <i className="fa fa-list-alt option-icon"/>;
         return <DropDownMenu header={Header} dropDownIcon={dropDownicon} isAvailable={!isPending} dropDownChange={this.handleDropDown}>
             { org.admin &&
-                <section className='dropdown-content'>
-                    <ul className="list undecorated-list flex-col">
+                <section className="dropdown-content">
+                <table className='table table-striped'>
+                    <tbody>
                         {
                             memberInstances.map((instance, i) => {
-                                return <li key={instance.id}>
-                                    <article className="item flex-row">
-                                        <span className="name">{instance.name}</span>
-                                        <span className="error-message">{this.state.errors[instance.id]}</span>
-                                        <div className="options flex-row">
+                                return <tr key={instance.id}>
+                                        <td className="fill-content">{instance.name}</td>
+                                        <td className="fill-content">{this.state.errors[instance.id]}</td>
+                                        <td className="fill-content col-md-1">
                                             <CustomTooltip title={this.context.t('tooltip.remove.instance')}>
-                                                <button className="btn icon"
+                                                <button className="btn icon delete"
                                                         onClick={this.removeAccessToInstance} data-instance={instance.id}>
                                                     <i className="fa fa-trash option-icon delete"/>
                                                 </button>
                                             </CustomTooltip>
-                                        </div>
-                                    </article>
-                                </li>;
+                                        </td>
+                                </tr>;
                             })
                         }
-                    </ul>
-                    <MemberDropdownFooter member={member}
-                                          instances={memberInstancesWithoutAccess}
-                                          onAddAccessToInstance={this.addAccessToInstance}/>
+                    </tbody>
+                </table>
+                <MemberDropdownFooter member={member}
+                                      instances={memberInstancesWithoutAccess}
+                                      onAddAccessToInstance={this.addAccessToInstance}/>
                 </section>
             }
         </DropDownMenu>

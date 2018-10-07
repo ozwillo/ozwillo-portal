@@ -121,9 +121,9 @@ class MemberDropdownHeader extends React.Component {
                     {
                         isOrgAdmin &&
                         <CustomTooltip title={this.context.t('tooltip.delete.member')}>
-                            <button type="button" className="btn icon"
+                            <button type="button" className="btn icon delete"
                                     onClick={!isPending && this.onRemoveMemberInOrganization || this.onRemoveInvitationToJoinAnOrg}>
-                                <i className="fa fa-trash option-icon"/>
+                                <i className="fa fa-trash option-icon delete"/>
                             </button>
                         </CustomTooltip>
                     }

@@ -99,7 +99,7 @@ class OrganizationDesc extends React.Component {
         return <section className="organization-desc oz-body wrapper flex-col">
 
             <Select
-                className="select"
+                className="select organization-switcher"
                 value={orgSelected}
                 labelKey="name"
                 valueKey="id"

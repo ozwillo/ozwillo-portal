@@ -2,7 +2,6 @@
 .organization-invitation-form {
     width: 100%;
     align-self: center;
-    color: var(--primary-color);
 }
 
 .organization-invitation-form .legend {
@@ -18,7 +17,6 @@
     text-align: left;
     margin: auto 0;
     font-size: 0.9em;
-    color: var(--secondary-color);
     padding: 2px 0;
     font-weight: normal;
 }

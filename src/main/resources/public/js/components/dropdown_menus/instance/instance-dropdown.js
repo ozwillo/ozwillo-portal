@@ -261,7 +261,7 @@ class InstanceDropdown extends React.Component {
                         <i className="fa fa-spinner fa-spin loading"/>
                     </div>
                 }
-                <table className="oz-table">
+                <table className="table table-striped">
                     <thead>
                     {/*
                             Header: size: 3+ n (services)
@@ -295,7 +295,7 @@ class InstanceDropdown extends React.Component {
                             const status = this.state.status[user.id];
                             return <tr key={user.id || user.email}>
                                 <td className="fill-content">
-                                    <article className="item flex-row-mobile-column">
+                                    <article className="item">
                                         {
                                             user.id &&
                                             <span className="name">{user.name}</span>
@@ -322,7 +322,7 @@ class InstanceDropdown extends React.Component {
                                     user.id && services &&
                                     services.map((service) => {
                                         const sub = this.searchSubForUser(user, service);
-                                        return <td key={service.catalogEntry.id} className="fill-content center">
+                                        return <td key={service.catalogEntry.id} className="fill-content col-md-1">
                                             {
                                                 !sub &&
                                                 <CustomTooltip title={this.context.t('tooltip.add.icon')}>
@@ -361,17 +361,19 @@ class InstanceDropdown extends React.Component {
                                                 colSpan={services.length - 1}/>
                                         }
 
-                                        <td className="fill-content center">
+                                        <td className="fill-content col-md-1">
                                             <CustomTooltip title={this.context.t('tooltip.pending')}>
-                                                <i className="fa fa-stopwatch option-icon loading"/>
+                                                <button type="button" className="btn icon">
+                                                    <i className="fa fa-stopwatch option-icon loading"/>
+                                                </button>
                                             </CustomTooltip>
                                         </td>
                                     </React.Fragment>
                                 }
 
-                                <td className="fill-content center">
+                                <td className="fill-content col-md-1">
                                     <CustomTooltip title={this.context.t('tooltip.remove.member')}>
-                                        <button className="btn icon" data-member={i}
+                                        <button className="btn icon delete" data-member={i}
                                                 onClick={this.removeUserAccessToInstance}>
                                             <i className="fa fa-trash option-icon delete"/>
                                         </button>
