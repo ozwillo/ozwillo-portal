@@ -30,7 +30,8 @@ public class InstanceController {
     }
 
     @GetMapping("/{instanceId}/services")
-    public List<InstanceService> getServices(@PathVariable String instanceId, @RequestParam Boolean withSubscriptions){
+    public List<InstanceService> getServices(@PathVariable String instanceId,
+                                             @RequestParam(defaultValue = "false") Boolean withSubscriptions){
             return applicationService.getServices(instanceId, withSubscriptions);
 
     }
