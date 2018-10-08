@@ -12,7 +12,6 @@ import UpdateTitle from '../components/update-title';
 
 //actions
 import {fetchOrganizationWithId, fetchOrganizationInfo} from "../actions/organization";
-import {fetchUsersOfInstance} from "../actions/instance";
 import {fetchApplications} from "../actions/app-store";
 import customFetch from "../util/custom-fetch";
 
@@ -61,6 +60,7 @@ class OrganizationDesc extends React.Component {
         this.props.fetchOrganizationWithId(id)
             .then(() => {
                 // Update selector
+
                 this.setState({orgSelected: this.props.organization});
                 this.setState({isLoading: false});
             });
@@ -174,9 +174,6 @@ const
         return {
             fetchOrganizationWithId(id) {
                 return dispatch(fetchOrganizationWithId(id));
-            },
-            fetchUsersOfInstance(instance) {
-                return dispatch(fetchUsersOfInstance(instance));
             },
             fetchApplications() {
                 return dispatch(fetchApplications());

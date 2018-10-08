@@ -4,7 +4,6 @@ import {
 } from "../../actions/acl";
 
 import {
-    FETCH_USERS_OF_INSTANCE,
     FETCH_UPDATE_INSTANCE_STATUS,
     FETCH_UPDATE_SERVICE_CONFIG
 } from "../../actions/instance";
@@ -40,9 +39,6 @@ export default (state = defaultState, action) => {
             break;
         case FETCH_UPDATE_INSTANCE_STATUS:
             nextState = Object.assign({}, state, action.instance);
-            break;
-        case FETCH_USERS_OF_INSTANCE:
-            nextState.users = action.users;
             break;
         case FETCH_CREATE_ACL:
             nextState.users = Object.assign([], state.users);
