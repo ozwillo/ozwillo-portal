@@ -13,7 +13,6 @@ import {
 } from '../../actions/acl';
 
 import {
-    FETCH_USERS_OF_INSTANCE,
     FETCH_UPDATE_INSTANCE_STATUS,
     FETCH_UPDATE_SERVICE_CONFIG
 } from '../../actions/instance';
@@ -113,7 +112,6 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
-        case FETCH_USERS_OF_INSTANCE:
         case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_DELETE_MEMBER:
         case FETCH_DELETE_ORGANIZATION_INVITATION:
@@ -151,7 +149,6 @@ export default (state = defaultState, action) => {
         case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_ADD_INSTANCE_TO_ORG:
         case FETCH_UPDATE_INSTANCE_STATUS:
-        case FETCH_USERS_OF_INSTANCE:
         case FETCH_CREATE_ACL:
         case FETCH_DELETE_ACL:
         case FETCH_ORGANIZATION_WITH_ID:
