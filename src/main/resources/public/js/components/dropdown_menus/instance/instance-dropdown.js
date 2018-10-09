@@ -282,10 +282,7 @@ class InstanceDropdown extends React.Component {
                                 })
                                 : null
                         }
-                        {
-                            status && status.error &&
-                            <th/>
-                        }
+                        <th/>
                     </tr>
                     </thead>
                     <tbody>
