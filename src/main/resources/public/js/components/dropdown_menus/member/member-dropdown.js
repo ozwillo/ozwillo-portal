@@ -53,7 +53,7 @@ class MemberDropdown extends React.Component {
         const acl = await this._instanceService.fetchCreateAcl(this.props.member, instance);
         let memberInstances = this.memberInstances(instances);
 
-        //TODO when the API allow it fetch the instances of specific user rather than do it in local
+        //add the new user without fetching the API
         instances.find(i => i.id === instance.id).users.push(this.props.member);
         memberInstances.push(instance);
         const memberInstancesWithoutAccess = this.getInstancesWithoutAccess(instances);
@@ -73,7 +73,7 @@ class MemberDropdown extends React.Component {
             await this._instanceService.fetchDeleteAcl(this.props.member, instance);
             const errors = Object.assign({}, this.state.errors, {[instanceId]: ''});
 
-            //TODO when the API allow it fetch the instances of specific user rather than do it in local
+            //remove the user without fetching the API
             let memberInstances = this.memberInstances(instances);
             memberInstances.splice(memberInstances.indexOf(instance.id),1);
             instance.users.splice(instance.users.indexOf(this.props.member.id),1);
