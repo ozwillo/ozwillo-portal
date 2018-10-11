@@ -11,24 +11,16 @@ import InstanceConfigForm from '../../forms/instance-config-form';
 import CustomTooltip from '../../custom-tooltip';
 
 //action
-import {fetchDeleteAcl} from '../../../actions/acl';
 import {fetchUpdateInstanceStatus} from '../../../actions/instance';
 
 //Config
 import Config from '../../../config/config';
 
-//Service
-import {
-    fetchCreateSubscription,
-    fetchDeleteSubscription,
-    fetchInstanceServices,
-    fetchUsersOfInstance
-} from "../../../util/instance-service";
-
 const instanceStatus = Config.instanceStatus;
 
 //Action
 import {fetchUpdateServiceConfig} from '../../../actions/instance';
+import InstanceService from "../../../util/instance-service";
 
 class InstanceDropdown extends React.Component {
 
@@ -56,6 +48,10 @@ class InstanceDropdown extends React.Component {
             services: [],
             members: null
         };
+
+        this._instanceService = new InstanceService();
+
+
     }
 
 
@@ -86,11 +82,11 @@ class InstanceDropdown extends React.Component {
         }, true);
     };
 
-    onRemoveInstance = (instance) =>{
+    onRemoveInstance = (instance) => {
         this.props.fetchUpdateInstanceStatus(instance, instanceStatus.stopped);
     };
 
-    onCancelRemoveInstance = (instance) =>{
+    onCancelRemoveInstance = (instance) => {
         this.props.fetchUpdateInstanceStatus(instance, instanceStatus.running);
     };
 
@@ -105,17 +101,30 @@ class InstanceDropdown extends React.Component {
         })
     };
 
-    removeUserAccessToInstance = (e) => {
+    createUserAccessToInstance = async (user) => {
         const {members} = this.state;
+        try {
+            await this._instanceService.fetchCreateAcl(user, this.props.instance);
+            members.push(user);
+            this.setState({members});
+            return {error: false}
+        } catch (e) {
+            return {error: true, message: e};
+        }
+    };
+
+    removeUserAccessToInstance = (e) => {
+        let {members} = this.state;
         const i = e.currentTarget.dataset.member;
         const member = members[i];
 
-        this.props.fetchDeleteAcl(member, this.props.instance)
+        this._instanceService.fetchDeleteAcl(member, this.props.instance)
             .then(() => {
+                members.splice(members.indexOf(member.id), 1);
                 this.setState({
                     status: Object.assign({}, this.state.status, {
                         [member.id]: {error: null}
-                    })
+                    }, members)
                 });
             })
             .catch((err) => {
@@ -139,7 +148,7 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchCreateSubscription(serviceId, userId);
-        const newServices = await fetchInstanceServices(this.props.instance.id, true);
+        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
         this.setState({services: newServices})
 
     };
@@ -156,14 +165,13 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchDeleteSubscription(serviceId, userId);
-        const newServices = await fetchInstanceServices(this.props.instance.id, true);
+        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
         this.setState({services: newServices});
     };
 
 
-
     fetchCreateSubscription = async (serviceId, userId) => {
-        fetchCreateSubscription(serviceId,userId).then(() => {
+        this._instanceService.fetchCreateSubscription(serviceId, userId).then(() => {
             this.setState({
                 status: Object.assign({}, this.state.status, {
                     [userId]: {error: null, isLoading: false}
@@ -179,7 +187,7 @@ class InstanceDropdown extends React.Component {
     };
 
     fetchDeleteSubscription = async (serviceId, userId) => {
-        fetchDeleteSubscription(serviceId,userId).then(() => {
+        this._instanceService.fetchDeleteSubscription(serviceId, userId).then(() => {
             this.setState({
                 status: Object.assign({}, this.state.status, {
                     [userId]: {error: null, isLoading: false}
@@ -206,13 +214,19 @@ class InstanceDropdown extends React.Component {
         });
     };
 
+    _refreshInstanceMembers = async () => {
+        const members = await this._instanceService.fetchUsersOfInstance(this.props.instance.id);
+        this.setState({members})
+    };
+
+
     handleDropDown = async (dropDownState) => {
         if (dropDownState) {
             //Fetch users for the instance
             if (this.props.isAdmin) {
                 this.setState({isLoading: true});
-                const newServices = await fetchInstanceServices(this.props.instance.id, true);
-                const members = await fetchUsersOfInstance(this.props.instance.id);
+                const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
+                const members = await this._instanceService.fetchUsersOfInstance(this.props.instance.id);
                 this.setState({services: newServices, isLoading: false, members: members});
             }
         }
@@ -368,7 +382,8 @@ class InstanceDropdown extends React.Component {
                     }
                     </tbody>
                 </table>
-                <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
+                <InstanceInvitationForm members={membersWithoutAccess} instance={instance}
+                                        sendInvitation={this.createUserAccessToInstance}/>
             </section>
         </DropDownMenu>;
     }
@@ -376,16 +391,12 @@ class InstanceDropdown extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchDeleteAcl(user, instance) {
-            return dispatch(fetchDeleteAcl(user, instance));
-        },
         fetchUpdateInstanceStatus(instance, status) {
             return dispatch(fetchUpdateInstanceStatus(instance, status));
         },
         fetchUpdateServiceConfig(instanceId, catalogEntry) {
             return dispatch(fetchUpdateServiceConfig(instanceId, catalogEntry));
         }
-
     };
 };
 

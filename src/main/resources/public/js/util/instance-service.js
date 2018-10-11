@@ -1,21 +1,45 @@
 import customFetch from "./custom-fetch";
 
-export const fetchInstanceServices = async (instanceId, withSubscriptions) => {
-    return await customFetch(`/my/api/instance/${instanceId}/services?withSubscriptions=${withSubscriptions}`);
-};
+export  default class InstanceService {
 
-export const fetchUsersOfInstance = async (instanceId) => {
-    return await customFetch(`/my/api/instance/${instanceId}/users`);
-};
 
-export const  fetchCreateSubscription = async (serviceId, userId) => {
-    return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
-        method: 'POST'
-    })
-};
+    fetchInstanceServices = async (instanceId, withSubscriptions) => {
+        return await customFetch(`/my/api/instance/${instanceId}/services?withSubscriptions=${withSubscriptions}`);
+    };
 
-export const fetchDeleteSubscription = async (serviceId, userId) => {
-    return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
-        method: 'DELETE'
-    })
-};
+    fetchUsersOfInstance = async (instanceId) => {
+        return await customFetch(`/my/api/instance/${instanceId}/users`);
+    };
+
+    fetchCreateSubscription = async (serviceId, userId) => {
+        return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
+            method: 'POST'
+        })
+    };
+
+    fetchDeleteSubscription = async (serviceId, userId) => {
+        return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
+            method: 'DELETE'
+        })
+    };
+
+    fetchCreateAcl = async (user, instance) => {
+        return await customFetch(`/my/api/instance/${instance.id}/acl`, {
+            method: 'POST',
+            json: {
+                userId: user.id,
+                email: user.email
+            }
+        });
+    };
+
+    fetchDeleteAcl = async (user, instance) => {
+        return await customFetch(`/my/api/instance/${instance.id}/acl`, {
+            method: 'DELETE',
+            json: {
+                userId: user.id,
+                email: user.email
+            }
+        });
+    }
+}

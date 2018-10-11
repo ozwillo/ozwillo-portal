@@ -3,18 +3,18 @@ import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-
 //Action
-import {fetchCreateAcl} from "../../actions/acl";
+import InstanceService from "../../util/instance-service";
 
-class InstanceInvitationForm extends React.Component {
+export default class InstanceInvitationForm extends React.Component {
     static contextTypes = {
         t: PropTypes.func.isRequired
     };
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
-        members: PropTypes.array
+        members: PropTypes.array,
+        sendInvitation: PropTypes.func
     };
 
     constructor(props) {
@@ -28,52 +28,49 @@ class InstanceInvitationForm extends React.Component {
             success: ''
         };
 
-        //bind methods
-        this.onOptionChange = this.onOptionChange.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
+        this._instanceService = new InstanceService();
     }
 
-    onOptionChange(selectedOption) {
+    onOptionChange = (selectedOption) => {
         this.setState({selectedOption: selectedOption})
-    }
+    };
 
-    handleChange(e) {
+    handleChange = (e) => {
         const el = e.currentTarget;
         this.setState({
             [el.name]: el.type === 'checkbox' ? el.checked : el.value
         });
-    }
+    };
 
-    onSubmit(e) {
+    onSubmit = async (e) => {
         e.preventDefault();
 
-        this.setState({isLoading: true});
+        this.setState({isLoading: true, success: ''});
 
         const user = this.state.selectedOption || {email: this.state.email};
-        this.props.fetchCreateAcl(user, this.props.instance)
-            .then(() => {
-                this.setState({
-                    isLoading: false,
-                    selectedOption: null,
-                    email: '',
-                    success: this.context.t('ui.request.send'),
-                    error: ''
-                });
-            })
-            .catch((err) => {
-                console.error(err);
-                this.setState({
-                    isLoading: false,
-                    success: '',
-                    error: err.error
-                });
+        const response = await this.props.sendInvitation(user);
+
+        if (!response.error) {
+            this.setState({
+                isLoading: false,
+                selectedOption: null,
+                email: '',
+                success: this.context.t('ui.request.send'),
+                error: ''
             });
-    }
+        } else {
+            console.error(response.message);
+            this.setState({
+                isLoading: false,
+                success: '',
+                error: response.message
+            });
+        }
+    };
 
     _formatMembers = () => {
         const {members} = this.props;
-        if(members) {
+        if (members) {
             return members.map(member => {
                 if (member.name) {
                     return {
@@ -87,7 +84,7 @@ class InstanceInvitationForm extends React.Component {
                     }
                 }
             });
-        }else{
+        } else {
             return null;
         }
     };
@@ -161,13 +158,3 @@ class InstanceInvitationForm extends React.Component {
     }
 
 }
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchCreateAcl(user, instance) {
-            return dispatch(fetchCreateAcl(user, instance));
-        }
-    };
-};
-
-export default connect(null, mapDispatchToProps)(InstanceInvitationForm);

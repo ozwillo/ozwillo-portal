@@ -9,9 +9,9 @@ import MemberDropdownFooter from './member-dropdown-footer'
 import CustomTooltip from '../../custom-tooltip';
 
 //Actions
-import {fetchCreateAcl, fetchDeleteAcl} from '../../../actions/acl';
 import {fetchDeleteMember, fetchUpdateRoleMember} from '../../../actions/member';
 import {fetchRemoveOrganizationInvitation} from "../../../actions/invitation";
+import InstanceService from "../../../util/instance-service";
 
 class MemberDropdown extends React.Component {
 
@@ -24,60 +24,80 @@ class MemberDropdown extends React.Component {
         organization: PropTypes.object.isRequired
     };
 
-    constructor(props) {
-        super(props);
+    state = {
+        errors: {},
+        instances: [],
+        memberInstances: [],
+        memberInstancesWithoutAccess: []
+    };
 
-        this.state = {
-            errors: {}
-        };
-
-        //bind methods
-        this.removeAccessToInstance = this.removeAccessToInstance.bind(this);
-        this.addAccessToInstance = this.addAccessToInstance.bind(this);
-        this.removeMemberInOrganization = this.removeMemberInOrganization.bind(this);
-        this.removeInvitationToJoinAnOrg = this.removeInvitationToJoinAnOrg.bind(this);
-        this.memberInstances = this.memberInstances.bind(this);
-        this.filterInstanceWithoutAccess = this.filterInstanceWithoutAccess.bind(this);
-        this.onUpdateRoleMember = this.onUpdateRoleMember.bind(this);
+    constructor(){
+        super();
+        this._instanceService = new InstanceService();
     }
 
-    addAccessToInstance(instance) {
+    componentDidMount(){
+        const {instances} = this.props.organization;
+        const memberInstances = this.memberInstances(instances);
+        const memberInstancesWithoutAccess = this.getInstancesWithoutAccess(instances);
+        this.setState({memberInstances, memberInstancesWithoutAccess, instances});
+    }
+
+    addAccessToInstance = async (instance) => {
+        let {instances} = this.state;
+
         if (!instance) {
             return;
         }
 
-        return this.props.fetchCreateAcl(this.props.member, instance);
-    }
+        const acl = await this._instanceService.fetchCreateAcl(this.props.member, instance);
+        let memberInstances = this.memberInstances(instances);
 
-    removeAccessToInstance(e) {
+        //add the new user without fetching the API
+        instances.find(i => i.id === instance.id).users.push(this.props.member);
+        memberInstances.push(instance);
+        const memberInstancesWithoutAccess = this.getInstancesWithoutAccess(instances);
+
+        this.setState({memberInstances, instances, memberInstancesWithoutAccess});
+        return acl;
+    };
+
+    removeAccessToInstance = async (e) => {
+        let {instances} = this.state;
         const instanceId = e.currentTarget.dataset.instance;
-        const instance = this.props.organization.instances.find((instance) => {
+        let instance = instances.find((instance) => {
             return instance.id === instanceId;
         });
 
-        this.props.fetchDeleteAcl(this.props.member, instance)
-            .then(() => {
-                const errors = Object.assign({}, this.state.errors, {[instanceId]: ''});
-                this.setState({errors});
-            })
-            .catch((err) => {
-                const errors = Object.assign({}, this.state.errors, {[instanceId]: err.error});
-                this.setState({errors});
-            });
-    }
+        try {
+            await this._instanceService.fetchDeleteAcl(this.props.member, instance);
+            const errors = Object.assign({}, this.state.errors, {[instanceId]: ''});
 
-    removeMemberInOrganization(memberId) {
+            //remove the user without fetching the API
+            let memberInstances = this.memberInstances(instances);
+            memberInstances.splice(memberInstances.indexOf(instance.id),1);
+            instance.users.splice(instance.users.indexOf(this.props.member.id),1);
+            const memberInstancesWithoutAccess = this.getInstancesWithoutAccess(instances);
+
+            this.setState({memberInstances, instances, memberInstancesWithoutAccess, errors});
+        }catch(err){
+            const errors = Object.assign({}, this.state.errors, {[instanceId]: err.error});
+            this.setState({errors});
+        }
+    };
+
+    removeMemberInOrganization = (memberId) => {
         return this.props.fetchDeleteMember(this.props.organization.id, memberId);
-    }
+    };
 
-    removeInvitationToJoinAnOrg(member) {
+    removeInvitationToJoinAnOrg = (member) => {
         return this.props.fetchRemoveOrganizationInvitation(this.props.organization.id, member);
-    }
+    };
 
-    memberInstances() {
-        const instances = [];
+    memberInstances = (instances) => {
+        const memberInstances = [];
 
-        this.props.organization.instances.forEach(instance => {
+        instances.forEach(instance => {
             if (!instance.users) {
                 return;
             }
@@ -87,26 +107,27 @@ class MemberDropdown extends React.Component {
             });
 
             if (u) {
-                instances.push(instance);
+                memberInstances.push(instance);
             }
         });
+        return memberInstances;
+    };
 
-        return instances;
-    }
+     getInstancesWithoutAccess = (instances) => {
+         return instances.filter( instance => {
+             if (!instance.users) {
+                 return true;
+             }
 
-    filterInstanceWithoutAccess(instance) {
-        if (!instance.users) {
-            return true;
-        }
+             return !instance.users.find((user) => {
+                 return user.id === this.props.member.id;
+             })
+         });
+    };
 
-        return !instance.users.find((user) => {
-            return user.id === this.props.member.id;
-        })
-    }
-
-    onUpdateRoleMember(isAdmin) {
+    onUpdateRoleMember = (isAdmin) => {
         return this.props.fetchUpdateRoleMember(this.props.organization.id, this.props.member.id, isAdmin);
-    }
+    };
 
     handleDropDown = (dropDownState) => {
         if(dropDownState){
@@ -115,6 +136,7 @@ class MemberDropdown extends React.Component {
     };
 
     render() {
+        const {memberInstances, memberInstancesWithoutAccess} = this.state;
         const member = this.props.member;
         const isPending = !member.name;
         const org = this.props.organization;
@@ -130,7 +152,7 @@ class MemberDropdown extends React.Component {
                 <section className='dropdown-content'>
                     <ul className="list undecorated-list flex-col">
                         {
-                            this.memberInstances().map((instance, i) => {
+                            memberInstances.map((instance, i) => {
                                 return <li key={instance.id}>
                                     <article className="item flex-row">
                                         <span className="name">{instance.name}</span>
@@ -149,7 +171,7 @@ class MemberDropdown extends React.Component {
                         }
                     </ul>
                     <MemberDropdownFooter member={member}
-                                          instances={org.instances.filter(this.filterInstanceWithoutAccess)}
+                                          instances={memberInstancesWithoutAccess}
                                           onAddAccessToInstance={this.addAccessToInstance}/>
                 </section>
             }
@@ -159,12 +181,6 @@ class MemberDropdown extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchCreateAcl(user, instance) {
-            return dispatch(fetchCreateAcl(user, instance));
-        },
-        fetchDeleteAcl(user, instance) {
-            return dispatch(fetchDeleteAcl(user, instance));
-        },
         fetchDeleteMember(organizationId, memberId) {
             return dispatch(fetchDeleteMember(organizationId, memberId));
         },
