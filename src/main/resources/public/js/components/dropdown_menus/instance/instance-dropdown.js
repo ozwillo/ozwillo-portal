@@ -17,18 +17,11 @@ import {fetchUpdateInstanceStatus} from '../../../actions/instance';
 //Config
 import Config from '../../../config/config';
 
-//Service
-import {
-    fetchCreateSubscription,
-    fetchDeleteSubscription,
-    fetchInstanceServices,
-    fetchUsersOfInstance
-} from "../../../util/instance-service";
-
 const instanceStatus = Config.instanceStatus;
 
 //Action
 import {fetchUpdateServiceConfig} from '../../../actions/instance';
+import InstanceService from "../../../util/instance-service";
 
 class InstanceDropdown extends React.Component {
 
@@ -56,6 +49,10 @@ class InstanceDropdown extends React.Component {
             services: [],
             members: null
         };
+
+        this._instanceService =  new InstanceService();
+
+
     }
 
 
@@ -139,7 +136,7 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchCreateSubscription(serviceId, userId);
-        const newServices = await fetchInstanceServices(this.props.instance.id, true);
+        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
         this.setState({services: newServices})
 
     };
@@ -156,14 +153,14 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchDeleteSubscription(serviceId, userId);
-        const newServices = await fetchInstanceServices(this.props.instance.id, true);
+        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
         this.setState({services: newServices});
     };
 
 
 
     fetchCreateSubscription = async (serviceId, userId) => {
-        fetchCreateSubscription(serviceId,userId).then(() => {
+        this._instanceService.fetchCreateSubscription(serviceId,userId).then(() => {
             this.setState({
                 status: Object.assign({}, this.state.status, {
                     [userId]: {error: null, isLoading: false}
@@ -179,7 +176,7 @@ class InstanceDropdown extends React.Component {
     };
 
     fetchDeleteSubscription = async (serviceId, userId) => {
-        fetchDeleteSubscription(serviceId,userId).then(() => {
+        this._instanceService.fetchDeleteSubscription(serviceId,userId).then(() => {
             this.setState({
                 status: Object.assign({}, this.state.status, {
                     [userId]: {error: null, isLoading: false}
@@ -211,8 +208,8 @@ class InstanceDropdown extends React.Component {
             //Fetch users for the instance
             if (this.props.isAdmin) {
                 this.setState({isLoading: true});
-                const newServices = await fetchInstanceServices(this.props.instance.id, true);
-                const members = await fetchUsersOfInstance(this.props.instance.id);
+                const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
+                const members = await this._instanceService.fetchUsersOfInstance(this.props.instance.id);
                 this.setState({services: newServices, isLoading: false, members: members});
             }
         }
