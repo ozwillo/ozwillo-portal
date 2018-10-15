@@ -43,7 +43,7 @@ public class InstanceACLStoreImpl {
             ACE[].class, user(), instanceId));
         if (logger.isDebugEnabled()) {
             logger.debug("ACL for instance {}", instanceId);
-            acl.stream().forEach(ace -> logger.debug("- {} - {}", ace.getUserId(), ace.getUserName()));
+            acl.forEach(ace -> logger.debug("- {} - {}", ace.getUserId(), ace.getUserName()));
         }
 
         return acl; // including !app_user app_admin
@@ -99,7 +99,7 @@ public class InstanceACLStoreImpl {
     public void deleteACL(String instanceId, String userId) {
         getACL(instanceId)
             .stream()
-            .filter(ace -> ace.getUserId().equals(userId))
+            .filter(ace -> ace.getUserId().equals(userId) && ace.getEntryUri() != null)
             .forEach(ace -> {
                 logger.debug("Deleting ACE for {} ", ace.getEmail());
                 kernel.exchange(ace.getEntryUri(), HttpMethod.DELETE,

@@ -22,8 +22,8 @@
 #dashboard ul.nav.nav-tabs > li > a {
     font-size: 20px;
     border-radius: 0;
-    color: var(--tertiary-color);
-    background-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: #FFF;
     border-color: transparent;
     border-width: 2px 0 0 0;
     margin: 0;
@@ -31,8 +31,8 @@
 
 #dashboard ul.nav.nav-tabs > li > a.over,
 #dashboard ul.nav.nav-tabs > li.active > a {
-    color: var(--secondary-color);
-    background-color: var(--tertiary-color);
+    color: var(--primary-color);
+    background-color: #FFF;
     border-color: var(--primary-color);
 }
 
@@ -42,7 +42,7 @@
 
 #dashboard .all-apps {
     height: 100%;
-    background-color: var(--tertiary-color);
+    background-color: #FFF;
     padding-left: 0;
     box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
     4px 3px 3px rgba(0, 0, 0, 0.2);
@@ -69,8 +69,18 @@
     text-align: center;
     padding: 10px;
 
-    color: var(--secondary-color);
-    font-size: 0.8em;
+}
+
+#dashboard .appzone .app span.badge-notifications {
+    position: absolute;
+    right: 17px;
+    top: 0;
+    background: var(--alert-color);
+    text-align: center;
+    border-radius: 30px 30px 30px 30px;
+    color: white;
+    padding: 5px 8px;
+    font-size: 12px;
 }
 
 #dashboard .appzone .app.disabled {
@@ -90,8 +100,8 @@
 
 #dashboard .appzone .dropzone.dragover .app,
 #dashboard .appzone .app:hover {
-    color: var(--tertiary-color);
-    background-color: var(--primary-color);
+    color: var(--primary-color);
+    background-color: #FFF;
 }
 
 #dashboard .appzone {
@@ -100,7 +110,7 @@
 
 #dashboard .appzone .app.pending:hover {
     color: var(--primary-color);
-    background-color: var(--tertiary-color);
+    background-color: #FFF;
 }
 
 #dashboard .appzone .app .action-icon {
@@ -142,8 +152,9 @@
 }
 
 #dashboard .app:hover .action-icon .fa-trash {
-    color: var(--tertiary-color);
-    border-color: var(--tertiary-color);
+    color: #FFF;
+    border-color: var(--primary-color);
+    background-color: var(--primary-color);
 }
 
 #dashboard .appzone .app p {

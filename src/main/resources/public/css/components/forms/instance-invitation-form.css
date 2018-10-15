@@ -20,13 +20,11 @@
 
 .instance-invitation-form .sep-text {
     margin: 0 10px;
-    font-size: 0.8em;
-    color: var(--secondary-color)
+    font-size: 1em;
 }
 
 .instance-invitation-form .label {
-    color: var(--secondary-color);
-    font-size: 0.8em;
+    font-size: 1em;
     font-weight: 300;
     margin: 0;
 }
@@ -68,6 +66,10 @@
 
 .instance-invitation-form .form-control {
     width: auto !important;
+}
+
+.instance-invitation-form .container-loading > .loading{
+    font-size: 1.5em !important;
 }
 
 @media (max-width: 425px) {

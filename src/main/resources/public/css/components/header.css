@@ -38,10 +38,6 @@
     margin-top: 25px;
 }
 
-.oz-header .welcome a {
-    color: var(--secondary-color);
-}
-
 .oz-header .welcome .badge {
     background-color: var(--primary-color);
     color: var(--tertiary-color);

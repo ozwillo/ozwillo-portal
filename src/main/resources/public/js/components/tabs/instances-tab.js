@@ -6,6 +6,7 @@ import {Link} from 'react-router-dom';
 //Components
 import AddInstanceDropdown from '../dropdown_menus/instance/add-instance-dropdown';
 import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
+import customFetch from '../../util/custom-fetch';
 
 class InstancesTabHeader extends React.Component {
 
@@ -35,62 +36,41 @@ class InstancesTab extends React.Component {
         t: PropTypes.func.isRequired,
     };
 
-    constructor(props) {
-        super(props);
+    state = {
+        organizationMembers: null
+    };
 
-        this.state = {
-            instancesFilter: ''
-        };
-
-        //bind methods
-        this.handleChange = this.handleChange.bind(this);
-        this.filterInstances = this.filterInstances.bind(this);
+    componentDidMount(){
+        this.fetchOrganizationMembers();
     }
 
-    handleChange(e) {
-        const el = e.currentTarget;
-        this.setState({
-            [el.name]: el.value
-        });
-    }
-
-    filterInstances(instances, filter) {
-        if (!filter) {
-            return instances;
-        }
-        const regex = new RegExp(`(\\w|\\S)*${filter.toUpperCase()}(\\w|\\S)*`);
-
-        return instances.filter((instance) => {
-            return regex.test(instance.name.toUpperCase());
-        });
-    }
+    fetchOrganizationMembers = () => {
+        const {id} = this.props.organization;
+        customFetch(`/my/api/organization/${id}/members`).then(res => {
+            this.setState({organizationMembers: res});
+        })
+    };
 
     render() {
         const org = this.props.organization;
-        const instancesFilter = this.state.instancesFilter;
+        const {organizationMembers} = this.state;
 
         return <article className="instances-tab">
 
             {
                 org.admin &&
                 <section className="add-instance">
-                    <header className="sub-title">{this.context.t('organization.desc.add-application')}</header>
                     <AddInstanceDropdown/>
                 </section>
             }
 
 
-            <section className="search-instance">
-                <form className="search oz-form">
-                    <input name="instancesFilter" className="field form-control" type="text" value={instancesFilter}
-                           placeholder={this.context.t('ui.search')} onChange={this.handleChange}/>
-                </form>
-
+            <section>
                 <ul className="instances-list undecorated-list flex-col">
                     {
-                        this.filterInstances(org.instances, instancesFilter).map((instance) => {
+                        org.instances.map(instance => {
                             return <li key={instance.id} className="instance">
-                                <InstanceDropdown instance={instance} members={org.members || []} isAdmin={org.admin}/>
+                                <InstanceDropdown instance={instance} organizationMembers={organizationMembers} isAdmin={org.admin}/>
                             </li>
                         })
                     }

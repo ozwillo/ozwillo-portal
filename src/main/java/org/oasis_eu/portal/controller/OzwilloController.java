@@ -26,14 +26,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api")
 public class OzwilloController {
 
-    @Autowired
-    private MessageSource messageSource;
+    private final MessageSource messageSource;
 
-    @Autowired
-    private MyNavigationService navigationService;
+    private final MyNavigationService navigationService;
 
-    @Autowired
-    private UserInfoService userInfoService;
+    private final UserInfoService userInfoService;
 
     @Value("${kernel.base_uri}")
     private String kernelEndPoint;
@@ -44,11 +41,19 @@ public class OzwilloController {
     @Value("${opendata.url}")
     private String opendataEndPoint;
 
+    // TODO : check it still has uses
     @Value("${application.devmode:false}")
     private boolean devMode;
 
     @Value("${application.notificationsEnabled:true}")
     private boolean notificationsEnabled;
+
+    @Autowired
+    public OzwilloController(MessageSource messageSource, MyNavigationService navigationService, UserInfoService userInfoService) {
+        this.messageSource = messageSource;
+        this.navigationService = navigationService;
+        this.userInfoService = userInfoService;
+    }
 
     @GetMapping("/user")
     public UserInfo getCurrentUser() {

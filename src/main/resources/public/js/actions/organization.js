@@ -2,11 +2,10 @@ import customFetch, {urlBuilder} from '../util/custom-fetch';
 
 export const FETCH_ORGANIZATION_WITH_ID = 'FETCH_ORGANIZATION_WITH_ID';
 export const FETCH_USER_ORGANIZATIONS = 'FETCH_USER_ORGANIZATIONS';
-export const FETCH_USER_ORGANIZATIONS_LAZY_MODE = 'FETCH_USER_ORGANIZATIONS_LAZY_MODE';
 export const FETCH_CREATE_ORGANIZATION = 'FETCH_CREATE_ORGANIZATION';
 export const FETCH_UPDATE_ORGANIZATION = 'FETCH_UPDATE_ORGANIZATION';
 export const FETCH_ORGANIZATION_INFO = 'FETCH_ORGANIZATION_INFO';
-export const FETCH_UPDATE_STATUS_ORGANIZATION = 'FETCH_UPDATE_STATUS_ORGANIZATION';
+export const FETCH_ORGANIZATION_MEMBERS = 'FETCH_ORGANIZATION_MEMBERS';
 
 // Actions
 const fetchOrganizationWithIdAction = (organization) => {
@@ -19,13 +18,6 @@ const fetchOrganizationWithIdAction = (organization) => {
 const fetchUserOrganizationsAction = (organizations) => {
     return {
         type: FETCH_USER_ORGANIZATIONS,
-        organizations
-    };
-};
-
-const fetchUserOrganizationsLazyModeAction = (organizations) => {
-    return {
-        type: FETCH_USER_ORGANIZATIONS_LAZY_MODE,
         organizations
     };
 };
@@ -51,11 +43,12 @@ const fetchOrganizationInfoAction = (info) => {
     };
 };
 
-const fetchUpdateStatusOrganizationAction = (organization) => {
+const fetchOrganizationMembersAction = (members) => {
     return {
-        type: FETCH_UPDATE_STATUS_ORGANIZATION,
-        organization
+        type: FETCH_ORGANIZATION_MEMBERS,
+        members
     };
+
 };
 
 // Async methods
@@ -73,21 +66,6 @@ export const fetchUserOrganizations = () => {
         return customFetch('/my/api/organization')
             .then((organizations) => {
                 dispatch(fetchUserOrganizationsAction(organizations));
-            });
-    };
-};
-
-export const fetchUserOrganizationsLazyMode = () => {
-    return (dispatch, getState) => {
-
-        const organizations = getState().organization.organizations;
-        if(organizations.length) {
-            return Promise.resolve(organizations);
-        }
-
-        return customFetch('/my/api/organization')
-            .then((organizations) => {
-                dispatch(fetchUserOrganizationsLazyModeAction(organizations));
             });
     };
 };
@@ -138,13 +116,12 @@ export const fetchOrganizationInfo = (dcId) => {
     };
 };
 
-export const fetchUpdateStatusOrganization = (organization) => {
-    return dispatch => {
-        return customFetch(`/my/api/organization/${organization.id}/status`, {
-            method: 'PUT',
-            json: organization
-        }).then(({id, status}) => {
-            return dispatch(fetchUpdateStatusOrganizationAction({id, status}));
-        });
-    };
+
+export const fetchOrganizationMembers = (organizationId) => {
+    return (dispatch => {
+        return customFetch(`/my/api/organization/${organizationId}/members`)
+            .then(members => {
+                return dispatch(fetchOrganizationMembersAction(members));
+            })
+    })
 };

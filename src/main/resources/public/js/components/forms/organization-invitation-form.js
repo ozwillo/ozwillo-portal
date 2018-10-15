@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 
 import {createOrganizationInvitation} from '../../actions/invitation';
+import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
 
 class OrganizationInvitationForm extends React.Component {
 
@@ -61,7 +62,8 @@ class OrganizationInvitationForm extends React.Component {
     }
 
     render() {
-        return <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
+        return <header className="dropdown-header">
+            <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
             <fieldset className="flex-col">
                 <div className="flex-row-mobile-column">
                     <div className="flex-row wrapper">
@@ -75,7 +77,7 @@ class OrganizationInvitationForm extends React.Component {
                     </div>
 
 
-                    <div className="options flex-row end">
+                    <div className="options flex-row">
 {/*
                         <label className="label">
                             {this.context.t('organization.form.admin')}
@@ -83,35 +85,30 @@ class OrganizationInvitationForm extends React.Component {
                                 onChange={this.handleChange} checked={this.state.admin}/>
                         </label>
 */}
-                        <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
+                        <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
                             {
                                 !this.state.isLoading &&
-                                this.context.t('ui.invite')
+                                this.context.t('my.network.invite-user')
                             }
                             {
 
                                 this.state.isLoading &&
-                                <i className="fa fa-spinner fa-spin action-icon loading"/>
+                                <i className="fa fa-spinner fa-spin action-icon" style={{ 'marginLeft': '1em' }}/>
                             }
                         </button>
 
-                        {
-                            this.state.error &&
-                            <div className="error">
-                                <span>{this.state.error}</span>
-                            </div>
-                        }
-
-                        {
-                            this.state.success &&
-                            <div className="success">
-                                <span>{this.state.success}</span>
-                            </div>
-                        }
                     </div>
                 </div>
             </fieldset>
-        </form>;
+            </form>
+            {
+                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
+            }
+
+            {
+                this.state.success && <DropdownBlockSuccess successMessage={this.state.success} />
+            }
+        </header>;
     }
 
 }

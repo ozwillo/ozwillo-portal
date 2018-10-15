@@ -1,0 +1,58 @@
+.oz-body .wrap-organization-card {
+    margin: 2em 1em 0 1em;
+    box-shadow: 2px 3px 3px rgba(0, 0, 0, 0.2);
+}
+
+.wrap-organization-card:hover{
+    box-shadow: 5px 5px 5px rgba(0, 0, 0, 0.2);
+}
+
+.wrap-organization-card .card{
+    height: 15rem;
+    width: 20rem;
+    display: flex;
+    flex-flow: column wrap;
+    flex: 1;
+}
+
+
+.wrap-organization-card .card-body{
+    justify-content: flex-end;
+    align-items: center;
+    flex-direction: column;
+    display: flex;
+    flex: 1;
+}
+
+.wrap-organization-card .card-body .option-icon{
+    font-size: 1.5em;
+    padding: 0.2em;
+    color: var(--primary-color);
+}
+
+.wrap-organization-card .card-title{
+    font-size: 1.2em;
+    white-space: normal;
+    margin-top: 1em;
+}
+
+.wrap-organization-card .card-body .card-message{
+    margin-bottom: 1rem;
+}
+
+.wrap-organization-card .delete .option-icon {
+    color: var(--alert-color);
+}
+
+.wrap-organization-card:active .option-icon,
+.wrap-organization-card:focus .option-icon,
+.wrap-organization-card:hover .option-icon{
+    color: var(--tertiary-color);
+}
+
+.organization-card-spinner{
+    justify-content: center;
+}
+
+
+

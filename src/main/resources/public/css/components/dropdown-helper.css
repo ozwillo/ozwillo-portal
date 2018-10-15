@@ -1,3 +1,9 @@
+header.dropdown-header {
+    padding-left: 2px !important;
+    color: inherit;
+    font-size: 1em;
+}
+
 .dropdown-header .form,
 .dropdown-header .options,
 .dropdown-footer .options,
@@ -24,7 +30,9 @@
 .dropdown-header .form .dropdown-name {
     min-width: 150px;
     margin: 0;
-    color: var(--tertiary-color);
+    font-size: 1.2em;
+    font-weight: 400;
+    color: inherit;
 }
 
 .dropdown-content .message,
@@ -33,14 +41,15 @@
     margin: 0 15px;
 }
 
-.dropdown-header .error-message{
+.dropdown-header .error-message {
     font-size: 1.1em;
-    color: var(--tertiary-color) !important;
+    text-align: center;
+    margin-top: 0.5em;
 }
 
 .dropdown-header .link {
     font-size: 1.1em;
-    color: var(--tertiary-color) !important;
+    color: var(--primary-color) !important;
     text-transform: uppercase;
 }
 
@@ -108,10 +117,7 @@
 }
 
 .dropdown-content .error {
-    font-size: 1.1em;
     color: var(--alert-color);
-    margin: 0 10px;
-    white-space: nowrap;
 }
 
 .dropdown-footer .btn-submit {
@@ -127,8 +133,12 @@
     font-size: 1.6em;
 }
 
-.dropdown-header .option-icon {
-    color: var(--tertiary-color);
+.dropdown-header .btn.icon:hover .option-icon,
+.btn.icon:hover .option-icon,
+.dropdown-header .option-icon:hover,
+.dropdown-content .option-icon:hover,
+.dropdown-footer .option-icon:hover {
+    color: #fff !important;
 }
 
 .dropdown-header .option-icon.delete,
@@ -151,7 +161,8 @@
 }
 
 .dropdown-header .btn.icon:hover {
-    background-color: var(--secondary-color);
+    background-color: var(--primary-color);
+    color: #fff;
 }
 
 @media (max-width: 425px) {

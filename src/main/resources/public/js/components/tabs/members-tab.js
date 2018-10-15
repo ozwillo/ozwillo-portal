@@ -7,6 +7,11 @@ import {Link} from 'react-router-dom';
 import OrganizationInvitationForm from '../forms/organization-invitation-form';
 import MemberDropdown from '../dropdown_menus/member/member-dropdown';
 import DropDownMenu from '../dropdown-menu';
+import {
+    fetchOrganizationMembers,
+} from "../../actions/organization";
+import InstanceService from "../../util/instance-service";
+
 
 class MembersTabHeader extends React.Component {
 
@@ -40,35 +45,38 @@ class MembersTab extends React.Component {
         super(props);
 
         this.state = {
-            membersFilter: ''
+            isLoading: false
         };
 
-        this.handleChange = this.handleChange.bind(this);
-        this.filterMembers = this.filterMembers.bind(this);
+        this._instanceService = new InstanceService();
     }
 
-    handleChange(e) {
-        const el = e.currentTarget;
-        this.setState({[el.name]: el.value});
-    }
-
-    filterMembers(members, filter) {
-        if (!filter) {
-            return members;
+    componentDidMount() {
+        //TODO find a solution to supress that (new method in the kernel which allow to get all the instances of one user) cf: TODO in MemberDropdown
+        if (this.props.organization.admin) {
+            this.props.organization.instances.forEach(async (instance) => {
+                instance.users = await this._instanceService.fetchUsersOfInstance(instance.id);
+            });
         }
+        if(this.props.organization.id) {
+            if (!this.props.organization.members) {
+                this.setState({isLoading: true});
+                this.props.fetchOrganizationMembers(this.props.organization.id);
+            } else {
+                //we have members to display BUT we want to check if new ones are available
+                this.props.fetchOrganizationMembers(this.props.organization.id);
+            }
+        }
+    }
 
-        const filterUpperCase = filter.toUpperCase();
-
-        return members.filter((member) => {
-            return member.name && member.name.toUpperCase().indexOf(filterUpperCase) >= 0 ||
-                member.email && member.email.toUpperCase().indexOf(filterUpperCase) >= 0
-        });
+    componentWillReceiveProps(nextProps){
+        if(nextProps.members) {
+            this.setState({isLoading: false})
+        }
     }
 
     render() {
         const org = this.props.organization;
-        const membersFilter = this.state.membersFilter;
-
         const header = <header className="dropdown-header">
             <OrganizationInvitationForm organization={this.props.organization} hideTitle={true}/>
         </header>;
@@ -77,23 +85,24 @@ class MembersTab extends React.Component {
             {
                 org.admin &&
                 <section className="add-member">
-                    <header className="sub-title">{this.context.t('organization.desc.send-invitation')}</header>
-                    <DropDownMenu header={header}/>
+                    <DropDownMenu header={header} className="action-header"/>
                 </section>
             }
-            <section className="search-member">
-                <form className="search oz-form">
-                    <input name="membersFilter" className="field form-control" type="text"
-                           placeholder={this.context.t('ui.search')} onChange={this.handleChange}/>
-                </form>
+            <section>
 
                 <ul className="members-list undecorated-list flex-col">
                     {
-                        org.members && this.filterMembers(org.members, membersFilter).map((member) => {
+                        !this.state.isLoading && this.props.members && this.props.members.map(member => {
                             return <li key={member.id} className="member">
                                 <MemberDropdown member={member} organization={this.props.organization}/>
                             </li>
                         })
+                    }
+                    {
+                        this.state.isLoading &&
+                        <div className="container-loading text-center">
+                            <i className="fa fa-spinner fa-spin loading"/>
+                        </div>
                     }
                 </ul>
             </section>
@@ -101,14 +110,28 @@ class MembersTab extends React.Component {
     }
 }
 
-const MemberTabWithRedux = connect(state => {
+const mapStateToProps = state => {
     return {
-        organization: state.organization.current
+        organization: state.organization.current,
+        members: state.organization.current.members
+    }
+};
+
+const mapDispatchToProps = dispatch => {
+    return {
+        fetchOrganizationMembers(organizationId) {
+            return dispatch(fetchOrganizationMembers(organizationId));
+        }
     };
-})(MembersTab);
+};
+
+const MemberTabWithRedux = connect(mapStateToProps, mapDispatchToProps)(MembersTab);
 
 
 export {
-    MemberTabWithRedux as MembersTab,
-    MembersTabHeaderWithRedux as MembersTabHeader
+    MembersTabHeaderWithRedux as MembersTabHeader,
+    MemberTabWithRedux as MembersTab
 };
+
+
+

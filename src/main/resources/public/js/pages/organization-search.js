@@ -4,11 +4,14 @@ import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
 // Components
-import OrganizationDropdown from '../components/dropdown_menus/organization/organization-dropdown';
 import UpdateTitle from '../components/update-title';
+import customFetch from '../util/custom-fetch';
 
 //action
 import {fetchUserOrganizations} from '../actions/organization';
+import OrganizationAutoSuggest from "../components/autosuggests/organization-autosuggest";
+import OrganizationCard from "../components/organization-card"
+import {Redirect} from "react-router";
 
 class OrganizationSearch extends React.Component {
 
@@ -21,19 +24,37 @@ class OrganizationSearch extends React.Component {
 
         this.state = {
             userOrganizationsFilter: '',
-            isLoading: true
+            isLoading: true,
+            inputValue: '',
+            organizationSelected: {},
+            organizationsHistory: [],
+            organizationHistoryMessage: ''
         };
 
         this.handleChange = this.handleChange.bind(this);
-        this.filterOrganizations = this.filterOrganizations.bind(this);
     }
 
     componentDidMount() {
-        this.props.fetchUserOrganizations()
-            .then(() => {
-                this.setState({isLoading: false});
-            });
+        this._handleOrganizationsHistory();
     }
+
+    _handleOrganizationsHistory = () => {
+        customFetch("/my/api/organizationHistory")
+            .then(res => {
+                if(res && res.length >0){
+                    this._sortOrganizationHistoryByDate(res);
+                    this.setState({organizationsHistory: res, organizationHistoryMessage: ''});
+                } else {
+                    this.setState({organizationHistoryMessage: this.context.t("organization.search.history.empty")});
+                }
+            });
+    };
+
+    _sortOrganizationHistoryByDate = (array) =>{
+        array.sort(function(a,b){
+            return new Date(b.date) - new Date(a.date);
+        });
+    };
 
     handleChange(e) {
         this.setState({
@@ -41,30 +62,31 @@ class OrganizationSearch extends React.Component {
         });
     }
 
-    filterOrganizations(organizations, filter) {
-        if (!filter) {
-            return organizations;
+    _displayOrganizationsHistory = () => {
+        const {organizationsHistory, organizationHistoryMessage} = this.state;
+        if (organizationsHistory.length > 0) {
+            let result = [];
+            organizationsHistory.map(organization => {
+                let dcOrganizationId = organization.dcOrganizationId;
+                let organizationCard = (
+                    <OrganizationCard key={dcOrganizationId} organization={organization}/>);
+                result.push(organizationCard)
+            });
+            return result;
+        }else{
+            return organizationHistoryMessage;
         }
-        const regex = new RegExp(`(\\w|\\S)*${filter.toUpperCase()}(\\w|\\S)*`);
-
-        return organizations.filter((org) => {
-            return regex.test(org.name.toUpperCase());
-        });
-    }
+    };
 
     render() {
-        const userOrganizations = this.props.userOrganizations;
-        const userOrganizationsFilter = this.state.userOrganizationsFilter;
+        const {organization_id} = this.state.organizationSelected;
+        if (organization_id) {
+            return <Redirect to={`/my/organization/${organization_id}/`}/>
+        }
 
         return <section className="organization-search oz-body wrapper flex-col">
 
             <UpdateTitle title={this.context.t('organization.search.title')}/>
-
-            <div className="flex-row end options">
-                <Link to="/my/organization/create" className="btn btn-default undecorated-link">
-                    {this.context.t('organization.search.new')}
-                </Link>
-            </div>
 
             <section>
                 <header className="title">
@@ -72,29 +94,32 @@ class OrganizationSearch extends React.Component {
                 </header>
 
                 <form className="search oz-form">
-                    <input name="userOrganizationsFilter" className="field form-control" type="text"
-                           placeholder={this.context.t('ui.search')} value={userOrganizationsFilter}
-                           onChange={this.handleChange}/>
+                    <OrganizationAutoSuggest
+                        className={"field"}
+                        value={this.state.inputValue}
+                        name={"orga-auto-suggest"}
+                        onChange={(event, value) => this.setState({inputValue: value})}
+                        onOrganizationSelected={(value) => {
+                            this.setState({organizationSelected: value})
+                        }}
+                        placeholder={this.context.t('search.organization.search-organization')}
+                    />
+                    <div className="flex-row options">
+                        <Link to="/my/organization/create" className={"new-organization"}>
+                            {this.context.t('organization.search.new')}
+                        </Link>
+                    </div>
                 </form>
 
-                <ul className="organisations-list undecorated-list">
-                    {
-                        !this.state.isLoading &&
-                        this.filterOrganizations(userOrganizations, userOrganizationsFilter).map((org) => {
-                            return <li key={org.id} className="organization">
-                                <OrganizationDropdown organization={org}/>
-                            </li>;
-                        })
-                    }
-                </ul>
-
-
-                {
-                    this.state.isLoading &&
-                    <div className="loading-container">
-                        <i className="fa fa-spinner fa-spin loading"/>
+                <div className={"container-organization-history"}>
+                    <p className={"history-title"}>
+                        <i className={"fa fa-star"}/>
+                        {this.context.t("organization.search.history.description")} :
+                    </p>
+                    <div className={"content-card-history"}>
+                        {this._displayOrganizationsHistory()}
                     </div>
-                }
+                </div>
             </section>
 
         </section>;

@@ -132,7 +132,7 @@ const NotificationTable = createClass({
                                             updateAppFilter={this.filterByApp} apps={this.state.apps}/>
                     </div>
 
-                    <table className="oz-table table">
+                    <table className="table table-striped">
                         <thead>
                         <tr>
                             <SortableHeader name="date" label={this.context.t('notif.date')} size="2" sortBy={this.sortBy}

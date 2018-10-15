@@ -1,12 +1,7 @@
 .modal-header .modal-title {
     font-size: 26px;
-    color: var(--secondary-color);
+    color: var(--primary-color);
     margin: 0 0 20px 0;
-}
-
-.modal-content {
-    color: var(--secondary-color);
-    background-color: var(--tertiary-color) !important;
 }
 
 .oz-simple-modal .modal-footer {
@@ -18,6 +13,5 @@
 }
 
 .modal-header .close .icon {
-    color: var(--secondary-color);
-    font-size: 1.2em;
+    color: var(--primary-color);
 }

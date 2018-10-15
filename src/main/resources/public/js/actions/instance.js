@@ -1,18 +1,9 @@
 import customFetch from '../util/custom-fetch';
 
-export const FETCH_USERS_OF_INSTANCE = 'FETCH_USERS_OF_INSTANCE';
 export const FETCH_UPDATE_INSTANCE_STATUS = 'FETCH_UPDATE_INSTANCE_STATUS';
 export const FETCH_UPDATE_SERVICE_CONFIG = 'FETCH_UPDATE_SERVICE_CONFIG';
 
 //Actions
-const fetchUsersOfInstanceAction = (instanceId, users) => {
-    return {
-        type: FETCH_USERS_OF_INSTANCE,
-        instanceId,
-        users
-    };
-};
-
 const fetchUpdateInstanceStatusAction = (instance) => {
     return {
         type: FETCH_UPDATE_INSTANCE_STATUS,
@@ -30,15 +21,6 @@ const fetchUpdateServiceConfigAction = (instanceId, service) => {
 };
 
 //Async methods
-export const fetchUsersOfInstance = (instance) => {
-    return (dispatch) => {
-        return customFetch(`/my/api/instance/${instance.id}/users`)
-            .then(users => {
-                return dispatch(fetchUsersOfInstanceAction(instance.id, users));
-            });
-    };
-};
-
 export const fetchUpdateInstanceStatus = ({applicationInstance}, status) => {
     return (dispatch) => {
         return customFetch(`/my/api/instance/${applicationInstance.id}/status`, {
@@ -60,6 +42,14 @@ export const fetchUpdateServiceConfig = (instanceId, catalogEntry) => {
             return dispatch(fetchUpdateServiceConfigAction(instanceId, service));
         });
     };
+};
+
+export const fetchServicesOfInstance = (instanceId) => {
+    return customFetch(`/my/api/instance/${instanceId}/services`)
+        .then((services) => {
+            return (services);
+        });
+
 };
 
 

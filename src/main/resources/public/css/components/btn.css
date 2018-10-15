@@ -1,8 +1,8 @@
-a.btn {
+.oz-body a.btn {
     text-decoration: none;
 }
 
-.btn {
+.oz-body .btn {
     display: inline-block;
     font-weight: normal;
     text-align: center;
@@ -20,18 +20,31 @@ a.btn {
     -ms-user-select: none;
     user-select: none;
     margin: 0 2px;
+    transition: all 0.5s;
 }
 
-.btn.focus, .btn:focus, .btn:hover {
+.oz-body .btn.focus, .btn:focus, .btn:hover {
     color: var(--button-secondary-color);
 }
 
-.btn-line {
+.oz-body .btn-line {
     margin-right: 10px;
 }
 
-.btn.icon {
+.oz-body .btn.icon {
     background-color: transparent;
+    border-radius: 50px;
+    padding: 0.5em 0.6em;
+}
+
+.oz-body .btn.icon:hover {
+    background-color: var(--primary-color);
+    color: #fff;
+}
+
+.oz-body .btn.icon.delete:hover {
+    background-color: var(--alert-color);
+    color: #fff;
 }
 
 .mm-popup__btn,
@@ -58,13 +71,13 @@ a.btn {
 
 .btn-default-inverse {
     color: var(--button-secondary-color) !important;
-    border-color: var(--button-tertiary-color) !important;
-    background-color: var(--button-tertiary-color) !important;
+    border-color: var(--button-hover-color) !important;
+    background-color: var(--button-hover-color) !important;
 }
 
 .btn-default-inverse:hover,
 .btn-default-inverse:focus,
 .btn-default-inverse:active {
-    color: var(--button-tertiary-color) !important;
+    color: var(--button-hover-color) !important;
     background-color: var(--button-secondary-color) !important;
 }

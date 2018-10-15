@@ -1,6 +1,8 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import org.oasis_eu.portal.model.kernel.organization.UserMembership;
+import org.oasis_eu.portal.model.authority.UIOrganizationMember;
 import org.oasis_eu.portal.services.OrganizationService;
 import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.dc.DCOrganization;
@@ -43,9 +45,23 @@ class OrganizationController {
         return organizationService.getOrganizationFromKernel(organizationId);
     }
 
+    @GetMapping ("/light/{organizationId}")
+    public UIOrganization getLightOrganization(@PathVariable String organizationId) {
+        return organizationService.getOrganizationFromKernelWithoutInstances(organizationId);
+    }
     @GetMapping(value = "/info")
     public DCOrganization getOrganizationInfo(@RequestParam String dcId) {
         return organizationService.getOrganization(dcId);
+    }
+
+    @GetMapping("/{organizationId}/members")
+    public List<UIOrganizationMember> organizationMember(@PathVariable String organizationId) {
+        return organizationService.getOrganizationMembers(organizationId);
+    }
+
+    @GetMapping(value = "/memberships")
+    public List<UserMembership> memberships(@RequestParam String query) {
+        return organizationService.searchUserMembershipsFromQuery(query);
     }
 
     @PostMapping

@@ -21,14 +21,14 @@
     /* BUTTON */
     --button-primary-color: #6f438e; /* Border + text */
     --button-secondary-color: #FFF; /* background */
-    --button-tertiary-color: #4c2d62; /* background on hover */
+    --button-hover-color: #4c2d62; /* background on hover */
 
 
     /* COLOR */
     --black-color: #4c4c4c;
-    --alert-color: #ff4d37e8;
+    --alert-color: #ff4d37;
+    --success-color: #388E3C;
     --gray-color: #e4e4e4;
-
 
     /* LOGO */
     --logo-url: url("/img/logo-ozwillo.png");

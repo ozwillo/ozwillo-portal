@@ -98,7 +98,7 @@ public class PortalExceptionHandler extends ResponseEntityExceptionHandler {
             throw (RefreshTokenNeedException) e;
         }
 
-        logger.error("Cannot process request: {}", new Object[]{e.getMessage(), e});
+        logger.error("Cannot process request: ", e);
 
         return e.getMessage();
     }

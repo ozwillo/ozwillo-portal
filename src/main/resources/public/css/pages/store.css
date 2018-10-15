@@ -15,10 +15,6 @@
     width: auto;
 }
 
-#store-search .control-label {
-    color: var(--secondary-color);
-}
-
 #store-apps .container-app {
     min-width: 230px;
 }
@@ -35,7 +31,7 @@
     position: absolute;
     top: calc((64px / 2) - 25px); /* (image size / 2)  - padding top */
     z-index: 1;
-    background-color: var(--tertiary-color);
+    background-color: #FFF;
     border: solid 1px var(--gray-color);
     border-radius: 100%;
     left: calc(50% - (64px / 2) - 25px); /* (width / 2) - (image width / 2) - padding left */
@@ -49,7 +45,7 @@
 }
 
 #store-apps .app .description {
-    background-color: var(--tertiary-color);
+    background-color: #FFF;
     border: 1px solid var(--gray-color);
     display: block;
     position: relative;
@@ -63,7 +59,6 @@
 }
 
 #store-apps .app .description .app-name {
-    color: var(--secondary-color);
     font-size: 24px;
     margin: 90px 0 10px 0;
     text-align: center;
@@ -71,14 +66,12 @@
 }
 
 #store-apps .app .description .app-provider {
-    color: var(--primary-color);
     font-size: 15px;
     text-align: center;
     display: block;
 }
 
 #store-apps .app .description .app-description {
-    color: var(--black-color);
     font-size: 15px;
     margin: 0 40px 28px 40px;
     text-align: center;
@@ -108,6 +101,10 @@
     position: absolute;
     top: 5px;
     left: 0;
+}
+
+#store-apps .app .description .public-service-indicator > div.label > i.triangle {
+    color: #FFF;
 }
 
 #store-apps .app .description .app-status {
@@ -153,7 +150,7 @@
 #store-apps .app .description .app-status .btn-installed,
 #store-apps .app .description .app-status .btn-installed-indicator {
     margin: 0;
-    color: var(--tertiary-color);
+    color: #fff;
 }
 
 #store-apps .oz-simple-modal .next {
@@ -169,7 +166,7 @@
     display: inline-block;
     width: 26px;
     font-size: 2em;
-    background-color: var(--tertiary-color);
+    background-color: #fff;
 }
 
 #store-loadmore {
@@ -177,8 +174,8 @@
 }
 
 #store-loadmore .oz-btn-loadmore {
-    color: #fff;
-    background: #6f438e;
+    color: var(--primary-color);
+    background: #fff;
 }
 
 #store div.app-screenshots {
@@ -286,48 +283,4 @@
     #store .store-app-card div.app-tos {
         width: 100%;
     }
-}
-
-#store-ad {
-    padding: 0 0 35px 35px;
-    background-color: #faf8f8;
-    min-height: 300px;
-}
-
-#store-ad h2 {
-    font-size: 45px;
-    color: #000;
-    margin: 78px 0 39px 0;
-    display: inline-block;
-}
-
-#store-ad p.ozwillo-desc {
-    font-size: 16px;
-    color: #6a6767;
-    margin: 0 0 31px 0;
-    display: inline-block;
-}
-
-#store-ad a.join {
-    font-size: 20px;
-    text-align: center;
-    line-height: 61px;
-    height: 61px;
-    width: 200px;
-    display: block;
-    margin: 0;
-    padding: 0;
-    border-bottom: 3px solid #542d6f;
-}
-
-#store-ad a.join:hover, #store-ad a.join:focus {
-    background-color: #542d6f;
-    color: #fff;
-}
-
-#store-ad img.close-ad {
-    position: absolute;
-    right: 25px;
-    top: 25px;
-    cursor: pointer;
 }

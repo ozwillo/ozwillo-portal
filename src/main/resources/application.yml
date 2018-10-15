@@ -29,6 +29,8 @@ ha:
 
 application:
   url: http://localhost:3000
+  error:
+    401: http://localhost:3000/my
   security:
     fetchUserInfo: true
     # requires devmode, to ease up development ex. of Catalog only

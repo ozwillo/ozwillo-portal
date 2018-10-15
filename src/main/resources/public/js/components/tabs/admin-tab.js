@@ -5,11 +5,12 @@ import {Link} from 'react-router-dom';
 
 //Components
 import OrganizationForm from '../forms/organization-form';
+import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
 
 //actions
 import {fetchCountries} from '../../actions/config';
 import {updateOrganizationFormAction} from '../../actions/components/organization-form';
-import {fetchUpdateOrganization} from '../../actions/organization';
+import {fetchOrganizationInfo, fetchUpdateOrganization} from '../../actions/organization';
 
 class AdminTabHeader extends React.Component {
 
@@ -43,7 +44,7 @@ class AdminTab extends React.Component {
         super(props);
 
         this.state = {
-            isLoading: false
+            isLoading: true
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -54,6 +55,11 @@ class AdminTab extends React.Component {
     }
 
     componentDidMount() {
+        // Fetch information of current organization
+        if (!this.isPersonal) {
+            this.props.fetchOrganizationInfo(this.props.organization.dc_id)
+                .then(() => this.setState({isLoading: false}));
+        }
         this.props.fetchCountries();
     }
 
@@ -77,31 +83,44 @@ class AdminTab extends React.Component {
     }
 
     render() {
-        return <article className="admin-tab">
-            <OrganizationForm onSubmit={this.onSubmit} countries={this.props.countries}
-                              isLoading={this.state.isLoading}
-                              label={this.context.t('ui.save')}
-                              alreadyRegistered={true}
-                              initialTaxRegNum={this.props.orgInfo.tax_reg_num}  />
+        if (!this.props.orgInfo) {
+            return (
+                <div className="container-loading text-center">
+                    <i className="fa fa-spinner fa-spin loading"/>
+                </div>
+            );
+        } else {
+            return (
+                <article className="admin-tab">
 
-            <div className="text-center">
-                {
-                    this.state.error &&
-                    <span className="error-message">{this.state.error}</span>
-                }
-                {
-                    this.state.success &&
-                    <span className="success-message">{this.state.success}</span>
-                }
-            </div>
-        </article>;
+                    <OrganizationForm onSubmit={this.onSubmit} countries={this.props.countries}
+                                      isLoading={this.state.isLoading}
+                                      label={this.context.t('ui.save')}
+                                      alreadyRegistered={true}
+                                      initialTaxRegNum={this.props.orgInfo.tax_reg_num}/>
+
+                    <div className="text-center">
+                        {
+                            this.state.error &&
+                                <DropdownBlockError errorMessage={this.state.error}/>
+                        }
+                        {
+                            this.state.success &&
+                                <DropdownBlockSuccess successMessage={this.state.success}/>
+                        }
+                    </div>
+                </article>
+            );
+        }
     }
 }
 
 const mapStateToProps = state => {
     return {
         countries: state.config.countries,
+        organization: state.organization.current,
         orgInfo: state.organization.current.info
+
     };
 };
 
@@ -115,6 +134,9 @@ const mapDispatchToProps = dispatch => {
         },
         fetchUpdateOrganization(org) {
             return dispatch(fetchUpdateOrganization(org));
+        },
+        fetchOrganizationInfo(dcId) {
+            return dispatch(fetchOrganizationInfo(dcId));
         }
     };
 };

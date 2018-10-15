@@ -11,9 +11,9 @@ import {AdminTabHeader, AdminTab} from '../components/tabs/admin-tab';
 import UpdateTitle from '../components/update-title';
 
 //actions
-import {fetchOrganizationWithId, fetchOrganizationInfo, fetchUserOrganizationsLazyMode} from "../actions/organization";
-import {fetchUsersOfInstance} from "../actions/instance";
+import {fetchOrganizationWithId, fetchOrganizationInfo} from "../actions/organization";
 import {fetchApplications} from "../actions/app-store";
+import customFetch from "../util/custom-fetch";
 
 const tabsHeaders = {
     instances: InstancesTabHeader,
@@ -41,7 +41,8 @@ class OrganizationDesc extends React.Component {
 
         this.state = {
             isLoading: false,
-            orgSelected: null
+            orgSelected: null,
+            organizations: []
         };
 
         this.onChangeOrganization = this.onChangeOrganization.bind(this);
@@ -49,70 +50,62 @@ class OrganizationDesc extends React.Component {
     }
 
     initialize(id) {
-        this.setState({ isLoading: true });
+        this.setState({isLoading: true});
+        if (!this.isPersonal()) {
+            customFetch(`/my/api/organizationHistory/visit/${id}`,
+                {
+                    method: "POST",
+                });
+        }
+        this.props.fetchOrganizationWithId(id)
+            .then(() => {
+                // Update selector
 
-        Promise.all([
-            this.props.fetchUserOrganizationsLazyMode(),
-            this.props.fetchOrganizationWithId(id)
-                .then(() => {
-                    const org = this.props.organization;
-                    const requests = [];
-
-                    // Update selector
-                    this.setState({ orgSelected: org });
-
-                    // Fetch users for each instance
-                    if (org.admin) {
-                        org.instances.forEach((instance) => {
-                            this.props.fetchUsersOfInstance(instance);
-                        });
-                    }
-
-                    // Fetch information of current organization
-                    if (!this.isPersonal) {
-                        requests.push(this.props.fetchOrganizationInfo(org.dc_id));
-                    }
-
-                    return Promise.all(requests);
-                }),
-            this.props.fetchApplications()
-        ])
-        .catch((err) => { console.error(err); })
-        .then(() => { this.setState({ isLoading: false }); });
+                this.setState({orgSelected: this.props.organization});
+                this.setState({isLoading: false});
+            });
+        customFetch('/my/api/organization')
+            .then((organizations) => {
+                this.setState({organizations: organizations})
+            });
     }
 
-    onChangeOrganization(organization) {
-        this.setState({ orgSelected: organization });
 
+    onChangeOrganization(organization) {
+        this.setState({orgSelected: organization});
         // Update url
         this.props.history.replace(`/my/organization/${organization.id}/`);
-
         // Update page
         this.initialize(organization.id);
+
+
     }
 
     componentDidMount() {
         this.initialize(this.props.match.params.id);
+        this.props.fetchApplications();
     }
 
-    get isPersonal() {
+    isPersonal = () => {
         return this.props.organization.id === this.props.userInfo.sub;
-    }
+    };
 
     render() {
         const tabToDisplay = this.props.match.params.tab || defaultTabToDisplay;
-        const isOrgAdmin = this.props.organization.admin
+        const isOrgAdmin = this.props.organization.admin;
+
+        let {orgSelected, organizations} = this.state;
 
         return <section className="organization-desc oz-body wrapper flex-col">
 
             <Select
-                className="select"
-                value={this.state.orgSelected}
+                className="select organization-switcher"
+                value={orgSelected}
                 labelKey="name"
                 valueKey="id"
                 onChange={this.onChangeOrganization}
                 clearable={false}
-                options={this.props.organizations}/>
+                options={organizations}/>
 
             {
                 this.state.isLoading &&
@@ -128,35 +121,36 @@ class OrganizationDesc extends React.Component {
                     <UpdateTitle title={this.props.organization.name}/>
 
                     {
-                        !this.isPersonal && isOrgAdmin && <React.Fragment>
+                        !this.isPersonal() && isOrgAdmin && <React.Fragment>
                             <header className="title">
                                 <span>{this.props.organization.name}</span>
                             </header>
-                            <Tabs className="content" headers={tabsHeaders} tabs={tabs} tabToDisplay={tabToDisplay}/>
+                            <Tabs className="content" headers={tabsHeaders} tabs={tabs}
+                                  tabToDisplay={tabToDisplay}/>
                         </React.Fragment>
 
                     }
 
                     {
-                        !this.isPersonal && !isOrgAdmin && <React.Fragment>
+                        !this.isPersonal() && !isOrgAdmin && <React.Fragment>
                             <header className="title">
                                 <span>{this.props.organization.name}</span>
                             </header>
                             <section className="box">
-                                <tabs.members />
+                                <tabs.members/>
                             </section>
                         </React.Fragment>
 
                     }
 
                     {
-                        this.isPersonal && <React.Fragment>
+                        this.isPersonal() && <React.Fragment>
                             <header className="title">
                                 <span>{this.context.t('organization.desc.applications')}</span>
                             </header>
 
                             <section className="box">
-                                <tabs.instances />
+                                <tabs.instances/>
                             </section>
                         </React.Fragment>
                     }
@@ -167,32 +161,32 @@ class OrganizationDesc extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        organization: state.organization.current,
-        organizations: state.organization.organizations,
-        userInfo: state.userInfo,
+const
+    mapStateToProps = state => {
+        return {
+            organization: state.organization.current,
+            userInfo: state.userInfo,
+        };
     };
-};
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchOrganizationWithId(id) {
-            return dispatch(fetchOrganizationWithId(id));
-        },
-        fetchUsersOfInstance(instance) {
-            return dispatch(fetchUsersOfInstance(instance));
-        },
-        fetchApplications() {
-            return dispatch(fetchApplications());
-        },
-        fetchOrganizationInfo(dcId) {
-            return dispatch(fetchOrganizationInfo(dcId));
-        },
-        fetchUserOrganizationsLazyMode() {
-            return dispatch(fetchUserOrganizationsLazyMode());
-        }
+const
+    mapDispatchToProps = dispatch => {
+        return {
+            fetchOrganizationWithId(id) {
+                return dispatch(fetchOrganizationWithId(id));
+            },
+            fetchApplications() {
+                return dispatch(fetchApplications());
+            },
+            fetchOrganizationInfo(dcId) {
+                return dispatch(fetchOrganizationInfo(dcId));
+            },
+        };
     };
-};
 
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationDesc);
+export default connect(mapStateToProps, mapDispatchToProps)
+
+(
+    OrganizationDesc
+)
+;

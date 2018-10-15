@@ -1,20 +1,21 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
+import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
 
 //Action
-import {fetchCreateAcl} from "../../actions/acl";
+import InstanceService from "../../util/instance-service";
 
-class InstanceInvitationForm extends React.Component {
+export default class InstanceInvitationForm extends React.Component {
     static contextTypes = {
         t: PropTypes.func.isRequired
     };
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
-        members: PropTypes.array.isRequired
+        members: PropTypes.array,
+        sendInvitation: PropTypes.func
     };
 
     constructor(props) {
@@ -28,50 +29,70 @@ class InstanceInvitationForm extends React.Component {
             success: ''
         };
 
-        //bind methods
-        this.onOptionChange = this.onOptionChange.bind(this);
-        this.handleChange = this.handleChange.bind(this);
-        this.onSubmit = this.onSubmit.bind(this);
+        this._instanceService = new InstanceService();
     }
 
-    onOptionChange(selectedOption) {
+    onOptionChange = (selectedOption) => {
         this.setState({selectedOption: selectedOption})
-    }
+    };
 
-    handleChange(e) {
+    handleChange = (e) => {
         const el = e.currentTarget;
         this.setState({
             [el.name]: el.type === 'checkbox' ? el.checked : el.value
         });
-    }
+    };
 
-    onSubmit(e) {
+    onSubmit = async (e) => {
         e.preventDefault();
 
-        this.setState({isLoading: true});
+        this.setState({isLoading: true, success: ''});
 
         const user = this.state.selectedOption || {email: this.state.email};
-        this.props.fetchCreateAcl(user, this.props.instance)
-            .then(() => {
-                this.setState({
-                    isLoading: false,
-                    selectedOption: null,
-                    email: '',
-                    success: this.context.t('ui.request.send'),
-                    error: ''
-                });
-            })
-            .catch((err) => {
-                console.error(err);
-                this.setState({
-                    isLoading: false,
-                    success: '',
-                    error: err.error
-                });
+        const response = await this.props.sendInvitation(user);
+
+        if (!response.error) {
+            this.setState({
+                isLoading: false,
+                selectedOption: null,
+                email: '',
+                success: this.context.t('ui.request.send'),
+                error: ''
             });
-    }
+        } else {
+            console.error(response.message);
+            this.setState({
+                isLoading: false,
+                success: '',
+                error: response.message
+            });
+        }
+    };
+
+    _formatMembers = () => {
+        const {members} = this.props;
+        if (members) {
+            return members.map(member => {
+                if (member.name) {
+                    return {
+                        ...member,
+                        displayedInfo: member.name + ' - ' + member.email
+                    }
+                } else {
+                    return {
+                        ...member,
+                        displayedInfo: member.email
+                    }
+                }
+            });
+        } else {
+            return null;
+        }
+    };
 
     render() {
+        const formattedMembers = this._formatMembers();
+
         return <form className={`instance-invitation-form flex-col end ${this.props.className || ''}`}
                      onSubmit={this.onSubmit}>
             <legend>{this.context.t('organization.desc.add-user-to-instance')}</legend>
@@ -79,16 +100,22 @@ class InstanceInvitationForm extends React.Component {
                 <label className="label">
                     {this.context.t('organization.desc.add-to-instance-from-members')}
                 </label>
-                <Select
-                    className="select"
-                    name="members"
-                    value={this.state.selectedOption}
-                    labelKey="name"
-                    valueKey="id"
-                    onChange={this.onOptionChange}
-                    options={this.props.members}
-                    placeholder={this.context.t('organization.desc.members')}
-                    required={!this.state.email}/>
+                {this.props.members ?
+                    <Select
+                        className="select add-member-instance-select"
+                        name="members"
+                        value={this.state.selectedOption}
+                        labelKey="displayedInfo"
+                        valueKey="id"
+                        onChange={this.onOptionChange}
+                        options={formattedMembers}
+                        placeholder={this.context.t('organization.desc.members')}
+                        required={!this.state.email}/>
+                    :
+                    <div className="container-loading text-center">
+                        <i className="fa fa-spinner fa-spin loading"/>
+                    </div>
+                }
 
                 <em className="sep-text">{this.context.t('ui.or')}</em>
 
@@ -101,7 +128,7 @@ class InstanceInvitationForm extends React.Component {
                     </label>
                 </div>
 
-                <button type="submit" className="btn btn-submit icon" disabled={this.state.isLoading}>
+                <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
                     {
                         !this.state.isLoading &&
                         this.context.t('ui.invite')
@@ -114,31 +141,14 @@ class InstanceInvitationForm extends React.Component {
                 </button>
             </div>
 
-
             {
-                this.state.error &&
-                <span className="error">
-                    {this.state.error}
-                </span>
+                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
             }
 
             {
-                this.state.success &&
-                <span className="success">
-                    {this.state.success}
-                </span>
+                this.state.success && <DropdownBlockSuccess successMessage={this.state.success} />
             }
         </form>;
     }
 
 }
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchCreateAcl(user, instance) {
-            return dispatch(fetchCreateAcl(user, instance));
-        }
-    };
-};
-
-export default connect(null, mapDispatchToProps)(InstanceInvitationForm);

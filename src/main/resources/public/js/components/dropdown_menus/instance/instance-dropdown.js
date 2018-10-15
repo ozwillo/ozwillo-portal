@@ -11,8 +11,6 @@ import InstanceConfigForm from '../../forms/instance-config-form';
 import CustomTooltip from '../../custom-tooltip';
 
 //action
-import {fetchDeleteAcl} from '../../../actions/acl';
-import {fetchCreateSubscription, fetchDeleteSubscription} from '../../../actions/subscription';
 import {fetchUpdateInstanceStatus} from '../../../actions/instance';
 
 //Config
@@ -22,6 +20,7 @@ const instanceStatus = Config.instanceStatus;
 
 //Action
 import {fetchUpdateServiceConfig} from '../../../actions/instance';
+import InstanceService from "../../../util/instance-service";
 
 class InstanceDropdown extends React.Component {
 
@@ -31,7 +30,7 @@ class InstanceDropdown extends React.Component {
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
-        members: PropTypes.array.isRequired,
+        organizationMembers: PropTypes.array,
         isAdmin: PropTypes.bool
     };
 
@@ -44,70 +43,88 @@ class InstanceDropdown extends React.Component {
 
         this.state = {
             error: null,
-            status: {}
+            status: {},
+            isLoading: false,
+            services: [],
+            members: null
         };
 
-        //bind methods
-        this.onClickConfigIcon = this.onClickConfigIcon.bind(this);
-        this.onRemoveInstance = this.onRemoveInstance.bind(this);
-        this.onCancelRemoveInstance = this.onCancelRemoveInstance.bind(this);
-        this.filterMemberWithoutAccess = this.filterMemberWithoutAccess.bind(this);
-        this.removeUserAccessToInstance = this.removeUserAccessToInstance.bind(this);
-        this.createSubscription = this.createSubscription.bind(this);
-        this.deleteSubscription = this.deleteSubscription.bind(this);
-        this.fetchUpdateServiceConfig = this.fetchUpdateServiceConfig.bind(this);
-        this.searchSubForUser = this.searchSubForUser.bind(this);
+        this._instanceService = new InstanceService();
+
+
     }
+
 
     componentWillReceiveProps(nextProps) {
         this.setState({
             instance: nextProps.instance,
-            members: nextProps.members
+            organizationMembers: nextProps.organizationMembers
         });
+
+        if (nextProps.organizationMembers) {
+            this.setState({isLoading: false})
+        }
+
     }
 
-    fetchUpdateServiceConfig(instanceId, catalogEntry) {
+
+    fetchUpdateServiceConfig = (instanceId, catalogEntry) => {
         return this.props.fetchUpdateServiceConfig(instanceId, catalogEntry)
             .then(() => {
                 Popup.close();
             });
-    }
+    };
 
-    onClickConfigIcon(instance) {
+    onClickConfigIcon = (instance) => {
         Popup.create({
             title: instance.name,
             content: <InstanceConfigForm instance={instance} onSubmit={this.fetchUpdateServiceConfig}/>
         }, true);
-    }
+    };
 
-    onRemoveInstance(instance) {
+    onRemoveInstance = (instance) => {
         this.props.fetchUpdateInstanceStatus(instance, instanceStatus.stopped);
-    }
+    };
 
-    onCancelRemoveInstance(instance) {
+    onCancelRemoveInstance = (instance) => {
         this.props.fetchUpdateInstanceStatus(instance, instanceStatus.running);
-    }
+    };
 
-    filterMemberWithoutAccess(member) {
-        if (!this.props.instance.users) {
+    filterMemberWithoutAccess = (member) => {
+        const {members} = this.state;
+        if (!members) {
             return true;
         }
 
-        return !this.props.instance.users.find((user) => {
+        return !members.find((user) => {
             return user.id === member.id;
         })
-    }
+    };
 
-    removeUserAccessToInstance(e) {
+    createUserAccessToInstance = async (user) => {
+        const {members} = this.state;
+        try {
+            await this._instanceService.fetchCreateAcl(user, this.props.instance);
+            members.push(user);
+            this.setState({members});
+            return {error: false}
+        } catch (e) {
+            return {error: true, message: e};
+        }
+    };
+
+    removeUserAccessToInstance = (e) => {
+        let {members} = this.state;
         const i = e.currentTarget.dataset.member;
-        const member = this.props.instance.users[i];
+        const member = members[i];
 
-        this.props.fetchDeleteAcl(member, this.props.instance)
+        this._instanceService.fetchDeleteAcl(member, this.props.instance)
             .then(() => {
+                members.splice(members.indexOf(member.id), 1);
                 this.setState({
                     status: Object.assign({}, this.state.status, {
                         [member.id]: {error: null}
-                    })
+                    }, members)
                 });
             })
             .catch((err) => {
@@ -117,9 +134,9 @@ class InstanceDropdown extends React.Component {
                     })
                 });
             });
-    }
+    };
 
-    createSubscription(e) {
+    createSubscription = async (e) => {
         const el = e.currentTarget;
         const userId = el.dataset.user;
         const serviceId = el.dataset.service;
@@ -130,28 +147,16 @@ class InstanceDropdown extends React.Component {
             })
         });
 
-        this.props.fetchCreateSubscription(this.props.instance.id, {user_id: userId, service_id: serviceId})
-            .then(() => {
-                this.setState({
-                    status: Object.assign({}, this.state.status, {
-                        [userId]: {error: null, isLoading: false}
-                    })
-                });
-            })
-            .catch((err) => {
-                this.setState({
-                    status: Object.assign({}, this.state.status, {
-                        [userId]: {error: err.error, isLoading: false}
-                    })
-                });
-            });
-    }
+        await this.fetchCreateSubscription(serviceId, userId);
+        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
+        this.setState({services: newServices})
 
-    deleteSubscription(e) {
+    };
+
+    deleteSubscription = async (e) => {
         const el = e.currentTarget;
         const userId = el.dataset.user;
         const serviceId = el.dataset.service;
-        const subId = el.dataset.sub;
 
         this.setState({
             status: Object.assign({}, this.state.status, {
@@ -159,14 +164,36 @@ class InstanceDropdown extends React.Component {
             })
         });
 
-        this.props.fetchDeleteSubscription(this.props.instance.id, {id: subId, user_id: userId, service_id: serviceId})
-            .then(() => {
-                this.setState({
-                    status: Object.assign({}, this.state.status, {
-                        [userId]: {error: null, isLoading: false}
-                    })
-                });
-            })
+        await this.fetchDeleteSubscription(serviceId, userId);
+        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
+        this.setState({services: newServices});
+    };
+
+
+    fetchCreateSubscription = async (serviceId, userId) => {
+        this._instanceService.fetchCreateSubscription(serviceId, userId).then(() => {
+            this.setState({
+                status: Object.assign({}, this.state.status, {
+                    [userId]: {error: null, isLoading: false}
+                })
+            });
+        }).catch((err) => {
+            this.setState({
+                status: Object.assign({}, this.state.status, {
+                    [userId]: {error: err.error, isLoading: false}
+                })
+            });
+        });
+    };
+
+    fetchDeleteSubscription = async (serviceId, userId) => {
+        this._instanceService.fetchDeleteSubscription(serviceId, userId).then(() => {
+            this.setState({
+                status: Object.assign({}, this.state.status, {
+                    [userId]: {error: null, isLoading: false}
+                })
+            });
+        })
             .catch((err) => {
                 this.setState({
                     status: Object.assign({}, this.state.status, {
@@ -174,9 +201,10 @@ class InstanceDropdown extends React.Component {
                     })
                 });
             });
-    }
+    };
 
-    searchSubForUser(user, service) {
+
+    searchSubForUser = (user, service) => {
         if (!service.subscriptions) {
             return null;
         }
@@ -184,66 +212,95 @@ class InstanceDropdown extends React.Component {
         return service.subscriptions.find((sub) => {
             return sub.user_id === user.id;
         });
-    }
+    };
+
+    _refreshInstanceMembers = async () => {
+        const members = await this._instanceService.fetchUsersOfInstance(this.props.instance.id);
+        this.setState({members})
+    };
+
+
+    handleDropDown = async (dropDownState) => {
+        if (dropDownState) {
+            //Fetch users for the instance
+            if (this.props.isAdmin) {
+                this.setState({isLoading: true});
+                const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
+                const members = await this._instanceService.fetchUsersOfInstance(this.props.instance.id);
+                this.setState({services: newServices, isLoading: false, members: members});
+            }
+        }
+
+    };
 
     render() {
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
+        const {services, isLoading, members} = this.state;
+        const {organizationMembers} = this.props;
         const isRunning = instance.applicationInstance.status === instanceStatus.running;
         const isAvailable = isAdmin && !instance.isPublic && isRunning;
-        const isOpen = isAvailable;
+        const isOpen = false;
 
-        const membersWithoutAccess = this.props.members.filter(this.filterMemberWithoutAccess);
+        const membersWithoutAccess = organizationMembers ? organizationMembers.filter(this.filterMemberWithoutAccess) : null;
         const Header = <InstanceDropdownHeader
             isAdmin={isAdmin}
             instance={instance}
             onClickConfigIcon={this.onClickConfigIcon}
             onRemoveInstance={this.onRemoveInstance}
             onCancelRemoveInstance={this.onCancelRemoveInstance}/>;
-        const Footer = (isAvailable && <footer>
-            <InstanceInvitationForm members={membersWithoutAccess} instance={instance}/>
-        </footer>) || null;
+        const usersIconDropDown = <i className="fa fa-users"/>;
 
-        return <DropDownMenu header={Header} footer={Footer} isAvailable={isAvailable} isOpen={isOpen}>
+        return <DropDownMenu header={Header} isAvailable={isAvailable} isOpen={isOpen}
+                             dropDownIcon={usersIconDropDown}
+                             dropDownChange={this.handleDropDown}>
             <section className='dropdown-content'>
-                <table className="oz-table">
+                {
+                    !members && isLoading &&
+                    <div className="container-loading text-center">
+                        <i className="fa fa-spinner fa-spin loading"/>
+                    </div>
+                }
+                <table className="table table-striped">
                     <thead>
                     {/*
                             Header: size: 3+ n (services)
                             user's name; error message; n services; options
                         */}
                     <tr>
-                        <th className="fill-content" colSpan={2}/>
+                        <th className="fill-content" colSpan={1}/>
                         {
-                            instance.services.map((service) => {
-                                return <th key={service.catalogEntry.id} className="center">
+                            services && services.length > 0 ?
+                                services.map((service) => {
+                                    return <th key={service.catalogEntry.id} className="center">
                                         {
-                                            instance.services.length > 1 &&
-                                            <span className="service" title={service.name}>{service.name.toAcronyme()}</span>
+                                            services.length > 1 &&
+                                            <span className="service"
+                                                  title={service.name}>{service.name.toAcronyme()}</span>
                                         }
-                                </th>
-                            })
+                                    </th>
+                                })
+                                : null
                         }
-                        {
-                            status && status.error &&
-                            <th/>
-                        }
+                        <th/>
                     </tr>
                     </thead>
                     <tbody>
                     {
-                        instance.users && instance.users.map((user, i) => {
+
+                        members && members.map((user, i) => {
                             const status = this.state.status[user.id];
                             return <tr key={user.id || user.email}>
                                 <td className="fill-content">
-                                    <article className="item flex-row-mobile-column">
+                                    <article className="item">
                                         {
                                             user.id &&
                                             <span className="name">{user.name}</span>
                                         }
                                         {
                                             user.email &&
-                                            <span className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
+                                            <span
+                                                className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
                                         }
                                     </article>
                                 </td>
@@ -259,12 +316,12 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Services */}
                                 {
-                                    user.id &&
-                                    instance.services.map((service) => {
+                                    user.id && services &&
+                                    services.map((service) => {
                                         const sub = this.searchSubForUser(user, service);
-                                        return <td key={service.catalogEntry.id} className="fill-content center">
+                                        return <td key={service.catalogEntry.id} className="fill-content col-md-1">
                                             {
-                                                 !sub &&
+                                                !sub &&
                                                 <CustomTooltip title={this.context.t('tooltip.add.icon')}>
                                                     <button className="btn icon" onClick={this.createSubscription}
                                                             disabled={status && status.isLoading}
@@ -292,25 +349,28 @@ class InstanceDropdown extends React.Component {
 
                                 {/* Options */}
                                 {
-                                    !user.id &&
+                                    !user.id && services &&
                                     <React.Fragment>
                                         {/* empty space to replace services */}
                                         {
-                                            (instance.services.length - 1) > 0 &&
-                                            <td className="fill-content center empty" colSpan={instance.services.length - 1} />
+                                            (services.length - 1) > 0 &&
+                                            <td className="fill-content center empty"
+                                                colSpan={services.length - 1}/>
                                         }
 
-                                        <td className="fill-content center">
+                                        <td className="fill-content col-md-1">
                                             <CustomTooltip title={this.context.t('tooltip.pending')}>
-                                                <i className="fa fa-stopwatch option-icon loading"/>
+                                                <button type="button" className="btn icon">
+                                                    <i className="fa fa-stopwatch option-icon loading"/>
+                                                </button>
                                             </CustomTooltip>
                                         </td>
                                     </React.Fragment>
                                 }
 
-                                <td className="fill-content center">
+                                <td className="fill-content col-md-1">
                                     <CustomTooltip title={this.context.t('tooltip.remove.member')}>
-                                        <button className="btn icon" data-member={i}
+                                        <button className="btn icon delete" data-member={i}
                                                 onClick={this.removeUserAccessToInstance}>
                                             <i className="fa fa-trash option-icon delete"/>
                                         </button>
@@ -321,6 +381,8 @@ class InstanceDropdown extends React.Component {
                     }
                     </tbody>
                 </table>
+                <InstanceInvitationForm members={membersWithoutAccess} instance={instance}
+                                        sendInvitation={this.createUserAccessToInstance}/>
             </section>
         </DropDownMenu>;
     }
@@ -328,21 +390,12 @@ class InstanceDropdown extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchDeleteAcl(user, instance) {
-            return dispatch(fetchDeleteAcl(user, instance));
-        },
         fetchUpdateInstanceStatus(instance, status) {
             return dispatch(fetchUpdateInstanceStatus(instance, status));
         },
         fetchUpdateServiceConfig(instanceId, catalogEntry) {
             return dispatch(fetchUpdateServiceConfig(instanceId, catalogEntry));
-        },
-        fetchCreateSubscription(instanceId, sub) {
-            return dispatch(fetchCreateSubscription(instanceId, sub));
-        },
-        fetchDeleteSubscription(instanceId, sub) {
-            return dispatch(fetchDeleteSubscription(instanceId, sub));
-        },
+        }
     };
 };
 

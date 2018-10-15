@@ -1,11 +1,10 @@
 import {
     FETCH_USER_ORGANIZATIONS,
-    FETCH_USER_ORGANIZATIONS_LAZY_MODE,
     FETCH_ORGANIZATION_WITH_ID,
     FETCH_CREATE_ORGANIZATION,
     FETCH_UPDATE_ORGANIZATION,
     FETCH_ORGANIZATION_INFO,
-    FETCH_UPDATE_STATUS_ORGANIZATION
+    FETCH_ORGANIZATION_MEMBERS
 } from '../../actions/organization';
 
 import {
@@ -14,7 +13,6 @@ import {
 } from '../../actions/acl';
 
 import {
-    FETCH_USERS_OF_INSTANCE,
     FETCH_UPDATE_INSTANCE_STATUS,
     FETCH_UPDATE_SERVICE_CONFIG
 } from '../../actions/instance';
@@ -27,17 +25,11 @@ import {
 import {FETCH_ADD_INSTANCE_TO_ORG} from '../../actions/app-store';
 
 import {
-    FETCH_CREATE_SUBSCRIPTION,
-    FETCH_DELETE_SUBSCRIPTION
-} from '../../actions/subscription';
-
-import {
     FETCH_CREATE_ORGANIZATION_INVITATION,
     FETCH_DELETE_ORGANIZATION_INVITATION
 } from '../../actions/invitation';
 
 //Reducers
-import instanceReducer from './instance';
 import memberReducer from './member';
 
 const defaultState = {
@@ -60,18 +52,6 @@ const instancesState = (state = [], action) => {
         case FETCH_USERS_OF_INSTANCE:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
-        case FETCH_CREATE_SUBSCRIPTION:
-        case FETCH_DELETE_SUBSCRIPTION:
-            const i = nextState.findIndex((instance) => {
-                return instance.id === action.instanceId;
-            });
-
-            if (i < 0) {
-                return state;
-            }
-
-            nextState[i] = instanceReducer(nextState[i], action);
-            break;
         default:
             return state;
     }
@@ -132,11 +112,6 @@ const currentOrganizationState = (state = {}, action) => {
         case FETCH_UPDATE_INSTANCE_STATUS:
         case FETCH_DELETE_ACL:
         case FETCH_CREATE_ACL:
-        case FETCH_USERS_OF_INSTANCE:
-        case FETCH_CREATE_SUBSCRIPTION:
-        case FETCH_DELETE_SUBSCRIPTION:
-            nextState.instances = instancesState(state.instances, action);
-            break;
         case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_DELETE_MEMBER:
         case FETCH_DELETE_ORGANIZATION_INVITATION:
@@ -153,21 +128,7 @@ const currentOrganizationState = (state = {}, action) => {
 const organizationsState = (state = [], action) => {
     let nextState = Object.assign([], state);
     switch (action.type) {
-        case FETCH_UPDATE_STATUS_ORGANIZATION:
-            const i = nextState.findIndex((org) => {
-                return org.id === action.organization.id;
-            });
-
-            if (i < 0) {
-                return state;
-            }
-
-            nextState[i] = Object.assign({}, nextState[i], action.organization);
-            break;
         case FETCH_USER_ORGANIZATIONS:
-        case FETCH_USER_ORGANIZATIONS_LAZY_MODE:
-            nextState = action.organizations;
-            break;
         case FETCH_CREATE_ORGANIZATION:
             nextState.push(action.organization);
             break;
@@ -182,19 +143,12 @@ export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
     switch (action.type) {
         case FETCH_USER_ORGANIZATIONS:
-        case FETCH_USER_ORGANIZATIONS_LAZY_MODE:
         case FETCH_CREATE_ORGANIZATION:
-        case FETCH_UPDATE_STATUS_ORGANIZATION:
-            nextState.organizations = organizationsState(nextState.organizations, action);
-            break;
-        case FETCH_CREATE_SUBSCRIPTION:
-        case FETCH_DELETE_SUBSCRIPTION:
         case FETCH_DELETE_MEMBER:
         case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_ADD_INSTANCE_TO_ORG:
         case FETCH_UPDATE_INSTANCE_STATUS:
-        case FETCH_USERS_OF_INSTANCE:
         case FETCH_CREATE_ACL:
         case FETCH_DELETE_ACL:
         case FETCH_ORGANIZATION_WITH_ID:
@@ -203,6 +157,9 @@ export default (state = defaultState, action) => {
         case FETCH_DELETE_ORGANIZATION_INVITATION:
         case FETCH_CREATE_ORGANIZATION_INVITATION:
             nextState.current = currentOrganizationState(state.current, action);
+            break;
+        case FETCH_ORGANIZATION_MEMBERS:
+            nextState.current.members = action.members;
             break;
         default:
             return state;

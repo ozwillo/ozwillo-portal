@@ -1,16 +1,32 @@
 .organization-search form.search {
     margin: 20px auto;
-    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
 }
 
 .organization-search form.search {
     width: 100%;
 }
 
+.organization-search form.search .new-organization {
+    margin-top: 1em;
+    color: var(--primary-color);
+
+}
+
+.organization-search form.search .new-organization a:hover {
+    color: var(--secondary-color);
+}
+
 .organization-search .search .field {
     margin: auto;
-
-    width: 50%;
+    min-width: 45vw;
+}
+.organization-search .search .react-autosuggest__suggestions-container--open{
+    margin: auto;
+    width: 100%;
     min-width: 300px;
 }
 
@@ -48,6 +64,34 @@
 .organization-search .dropdown-content ul.list > li:after {
     display: none;
 }
+
+.organization-search .history-title{
+    font-size: 1.25em;
+}
+
+
+.organization-search .history-title i{
+    padding-right: 0.5em;
+    color: var(--primary-color);
+}
+
+.organization-search .container-organization-history{
+    flex-direction: column;
+    display: flex;
+    align-items: center;
+}
+.organization-search .container-organization-history .content-card-history{
+    flex-wrap: wrap;
+    flex-direction: row;
+    display: flex;
+    justify-content: center;
+    width: 90%;
+
+}
+
+
+
+
 
 
 @media (max-width: 425px) {

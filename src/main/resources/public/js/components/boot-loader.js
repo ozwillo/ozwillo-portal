@@ -4,18 +4,13 @@ import {connect} from 'react-redux';
 //Actions
 import {
     fetchConfig,
-    fetchMyConfig,
     fetchCsrf
 } from "../actions/config";
 
 class BootLoader extends React.Component {
 
     componentDidMount() {
-        if (this.props.user.sub) {
-            this.props.fetchMyConfig();
-        } else {
-            this.props.fetchConfig();
-        }
+        this.props.fetchConfig();
         this.props.fetchCsrf();
     }
 
@@ -35,9 +30,6 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchMyConfig() {
-            return dispatch(fetchMyConfig());
-        },
         fetchConfig() {
             return dispatch(fetchConfig());
         },
