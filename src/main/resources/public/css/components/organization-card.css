@@ -34,6 +34,12 @@
     font-size: 1.2em;
     white-space: normal;
     margin-top: 1em;
+    text-overflow: ellipsis;
+    overflow: hidden;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
 }
 
 .wrap-organization-card .card-body .card-message{
