@@ -45,7 +45,8 @@ class MembersTab extends React.Component {
         super(props);
 
         this.state = {
-            isLoading: false
+            isLoading: false,
+            members: []
         };
 
         this._instanceService = new InstanceService();
@@ -58,7 +59,7 @@ class MembersTab extends React.Component {
                 instance.users = await this._instanceService.fetchUsersOfInstance(instance.id);
             });
         }
-        if(this.props.organization.id) {
+        if (this.props.organization.id) {
             if (!this.props.organization.members) {
                 this.setState({isLoading: true});
                 this.props.fetchOrganizationMembers(this.props.organization.id);
@@ -69,16 +70,27 @@ class MembersTab extends React.Component {
         }
     }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.members) {
-            this.setState({isLoading: false})
+    componentWillReceiveProps(nextProps) {
+        if (nextProps.members) {
+            this.setState({isLoading: false, members: nextProps.members})
         }
     }
 
+    _updateMembers = (newMembers) => {
+        const {members} = this.state;
+        const mergedArray = members.concat(newMembers);
+        this.setState({members: mergedArray});
+    };
+
     render() {
+        const {members, isLoading} = this.state;
         const org = this.props.organization;
         const header = <header className="dropdown-header">
-            <OrganizationInvitationForm organization={this.props.organization} hideTitle={true}/>
+            <OrganizationInvitationForm
+                organization={this.props.organization}
+                hideTitle={true}
+                membersInvited={this._updateMembers}
+            />
         </header>;
 
         return <article className="members-tab">
@@ -92,14 +104,14 @@ class MembersTab extends React.Component {
 
                 <ul className="members-list undecorated-list flex-col">
                     {
-                        !this.state.isLoading && this.props.members && this.props.members.map(member => {
+                        !isLoading && members && members.map(member => {
                             return <li key={member.id} className="member">
                                 <MemberDropdown member={member} organization={this.props.organization}/>
                             </li>
                         })
                     }
                     {
-                        this.state.isLoading &&
+                        isLoading &&
                         <div className="container-loading text-center">
                             <i className="fa fa-spinner fa-spin loading"/>
                         </div>

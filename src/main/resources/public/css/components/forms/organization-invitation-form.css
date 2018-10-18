@@ -21,12 +21,24 @@
     font-weight: normal;
 }
 
+.organization-invitation-form .label-title {
+    padding-bottom: 0.5em;
+    font-size: 1em;
+}
+
 .organization-invitation-form .field {
     display: inline;
     width: 230px;
     height: auto;
     padding: 2px 5px;
     margin: 0 5px;
+}
+
+.organization-invitation-form .spinner-container{
+    display: flex;
+    align-items: center;
+    margin-left: 1em;
+
 }
 
 .organization-invitation-form input[type="checkbox"].field {
@@ -53,6 +65,10 @@
 .organization-invitation-form .btn-submit {
     padding: 3px 6px;
     font-size: 0.9em;
+}
+
+.organization-invitation-form .invite-multiple-users{
+    margin-top: 1.5em;
 }
 
 @media (max-width: 425px) {

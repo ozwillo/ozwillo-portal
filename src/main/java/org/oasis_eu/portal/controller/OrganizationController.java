@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/my/api/organization")
@@ -88,6 +89,14 @@ class OrganizationController {
     public UIPendingOrganizationMember invite(@PathVariable String organizationId, @RequestBody InvitationRequest invitation) {
         return organizationService.invite(invitation.email, invitation.admin, organizationId);
     }
+
+    @PostMapping ("/invite/multiple/{organizationId}")
+    public List<UIPendingOrganizationMember> invite(@PathVariable String organizationId, @RequestBody List<InvitationRequest> invitations) {
+       return invitations.stream()
+                .map(invitation -> organizationService.invite(invitation.email, invitation.admin, organizationId))
+                .collect(Collectors.toList());
+    }
+
 
     @DeleteMapping(value = "/{organizationId}/invitation/{invitationId}")
     public void removeInvitation(@PathVariable String organizationId, @RequestBody UIPendingOrganizationMember member) {
