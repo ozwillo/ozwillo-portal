@@ -4,6 +4,7 @@ import PropTypes from 'prop-types';
 import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
+import CustomTooltip from "../custom-tooltip";
 
 class OrganizationInvitationForm extends React.Component {
 
@@ -125,20 +126,22 @@ class OrganizationInvitationForm extends React.Component {
 
                     <div className={"invite-multiple-users"}>
                         <label className={"flex-row label label-title"}>
-                            Import from CSV
+                            {this.context.t('my.network.import-from-csv')}
                         </label>
                         <div className={"flex-row"}>
                             <CSVReader
                                 onFileReading={() => this.setState({csvLoading: true})}
                                 onFileReaded={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
 
+                            <CustomTooltip title={this.context.t('my.network.csv-email-spec')}>
                             <button className="btn btn-submit"
                                     onClick={() => this._inviteMultipleUsers(emailsFromCSV)}
                                     disabled={(isFetchingUsers || csvLoading)}>
                                 {
-                                    this.context.t('my.network.invite-user')
+                                    this.context.t('my.network.invite-multiple-users')
                                 }
                             </button>
+                            </CustomTooltip>
 
                             {(csvLoading || isFetchingUsers) &&
                             <div className={"spinner-container"}>
