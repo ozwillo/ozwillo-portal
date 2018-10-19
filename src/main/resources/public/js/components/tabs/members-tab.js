@@ -77,14 +77,14 @@ class MembersTab extends React.Component {
     }
 
     _updateMembers = (newMembers) => {
-        const {members} = this.state;
+        let {members} = this.state;
         const mergedArray = members.concat(newMembers);
         this.setState({members: mergedArray});
     };
 
     _removeMember = (member) => {
-        const {members} = this.state;
-        members.splice(members.indexOf(member.id),1);
+        let {members} = this.state;
+        members.splice(members.findIndex(elem => elem.id === member.id), 1);
         this.setState({members});
     };
 
