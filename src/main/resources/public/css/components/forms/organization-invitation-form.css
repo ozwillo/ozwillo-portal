@@ -22,8 +22,10 @@
 }
 
 .organization-invitation-form .label-title {
-    padding-bottom: 0.5em;
+    padding-bottom: 0.8em;
     font-size: 1em;
+    color: var(--secondary-color) !important;
+
 }
 
 .organization-invitation-form .field {
