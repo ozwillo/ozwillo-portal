@@ -396,23 +396,18 @@ public class OrganizationService {
     }
 
 
-    public List<UIOrganizationMember> getOrganizationMembers(String organizationId) {
-        //if(fetchMembers && !uiOrg.isPersonal()) {
+    public List<UIOrganizationMember> getOrganizationMembers(String organizationId, boolean onlyAccepted) {
         UIOrganization uiOrganization = getKernelOrganization(organizationId);
-        List<UIOrganizationMember> members = fetchOrganizationMembers(uiOrganization.getId());
-        if (uiOrganization.isAdmin()) {
-            members.addAll(getOrganizationPendingMembers(uiOrganization.getId()));
+        List<UIOrganizationMember> members = fetchOrganizationMembers(organizationId, uiOrganization.isAdmin());
+        if (uiOrganization.isAdmin() && !onlyAccepted) {
+            members.addAll(fetchOrganizationPendingMembers(uiOrganization.getId(), uiOrganization.isAdmin()));
         }
 
         return members;
 
     }
 
-    private List<UIOrganizationMember> fetchOrganizationMembers(String organizationId) {
-        UserInfo currentUser = userInfoService.currentUser();
-        List<OrgMembership> orgAdmins = userMembershipService.getAdminsOfOrganization(organizationId);
-        boolean isAdmin =
-                orgAdmins.stream().anyMatch(orgMembership -> orgMembership.getAccountId().equals(currentUser.getUserId()));
+    private List<UIOrganizationMember> fetchOrganizationMembers(String organizationId, boolean isAdmin) {
 
         if (isAdmin) {
             // Add organization members :
@@ -434,18 +429,14 @@ public class OrganizationService {
             // followed by admins
             return Stream.concat(
                     Stream.of(selfNonAdminUIOrganizationMember()),
-                    orgAdmins.stream().map(this::toUIOrganizationMember))
+                    userMembershipService.getAdminsOfOrganization(organizationId).stream().map(this::toUIOrganizationMember))
                     // NB. self is already in first position, so ne need to sort
                     .collect(Collectors.toList());
         }
     }
 
 
-    private List<UIPendingOrganizationMember> getOrganizationPendingMembers(String organizationId) {
-        UserInfo currentUser = userInfoService.currentUser();
-        List<OrgMembership> orgAdmins = userMembershipService.getAdminsOfOrganization(organizationId);
-        boolean isAdmin =
-                orgAdmins.stream().anyMatch(orgMembership -> orgMembership.getAccountId().equals(currentUser.getUserId()));
+    private List<UIPendingOrganizationMember> fetchOrganizationPendingMembers(String organizationId, boolean isAdmin) {
 
         if (isAdmin) {
             return userMembershipService
@@ -457,7 +448,7 @@ public class OrganizationService {
                             .compareToIgnoreCase(member2.getEmail())))
                     .collect(Collectors.toList());
         } else {
-            return null;
+            return Collections.emptyList();
         }
     }
 

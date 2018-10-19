@@ -56,7 +56,12 @@ class OrganizationController {
 
     @GetMapping("/{organizationId}/members")
     public List<UIOrganizationMember> organizationMember(@PathVariable String organizationId) {
-        return organizationService.getOrganizationMembers(organizationId);
+        return organizationService.getOrganizationMembers(organizationId, false);
+    }
+
+    @GetMapping("/{organizationId}/accepted-members")
+    public List<UIOrganizationMember> acceptedOrganizationMembers(@PathVariable String organizationId) {
+        return organizationService.getOrganizationMembers(organizationId, true);
     }
 
     @GetMapping(value = "/memberships")

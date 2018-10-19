@@ -46,7 +46,7 @@ class InstancesTab extends React.Component {
 
     fetchOrganizationMembers = () => {
         const {id} = this.props.organization;
-        customFetch(`/my/api/organization/${id}/members`).then(res => {
+        customFetch(`/my/api/organization/${id}/accepted-members`).then(res => {
             this.setState({organizationMembers: res});
         })
     };
