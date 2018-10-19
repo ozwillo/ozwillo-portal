@@ -18,5 +18,18 @@ export default class OrganizationService {
             method: 'POST',
             json: invitations
         });
+    };
+
+    removeUserInvitation = async (orgId, invitation) => {
+        return await customFetch(`/my/api/organization/${orgId}/invitation/${invitation.id}`, {
+            method: 'DELETE',
+            json: invitation
+        })
+    };
+
+    removeUser = async (orgId, member) => {
+        return await customFetch(`/my/api/organization/${orgId}/membership/${member.id}`, {
+            method: 'DELETE'
+        });
     }
 }

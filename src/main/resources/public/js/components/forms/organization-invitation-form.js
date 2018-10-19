@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 
-import {createOrganizationInvitation} from '../../actions/invitation';
 import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
@@ -47,9 +45,16 @@ class OrganizationInvitationForm extends React.Component {
         this.setState({isFetchingUsers: true});
         try {
             const response = await this._organizationService.inviteMultipleUsers(this.props.organization.id, emailArray);
+            this.setState({
+                success: this.context.t('ui.request.send'),
+                error: ''
+            });
             this.props.membersInvited(response);
-        } catch(e) {
-            this.setState({error: e})
+        } catch (e) {
+            this.setState({
+                error: e.error,
+                success: ''
+            })
         } finally {
             this.setState({isFetchingUsers: false});
         }
@@ -59,8 +64,9 @@ class OrganizationInvitationForm extends React.Component {
         e.preventDefault();
 
         this.setState({isLoading: true});
-        this.props.createOrganizationInvitation(this.props.organization.id, this.state.email, this.state.admin)
-            .then(() => {
+        this._organizationService.inviteUser(this.props.organization.id, this.state.email, this.state.admin)
+            .then((res) => {
+                this.props.membersInvited(res);
                 this.setState({
                     email: '',
                     admin: false,
@@ -78,11 +84,12 @@ class OrganizationInvitationForm extends React.Component {
     }
 
     render() {
-        const {csvLoading, isFetchingUsers,emailsFromCSV} = this.state;
+        const {csvLoading, isFetchingUsers, emailsFromCSV, isLoading} = this.state;
 
         return <header className="dropdown-header">
             <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
                 <fieldset className="flex-row">
+
                     <div className={"invite-user"}>
                         <label className={"flex-row label label-title"}>
                             {this.context.t('organization.form.email')}
@@ -100,29 +107,22 @@ class OrganizationInvitationForm extends React.Component {
 
 
                             <div className="options flex-row">
-                                {/*
-                        <label className="label">
-                            {this.context.t('organization.form.admin')}
-                            <input name="admin" type="checkbox" className="field"
-                                onChange={this.handleChange} checked={this.state.admin}/>
-                        </label>
-*/}
                                 <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
                                     {
-                                        !this.state.isLoading &&
                                         this.context.t('my.network.invite-user')
                                     }
-                                    {
-
-                                        this.state.isLoading &&
-                                        <i className="fa fa-spinner fa-spin action-icon" style={{'marginLeft': '1em'}}/>
-                                    }
                                 </button>
+                                {(isLoading) &&
+                                <div className={"spinner-container"}>
+                                    <i className="fa fa-spinner fa-spin action-icon"/>
+                                </div>
+                                }
 
 
                             </div>
                         </div>
                     </div>
+
                     <div className={"invite-multiple-users"}>
                         <label className={"flex-row label label-title"}>
                             Import from CSV
@@ -133,9 +133,9 @@ class OrganizationInvitationForm extends React.Component {
                                 onFileReaded={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
 
                             <button className="btn btn-submit"
-                                    onClick={() => this._inviteMultipleUsers(emailsFromCSV)} disabled={(isFetchingUsers || csvLoading)}>
+                                    onClick={() => this._inviteMultipleUsers(emailsFromCSV)}
+                                    disabled={(isFetchingUsers || csvLoading)}>
                                 {
-                                    !this.state.isLoading &&
                                     this.context.t('my.network.invite-user')
                                 }
                             </button>
@@ -148,6 +148,7 @@ class OrganizationInvitationForm extends React.Component {
 
                         </div>
                     </div>
+
                 </fieldset>
             </form>
             {
@@ -168,12 +169,4 @@ OrganizationInvitationForm.propTypes = {
 };
 
 
-const mapDispatchToProps = dispatch => {
-    return {
-        createOrganizationInvitation(orgId, email, admin) {
-            return dispatch(createOrganizationInvitation(orgId, email, admin));
-        }
-    };
-};
-
-export default connect(null, mapDispatchToProps)(OrganizationInvitationForm);
+export default OrganizationInvitationForm;

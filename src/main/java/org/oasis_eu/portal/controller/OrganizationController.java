@@ -7,6 +7,7 @@ import org.oasis_eu.portal.services.OrganizationService;
 import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -93,8 +94,15 @@ class OrganizationController {
     @PostMapping ("/invite/multiple/{organizationId}")
     public List<UIPendingOrganizationMember> invite(@PathVariable String organizationId, @RequestBody List<InvitationRequest> invitations) {
        return invitations.stream()
-                .map(invitation -> organizationService.invite(invitation.email, invitation.admin, organizationId))
-                .collect(Collectors.toList());
+                .map(invitation ->{
+                    try{
+                       return  organizationService.invite(invitation.email, invitation.admin, organizationId);
+                    }catch(WrongQueryException e){
+                        return null;
+                    }
+                })
+               .filter(user -> user != null)
+               .collect(Collectors.toList());
     }
 
 

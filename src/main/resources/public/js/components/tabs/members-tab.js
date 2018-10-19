@@ -82,6 +82,12 @@ class MembersTab extends React.Component {
         this.setState({members: mergedArray});
     };
 
+    _removeMember = (member) => {
+        const {members} = this.state;
+        members.splice(members.indexOf(member.id),1);
+        this.setState({members});
+    };
+
     render() {
         const {members, isLoading} = this.state;
         const org = this.props.organization;
@@ -106,7 +112,11 @@ class MembersTab extends React.Component {
                     {
                         !isLoading && members && members.map(member => {
                             return <li key={member.id} className="member">
-                                <MemberDropdown member={member} organization={this.props.organization}/>
+                                <MemberDropdown
+                                    member={member}
+                                    organization={this.props.organization}
+                                    memberRemoved={this._removeMember}
+                                />
                             </li>
                         })
                     }
