@@ -6,7 +6,7 @@ import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
 import CustomTooltip from "../custom-tooltip";
 
-class OrganizationInvitationForm extends React.Component {
+export default class OrganizationInvitationForm extends React.Component {
 
     static contextTypes = {
         t: PropTypes.func.isRequired
@@ -42,15 +42,25 @@ class OrganizationInvitationForm extends React.Component {
         });
     }
 
+    _removeAlreadyPresentMembers = (emailArray) => {
+        const {members} = this.props;
+
+        members.map(member => {
+            const emailIndex = emailArray.indexOf(member.email);
+            emailIndex > -1 ? emailArray.splice(emailIndex, 1) : null;
+        });
+    };
+
     _inviteMultipleUsers = async (emailArray) => {
         this.setState({isFetchingUsers: true});
         try {
+            this._removeAlreadyPresentMembers(emailArray);
             const response = await this._organizationService.inviteMultipleUsers(this.props.organization.id, emailArray);
             this.setState({
                 success: this.context.t('ui.request.send'),
                 error: ''
             });
-            this.props.membersInvited(response);
+            this.props.callBackMembersInvited(response);
         } catch (e) {
             this.setState({
                 error: e.error,
@@ -67,7 +77,7 @@ class OrganizationInvitationForm extends React.Component {
         this.setState({isLoading: true});
         this._organizationService.inviteUser(this.props.organization.id, this.state.email, this.state.admin)
             .then((res) => {
-                this.props.membersInvited(res);
+                this.props.callBackMembersInvited(res);
                 this.setState({
                     email: '',
                     admin: false,
@@ -134,13 +144,13 @@ class OrganizationInvitationForm extends React.Component {
                                 onFileReaded={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
 
                             <CustomTooltip title={this.context.t('my.network.csv-email-spec')}>
-                            <button className="btn btn-submit"
-                                    onClick={() => this._inviteMultipleUsers(emailsFromCSV)}
-                                    disabled={(isFetchingUsers || csvLoading)}>
-                                {
-                                    this.context.t('my.network.invite-multiple-users')
-                                }
-                            </button>
+                                <button className="btn btn-submit"
+                                        onClick={() => this._inviteMultipleUsers(emailsFromCSV)}
+                                        disabled={(isFetchingUsers || csvLoading)}>
+                                    {
+                                        this.context.t('my.network.invite-multiple-users')
+                                    }
+                                </button>
                             </CustomTooltip>
 
                             {(csvLoading || isFetchingUsers) &&
@@ -168,8 +178,8 @@ class OrganizationInvitationForm extends React.Component {
 
 OrganizationInvitationForm.propTypes = {
     organization: PropTypes.object.isRequired,
-    membersInvited: PropTypes.func
+    callBackMembersInvited: PropTypes.func,
+    members: PropTypes.array
 };
 
 
-export default OrganizationInvitationForm;

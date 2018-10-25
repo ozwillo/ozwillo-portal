@@ -94,8 +94,8 @@ class MembersTab extends React.Component {
         const header = <header className="dropdown-header">
             <OrganizationInvitationForm
                 organization={this.props.organization}
-                hideTitle={true}
-                membersInvited={this._updateMembers}
+                callBackMembersInvited={this._updateMembers}
+                members={members}
             />
         </header>;
 
