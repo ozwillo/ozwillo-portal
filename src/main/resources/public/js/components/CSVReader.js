@@ -12,10 +12,9 @@ export default class CSVReader extends React.Component {
         error: null
     };
 
-    componentDidMount() {
-
-    }
-
+    cleanInput = () => {
+        this.inputFile.value = "";
+    };
 
     _sanitizeEmailArray = (emailArray) => {
         let regExEmail = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
@@ -50,10 +49,14 @@ export default class CSVReader extends React.Component {
 
     render() {
         const {error} = this.state;
+        const {requiered} = this.props;
         return (
             <div>
                 <label className="label">
-                    <input className={"field"} id="fileSelect" type="file" accept=".csv" onChange={this._extractData}/>
+                    <input ref={inputFile => this.inputFile = inputFile}
+                           className={"field"} required={requiered}
+                           id="fileSelect" type="file"
+                           accept=".csv" onChange={this._extractData}/>
                     {error && <div>{error}</div>}
                 </label>
             </div>

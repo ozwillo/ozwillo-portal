@@ -74,6 +74,20 @@
     margin-top: 1.5em;
 }
 
+.organization-invitation-form .form-row-block{
+    flex-direction: row;
+    display: flex;
+}
+
+.organization-invitation-form .form-column-block{
+    flex-direction: column;
+    display: flex;
+}
+
+.organization-invitation-form .form-submit{
+    align-self: flex-end;
+}
+
 @media (max-width: 425px) {
     .organization-invitation-form .field:not(.no-auto) {
         width: auto;

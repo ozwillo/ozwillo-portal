@@ -67,102 +67,113 @@ export default class OrganizationInvitationForm extends React.Component {
                 success: ''
             })
         } finally {
-            this.setState({isFetchingUsers: false});
+            this.setState({isFetchingUsers: false, emailsFromCSV: []});
+            this.csvReader.cleanInput();
         }
     };
 
     onSubmit(e) {
         e.preventDefault();
+        const {email, admin, emailsFromCSV} = this.state;
 
-        this.setState({isLoading: true});
-        this._organizationService.inviteUser(this.props.organization.id, this.state.email, this.state.admin)
-            .then((res) => {
-                this.props.callBackMembersInvited(res);
-                this.setState({
-                    email: '',
-                    admin: false,
-                    isLoading: false,
-                    error: '',
-                    success: this.context.t('ui.request.send')
+
+        if (emailsFromCSV.length > 0) {
+            this._inviteMultipleUsers(emailsFromCSV);
+        }
+
+        if(email !== '') {
+            this.setState({isLoading: true});
+            this._organizationService.inviteUser(this.props.organization.id, email, admin)
+                .then((res) => {
+                    this.props.callBackMembersInvited(res);
+                    this.setState({
+                        email: '',
+                        admin: false,
+                        isLoading: false,
+                        error: '',
+                        success: this.context.t('ui.request.send')
+                    });
+                })
+                .catch((err) => {
+                    this.setState({
+                        isLoading: false,
+                        error: err.error
+                    });
                 });
-            })
-            .catch((err) => {
-                this.setState({
-                    isLoading: false,
-                    error: err.error
-                });
-            });
+        }
     }
 
     render() {
-        const {csvLoading, isFetchingUsers, emailsFromCSV, isLoading} = this.state;
+        const {csvLoading, isFetchingUsers, emailsFromCSV, isLoading, email} = this.state;
+        const submitButton =
+            <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}>
+                {this.context.t('my.network.invite-user')}
+            </button>;
+        const requiered = !(emailsFromCSV.length > 0 || email !== '');
 
         return <header className="dropdown-header">
             <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
-                <fieldset className="flex-row">
-
-                    <div className={"invite-user"}>
-                        <label className={"flex-row label label-title"}>
+                {/*email input*/}
+                <div className={"form-row-block"}>
+                    <div className={"form-column-block"}>
+                        <label className={"label label-title"}>
                             {this.context.t('organization.form.email')}
                         </label>
                         <div className="flex-row-mobile-column">
+
                             <div className="flex-row wrapper">
                                 <div className="flex-row">
                                     <label className="label">
-                                        <input name="email" type="email" className="field form-control no-auto"
-                                               required={true}
+                                        <input required={requiered} name="email" type="email"
+                                               className="field form-control no-auto"
                                                onChange={this.handleChange} value={this.state.email}/>
                                     </label>
                                 </div>
                             </div>
-
-
-                            <div className="options flex-row">
-                                <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
-                                    {
-                                        this.context.t('my.network.invite-user')
-                                    }
-                                </button>
-                                {(isLoading) &&
-                                <div className={"spinner-container"}>
-                                    <i className="fa fa-spinner fa-spin action-icon"/>
-                                </div>
-                                }
-
-
-                            </div>
                         </div>
                     </div>
+                </div>
 
-                    <div className={"invite-multiple-users"}>
-                        <label className={"flex-row label label-title"}>
+
+                {/*CSV INPUT*/}
+                <div className={"form-row-block"}>
+                    <div className={"form-column-block"}>
+                        <label className={"label label-title"}>
                             {this.context.t('my.network.import-from-csv')}
                         </label>
                         <div className={"flex-row"}>
                             <CSVReader
+                                requiered={requiered}
+                                ref={csvReader => this.csvReader = csvReader}
                                 onFileReading={() => this.setState({csvLoading: true})}
                                 onFileReaded={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
-
-                            <CustomTooltip title={this.context.t('my.network.csv-email-spec')}>
-                                <button className="btn btn-submit"
-                                        onClick={() => this._inviteMultipleUsers(emailsFromCSV)}
-                                        disabled={(isFetchingUsers || csvLoading)}>
-                                    {
-                                        this.context.t('my.network.invite-multiple-users')
-                                    }
-                                </button>
-                            </CustomTooltip>
-
-                            {(csvLoading || isFetchingUsers) &&
-                            <div className={"spinner-container"}>
-                                <i className="fa fa-spinner fa-spin action-icon"/>
-                            </div>
-                            }
-
                         </div>
+
+
                     </div>
 
-                </fieldset>
+                </div>
+
+                {/*Submit button*/}
+                <div className={"form-column-block form-submit"}>
+                    <div className={"form-row-block"}>
+                        {emailsFromCSV.length > 0 ?
+                            <CustomTooltip title={this.context.t('my.network.csv-email-spec')}>
+                                {submitButton}
+                            </CustomTooltip>
+                            :
+                            submitButton
+
+                        }
+                        {(isLoading || csvLoading || isFetchingUsers) &&
+                        <div className={"spinner-container"}>
+                            <i className="fa fa-spinner fa-spin action-icon"/>
+                        </div>
+                        }
+                    </div>
+                </div>
+
+
             </form>
             {
                 this.state.error && <DropdownBlockError errorMessage={this.state.error}/>
@@ -171,7 +182,8 @@ export default class OrganizationInvitationForm extends React.Component {
             {
                 this.state.success && <DropdownBlockSuccess successMessage={this.state.success}/>
             }
-        </header>;
+        </header>
+            ;
     }
 
 }
