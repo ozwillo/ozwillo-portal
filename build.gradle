@@ -55,6 +55,8 @@ dependencies {
 
     compile('com.ozwillo:ozwillo-java-spring-integration:1.25.8')
 
+    compile 'io.projectreactor:reactor-core'
+
     /* Our specific dependencies */
     compile('de.javakaffee.msm:memcached-session-manager:2.1.1')
     compile('de.javakaffee.msm:memcached-session-manager-tc8:2.1.1')

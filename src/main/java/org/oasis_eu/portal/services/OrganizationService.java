@@ -7,6 +7,7 @@ import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
+import org.oasis_eu.portal.model.user.InvitationRequest;
 import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
@@ -26,6 +27,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import javax.servlet.http.HttpServletRequest;
 import java.net.URI;
@@ -623,6 +627,24 @@ public class OrganizationService {
             }
             throw wqex;
         }
+    }
+
+
+    public List<UIPendingOrganizationMember> inviteMultipleUsers(List<InvitationRequest> invitations, String organizationId){
+        List<UIPendingOrganizationMember> uiPendingOrganizationMembers = new ArrayList<>();
+
+        Flux.fromIterable(invitations)
+                .flatMap(invitation -> {
+                            try {
+                                return Mono.just(this.invite(invitation.getEmail(), invitation.isAdmin(), organizationId)).subscribeOn(Schedulers.parallel());
+                            } catch (WrongQueryException e) {
+                                return Mono.empty();
+                            }
+                        }
+                        , 4)
+                .subscribe(user -> uiPendingOrganizationMembers.add(user));
+
+        return uiPendingOrganizationMembers;
     }
 
     public void removeInvitation(String organizationId, String id, String eTag) {

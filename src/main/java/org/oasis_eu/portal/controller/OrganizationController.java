@@ -3,6 +3,7 @@ package org.oasis_eu.portal.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
 import org.oasis_eu.portal.model.authority.UIOrganizationMember;
+import org.oasis_eu.portal.model.user.InvitationRequest;
 import org.oasis_eu.portal.services.OrganizationService;
 import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.dc.DCOrganization;
@@ -10,11 +11,14 @@ import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import reactor.core.publisher.Flux;
+import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/my/api/organization")
@@ -42,15 +46,16 @@ class OrganizationController {
         return organizationService.getMyOrganizations();
     }
 
-    @GetMapping ("/{organizationId}")
+    @GetMapping("/{organizationId}")
     public UIOrganization organization(@PathVariable String organizationId) {
         return organizationService.getOrganizationFromKernel(organizationId);
     }
 
-    @GetMapping ("/light/{organizationId}")
+    @GetMapping("/light/{organizationId}")
     public UIOrganization getLightOrganization(@PathVariable String organizationId) {
         return organizationService.getOrganizationFromKernelWithoutInstances(organizationId);
     }
+
     @GetMapping(value = "/info")
     public DCOrganization getOrganizationInfo(@RequestParam String dcId) {
         return organizationService.getOrganization(dcId);
@@ -86,23 +91,14 @@ class OrganizationController {
         return organizationService.setOrganizationStatus(organization);
     }
 
-    @PostMapping ("/invite/{organizationId}")
+    @PostMapping("/invite/{organizationId}")
     public UIPendingOrganizationMember invite(@PathVariable String organizationId, @RequestBody InvitationRequest invitation) {
-        return organizationService.invite(invitation.email, invitation.admin, organizationId);
+        return organizationService.invite(invitation.getEmail(), invitation.isAdmin(), organizationId);
     }
 
-    @PostMapping ("/invite/multiple/{organizationId}")
+    @PostMapping("/invite/multiple/{organizationId}")
     public List<UIPendingOrganizationMember> invite(@PathVariable String organizationId, @RequestBody List<InvitationRequest> invitations) {
-       return invitations.stream()
-                .map(invitation ->{
-                    try{
-                       return  organizationService.invite(invitation.email, invitation.admin, organizationId);
-                    }catch(WrongQueryException e){
-                        return null;
-                    }
-                })
-               .filter(user -> user != null)
-               .collect(Collectors.toList());
+        return organizationService.inviteMultipleUsers(invitations,organizationId);
     }
 
 
@@ -113,7 +109,7 @@ class OrganizationController {
 
     @PutMapping("/{organizationId}/membership/{accountId}/role/{isAdmin}")
     public void updateRoleMember(@PathVariable String organizationId, @PathVariable String accountId,
-                             @PathVariable boolean isAdmin) {
+                                 @PathVariable boolean isAdmin) {
         organizationService.updateMember(organizationId, accountId, isAdmin);
     }
 
@@ -122,14 +118,6 @@ class OrganizationController {
         organizationService.removeMember(organizationId, accountId);
     }
 
-    private static class InvitationRequest {
-        @JsonProperty
-        @NotNull
-        @NotEmpty
-        String email;
 
-        @JsonProperty
-        boolean admin;
-    }
 
 }
