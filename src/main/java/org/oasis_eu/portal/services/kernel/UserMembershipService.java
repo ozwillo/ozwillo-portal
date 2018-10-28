@@ -7,6 +7,7 @@ import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
+import org.oasis_eu.spring.kernel.model.Authentication;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -150,7 +151,8 @@ public class UserMembershipService {
         kernel.getBodyUnlessClientError(kernelResp, Void.class, uriString );
     }
 
-    public UIPendingOrganizationMember createMembership(String email, boolean isAdmin, String organizationId) throws WrongQueryException {
+    public UIPendingOrganizationMember createMembership(String email, boolean isAdmin, String organizationId,
+                                                        Authentication user) throws WrongQueryException {
 
         String uriString = UriComponentsBuilder.fromHttpUrl(userMembershipEndpoint)
                 .path("/memberships/org/{organization_id}").build().expand(organizationId).toUriString();
@@ -160,7 +162,7 @@ public class UserMembershipService {
         request.admin = isAdmin;
 
         ResponseEntity<MembershipResponse> kernelResp = kernel.exchange(uriString, HttpMethod.POST, new HttpEntity<Object>(request),
-                MembershipResponse.class, user());
+                MembershipResponse.class, user != null ? user : user());
 
         // validate response body (business message is set to a more specific
         // one in CONFLICT case in portal service)

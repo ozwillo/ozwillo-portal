@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.controller;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
 import org.oasis_eu.portal.model.authority.UIOrganizationMember;
 import org.oasis_eu.portal.model.user.InvitationRequest;
@@ -8,16 +7,9 @@ import org.oasis_eu.portal.services.OrganizationService;
 import org.oasis_eu.portal.model.authority.UIOrganization;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
-import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
-import reactor.core.scheduler.Schedulers;
 
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -98,7 +90,7 @@ class OrganizationController {
 
     @PostMapping("/invite/multiple/{organizationId}")
     public List<UIPendingOrganizationMember> invite(@PathVariable String organizationId, @RequestBody List<InvitationRequest> invitations) {
-        return organizationService.inviteMultipleUsers(invitations,organizationId);
+        return organizationService.inviteMultiple(invitations,organizationId);
     }
 
 

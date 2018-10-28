@@ -28,7 +28,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import reactor.core.publisher.Flux;
-import reactor.core.publisher.Mono;
 import reactor.core.scheduler.Schedulers;
 
 import javax.servlet.http.HttpServletRequest;
@@ -40,6 +39,8 @@ import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+
+import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.user;
 
 @Service
 public class OrganizationService {
@@ -617,7 +618,7 @@ public class OrganizationService {
         }
 
         try {
-            return userMembershipService.createMembership(email, isAdmin, organizationId);
+            return userMembershipService.createMembership(email, isAdmin, organizationId, null);
         } catch (WrongQueryException wqex) {
             if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
                 // Translated msg. see issue #201
@@ -630,21 +631,28 @@ public class OrganizationService {
     }
 
 
-    public List<UIPendingOrganizationMember> inviteMultipleUsers(List<InvitationRequest> invitations, String organizationId){
-        List<UIPendingOrganizationMember> uiPendingOrganizationMembers = new ArrayList<>();
+    public List<UIPendingOrganizationMember> inviteMultiple(List<InvitationRequest> invitations, String organizationId) {
+        if (!userIsAdmin(organizationId)) {
+            logger.error("Potential attack: user {} is not admin of organization {}", userInfoService.currentUser().getUserId(), organizationId);
+            throw new ForbiddenException();
+        }
 
-        Flux.fromIterable(invitations)
-                .flatMap(invitation -> {
-                            try {
-                                return Mono.just(this.invite(invitation.getEmail(), invitation.isAdmin(), organizationId)).subscribeOn(Schedulers.parallel());
-                            } catch (WrongQueryException e) {
-                                return Mono.empty();
-                            }
-                        }
-                        , 4)
-                .subscribe(user -> uiPendingOrganizationMembers.add(user));
-
-        return uiPendingOrganizationMembers;
+        Authentication user = user();
+        return Flux.fromIterable(invitations)
+                .parallel(4)
+                .runOn(Schedulers.parallel())
+                .map(invitationRequest -> {
+                    try {
+                        return userMembershipService.createMembership(invitationRequest.getEmail(),
+                                invitationRequest.isAdmin(), organizationId, user);
+                    } catch (WrongQueryException e) {
+                        return null;
+                    }
+                })
+                .sequential()
+                .toStream()
+                .filter(Objects::nonNull)
+                .collect(Collectors.toList());
     }
 
     public void removeInvitation(String organizationId, String id, String eTag) {
