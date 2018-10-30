@@ -12,7 +12,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.dao.SiteMapHeaderRepository;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuItem;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
+import org.oasis_eu.portal.model.sitemap.SiteMapMenuHeader;
 import org.oasis_eu.portal.services.SiteMapService;
 import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
 import org.oasis_eu.portal.model.sitemap.HeaderMenuSet;
@@ -46,7 +46,7 @@ public class SiteMapHeaderParserTest {
 	@Qualifier("xmlAwareRestTemplate")
 	private RestTemplate restTemplate;
 
-	@Value("${web.sitemap.url_header}")
+	@Value("${confs.ozwillo.web.sitemap.url_header}")
 	private String url_header;
 
 	@Autowired
@@ -62,32 +62,8 @@ public class SiteMapHeaderParserTest {
 	private SiteMapUpdater siteMapUpdater;
 
 	@Test
-	public void testParseHeaderSiteMap() throws Exception {
-
-		InputStream stream = getClass().getClassLoader().getResourceAsStream("xml/header.xml");
-		XmlMapper xmlMapper = new XmlMapper();
-		HeaderMenuSet header = xmlMapper.readValue(stream, HeaderMenuSet.class);
-
-		validateMenuSet(header);
-
-		List<SiteMapMenuItem> siteMapMenuItems = header.getMenuset().get(0).getItems();
-		assertEquals("/static/img/logo.png", siteMapMenuItems.get(0).getImgUrl());
-
-		SiteMapMenuItem catalogMenuItem = siteMapMenuItems.get(5);
-		assertEquals("https://portal.ozwillo.com/fr/store", catalogMenuItem.getUrl());
-		assertEquals("/static/img/icone-catalogue-color.png", catalogMenuItem.getImgUrl());
-		assertEquals("Catalogue", catalogMenuItem.getLabel());
-
-		assertEquals(3, siteMapMenuItems.get(2).getItems().size());
-		SiteMapMenuItem offerDataMenuItem = siteMapMenuItems.get(2).getItems().get(0);
-		assertEquals("/fr/offre-donnees", offerDataMenuItem.getUrl());
-		assertEquals("menu", offerDataMenuItem.getType());
-		assertEquals("Données", offerDataMenuItem.getLabel());
-	}
-
-	@Test
 	@DirtiesContext
-	public void testLoadRemote() throws Exception {
+	public void testLoadRemote() {
 
 		Resource resource = resourceLoader.getResource("classpath:/xml/header.xml");
 		MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
@@ -107,7 +83,7 @@ public class SiteMapHeaderParserTest {
 
 	@Test
 	@DirtiesContext
-	public void testUpdateSiteMap() throws Exception {
+	public void testUpdateSiteMap() {
 
 		Resource resource = resourceLoader.getResource("classpath:/xml/header.xml");
 		MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
@@ -117,17 +93,17 @@ public class SiteMapHeaderParserTest {
 
 		siteMapUpdater.reloadHeader();
 
-		SiteMapMenuSet sitemapHeaderFR = siteMapService.getSiteMapHeader("fr");
+		SiteMapMenuHeader sitemapHeaderFR = siteMapService.getSiteMapHeader("ozwillo","fr");
 		validateFRData(sitemapHeaderFR);
 
-		SiteMapMenuSet sitemapHeaderEN = siteMapService.getSiteMapHeader("en");
+		SiteMapMenuHeader sitemapHeaderEN = siteMapService.getSiteMapHeader("ozwillo","en");
 		validateENData(sitemapHeaderEN);
 
 		server.verify();
 	}
 
 	// utility methods
-	private void validateFRData(SiteMapMenuSet sitemapHeader){
+	private void validateFRData(SiteMapMenuHeader sitemapHeader){
 		assertNotNull(sitemapHeader);
 		assertNotNull(sitemapHeader.getItems().get(0));
 
@@ -144,7 +120,7 @@ public class SiteMapHeaderParserTest {
 		assertEquals("Portail", offersMenuItem.getItems().get(1).getLabel());
 	}
 
-	private void validateENData(SiteMapMenuSet sitemapHeader){
+	private void validateENData(SiteMapMenuHeader sitemapHeader){
 		assertNotNull(sitemapHeader);
 		assertNotNull(sitemapHeader.getItems().get(0));
 
@@ -163,11 +139,11 @@ public class SiteMapHeaderParserTest {
 		assertEquals(7, header.getMenuset().size());
 
 		//French
-		SiteMapMenuSet sitemapHeaderFR = header.getMenuset().get(0);
+		SiteMapMenuHeader sitemapHeaderFR = header.getMenuset().get(0);
 		validateFRData(sitemapHeaderFR);
 
 		// English
-		SiteMapMenuSet sitemapHeaderEN = header.getMenuset().get(1);
+		SiteMapMenuHeader sitemapHeaderEN = header.getMenuset().get(1);
 		validateENData(sitemapHeaderEN);
 	}
 }

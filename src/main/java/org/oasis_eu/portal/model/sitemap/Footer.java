@@ -1,27 +1,24 @@
 package org.oasis_eu.portal.model.sitemap;
 
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import org.oasis_eu.portal.model.sitemap.SiteMap;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonRootName;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  * User: schambon
  * Date: 1/6/15
  */
-@JacksonXmlRootElement(localName = "menuset")
-public class Footer {
-    @JacksonXmlElementWrapper(useWrapping = false)
-    @JacksonXmlProperty(localName = "menu")
-    private List<SiteMap> menuset;
+public class Footer implements Serializable {
+    @JsonProperty(value = "menu")
+    private List<SiteMapMenuFooter> menuset;
 
-    public List<SiteMap> getMenuset() {
+    public List<SiteMapMenuFooter> getMenuset() {
         return menuset;
     }
 
-    public void setMenuset(List<SiteMap> menuset) {
+    public void setMenuset(List<SiteMapMenuFooter> menuset) {
         this.menuset = menuset;
     }
 }

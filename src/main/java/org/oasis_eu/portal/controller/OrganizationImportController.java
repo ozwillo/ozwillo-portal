@@ -3,7 +3,9 @@ package org.oasis_eu.portal.controller;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
+import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.dc.GeographicalAreaService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
@@ -16,6 +18,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -30,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
@@ -56,8 +60,12 @@ class OrganizationImportController {
     @Autowired
     private GeographicalAreaService geographicalAreaService;
 
-    @Value("${kernel.auth.callback_uri:${application.url}/callback}")
-    private String callbackUri;
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
+
+    @Autowired
+    private HttpServletRequest request;
+
 
     @Value("${application.dcOrg.project: org_0}")
     private String dcOrgProjectName;
@@ -70,9 +78,12 @@ class OrganizationImportController {
 
     @PostMapping
     public ResponseEntity<String> importOrganization(@RequestHeader String password, @RequestHeader String refreshToken,
-        @RequestParam("file") MultipartFile file) {
+                                                     @RequestParam("file") MultipartFile file) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         StringBuilder log = new StringBuilder();
+        EnvConfig envConfig = this.envPropertiesService.getConfig(request.getServerName());
+        String callBackUri = envConfig.getKernel().getCallback_uri();
+
         log.append("Starting log for organisation import");
         if (!passwordEncoder.matches(password, importPassword)) {
             log.append("\nWrong password");
@@ -98,7 +109,7 @@ class OrganizationImportController {
                 StringBuilder city_uri = new StringBuilder();
                 StringBuilder country = new StringBuilder();
                 StringBuilder country_uri = new StringBuilder();
-                runAsUser(refreshToken, () -> {
+                runAsUser(refreshToken, callBackUri,  () -> {
                     List<GeographicalArea> countries = geographicalAreaService.findCountries("France");
                     if (!countries.isEmpty()) {
                         country.append(countries.get(0).getName());
@@ -131,7 +142,7 @@ class OrganizationImportController {
                     dcOrganization.setSector_type("PUBLIC_BODY");
                     dcOrganization.setJurisdiction(city.toString());
                     dcOrganization.setJurisdiction_uri(city_uri.toString());
-                    runAsUser(refreshToken, () -> {
+                    runAsUser(refreshToken, callBackUri, () -> {
                         DCResource dcResource = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcOrganization.getId()).getResource();
                         if (dcResource != null) dcOrganization.setVersion(String.valueOf(dcResource.getVersion()));
                         log.append("\nCreating / updating organization: ")
@@ -176,7 +187,7 @@ class OrganizationImportController {
     }
 
 
-    private void runAsUser(String refreshToken, Runnable runnable) {
+    private void runAsUser(String refreshToken, String callbackUri, Runnable runnable) {
         Authentication endUserAuth = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(null); // or UnauthAuth ?? anyway avoid to do next queries to Kernel with user auth
         try {

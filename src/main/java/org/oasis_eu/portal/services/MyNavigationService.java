@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
+import org.oasis_eu.portal.model.sitemap.SiteMapMenuHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -23,6 +23,9 @@ public class MyNavigationService {
     @Autowired
     private HttpServletRequest httpRequest;
 
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
+
     /**
      * @return a map of {@link SiteMapEntry} values keyed by the row in which they have to appear
      */
@@ -31,7 +34,7 @@ public class MyNavigationService {
     }
 
     public Map<Integer, List<SiteMapEntry>> getSiteMapFooter(String language) {
-        List<SiteMapEntry> siteMapEntries = siteMapService.getSiteMapFooter(language);
+        List<SiteMapEntry> siteMapEntries = siteMapService.getSiteMapFooter(envPropertiesService.sanitizedDomaineName(httpRequest.getServerName()),language);
 
         if (siteMapEntries == null) {
             return Collections.emptyMap();
@@ -41,12 +44,12 @@ public class MyNavigationService {
         return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
     }
 
-    public SiteMapMenuSet getSiteMapHeader() {
-        return siteMapService.getSiteMapHeader(RequestContextUtils.getLocale(httpRequest).getLanguage());
+    public SiteMapMenuHeader getSiteMapHeader() {
+        return siteMapService.getSiteMapHeader(envPropertiesService.sanitizedDomaineName(httpRequest.getServerName()), RequestContextUtils.getLocale(httpRequest).getLanguage());
     }
 
-    public SiteMapMenuSet getSiteMapHeader(String language) {
-        return siteMapService.getSiteMapHeader(language);
+    public SiteMapMenuHeader getSiteMapHeader(String language) {
+        return siteMapService.getSiteMapHeader(envPropertiesService.sanitizedDomaineName(httpRequest.getServerName()), language);
     }
 
 }

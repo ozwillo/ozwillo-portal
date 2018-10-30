@@ -69,6 +69,24 @@ web:
     url_footer: https://www.ozwillo.com/footer.xml
     refresh: 0 0 3 ? DEC SUN
 
+confs:
+  ozwillo:
+    url: https://portal.ozwillo.com
+    error_401: https://portal.ozwillo.com/my
+    web:
+      googleTag: UA-71967243-2
+      home: https://www.ozwillo-dev.eu
+      sitemap:
+        url_header: ${confs.ozwillo.web.home}/header.xml
+        url_footer: ${confs.ozwillo.web.home}/footer.json
+    kernel:
+      client_id: portal
+      client_secret: changeit
+      callback_uri: ${confs.ozwillo.url}/callback
+      home_uri: ${confs.ozwillo.url}/my
+    opendata:
+      url: https://opendata.ozwillo.com
+
 kernel:
   token:
     expiry: 300

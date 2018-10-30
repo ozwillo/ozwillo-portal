@@ -81,10 +81,7 @@ application:
   notificationsEnabled: true
 
 web:
-  home: https://www.ozwillo.com
   sitemap:
-      url_header: https://www.ozwillo.com/header.xml
-      url_footer: https://www.ozwillo.com/footer.xml
       #refresh: 0 0/5 * * * *
       refresh: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
 
@@ -92,6 +89,24 @@ rest:
   # by default uses mere HttpURLConnection, better : https://jira.spring.io/browse/ANDROID-54 http://stackoverflow.com/questions/25698072/simpleclienthttprequestfactory-vs-httpcomponentsclienthttprequestfactory-for-htt
   # instead of using Apache HTTPComponents Client (would require specific conf for enabling SNI, which should be possible since 4.3.2)
   revertToApacheHttpComponentsClient: false
+
+confs:
+  ozwillo:
+    url: https://portal.ozwillo.com
+    error_401: https://portal.ozwillo.com/my
+    web:
+      googleTag: UA-71967243-2
+      home: https://www.ozwillo.com
+      sitemap:
+        url_header: ${confs.ozwillo.web.home}/header.xml
+        url_footer: ${confs.ozwillo.web.home}/footer.json
+    kernel:
+      client_id: portal
+      client_secret: changeit
+      callback_uri: ${confs.ozwillo.url}/callback
+      home_uri: ${confs.ozwillo.url}/my
+    opendata:
+      url: https://opendata.ozwillo.com
 
 kernel:
   base_uri: https://kernel.ozwillo.com
@@ -106,8 +121,6 @@ kernel:
     password_change_endpoint: ${kernel.alt_uri}/a/password
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.alt_uri}/a/logout
-    callback_uri: ${application.url}/callback
-    home_uri: ${application.url}/my
   account_france_connect_uri: ${kernel.account_uri}/a/franceconnect
   kernel_france_connect_uri: ${kernel.base_uri}/a/franceconnect
   france_connect:
@@ -120,8 +133,7 @@ kernel:
   organization_endpoint: ${kernel.base_uri}/d/org
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
-  client_id: portal
-  client_secret: changeit
+  #client_secret: changeit
   # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
   scopes_to_require: openid profile email address phone datacore
   portal_endpoints:
@@ -143,9 +155,6 @@ datacore:
   systemAdminUser:  #Get it using Node.js util / with portal clientId
     refreshToken: changeit
     nonce: changeit      #Set it when getting the refreshToken
-
-opendata:
-  url: https://opendata.ozwillo.com
 
 mail:
   contact:

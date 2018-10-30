@@ -1,24 +1,27 @@
 package org.oasis_eu.portal.services.jobs;
 
-import org.oasis_eu.portal.model.sitemap.SiteMap;
-import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
+import org.codehaus.jettison.json.JSONArray;
+import org.codehaus.jettison.json.JSONException;
+import org.codehaus.jettison.json.JSONObject;
+import org.oasis_eu.portal.config.environnements.EnvProperties;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
+import org.oasis_eu.portal.dao.GoogleAnalyticsTagRepository;
+import org.oasis_eu.portal.dao.SiteMapComponentsRepository;
+import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
+import org.oasis_eu.portal.model.sitemap.*;
 import org.oasis_eu.portal.services.SiteMapService;
-import org.oasis_eu.portal.model.sitemap.Footer;
-import org.oasis_eu.portal.model.sitemap.HeaderMenuSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -33,64 +36,166 @@ public class SiteMapUpdater {
     @Autowired
     private SiteMapService siteMapService;
 
-    @Value("${web.sitemap.url_header}")
-    private String sitemapUrlHeader;
-
-    @Value("${web.sitemap.url_footer}")
-    private String sitemapUrlFooter;
-
     @Autowired
     @Qualifier("xmlAwareRestTemplate")
     private RestTemplate restTemplate;
+
+    @Autowired
+    private EnvProperties envProperties;
+
+    @Autowired
+    private SiteMapComponentsRepository siteMapComponentsRepository;
+
+    @Autowired
+    private StylePropertiesMapRepository stylePropertiesMapRepository;
+
+    @Autowired
+    private GoogleAnalyticsTagRepository googleAnalyticsTagRepository;
 
 
     @Scheduled(cron = "${web.sitemap.refresh}")
     public void reload() {
         logger.info("Reloading site map: Header, Footer");
+        //parse and create new entries for website
+        initializeSiteMapComponents();
         reloadHeader();
         reloadFooter();
     }
 
+    public void initializeSiteMapComponents() {
+        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
+        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
+            String website = entry.getKey();
+            SiteMapComponents siteMapComponents = siteMapComponentsRepository.findByWebsite(website);
+            if (siteMapComponents == null) {
+                siteMapComponents = new SiteMapComponents();
+                siteMapComponents.setWebsite(website);
+                siteMapComponentsRepository.save(siteMapComponents);
+            }
+        }
+    }
+
+    public void initializeGoogleAnalyticsTags() {
+        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
+        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
+            String website = entry.getKey();
+
+            String googleTag = envProperties.getConfs().get(website).getWeb().getGoogleTag();
+            googleAnalyticsTagRepository.save(new GoogleAnalyticsTag(googleTag, website));
+        }
+    }
+
+    public void initializeStylePropertiesMap() {
+        List<StyleProperty> styleProperties = new ArrayList<>();
+        try {
+            JSONObject obj = new JSONObject("{default: " +
+                        "[" +
+                        "    {key: \"--primary-color\", value: \"#6f438e\"},\n" +
+                        "    {key:\"--secondary-color\",value:\"#4c2d62\"},\n" +
+                        "    {key: \"--tertiary-color\", value:\"#FFF\"},\n" +
+                        "\n" +
+                        "    {key:\"--separator-color\", value: \"#CCC\"},\n" +
+                        "    {key:\"--footer-color\", value: \"#EEE\"},\n" +
+                        "    {key:\"--nav-color\",value: \"#FBFBFB\"},\n" +
+                        "    {key:\"--bg-content-color\",value: \"#f4f4f4\"},\n" +
+                        "\n" +
+                        "    /* STORE */\n" +
+                        "    {key:\"--buy-color\",value: \"#ff4d37e8\"},\n" +
+                        "    {key:\"--buy-dark-color\",value: \"rgba(150, 0, 42, 1)\"},\n" +
+                        "\n" +
+                        "    {key:\"--free-color\",value: \"#f8ba03\"},\n" +
+                        "    {key:\"--free-dark-color\",value: \"#f69b04\"},\n" +
+                        "\n" +
+                        "    {key:\"--installed-color\",value: \"#43a047\"},\n" +
+                        "    {key:\"--installed-dark-color\",value: \"#2e7d32\"},\n" +
+                        "\n" +
+                        "    /* BUTTON */\n" +
+                        "    {key:\"--button-primary-color\",value: \"#6f438e\"}, /*Border text*/\n" +
+                        "    {key:\"--button-secondary-color\",value: \"#FFF\"}, /* background */\n" +
+                        "    {key:\"--button-tertiary-color\",value: \"#4c2d62\"}, /* background on hover */\n" +
+                        "\n" +
+                        "\n" +
+                        "    /* COLOR */\n" +
+                        "    {key:\"--black-color\",value: \"#4c4c4c\"},\n" +
+                        "    {key:\"--alert-color\",value: \"#ff4d37e8\"},\n" +
+                        "    {key:\"--gray-color\",value: \"#e4e4e4\"},\n" +
+                        "\n" +
+                        "\n" +
+                        "    /* LOGO */\n" +
+                        "    {key:\"--logo-url\",value: \"url('/img/logo-ozwillo.png')\"},\n" +
+                        "    {key:\"--logo-width\",value: \"120px\"},\n" +
+                        "    {key:\"--footer-logo-url\",value: 'url(\"/img/logo-ozwillo-footer.png\")'},\n" +
+                        "    \n" +
+                        "]" +
+                    "}");
+
+            JSONArray array = obj.getJSONArray("default");
+            for (int i = 0; i< array.length(); i++){
+                String key = array.getJSONObject(i).getString("key");
+                String value = array.getJSONObject(i).getString("value");
+                styleProperties.add(new StyleProperty(key, value));
+            }
+            stylePropertiesMapRepository.save(new StylePropertiesMap(styleProperties, "ozwillo"));
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
+
+
     public void reloadHeader() {
         // Loads and updates the header from xml resource
-        try {
-            List<SiteMapMenuSet> menuset = restTemplate.getForObject(sitemapUrlHeader, HeaderMenuSet.class).getMenuset();
-            menuset.forEach(menu -> siteMapService.updateSiteMapHeader(menu.getLanguage(), menu));
-            logger.debug("Header Loaded!");
-        } catch (RestClientException rce) {
-            logger.error("The Header file was not Loaded due to error: " + rce);
+        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
+        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
+            EnvConfig envConfig = entry.getValue();
+            String website = entry.getKey();
+            String url_header = envConfig.getWeb().getSitemap().getUrl_header();
+
+            try {
+                List<SiteMapMenuHeader> menuset = restTemplate.getForObject(url_header, HeaderMenuSet.class).getMenuset();
+                menuset.forEach(menu -> siteMapService.updateSiteMapHeader(website, menu.getLanguage(), menu));
+                logger.debug("Header Loaded!");
+            } catch (RestClientException rce) {
+                logger.error("The Header file was not Loaded due to error: " + rce);
+            }
         }
+
 
     }
 
     public void reloadFooter() {
 
-        List<String> contactUrls =
-            new ArrayList<>(Arrays.asList("/fr/contact", "/en/contact", "/it/contatti", "/tr/iletism",
-                "/bg/vriz-i", "/es/contactos", "/ca/contactes"));
+        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
+        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
+            EnvConfig envConfig = entry.getValue();
+            String website = entry.getKey();
+            String url_footer = envConfig.getWeb().getSitemap().getUrl_footer();
 
-        // Loads and updates the footer from xml resource
-        try {
-            List<SiteMap> menuset = restTemplate.getForObject(sitemapUrlFooter, Footer.class).getMenuset();
-            // There is an ugly thing happening here
-            // In order to replace the contact link retrieved from the CMS by our own contact link,
-            //     we manually exclude contact URLs when synchronizing footer links in our DB
-            // It should have to be dealt with when current CMS is replaced
-            menuset.stream().forEach(siteMap -> {
-                    List<SiteMapEntry> entries = siteMap.getEntries();
-                    List<SiteMapEntry> filteredEntries =
-                        entries.stream()
-                            .filter(siteMapEntry ->
-                                siteMapEntry != null && siteMapEntry.getUrl() != null && !contactUrls.contains(siteMapEntry.getUrl()))
-                            .collect(Collectors.toList());
-                    siteMap.setEntries(filteredEntries);
-                }
-            );
-            menuset.forEach(menu -> siteMapService.updateSiteMapFooter(menu.getLanguage(), menu));
-            logger.debug("Footer Loaded!");
-        } catch (RestClientException rce) {
-            logger.error("The Footer file was not Loaded due to error: " + rce);
+            // Loads and updates the footer from xml resource
+            try {
+                RestTemplate restTemplate = new RestTemplate();
+                FooterMenuSet footerMenuSet = restTemplate.getForObject(url_footer, FooterMenuSet.class);
+                Footer footer = footerMenuSet.getFooter();
+                List<SiteMapMenuFooter> menuset = footer.getMenuset();
+                // There is an ugly thing happening here
+                // In order to replace the contact link retrieved from the CMS by our own contact link,
+                //     we manually exclude contact URLs when synchronizing footer links in our DB
+                // It should have to be dealt with when current CMS is replaced
+                menuset.forEach(siteMap -> {
+                            List<SiteMapEntry> entries = siteMap.getEntries();
+                            List<SiteMapEntry> filteredEntries =
+                                    entries.stream()
+                                            .filter(siteMapEntry ->
+                                                    siteMapEntry != null && siteMapEntry.getUrl() != null)
+                                            .collect(Collectors.toList());
+                            siteMap.setEntries(filteredEntries);
+                        }
+                );
+                menuset.forEach(menu -> siteMapService.updateSiteMapFooter(website, menu.getLanguage(), menu));
+                logger.debug("Footer Loaded!");
+            } catch (RestClientException rce) {
+                logger.error("The Footer file was not Loaded due to error: " + rce);
+            }
         }
     }
-
 }

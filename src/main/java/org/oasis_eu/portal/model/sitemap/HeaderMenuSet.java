@@ -3,7 +3,6 @@ package org.oasis_eu.portal.model.sitemap;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
 
 import java.util.List;
 
@@ -20,13 +19,13 @@ public class HeaderMenuSet {
      */
     @JacksonXmlElementWrapper(useWrapping = false)
     @JacksonXmlProperty(localName = "menu")
-    private List<SiteMapMenuSet> menuset;
+    private List<SiteMapMenuHeader> menuset;
 
-    public List<SiteMapMenuSet> getMenuset() {
+    public List<SiteMapMenuHeader> getMenuset() {
         return menuset;
     }
 
-    public void setMenuset(List<SiteMapMenuSet> menuset) {
+    public void setMenuset(List<SiteMapMenuHeader> menuset) {
         this.menuset = menuset;
     }
 }

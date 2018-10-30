@@ -6,18 +6,21 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 import java.io.InputStream;
+import java.util.List;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.dao.SiteMapRepository;
-import org.oasis_eu.portal.model.sitemap.SiteMap;
+import org.oasis_eu.portal.model.sitemap.FooterMenuSet;
+import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
+import org.oasis_eu.portal.model.sitemap.SiteMapMenuFooter;
 import org.oasis_eu.portal.services.SiteMapService;
 import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
 import org.oasis_eu.portal.model.sitemap.Footer;
 import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.io.ResourceLoader;
@@ -40,15 +43,8 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 @SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
 public class SiteMapFooterParserTest {
 
-	@Autowired
-	@Qualifier("xmlAwareRestTemplate")
-	private RestTemplate restTemplate;
-
-	@Value("${web.sitemap.url_footer}")
+	@Value("${confs.ozwillo.web.sitemap.url_footer}")
 	private String sitemapUrl;
-
-	@Autowired
-	private ResourceLoader resourceLoader;
 
 	@Autowired
 	private SiteMapRepository repository;
@@ -62,64 +58,41 @@ public class SiteMapFooterParserTest {
 	@Before
 	public void clean() {
 		repository.deleteAll();
-	}
-
-	@Test
-	public void testParseSiteMap() throws Exception {
-
-		InputStream stream = getClass().getClassLoader().getResourceAsStream("xml/footer.xml");
-		XmlMapper xmlMapper = new XmlMapper();
-		Footer footer = xmlMapper.readValue(stream, Footer.class);
-		assertEquals(7, footer.getMenuset().size());
-		SiteMap frSiteMap = footer.getMenuset().get(0);
-		assertEquals("fr", frSiteMap.getLanguage());
-		assertEquals(13, frSiteMap.getEntries().size());
-		assertEquals("/fr/association", frSiteMap.getEntries().get(0).getUrl());
-		assertEquals("Association", frSiteMap.getEntries().get(0).getLabel());
-
-		SiteMap enSiteMap = footer.getMenuset().get(1);
-		assertEquals("en", enSiteMap.getLanguage());
-		assertEquals(13, enSiteMap.getEntries().size());
-	}
+    }
 
 	@Test
 	@DirtiesContext
-	public void testLoadRemote() throws Exception {
-		MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
-		server.expect(requestTo(sitemapUrl)).andRespond(withSuccess(resourceLoader.getResource("classpath:/xml/footer.xml"), MediaType.APPLICATION_XML));
+	public void testLoadRemote() {
+	    RestTemplate restTemplate = new RestTemplate();
+		Footer footer = restTemplate.getForObject(sitemapUrl, FooterMenuSet.class).getFooter();
 
-		Footer footer = restTemplate.getForObject(sitemapUrl, Footer.class);
 		assertEquals(7, footer.getMenuset().size());
-		SiteMap frSiteMap = footer.getMenuset().get(0);
-		assertEquals("fr", frSiteMap.getLanguage());
-		assertEquals(13, frSiteMap.getEntries().size());
-		assertEquals("/fr/association", frSiteMap.getEntries().get(0).getUrl());
-		assertEquals("Association", frSiteMap.getEntries().get(0).getLabel());
+		SiteMapMenuFooter frSiteMapMenuFooter = footer.getMenuset().get(0);
 
-		SiteMap enSiteMap = footer.getMenuset().get(1);
-		assertEquals("en", enSiteMap.getLanguage());
-		assertEquals(13, enSiteMap.getEntries().size());
+		assertEquals("fr", frSiteMapMenuFooter.getLanguage());
+		assertEquals(14, frSiteMapMenuFooter.getEntries().size());
+		assertEquals("/fr/association", frSiteMapMenuFooter.getEntries().get(0).getUrl());
+		assertEquals("Association", frSiteMapMenuFooter.getEntries().get(0).getLabel());
 
-		server.verify();
-	}
+		SiteMapMenuFooter enSiteMapMenuFooter = footer.getMenuset().get(1);
+		assertEquals("en", enSiteMapMenuFooter.getLanguage());
+		assertEquals(14, enSiteMapMenuFooter.getEntries().size());
+    }
 
 	@Test
 	@DirtiesContext
-	public void testUpdateSiteMap() throws Exception {
-
-		MockRestServiceServer server = MockRestServiceServer.createServer(restTemplate);
-		server.expect(requestTo(sitemapUrl)).andRespond(withSuccess(resourceLoader.getResource("classpath:/xml/footer.xml"), MediaType.APPLICATION_XML));
-
-		this.clean();
-
+	public void testUpdateSiteMap()  {
 		siteMapUpdater.reloadFooter();
 
-		assertNotNull(siteMapService.getSiteMapFooter("fr"));
-		assertEquals("http://www.ozwillo-dev.eu/fr/association", siteMapService.getSiteMapFooter("fr").get(0).getUrl());
-		assertNotNull(siteMapService.getSiteMapFooter("en").get(7));
-		assertEquals("Genesis", siteMapService.getSiteMapFooter("en").get(7).getLabel());
-		assertEquals("http://www.ozwillo-dev.eu/en/genesis", siteMapService.getSiteMapFooter("en").get(7).getUrl());
+        List<SiteMapEntry> siteMapEN = siteMapService.getSiteMapFooter("ozwillo","en");
+		List<SiteMapEntry> siteMapFR = siteMapService.getSiteMapFooter("ozwillo","fr");
 
-		server.verify();
-	}
+		assertNotNull(siteMapFR);
+		assertEquals("https://www.ozwillo-dev.eu/fr/association", siteMapFR.get(0).getUrl());
+
+		assertNotNull(siteMapEN);
+		assertEquals("Genesis", siteMapEN.get(7).getLabel());
+		assertEquals("https://www.ozwillo-dev.eu/en/genesis", siteMapEN.get(7).getUrl());
+
+    }
 }

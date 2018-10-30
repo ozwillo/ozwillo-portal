@@ -1,15 +1,10 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.dao.SiteMapHeaderRepository;
-import org.oasis_eu.portal.dao.SiteMapRepository;
-import org.oasis_eu.portal.model.sitemap.SiteMap;
-import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuItem;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
+import org.oasis_eu.portal.dao.SiteMapComponentsRepository;
+import org.oasis_eu.portal.model.sitemap.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -29,23 +24,27 @@ public class SiteMapService {
 
     @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
-    private SiteMapRepository footerRepository;
+    private SiteMapComponentsRepository siteMapComponentsRepository;
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
     @Autowired
-    private SiteMapHeaderRepository headerRepository;
+    private EnvPropertiesService envPropertiesService;
 
-    @Value("${web.home}")
-    private String webHome;
 
-    @Cacheable(value = "sitemapheader", key = "#language")
-    public SiteMapMenuSet getSiteMapHeader(String language) {
-        SiteMapMenuSet menuset = headerRepository.findByLanguage(language);
-        if (menuset != null) {
-            menuset.getItems().forEach(this::setHyperLinks);
+    @Cacheable(value = "sitemapheader", key = "#website + #language.toString()")
+    public SiteMapMenuHeader getSiteMapHeader(String website, String language) {
+        SiteMapMenuHeader siteMapMenuHeader = siteMapComponentsRepository.findByWebsite(website)
+                .getSiteMapMenuHeader()
+                .stream()
+                .filter(header -> header.getLanguage().equals(language))
+                .findFirst()
+                .orElse(null);
+
+
+        if (siteMapMenuHeader != null) {
+            siteMapMenuHeader.getItems().forEach(this::setHyperLinks);
         }
 
-        return menuset;
+        return siteMapMenuHeader;
     }
 
     /**
@@ -54,10 +53,12 @@ public class SiteMapService {
      * @return SiteMapMenuItem
      */
     private SiteMapMenuItem setHyperLinks(SiteMapMenuItem entry) {
+
         if (entry == null) return new SiteMapMenuItem();
 
         // complete relative URLs
         if (entry.getUrl().startsWith("/") || entry.getUrl().isEmpty()) {
+            String webHome = envPropertiesService.getCurrentConfig().getWeb().getHome();
             entry.setUrl(webHome + entry.getUrl());
         }
 
@@ -78,29 +79,46 @@ public class SiteMapService {
     }
 
 
-    @CacheEvict(value = "sitemapheader", key = "#language")
-    public void updateSiteMapHeader(String language, SiteMapMenuSet siteMapheadaer) {
-        SiteMapMenuSet old = headerRepository.findByLanguage(language);
-        if (old != null) {
-            headerRepository.deleteById(old.getId());
-        }
+    @CacheEvict(value = "sitemapheader", key ="#website.toString() + #language.toString()")
+    public void updateSiteMapHeader(String website, String language, SiteMapMenuHeader siteMapheader) {
 
-        siteMapheadaer.setLanguage(language);
-        siteMapheadaer.setId(null);
+        SiteMapComponents siteMapComponents = siteMapComponentsRepository.findByWebsite(website);
 
-        headerRepository.save(siteMapheadaer);
+        List<SiteMapMenuHeader> siteMapMenuHeaders = siteMapComponents.getSiteMapMenuHeader();
+
+        SiteMapMenuHeader siteMapMenuHeader =
+                siteMapMenuHeaders
+                        .stream()
+                        .filter(header -> header.getLanguage().equals(language))
+                        .findFirst()
+                        .orElse(null);
+
+        if (siteMapMenuHeader == null)
+            siteMapComponents.getSiteMapMenuHeader().add(siteMapheader);
+
+        siteMapMenuHeader = siteMapheader;
+        siteMapMenuHeader.setId(null);
+        siteMapMenuHeader.setLanguage(language);
+
+        siteMapComponentsRepository.save(siteMapComponents);
     }
 
-    @Cacheable(value = "sitemap", key = "#language")
-    public List<SiteMapEntry> getSiteMapFooter(String language) {
-        SiteMap siteMap = footerRepository.findByLanguage(language);
-        if (siteMap != null) {
-            return siteMap.getEntries()
+    @Cacheable(value = "sitemapfooter", key = "#website.toString() + #language.toString()")
+    public List<SiteMapEntry> getSiteMapFooter(String website, String language) {
+        SiteMapMenuFooter siteMapMenuFooter = siteMapComponentsRepository.findByWebsite(website)
+                .getSiteMapMenuFooter()
                 .stream()
-                .map(this::fixSME)
-                .collect(Collectors.toList());
+                .filter(footer -> footer.getLanguage().equals(language))
+                .findFirst()
+                .orElse(null);
 
-        } else {
+
+        if (siteMapMenuFooter != null) {
+            return siteMapMenuFooter.getEntries()
+                    .stream()
+                    .map(this::fixSME)
+                    .collect(Collectors.toList());
+        }else{
             return null;
         }
     }
@@ -108,20 +126,32 @@ public class SiteMapService {
     private SiteMapEntry fixSME(SiteMapEntry entry) {
         if (entry == null) return new SiteMapEntry();
 
+        String webHome = envPropertiesService.getCurrentConfig().getWeb().getHome();
         entry.setUrl(webHome + entry.getUrl());
         return entry;
     }
 
-    @CacheEvict(value = "sitemap", key = "#language")
-    public void updateSiteMapFooter(String language, SiteMap siteMap) {
-        SiteMap old = footerRepository.findByLanguage(language);
-        if (old != null) {
-            footerRepository.deleteById(old.getId());
-        }
+    @CacheEvict(value = "sitemapfooter", key = "#website.toString() + #language.toString()")
+    public void updateSiteMapFooter(String website, String language, SiteMapMenuFooter siteMapFooter) {
 
-        siteMap.setLanguage(language);
-        siteMap.setId(null);
+        SiteMapComponents siteMapComponents = siteMapComponentsRepository.findByWebsite(website);
 
-        footerRepository.save(siteMap);
+        List<SiteMapMenuFooter> siteMapMenuFooters = siteMapComponents.getSiteMapMenuFooter();
+
+        SiteMapMenuFooter siteMapMenuFooter =
+                siteMapMenuFooters
+                        .stream()
+                        .filter(header -> header.getLanguage().equals(language))
+                        .findFirst()
+                        .orElse(null);
+
+        if (siteMapMenuFooter == null)
+            siteMapComponents.getSiteMapMenuFooter().add(siteMapFooter);
+
+        siteMapMenuFooter = siteMapFooter;
+        siteMapMenuFooter.setId(null);
+        siteMapMenuFooter.setLanguage(language);
+
+        siteMapComponentsRepository.save(siteMapComponents);
     }
 }
