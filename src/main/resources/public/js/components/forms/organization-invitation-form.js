@@ -81,7 +81,7 @@ export default class OrganizationInvitationForm extends React.Component {
             this._inviteMultipleUsers(emailsFromCSV);
         }
 
-        if(email !== '') {
+        if (email !== '') {
             this.setState({isLoading: true});
             this._organizationService.inviteUser(this.props.organization.id, email, admin)
                 .then((res) => {
@@ -111,52 +111,24 @@ export default class OrganizationInvitationForm extends React.Component {
             </button>;
         const requiered = !(emailsFromCSV.length > 0 || email !== '');
 
-        return <header className="dropdown-header">
-            <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
-                {/*email input*/}
-                <div className={"form-row-block"}>
-                    <div className={"form-column-block"}>
-                        <label className={"label label-title"}>
-                            {this.context.t('organization.form.email')}
-                        </label>
-                        <div className="flex-row-mobile-column">
-
-                            <div className="flex-row wrapper">
-                                <div className="flex-row">
-                                    <label className="label">
-                                        <input required={requiered} name="email" type="email"
-                                               className="field form-control no-auto"
-                                               onChange={this.handleChange} value={this.state.email}/>
-                                    </label>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                {/*CSV INPUT*/}
-                <div className={"form-row-block"}>
-                    <div className={"form-column-block"}>
-                        <label className={"label label-title"}>
-                            {this.context.t('my.network.import-from-csv')}
-                        </label>
-                        <div className={"flex-row"}>
-                            <CSVReader
-                                requiered={requiered}
-                                ref={csvReader => this.csvReader = csvReader}
-                                onFileReading={() => this.setState({csvLoading: true})}
-                                onFileReaded={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
-                        </div>
-
-
-                    </div>
-
-                </div>
-
-                {/*Submit button*/}
-                <div className={"form-column-block form-submit"}>
-                    <div className={"form-row-block"}>
+        return <header className="organization-invitation-form">
+            <p className={"invitation-title"}>{this.context.t("organization.desc.add-new-members")}</p>
+            <form className="invitation-form" onSubmit={this.onSubmit}>
+                <div className={"organization-form-sentence sentence"}>
+                    {/*email input*/}
+                    <p>{this.context.t("organization.desc.from-email")}</p>
+                    <input required={requiered} name="email" type="email"
+                           className="field form-control no-auto"
+                           onChange={this.handleChange} value={this.state.email}/>
+                    {/*CSV INPUT*/}
+                    <p>{this.context.t("organization.desc.from-CSV")}*</p>
+                    <CSVReader
+                        requiered={requiered}
+                        ref={csvReader => this.csvReader = csvReader}
+                        onFileReading={() => this.setState({csvLoading: true})}
+                        onFileReaded={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
+                    {/*Submit button*/}
+                    <div>
                         {emailsFromCSV.length > 0 ?
                             <CustomTooltip title={this.context.t('my.network.csv-email-spec')}>
                                 {submitButton}
@@ -171,6 +143,9 @@ export default class OrganizationInvitationForm extends React.Component {
                         </div>
                         }
                     </div>
+                </div>
+                <div className={"organization-form-sentence"}>
+                    <p className={"helper-text"}>(*)&nbsp;{this.context.t("organization.desc.CSV-helper")}.</p>
                 </div>
 
 

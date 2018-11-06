@@ -92,7 +92,7 @@ public final class i18nMessages {
 
     private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
             "add-application", "add-in-organization", "send-invitation", "form.success", "add-to-instance-from-members",
-            "add-to-instance-by-email", "add-user-to-instance");
+            "add-to-instance-by-email", "add-user-to-instance", "from-email", "from-CSV", "CSV-helper", "add-new-members");
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden", "msg.delete-pending-instance");
 

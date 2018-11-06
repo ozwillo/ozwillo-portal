@@ -91,13 +91,12 @@ class MembersTab extends React.Component {
     render() {
         const {members, isLoading} = this.state;
         const org = this.props.organization;
-        const header = <header className="dropdown-header">
+        const header =
             <OrganizationInvitationForm
                 organization={this.props.organization}
                 callBackMembersInvited={this._updateMembers}
                 members={members}
-            />
-        </header>;
+            />;
 
         return <article className="members-tab">
             {
