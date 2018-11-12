@@ -1,0 +1,5 @@
+
+.csv-error {
+    color: var(--alert-color);
+    padding-left: 0.5em;
+}

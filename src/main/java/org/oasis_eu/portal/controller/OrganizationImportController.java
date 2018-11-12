@@ -148,7 +148,7 @@ class OrganizationImportController {
                     });
                     migrated++;
                 } else {
-                    log.append("\nLocal authority not migrated due to uncomplete infos :");
+                    log.append("\nLocal organization not migrated due to uncomplete infos :");
                     log.append("\n---------------");
                     log.append("\nName : ").append(name);
                     log.append("\nSiren : ").append(siren);

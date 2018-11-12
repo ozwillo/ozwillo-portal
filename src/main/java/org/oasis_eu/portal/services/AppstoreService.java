@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.model.authority.UIOrganization;
+import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
 import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;

@@ -109,7 +109,7 @@ export default class OrganizationInvitationForm extends React.Component {
             <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}>
                 {this.context.t('my.network.invite-user')}
             </button>;
-        const requiered = !(emailsFromCSV.length > 0 || email !== '');
+        const required = !(emailsFromCSV.length > 0 || email !== '');
 
         return <header className="organization-invitation-form">
             <p className={"invitation-title"}>{this.context.t("organization.desc.add-new-members")}</p>
@@ -117,16 +117,16 @@ export default class OrganizationInvitationForm extends React.Component {
                 <div className={"organization-form-sentence sentence"}>
                     {/*email input*/}
                     <p>{this.context.t("organization.desc.from-email")}</p>
-                    <input required={requiered} name="email" type="email"
+                    <input required={required} name="email" type="email"
                            className="field form-control no-auto"
                            onChange={this.handleChange} value={this.state.email}/>
                     {/*CSV INPUT*/}
                     <p>{this.context.t("organization.desc.from-CSV")}*</p>
                     <CSVReader
-                        requiered={requiered}
+                        required={required}
                         ref={csvReader => this.csvReader = csvReader}
                         onFileReading={() => this.setState({csvLoading: true})}
-                        onFileReaded={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
+                        onFileRead={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
                     {/*Submit button*/}
                     <div>
                         {emailsFromCSV.length > 0 ?
@@ -137,12 +137,12 @@ export default class OrganizationInvitationForm extends React.Component {
                             submitButton
 
                         }
-                        {(isLoading || csvLoading || isFetchingUsers) &&
-                        <div className={"spinner-container"}>
-                            <i className="fa fa-spinner fa-spin action-icon"/>
-                        </div>
-                        }
                     </div>
+                    {(isLoading || csvLoading || isFetchingUsers) &&
+                    <div className={"spinner-container"}>
+                        <i className="fa fa-spinner fa-spin action-icon"/>
+                    </div>
+                    }
                 </div>
                 <div className={"organization-form-sentence"}>
                     <p className={"helper-text"}>(*)&nbsp;{this.context.t("organization.desc.CSV-helper")}.</p>

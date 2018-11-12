@@ -1,13 +1,13 @@
 package org.oasis_eu.portal.services;
 
 import com.google.common.base.Strings;
-import org.oasis_eu.portal.model.authority.*;
+import org.oasis_eu.portal.model.organization.*;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
-import org.oasis_eu.portal.model.user.InvitationRequest;
+import org.oasis_eu.portal.model.organization.InvitationRequest;
 import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCOrganization;

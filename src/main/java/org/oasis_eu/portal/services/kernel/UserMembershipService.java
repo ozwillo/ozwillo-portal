@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services.kernel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.authority.UIPendingOrganizationMember;
+import org.oasis_eu.portal.model.organization.UIPendingOrganizationMember;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;

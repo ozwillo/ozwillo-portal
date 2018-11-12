@@ -1,11 +1,14 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Tools from "../util/tools";
+import OrganizationCard from "./organization-card";
 
 export default class CSVReader extends React.Component {
 
 
     constructor() {
         super();
+        this._tools = new Tools();
     }
 
     state = {
@@ -17,14 +20,14 @@ export default class CSVReader extends React.Component {
     };
 
     _sanitizeEmailArray = (emailArray) => {
-        let regExEmail = new RegExp(/^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/);
-        return emailArray.filter(email => regExEmail.test(String(email).toLowerCase()));
+        return emailArray.filter(email => this._tools.checkEmail(email));
     };
 
     _parseCSVData = (value) => {
-        let resultArray = value.trim().split('\n');
+        let resultArray = value.trim().split(/[\r\n]+/g);
+        resultArray.filter(elm =>  elm !== "");
         resultArray = this._sanitizeEmailArray(resultArray);
-        this.props.onFileReaded(resultArray);
+        this.props.onFileRead(resultArray);
     };
 
     _extractData = (e) => {
@@ -38,8 +41,10 @@ export default class CSVReader extends React.Component {
                     this._parseCSVData(reader.result)
                 };
                 reader.readAsText(files[0]);
+                this.setState({error: null})
             } else {
-                this.setState({error: "Wrong type of file, only .csv accepted"})
+                this.setState({error: this.context.t('error.msg.csv-file-required')});
+                this.cleanInput();
             }
         } catch (e) {
             this.setState({error: e});
@@ -57,15 +62,21 @@ export default class CSVReader extends React.Component {
                            className={"field"} required={requiered}
                            id="fileSelect" type="file"
                            accept=".csv" onChange={this._extractData}/>
-                    {error && <div>{error}</div>}
                 </label>
+                {error && <div className={"csv-error"}>{error}</div>}
             </div>
         )
     }
 
 }
 
+
 CSVReader.propTypes = {
-    onFileReaded: PropTypes.func,
-    onFileReading: PropTypes.func
+    onFileRead: PropTypes.func,
+    onFileReading: PropTypes.func,
+};
+
+
+CSVReader.contextTypes = {
+    t: PropTypes.func.isRequired
 };

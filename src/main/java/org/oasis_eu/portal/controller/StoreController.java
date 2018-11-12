@@ -12,7 +12,7 @@ import org.oasis_eu.portal.services.*;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.store.AppstoreHit;
 import org.oasis_eu.portal.model.store.InstallationOption;
-import org.oasis_eu.portal.model.authority.UIOrganization;
+import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
 import org.oasis_eu.portal.model.dc.DCRegActivityResponse;
