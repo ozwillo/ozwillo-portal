@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.model.authority.UIOrganization;
+import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.model.instance.InstanceService;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;

@@ -30,7 +30,7 @@ class MemberDropdownHeader extends React.Component {
     }
 
     onRemoveMemberInOrganization() {
-        this.props.onRemoveMemberInOrganization(this.props.member.id)
+        this.props.onRemoveMemberInOrganization(this.props.member)
             .catch((err) => {
                 this.setState({error: err.error});
             });

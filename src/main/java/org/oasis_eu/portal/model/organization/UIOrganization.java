@@ -1,4 +1,4 @@
-package org.oasis_eu.portal.model.authority;
+package org.oasis_eu.portal.model.organization;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;

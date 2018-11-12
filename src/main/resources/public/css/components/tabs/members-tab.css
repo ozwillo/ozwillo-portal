@@ -7,6 +7,7 @@
 .members-tab .btn-submit {
     background-color: var(--tertiary-color);
     padding: 3px 6px !important;
+
 }
 
 .members-tab .add-member {
@@ -29,13 +30,68 @@
     font-size: 1.2em;
 }
 
-.members-tab .organization-invitation-form > fieldset {
+.members-tab .invitation-title{
+    font-weight: 500;
+    font-size: 1.1em;
+}
+
+.members-tab .organization-invitation-form {
     width: 100%;
+}
+
+.members-tab .organization-form-sentence{
+    display: flex;
+    flex-flow: row wrap;
+    font-size: 0.9em;
+    align-items: center;
+    width: 100%;
+
+}
+
+.members-tab .organization-form-sentence input {
+    max-width: 15vw;
+    margin: 0.4em;
+}
+
+.members-tab .organization-form-sentence #fileSelect{
+    max-width: 16vw;
+}
+
+
+.members-tab .organization-form-sentence p{
+    margin: 0;
+}
+
+.members-tab .organization-form-sentence.sentence{
+    font-size: 1em;
+}
+
+.members-tab .invitation-form{
+    display: flex;
+    flex-flow: row wrap;
+}
+
+.members-tab .helper-text{
+    font-size: 1em;
+    margin-top: 0.2em !important;
+    color: var(--secondary-color);
 }
 
 @media (max-width: 425px) {
     .members-tab .select {
         min-width: auto;
         width: 100%;
+    }
+}
+
+@media (max-width: 1200px) {
+    .members-tab .organization-form-sentence button {
+        min-width: 150px;
+        margin-top: 1em;
+        margin-bottom: 1em;
+    }
+
+    .members-tab .organization-form-sentence{
+        justify-content: center;
     }
 }

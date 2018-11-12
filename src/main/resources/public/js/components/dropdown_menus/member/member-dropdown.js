@@ -9,9 +9,9 @@ import MemberDropdownFooter from './member-dropdown-footer'
 import CustomTooltip from '../../custom-tooltip';
 
 //Actions
-import {fetchDeleteMember, fetchUpdateRoleMember} from '../../../actions/member';
-import {fetchRemoveOrganizationInvitation} from "../../../actions/invitation";
+import {fetchUpdateRoleMember} from '../../../actions/member';
 import InstanceService from "../../../util/instance-service";
+import OrganizationService from "../../../util/organization-service";
 
 class MemberDropdown extends React.Component {
 
@@ -21,7 +21,8 @@ class MemberDropdown extends React.Component {
 
     static propTypes = {
         member: PropTypes.object.isRequired,
-        organization: PropTypes.object.isRequired
+        organization: PropTypes.object.isRequired,
+        memberRemoved: PropTypes.func
     };
 
     state = {
@@ -34,6 +35,7 @@ class MemberDropdown extends React.Component {
     constructor(){
         super();
         this._instanceService = new InstanceService();
+        this._organizationService = new OrganizationService();
     }
 
     componentDidMount(){
@@ -86,12 +88,14 @@ class MemberDropdown extends React.Component {
         }
     };
 
-    removeMemberInOrganization = (memberId) => {
-        return this.props.fetchDeleteMember(this.props.organization.id, memberId);
+    removeMemberInOrganization = async(member) => {
+        await this._organizationService.removeUser(this.props.organization.id, member);
+        this.props.memberRemoved(member);
     };
 
-    removeInvitationToJoinAnOrg = (member) => {
-        return this.props.fetchRemoveOrganizationInvitation(this.props.organization.id, member);
+    removeInvitationToJoinAnOrg = async (member) => {
+        await this._organizationService.removeUserInvitation(this.props.organization.id, member);
+        this.props.memberRemoved(member);
     };
 
     memberInstances = (instances) => {
@@ -181,15 +185,9 @@ class MemberDropdown extends React.Component {
 
 const mapDispatchToProps = dispatch => {
     return {
-        fetchDeleteMember(organizationId, memberId) {
-            return dispatch(fetchDeleteMember(organizationId, memberId));
-        },
         fetchUpdateRoleMember(organizationId, memberId, isAdmin) {
             return dispatch(fetchUpdateRoleMember(organizationId, memberId, isAdmin));
         },
-        fetchRemoveOrganizationInvitation(orgId, invitation) {
-            return dispatch(fetchRemoveOrganizationInvitation(orgId, invitation));
-        }
     };
 };
 

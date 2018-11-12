@@ -1,15 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 
-import {createOrganizationInvitation} from '../../actions/invitation';
-import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
+import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
+import CSVReader from "../CSVReader";
+import OrganizationService from "../../util/organization-service";
+import CustomTooltip from "../custom-tooltip";
 
-class OrganizationInvitationForm extends React.Component {
-
-    static propTypes = {
-        organization: PropTypes.object.isRequired
-    };
+export default class OrganizationInvitationForm extends React.Component {
 
     static contextTypes = {
         t: PropTypes.func.isRequired
@@ -23,8 +20,14 @@ class OrganizationInvitationForm extends React.Component {
             admin: false,
             isLoading: false,
             success: '',
-            error: ''
+            error: '',
+            emailsFromCSV: [],
+            csvLoading: false,
+            isFetchingUsers: false
         };
+
+
+        this._organizationService = new OrganizationService();
 
         //bind methods
         this.handleChange = this.handleChange.bind(this);
@@ -39,86 +42,131 @@ class OrganizationInvitationForm extends React.Component {
         });
     }
 
+    _removeAlreadyPresentMembers = (emailArray) => {
+        const {members} = this.props;
+
+        members.map(member => {
+            const emailIndex = emailArray.indexOf(member.email);
+            emailIndex > -1 ? emailArray.splice(emailIndex, 1) : null;
+        });
+    };
+
+    _inviteMultipleUsers = async (emailArray) => {
+        this.setState({isFetchingUsers: true});
+        try {
+            this._removeAlreadyPresentMembers(emailArray);
+            const response = await this._organizationService.inviteMultipleUsers(this.props.organization.id, emailArray);
+            this.setState({
+                success: this.context.t('ui.request.send'),
+                error: ''
+            });
+            this.props.callBackMembersInvited(response);
+        } catch (e) {
+            this.setState({
+                error: e.error,
+                success: ''
+            })
+        } finally {
+            this.setState({isFetchingUsers: false, emailsFromCSV: []});
+            this.csvReader.cleanInput();
+        }
+    };
+
     onSubmit(e) {
         e.preventDefault();
+        const {email, admin, emailsFromCSV} = this.state;
 
-        this.setState({isLoading: true});
-        this.props.createOrganizationInvitation(this.props.organization.id, this.state.email, this.state.admin)
-            .then(() => {
-                this.setState({
-                    email: '',
-                    admin: false,
-                    isLoading: false,
-                    error: '',
-                    success: this.context.t('ui.request.send')
+
+        if (emailsFromCSV.length > 0) {
+            this._inviteMultipleUsers(emailsFromCSV);
+        }
+
+        if (email !== '') {
+            this.setState({isLoading: true});
+            this._organizationService.inviteUser(this.props.organization.id, email, admin)
+                .then((res) => {
+                    this.props.callBackMembersInvited(res);
+                    this.setState({
+                        email: '',
+                        admin: false,
+                        isLoading: false,
+                        error: '',
+                        success: this.context.t('ui.request.send')
+                    });
+                })
+                .catch((err) => {
+                    this.setState({
+                        isLoading: false,
+                        error: err.error
+                    });
                 });
-            })
-            .catch((err) => {
-                this.setState({
-                    isLoading: false,
-                    error: err.error
-                });
-            });
+        }
     }
 
     render() {
-        return <header className="dropdown-header">
-            <form className="organization-invitation-form flex-row" onSubmit={this.onSubmit}>
-            <fieldset className="flex-col">
-                <div className="flex-row-mobile-column">
-                    <div className="flex-row wrapper">
-                        <div className="flex-row">
-                            <label className="label">
-                                {this.context.t('organization.form.email')}
-                                <input name="email" type="email" className="field form-control no-auto" required={true}
-                                       onChange={this.handleChange} value={this.state.email}/>
-                            </label>
-                        </div>
+        const {csvLoading, isFetchingUsers, emailsFromCSV, isLoading, email} = this.state;
+        const submitButton =
+            <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}>
+                {this.context.t('my.network.invite-user')}
+            </button>;
+        const required = !(emailsFromCSV.length > 0 || email !== '');
+
+        return <header className="organization-invitation-form">
+            <p className={"invitation-title"}>{this.context.t("organization.desc.add-new-members")}</p>
+            <form className="invitation-form" onSubmit={this.onSubmit}>
+                <div className={"organization-form-sentence sentence"}>
+                    {/*email input*/}
+                    <p>{this.context.t("organization.desc.from-email")}</p>
+                    <input required={required} name="email" type="email"
+                           className="field form-control no-auto"
+                           onChange={this.handleChange} value={this.state.email}/>
+                    {/*CSV INPUT*/}
+                    <p>{this.context.t("organization.desc.from-CSV")}*</p>
+                    <CSVReader
+                        required={required}
+                        ref={csvReader => this.csvReader = csvReader}
+                        onFileReading={() => this.setState({csvLoading: true})}
+                        onFileRead={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
+                    {/*Submit button*/}
+                    <div>
+                        {emailsFromCSV.length > 0 ?
+                            <CustomTooltip title={this.context.t('my.network.csv-email-spec')}>
+                                {submitButton}
+                            </CustomTooltip>
+                            :
+                            submitButton
+
+                        }
                     </div>
-
-
-                    <div className="options flex-row">
-{/*
-                        <label className="label">
-                            {this.context.t('organization.form.admin')}
-                            <input name="admin" type="checkbox" className="field"
-                                onChange={this.handleChange} checked={this.state.admin}/>
-                        </label>
-*/}
-                        <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
-                            {
-                                !this.state.isLoading &&
-                                this.context.t('my.network.invite-user')
-                            }
-                            {
-
-                                this.state.isLoading &&
-                                <i className="fa fa-spinner fa-spin action-icon" style={{ 'marginLeft': '1em' }}/>
-                            }
-                        </button>
-
+                    {(isLoading || csvLoading || isFetchingUsers) &&
+                    <div className={"spinner-container"}>
+                        <i className="fa fa-spinner fa-spin action-icon"/>
                     </div>
+                    }
                 </div>
-            </fieldset>
+                <div className={"organization-form-sentence"}>
+                    <p className={"helper-text"}>(*)&nbsp;{this.context.t("organization.desc.CSV-helper")}.</p>
+                </div>
+
+
             </form>
             {
-                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
+                this.state.error && <DropdownBlockError errorMessage={this.state.error}/>
             }
 
             {
-                this.state.success && <DropdownBlockSuccess successMessage={this.state.success} />
+                this.state.success && <DropdownBlockSuccess successMessage={this.state.success}/>
             }
-        </header>;
+        </header>
+            ;
     }
 
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        createOrganizationInvitation(orgId, email, admin) {
-            return dispatch(createOrganizationInvitation(orgId, email, admin));
-        }
-    };
+OrganizationInvitationForm.propTypes = {
+    organization: PropTypes.object.isRequired,
+    callBackMembersInvited: PropTypes.func,
+    members: PropTypes.array
 };
 
-export default connect(null, mapDispatchToProps)(OrganizationInvitationForm);
+
