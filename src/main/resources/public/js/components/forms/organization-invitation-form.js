@@ -5,6 +5,7 @@ import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
 import CustomTooltip from "../custom-tooltip";
+import OrganizationInvitationInstances from "./organization-invitation-instances";
 
 export default class OrganizationInvitationForm extends React.Component {
 
@@ -32,6 +33,7 @@ export default class OrganizationInvitationForm extends React.Component {
         //bind methods
         this.handleChange = this.handleChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+
     }
 
     handleChange(e) {
@@ -148,8 +150,11 @@ export default class OrganizationInvitationForm extends React.Component {
                     <p className={"helper-text"}>(*)&nbsp;{this.context.t("organization.desc.CSV-helper")}.</p>
                 </div>
 
+                <OrganizationInvitationInstances instances={this.props.organization.instances}/>
+
 
             </form>
+
             {
                 this.state.error && <DropdownBlockError errorMessage={this.state.error}/>
             }
@@ -157,8 +162,8 @@ export default class OrganizationInvitationForm extends React.Component {
             {
                 this.state.success && <DropdownBlockSuccess successMessage={this.state.success}/>
             }
-        </header>
-            ;
+
+        </header>;
     }
 
 }
