@@ -1,21 +1,21 @@
+.instance-invitation-form{
+    border-top: 0.1em solid var(--primary-color);
+    padding-top: 0.5em;
+}
 
 .instance-invitation-form .content {
     align-items: center;
-    justify-content: space-between;
     width: 100%;
+    display: flex;
+    flex-flow: wrap row;
 }
 
-.instance-invitation-form legend {
+.instance-invitation-form .instance-invitation-title {
     margin-bottom: 10px;
     margin-top: 10px;
     font-size: 1em;
     font-weight: 400;
-}
-
-.instance-invitation-form .select,
-.instance-invitation-form .new-user-fieldset {
-    width: 100%;
-    align-self: center !important;
+    color: var(--secondary-color);
 }
 
 .instance-invitation-form .sep-text {
