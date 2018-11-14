@@ -101,12 +101,17 @@ class InstanceDropdown extends React.Component {
         })
     };
 
+
     createUserAccessToInstance = async (user) => {
-        const {members} = this.state;
+        const {members, services} = this.state;
         try {
             await this._instanceService.fetchCreateAcl(user, this.props.instance);
             members.push(user);
             this.setState({members});
+            services.map(async (service) => {
+                await this._createSubscription(service.catalogEntry.id, user.id);
+            });
+            await this._refreshServices();
             return {error: false}
         } catch (e) {
             return {error: true, message: e};
@@ -136,21 +141,27 @@ class InstanceDropdown extends React.Component {
             });
     };
 
-    createSubscription = async (e) => {
+    _createSubscription = async (serviceId, userId) => {
+        this.setState({
+            status: {[userId]: {isLoading: true}}
+        });
+        return await this.fetchCreateSubscription(serviceId, userId);
+    };
+
+    createSubscriptionFromEvent = async (e) => {
         const el = e.currentTarget;
         const userId = el.dataset.user;
         const serviceId = el.dataset.service;
-
-        this.setState({
-            status: Object.assign({}, this.state.status, {
-                [userId]: {isLoading: true}
-            })
-        });
-
-        await this.fetchCreateSubscription(serviceId, userId);
-        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
-        this.setState({services: newServices})
-
+        try {
+            await this._createSubscription(serviceId, userId);
+            await this._refreshServices();
+        }catch(e){
+            this.setState({
+                status: Object.assign({}, this.state.status, {
+                    [userId]: {error: e.error, isLoading: false}
+                })
+            });
+        }
     };
 
     deleteSubscription = async (e) => {
@@ -165,8 +176,7 @@ class InstanceDropdown extends React.Component {
         });
 
         await this.fetchDeleteSubscription(serviceId, userId);
-        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
-        this.setState({services: newServices});
+        await this._refreshServices();
     };
 
 
@@ -177,13 +187,7 @@ class InstanceDropdown extends React.Component {
                     [userId]: {error: null, isLoading: false}
                 })
             });
-        }).catch((err) => {
-            this.setState({
-                status: Object.assign({}, this.state.status, {
-                    [userId]: {error: err.error, isLoading: false}
-                })
-            });
-        });
+        })
     };
 
     fetchDeleteSubscription = async (serviceId, userId) => {
@@ -214,9 +218,9 @@ class InstanceDropdown extends React.Component {
         });
     };
 
-    _refreshInstanceMembers = async () => {
-        const members = await this._instanceService.fetchUsersOfInstance(this.props.instance.id);
-        this.setState({members})
+    _refreshServices = async () => {
+        const newServices = await this._instanceService.fetchInstanceServices(this.props.instance.id, true);
+        this.setState({services: newServices})
     };
 
 
@@ -323,7 +327,8 @@ class InstanceDropdown extends React.Component {
                                             {
                                                 !sub &&
                                                 <CustomTooltip title={this.context.t('tooltip.add.icon')}>
-                                                    <button className="btn icon" onClick={this.createSubscription}
+                                                    <button className="btn icon"
+                                                            onClick={this.createSubscriptionFromEvent}
                                                             disabled={status && status.isLoading}
                                                             data-user={user.id} data-service={service.catalogEntry.id}>
                                                         <i className="fas fa-plus option-icon service"/>
