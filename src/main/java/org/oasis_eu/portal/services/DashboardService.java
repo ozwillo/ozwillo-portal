@@ -144,6 +144,7 @@ public class DashboardService {
             app.setName(service.getName(RequestContextUtils.getLocale(request)));
             app.setIcon(imageService.getImageForURL(service.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false));
             app.setUrl(service.getUrl());
+            app.setStatus(service.getStatus());
 
             if (service.getNotificationUrl() != null) {
                 app.setNotificationUrl(service.getNotificationUrl());
