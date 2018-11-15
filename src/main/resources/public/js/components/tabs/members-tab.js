@@ -46,7 +46,7 @@ class MembersTab extends React.Component {
 
         this.state = {
             isLoading: false,
-            members: []
+            members: this.props.organization.members ? this.props.organization.members : []
         };
 
         this._instanceService = new InstanceService();

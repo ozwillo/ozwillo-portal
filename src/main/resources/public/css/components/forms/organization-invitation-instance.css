@@ -1,10 +1,8 @@
 .organization-invitation-instance{
     display: flex;
     flex-flow: column wrap;
-    border-top: 1px solid var(--primary-color);
-    padding-top: 0.5em;
-    margin-top: 0.5em;
-    flex: 1;
+    flex: 1 1 auto;
+    padding: 0 0.5em 0 0.5em;
 }
 
 .organization-invitation-instance .content{

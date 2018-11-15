@@ -6,6 +6,9 @@ import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
 import CustomTooltip from "../custom-tooltip";
 import OrganizationInvitationInstances from "./organization-invitation-instances";
+import Stepper from "../stepper";
+import PillButton from "../pill-button";
+import InstanceService from "../../util/instance-service";
 
 export default class OrganizationInvitationForm extends React.Component {
 
@@ -23,12 +26,16 @@ export default class OrganizationInvitationForm extends React.Component {
             success: '',
             error: '',
             emailsFromCSV: [],
+            csvFileName: "",
             csvLoading: false,
-            isFetchingUsers: false
+            isFetchingUsers: false,
+            activeStep: 1,
+            instancesSelected: []
         };
 
 
         this._organizationService = new OrganizationService();
+        this._instanceService = new InstanceService();
 
         //bind methods
         this.handleChange = this.handleChange.bind(this);
@@ -69,32 +76,60 @@ export default class OrganizationInvitationForm extends React.Component {
                 success: ''
             })
         } finally {
+            await this._addMembersToInstances(emailArray);
             this.setState({isFetchingUsers: false, emailsFromCSV: []});
-            this.csvReader.cleanInput();
         }
     };
 
-    onSubmit(e) {
+
+    _addMembersToInstances = async (emails) => {
+        const {instancesSelected} = this.state;
+        const fetchResult = instancesSelected.map(async instance => {
+            emails.map(async email => {
+                await this._instanceService.fetchCreateAcl({email: email}, instance);
+            })
+        });
+        return await Promise.all(fetchResult);
+    };
+
+
+    _handleCSVRead = (emails) => {
+        this.setState({emailsFromCSV: emails, csvLoading: false, csvFileName: this.csvReader.state.fileName});
+    };
+
+    _handleInstancesSelected = (instances) => {
+        this.setState({instancesSelected: instances})
+    };
+
+    _handleStep = (activeStep) => {
+        const {email, emailsFromCSV} = this.state;
+        if (activeStep > 1 && (email || emailsFromCSV.length > 0)) {
+            this.setState({activeStep: activeStep});
+        } else if (activeStep === 1) {
+            this.setState({activeStep: activeStep});
+        }
+    };
+
+    onSubmit = async (e) => {
         e.preventDefault();
         const {email, admin, emailsFromCSV} = this.state;
 
 
         if (emailsFromCSV.length > 0) {
-            this._inviteMultipleUsers(emailsFromCSV);
+            await this._inviteMultipleUsers(emailsFromCSV);
+            this._resetForm();
         }
 
         if (email !== '') {
             this.setState({isLoading: true});
             this._organizationService.inviteUser(this.props.organization.id, email, admin)
                 .then((res) => {
+                    this._addMembersToInstances([res.email]);
                     this.props.callBackMembersInvited(res);
                     this.setState({
-                        email: '',
-                        admin: false,
-                        isLoading: false,
-                        error: '',
                         success: this.context.t('ui.request.send')
                     });
+                    this._resetForm();
                 })
                 .catch((err) => {
                     this.setState({
@@ -103,42 +138,122 @@ export default class OrganizationInvitationForm extends React.Component {
                     });
                 });
         }
-    }
+    };
+
+    _resetForm = () => {
+        this.setState({
+            email: '',
+            admin: false,
+            isLoading: false,
+            error: '',
+            emailsFromCSV: [],
+            csvFileName: "",
+            csvLoading: false,
+            isFetchingUsers: false,
+            activeStep: 1,
+            instancesSelected: []
+        });
+    };
 
     render() {
-        const {csvLoading, isFetchingUsers, emailsFromCSV, isLoading, email} = this.state;
+        const {csvLoading, isFetchingUsers, emailsFromCSV, isLoading, email, activeStep, csvFileName, instancesSelected} = this.state;
         const submitButton =
-            <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}>
+            <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}
+                    onClick={this.onSubmit}>
                 {this.context.t('my.network.invite-user')}
             </button>;
         const required = !(emailsFromCSV.length > 0 || email !== '');
 
+
         return <header className="organization-invitation-form">
             <p className={"invitation-title"}>{this.context.t("organization.desc.add-new-members")}</p>
-            <form className="invitation-form" onSubmit={this.onSubmit}>
-                <div className={"organization-form-sentence sentence"}>
-                    {/*email input*/}
-                    <p>{this.context.t("organization.desc.from-email")}</p>
-                    <input required={required} name="email" type="email"
-                           className="field form-control no-auto"
-                           onChange={this.handleChange} value={this.state.email}/>
-                    {/*CSV INPUT*/}
-                    <p>{this.context.t("organization.desc.from-CSV")}*</p>
-                    <CSVReader
-                        required={required}
-                        ref={csvReader => this.csvReader = csvReader}
-                        onFileReading={() => this.setState({csvLoading: true})}
-                        onFileRead={(emails) => this.setState({emailsFromCSV: emails, csvLoading: false})}/>
+
+            <Stepper activeStep={activeStep} nbSteps={3} onClickStep={(activeStep) => this._handleStep(activeStep)}/>
+
+            <form className="invitation-form">
+                {/*STEP 1*/}
+                {activeStep === 1 &&
+                <div>
+                    <div className={"organization-form-sentence sentence"}>
+                        {/*email input*/}
+                        <p>{this.context.t("organization.desc.from-email")}</p>
+                        <input required={required} name="email" type="email"
+                               className="field form-control no-auto"
+                               onChange={this.handleChange} value={this.state.email}/>
+                        {/*CSV INPUT*/}
+                        <p>{this.context.t("organization.desc.from-CSV")}*</p>
+                        <CSVReader
+                            fileName={csvFileName}
+                            required={required}
+                            ref={csvReader => this.csvReader = csvReader}
+                            onFileReading={() => this.setState({csvLoading: true})}
+                            onFileRead={(emails) => this._handleCSVRead(emails)}/>
+                    </div>
+                    <div className={"organization-form-sentence"}>
+                        <p className={"helper-text"}>(*)<em>&nbsp;{this.context.t("organization.desc.CSV-helper")}.</em>
+                        </p>
+                    </div>
+                </div>
+                }
+
+                {/*STEP 2*/}
+                {activeStep === 2 &&
+                <OrganizationInvitationInstances
+                    instances={this.props.organization.instances}
+                    callBackInstances={this._handleInstancesSelected}
+                    instancesSelected={instancesSelected}/>
+                }
+
+                {/*STEP 3*/}
+                {activeStep === 3 &&
+                <div className={"summarize"}>
+                    <div>
+                        <ul>
+                            {emailsFromCSV &&
+                            <li>
+                                {this.context.t('organization.desc.summarize-members-added', {csvFileName: csvFileName})}
+                            </li>}
+                            {email && <li>{this.context.t('organization.desc.summarize-member-added', {email: email})}</li>}
+                            {instancesSelected.length > 0 &&
+                            <React.Fragment>
+                                <li>{this.context.t("organization.desc.summarize-apps-added")} :</li>
+                                <div className={"instances-summarize"}>
+                                    {
+                                        instancesSelected.map(instance => {
+                                            return (
+                                                <PillButton key={instance.id}
+                                                            text={instance.applicationInstance.name}
+                                                />
+                                            )
+                                        })
+                                    }
+                                </div>
+                            </React.Fragment>
+                            }
+                        </ul>
+                    </div>
+
+                </div>
+                }
+
+
+            </form>
+
+            {/*NEXT STEP BUTTONS*/}
+            {activeStep < 3 ?
+                <div className={"next-step-container"}>
+                    <button className={"btn btn-default next-step"}
+                            onClick={() => this._handleStep(activeStep + 1)}
+                            disabled={!emailsFromCSV.length > 0 && !email}
+                    >
+                        {this.context.t("ui.next-step")}
+                    </button>
+                </div>
+                :
+                <div className={"next-step-container"}>
                     {/*Submit button*/}
                     <div>
-                        {emailsFromCSV.length > 0 ?
-                            <CustomTooltip title={this.context.t('my.network.csv-email-spec')}>
-                                {submitButton}
-                            </CustomTooltip>
-                            :
-                            submitButton
-
-                        }
+                        {submitButton}
                     </div>
                     {(isLoading || csvLoading || isFetchingUsers) &&
                     <div className={"spinner-container"}>
@@ -146,14 +261,7 @@ export default class OrganizationInvitationForm extends React.Component {
                     </div>
                     }
                 </div>
-                <div className={"organization-form-sentence"}>
-                    <p className={"helper-text"}>(*)&nbsp;{this.context.t("organization.desc.CSV-helper")}.</p>
-                </div>
-
-                <OrganizationInvitationInstances instances={this.props.organization.instances}/>
-
-
-            </form>
+            }
 
             {
                 this.state.error && <DropdownBlockError errorMessage={this.state.error}/>

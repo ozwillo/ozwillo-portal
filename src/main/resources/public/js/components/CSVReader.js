@@ -41,7 +41,7 @@ export default class CSVReader extends React.Component {
         let files = e.target.files;
         //check if that is a real csv
         try {
-            if (files && files[0].name.match('.csv')) {
+            if (files && files.length > 0 && files[0].name.match('.csv')) {
                 this._extractFileName();
                 this.props.onFileReading();
                 reader.onload = () => {
@@ -49,7 +49,7 @@ export default class CSVReader extends React.Component {
                 };
                 reader.readAsText(files[0]);
                 this.setState({error: null})
-            } else {
+            } else if(files && files.length > 0) {
                 this.setState({error: this.context.t('error.msg.csv-file-required')});
                 this.cleanInput();
             }
@@ -70,8 +70,8 @@ export default class CSVReader extends React.Component {
         const {error, fileName} = this.state;
         const {requiered} = this.props;
         return (
-            <form className={"csv-reader"}>
-                <label className="label btn btn-default" for="fileSelect">
+            <div className={"csv-reader"}>
+                <label className="label btn btn-default" htmlFor="fileSelect">
                     {this.context.t("organization.desc.choose-file")}
                 </label>
                 <p>
@@ -83,7 +83,7 @@ export default class CSVReader extends React.Component {
                        accept=".csv" onChange={this._extractData}/>
 
                 {error && <div className={"csv-error"}>{error}</div>}
-            </form>
+            </div>
         )
     }
 

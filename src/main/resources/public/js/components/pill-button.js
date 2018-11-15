@@ -4,17 +4,27 @@ import PropTypes from 'prop-types';
 export default class PillButton extends React.PureComponent{
 
     state = {
-        isActive: false
+        isActive: this.props.isActive ? this.props.isActive : false
     };
+
+
+    componentWillReceiveProps(nextProps){
+        if(nextProps.isActive){
+           this.setState({isActive: nextProps.isActive});
+        }
+    }
 
     _handleActiveButton = () => {
         return this.state.isActive ? "btn-default-inverse": "btn-default";
     };
 
     _handleClick = () => {
-        this.setState({isActive: !this.state.isActive},() => {
-            this.props.onClick()
-        });
+        const {onClick} = this.props;
+        if(onClick) {
+            this.setState({isActive: !this.state.isActive}, () => {
+                onClick()
+            });
+        }
     };
 
     render(){
@@ -32,4 +42,5 @@ export default class PillButton extends React.PureComponent{
 PillButton.propTypes = {
     onClick: PropTypes.func,
     text: PropTypes.string,
+    isActive: PropTypes.bool
 };

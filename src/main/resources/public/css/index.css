@@ -27,6 +27,7 @@
 @import 'components/forms/organization-invitation-instance.css';
 @import 'components/organization-card.css';
 @import 'components/CSVReader.css';
+@import 'components/stepper.css';
 /* Pages */
 @import 'pages/dashboard.css';
 @import 'pages/notifications.css';
