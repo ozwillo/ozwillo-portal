@@ -164,6 +164,9 @@ export default class OrganizationInvitationForm extends React.Component {
             </button>;
         const required = !(emailsFromCSV.length > 0 || email !== '');
 
+        const emailFormated = `<strong>${email}</strong>`;
+        const csvFileNameFormated = `<strong>${csvFileName}</strong>`;
+
 
         return <header className="organization-invitation-form">
             <p className={"invitation-title"}>{this.context.t("organization.desc.add-new-members")}</p>
@@ -209,11 +212,8 @@ export default class OrganizationInvitationForm extends React.Component {
                 <div className={"summarize"}>
                     <div>
                         <ul>
-                            {emailsFromCSV &&
-                            <li>
-                                {this.context.t('organization.desc.summarize-members-added', {csvFileName: csvFileName})}
-                            </li>}
-                            {email && <li>{this.context.t('organization.desc.summarize-member-added', {email: email})}</li>}
+                            {emailsFromCSV && <li dangerouslySetInnerHTML={{__html :this.context.t('organization.desc.summarize-members-added', {csvFileName: csvFileNameFormated})}}/>}
+                            {email && <li dangerouslySetInnerHTML={{__html :this.context.t('organization.desc.summarize-member-added', {email: emailFormated})}}/>}
                             {instancesSelected.length > 0 &&
                             <React.Fragment>
                                 <li>{this.context.t("organization.desc.summarize-apps-added")} :</li>

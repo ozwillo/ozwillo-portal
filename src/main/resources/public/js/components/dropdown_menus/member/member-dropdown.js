@@ -40,9 +40,11 @@ class MemberDropdown extends React.Component {
 
     componentDidMount(){
         const {instances} = this.props.organization;
-        const memberInstances = this.memberInstances(instances);
-        const memberInstancesWithoutAccess = this.getInstancesWithoutAccess(instances);
-        this.setState({memberInstances, memberInstancesWithoutAccess, instances});
+        if(instances) {
+            const memberInstances = this.memberInstances(instances);
+            const memberInstancesWithoutAccess = this.getInstancesWithoutAccess(instances);
+            this.setState({memberInstances, memberInstancesWithoutAccess, instances});
+        }
     }
 
     addAccessToInstance = async (instance) => {
