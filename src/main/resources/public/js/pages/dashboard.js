@@ -266,6 +266,13 @@ const Dashboard = withRouter(createClass({
     render: function () {
         return (
             <section id="dashboard" className="flex-col">
+                <div className="alert alert-danger" role="alert" style={{ 'textAlign': 'center', 'fontWeight':'bold', 'fontSize': '1.2em'}}>
+                    <span>Chers adhérents du SICTIAM, votre portail de services fait peau neuve et a déménagé à une nouvelle
+                        adresse.</span><br/>
+                    <span>Vous pouvez dès maintenant vous y connecter avec vos identifiants habituels et y retrouver toutes vos
+                        applications.</span><br/>
+                    <div style={{ 'marginTop': '0.5em'}}><a href="https://services.sictiam.fr/my">Je veux découvrir mon nouveau portail !</a></div>
+                </div>
                 <DashList
                     loading={this.state.loadingDashboards}
                     dashboards={this.state.dashboards}
