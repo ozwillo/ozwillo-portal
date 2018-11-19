@@ -65,6 +65,8 @@
     overflow: hidden;
     width: 130px;
     height: 100%;
+    min-height:10em;
+    max-height:10em;
     border-radius: 3px;
     text-align: center;
     padding: 10px;
@@ -99,9 +101,10 @@
 
 
 #dashboard .appzone .dropzone.dragover .app,
-#dashboard .appzone .app:hover {
+#dashboard .appzone .app:hover,
+#dashboard .appzone .app.pending:hover{
     color: var(--primary-color);
-    background-color: #FFF;
+    background-color: var(--gray-color);
 }
 
 #dashboard .appzone {
@@ -109,8 +112,7 @@
 }
 
 #dashboard .appzone .app.pending:hover {
-    color: var(--primary-color);
-    background-color: #FFF;
+    cursor: not-allowed;
 }
 
 #dashboard .appzone .app .action-icon {
