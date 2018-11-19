@@ -2,7 +2,6 @@ import customFetch, {urlBuilder} from '../util/custom-fetch';
 
 export const FETCH_ORGANIZATION_WITH_ID = 'FETCH_ORGANIZATION_WITH_ID';
 export const FETCH_USER_ORGANIZATIONS = 'FETCH_USER_ORGANIZATIONS';
-export const FETCH_CREATE_ORGANIZATION = 'FETCH_CREATE_ORGANIZATION';
 export const FETCH_UPDATE_ORGANIZATION = 'FETCH_UPDATE_ORGANIZATION';
 export const FETCH_ORGANIZATION_INFO = 'FETCH_ORGANIZATION_INFO';
 export const FETCH_ORGANIZATION_MEMBERS = 'FETCH_ORGANIZATION_MEMBERS';
@@ -19,13 +18,6 @@ const fetchUserOrganizationsAction = (organizations) => {
     return {
         type: FETCH_USER_ORGANIZATIONS,
         organizations
-    };
-};
-
-const fetchCreateOrganizationAction = (organization) => {
-    return {
-        type: FETCH_CREATE_ORGANIZATION,
-        organization
     };
 };
 
@@ -67,22 +59,6 @@ export const fetchUserOrganizations = () => {
             .then((organizations) => {
                 dispatch(fetchUserOrganizationsAction(organizations));
             });
-    };
-};
-
-export const fetchCreateOrganization = (info) => {
-    return dispatch => {
-        //Transform empty fields to null
-        Object.keys(info).forEach(key => {
-            info[key] = info[key] || null;
-        });
-
-        return customFetch('/my/api/organization', {
-            method: 'POST',
-            json: {...info}
-        }).then((org) => {
-            dispatch(fetchCreateOrganizationAction(org));
-        });
     };
 };
 

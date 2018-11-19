@@ -7,9 +7,8 @@ import OrganizationForm from '../components/forms/organization-form';
 import UpdateTitle from '../components/update-title';
 
 //Action
-import {fetchCreateOrganization} from '../actions/organization';
 import {fetchCountries} from '../actions/config';
-import {resetOrganizationFormAction} from '../actions/components/organization-form';
+import OrganizationService from "../util/organization-service";
 
 class OrganizationCreate extends React.Component {
 
@@ -26,37 +25,30 @@ class OrganizationCreate extends React.Component {
         };
 
         //bind methods
-        this.onSubmit = this.onSubmit.bind(this);
+        this._organizationService = new OrganizationService();
     }
 
     componentDidMount() {
-        this.props.resetOrganizationForm();
         this.props.fetchCountries();
     }
 
-    onSubmit(organization) {
+    onSubmit = async (organization) => {
         this.setState({isLoading: true});
-
-        this.props.fetchCreateOrganization(organization)
-            .then(() => {
-                return this.props.resetOrganizationForm();
-            })
-            .then(() => {
-                this.props.history.push('/my/organization')
-            })
-            .catch((err) => {
-                //scroll to top
-                window.scrollTo({
-                    top: 0,
-                    behavior: 'smooth'
-                });
-
-                this.setState({
-                    isLoading: false,
-                    error: err.error || 'An error has occurred.\nYour request has not been sent.'
-                });
+        try {
+            const organizationCreated = await this._organizationService.createOrganization(organization);
+            this.props.history.push(`/my/organization/${organizationCreated.id}`);
+        }catch(err){
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
             });
-    }
+
+            this.setState({
+                isLoading: false,
+                error: err.error || 'An error has occurred.\nYour request has not been sent.'
+            });
+        }
+    };
 
     render() {
         return <section className="organization-create oz-body wrapper flex-col">
@@ -82,7 +74,7 @@ class OrganizationCreate extends React.Component {
 const mapStateToProps = state => {
     return {
         countries: state.config.countries,
-        userInfo: state.userInfo
+        userInfo: state.userInfo,
     }
 };
 
@@ -90,12 +82,6 @@ const mapDispatchToProps = dispatch => {
     return {
         fetchCountries() {
             return dispatch(fetchCountries());
-        },
-        fetchCreateOrganization(organization) {
-            return dispatch(fetchCreateOrganization(organization))
-        },
-        resetOrganizationForm() {
-            return dispatch(resetOrganizationFormAction())
         }
     };
 };

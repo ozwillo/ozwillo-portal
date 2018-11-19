@@ -1,7 +1,6 @@
 import {
     FETCH_USER_ORGANIZATIONS,
     FETCH_ORGANIZATION_WITH_ID,
-    FETCH_CREATE_ORGANIZATION,
     FETCH_UPDATE_ORGANIZATION,
     FETCH_ORGANIZATION_INFO,
     FETCH_ORGANIZATION_MEMBERS
@@ -110,9 +109,6 @@ const organizationsState = (state = [], action) => {
     let nextState = Object.assign([], state);
     switch (action.type) {
         case FETCH_USER_ORGANIZATIONS:
-        case FETCH_CREATE_ORGANIZATION:
-            nextState.push(action.organization);
-            break;
         default:
             return state;
     }
@@ -124,7 +120,6 @@ export default (state = defaultState, action) => {
     let nextState = Object.assign({}, state);
     switch (action.type) {
         case FETCH_USER_ORGANIZATIONS:
-        case FETCH_CREATE_ORGANIZATION:
         case FETCH_UPDATE_ROLE_MEMBER:
         case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_ADD_INSTANCE_TO_ORG:
