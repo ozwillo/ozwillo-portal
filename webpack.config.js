@@ -63,13 +63,15 @@ const common = {
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
-                    options: {
-                        presets: ['es2015', 'react', 'stage-0',
-                            ["env", {
-                                "targets": {
-                                    "browsers": ["last 2 Chrome versions"]
-                                }
-                            }]]
+                    options:{
+                        presets: [
+                            "@babel/preset-env",
+                            "@babel/preset-react"
+                        ],
+                        plugins: [
+                            "@babel/plugin-proposal-class-properties",
+                            "macros"
+                        ]
                     }
                 }
             },
