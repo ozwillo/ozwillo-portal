@@ -94,8 +94,8 @@ public class DashboardController {
 
 
     @RequestMapping(value = "/notifications", method = GET)
-    public Map<String, Integer> getAppNotificationCounts() {
-        return notificationService.getAppNotificationCounts();
+    public Map<String, Integer> getNotificationsCountByService() {
+        return notificationService.getNotificationsCountByService();
     }
 
 }

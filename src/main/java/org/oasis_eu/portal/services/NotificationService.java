@@ -155,20 +155,12 @@ public class NotificationService {
             .collect(Collectors.toList());
     }
 
-    public Map<String, Integer> getAppNotificationCounts() {
+    public Map<String, Integer> getNotificationsCountByService() {
 
-        List<InboundNotification> inboundNotifications =
-            knNotificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+        return knNotificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
                 .stream()
-                .filter(inboundNotification -> inboundNotification.getServiceId() != null || inboundNotification.getInstanceId() != null)
-                .collect(Collectors.toList());
-
-        List<UserNotification> userNotifications = extractNotifications(RequestContextUtils.getLocale(request),
-            NotificationStatus.UNREAD, inboundNotifications);
-
-        return userNotifications.stream()
-            .filter(userNotification -> !Strings.isNullOrEmpty(userNotification.getServiceId()))
-            .collect(Collectors.groupingBy(UserNotification::getServiceId, Collectors.reducing(0, n -> 1, Integer::sum)));
+                .filter(inboundNotification -> inboundNotification.getServiceId() != null)
+                .collect(Collectors.groupingBy(InboundNotification::getServiceId, Collectors.reducing(0, n -> 1, Integer::sum)));
     }
 
     private static String getFormattedText(InboundNotification notification, Locale locale) {
