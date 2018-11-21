@@ -27,8 +27,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class OzwilloController {
-    private static final Logger logger = LoggerFactory.getLogger(OzwilloController.class);
-
 
     private final MessageSource messageSource;
 
@@ -88,7 +86,6 @@ public class OzwilloController {
 
         //Site map
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter();
-        SiteMapMenuHeader siteMapHeader = navigationService.getSiteMapHeader();
 
         //MyConfig object
         Config config = new Config();
@@ -96,7 +93,6 @@ public class OzwilloController {
         config.languages = languages;
         config.i18n = i18n;
         config.siteMapFooter = siteMapFooter;
-        config.siteMapHeader = siteMapHeader;
         config.kernelEndPoint = kernelEndPoint;
         config.accountEndPoint = accountEndPoint;
         config.opendataEndPoint = envConfig.getOpendata().getUrl();
@@ -129,13 +125,10 @@ public class OzwilloController {
         Map<String, Map<String, String>> i18n = new HashMap<>();
         i18n.put(lang, i18nMessages.getI18n_all(new Locale(lang) , messageSource));
 
-        //Site map
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter(lang);
-        SiteMapMenuHeader siteMapHeader = navigationService.getSiteMapHeader(lang);
 
         Config config = new Config();
         config.siteMapFooter = siteMapFooter;
-        config.siteMapHeader = siteMapHeader;
         config.i18n = i18n;
         return config;
     }
@@ -152,9 +145,6 @@ public class OzwilloController {
 
         @JsonProperty
         Map<Integer, List<SiteMapEntry>> siteMapFooter;
-
-        @JsonProperty
-        SiteMapMenuHeader siteMapHeader;
 
         @JsonProperty
         String kernelEndPoint;

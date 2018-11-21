@@ -90,7 +90,6 @@ confs:
       googleTag: UA-71967243-2
       home: https://www.ozwillo.com
       sitemap:
-        url_header: ${confs.ozwillo.web.home}/header.xml
         url_footer: ${confs.ozwillo.web.home}/footer.json
     kernel:
       client_id: portal

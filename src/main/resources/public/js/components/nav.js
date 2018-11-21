@@ -80,7 +80,6 @@ const mapStateToProps = state => {
     return {
         language: state.config.language,
         languages: state.config.languages,
-        siteMapHeader: state.config.currentSiteMapHeader,
         opendataEndPoint: state.config.opendataEndPoint
     };
 };

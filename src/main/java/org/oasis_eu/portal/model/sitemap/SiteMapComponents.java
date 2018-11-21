@@ -18,8 +18,6 @@ public class SiteMapComponents {
 
     private List<SiteMapMenuFooter> siteMapMenuFooter = new ArrayList<>();
 
-    private List<SiteMapMenuHeader> siteMapMenuHeader = new ArrayList<>();
-
     public String getWebsite() {
         return website;
     }
@@ -34,13 +32,5 @@ public class SiteMapComponents {
 
     public void setSiteMapMenuFooter(List<SiteMapMenuFooter> siteMapMenuFooter) {
         this.siteMapMenuFooter = siteMapMenuFooter;
-    }
-
-    public List<SiteMapMenuHeader> getSiteMapMenuHeader() {
-        return siteMapMenuHeader;
-    }
-
-    public void setSiteMapMenuHeader(List<SiteMapMenuHeader> siteMapMenuHeader) {
-        this.siteMapMenuHeader = siteMapMenuHeader;
     }
 }

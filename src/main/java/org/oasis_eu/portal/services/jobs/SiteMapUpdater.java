@@ -13,7 +13,6 @@ import org.oasis_eu.portal.services.SiteMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
@@ -37,10 +36,6 @@ public class SiteMapUpdater {
     private SiteMapService siteMapService;
 
     @Autowired
-    @Qualifier("xmlAwareRestTemplate")
-    private RestTemplate restTemplate;
-
-    @Autowired
     private EnvProperties envProperties;
 
     @Autowired
@@ -58,21 +53,19 @@ public class SiteMapUpdater {
         logger.info("Reloading site map: Header, Footer");
         //parse and create new entries for website
         initializeSiteMapComponents();
-        reloadHeader();
         reloadFooter();
     }
 
     public void initializeSiteMapComponents() {
         Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
-        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
-            String website = entry.getKey();
+        mapEnvConfig.forEach((website, envConfig) -> {
             SiteMapComponents siteMapComponents = siteMapComponentsRepository.findByWebsite(website);
             if (siteMapComponents == null) {
                 siteMapComponents = new SiteMapComponents();
                 siteMapComponents.setWebsite(website);
                 siteMapComponentsRepository.save(siteMapComponents);
             }
-        }
+        });
     }
 
     public void initializeGoogleAnalyticsTags() {
@@ -142,45 +135,18 @@ public class SiteMapUpdater {
         }
     }
 
-
-    public void reloadHeader() {
-        // Loads and updates the header from xml resource
-        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
-        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
-            EnvConfig envConfig = entry.getValue();
-            String website = entry.getKey();
-            String url_header = envConfig.getWeb().getSitemap().getUrl_header();
-
-            try {
-                List<SiteMapMenuHeader> menuset = restTemplate.getForObject(url_header, HeaderMenuSet.class).getMenuset();
-                menuset.forEach(menu -> siteMapService.updateSiteMapHeader(website, menu.getLanguage(), menu));
-                logger.debug("Header Loaded!");
-            } catch (RestClientException rce) {
-                logger.error("The Header file was not Loaded due to error: " + rce);
-            }
-        }
-
-
-    }
-
     public void reloadFooter() {
 
         Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
-        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
-            EnvConfig envConfig = entry.getValue();
-            String website = entry.getKey();
+        mapEnvConfig.forEach((website, envConfig) -> {
             String url_footer = envConfig.getWeb().getSitemap().getUrl_footer();
 
-            // Loads and updates the footer from xml resource
+            // Loads and updates the footer from JSON resource
             try {
                 RestTemplate restTemplate = new RestTemplate();
                 FooterMenuSet footerMenuSet = restTemplate.getForObject(url_footer, FooterMenuSet.class);
                 Footer footer = footerMenuSet.getFooter();
                 List<SiteMapMenuFooter> menuset = footer.getMenuset();
-                // There is an ugly thing happening here
-                // In order to replace the contact link retrieved from the CMS by our own contact link,
-                //     we manually exclude contact URLs when synchronizing footer links in our DB
-                // It should have to be dealt with when current CMS is replaced
                 menuset.forEach(siteMap -> {
                             List<SiteMapEntry> entries = siteMap.getEntries();
                             List<SiteMapEntry> filteredEntries =
@@ -196,6 +162,6 @@ public class SiteMapUpdater {
             } catch (RestClientException rce) {
                 logger.error("The Footer file was not Loaded due to error: " + rce);
             }
-        }
+        });
     }
 }

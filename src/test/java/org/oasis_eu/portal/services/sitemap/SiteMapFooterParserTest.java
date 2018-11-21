@@ -2,17 +2,14 @@ package org.oasis_eu.portal.services.sitemap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
-import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-import java.io.InputStream;
 import java.util.List;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.oasis_eu.portal.dao.SiteMapRepository;
+import org.oasis_eu.portal.dao.SiteMapComponentsRepository;
 import org.oasis_eu.portal.model.sitemap.FooterMenuSet;
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuFooter;
@@ -23,16 +20,12 @@ import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.io.ResourceLoader;
-import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
-import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
 /**
  * User: schambon
@@ -47,7 +40,7 @@ public class SiteMapFooterParserTest {
 	private String sitemapUrl;
 
 	@Autowired
-	private SiteMapRepository repository;
+	private SiteMapComponentsRepository siteMapComponentsRepository;
 
 	@Autowired
 	private SiteMapService siteMapService;
@@ -56,9 +49,14 @@ public class SiteMapFooterParserTest {
 	private SiteMapUpdater siteMapUpdater;
 
 	@Before
-	public void clean() {
-		repository.deleteAll();
+	public void init() {
+		siteMapUpdater.initializeSiteMapComponents();
     }
+
+    @After
+	public void clean() {
+		siteMapComponentsRepository.deleteAll();
+	}
 
 	@Test
 	@DirtiesContext

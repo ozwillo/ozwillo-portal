@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuHeader;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -43,13 +42,4 @@ public class MyNavigationService {
 
         return siteMapEntries.stream().collect(Collectors.groupingBy(SiteMapEntry::getRow));
     }
-
-    public SiteMapMenuHeader getSiteMapHeader() {
-        return siteMapService.getSiteMapHeader(envPropertiesService.sanitizedDomaineName(httpRequest.getServerName()), RequestContextUtils.getLocale(httpRequest).getLanguage());
-    }
-
-    public SiteMapMenuHeader getSiteMapHeader(String language) {
-        return siteMapService.getSiteMapHeader(envPropertiesService.sanitizedDomaineName(httpRequest.getServerName()), language);
-    }
-
 }
