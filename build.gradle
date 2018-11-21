@@ -33,7 +33,7 @@ node {
 
 repositories {
     mavenCentral()
-    mavenLocal()
+    maven { url 'https://jitpack.io' }
 }
 
 dependencies {
@@ -52,8 +52,7 @@ dependencies {
     compile('org.apache.httpcomponents:httpclient')
     compile('org.apache.httpcomponents:httpcore')
     compile('org.apache.commons:commons-csv:1.5')
-
-    compile('com.ozwillo:ozwillo-java-spring-integration:1.25.8')
+    compile('com.github.ozwillo:ozwillo-java-spring-integration:1.26.0')
 
     compile 'io.projectreactor:reactor-core'
 
@@ -62,8 +61,6 @@ dependencies {
     compile('de.javakaffee.msm:memcached-session-manager-tc8:2.1.1')
     compile('org.apache.tika:tika-core:1.16')
 
-    // java.mail API replacement (Apache 2.0 License)
-    compile('org.apache.geronimo.javamail:geronimo-javamail_1.4_mail:1.8.4')
     compile('org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.1')
 
     testCompile('org.springframework.boot:spring-boot-starter-test')

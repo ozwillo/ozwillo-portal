@@ -3,14 +3,6 @@ spring:
   # only for 64x64 pngs which should be mostly below 5000B
   data.mongodb.uri: mongodb://localhost/portal_test
   servlet.multipart.max-file-size: 20KB
-  mail:
-    host: smtp.mydomain.eu
-    port: 25
-    protocol: smtp
-    properties:
-      mail.smtp:
-        auth: false
-        starttls.enable: true
 
 server:
   compression.enabled: true
@@ -136,16 +128,6 @@ datacore:
 opendata:
   url: https://opendata-preprod.data-ozwillo.org
 
-mail:
-  contact:
-    from: Contact Ozwillo <contact@mydomain.eu>
-    to: contact@mydomain.eu
-
 cache:
   hosts:
     - 127.0.0.1
-
-captcha:
-  url: https://www.google.com/recaptcha/api/siteverify
-  secret: changeit #The shared key between portal and google reCAPTCHA
-  sitekey: changeit

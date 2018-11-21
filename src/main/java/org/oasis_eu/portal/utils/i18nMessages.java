@@ -27,11 +27,6 @@ public final class i18nMessages {
     private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "organization", "create", "confirm-delete-dash",
         "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
 
-    private static final List<String> contactKeys = Arrays.asList("title", "form.copy-to-sender",
-        "form.motive", "form.motive.question", "form.motive.feedback", "form.motive.application-problem",
-        "form.motive.other-problem", "form.motive.other", "form.subject", "form.body", "form-sent", "technical-problem",
-        "form.captcha");
-
     private static final List<String> searchOrganization = Arrays.asList("search-organization", "title", "country", "legal-name", "business-id.fr", "business-id.it",
         "business-id.es", "business-id.bg", "business-id.tr", "business-id.en", "sector-type", "sector-type.PUBLIC_BODY", "sector-type.COMPANY",
         "selection.new", "selection.existing", "cannot-be-used", "technical-problem");
@@ -112,7 +107,6 @@ public final class i18nMessages {
 
         i18n.putAll(i18nMessages.getI18n_i18keys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_generickeys(locale, messageSource));
-        i18n.putAll(i18nMessages.getI18nContactKeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18nDashboardKeys(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_searchOrganization(locale, messageSource));
         i18n.putAll(i18nMessages.getI18n_createOrModifyOrganization(locale, messageSource));
@@ -140,15 +134,6 @@ public final class i18nMessages {
 
     public static Map<String, String> getI18n_generickeys(Locale locale, MessageSource messageSource) {
         return (generickeys.stream().collect(Collectors.toMap(k -> "ui." + k, k -> messageSource.getMessage("ui." + k, new Object[]{}, locale))));
-    }
-
-    public static Map<String, String> getI18nContactKeys(Locale locale, MessageSource messageSource) {
-        Map<String, String> i18n = new HashMap<>();
-        i18n.putAll(contactKeys.stream().collect(Collectors.toMap(k -> "contact." + k,
-            k -> messageSource.getMessage("contact." + k, new Object[]{}, locale))));
-        // because there is some magic done with keys prefixes, manually add footer.contact key
-        i18n.put("footer.contact", messageSource.getMessage("footer.contact", new Object[]{}, locale));
-        return i18n;
     }
 
     public static Map<String, String> getI18nDashboardKeys(Locale locale, MessageSource messageSource) {
