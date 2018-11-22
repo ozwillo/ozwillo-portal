@@ -1,35 +1,30 @@
 package org.oasis_eu.portal.controller;
 
-import org.oasis_eu.portal.config.environnements.EnvProperties;
-import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
-import org.oasis_eu.portal.services.EnvPropertiesService;
+import org.oasis_eu.portal.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpRequest;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-
-import javax.servlet.http.HttpServletRequest;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 
-    @Autowired
-    private EnvPropertiesService envPropertiesService;
+    private final UserService userService;
 
     @Autowired
-    private HttpServletRequest request;
+    public HomeController(UserService userService) {
+        this.userService = userService;
+    }
 
-    @RequestMapping("/")
-    public ResponseEntity<?> index() {
-        EnvConfig envConfig = envPropertiesService.getConfig(request.getServerName());
-        HttpHeaders headers = new HttpHeaders();
-        // Let the website handle the display language based on which he knows and our browsing preferences
-        headers.add("Location", envConfig.getWeb().getHome());
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/my";
+    }
 
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+    @GetMapping("/my")
+    public String show() {
+        if (userService.requiresLogout()) {
+            return "redirect:/logout";
+        }
+        return "forward:/index.html";
     }
 }
