@@ -52,7 +52,7 @@ dependencies {
     compile('org.apache.httpcomponents:httpclient')
     compile('org.apache.httpcomponents:httpcore')
     compile('org.apache.commons:commons-csv:1.5')
-    compile('com.github.ozwillo:ozwillo-java-spring-integration:1.26.0')
+    compile('com.github.ozwillo:ozwillo-java-spring-integration:1.26.2')
 
     compile 'io.projectreactor:reactor-core'
 

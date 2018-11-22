@@ -5,6 +5,7 @@ public class KernelEnv {
     private String client_id;
     private String client_secret;
     private String callback_uri;
+    private String post_logout_redirect_uri;
     private String home_uri;
 
     public String getClient_id() {
@@ -29,6 +30,14 @@ public class KernelEnv {
 
     public void setCallback_uri(String callback_uri) {
         this.callback_uri = callback_uri;
+    }
+
+    public String getPost_logout_redirect_uri() {
+        return post_logout_redirect_uri;
+    }
+
+    public void setPost_logout_redirect_uri(String post_logout_redirect_uri) {
+        this.post_logout_redirect_uri = post_logout_redirect_uri;
     }
 
     public String getHome_uri() {

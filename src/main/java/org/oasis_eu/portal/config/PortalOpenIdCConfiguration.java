@@ -5,11 +5,6 @@ import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.spring.kernel.security.StaticOpenIdCConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.context.request.RequestAttributes;
-import org.springframework.web.context.request.RequestContextHolder;
-import org.springframework.web.context.request.ServletRequestAttributes;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * User: schambon
@@ -65,6 +60,15 @@ public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
     }
 
     @Override
+    public String getPostLogoutRedirectUri() {
+        EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
+        if (envConfig != null) {
+            return envConfig.getKernel().getPost_logout_redirect_uri();
+        }
+        return null;
+    }
+
+    @Override
     public String getHomeUri() {
         EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
         if (envConfig != null) {
@@ -72,9 +76,4 @@ public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
         }
         return null;
     }
-
-
-
-
-
 }
