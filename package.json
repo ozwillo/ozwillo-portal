@@ -75,7 +75,6 @@
     "react-autosuggest": "^9.3.4",
     "react-datepicker": "^1.5.0",
     "react-dom": "^16.4.2",
-    "react-grecaptcha": "^1.2.5",
     "react-rating": "^0.9.1",
     "react-redux": "^5.0.7",
     "react-router": "^4.3.1",
