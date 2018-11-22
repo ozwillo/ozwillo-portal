@@ -33,6 +33,8 @@ node {
 
 repositories {
     mavenCentral()
+    // uncomment this when locally developing on ozwillo-java-spring-integration lib
+    // mavenLocal()
     maven { url 'https://jitpack.io' }
 }
 
@@ -53,6 +55,8 @@ dependencies {
     compile('org.apache.httpcomponents:httpcore')
     compile('org.apache.commons:commons-csv:1.5')
     compile('com.github.ozwillo:ozwillo-java-spring-integration:1.26.2')
+    // uncomment this when locally developing on ozwillo-java-spring-integration lib
+    // compile('com.ozwillo:ozwillo-java-spring-integration:1.26.2')
 
     compile 'io.projectreactor:reactor-core'
 
