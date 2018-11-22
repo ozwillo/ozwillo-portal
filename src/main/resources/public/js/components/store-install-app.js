@@ -13,12 +13,11 @@ const converter = new Showdown.Converter({tables: true});
 import {Modal} from './bootstrap-react';
 import {RatingWrapper} from './rating';
 import customFetch from '../util/custom-fetch';
+import { i18n } from "../app.js"
+
 
 class AppModal extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -132,7 +131,7 @@ class AppModal extends React.Component {
     }
 
     renderBuying() {
-        return (<h3><i className="fa fa-spinner fa-spin loading"/> {this.context.t('buying')}</h3>);
+        return (<h3><i className="fa fa-spinner fa-spin loading"/> {i18n._('buying')}</h3>);
     }
 
     renderInstallingForm() {
@@ -157,20 +156,20 @@ class AppModal extends React.Component {
                 <div className='form-horizontal'>
                     <i id="success-app-install" className="fa fa-check pull-left col-sm-offset-1"></i>
                     <div className='form-group'>
-                        <h5 className="col-sm-offset-2">{this.context.t('install.org.success-msg-1')}</h5><br/>
+                        <h5 className="col-sm-offset-2">{i18n._('install.org.success-msg-1')}</h5><br/>
                     </div>
                     {!this.props.app.paid ? '' :
                         <div className='form-group'>
-                            <h5 className="col-sm-offset-2">{this.context.t('install.org.success-msg-2')}</h5><br/>
+                            <h5 className="col-sm-offset-2">{i18n._('install.org.success-msg-2')}</h5><br/>
                         </div>
                     }
                     {this.state.installType === 'PERSONAL' ? '' :
                         <div className='form-group'>
-                            <h5 className="col-sm-offset-2">{this.context.t('install.org.success-msg-3')}</h5><br/>
+                            <h5 className="col-sm-offset-2">{i18n._('install.org.success-msg-3')}</h5><br/>
                         </div>
                     }
                     <div className='form-group'>
-                        <h5 className="col-sm-offset-2">{this.context.t('install.org.success-msg-4')}</h5><br/>
+                        <h5 className="col-sm-offset-2">{i18n._('install.org.success-msg-4')}</h5><br/>
                     </div>
                 </div>
             </div>
@@ -195,9 +194,9 @@ class AppModal extends React.Component {
                 <Modal ref="modal" large={true} infobox={true} title={title} cancelHandler={this.close}>
                     {content}
                 </Modal>
-                <Modal ref="modalError" title={this.context.t('ui.something_went_wrong_title')} infobox={true}
+                <Modal ref="modalError" title={i18n._('ui.something_went_wrong_title')} infobox={true}
                        cancelHandler={null}>
-                    <div><h5>{this.context.t('search.organization.cannot-be-used')}</h5></div>
+                    <div><h5>{i18n._('search.organization.cannot-be-used')}</h5></div>
                 </Modal>
             </div>);
     }
@@ -214,21 +213,21 @@ const AppDescriptionComponent = createClass({
         if(status &&  http_status){
             let message = '';
             if(http_status.toString().startsWith('4')) {
-                message = this.context.t('could-not-install-app-400')
+                message = i18n._('could-not-install-app-400')
             }else if(http_status.toString().startsWith('5')){
-                message = this.context.t('could-not-install-app-500')
+                message = i18n._('could-not-install-app-500')
             }else{
-                message = this.context.t('could-not-install-app')
+                message = i18n._('could-not-install-app')
             }
 
             return (
                 <div className="alert alert-danger alert-dismissible" role="alert">
                     <button type="button" className="close" data-dismiss="alert">
                         <span aria-hidden="true">&times;</span>
-                        <span className="sr-only">{this.context.t('ui.close')}</span>
+                        <span className="sr-only">{i18n._('ui.close')}</span>
                     </button>
-                    <strong>{this.context.t('sorry')}</strong>
-                    &nbsp;{message +' ('+ this.context.t('error-code')+' : ' + http_status+')'}
+                    <strong>{i18n._('sorry')}</strong>
+                    &nbsp;{message +' ('+ i18n._('error-code')+' : ' + http_status+')'}
                 </div>
             )
         }
@@ -249,7 +248,7 @@ const AppDescriptionComponent = createClass({
         let rateInfo = null;
         const isLogged = !!this.props.userInfo.sub;
         if (isLogged && !stateApp.rateable) {
-            rateInfo = (<p>{this.context.t('already-rated')}</p>);
+            rateInfo = (<p>{i18n._('already-rated')}</p>);
         }
 
         const description = converter.makeHtml(stateApp.longdescription);
@@ -260,7 +259,7 @@ const AppDescriptionComponent = createClass({
             if (this.props.stateApp && this.props.stateApp.serviceUrl) {
                 launchOrInstallButton =
                     <a className="btn btn-default btn-lg pull-right" href={this.props.stateApp.serviceUrl}
-                       target="_new">{this.context.t('launch')}</a>;
+                       target="_new">{i18n._('launch')}</a>;
             } else {
                 launchOrInstallButton = (<label> <i className="fa fa-spinner fa-spin loading"/> </label>);
             }
@@ -268,9 +267,9 @@ const AppDescriptionComponent = createClass({
             const storeUrl = `/${this.props.config.language}/store`;
             launchOrInstallButton = !isLogged
                 ? (<a className="btn btn-default btn-lg pull-right"
-                      href={storeUrl + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{this.context.t('install')}</a>)
+                      href={storeUrl + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{i18n._('install')}</a>)
                 : (<button type="button" className="btn btn-default btn-lg pull-right"
-                           onClick={this.props.onInstallButton}>{this.context.t('install')}</button>)
+                           onClick={this.props.onInstallButton}>{i18n._('install')}</button>)
         }
 
         return (
@@ -281,7 +280,7 @@ const AppDescriptionComponent = createClass({
                     </div>
                     <div className="col-sm-7">
                         <div>
-                            <p>{this.context.t('by')} {this.props.app.provider}</p>
+                            <p>{i18n._('by')} {this.props.app.provider}</p>
                             <RatingWrapper rating={stateApp.rating} appId={this.props.app.id}
                                            rateable={stateApp.rateable} rate={this.props.rateApp}/>
                             {rateInfo}
@@ -301,12 +300,12 @@ const AppDescriptionComponent = createClass({
                 <div className="row">
                     <div className="col-sm-12">
                         <div className="app-tos">
-                            <p>{this.context.t('agree-to-tos')}</p>
+                            <p>{i18n._('agree-to-tos')}</p>
                             <p>
-                                <a href={stateApp.tos} target="_new">{this.context.t('tos')}</a>
+                                <a href={stateApp.tos} target="_new">{i18n._('tos')}</a>
                             </p>
                             <p>
-                                <a href={stateApp.policy} target="_new">{this.context.t('privacy')}</a>
+                                <a href={stateApp.policy} target="_new">{i18n._('privacy')}</a>
                             </p>
                         </div>
                     </div>
@@ -315,9 +314,9 @@ const AppDescriptionComponent = createClass({
         );
     }
 });
-AppDescriptionComponent.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
+
+
 const mapStateToProps = state => {
     return {
         config: state.config,
@@ -369,7 +368,7 @@ const InstallForm = createClass({
             : (<div className='radio col-sm-offset-3 col-sm-8'>
                     <label>
                         <input type="radio" value="PERSONAL" checked={installType === 'PERSONAL'}
-                               onChange={this.toggleType}/>{this.context.t('install.org.type.PERSONAL')}
+                               onChange={this.toggleType}/>{i18n._('install.org.type.PERSONAL')}
                     </label>
                 </div>
             );
@@ -379,14 +378,14 @@ const InstallForm = createClass({
             : (<div className='radio col-sm-offset-3 col-sm-8'>
                     <label>
                         <input type="radio" value="ORG" checked={installType === 'ORG'}
-                               onChange={this.toggleType}/>{this.context.t('install.org.type.ORG')}
+                               onChange={this.toggleType}/>{i18n._('install.org.type.ORG')}
                     </label>
                 </div>
             );
 
         return (
             <div>
-                <h4>{this.context.t('choose-install-type')}</h4>
+                <h4>{i18n._('choose-install-type')}</h4>
                 <div className="form-group">
                     {personal}
                     {org}
@@ -414,7 +413,7 @@ const InstallForm = createClass({
                 {(installType === 'PERSONAL') || (this.props.app.type === "service")
                     ? (<div className="next">
                             <button className="btn btn-default pull-right"
-                                    onClick={this.validateAndContinue}>{this.context.t('ui.next')}</button>
+                                    onClick={this.validateAndContinue}>{i18n._('ui.next')}</button>
                         </div>
                     )
                     : (<div>
@@ -423,7 +422,7 @@ const InstallForm = createClass({
                                                   isOnlyForCitizens={this.isOnlyForCitizens}/>
                         <div className="next">
                             <button className="btn btn-default pull-right"
-                                    onClick={this.validateAndContinue}>{this.context.t('ui.next')}</button>
+                                    onClick={this.validateAndContinue}>{i18n._('ui.next')}</button>
                         </div>
                     </div>)
                 }
@@ -432,9 +431,6 @@ const InstallForm = createClass({
     }
 });
 
-InstallForm.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 /** PROPS: app{}, orgs[], url, isOnlyForCitizens() */
 const SetOrganizationComponent = createClass({
@@ -458,7 +454,7 @@ const SetOrganizationComponent = createClass({
 
         return (
             <div className={formGroupClass}>
-                {this.renderLabel('organization', this.context.t('search.organization.title'), true)}
+                {this.renderLabel('organization', i18n._('search.organization.title'), true)}
                 <div className="col-sm-8">
                     <select id="organization" className="col-sm-8 form-control"
                             onChange={(event) => this.setState({ selectedOrgId: event.target.value })}
@@ -492,9 +488,7 @@ const SetOrganizationComponent = createClass({
         );
     }
 });
-SetOrganizationComponent.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 //END NEW INSTALL PROCESS
 
 /** PROPS: images */

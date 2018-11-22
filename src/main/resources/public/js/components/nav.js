@@ -51,14 +51,14 @@ class Nav extends React.Component {
                         </li>
                         <li className="menu dropdown">
                             <a href="#" className="link nav-link dropdown-toggle" data-toggle="dropdown">
-                                <span>{this.context.t(`store.language.${this.props.language}`)}</span>
+                                <span>{i18n._(`store.language.${this.props.language}`)}</span>
                                 <i className="caret"/>
                             </a>
                             <ul className="dropdown-menu">
                                 <li className="menu">
                                     {
                                         this.props.languages && this.props.languages.map((lang, index) => {
-                                            return <Link className="link" key={index} to={`/${lang}/store`}>{this.context.t(`store.language.${lang}`)}</Link>
+                                            return <Link className="link" key={index} to={`/${lang}/store`}>{i18n._(`store.language.${lang}`)}</Link>
                                         })
                                     }
                                 </li>

@@ -26,15 +26,9 @@ export const fetchConfig = () => {
     return (dispatch) => {
         return customFetch('/api/config')
             .then((res) => {
-                console.warn('config');
                 //Config
                 dispatch(fetchConfigAction(res));
 
-                // Language
-                // dispatch(setLanguage(res.language));
-
-                // dispatch(setLanguageAction(res.language));
-                // /dispatch(setTranslations(res.i18n));
                 i18n.activate(res.language);
             })
     };
@@ -74,7 +68,7 @@ export const fetchSetLanguage= (language) => {
                 //i18n-redux
                 dispatch(setLanguage(language));
                 dispatch(setLanguageAction(language));
-                dispatch(setTranslations(i18n, {preserveExisting: true}));
+                i18n.activate(language);
             });
     };
 };

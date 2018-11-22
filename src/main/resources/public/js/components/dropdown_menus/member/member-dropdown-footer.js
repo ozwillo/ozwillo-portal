@@ -3,17 +3,14 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import { DropdownBlockError, DropdownBlockSuccess } from '../../notification-messages';
-
+import { i18n } from "../../../app.js"
+import { t } from "@lingui/macro"
 
 class MemberDropdownFooter extends React.Component {
 
     static propTypes = {
         instances: PropTypes.array.isRequired,
         onAddAccessToInstance: PropTypes.func.isRequired
-    };
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired,
     };
 
     constructor(props) {
@@ -70,7 +67,7 @@ class MemberDropdownFooter extends React.Component {
                 <div className="flex-row end">
                     <button type="submit" className="btn btn-submit">
                         {
-                            !this.state.isLoading && this.context.t('ui.add')
+                            !this.state.isLoading && i18n._(t`ui.add`)
                         }
                         {
                             this.state.isLoading &&

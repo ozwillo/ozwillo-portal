@@ -9,7 +9,6 @@ import org.oasis_eu.portal.model.sitemap.*;
 import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.MyNavigationService;
-import org.oasis_eu.portal.utils.i18nMessages;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,8 +74,6 @@ public class OzwilloController {
         EnvConfig envConfig = envPropertiesService.getConfig();
         // i18n
         Locale locale = RequestContextUtils.getLocale(request);
-        Map<String, Map<String, String>> i18n = new HashMap<>();
-        i18n.put(locale.getLanguage(), i18nMessages.getI18n_all(locale, messageSource));
 
         List<String> languages = Arrays.stream(Languages.values())
                 .map(l -> l.getLocale().getLanguage()).collect(Collectors.toList());
@@ -88,7 +85,6 @@ public class OzwilloController {
         Config config = new Config();
         config.language = locale.getLanguage();
         config.languages = languages;
-        config.i18n = i18n;
         config.siteMapFooter = siteMapFooter;
         config.kernelEndPoint = kernelEndPoint;
         config.accountEndPoint = accountEndPoint;
@@ -119,14 +115,11 @@ public class OzwilloController {
 
     @GetMapping("/config/language/{lang}")
     public Config getLanguage(@PathVariable String lang) throws JsonProcessingException {
-        Map<String, Map<String, String>> i18n = new HashMap<>();
-        i18n.put(lang, i18nMessages.getI18n_all(new Locale(lang) , messageSource));
-
+        //Site map
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter(lang);
 
         Config config = new Config();
         config.siteMapFooter = siteMapFooter;
-        config.i18n = i18n;
         return config;
     }
 
@@ -136,9 +129,6 @@ public class OzwilloController {
 
         @JsonProperty
         List<String> languages;
-
-        @JsonProperty
-        Map<String, Map<String, String>> i18n;
 
         @JsonProperty
         Map<Integer, List<SiteMapEntry>> siteMapFooter;

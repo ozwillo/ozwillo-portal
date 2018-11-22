@@ -4,17 +4,14 @@ import PropTypes from 'prop-types';
 import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
-import CustomTooltip from "../custom-tooltip";
+import { i18n } from "../../app.js"
+
 import OrganizationInvitationInstances from "./organization-invitation-instances";
 import Stepper from "../stepper";
 import PillButton from "../pill-button";
 import InstanceService from "../../util/instance-service";
 
 export default class OrganizationInvitationForm extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -66,7 +63,7 @@ export default class OrganizationInvitationForm extends React.Component {
             this._removeAlreadyPresentMembers(emailArray);
             const response = await this._organizationService.inviteMultipleUsers(this.props.organization.id, emailArray);
             this.setState({
-                success: this.context.t('ui.request.send'),
+                success: i18n._('ui.request.send'),
                 error: ''
             });
             this.props.callBackMembersInvited(response);
@@ -125,7 +122,7 @@ export default class OrganizationInvitationForm extends React.Component {
                     this._addMembersToInstances([res.email]);
                     this.props.callBackMembersInvited(res);
                     this.setState({
-                        success: this.context.t('ui.request.send')
+                        success: i18n._('ui.request.send')
                     });
                     this._resetForm();
                 })
@@ -158,7 +155,7 @@ export default class OrganizationInvitationForm extends React.Component {
         const submitButton =
             <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}
                     onClick={this.onSubmit}>
-                {this.context.t('my.network.invite-user')}
+                {i18n._('my.network.invite-user')}
             </button>;
         const required = !(emailsFromCSV.length > 0 || email !== '');
 
@@ -167,7 +164,7 @@ export default class OrganizationInvitationForm extends React.Component {
 
 
         return <header className="organization-invitation-form">
-            <p className={"invitation-title"}>{this.context.t("organization.desc.add-new-members")}</p>
+            <p className={"invitation-title"}>{i18n._("organization.desc.add-new-members")}</p>
 
             <Stepper activeStep={activeStep} nbSteps={3} onClickStep={(activeStep) => this._handleStep(activeStep)}/>
 
@@ -177,12 +174,12 @@ export default class OrganizationInvitationForm extends React.Component {
                 <div>
                     <div className={"organization-form-sentence sentence"}>
                         {/*email input*/}
-                        <p>{this.context.t("organization.desc.from-email")}</p>
+                        <p>{i18n._("organization.desc.from-email")}</p>
                         <input required={required} name="email" type="email"
                                className="field form-control no-auto"
                                onChange={this.handleChange} value={this.state.email}/>
                         {/*CSV INPUT*/}
-                        <p>{this.context.t("organization.desc.from-CSV")}*</p>
+                        <p>{i18n._("organization.desc.from-CSV")}*</p>
                         <CSVReader
                             fileName={csvFileName}
                             required={required}
@@ -258,6 +255,9 @@ export default class OrganizationInvitationForm extends React.Component {
                         <i className="fa fa-spinner fa-spin action-icon"/>
                     </div>
                     }
+                </div>
+                <div className={"organization-form-sentence"}>
+                    <p className={"helper-text"}>(*)&nbsp;{i18n._("organization.desc.CSV-helper")}.</p>
                 </div>
             }
 

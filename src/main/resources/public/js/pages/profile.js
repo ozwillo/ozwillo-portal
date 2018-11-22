@@ -23,6 +23,9 @@ import UpdateTitle from '../components/update-title';
 import customFetch from "../util/custom-fetch";
 import { DropdownBlockSuccess } from '../components/notification-messages';
 
+import { i18n } from "../app.js"
+import { t } from "@lingui/macro"
+
 class Profile extends React.Component {
     state = {
         userProfile: {
@@ -43,9 +46,6 @@ class Profile extends React.Component {
         franceConnectEnabled: false
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     componentDidMount() {
         customFetch('/my/api/profile').then(data => this.setState(data));
@@ -94,7 +94,7 @@ class Profile extends React.Component {
         return (
             <section id="profile">
                 <header className="title">
-                    <span>{this.context.t('my.profile')}</span>
+                    <span>{i18n._(t`my.profile`)}</span>
                 </header>
                 <section className="box">
                     <Form id="account" onSubmit={this.onSubmit.bind(this)}>
@@ -110,9 +110,9 @@ class Profile extends React.Component {
                                         onValueChange={this.onValueChange.bind(this)}
                                         voluntaryClaims={voluntaryClaims}
                                         essentialClaims={essentialClaims} />
-                        <SubmitButton label={this.context.t('ui.save')} className="btn-lg"/>
+                        <SubmitButton label={i18n._(t`ui.save`)} className="btn-lg"/>
                         {renderIf(this.state.updateSucceeded)(
-                            <DropdownBlockSuccess successMessage={this.context.t('my.profile.account.update')}/>
+                            <DropdownBlockSuccess successMessage={i18n._(t`my.profile.account.update`)}/>
                         )}
                     </Form>
                 </section>
@@ -147,9 +147,6 @@ class ProfileAccount extends React.Component {
         essentialClaims: []
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -169,7 +166,7 @@ class ProfileAccount extends React.Component {
     createOptions(languages) {
         const options = [];
         languages.forEach((lang) => {
-            const label = this.context.t(`my.profile.account.language.${lang}`);
+            const label = i18n._(t`my.profile.account.language.${lang}`);
             options.push({value: lang, label})
         });
 
@@ -185,11 +182,11 @@ class ProfileAccount extends React.Component {
         return (
             <ConditionalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} fields={['nickname']}>
                 <fieldset className="oz-fieldset">
-                    <legend className="oz-legend">{this.context.t('my.profile.title.account')}</legend>
+                    <legend className="oz-legend">{i18n._(t`my.profile.title.account`)}</legend>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}>
                         <div className="flex-row">
                             <Label className="label" required>
-                                {this.context.t('my.profile.account.email')}
+                                {i18n._(t`my.profile.account.email`)}
                             </Label>
                             <span className="field">{this.props.userProfile.email_address}</span>
                         </div>
@@ -199,7 +196,7 @@ class ProfileAccount extends React.Component {
                         <InputText name="nickname" value={this.props.userProfile.nickname} 
                                 isRequired={conditionalClaimsRequired('nickname', true, essentialClaims)}
                                 onChange={e => this.props.onValueChange('nickname', e.target.value)}
-                                label={this.context.t('my.profile.personal.nickname')}/>
+                                label={i18n._(t`my.profile.personal.nickname`)}/>
                     </ConditionalClaimsField>
 
                     {/*<LanguageSelector value={this.props.userProfile.locale} languages={this.props.languages}
@@ -207,7 +204,7 @@ class ProfileAccount extends React.Component {
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}>
                         <div className="flex-row">
                             <Label htmlFor="language" className="label" required>
-                                {this.context.t('my.profile.account.language')}
+                                {i18n._(t`my.profile.account.language`)}
                             </Label>
                             <Select className="select field" value={this.props.userProfile.locale}
                                     onChange={this.handleSelectChange} placeholder=""
@@ -232,9 +229,6 @@ class IdentityAccount extends React.Component {
         essentialClaims: []
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     handleChange(date) {
         this.props.onValueChange('birthdate', moment(date).utc());
@@ -249,31 +243,31 @@ class IdentityAccount extends React.Component {
             <ConditionalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims}
                     fields={['given_name', 'middle_name', 'family_name', 'birthdate', 'phone_number', 'gender']}>
                 <fieldset className="oz-fieldset">
-                    <legend className="oz-legend">{this.context.t('my.profile.personal.identity')}</legend>
+                    <legend className="oz-legend">{i18n._(t`my.profile.personal.identity`)}</legend>
 
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='given_name'>
                         <InputText name="given_name" value={this.props.userProfile.given_name}
                                 isRequired={conditionalClaimsRequired('given_name', false, essentialClaims)}
                                 onChange={e => this.props.onValueChange('given_name', e.target.value)}
-                                label={this.context.t('my.profile.personal.firstname')}
+                                label={i18n._(t`my.profile.personal.firstname`)}
                                 disabled={this.props.userProfile.franceconnect_sub} />
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='middle_name'>
                         <InputText name="middle_name" value={this.props.userProfile.middle_name}
                                 isRequired={conditionalClaimsRequired('middle_name', false, essentialClaims)}
-                                label={this.context.t('my.profile.personal.middlename')}
+                                label={i18n._(t`my.profile.personal.middlename`)}
                                 onChange={e => this.props.onValueChange('middle_name', e.target.value)}
                                 disabled={this.props.userProfile.franceconnect_sub} />
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='family_name'>
                         <InputText name="family_name" value={this.props.userProfile.family_name}
                                 isRequired={conditionalClaimsRequired('family_name', false, essentialClaims)}
-                                label={this.context.t('my.profile.personal.lastname')}
+                                label={i18n._(t`my.profile.personal.lastname`)}
                                 onChange={e => this.props.onValueChange('family_name', e.target.value)}
                                 disabled={this.props.userProfile.franceconnect_sub} />
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='birthdate'>
-                        <InputDatePicker name="birthdate" label={this.context.t('my.profile.personal.birthdate')}
+                        <InputDatePicker name="birthdate" label={i18n._(t`my.profile.personal.birthdate`)}
                                 required={conditionalClaimsRequired('birthdate', false, essentialClaims)}
                                 onChange={this.handleChange.bind(this)} onSubmit={this.handleChange.bind(this)}
                                 value={birthdate} dropdownMode="select"
@@ -282,7 +276,7 @@ class IdentityAccount extends React.Component {
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='phone_number'>
                         <InputText name="phone_number" value={this.props.userProfile.phone_number}
                                 isRequired={conditionalClaimsRequired('phone_number', false, essentialClaims)}
-                                label={this.context.t('my.profile.personal.phonenumber')}
+                                label={i18n._(t`my.profile.personal.phonenumber`)}
                                 onChange={e => this.props.onValueChange('phone_number', e.target.value)}/>
                     </ConditionalClaimsField>
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='gender'>
@@ -307,10 +301,6 @@ class AddressAccount extends React.Component {
         address: {},
         voluntaryClaims: [],
         essentialClaims: []
-    };
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -348,7 +338,7 @@ class AddressAccount extends React.Component {
         return (
             <ConditionalClaimsForm voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} fields={['address']}>
                 <fieldset className="oz-fieldset">
-                    <legend className="oz-legend">{this.context.t('my.profile.personal.address')}</legend>
+                    <legend className="oz-legend">{i18n._(t`my.profile.personal.address`)}</legend>
                     <CountrySelector value={address.country || ''}
                             required={required}
                             onChange={this.onCountryChange}
@@ -358,28 +348,28 @@ class AddressAccount extends React.Component {
                         address.country && [
                             <div key={`${address.country}_locality`} className="flex-row">
                                 <Label className="label" required={required}>
-                                    {this.context.t('my.profile.personal.locality')}
+                                    {i18n._(t`my.profile.personal.locality`)}
                                 </Label>
                                 <GeoAreaAutosuggest name="locality"
                                                     onGeoAreaSelected={this.onGeoAreaSelected}
                                                     onChange={this.onGeoAreaChange}
                                                     countryUri={address.country || ''}
                                                     endpoint="cities"
-                                                    placeholder={this.context.t('my.profile.personal.locality')}
+                                                    placeholder={i18n._(t`my.profile.personal.locality`)}
                                                     value={address.locality || ''}/>
                             </div>,
 
                             <InputText key={`${address.country}_postal_code`} name="address.postal_code"
                                     value={address.postal_code}
                                     isRequired={required}
-                                    label={this.context.t('my.profile.personal.postalcode')}
+                                    label={i18n._(t`my.profile.personal.postalcode`)}
                                     onChange={e => this.props.onValueChange('address.postal_code', e.target.value)}
                                     disabled={true}/>,
 
                             <InputText key={`${address.country}_street_address`} name="address.street_address"
                                     value={address.street_address}
                                     isRequired={required}
-                                    label={this.context.t('my.profile.personal.streetaddress')}
+                                    label={i18n._(t`my.profile.personal.streetaddress`)}
                                     onChange={e => this.props.onValueChange('address.street_address', e.target.value)}/>
                         ]
                     }
@@ -396,22 +386,18 @@ class PasswordAccount extends React.Component {
         passwordExist: PropTypes.bool
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
     render() {
         return (
             <section className="box flex-col">
                 <header className="sub-title">
-                    {this.context.t('my.profile.account.password')}
+                    {i18n._(t`my.profile.account.password`)}
                 </header>
 
                 <div className="text-center">
                     <a href={this.props.passwordChangeEndpoint}>
                         <span className="btn btn-default">
-                            {this.props.passwordExist && this.context.t('my.profile.account.changepassword')}
-                            {!this.props.passwordExist && this.context.t('my.profile.account.createpassword')}
+                            {this.props.passwordExist && i18n._(t`my.profile.account.changepassword`)}
+                            {!this.props.passwordExist && i18n._(t`my.profile.account.createpassword`)}
                         </span>
                     </a>
                 </div>
@@ -440,13 +426,10 @@ const getConditionalClaims = (searchLocation) => {
 
 class ProfileWrapper extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     render() {
         return <section className="oz-body wrapper">
-            <UpdateTitle title={this.context.t('my.profile')}/>
+            <UpdateTitle title={i18n._(t`my.profile`)}/>
             <Profile {...this.props} />
             <div className="push"></div>
         </section>;

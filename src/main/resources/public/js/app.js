@@ -7,14 +7,22 @@ import GoogleAnalytics from "./components/google-analytics";
 import HtmlHead from './components/html-head';
 import {setupI18n} from "@lingui/core"
 
-import catalogEn from '@lingui/loader!../locales/en/messages.json'
-import catalogFr from '@lingui/loader!../locales/fr/messages.json'
+import catalogEn from '@lingui/loader!../locales/en/messages.json';
+import catalogFr from '@lingui/loader!../locales/fr/messages.json';
+import catalogEs from '@lingui/loader!../locales/es/messages.json';
+import catalogCa from '@lingui/loader!../locales/ca/messages.json';
+import catalogBg from '@lingui/loader!../locales/bg/messages.json';
+import catalogTr from '@lingui/loader!../locales/tr/messages.json';
 
 export const i18n = setupI18n();
 // mind the `en` key
 i18n.load({
     en: catalogEn,
-    fr: catalogFr
+    fr: catalogFr,
+    es: catalogEs,
+    ca: catalogCa,
+    bg: catalogBg,
+    tr: catalogTr
 });
 
 

@@ -117,7 +117,7 @@ class OrganizationSearch extends React.Component {
                         {i18n._(t`organization.search.history.description`)} :
                     </p>
                     <div className={"content-card-history"}>
-                        {/*{this._displayOrganizationsHistory()}*/}
+                        {this._displayOrganizationsHistory()}
                     </div>
                 </div>
             </section>

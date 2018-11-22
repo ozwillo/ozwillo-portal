@@ -15,6 +15,9 @@ import {fetchOrganizationWithId, fetchOrganizationInfo} from "../actions/organiz
 import {fetchApplications} from "../actions/app-store";
 import customFetch from "../util/custom-fetch";
 
+import { i18n } from "../app.js"
+import { t } from "@lingui/macro"
+
 const tabsHeaders = {
     instances: InstancesTabHeader,
     members: MembersTabHeader,
@@ -31,10 +34,6 @@ const defaultTabToDisplay = 'instances';
 
 
 class OrganizationDesc extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -146,7 +145,7 @@ class OrganizationDesc extends React.Component {
                     {
                         this.isPersonal() && <React.Fragment>
                             <header className="title">
-                                <span>{this.context.t('organization.desc.applications')}</span>
+                                <span>{i18n._(t`organization.desc.applications`)}</span>
                             </header>
 
                             <section className="box">

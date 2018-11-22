@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {SubmitButton} from "./form";
 
+import { i18n } from "../../app.js"
+import { t } from "@lingui/macro"
+
 class FranceConnectForm extends React.Component {
 
     static propTypes = {
@@ -11,10 +14,6 @@ class FranceConnectForm extends React.Component {
         linkFranceConnectEndpoint: PropTypes.string
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
     render() {
         const userProfile = this.props.userProfile || {};
 
@@ -22,14 +21,14 @@ class FranceConnectForm extends React.Component {
                      method="post" action={this.props.linkFranceConnectEndpoint}
                      className={`oz-form ${this.props.className}`}>
             <div>
-                <h2 className="sub-title">{this.context.t("franceconnect.name")}</h2>
+                <h2 className="sub-title">{i18n._(t`franceconnect.name`)}</h2>
             </div>
 
             {
                 userProfile.franceconnect_sub && userProfile.email_verified &&
                 <div className="text-center">
                     <a href={this.props.unlinkFranceConnectEndpoint} className="btn btn-submit">
-                        {this.context.t("franceconnect.form.desynchronize")}
+                        {i18n._(t`franceconnect.form.desynchronize`)}
                     </a>
                 </div>
 
@@ -39,9 +38,9 @@ class FranceConnectForm extends React.Component {
                 userProfile.franceconnect_sub && !userProfile.email_verified &&
                 <div className="text-center">
                     <a className="btn btn-submit disabled">
-                        {this.context.t("franceconnect.form.desynchronize-without-pwd")}
+                        {i18n._(t`franceconnect.form.desynchronize-without-pwd`)}
                     </a>
-                    <span className="help-block">{this.context.t("franceconnect.form.desynchronize-without-pwd-help")}</span>
+                    <span className="help-block">{i18n._(t`franceconnect.form.desynchronize-without-pwd-help`)}</span>
                 </div>
             }
 
@@ -50,7 +49,7 @@ class FranceConnectForm extends React.Component {
                 <fieldset>
                     <input type="hidden" name="continue"
                            value={`${window.location.origin}/my/profile/franceconnect`}/>
-                    <SubmitButton label={this.context.t("franceconnect.form.synchronise")}/>
+                    <SubmitButton label={i18n._(t`franceconnect.form.synchronise`)}/>
                 </fieldset>
             }
         </form>;

@@ -32,7 +32,7 @@
   "ui.send": "Envoyer",
   "ui.searching": "Recherche ...",
   "ui.no-matches-found": "Aucun résultat trouvé",
-  "ui.message.will-be-deleted-plural": "Sera supprimée dans {0} jour(s)",
+  "ui.message.will-be-deleted-plural": "Sera supprimée dans {value} jour(s)",
   "ui.message.will-be-deleted": "Sera supprimée",
   "ui.or": "ou",
   "ui.request.send": "Votre demande a été envoyée !",

@@ -22,11 +22,11 @@ const instanceStatus = Config.instanceStatus;
 import {fetchUpdateServiceConfig} from '../../../actions/instance';
 import InstanceService from "../../../util/instance-service";
 
-class InstanceDropdown extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
+import { i18n } from "../../../app.js"
+import { t } from "@lingui/macro"
+
+class InstanceDropdown extends React.Component {
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
@@ -326,7 +326,7 @@ class InstanceDropdown extends React.Component {
                                         return <td key={service.catalogEntry.id} className="fill-content col-md-1">
                                             {
                                                 !sub &&
-                                                <CustomTooltip title={this.context.t('tooltip.add.icon')}>
+                                                <CustomTooltip title={i18n._(t`tooltip.add.icon`)}>
                                                     <button className="btn icon"
                                                             onClick={this.createSubscriptionFromEvent}
                                                             disabled={status && status.isLoading}
@@ -338,7 +338,7 @@ class InstanceDropdown extends React.Component {
 
                                             {
                                                 sub &&
-                                                <CustomTooltip title={this.context.t('tooltip.remove.icon')}>
+                                                <CustomTooltip title={i18n._(t`tooltip.remove.icon`)}>
                                                     <button className="btn icon" onClick={this.deleteSubscription}
                                                             disabled={status && status.isLoading}
                                                             data-sub={sub.id}
@@ -364,7 +364,7 @@ class InstanceDropdown extends React.Component {
                                         }
 
                                         <td className="fill-content col-md-1">
-                                            <CustomTooltip title={this.context.t('tooltip.pending')}>
+                                            <CustomTooltip title={i18n._(t`tooltip.pending`)}>
                                                 <button type="button" className="btn icon">
                                                     <i className="fa fa-stopwatch option-icon loading"/>
                                                 </button>
@@ -374,7 +374,7 @@ class InstanceDropdown extends React.Component {
                                 }
 
                                 <td className="fill-content col-md-1">
-                                    <CustomTooltip title={this.context.t('tooltip.remove.member')}>
+                                    <CustomTooltip title={i18n._(t`tooltip.remove.member`)}>
                                         <button className="btn icon delete" data-member={i}
                                                 onClick={this.removeUserAccessToInstance}>
                                             <i className="fa fa-trash option-icon delete"/>
