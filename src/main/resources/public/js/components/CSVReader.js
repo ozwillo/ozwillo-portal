@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tools from "../util/tools";
-import OrganizationCard from "./organization-card";
 
 export default class CSVReader extends React.Component {
 
