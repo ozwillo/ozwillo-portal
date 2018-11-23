@@ -201,7 +201,7 @@ const SearchAppsForm = createClass({
     },
     render: function () {
         const languageComponents = this.props.languages.map(language =>
-            <option key={language} value={language}>{i18n._(t`store.language.${language}`)}</option>
+            <option key={language} value={language}>{i18n._(`store.language.${language}`)}</option>
         );
 
         return (
@@ -210,7 +210,7 @@ const SearchAppsForm = createClass({
                     <div className="col-md-6">
                         <div className="form-group">
                             <label htmlFor="language"
-                                   className="col-sm-4 control-label">{i18n._(t`languages-supported-by-applications`)}</label>
+                                   className="col-sm-4 control-label">{i18n._(t`store.languages-supported-by-applications`)}</label>
 
                             <div className="col-sm-8">
                                 <select id="language" className="form-control" onChange={this.handleLanguageClicked}
@@ -223,7 +223,7 @@ const SearchAppsForm = createClass({
                         {/* geo-filer - filtering by jurisdiction (geoArea) */}
                         <div className="form-group">
                             <label htmlFor="geoSearch"
-                                   className="col-sm-4 control-label">{i18n._(t`geoarea`)}</label>
+                                   className="col-sm-4 control-label">{i18n._(t`store.geoarea`)}</label>
 
                             <div className="col-sm-8">
                                 <GeoAreaAutosuggest name="geoSearch"
@@ -236,16 +236,16 @@ const SearchAppsForm = createClass({
                             </div>
                         </div>
                         <div className="form-group">
-                            <label className="col-sm-4 control-label">{i18n._(t`mode`)}</label>
+                            <label className="col-sm-4 control-label">{i18n._(t`store.mode`)}</label>
 
                             <div className="col-sm-8">
                                 <label className="checkbox-inline">
                                     <input type="checkbox" name="free" checked={this.props.filter.payment.free}
-                                           onChange={this.onPaymentChange}/>{i18n._(t`free`)}
+                                           onChange={this.onPaymentChange}/>{i18n._(t`store.free`)}
                                 </label>
                                 <label className="checkbox-inline">
                                     <input type="checkbox" name="paid" checked={this.props.filter.payment.paid}
-                                           onChange={this.onPaymentChange}/>{i18n._(t`paid`)}
+                                           onChange={this.onPaymentChange}/>{i18n._(t`store.paid`)}
                                 </label>
                             </div>
                         </div>
@@ -253,37 +253,37 @@ const SearchAppsForm = createClass({
                     <div className="col-md-6 right">
                         <div className="form-group">
                             <label htmlFor="fulltext"
-                                   className="col-sm-4 control-label">{i18n._(t`keywords`)}</label>
+                                   className="col-sm-4 control-label">{i18n._(t`store.keywords`)}</label>
 
                             <div className="col-sm-8">
                                 <input type="text" id="fulltext" className="form-control"
                                        onChange={this.fullTextSearchChanged}
-                                       placeholder={i18n._(t`keywords`)} name="fullTextSearch"/>
+                                       placeholder={i18n._(t`store.keywords`)} name="fullTextSearch"/>
                             </div>
                         </div>
                         <div className="form-group">
-                            <label className="col-sm-4 control-label">{i18n._(t`audience`)}</label>
+                            <label className="col-sm-4 control-label">{i18n._(t`store.audience`)}</label>
 
                             <div className="col-sm-8">
                                 <div className="checkbox">
                                     <label>
                                         <input type="checkbox" name="citizens"
                                                checked={this.props.filter.audience.citizens}
-                                               onChange={this.onAudienceChange}/>{i18n._(t`citizens`)}
+                                               onChange={this.onAudienceChange}/>{i18n._(t`store.citizens`)}
                                     </label>
                                 </div>
                                 <div className="checkbox">
                                     <label>
                                         <input type="checkbox" name="publicbodies"
                                                checked={this.props.filter.audience.publicbodies}
-                                               onChange={this.onAudienceChange}/>{i18n._(t`publicbodies`)}
+                                               onChange={this.onAudienceChange}/>{i18n._(t`store.publicbodies`)}
                                     </label>
                                 </div>
                                 <div className="checkbox">
                                     <label>
                                         <input type="checkbox" name="companies"
                                                checked={this.props.filter.audience.companies}
-                                               onChange={this.onAudienceChange}/>{i18n._(t`companies`)}
+                                               onChange={this.onAudienceChange}/>{i18n._(t`store.companies`)}
                                     </label>
                                 </div>
                             </div>
@@ -412,7 +412,7 @@ const Indicator = createClass({
         if (status === "installed") {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-installed">{i18n._(t`installed`)}</button>,
+                        className="btn btn-lg btn-installed">{i18n._(t`store.installed`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-installed-indicator">
                     <i className="fa fa-check" />
                 </button>
@@ -420,7 +420,7 @@ const Indicator = createClass({
         } else if (status === "free") {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-free">{i18n._(t`free`)}</button>,
+                        className="btn btn-lg btn-free">{i18n._(t`store.free`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-free-indicator">
                     <i className="fa fa-gift" />
                 </button>
@@ -428,7 +428,7 @@ const Indicator = createClass({
         } else {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-buy">{i18n._(t`paid`)}</button>,
+                        className="btn btn-lg btn-buy">{i18n._(t`store.paid`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
                     <i className="fa fas fa-euro-sign" />
                 </button>

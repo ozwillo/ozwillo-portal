@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.dao.RatingRepository;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.model.store.AvgRating;
 import org.oasis_eu.portal.model.store.Rating;
 import org.oasis_eu.spring.kernel.service.UserInfoService;

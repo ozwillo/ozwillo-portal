@@ -50,7 +50,7 @@
   "my.dashboard": "Bureau",
   "my.profile": "Profil",
   "my.organization": "Organisations",
-  "my.n_notifications": "{0} notifications",
+  "my.n_notifications": "{value} notifications",
   "my.switch-dash": "Mes bureaux",
   "my.create": "Cr\u00e9er un nouveau bureau",
   "my.default-dashboard-name": "principal",

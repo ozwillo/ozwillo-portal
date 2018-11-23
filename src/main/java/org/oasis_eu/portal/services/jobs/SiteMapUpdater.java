@@ -1,5 +1,6 @@
 package org.oasis_eu.portal.services.jobs;
 
+import org.oasis_eu.portal.model.sitemap.*;
 import org.codehaus.jettison.json.JSONArray;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;

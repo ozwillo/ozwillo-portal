@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.model.instance.InstanceService;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
@@ -9,6 +8,7 @@ import org.oasis_eu.portal.model.kernel.instance.Subscription;
 import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
+import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.kernel.*;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;

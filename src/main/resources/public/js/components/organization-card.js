@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
 import RedirectButtonWithTooltip from "./redirect-button-with-tooltip";
 import CustomTooltip from "./custom-tooltip";
-import customFetch from "../util/custom-fetch";
 import Config from "../config/config";
 import Popup from "react-popup/dist";
 import OrganizationService from '../util/organization-service';
@@ -75,7 +74,7 @@ export default class OrganizationCard extends React.PureComponent {
         }catch(err){
             if (err.status === 403) {
                 this.setState({error: ''});
-                const lines = err.error.split('\n');
+                const lines = i18n._(`error.msg.delete-organization`).split('\n');
 
                 Popup.create({
                     title: orgDetails.name,

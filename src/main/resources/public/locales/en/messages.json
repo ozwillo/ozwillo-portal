@@ -104,7 +104,7 @@
   "my.default-dashboard-name": "principal",
   "my.drop-to-remove": "Drop an application to remove it",
   "my.manage": "Manage dashboard",
-  "my.n_notifications": "{0} notifications",
+  "my.n_notifications": "{value} notifications",
   "my.name": "Name",
   "my.network.add-organization": "Add an organization",
   "my.network.admin": "Admin",

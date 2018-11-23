@@ -129,7 +129,7 @@ export default class OrganizationInvitationForm extends React.Component {
                 .catch((err) => {
                     this.setState({
                         isLoading: false,
-                        error: err.error
+                        error: i18n._('error.msg.user-already-invited')
                     });
                 });
         }

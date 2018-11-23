@@ -48,7 +48,7 @@
   "home.applications": "Aplicaciones",
   "my.dashboard": "Escritorio",
   "my.profile": "Perfil",
-  "my.n_notifications": "{0} notificaciones",
+  "my.n_notifications": "{value} notificaciones",
   "my.switch-dash": "Cambiar el escritorio",
   "my.create": "+ crear nuevo",
   "my.default-dashboard-name": "defecto",

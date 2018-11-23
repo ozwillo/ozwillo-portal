@@ -49,7 +49,7 @@
   "home.applications": "Aplicacions",
   "my.dashboard": "Escriptori",
   "my.profile": "Perfil",
-  "my.n_notifications": "{0} notificacions",
+  "my.n_notifications": "{value} notificacions",
   "my.switch-dash": "Canviar l\u0027escriptori",
   "my.create": "+ crear nou",
   "my.default-dashboard-name": "defecte",

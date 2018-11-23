@@ -2,6 +2,9 @@ package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import org.oasis_eu.portal.model.Languages;
+import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
+import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.dao.GoogleAnalyticsTagRepository;
 import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
@@ -18,7 +21,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
