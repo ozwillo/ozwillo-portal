@@ -12,11 +12,17 @@ export default class CSVReader extends React.Component {
     }
 
     state = {
-        error: null
+        error: null,
+        fileName: ""
     };
+
+    componentDidMount(){
+        this.props.fileName ? this.setState({fileName: this.props.fileName}) : null;
+    }
 
     cleanInput = () => {
         this.inputFile.value = "";
+        this.setState({fileName: ""});
     };
 
     _sanitizeEmailArray = (emailArray) => {
@@ -25,7 +31,7 @@ export default class CSVReader extends React.Component {
 
     _parseCSVData = (value) => {
         let resultArray = value.trim().split(/[\r\n]+/g);
-        resultArray.filter(elm =>  elm !== "");
+        resultArray.filter(elm => elm !== "");
         resultArray = this._sanitizeEmailArray(resultArray);
         this.props.onFileRead(resultArray);
     };
@@ -35,34 +41,47 @@ export default class CSVReader extends React.Component {
         let files = e.target.files;
         //check if that is a real csv
         try {
-            if (files && files[0].name.match('.csv')) {
+            if (files && files.length > 0 && files[0].name.match('.csv')) {
+                this._extractFileName();
                 this.props.onFileReading();
                 reader.onload = () => {
                     this._parseCSVData(reader.result)
                 };
                 reader.readAsText(files[0]);
                 this.setState({error: null})
-            } else {
+            } else if(files && files.length > 0) {
                 this.setState({error: this.context.t('error.msg.csv-file-required')});
                 this.cleanInput();
             }
         } catch (e) {
+            this.cleanInput();
             this.setState({error: e});
         }
     };
 
+    _extractFileName = () => {
+        const fileName = this.inputFile.value.split(/.*[\/|\\]/).pop();
+        this.setState({fileName: fileName})
+        return fileName;
+    };
+
 
     render() {
-        const {error} = this.state;
+        const {error, fileName} = this.state;
         const {requiered} = this.props;
         return (
-            <div>
-                <label className="label">
-                    <input ref={inputFile => this.inputFile = inputFile}
-                           className={"field"} required={requiered}
-                           id="fileSelect" type="file"
-                           accept=".csv" onChange={this._extractData}/>
+            <div className={"csv-reader"}>
+                <label className="label btn btn-default" htmlFor="fileSelect">
+                    {this.context.t("organization.desc.choose-file")}
                 </label>
+                <p>
+                    {fileName}
+                </p>
+                <input ref={inputFile => this.inputFile = inputFile}
+                       className={"field"} required={requiered}
+                       id="fileSelect" type="file"
+                       accept=".csv" onChange={this._extractData}/>
+
                 {error && <div className={"csv-error"}>{error}</div>}
             </div>
         )
@@ -74,6 +93,7 @@ export default class CSVReader extends React.Component {
 CSVReader.propTypes = {
     onFileRead: PropTypes.func,
     onFileReading: PropTypes.func,
+    fileName: PropTypes.string,
 };
 
 
