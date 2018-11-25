@@ -101,12 +101,10 @@ export default class OrganizationInvitationForm extends React.Component {
         this.setState({instancesSelected: instances})
     };
 
-    _handleStep = (activeStep) => {
+    _handleStep = (wantedStep) => {
         const {email, emailsFromCSV} = this.state;
-        if (activeStep > 1 && (email || emailsFromCSV.length > 0)) {
-            this.setState({activeStep: activeStep});
-        } else if (activeStep === 1) {
-            this.setState({activeStep: activeStep});
+        if ((wantedStep > 1 && (email || emailsFromCSV.length > 0)) || wantedStep === 1) {
+            this.setState({activeStep: wantedStep});
         }
     };
 
