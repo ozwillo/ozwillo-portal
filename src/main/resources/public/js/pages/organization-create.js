@@ -36,7 +36,7 @@ class OrganizationCreate extends React.Component {
         this.setState({isLoading: true});
         try {
             const organizationCreated = await this._organizationService.createOrganization(organization);
-            this.props.history.push(`/my/organization/${organizationCreated.id}`);
+            this.props.history.push(`/my/organization/${organizationCreated.id}/admin`);
         }catch(err){
             window.scrollTo({
                 top: 0,
