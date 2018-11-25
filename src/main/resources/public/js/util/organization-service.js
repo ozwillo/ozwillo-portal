@@ -31,5 +31,16 @@ export default class OrganizationService {
         return await customFetch(`/my/api/organization/${orgId}/membership/${member.id}`, {
             method: 'DELETE'
         });
-    }
+    };
+
+    createOrganization = async (organization) => {
+        Object.keys(organization).forEach(key => {
+            organization[key] = organization[key] || null;
+        });
+
+        return await customFetch('/my/api/organization', {
+            method: 'POST',
+            json: {...organization}
+        })
+    };
 }
