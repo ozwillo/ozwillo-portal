@@ -1,0 +1,22 @@
+.pill-button{
+    border-radius: 10px !important;
+    max-width: 8em!important;
+    min-width: 8em!important;
+    max-height: 4em!important;
+    min-height: 4em!important;
+    margin: 0.7em 0.3em !important;
+    display: flex !important;
+    flex-flow: column wrap;
+    justify-content: center;
+    flex: 1;
+}
+
+.pill-button .pill-text{
+    margin: 0;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+
+}

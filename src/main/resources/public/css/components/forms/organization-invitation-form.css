@@ -4,6 +4,13 @@
     align-self: center;
 }
 
+.organization-invitation-form .invitation-title{
+    font-weight: 500;
+    font-size: 1.1em;
+    padding-left: 0.5em;
+    padding-top: 0.5em;
+}
+
 .organization-invitation-form .legend {
     border: none;
     font-size: 1em;
@@ -19,6 +26,11 @@
     font-size: 0.9em;
     padding: 2px 0;
     font-weight: normal;
+}
+
+.organization-invitation-form .invitation-form{
+    padding: 0 0.5em 0 0.5em;
+    /*justify-content: center;i*/
 }
 
 .organization-invitation-form .label-title {
@@ -86,6 +98,32 @@
 
 .organization-invitation-form .form-submit{
     align-self: flex-end;
+}
+
+.organization-invitation-form .next-step-container{
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    display: flex;
+    padding: 1em;
+}
+
+.organization-invitation-form .instances-summarize{
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: row wrap;
+}
+
+.instances-summarize .pill-button.btn-default:hover,
+.instances-summarize .pill-button.btn-default:focus,
+.instances-summarize .pill-button.btn-default:active
+{
+    color: var(--button-primary-color) !important;
+    border-color: var(--button-primary-color) !important;
+    background-color: var(--button-secondary-color) !important;
+}
+
+.instances-summarize .pill-button.btn-default{
+    cursor: default;
 }
 
 @media (max-width: 425px) {

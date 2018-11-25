@@ -22,7 +22,7 @@ public final class i18nMessages {
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
         "no-matches-found", "yes", "datastore", "login", "logout", "notifications", "message.will-be-deleted",
-        "message.will-be-deleted-plural", "or", "request.send", "error", "ok", "invite");
+        "message.will-be-deleted-plural", "or", "request.send", "error", "ok", "invite", "next-step");
 
     private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "organization", "create", "confirm-delete-dash",
         "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
@@ -92,7 +92,9 @@ public final class i18nMessages {
 
     private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
             "add-application", "add-in-organization", "send-invitation", "form.success", "add-to-instance-from-members",
-            "add-to-instance-by-email", "add-user-to-instance", "from-email", "from-CSV", "CSV-helper", "add-new-members");
+            "add-to-instance-by-email", "add-user-to-instance", "from-email", "from-CSV", "CSV-helper", "choose-file", "add-new-members", "add-instances-to-members",
+            "summarize-members-added", "summarize-member-added","summarize-apps-added"
+    );
 
     private static final List<String> errors = Arrays.asList("datacore.forbidden", "msg.delete-pending-instance", "msg.csv-file-required");
 

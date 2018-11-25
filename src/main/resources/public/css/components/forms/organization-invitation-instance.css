@@ -1,0 +1,12 @@
+.organization-invitation-instance{
+    display: flex;
+    flex-flow: column wrap;
+    flex: 1 1 auto;
+    padding: 0 0.5em 0 0.5em;
+}
+
+.organization-invitation-instance .content{
+    flex-flow: row wrap;
+    display: flex;
+    justify-content: center;
+}

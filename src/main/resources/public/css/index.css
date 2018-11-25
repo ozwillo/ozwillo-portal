@@ -3,6 +3,7 @@
 @import url(https://fonts.googleapis.com/css?family=Roboto:400,100,300,700);
 /* Components */
 @import 'components/btn.css';
+@import 'components/pill-button.css';
 @import 'components/custom-tooltip.css';
 @import 'components/datepicker.css';
 @import 'components/dropdown-helper.css';
@@ -23,8 +24,10 @@
 @import 'components/forms/instance-config-form.css';
 @import 'components/forms/instance-invitation-form.css';
 @import 'components/forms/organization-invitation-form.css';
+@import 'components/forms/organization-invitation-instance.css';
 @import 'components/organization-card.css';
 @import 'components/CSVReader.css';
+@import 'components/stepper.css';
 /* Pages */
 @import 'pages/dashboard.css';
 @import 'pages/notifications.css';
