@@ -6,6 +6,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Service
 public class EnvPropertiesService {
@@ -16,9 +19,9 @@ public class EnvPropertiesService {
     @Autowired
     private HttpServletRequest request;
 
-    public EnvConfig getConfig(String domain_name) {
-        String sanitized_domain_name = sanitizedDomaineName(domain_name);
-        EnvConfig envConfig = envProperties.getConfs().get(sanitized_domain_name);
+    public EnvConfig getConfig() {
+        String website = extractEnvKey();
+        EnvConfig envConfig = envProperties.getConfs().get(website);
         if (envConfig != null) {
             return envConfig;
         } else {
@@ -26,13 +29,36 @@ public class EnvPropertiesService {
         }
     }
 
-    public String sanitizedDomaineName(String domain_name){
-        return domain_name.replaceAll(".*\\.(?=.*\\.)", "").replaceAll("\\..*", "");
+    public String extractEnvKey(){
+        String URL = extractURL(request.getRequestURL().toString());
+        Map<String, EnvConfig> envConfigMap = envProperties.getConfs();
+
+        for(Map.Entry<String,EnvConfig> entry : envConfigMap.entrySet()){
+            String key = entry.getKey();
+            EnvConfig envConfig = entry.getValue();
+
+            if(envConfig.getBaseUrl().equals(URL)){
+                return key;
+            }
+        }
+
+        return "ozwillo";
     }
 
+
     public EnvConfig getCurrentConfig(){
-        String website = sanitizedDomaineName(request.getServerName());
-        return getConfig(website);
+        try {
+            return getConfig();
+        }catch(Exception e){
+            return null;
+        }
+    }
+
+    private String extractURL(String URL){
+        Pattern p = Pattern.compile("((https|http)?:\\/\\/)(.*?)(?=\\/)");
+        Matcher m = p.matcher(URL);
+        m.find();
+        return m.group(0);
     }
 
 

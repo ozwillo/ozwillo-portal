@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -33,7 +32,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Collections;
@@ -63,9 +61,6 @@ class OrganizationImportController {
     @Autowired
     private EnvPropertiesService envPropertiesService;
 
-    @Autowired
-    private HttpServletRequest request;
-
 
     @Value("${application.dcOrg.project: org_0}")
     private String dcOrgProjectName;
@@ -81,7 +76,7 @@ class OrganizationImportController {
                                                      @RequestParam("file") MultipartFile file) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         StringBuilder log = new StringBuilder();
-        EnvConfig envConfig = this.envPropertiesService.getConfig(request.getServerName());
+        EnvConfig envConfig = this.envPropertiesService.getConfig();
         String callBackUri = envConfig.getKernel().getCallback_uri();
 
         log.append("Starting log for organisation import");

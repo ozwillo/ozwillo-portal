@@ -7,6 +7,7 @@ public class KernelEnv {
     private String callback_uri;
     private String post_logout_redirect_uri;
     private String home_uri;
+    private String error_401_uri;
 
     public String getClient_id() {
         return client_id;
@@ -46,5 +47,13 @@ public class KernelEnv {
 
     public void setHome_uri(String home_uri) {
         this.home_uri = home_uri;
+    }
+
+    public String getError_401_uri() {
+        return error_401_uri;
+    }
+
+    public void setError_401_uri(String error_401_uri) {
+        this.error_401_uri = error_401_uri;
     }
 }

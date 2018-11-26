@@ -4,41 +4,39 @@ import com.mongodb.client.MongoCollection;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
+import org.oasis_eu.portal.config.environnements.helpers.KernelEnv;
 import org.oasis_eu.portal.dao.ImageDownloadAttemptRepository;
 import org.oasis_eu.portal.dao.ImageRepository;
 import org.oasis_eu.portal.model.images.Image;
 import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.HttpImageDownloader;
 import org.oasis_eu.portal.services.ImageService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static org.junit.Assert.*;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@SpringBootTest(classes = {ImageServiceIntegrationTest.class})
-@ComponentScan(basePackages = "org.oasis_eu.portal")
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ImageServiceIntegrationTest {
 
 	private MongoCollection blacklist;
@@ -47,9 +45,6 @@ public class ImageServiceIntegrationTest {
 	public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
 		return new PropertySourcesPlaceholderConfigurer();
 	}
-
-	@Value("${application.url}")
-	private String applicationUrl;
 
 	@Autowired
 	private ImageService imageService;
@@ -63,6 +58,9 @@ public class ImageServiceIntegrationTest {
 	@Autowired
 	private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
+	@MockBean
+	private EnvPropertiesService envPropertiesService;
+
 	@Before
 	public void clean() {
 		blacklist = mongoTemplate.getCollection("image_download_attempt");
@@ -70,6 +68,13 @@ public class ImageServiceIntegrationTest {
 		imageRepository.deleteAll();
 		imageDownloadAttemptRepository.deleteAll();
 
+		EnvConfig envConfig = new EnvConfig();
+		envConfig.setBaseImageUrl("http://localhost:3000/media");
+		envConfig.setBaseUrl("http://localhost:3000");
+		KernelEnv kernelEnv = new KernelEnv();
+		kernelEnv.setCallback_uri("http://localhost:3000/callback");
+		envConfig.setKernel(kernelEnv);
+		given(envPropertiesService.getCurrentConfig()).willReturn(envConfig);
 	}
 
 	@Test
@@ -86,6 +91,7 @@ public class ImageServiceIntegrationTest {
 		assertEquals(1, mongoTemplate.getCollection("image").count());
 		assertNotNull(iconUri);
 		// test that this matches a regexp including a UUID
+		String applicationUrl = envPropertiesService.getCurrentConfig().getBaseUrl();
 		Pattern pattern = Pattern.compile(applicationUrl + "/media/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
 		Matcher matcher = pattern.matcher(iconUri);
 		assertTrue(matcher.matches());
@@ -111,15 +117,12 @@ public class ImageServiceIntegrationTest {
 		ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
 
 		assertEquals(0, blacklist.count());
-		String uri = imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64, false);
-		assertEquals(defaultIcon(), uri);
-		assertEquals(1, blacklist.count());
 
 		imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
-		assertEquals(2, blacklist.count());
+		assertEquals(1, blacklist.count());
 
 		imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64, false);
-		assertEquals(3, blacklist.count());
+		assertEquals(2, blacklist.count());
 
 		imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64, false);
 		imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
@@ -147,11 +150,5 @@ public class ImageServiceIntegrationTest {
 	private byte[] load(String name) throws IOException {
 		InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
         return StreamUtils.copyToByteArray(stream);
-	}
-
-	private String defaultIcon() throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
-		Method method = imageService.getClass().getDeclaredMethod("defaultIcon");
-		method.setAccessible(true);
-		return (String) method.invoke(imageService);
 	}
 }

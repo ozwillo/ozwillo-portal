@@ -33,7 +33,7 @@ public class MyNavigationService {
     }
 
     public Map<Integer, List<SiteMapEntry>> getSiteMapFooter(String language) {
-        List<SiteMapEntry> siteMapEntries = siteMapService.getSiteMapFooter(envPropertiesService.sanitizedDomaineName(httpRequest.getServerName()),language);
+        List<SiteMapEntry> siteMapEntries = siteMapService.getSiteMapFooter(envPropertiesService.extractEnvKey(),language);
 
         if (siteMapEntries == null) {
             return Collections.emptyMap();

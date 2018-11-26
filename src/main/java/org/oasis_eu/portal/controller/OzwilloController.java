@@ -12,8 +12,6 @@ import org.oasis_eu.portal.services.MyNavigationService;
 import org.oasis_eu.portal.utils.i18nMessages;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
@@ -73,9 +71,8 @@ public class OzwilloController {
 
     @GetMapping("/config")
     public Config getConfig() throws JsonProcessingException {
-        String website = envPropertiesService.sanitizedDomaineName(request.getServerName());
         //get the config depending on which web is called
-        EnvConfig envConfig = envPropertiesService.getConfig(website);
+        EnvConfig envConfig = envPropertiesService.getConfig();
         // i18n
         Locale locale = RequestContextUtils.getLocale(request);
         Map<String, Map<String, String>> i18n = new HashMap<>();
@@ -104,7 +101,7 @@ public class OzwilloController {
 
     @GetMapping("/config/style")
     public List<StyleProperty> getStyleProperties() {
-        String website = envPropertiesService.sanitizedDomaineName(request.getServerName());
+        String website = envPropertiesService.extractEnvKey();
         StylePropertiesMap stylePropertiesMap = stylePropertiesMapRepository.findByWebsite(website);
         if(stylePropertiesMap != null && !stylePropertiesMap.getStyleProperties().isEmpty()){
             return stylePropertiesMap.getStyleProperties();
@@ -115,7 +112,7 @@ public class OzwilloController {
 
     @GetMapping("/config/googleTag")
     public GoogleAnalyticsTag getGoogleAnalyticsTag(){
-        String website = envPropertiesService.sanitizedDomaineName(request.getServerName());
+        String website = envPropertiesService.extractEnvKey();
         return googleAnalyticsTagRepository.findByWebsite(website);
     }
 

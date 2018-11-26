@@ -2,6 +2,14 @@ import React from 'react';
 import {connect} from 'react-redux';
 
 class Footer extends React.Component {
+    state = {
+        env: ''
+    }
+
+    componentDidMount = async () => {
+        this.setState({ env: localStorage.getItem("env") });
+    }
+
     render() {
         const siteMapFooter = this.props.siteMapFooter;
         return <footer className="oz-footer">
@@ -27,8 +35,8 @@ class Footer extends React.Component {
                     }
                 </section>
             </div>
-            { false &&
-                <div className="flex-row">
+            { this.state.env === 'ozwillo' &&
+                <div className="flex-row additional-oz-footer">
                     <section className="social-network">
                         <a href="https://twitter.com/ozwillo">
                             <i className="fab fa-twitter image twitter"/>

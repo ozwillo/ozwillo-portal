@@ -2,9 +2,7 @@ package org.oasis_eu.portal.config.environnements.helpers;
 
 public class EnvConfig {
 
-    private String url;
-
-    private String error_401;
+    private String baseUrl;
 
     private WebEnv web;
 
@@ -12,21 +10,16 @@ public class EnvConfig {
 
     private OpenDataEnv opendata;
 
+    private String baseImageUrl;
 
-    public String getUrl() {
-        return url;
+    private String defaultIconUrl;
+
+    public String getBaseUrl() {
+        return baseUrl;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
-    public String getError_401() {
-        return error_401;
-    }
-
-    public void setError_401(String error_401) {
-        this.error_401 = error_401;
+    public void setBaseUrl(String baseUrl) {
+        this.baseUrl = baseUrl;
     }
 
     public WebEnv getWeb() {
@@ -51,6 +44,22 @@ public class EnvConfig {
 
     public void setOpendata(OpenDataEnv opendata) {
         this.opendata = opendata;
+    }
+
+    public String getBaseImageUrl() {
+        return baseImageUrl;
+    }
+
+    public void setBaseImageUrl(String baseImageUrl) {
+        this.baseImageUrl = baseImageUrl;
+    }
+
+    public String getDefaultIconUrl() {
+        return defaultIconUrl;
+    }
+
+    public void setDefaultIconUrl(String defaultIconUrl) {
+        this.defaultIconUrl = defaultIconUrl;
     }
 }
 

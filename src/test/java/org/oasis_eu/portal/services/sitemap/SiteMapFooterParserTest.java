@@ -2,6 +2,7 @@ package org.oasis_eu.portal.services.sitemap;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 
@@ -9,21 +10,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
+import org.oasis_eu.portal.config.environnements.helpers.WebEnv;
 import org.oasis_eu.portal.dao.SiteMapComponentsRepository;
 import org.oasis_eu.portal.model.sitemap.FooterMenuSet;
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuFooter;
+import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.SiteMapService;
 import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
 import org.oasis_eu.portal.model.sitemap.Footer;
-import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.mock.web.MockServletContext;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
+import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -31,9 +33,8 @@ import org.springframework.web.client.RestTemplate;
  * User: schambon
  * Date: 1/8/15
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
+@RunWith(SpringRunner.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class SiteMapFooterParserTest {
 
 	@Value("${confs.ozwillo.web.sitemap.url_footer}")
@@ -48,10 +49,21 @@ public class SiteMapFooterParserTest {
 	@Autowired
 	private SiteMapUpdater siteMapUpdater;
 
+	@MockBean
+	private EnvPropertiesService envPropertiesService;
+
 	@Before
 	public void init() {
 		siteMapUpdater.initializeSiteMapComponents();
-    }
+
+		EnvConfig envConfig = new EnvConfig();
+		envConfig.setBaseImageUrl("http://localhost:3000/media");
+		envConfig.setBaseUrl("http://localhost:3000");
+		WebEnv webEnv = new WebEnv();
+		webEnv.setHome("http://localhost:3000");
+		envConfig.setWeb(webEnv);
+		given(envPropertiesService.getCurrentConfig()).willReturn(envConfig);
+	}
 
     @After
 	public void clean() {
@@ -86,11 +98,10 @@ public class SiteMapFooterParserTest {
 		List<SiteMapEntry> siteMapFR = siteMapService.getSiteMapFooter("ozwillo","fr");
 
 		assertNotNull(siteMapFR);
-		assertEquals("https://www.ozwillo-dev.eu/fr/association", siteMapFR.get(0).getUrl());
+		assertEquals("http://localhost:3000/fr/association", siteMapFR.get(0).getUrl());
 
 		assertNotNull(siteMapEN);
 		assertEquals("Genesis", siteMapEN.get(7).getLabel());
-		assertEquals("https://www.ozwillo-dev.eu/en/genesis", siteMapEN.get(7).getUrl());
-
+		assertEquals("http://localhost:3000/en/genesis", siteMapEN.get(7).getUrl());
     }
 }

@@ -27,7 +27,8 @@ public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
 
     @Override
     public boolean skipAuthenticationForPath(String path) {
-        return path.contains("/api/organization/import") || path.contains("/status");
+        return path.contains("/api/organization/import") || path.contains("/status")
+                || path.contains("/media");
     }
 
     @Override
@@ -73,6 +74,15 @@ public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
         EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
         if (envConfig != null) {
             return envConfig.getKernel().getHome_uri();
+        }
+        return null;
+    }
+
+    @Override
+    public String getError401Uri() {
+        EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
+        if (envConfig != null) {
+            return envConfig.getKernel().getError_401_uri();
         }
         return null;
     }

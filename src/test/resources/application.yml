@@ -62,20 +62,21 @@ web:
 
 confs:
   ozwillo:
-    url: https://portal.ozwillo.com
-    error_401: https://portal.ozwillo.com/my
+    baseUrl: https://portal.ozwillo.com
+    baseImageUrl: ${confs.ozwillo.baseUrl}/media
+    defaultIconUrl: ${confs.ozwillo.baseUrl}/img/noicon.png
     web:
-      googleTag: UA-71967243-2
+      googleTag: UA-11111111-1
       home: https://www.ozwillo-dev.eu
       sitemap:
-        url_header: ${confs.ozwillo.web.home}/header.xml
         url_footer: ${confs.ozwillo.web.home}/footer.json
     kernel:
       client_id: portal
       client_secret: changeit
-      callback_uri: ${confs.ozwillo.url}/callback
-      post_logout_redirect_uri: ${conf.ozwillo.url}/fr/store
-      home_uri: ${confs.ozwillo.url}/my
+      callback_uri: ${confs.ozwillo.baseUrl}/callback
+      post_logout_redirect_uri: ${confs.ozwillo.baseUrl}/fr/store
+      home_uri: ${confs.ozwillo.baseUrl}
+      error_401_uri: ${confs.ozwillo.baseUrl}/my
     opendata:
       url: https://opendata.ozwillo.com
 

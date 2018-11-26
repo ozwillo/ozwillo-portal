@@ -49,7 +49,7 @@ export default (url, params = {headers: {}}) => {
     return fetch(url, params)
         .then((res) => {
             if (!res.ok) {
-                throw res;
+                throw Error(res.statusText);
             }
 
             return res;
