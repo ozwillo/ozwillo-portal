@@ -9,6 +9,7 @@ public enum InstallationOption {
     FREE,
     PAID,
     INSTALLED,
+    NOT_INSTALLED,
     INSTALL_PENDING
 
 }

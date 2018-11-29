@@ -21,6 +21,14 @@ public class AppstoreHit {
     private InstallationOption installationOption;
 
 
+
+    public AppstoreHit(Locale displayLocale, CatalogEntry catalogEntry, String iconUrl, String providerName) {
+        this.displayLocale = displayLocale;
+        this.catalogEntry = catalogEntry;
+        this.iconUrl = iconUrl;
+        this.providerName = providerName;
+    }
+
     public AppstoreHit(Locale displayLocale, CatalogEntry catalogEntry, String iconUrl, String providerName, InstallationOption installationOption) {
         this.displayLocale = displayLocale;
         this.catalogEntry = catalogEntry;

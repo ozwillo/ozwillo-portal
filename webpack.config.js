@@ -16,6 +16,8 @@ const PATHS = {
 const commonEntryPointsLoadersAndServers = ['bootstrap-loader', /*'font-awesome-webpack',*/
     path.join(PATHS.nodeModules, 'react-select/dist/react-select.css'),
     path.join(PATHS.nodeModules, 'react-datepicker/dist/react-datepicker.css'),
+    path.join(PATHS.nodeModules, 'slick-carousel/slick/slick.css'),
+    path.join(PATHS.nodeModules, 'slick-carousel/slick/slick-theme.css'),
     path.join(PATHS.nodeModules, 'react-tippy/dist/tippy.css')];
 const devEntryPointsLoadersAndServers = ['webpack-dev-server/client?http://localhost:3000', 'webpack/hot/only-dev-server'];
 
@@ -74,7 +76,7 @@ const common = {
 
             //Ressources
             {
-                test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                test: /.(ttf|otf|eot|svg|gif|woff(2)?)(\?[a-z0-9]+)?$/,
                 use: [{
                     loader: 'file-loader',
                     options: {

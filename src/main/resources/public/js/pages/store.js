@@ -9,7 +9,7 @@ import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import AppModal from '../components/store-install-app'
 import UpdateTitle from '../components/update-title';
 
-
+//EXTRACTED
 const AppStore = createClass({
     getInitialState: function () {
         return {
@@ -84,6 +84,7 @@ const AppStore = createClass({
         };
     },
     updateApps: function () {
+        console.log(this.getSearchFilters())
         $.ajax({
             url: "/api/store/applications",
             data: this.getSearchFilters(),
@@ -295,6 +296,7 @@ SearchAppsForm.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
+//EXTRACTED
 const AppList = createClass({
     renderApps: function () {
         return this.props.apps.map(function (app) {
@@ -357,6 +359,7 @@ LoadMore.contextTypes = {
     t: PropTypes.func.isRequired
 };
 
+//EXTRACTED
 const App = createClass({
     getInitialState: function () {
         return {

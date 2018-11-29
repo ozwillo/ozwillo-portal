@@ -26,6 +26,13 @@
 @import 'components/forms/organization-invitation-form.css';
 @import 'components/forms/organization-invitation-instance.css';
 @import 'components/organization-card.css';
+@import 'components/side-nav.css';
+@import 'components/search-apps-form.css';
+@import 'components/label-section.css';
+@import 'components/pill-button.css';
+@import 'components/pill-input-button.css';
+@import 'components/modal-image.css';
+@import 'components/app.css';
 @import 'components/CSVReader.css';
 @import 'components/stepper.css';
 /* Pages */
@@ -35,10 +42,12 @@
 @import 'pages/organization-search.css';
 @import 'pages/organization-desc.css';
 @import 'pages/profile.css';
-@import 'pages/store.css';
 @import 'pages/synchronize-fc-profile.css';
+@import 'pages/app-store.css';
+@import 'pages/app-install.css';
 /* Helper */
 @import './helper.css';
+
 
 /* styles needed to have a responsive fixed footer
      while having main content (with page-row-expanded class) taking up all available space */

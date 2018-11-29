@@ -1,33 +1,34 @@
 'use strict';
 
 import React from 'react';
-import createClass from 'create-react-class';
 import PropTypes from 'prop-types';
 
-var Rating = require('react-rating');
+const Rating = require('react-rating');
 
-var RatingWrapper = createClass({
-    propTypes: {
-        rating: PropTypes.number.isRequired,
-        appId: PropTypes.string.isRequired,
-        rateable: PropTypes.bool.isRequired,
-        rate: PropTypes.func.isRequired
-    },
-    render: function () {
-        var empty = React.createElement('img', {
+export default class RatingWrapper extends React.PureComponent{
+    render() {
+        const {rateable, rating} = this.props;
+        let empty = React.createElement('img', {
             src: '/img/star-empty.png',
             className: 'icon'
-        })
-        var full = React.createElement('img', {
+        });
+
+        let full = React.createElement('img', {
             src: '/img/star-yellow.png',
             className: 'icon'
-        })
+        });
+
 
         return (
-            <Rating start={0} stop={5} step={1} readonly={!this.props.rateable} initialRate={this.props.rating}
+            <Rating start={0} stop={5} step={1} readonly={!rateable} initialRate={rating}
                     onChange={(rate) => this.props.rate(rate)} empty={empty} full={full}/>
         );
     }
-});
+};
 
-module.exports = {RatingWrapper};
+RatingWrapper.propType ={
+    rating: PropTypes.number.isRequired,
+    rateable: PropTypes.bool.isRequired,
+    rate: PropTypes.func.isRequired
+};
+

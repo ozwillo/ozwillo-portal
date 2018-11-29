@@ -88,7 +88,7 @@ public class AppstoreService {
      * @return
      */
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
-                                    List<Locale> supportedLocales, List<String> geographicalAreas,
+                                    List<Locale> supportedLocales, String organizationId, String installed_status, List<String> geographicalAreas,
                                     List<String> categoryIds, String q, int from) {
 
         if (addCurrentToSupportedLocalesIfNone) {
@@ -99,12 +99,30 @@ public class AppstoreService {
 
         String currentHl = RequestContextUtils.getLocale(request).getLanguage(); // optimization
         List<CatalogEntry> catalogEntryLst = catalogStore.findAllVisible(targetAudiences, paymentOptions, supportedLocales,
-            geographicalAreas, categoryIds, q, currentHl, from);
+                geographicalAreas, categoryIds, q, currentHl, from);
 
-        return catalogEntryLst.stream().filter(catalogEntry -> catalogEntry != null)
+        //if an organization is selected, display the specifics app with the install option
+        if(organizationId != null && !organizationId.equals("")) {
+            UIOrganization organization = organizationService.getOrganizationFromKernel(organizationId);
+
+            catalogEntryLst = catalogEntryLst.stream()
+                    .filter(app -> app.getTargetAudience().stream().anyMatch(audience -> audience.isCompatibleWith(organization.getType())))
+                    .collect(Collectors.toList());
+
+            //return all the applications available for a specific organization with the install option
+            return catalogEntryLst.stream()
+                    .filter(Objects::nonNull)
+                    .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry,
+                            imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false),
+                            getOrganizationName(catalogEntry), getApplicationInstallationOptionFromOrganization(organization, catalogEntry)))
+                    .filter(appstoreHit -> installed_status.equals("") || appstoreHit.getInstallationOption().toString().equals(installed_status.toUpperCase()))
+                    .collect(Collectors.toList());
+        }
+
+        return catalogEntryLst.stream().filter(Objects::nonNull)
             .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry,
                 imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false),
-                getOrganizationName(catalogEntry), getInstallationOption(catalogEntry)))
+                getOrganizationName(catalogEntry)))
             .collect(Collectors.toList());
     }
 
@@ -197,6 +215,20 @@ public class AppstoreService {
         installedStatusRepository.save(status);
 
         return option;
+    }
+
+    private InstallationOption getApplicationInstallationOptionFromOrganization(UIOrganization organization, CatalogEntry entry){
+        boolean installed = organization.getInstances().stream()
+                .map(MyAppsInstance::getApplicationInstance)
+                .anyMatch(instance ->
+                   entry.getId() != null && entry.getType().equals(CatalogEntryType.APPLICATION) && entry.getId().equals(instance.getApplicationId())
+                           || entry.getProviderId() != null && entry.getType().equals(CatalogEntryType.SERVICE) && entry.getProviderId().equals(instance.getProviderId())
+                );
+        if(installed){
+            return InstallationOption.INSTALLED;
+        }else{
+            return InstallationOption.NOT_INSTALLED;
+        }
     }
 
     private InstallationOption computeInstallationOption(CatalogEntry entry) {

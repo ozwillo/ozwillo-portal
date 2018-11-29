@@ -2,6 +2,9 @@ import customFetch from "./custom-fetch";
 
 
 export default class OrganizationService {
+    getOrganizationComplete = async (organizationId) => {
+        return await customFetch(`/my/api/organization/${organizationId}`);
+    };
 
     inviteUser = async (orgId, email, admin) => {
             return await customFetch(`/my/api/organization/invite/${orgId}`, {
