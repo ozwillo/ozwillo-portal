@@ -20,7 +20,7 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.moowork.node'
 
-version = '1.52.0'
+version = '1.53.0'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -54,6 +54,8 @@ dependencies {
     compile('org.apache.commons:commons-csv:1.5')
 
     compile('com.ozwillo:ozwillo-java-spring-integration:1.25.8')
+
+    compile 'io.projectreactor:reactor-core'
 
     /* Our specific dependencies */
     compile('de.javakaffee.msm:memcached-session-manager:2.1.1')

@@ -87,12 +87,12 @@ class OrganizationImportController {
             int analysed = 0;
             int migrated = 0;
             for (CSVRecord record : records) {
-                String name = record.get(1);
-                String siren = record.get(2);
-                String nic = record.get(3);
-                String zip = record.get(4);
-                String street = record.get(5);
-                String cityCSV = record.get(6);
+                String name = record.get(0);
+                String siren = record.get(1);
+                String nic = record.get(2);
+                String zip = record.get(3);
+                String street = record.get(4);
+                String cityCSV = record.get(5);
 
                 StringBuilder city = new StringBuilder();
                 StringBuilder city_uri = new StringBuilder();
@@ -148,7 +148,7 @@ class OrganizationImportController {
                     });
                     migrated++;
                 } else {
-                    log.append("\nLocal authority not migrated due to uncomplete infos :");
+                    log.append("\nLocal organization not migrated due to uncomplete infos :");
                     log.append("\n---------------");
                     log.append("\nName : ").append(name);
                     log.append("\nSiren : ").append(siren);

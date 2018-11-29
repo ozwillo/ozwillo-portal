@@ -13,7 +13,7 @@ public final class i18nMessages {
     //this class can't be an instance (all members are static)
 
     private static final List<String> i18nkeys = Arrays.asList("create-org", "modify-org", "add-organization", "information",
-        "leave", "invite", "invite-user", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave", "no-information-available",
+        "leave", "invite", "invite-user", "invite-multiple-users", "import-from-csv", "csv-email-spec", "admin", "user", "email", "yes-i-want-to-leave", "confirm-leave", "no-information-available",
         "organization-type.PUBLIC_BODY", "organization-type.COMPANY", "organization-name", "organization-type", "create",
         "by", "will-be-deleted", "confirm-trash.title", "confirm-trash.body", "confirm-untrash.title", "confirm-untrash.body",
         "organization.pending-invitation", "organization.not-registrable");
@@ -22,7 +22,7 @@ public final class i18nMessages {
         "loading", "go", "general-error", "edit", "remove", "location", "unexpected_error", "something_went_wrong_msg",
         "something_went_wrong_title", "error_detail_title", "search", "next", "previous", "welcome", "send", "add", "searching",
         "no-matches-found", "yes", "datastore", "login", "logout", "notifications", "message.will-be-deleted",
-        "message.will-be-deleted-plural", "or", "request.send", "error", "ok", "invite");
+        "message.will-be-deleted-plural", "or", "request.send", "error", "ok", "invite", "next-step");
 
     private static final List<String> dashboardKeys = Arrays.asList("dashboard", "profile", "organization", "create", "confirm-delete-dash",
         "confirm-delete-dash-long", "confirm-remove-app", "confirm-remove-app-long", "name", "click-to-add", "drop-to-remove");
@@ -92,9 +92,11 @@ public final class i18nMessages {
 
     private static final List<String> organizationDescKeys = Arrays.asList("applications", "members", "admin",
             "add-application", "add-in-organization", "send-invitation", "form.success", "add-to-instance-from-members",
-            "add-to-instance-by-email", "add-user-to-instance");
+            "add-to-instance-by-email", "add-user-to-instance", "from-email", "from-CSV", "CSV-helper", "choose-file", "add-new-members", "add-instances-to-members",
+            "summarize-members-added", "summarize-member-added","summarize-apps-added"
+    );
 
-    private static final List<String> errors = Arrays.asList("datacore.forbidden", "msg.delete-pending-instance");
+    private static final List<String> errors = Arrays.asList("datacore.forbidden", "msg.delete-pending-instance", "msg.csv-file-required");
 
     private static final List<String> tooltipKeys = Arrays.asList("instances", "members", "admin", "config", "pending",
             "delete.organization", "delete.instance", "delete.member", "remove.right", "remove.icon",

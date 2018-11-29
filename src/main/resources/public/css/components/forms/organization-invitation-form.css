@@ -4,6 +4,13 @@
     align-self: center;
 }
 
+.organization-invitation-form .invitation-title{
+    font-weight: 500;
+    font-size: 1.1em;
+    padding-left: 0.5em;
+    padding-top: 0.5em;
+}
+
 .organization-invitation-form .legend {
     border: none;
     font-size: 1em;
@@ -21,12 +28,31 @@
     font-weight: normal;
 }
 
+.organization-invitation-form .invitation-form{
+    padding: 0 0.5em 0 0.5em;
+    /*justify-content: center;i*/
+}
+
+.organization-invitation-form .label-title {
+    padding-bottom: 0.8em;
+    font-size: 1em;
+    color: var(--secondary-color) !important;
+
+}
+
 .organization-invitation-form .field {
     display: inline;
     width: 230px;
     height: auto;
     padding: 2px 5px;
     margin: 0 5px;
+}
+
+.organization-invitation-form .spinner-container{
+    display: flex;
+    align-items: center;
+    margin-left: 0.5em;
+
 }
 
 .organization-invitation-form input[type="checkbox"].field {
@@ -53,6 +79,51 @@
 .organization-invitation-form .btn-submit {
     padding: 3px 6px;
     font-size: 0.9em;
+    min-width: 200px;
+}
+
+.organization-invitation-form .invite-multiple-users{
+    margin-top: 1.5em;
+}
+
+.organization-invitation-form .form-row-block{
+    flex-direction: row;
+    display: flex;
+}
+
+.organization-invitation-form .form-column-block{
+    flex-direction: column;
+    display: flex;
+}
+
+.organization-invitation-form .form-submit{
+    align-self: flex-end;
+}
+
+.organization-invitation-form .next-step-container{
+    flex: 1 1 auto;
+    justify-content: flex-end;
+    display: flex;
+    padding: 1em;
+}
+
+.organization-invitation-form .instances-summarize{
+    display: flex;
+    flex: 1 1 auto;
+    flex-flow: row wrap;
+}
+
+.instances-summarize .pill-button.btn-default:hover,
+.instances-summarize .pill-button.btn-default:focus,
+.instances-summarize .pill-button.btn-default:active
+{
+    color: var(--button-primary-color) !important;
+    border-color: var(--button-primary-color) !important;
+    background-color: var(--button-secondary-color) !important;
+}
+
+.instances-summarize .pill-button.btn-default{
+    cursor: default;
 }
 
 @media (max-width: 425px) {

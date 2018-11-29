@@ -95,8 +95,8 @@ export default class InstanceInvitationForm extends React.Component {
 
         return <form className={`instance-invitation-form flex-col end ${this.props.className || ''}`}
                      onSubmit={this.onSubmit}>
-            <legend>{this.context.t('organization.desc.add-user-to-instance')}</legend>
-            <div className="content flex-row">
+            <div className={'instance-invitation-title'}>{this.context.t('organization.desc.add-user-to-instance')}</div>
+            <div className="content">
                 <label className="label">
                     {this.context.t('organization.desc.add-to-instance-from-members')}
                 </label>
