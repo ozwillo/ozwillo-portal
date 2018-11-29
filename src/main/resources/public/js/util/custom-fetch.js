@@ -39,6 +39,13 @@ export default (url, params = {headers: {}}) => {
         params.headers['Content-Type'] = 'application/json';
     }
 
+    if(params.urlParams){
+        let query = Object.keys(params.urlParams)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params.urlParams[k]))
+            .join('&');
+        url += '?' + query;
+    }
+
     return fetch(url, params)
         .then((res) => {
             if (!res.ok) {

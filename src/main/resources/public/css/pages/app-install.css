@@ -1,0 +1,116 @@
+.app-install-wrapper {
+    padding: 3em 1em 0 1em;
+}
+
+.app-install-wrapper .header-app-install {
+    justify-content: space-between;
+}
+
+.app-install-wrapper .header-app-install .information-app {
+    height: 100%;
+}
+
+.app-install-wrapper .header-app-install .information-app img {
+    width: 8em;
+    height: 8em;
+    align-self: center;
+}
+
+.app-install-wrapper .header-app-install .information-app .information-app-details {
+    display: flex;
+    justify-content: start;
+    flex-flow: column wrap;
+    max-width: 50%;
+    margin-left: 2em;
+}
+
+.app-install-wrapper .app-install-carousel {
+    padding: 5em 5em 2em 5em;
+}
+
+.app-install-wrapper .app-install-description {
+    text-align: justify;
+    justify-content: center;
+    padding: 2em 0 2em 0;
+}
+
+.app-install-wrapper .install-selector{
+
+}
+
+.app-install-wrapper .rate-content img {
+    max-width: 1.5em;
+    max-height: 1.5em;
+}
+
+.app-install-carousel .screenshot {
+    max-width: 25em;
+    max-height: 25em;
+    transition: 0.2s all;
+}
+
+.app-install-carousel .screenshot:hover {
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.slick-slide {
+    padding: 0 1em 0 1em;
+}
+
+.slick-prev::before,
+.slick-next::before {
+    color: black !important;
+}
+
+.slick-slide .content {
+    width: 90%;
+}
+
+.slick-list {
+    height: 15em !important;
+}
+
+
+.install-app {
+    width: 25%;
+}
+.install-app .dropdown{
+    margin-top: -1em;
+}
+
+.install-app .dropdown > *{
+    margin-bottom: 1.5em;
+}
+
+.install-app .dropdown > :last-child{
+    margin-top: -0.5em;
+}
+
+.install-area {
+    justify-content: flex-end;
+    align-items: center;
+    font-size: 1.5em;
+}
+
+.install-area > :last-child{
+    margin-left: 0.5em;
+}
+
+.install .btn-install{
+    width: 8em;
+}
+
+.installed {
+    padding-top: 5em;
+    flex-flow: row wrap;
+}
+
+.installed > *{
+    margin-bottom: 0.5em;
+    margin-left: 0.5em;
+}
+
+.dashboard{
+    background-color: var(--primary-color) !important;
+}

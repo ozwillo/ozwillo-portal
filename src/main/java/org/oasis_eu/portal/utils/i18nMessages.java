@@ -49,13 +49,13 @@ public final class i18nMessages {
         "additional_information", "sector_type", "sector_type.PUBLIC_BODY", "sector_type.COMPANY", "sector_type.Public", "sector_type.Private");
 
     private static final List<String> storekeys = Arrays.asList("audience", "mode", "citizens", "publicbodies", "companies", "free", "paid",
-        "languages-supported-by-applications", "geoarea", "keywords", "installed", "tos", "privacy", "by",
+        "languages-supported-by-applications", "geoarea", "keywords", "installed", "not-installed", "tos", "privacy", "by",
         "agree-to-tos", "install", "install_this_app", "confirm-install-this-app", "confirm-install-this-app-paid",
         "for_myself", "on_behalf_of", "create-new-org", "modify-org", "buying", "sorry", "could-not-install-app","could-not-install-app-500","could-not-install-app-400",
-            "error-code","already-rated", "launch", "load-more", "choose-install-type",
+            "error-code","already-rated", "launch", "load-more", "choose-install-type", "active-filters", "reset-filters", "active",
         "rating.half-star", "rating.one-star", "rating.one-half-star", "rating.two-stars", "rating.two-half-stars", "rating.three-stars",
         "rating.three-half-stars", "rating.four-stars", "rating.four-half-stars", "rating.five-stars",
-        "install.orgType.title", "ad.description", "ad.title.part1", "ad.title.part2", "ad.joinUs");
+        "install.orgType.title", "ad.description", "ad.title.part1", "ad.title.part2", "ad.joinUs","apply-old-filters", "all");
 
     private static final List<String> storeInstallkeys = Arrays.asList("type.ORG", "type.PERSONAL", "success-msg-1", "success-msg-2", "success-msg-3",
         "success-msg-4");

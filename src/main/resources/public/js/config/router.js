@@ -19,10 +19,11 @@ import Notification from '../pages/notifications';
 import OrganizationCreate from '../pages/organization-create';
 import OrganizationSearch from '../pages/organization-search';
 import OrganizationDesc from '../pages/organization-desc';
-import Store from '../pages/store';
+import AppStore from '../pages/app-store';
 
 // Actions
 import {fetchUserInfo} from "../actions/user";
+import AppInstall from "../pages/app-install";
 
 class RouterWithUser extends React.Component {
     render() {
@@ -64,8 +65,8 @@ class RouterWithoutUser extends React.Component {
     render() {
         return <Layout>
             <Switch>
-                <Route path="/:lang/store/:type?/:id?" component={Store}/>
-                <Route path="/:lang/store" component={Store}/>
+                <Route path="/:lang/store/:type/:id" component={AppInstall}/>
+                <Route path="/:lang/store" component={AppStore}/>
             </Switch>
         </Layout>;
     }

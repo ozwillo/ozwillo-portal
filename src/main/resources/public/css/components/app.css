@@ -1,22 +1,9 @@
-#store {
-    padding-bottom: 0 !important;
-    height: auto;
-}
-
-#store-search {
-    margin-top: 30px;
-}
-
-#store-search .form-group label {
-    font-weight: 300;
-}
-
-#store-search .right .form-group label {
-    width: auto;
-}
-
 #store-apps .container-app {
     min-width: 230px;
+}
+
+.container-app.installed-app{
+    order: 2;
 }
 
 #store-apps .app {
@@ -31,8 +18,8 @@
     position: absolute;
     top: calc((64px / 2) - 25px); /* (image size / 2)  - padding top */
     z-index: 1;
-    background-color: #FFF;
-    border: solid 1px var(--gray-color);
+    background-color: var(--tertiary-color);
+    border: solid 1px var(--primary-color);
     border-radius: 100%;
     left: calc(50% - (64px / 2) - 25px); /* (width / 2) - (image width / 2) - padding left */
     padding: 25px;
@@ -45,8 +32,8 @@
 }
 
 #store-apps .app .description {
-    background-color: #FFF;
-    border: 1px solid var(--gray-color);
+    background-color: var(--tertiary-color);
+    border: 1px solid var(--primary-color);
     display: block;
     position: relative;
     border-radius: 5px;
@@ -56,9 +43,12 @@
 #store-apps .app .description .app-header {
     height: 160px;
     min-height: 128px;
+    padding-left: 2.5%;
+    padding-right: 2.5%;
 }
 
 #store-apps .app .description .app-name {
+    color: var(--secondary-color);
     font-size: 24px;
     margin: 90px 0 10px 0;
     text-align: center;
@@ -66,12 +56,14 @@
 }
 
 #store-apps .app .description .app-provider {
+    color: var(--primary-color);
     font-size: 15px;
     text-align: center;
     display: block;
 }
 
 #store-apps .app .description .app-description {
+    color: var(--black-color);
     font-size: 15px;
     margin: 0 40px 28px 40px;
     text-align: center;
@@ -101,10 +93,6 @@
     position: absolute;
     top: 5px;
     left: 0;
-}
-
-#store-apps .app .description .public-service-indicator > div.label > i.triangle {
-    color: #FFF;
 }
 
 #store-apps .app .description .app-status {
@@ -150,137 +138,5 @@
 #store-apps .app .description .app-status .btn-installed,
 #store-apps .app .description .app-status .btn-installed-indicator {
     margin: 0;
-    color: #fff;
-}
-
-#store-apps .oz-simple-modal .next {
-    overflow: auto;
-}
-
-#store-apps .icon {
-    width: 26px;
-    height: 26px;
-}
-
-#store-apps .icon-text {
-    display: inline-block;
-    width: 26px;
-    font-size: 2em;
-    background-color: #fff;
-}
-
-#store-loadmore {
-    padding: 30px 0 30px 0;
-}
-
-#store-loadmore .oz-btn-loadmore {
-    color: var(--primary-color);
-    background: #fff;
-}
-
-#store div.app-screenshots {
-    position: relative;
-    max-width: 800px;
-    width: auto;
-    height: auto;
-    border: 1px #5b5f84 solid;
-    margin: 24px auto;
-}
-
-#store-apps > .row {
-    flex-wrap: wrap;
-}
-
-@media (max-width: var(m-tablet-width)) {
-    #store div.app-screenshots {
-        left: 0;
-        width: 100%;
-        height: auto;
-    }
-
-    #store div.app-screenshots:after {
-        padding-top: 56.25%;
-        display: block;
-        content: '';
-    }
-}
-
-#store div.app-screenshots > img {
-    top: 0;
-    left: 0;
-    padding: 0;
-    max-width: 100%;
-    height: auto;
-    z-index: 1030;
-}
-
-#store div.app-screenshots a.back {
-    opacity: 0.25;
-    transition: opacity 0.5s;
-    position: absolute;
-    height: 50px;
-    width: 50px;
-    top: 50%;
-    margin-top: -25px;
-    left: 0;
-    background-color: #999999;
-    color: #F7F7F7;
-    z-index: 1031;
-}
-
-#store div.app-screenshots a.back:hover {
-    opacity: 1;
-}
-
-#store div.app-screenshots a.back i.fa {
-    position: absolute;
-    line-height: 20px;
-    top: 15px;
-    left: 5px;
-}
-
-#store div.app-screenshots a.forward {
-    opacity: 0.25;
-    transition: opacity 0.5s;
-    position: absolute;
-    height: 50px;
-    width: 50px;
-    top: 50%;
-    right: 0;
-    margin-top: -25px;
-    background-color: #999999;
-    color: #F7F7F7;
-    z-index: 1031;
-}
-
-#store div.app-screenshots a.forward:hover {
-    opacity: 1;
-}
-
-#store div.app-screenshots a.forward i.fa {
-    position: absolute;
-    line-height: 20px;
-    top: 15px;
-    right: 5px;
-}
-
-#store .store-app-card div.app-description {
-    width: 800px;
-    margin: 25px auto 10px auto;
-    border-bottom: 1px solid #d4d2d2;
-}
-
-#store .store-app-card div.app-tos {
-    width: 800px;
-    margin: 15px auto;
-    border-bottom: 1px solid #d4d2d2;
-}
-
-@media (max-width: 990px) {
-    #store .store-app-card div.app-description {
-        width: 100%;
-    }
-    #store .store-app-card div.app-tos {
-        width: 100%;
-    }
+    color: var(--tertiary-color);
 }
