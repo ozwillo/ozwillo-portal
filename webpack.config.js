@@ -13,7 +13,7 @@ const PATHS = {
     nodeModules: path.join(__dirname, 'node_modules')
 };
 
-const commonEntryPointsLoadersAndServers = ['bootstrap-loader', /*'font-awesome-webpack',*/
+const commonEntryPointsLoadersAndServers = ['bootstrap-loader',
     path.join(PATHS.nodeModules, 'react-select/dist/react-select.css'),
     path.join(PATHS.nodeModules, 'react-datepicker/dist/react-datepicker.css'),
     path.join(PATHS.nodeModules, 'slick-carousel/slick/slick.css'),
