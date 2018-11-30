@@ -28,4 +28,9 @@ public class UserOrganizationsHistoryController {
         return userOrganizationsHistoryService.addLastVisited(dcOrganizationId);
     }
 
+    @DeleteMapping(value = "/delete/{dcOrganizationId}")
+    public List<OrganizationHistory> deleteOrganizationHistory(@PathVariable String dcOrganizationId){
+        return userOrganizationsHistoryService.deleteOrganizationHistory(dcOrganizationId);
+    }
+
 }
