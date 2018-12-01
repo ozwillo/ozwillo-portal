@@ -8,6 +8,7 @@ import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 @Service
@@ -52,6 +53,17 @@ public class UserOrganizationsHistoryService {
             organizationHistories = updateOrganizationHistories(organizationId, uiOrganization.getName(), organizationHistories);
             userOrganizationsHistoryRepository.save(userOrganizationsHistories);
             return organizationHistories;
+    }
+
+    public List<OrganizationHistory> deleteOrganizationHistory(String organizationId){
+        String userId = userInfoService.currentUser().getUserId();
+        UserOrganizationsHistory userOrganizationsHistories  = userOrganizationsHistoryRepository
+                .findById(userId).orElse(new UserOrganizationsHistory(userId));
+        List<OrganizationHistory> organizationHistories = userOrganizationsHistories.getOrganizationsHistory();
+
+        organizationHistories.remove(new OrganizationHistory(organizationId));
+        userOrganizationsHistoryRepository.save(userOrganizationsHistories);
+        return organizationHistories;
     }
 
     private List<OrganizationHistory> updateOrganizationHistories(String organizationId, String name, List<OrganizationHistory> organizationHistories){

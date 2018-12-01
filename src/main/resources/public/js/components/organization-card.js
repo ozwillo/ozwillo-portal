@@ -6,6 +6,7 @@ import CustomTooltip from "./custom-tooltip";
 import customFetch from "../util/custom-fetch";
 import Config from "../config/config";
 import Popup from "react-popup/dist";
+import OrganizationService from '../util/organization-service';
 
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes
@@ -16,16 +17,24 @@ export default class OrganizationCard extends React.PureComponent {
         isLoading: true
     };
 
-    componentDidMount() {
+    constructor(){
+        super();
+        this._organizationService = new OrganizationService();
+    }
+
+    componentDidMount = async () => {
         const {organization} = this.props;
-        this._getOrganizationDetails(organization.dcOrganizationId);
+        await this._getOrganizationDetails(organization.dcOrganizationId);
     }
 
 
-    _getOrganizationDetails = (dcOrganizationId) => {
-        customFetch(`/my/api/organization/light/${dcOrganizationId}`)
-            .then(res => this.setState({orgDetails: res, isLoading: false}))
-            .catch(err => console.error(err))
+    _getOrganizationDetails = async (dcOrganizationId) => {
+        try {
+            let res = await this._organizationService.getOrganizationLight(dcOrganizationId);
+            this.setState({orgDetails: res, isLoading: false})
+        }catch(err) {
+            this.props.callBackError(err, dcOrganizationId);
+        }
     };
 
     _numberOfDaysBeforeDeletion() {
@@ -38,57 +47,53 @@ export default class OrganizationCard extends React.PureComponent {
             this.context.t('ui.message.will-be-deleted');
     }
 
-    _handleCancelRemoveOrganization = (e) => {
+    _handleCancelRemoveOrganization = async (e) => {
         e.preventDefault();
         const {orgDetails} = this.state;
         orgDetails.status = Config.organizationStatus.available;
         let org = {id: orgDetails.id, status: Config.organizationStatus.available};
-        customFetch(`/my/api/organization/${orgDetails.id}/status`, {
-            method: 'PUT',
-            json: org
-        }).then((res) => {
+
+        try {
+            let res = await this._organizationService.updateOrganizationStatus(org);
             this.setState({error: '', orgDetails: res});
-        })
-            .catch(err => {
-                this.setState({error: err.error});
-            });
+        }catch(err){
+            this.setState({error: err.error});
+        }
     };
 
 
-    _handleRemoveOrganization = (e) => {
+    _handleRemoveOrganization = async (e) => {
         e.preventDefault();
         const {orgDetails} = this.state;
         let org = {id: orgDetails.id, status: Config.organizationStatus.deleted};
-        customFetch(`/my/api/organization/${orgDetails.id}/status`, {
-            method: 'PUT',
-            json: org
-        }).then((res) => {
+
+        try {
+            let res = await this._organizationService.updateOrganizationStatus(org);
             this.setState({error: '', orgDetails: res});
-        })
-            .catch(err => {
-                if (err.status === 403) {
-                    this.setState({error: ''});
-                    const lines = err.error.split('\n');
+        }catch(err){
+            if (err.status === 403) {
+                this.setState({error: ''});
+                const lines = err.error.split('\n');
 
-                    Popup.create({
-                        title: orgDetails.name,
-                        content: <p className="alert-message">
-                            {lines.map((msg, i) => <span key={i} className="line">{msg}</span>)}
-                        </p>,
-                        buttons: {
-                            right: [{
-                                text: this.context.t('ui.ok'),
-                                action: () => {
-                                    Popup.close();
-                                }
-                            }]
-                        }
+                Popup.create({
+                    title: orgDetails.name,
+                    content: <p className="alert-message">
+                        {lines.map((msg, i) => <span key={i} className="line">{msg}</span>)}
+                    </p>,
+                    buttons: {
+                        right: [{
+                            text: this.context.t('ui.ok'),
+                            action: () => {
+                                Popup.close();
+                            }
+                        }]
+                    }
 
-                    });
-                } else {
-                    this.setState({error: err.error});
-                }
-            });
+                });
+            } else {
+                this.setState({error: err.error});
+            }
+        }
     };
 
     render() {
@@ -181,7 +186,8 @@ export default class OrganizationCard extends React.PureComponent {
 }
 
 OrganizationCard.propTypes = {
-    organization: PropTypes.object.isRequired
+    organization: PropTypes.object.isRequired,
+    callBackError: PropTypes.func.isRequired
 };
 
 OrganizationCard.contextTypes = {
