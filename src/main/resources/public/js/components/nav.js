@@ -56,8 +56,7 @@ class Nav extends React.Component {
                                 <li className="menu">
                                     {
                                         this.props.languages && this.props.languages.map((lang, index) => {
-                                            return <Link className="link" key={index} to={`/${lang}/store`}
-                                                      data-th-text="${lang.name}">{this.context.t(`store.language.${lang}`)}</Link>
+                                            return <Link className="link" key={index} to={`/${lang}/store`}>{this.context.t(`store.language.${lang}`)}</Link>
                                         })
                                     }
                                 </li>
