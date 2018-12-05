@@ -62,9 +62,9 @@ export const fetchSetLanguage= (language) => {
         }
 
         return customFetch(`/api/config/language/${language}`)
-            .then(({ i18n, siteMapFooter, siteMapHeader }) => {
+            .then(({ i18n, siteMapFooter }) => {
                 //Config
-                dispatch(fetchConfigAction({ language, siteMapFooter, siteMapHeader }));
+                dispatch(fetchConfigAction({ language, siteMapFooter }));
 
                 //i18n-redux
                 dispatch(setLanguage(language));

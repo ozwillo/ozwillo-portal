@@ -3,7 +3,9 @@ package org.oasis_eu.portal.controller;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVParser;
 import org.apache.commons.csv.CSVRecord;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
+import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.dc.GeographicalAreaService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
@@ -56,8 +58,9 @@ class OrganizationImportController {
     @Autowired
     private GeographicalAreaService geographicalAreaService;
 
-    @Value("${kernel.auth.callback_uri:${application.url}/callback}")
-    private String callbackUri;
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
+
 
     @Value("${application.dcOrg.project: org_0}")
     private String dcOrgProjectName;
@@ -70,9 +73,12 @@ class OrganizationImportController {
 
     @PostMapping
     public ResponseEntity<String> importOrganization(@RequestHeader String password, @RequestHeader String refreshToken,
-        @RequestParam("file") MultipartFile file) {
+                                                     @RequestParam("file") MultipartFile file) {
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         StringBuilder log = new StringBuilder();
+        EnvConfig envConfig = this.envPropertiesService.getConfig();
+        String callBackUri = envConfig.getKernel().getCallback_uri();
+
         log.append("Starting log for organisation import");
         if (!passwordEncoder.matches(password, importPassword)) {
             log.append("\nWrong password");
@@ -98,7 +104,7 @@ class OrganizationImportController {
                 StringBuilder city_uri = new StringBuilder();
                 StringBuilder country = new StringBuilder();
                 StringBuilder country_uri = new StringBuilder();
-                runAsUser(refreshToken, () -> {
+                runAsUser(refreshToken, callBackUri,  () -> {
                     List<GeographicalArea> countries = geographicalAreaService.findCountries("France");
                     if (!countries.isEmpty()) {
                         country.append(countries.get(0).getName());
@@ -131,7 +137,7 @@ class OrganizationImportController {
                     dcOrganization.setSector_type("PUBLIC_BODY");
                     dcOrganization.setJurisdiction(city.toString());
                     dcOrganization.setJurisdiction_uri(city_uri.toString());
-                    runAsUser(refreshToken, () -> {
+                    runAsUser(refreshToken, callBackUri, () -> {
                         DCResource dcResource = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcOrganization.getId()).getResource();
                         if (dcResource != null) dcOrganization.setVersion(String.valueOf(dcResource.getVersion()));
                         log.append("\nCreating / updating organization: ")
@@ -176,7 +182,7 @@ class OrganizationImportController {
     }
 
 
-    private void runAsUser(String refreshToken, Runnable runnable) {
+    private void runAsUser(String refreshToken, String callbackUri, Runnable runnable) {
         Authentication endUserAuth = SecurityContextHolder.getContext().getAuthentication();
         SecurityContextHolder.getContext().setAuthentication(null); // or UnauthAuth ?? anyway avoid to do next queries to Kernel with user auth
         try {

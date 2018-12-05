@@ -1,5 +1,7 @@
 package org.oasis_eu.portal.model.dashboard;
 
+import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
+
 /**
  * User: schambon
  * Date: 11/19/14
@@ -13,7 +15,7 @@ public class DashboardApp {
     private String serviceId;
     private String notificationUrl;
     private int notificationCount;
-
+    private ServiceEntry.Status status;
 
     public String getId() {
         return id;
@@ -69,6 +71,14 @@ public class DashboardApp {
 
     public void setNotificationCount(int notificationCount) {
         this.notificationCount = notificationCount;
+    }
+
+    public ServiceEntry.Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(ServiceEntry.Status status) {
+        this.status = status;
     }
 
     @Override

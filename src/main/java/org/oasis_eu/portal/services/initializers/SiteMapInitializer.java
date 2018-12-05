@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.services.initializers;
 
-import org.oasis_eu.portal.dao.SiteMapHeaderRepository;
-import org.oasis_eu.portal.dao.SiteMapRepository;
+import org.oasis_eu.portal.dao.GoogleAnalyticsTagRepository;
+import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
 import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,25 +15,26 @@ public class SiteMapInitializer implements ApplicationListener<ContextRefreshedE
 
     private static final Logger logger = LoggerFactory.getLogger(SiteMapInitializer.class);
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Autowired
-    private SiteMapRepository footerRepository;
-
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Autowired
-    private SiteMapHeaderRepository headerRepository;
-
     @Autowired
     private SiteMapUpdater siteMapUpdater;
+
+    @Autowired
+    private StylePropertiesMapRepository stylePropertiesMapRepository;
+
+    @Autowired
+    private GoogleAnalyticsTagRepository googleAnalyticsTagRepository;
 
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         logger.debug("Context refreshed, checking header and footer status !");
 
-        if (headerRepository.count() == 0)
-            siteMapUpdater.reloadHeader();
+        siteMapUpdater.initializeSiteMapComponents();
+        siteMapUpdater.reloadFooter();
 
-        if (footerRepository.count() == 0)
-            siteMapUpdater.reloadFooter();
+        if(stylePropertiesMapRepository.count() == 0)
+            siteMapUpdater.initializeStylePropertiesMap();
+
+        if(googleAnalyticsTagRepository.count() == 0)
+            siteMapUpdater.initializeGoogleAnalyticsTags();
     }
 }

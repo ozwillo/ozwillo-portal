@@ -21,10 +21,7 @@ class Header extends React.Component {
                     </Link>
                 }
                 {
-                    !isLogged &&
-                    <a href={`https://www.ozwillo.com/${this.props.config.language}/`}>
-                        <img className="logo"/>
-                    </a>
+                    !isLogged && <img className="logo"/>
                 }
             </div>
 

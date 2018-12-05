@@ -2,9 +2,7 @@ import {FETCH_CONFIG, FETCH_SET_LANGUAGE} from '../actions/config';
 
 const defaultState = {
     siteMapFooter: {},
-    siteMapHeader: {},
     currentSiteMapFooter: null,
-    currentSiteMapHeader: null,
     language: 'en',
     languages: ['en'],
     kernelEndPoint: '',
@@ -20,11 +18,9 @@ export default (state = defaultState, action) => {
     switch (action.type) {
         case FETCH_CONFIG:
             nextState.siteMapFooter = { ...state.siteMapFooter, [action.config.language]: action.config.siteMapFooter };
-            nextState.siteMapHeader = { ...state.siteMapHeader, [action.config.language]: action.config.siteMapHeader };
             break;
         case FETCH_SET_LANGUAGE:
             nextState.currentSiteMapFooter = nextState.siteMapFooter[nextState.language];
-            nextState.currentSiteMapHeader = nextState.siteMapHeader[nextState.language];
             break;
         default:
             return state;

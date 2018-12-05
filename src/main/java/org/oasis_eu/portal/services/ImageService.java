@@ -63,11 +63,8 @@ public class ImageService {
     @Autowired
     private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
-    @Value("${application.baseImageUrl}")
-    private String baseImageUrl;
-
-    @Value("${application.defaultIconUrl}")
-    private String defaultIconUrl;
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
 
 
     /**
@@ -130,6 +127,7 @@ public class ImageService {
      * @return URL that is unique for mongo, but not where this image will be served
      */
     private String buildObjectIconImageVirtualUrl(String objectId) {
+        String baseImageUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
         return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
             .path("/")
             .path(OBJECTICONIMAGE_PATHELEMENT)
@@ -146,6 +144,7 @@ public class ImageService {
      * @return URL where this image will be served
      */
     public String buildImageServedUrl(Image image) {
+        String baseImageUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
         return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
             .path("/")
             .path(image.getId())
@@ -165,20 +164,17 @@ public class ImageService {
      * @return
      */
     public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
+        String baseImageUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
+        String defaultIconUrl = envPropertiesService.getCurrentConfig().getDefaultIconUrl();
 
         if (inputUrl != null && inputUrl.startsWith(baseImageUrl)) {
             // Self-served (Portal object icon) image
             return inputUrl;
-            // NB. could also allow to cache portal-served images besides POSTed ones (but for what need ?) :
-            /*if (!inputUrl.contains("objectIcon")) { // TODO better parse URI & startsWith
-				return inputUrl;
-			}
-			//throw new RuntimeException("Self-served (Portal object icon) image not found " + inputUrl);*/
         }
 
         if (imageDownloadAttemptRepository.findByUrl(inputUrl) != null) {
             logger.debug("Image input URL {} is blacklisted, returning default icon", inputUrl);
-            return defaultIcon();
+            return defaultIconUrl;
         }
 
         Image image = imageRepository.findByUrl(inputUrl);
@@ -190,19 +186,19 @@ public class ImageService {
             if (iconBytes == null) {
                 logger.error("Could not load icon from URL {}, returning default", inputUrl);
                 blacklist(inputUrl);
-                return defaultIcon();
+                return defaultIconUrl;
             }
 
             // 2. make sure it is a 64x64 PNG (NB this will change in the future with more intelligent format detection / conversion)
             if (!ensurePNG(iconBytes)) {
                 logger.error("Icon URL {} is not a PNG, returning default icon", inputUrl);
                 blacklist(inputUrl);
-                return defaultIcon();
+                return defaultIconUrl;
             }
             if (!format.equals(getFormat(iconBytes))) {
                 logger.error("Icon URL {} does not point to an image of correct format ({}), returning default icon", inputUrl, format);
                 blacklist(inputUrl);
-                return defaultIcon();
+                return defaultIconUrl;
             }
 
             // 3. compute the hash and store the icon
@@ -233,24 +229,21 @@ public class ImageService {
 
     @Scheduled(fixedRate = 600000)
     public void refreshOldImages() {
-        logger.debug("Refreshing images");
+        if(envPropertiesService.getCurrentConfig() !=  null) {
+            logger.debug("Refreshing images");
 
-        // every 10 minutes, try to download the 10 oldest images not already downloaded in the last 60 minutes (phew)
-        List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), PageRequest.of(0, 10, Sort.Direction.ASC, "downloadedTime"));
+            // every 10 minutes, try to download the 10 oldest images not already downloaded in the last 60 minutes (phew)
+            List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), PageRequest.of(0, 10, Sort.Direction.ASC, "downloadedTime"));
 
-        logger.debug("Found {} image(s) to refresh", images.size());
+            logger.debug("Found {} image(s) to refresh", images.size());
 
-        images.forEach(i -> getImageForURL(i.getUrl(), i.getImageFormat(), true));
-
-    }
-
-    // TODO provide a default for all image formats (eg 800×450)
-    private String defaultIcon() {
-        return defaultIconUrl;
+            images.forEach(i -> getImageForURL(i.getUrl(), i.getImageFormat(), true));
+        }
 
     }
 
     public boolean isDefaultIcon(String icon) {
+        String defaultIconUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
         return defaultIconUrl.equals(icon);
     }
 

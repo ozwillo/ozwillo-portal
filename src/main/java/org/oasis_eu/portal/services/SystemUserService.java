@@ -15,11 +15,10 @@ public class SystemUserService {
     private String refreshToken;
     @Value("${datacore.systemAdminUser.nonce:SET WHEN GETTING REFRESH TOKEN}")
     private String refreshTokenNonce;
-    /**
-     * NOT REQUIRED ?!
-     */
-    @Value("${kernel.auth.callback_uri:${application.url}/callback}")
-    private String callbackUri;
+
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
+
     /*@Value("${kernel.scopes_to_require: openid profile email address phone datacore}")
 	private String scopesToRequire;*/ // see comment in loginAs()
 
@@ -42,13 +41,14 @@ public class SystemUserService {
     private void loginAs() {
 	   /* 1. do query to Kernel "exchange refresh token for access token" (similar to "exchange code for acces token") see https://tools.ietf.org/html/rfc6749#section-6
 		  2. wrap token in a Spring Authentication impl */
+	    String callBackUri = envPropertiesService.getCurrentConfig().getKernel().getCallback_uri();
 
         String state = null, savedState = null;
         // Refresh_Token rather than Code
         // NB. In the Kernel auth spec says that the SCOPE is required, but actually if the scope is not added in the refresh token,
         // the original scope is taken by default. If the scope has new elements, then it will throw an exception. So is better not send it.
         OpenIdCAuthentication authentication = openIdCService.processAuthentication(
-            null, refreshToken.trim(), state, savedState, refreshTokenNonce.trim(), callbackUri.trim());
+            null, refreshToken.trim(), state, savedState, refreshTokenNonce.trim(), callBackUri.trim());
         // set it as authenticated user for current context:
         SecurityContextHolder.getContext().setAuthentication(authentication);
     }

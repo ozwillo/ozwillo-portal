@@ -34,3 +34,5 @@ out/
 # Node
 node_modules/
 
+
+src/test/resources/application-test\.yml

@@ -2,7 +2,6 @@ package org.oasis_eu.portal.model.kernel.store;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 
 import java.util.List;
 
@@ -32,6 +31,8 @@ public class ServiceEntry extends CatalogEntry {
     @JsonProperty("post_logout_redirect_uris")
     private List<String> postLogoutRedirectUris;
 
+    private Status status;
+
     public String getUrl() {
         return url;
     }
@@ -48,11 +49,21 @@ public class ServiceEntry extends CatalogEntry {
         this.notificationUrl = notificationUrl;
     }
 
-    public String getVisibility() { return visibility; }
-    public void setVisibility(String visibility) { this.visibility = visibility; }
+    public String getVisibility() {
+        return visibility;
+    }
 
-    public String getAccessControl() { return accessControl; }
-    public void setAccessControl(String accessControl) { this.accessControl = accessControl; }
+    public void setVisibility(String visibility) {
+        this.visibility = visibility;
+    }
+
+    public String getAccessControl() {
+        return accessControl;
+    }
+
+    public void setAccessControl(String accessControl) {
+        this.accessControl = accessControl;
+    }
 
     public void setRedirectUris(List<String> redirectUris) {
         this.redirectUris = redirectUris;
@@ -78,4 +89,15 @@ public class ServiceEntry extends CatalogEntry {
         this.instanceId = instanceId;
     }
 
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public enum Status {
+        AVAILABLE, NOT_AVAILABLE;
+    }
 }

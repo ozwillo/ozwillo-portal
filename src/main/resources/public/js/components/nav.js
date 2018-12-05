@@ -9,7 +9,7 @@ import {fetchSetLanguage} from '../actions/config';
 class Nav extends React.Component {
 
     componentWillReceiveProps(nextProps) {
-        if(this.props.language != nextProps.match.params.lang) {
+        if(this.props.language !== nextProps.match.params.lang) {
             this.props.fetchSetLanguage(nextProps.match.params.lang);
         }
     }
@@ -28,45 +28,6 @@ class Nav extends React.Component {
                 </div>
 
                 <div className="collapse navbar-collapse" id="ozwillo-navbar">
-                    <ul className="nav navbar-nav">
-                        {
-                            this.props.siteMapHeader && this.props.siteMapHeader.contentItems.map((item, index) => {
-                                const isSubMenu = item.type === 'submenu';
-                                return <li className={`menu ${(isSubMenu && 'dropdown') || ''}`} key={index}>
-                                    {
-                                        isSubMenu &&
-                                        <a className="link dropdown-toggle" data-toggle="dropdown"
-                                           role="button"
-                                           aria-expanded="false" aria-haspopup="true" href={item.url}>
-                                            <span data-th-text="${item.label}">{item.label}</span>
-                                            <span className="caret"/>
-                                        </a>
-                                    }
-                                    {
-                                        isSubMenu &&
-                                        <ul className="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-                                            {
-                                                item.items.map((subMenu, index) => {
-                                                    return <li className="menu" role="presentation" key={index}>
-                                                        <a className="link" role="menuitem" tabIndex="-1"
-                                                           href={subMenu.url}>{subMenu.label}</a>
-                                                    </li>
-                                                })
-                                            }
-                                        </ul>
-                                    }
-                                    {
-                                        !isSubMenu &&
-                                        <a className="link" role="menuitem" tabIndex="-1" href={item.url}>
-                                            {item.label}
-                                        </a>
-                                    }
-                                </li>
-                            })
-                        }
-
-                    </ul>
-
                     <ul className="nav navbar-nav navbar-right">
                         <li className="menu">
                             <a className="link" href={`/${this.props.language}/store`}>
@@ -95,8 +56,7 @@ class Nav extends React.Component {
                                 <li className="menu">
                                     {
                                         this.props.languages && this.props.languages.map((lang, index) => {
-                                            return <Link className="link" key={index} to={`/${lang}/store`}
-                                                      data-th-text="${lang.name}">{this.context.t(`store.language.${lang}`)}</Link>
+                                            return <Link className="link" key={index} to={`/${lang}/store`}>{this.context.t(`store.language.${lang}`)}</Link>
                                         })
                                     }
                                 </li>
@@ -119,7 +79,6 @@ const mapStateToProps = state => {
     return {
         language: state.config.language,
         languages: state.config.languages,
-        siteMapHeader: state.config.currentSiteMapHeader,
         opendataEndPoint: state.config.opendataEndPoint
     };
 };

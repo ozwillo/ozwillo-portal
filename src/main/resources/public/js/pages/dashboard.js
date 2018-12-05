@@ -52,6 +52,11 @@ const Dashboard = withRouter(createClass({
         this.loadApps(dashId);
 
     },
+    componentWillUnmount() {
+        if (this.state.timeoutId) {
+            clearTimeout(this.state.timeoutId);
+        }
+    },
     loadApps(dashId) {
         Promise.all([fetchApps(dashId), fetchPendingApps()])
             .then(data => {
@@ -79,7 +84,8 @@ const Dashboard = withRouter(createClass({
                     this.setState({ apps: apps });
                 }).catch(err => console.error("Cannot check notifications", status, err));
         }
-        window.setTimeout(this.checkNotifications, 10000);
+        const timeoutId = window.setTimeout(this.checkNotifications, 10000);
+        this.setState({ timeoutId: timeoutId })
     },
     initNotificationsCheck() {
         if (!this.notificationsChecked) {
@@ -587,15 +593,25 @@ const Desktop = createClass({
                     {/* Apps */}
                     {
                         this.props.apps.map(app => {
-                            return <li key={app.id} className="item">
-                                <AppZone
-                                    app={app}
-                                    startDrag={this.props.startDrag}
-                                    endDrag={this.props.endDrag}
-                                    dragging={this.props.dragging}
-                                    dropCallback={this.props.dropCallback}
-                                />
-                            </li>;
+                            if (app.status === 'AVAILABLE') {
+                                return <li key={app.id} className="item">
+                                    <AppZone
+                                        app={app}
+                                        startDrag={this.props.startDrag}
+                                        endDrag={this.props.endDrag}
+                                        dragging={this.props.dragging}
+                                        dropCallback={this.props.dropCallback}
+                                    />
+                                </li>
+                            } else {
+                                return <li key={app.id} className="item">
+                                    <StoppedApp
+                                        app={app}
+                                        startDrag={this.props.startDragPending}
+                                        endDrag={this.props.endDragPending}
+                                    />
+                                </li>;
+                            }
                         })
                     }
 
@@ -651,6 +667,22 @@ const PendingApp = createClass({
                     <img className="image" src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
 
                     <p>{this.props.app.name} <i className="fa fa-stopwatch"/></p>
+
+                </div>
+            </div>
+        );
+    }
+});
+
+const StoppedApp = createClass({
+    render: function () {
+        return (
+            <div className="appzone">
+                <div className="app pending disabled" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
+                     onDragEnd={this.props.endDrag}>
+                    <img className="image" src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
+
+                    <p>{this.props.app.name} <i className="fa fa-stop-circle"/></p>
 
                 </div>
             </div>
