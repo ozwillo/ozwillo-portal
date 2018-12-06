@@ -7,7 +7,7 @@ Ozwillo portal implementation
 
 Building requires **Java 8**.
 
-"Unit" tests require a working **MongoDB** database at localhost:27017. We use 2.6 in the project; it may or may not work with older versions. "Integration" tests require an Internet connection and generally that the Ozwillo ecosystem (kernel, data core, etc.) is set up and in the expected condition. They are therefore more brittle and for that reason, they do not fail the build (you should make sure they pass, though).
+"Unit" tests require a working **MongoDB** database at localhost:27017. We use 2.6 in the project (but it works with newer versions, such as the 3.4 one). "Integration" tests require an Internet connection and generally that the Ozwillo ecosystem (kernel, data core, etc.) is set up and in the expected condition. They are therefore more brittle and for that reason, they do not fail the build (you should make sure they pass, though).
 
 
 ## Installation
@@ -58,7 +58,7 @@ spring.data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal
 yarn start
 ```
 
-Open http://localhost:8080/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
+Open http://localhost:3000/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
 
 NB. to be used, Portal features require Kernel and Datacore servers to be deployed and configured in [application.yml](https://github.com/ozwillo/ozwillo-portal/blob/master/src/main/resources/application.yml).
 You can deploy your own, or [ask on the ML](https://github.com/ozwillo/ozwillo-issues#other-information-channels) to get access to the online Ozwillo dev environment.
@@ -67,7 +67,7 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ## Using the portal
 
 * Front-end access: 
-  * DEV  : http://localhost:8080/my
+  * DEV  : http://localhost:3000/my
   * PROD : http://www.ozwillo.com
 
 ## Renew Refresh_Token to DC http access
