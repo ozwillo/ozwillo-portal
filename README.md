@@ -58,7 +58,7 @@ spring.data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal
 yarn start
 ```
 
-Open http://localhost:8080/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
+Open http://localhost:3000/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
 
 NB. to be used, Portal features require Kernel and Datacore servers to be deployed and configured in [application.yml](https://github.com/ozwillo/ozwillo-portal/blob/master/src/main/resources/application.yml).
 You can deploy your own, or [ask on the ML](https://github.com/ozwillo/ozwillo-issues#other-information-channels) to get access to the online Ozwillo dev environment.
@@ -67,7 +67,7 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ## Using the portal
 
 * Front-end access: 
-  * DEV  : http://localhost:8080/my
+  * DEV  : http://localhost:3000/my
   * PROD : http://www.ozwillo.com
 
 ## Renew Refresh_Token to DC http access
