@@ -82,9 +82,9 @@ class OrganizationForm extends React.Component {
         }
 
         return {
-            taxRegNum: i18n._(t`search.organization.business-id.${lang}`),
-            taxRegOfficialId: i18n._(t`my.network.organization.tax_reg_official_id.${lang}`),
-            taxRegActivity: i18n._(t`my.network.organization.tax_reg_activity.${lang}`)
+            taxRegNum: i18n._(`search.organization.business-id.${lang}`),
+            taxRegOfficialId: i18n._(`my.network.organization.tax_reg_official_id.${lang}`),
+            taxRegActivity: i18n._(`my.network.organization.tax_reg_activity.${lang}`)
         };
     }
 

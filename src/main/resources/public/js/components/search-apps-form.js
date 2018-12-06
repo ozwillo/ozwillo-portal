@@ -6,6 +6,10 @@ import LabelSection from "./label-section";
 import {fetchUserInfos} from "../util/user-service";
 import PillInputButton from './pill-input-button';
 
+import { i18n } from "../app.js"
+import { t } from "@lingui/macro"
+
+
 export default class SearchAppsForm extends React.Component {
 
     state = {
@@ -36,7 +40,7 @@ export default class SearchAppsForm extends React.Component {
         const userInfo = await fetchUserInfos();
         if(userInfo){
             customFetch("/my/api/organization").then((organizations) => {
-                organizations.unshift({name:this.context.t(`store.language.all`), id: ''});
+                organizations.unshift({name:i18n._(t`store.language.all`), id: ''});
                 this.setState({organizations: organizations});
             });
         }
@@ -153,7 +157,7 @@ export default class SearchAppsForm extends React.Component {
     render() {
         const {languages, selectedLanguage, payment, audience, selectedOrganizationId, organizations, installStatus} = this.state;
         const languageComponents = languages.map(language =>
-            <option key={language} value={language}>{this.context.t(`store.language.${language}`)}</option>
+            <option key={language} value={language}>{i18n._(`store.language.${language}`)}</option>
         );
         const organizationComponents = organizations ? organizations.map(organization =>
             <option key={organization.id} value={organization.id}>{organization.name}</option>
@@ -162,7 +166,7 @@ export default class SearchAppsForm extends React.Component {
         return (
             <div id="search-apps-form">
                 {/*LANGUAGE*/}
-                <LabelSection label={this.context.t('languages-supported-by-applications')}>
+                <LabelSection label={i18n._('store.languages-supported-by-applications')}>
                     <select id="language" className="form-control"
                             onChange={this._handleLanguageClicked}
                             value={selectedLanguage}>
@@ -170,7 +174,7 @@ export default class SearchAppsForm extends React.Component {
                     </select>
                 </LabelSection>
                 {/*GEOAREA*/}
-                <LabelSection label={this.context.t('geoarea')}>
+                <LabelSection label={i18n._('store.geoarea')}>
                     <GeoAreaAutosuggest name="geoSearch"
                                         countryUri=""
                                         endpoint="areas"
@@ -181,7 +185,7 @@ export default class SearchAppsForm extends React.Component {
                 </LabelSection>
                 {/*ORGANIZATION*/}
                 {organizations &&
-                    <LabelSection label={this.context.t('organization.search.title')}>
+                    <LabelSection label={i18n._('organization.search.title')}>
                         <select id="organization" className="form-control"
                                 onChange={this._handleOrganizationChange}
                                 value={selectedOrganizationId}>
@@ -191,34 +195,34 @@ export default class SearchAppsForm extends React.Component {
                 }
                 {/*INSTALLED*/}
                 {selectedOrganizationId &&
-                    <LabelSection label={this.context.t('my.apps.status')}>
+                    <LabelSection label={i18n._('my.apps.status')}>
                         <select id="installed" className="form-control"
                                 onChange={this._handleInstallStatusChange}
                                 value={installStatus}>
-                            <option value={''}>{this.context.t('all')}</option>
-                            <option value={"installed"}>{this.context.t('installed')}</option>
-                            <option value={"not_installed"}>{this.context.t('not-installed')}</option>
+                            <option value={''}>{i18n._('all')}</option>
+                            <option value={"installed"}>{i18n._('installed')}</option>
+                            <option value={"not_installed"}>{i18n._('not-installed')}</option>
                         </select>
                     </LabelSection>
                 }
                 {/*MODE*/}
-                <LabelSection label={this.context.t('mode')}>
-                    <PillInputButton label={this.context.t('free')} id={"free-checkbox"}
+                <LabelSection label={i18n._('mode')}>
+                    <PillInputButton label={i18n._('store.free')} id={"free-checkbox"}
                                 checked={payment.free} name={'free'} onChange={this._handleOnPaymentChange}/>
 
-                    <PillInputButton label={this.context.t('paid')} id={"paid-checkbox"}
+                    <PillInputButton label={i18n._('store.paid')} id={"paid-checkbox"}
                                 checked={payment.paid} name={'paid'} onChange={this._handleOnPaymentChange}/>
 
                 </LabelSection>
                 {/*AUDIENCE*/}
-                <LabelSection label={this.context.t('audience')}>
-                    <PillInputButton label={this.context.t('citizens')} id={"citizens-checkbox"}
+                <LabelSection label={i18n._('audience')}>
+                    <PillInputButton label={i18n._('store.citizens')} id={"citizens-checkbox"}
                                 checked={audience.citizens} name={'citizens'} onChange={this._handleAudienceChange}/>
 
-                    <PillInputButton label={this.context.t('publicbodies')} id={"publicbodies-checkbox"}
+                    <PillInputButton label={i18n._('store.publicbodies')} id={"publicbodies-checkbox"}
                                 checked={audience.publicbodies} name={'publicbodies'} onChange={this._handleAudienceChange}/>
 
-                    <PillInputButton label={this.context.t('companies')} id={"companies-checkbox"}
+                    <PillInputButton label={i18n._('store.companies')} id={"companies-checkbox"}
                                 checked={audience.companies} name={'companies'} onChange={this._handleAudienceChange}/>
                 </LabelSection>
 
@@ -230,9 +234,5 @@ export default class SearchAppsForm extends React.Component {
 
 
 }
-
-SearchAppsForm.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 SearchAppsForm.propTypes = {};

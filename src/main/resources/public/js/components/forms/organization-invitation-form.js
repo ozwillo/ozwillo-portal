@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
-import { i18n } from "../../app.js"
+import { i18n } from "../../app"
+import { t } from "@lingui/macro"
+import { Trans } from '@lingui/macro';
+
+
 
 import OrganizationInvitationInstances from "./organization-invitation-instances";
 import Stepper from "../stepper";
@@ -155,16 +159,13 @@ export default class OrganizationInvitationForm extends React.Component {
         const submitButton =
             <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}
                     onClick={this.onSubmit}>
-                {i18n._('my.network.invite-user')}
+                {i18n._(t`my.network.invite-user`)}
             </button>;
         const required = !(emailsFromCSV.length > 0 || email !== '');
 
-        const emailFormated = `<strong>${email}</strong>`;
-        const csvFileNameFormated = `<strong>${csvFileName}</strong>`;
 
-
-        return <header className="organization-invitation-form">
-            <p className={"invitation-title"}>{i18n._("organization.desc.add-new-members")}</p>
+        return<header className="organization-invitation-form">
+            <p className={"invitation-title"}>{i18n._(t`organization.desc.add-new-members`)}</p>
 
             <Stepper activeStep={activeStep} nbSteps={3} onClickStep={(activeStep) => this._handleStep(activeStep)}/>
 
@@ -174,12 +175,12 @@ export default class OrganizationInvitationForm extends React.Component {
                 <div>
                     <div className={"organization-form-sentence sentence"}>
                         {/*email input*/}
-                        <p>{i18n._("organization.desc.from-email")}</p>
+                        <p>{i18n._(t`organization.desc.from-email`)}</p>
                         <input required={required} name="email" type="email"
                                className="field form-control no-auto"
                                onChange={this.handleChange} value={this.state.email}/>
                         {/*CSV INPUT*/}
-                        <p>{i18n._("organization.desc.from-CSV")}*</p>
+                        <p>{i18n._(t`organization.desc.from-CSV`)}*</p>
                         <CSVReader
                             fileName={csvFileName}
                             required={required}
@@ -188,7 +189,7 @@ export default class OrganizationInvitationForm extends React.Component {
                             onFileRead={(emails) => this._handleCSVRead(emails)}/>
                     </div>
                     <div className={"organization-form-sentence"}>
-                        <p className={"helper-text"}>(*)<em>&nbsp;{this.context.t("organization.desc.CSV-helper")}.</em>
+                        <p className={"helper-text"}>(*)<em>&nbsp;{i18n._("organization.desc.CSV-helper")}.</em>
                         </p>
                     </div>
                 </div>
@@ -207,11 +208,11 @@ export default class OrganizationInvitationForm extends React.Component {
                 <div className={"summarize"}>
                     <div>
                         <ul>
-                            {emailsFromCSV && <li dangerouslySetInnerHTML={{__html :this.context.t('organization.desc.summarize-members-added', {csvFileName: csvFileNameFormated})}}/>}
-                            {email && <li dangerouslySetInnerHTML={{__html :this.context.t('organization.desc.summarize-member-added', {email: emailFormated})}}/>}
+                            {emailsFromCSV.length > 0 && <li><Trans>Emails from CSV file <strong>{csvFileName}</strong> will be invited to the organization</Trans></li>}
+                            {email && <li><Trans><strong>{email}</strong> will be invited to the organization</Trans></li>}
                             {instancesSelected.length > 0 &&
                             <React.Fragment>
-                                <li>{this.context.t("organization.desc.summarize-apps-added")} :</li>
+                                <li>{i18n._(t`organization.desc.summarize-apps-added`)} :</li>
                                 <div className={"instances-summarize"}>
                                     {
                                         instancesSelected.map(instance => {
@@ -241,7 +242,7 @@ export default class OrganizationInvitationForm extends React.Component {
                             onClick={() => this._handleStep(activeStep + 1)}
                             disabled={!emailsFromCSV.length > 0 && !email}
                     >
-                        {this.context.t("ui.next-step")}
+                        {i18n._(t`ui.next-step`)}
                     </button>
                 </div>
                 :
@@ -255,9 +256,6 @@ export default class OrganizationInvitationForm extends React.Component {
                         <i className="fa fa-spinner fa-spin action-icon"/>
                     </div>
                     }
-                </div>
-                <div className={"organization-form-sentence"}>
-                    <p className={"helper-text"}>(*)&nbsp;{i18n._("organization.desc.CSV-helper")}.</p>
                 </div>
             }
 

@@ -155,7 +155,6 @@ class ProfileAccount extends React.Component {
             options: this.createOptions(this.props.languages)
         };
 
-        this.createOptions = this.createOptions.bind(this);
         this.handleSelectChange = this.handleSelectChange.bind(this);
     }
 
@@ -163,10 +162,10 @@ class ProfileAccount extends React.Component {
         this.setState({options: this.createOptions(nextProps.languages)});
     }
 
-    createOptions(languages) {
+    createOptions = (languages) =>{
         const options = [];
         languages.forEach((lang) => {
-            const label = i18n._(t`my.profile.account.language.${lang}`);
+            const label = i18n._(`my.profile.account.language.${lang}`);
             options.push({value: lang, label})
         });
 

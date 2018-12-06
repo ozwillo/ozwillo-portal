@@ -28,7 +28,7 @@ i18n.load({
 
 class App extends React.Component {
 
-    componentDidMount(){
+    componentDidMount = async () =>{
         i18n.activate("en");
 
         //Change css var, depends on the domain name

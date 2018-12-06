@@ -6,7 +6,7 @@ import SideNav from "../components/side-nav";
 import SearchAppForm from "../components/search-apps-form";
 import CustomTooltip from "../components/custom-tooltip";
 import PropTypes from "prop-types";
-
+import {i18n} from "../app";
 import swal from "sweetalert2";
 import {fetchUserInfo} from "../actions/user";
 
@@ -66,11 +66,11 @@ export default class AppStore extends React.Component {
             });
         } else if (potentialOldFilters && askFilterPermission && numberPotentialActiveFilters > 0) {
             swal({
-                title: this.context.t("apply-old-filters"),
+                title: i18n._("apply-old-filters"),
                 type: 'info',
                 showCancelButton: true,
-                cancelButtonText: this.context.t("ui.cancel"),
-                confirmButtonText: this.context.t("ui.yes")
+                cancelButtonText: i18n._("ui.cancel"),
+                confirmButtonText: i18n._("ui.yes")
             }).then((result) => {
                 if (result.value) {
                     this.setState({filters: potentialOldFilters}, () => {
@@ -209,12 +209,12 @@ export default class AppStore extends React.Component {
             <div className={"load-more-apps"}>
                 {moreAppsLoading && maybeMoreApps ?
                     <div className="text-center">
-                        <i className="fa fa-spinner fa-spin loading"></i> {this.context.t('ui.loading')}
+                        <i className="fa fa-spinner fa-spin loading"></i> {i18n._('ui.loading')}
                     </div>
                     : (
                         maybeMoreApps ? <div className="text-center">
                             <button className="btn btn-lg btn-default"
-                                    onClick={this._loadMoreApps}>{this.context.t('load-more')}</button>
+                                    onClick={this._loadMoreApps}>{i18n._('load-more')}</button>
                         </div> : null
                     )
                 }
@@ -250,20 +250,20 @@ export default class AppStore extends React.Component {
     };
 
     render() {
-        this.cancel = this.context.t("ui.cancel");
+        this.cancel = i18n._("ui.cancel");
         const {loading, activeFiltersNumber, config, filters, maybeMoreApps, moreAppsLoading} = this.state;
         const filterCounter = activeFiltersNumber > 0 &&
             <div className={"badge-filter-close"}>
-                <CustomTooltip title={this.context.t("active-filters")}>{activeFiltersNumber}</CustomTooltip>
+                <CustomTooltip title={i18n._("active-filters")}>{activeFiltersNumber}</CustomTooltip>
             </div>;
         const filterCounterHeader = activeFiltersNumber > 0 &&
             <React.Fragment>
-                <CustomTooltip title={this.context.t("reset-filters")}>
+                <CustomTooltip title={i18n._("reset-filters")}>
                     <i className={"reset-filters fa fa-trash"} onClick={this._resetFilters}/>
                 </CustomTooltip>
-                <div className={"active-filters"}>{this.context.t("active-filters")} :</div>
+                <div className={"active-filters"}>{i18n._("active-filters")} :</div>
                 <div className={"badge-filter-open"}>
-                    <CustomTooltip title={this.context.t("active")}>
+                    <CustomTooltip title={i18n._("active")}>
                         {activeFiltersNumber}
                     </CustomTooltip>
                 </div>
@@ -287,13 +287,13 @@ export default class AppStore extends React.Component {
                         <div className={"app-store-container"} id="store-apps" onScroll={this._handleScroll}>
 
                             <header className="title">
-                                <span>{this.context.t('ui.appstore')}</span>
+                                <span>{i18n._('ui.appstore')}</span>
                             </header>
 
                             <input type="text" id="fulltext"
                                    className={"form-control search-bar " + this.state.isSearchBarVisible}
                                    onChange={this._handleFullTextSearchChanged}
-                                   placeholder={this.context.t("keywords")} name="fullTextSearch"/>
+                                   placeholder={i18n._("keywords")} name="fullTextSearch"/>
                             <div className={"app-list"}>
                                 {this._displayApps()}
                             </div>
@@ -305,7 +305,3 @@ export default class AppStore extends React.Component {
         )
     }
 }
-
-AppStore.contextTypes = {
-    t: PropTypes.func.isRequired
-};

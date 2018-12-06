@@ -72,7 +72,7 @@ export default class CSVReader extends React.Component {
         return (
             <div className={"csv-reader"}>
                 <label className="label btn btn-default" htmlFor="fileSelect">
-                    {this.context.t("organization.desc.choose-file")}
+                    {i18n._("organization.desc.choose-file")}
                 </label>
                 <p>
                     {fileName}
