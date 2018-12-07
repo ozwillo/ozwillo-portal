@@ -9,8 +9,8 @@
     margin-left: 10px;
 }
 
-.oz-header .logo-home img.logo,
-.oz-header .logo-home img.logo:after {
+.oz-header .logo-home .logo,
+.oz-header .logo-home .logo:after {
     display: block;
     content: var(--logo-url);
     width: var(--logo-width);
@@ -18,8 +18,8 @@
 
 /* IE10+ */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-    .oz-header .logo-home img.logo,
-    .oz-header .logo-home img.logo:after {
+    .oz-header .logo-home .logo,
+    .oz-header .logo-home .logo:after {
         content: '';
         background: var(--logo-url) no-repeat;
         width: 160px;
