@@ -11,8 +11,8 @@
 }
 
 .app-install-wrapper .header-app-install .information-app img {
-    width: 8em;
-    height: 8em;
+    width: 64px;
+    height: 64px;
     align-self: center;
 }
 
@@ -56,6 +56,11 @@
 
 .slick-slide {
     padding: 0 1em 0 1em;
+}
+
+.slick-slide img{
+    border: 1px solid var(--primary-color);
+    cursor: zoom-in;
 }
 
 .slick-prev::before,
@@ -109,6 +114,19 @@
 .installed > *{
     margin-bottom: 0.5em;
     margin-left: 0.5em;
+}
+
+
+.unique-screenshot{
+    display: flex;
+    flex:1;
+    justify-content: center;
+    align-items: center;
+}
+
+.unique-screenshot img{
+    border: 1px solid var(--primary-color);
+    cursor: zoom-in;
 }
 
 .dashboard{

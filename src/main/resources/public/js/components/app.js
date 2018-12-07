@@ -29,11 +29,11 @@ class App extends React.PureComponent{
 
         return (
             <div className={`col-lg-2 col-md-3 col-sm-4 col-xs-6 container-app ${indicatorStatus}-app`}>
-                <div className="app">
+                <div className="app" onClick={() => this.openInstallAppPage()}>
                     <div className="logo">
                         <img src={app.icon}/>
                     </div>
-                    <div className="description" onClick={() => this.openInstallAppPage()}>
+                    <div className="description">
                         {pubServiceIndicator}
                         <div className="app-header">
                             <span className="app-name">{app.name}</span>

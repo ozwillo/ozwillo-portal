@@ -67,6 +67,7 @@ export default class AppInstall extends React.Component {
     _loadAppDetails = async () => {
         const {app} = this.state;
         const data = await fetchAppDetails(app.type, app.id);
+        console.log(data);
         this.setState({appDetails: data});
     };
 
@@ -130,7 +131,7 @@ export default class AppInstall extends React.Component {
 
 
                 {
-                    appDetails.screenshots && appDetails.screenshots.length > 0 &&
+                    appDetails.screenshots && appDetails.screenshots.length > 1 &&
                     <div className={'app-install-carousel'}>
                         <div className={'carousel-container'}>
                             <Slider {...settings}>
@@ -138,6 +139,14 @@ export default class AppInstall extends React.Component {
                             </Slider>
                         </div>
                     </div>
+                }
+
+                {
+                    appDetails.screenshots && appDetails.screenshots.length === 1 &&
+                        <div className={"unique-screenshot"} onClick={() => this._openModal(appDetails.screenshots[0])}>
+                            <img src={appDetails.screenshots[0]} alt={"screenshot "+appDetails.screenshots[0]}/>
+                        </div>
+
                 }
 
                 <div className={'flex-row app-install-description'}>
