@@ -37,7 +37,7 @@ public class EnvPropertiesService {
             String key = entry.getKey();
             EnvConfig envConfig = entry.getValue();
 
-            if(envConfig.getBaseUrl().equals(URL)){
+            if(envConfig.getBaseUrl().contains(URL)){
                 return key;
             }
         }
