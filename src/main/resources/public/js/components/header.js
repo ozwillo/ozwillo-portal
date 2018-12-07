@@ -17,11 +17,11 @@ class Header extends React.Component {
                 {
                     isLogged &&
                     <Link to='/my/dashboard'>
-                        <img className="logo"/>
+                        <div className="logo"/>
                     </Link>
                 }
                 {
-                    !isLogged && <img className="logo"/>
+                    !isLogged && <div className="logo"/>
                 }
             </div>
 
