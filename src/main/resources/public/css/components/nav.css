@@ -3,7 +3,6 @@
     margin: 0 !important;
     background: var(--nav-color);
     border-bottom: solid 2px var(--primary-color);
-    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.2);
     min-height: auto;
     z-index: 5;
 }
