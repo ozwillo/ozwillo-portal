@@ -55,7 +55,7 @@ application:
     country: adrpost:country
   organizationDaysTillDeletedFromTrash: 7
   applicationInstanceDaysTillDeletedFromTrash: 7
-  importPassword: $2a$10$E7r2ThFeUbaW0NIBWyPuI.1t5ZrrSaRu8tWkt1/KjgHFJSn0BDkvm
+  importPassword: importPassword
 
 # some switches:
 # devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
