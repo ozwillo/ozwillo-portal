@@ -22,8 +22,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -74,13 +72,12 @@ class OrganizationImportController {
     @PostMapping
     public ResponseEntity<String> importOrganization(@RequestHeader String password, @RequestHeader String refreshToken,
                                                      @RequestParam("file") MultipartFile file) {
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
         StringBuilder log = new StringBuilder();
         EnvConfig envConfig = this.envPropertiesService.getConfig();
         String callBackUri = envConfig.getKernel().getCallback_uri();
 
         log.append("Starting log for organisation import");
-        if (!passwordEncoder.matches(password, importPassword)) {
+        if (!password.equals(importPassword)) {
             log.append("\nWrong password");
             return new ResponseEntity<>(log.toString(), HttpStatus.UNAUTHORIZED);
         }
