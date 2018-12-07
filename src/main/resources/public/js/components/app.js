@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import {i18n} from "../app";
+import { t } from "@lingui/macro"
 
 
 class App extends React.PureComponent{
@@ -29,11 +30,11 @@ class App extends React.PureComponent{
 
         return (
             <div className={`col-lg-2 col-md-3 col-sm-4 col-xs-6 container-app ${indicatorStatus}-app`}>
-                <div className="app">
+                <div className="app" onClick={() => this.openInstallAppPage()}>
                     <div className="logo">
                         <img src={app.icon}/>
                     </div>
-                    <div className="description" onClick={() => this.openInstallAppPage()}>
+                    <div className="description">
                         {pubServiceIndicator}
                         <div className="app-header">
                             <span className="app-name">{app.name}</span>
@@ -64,7 +65,7 @@ export class Indicator extends React.PureComponent {
         if (status === "installed") {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-installed">{i18n._('store.installed')}</button>,
+                        className="btn btn-lg btn-installed">{i18n._(t`store.installed`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-installed-indicator">
                     <i className="fa fa-check" />
                 </button>
@@ -72,7 +73,7 @@ export class Indicator extends React.PureComponent {
         } else if (status === "free") {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-free">{i18n._('store.free')}</button>,
+                        className="btn btn-lg btn-free">{i18n._(t`store.free`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-free-indicator">
                     <i className="fa fa-gift" />
                 </button>
@@ -80,7 +81,7 @@ export class Indicator extends React.PureComponent {
         } else {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-buy">{i18n._('store.paid')}</button>,
+                        className="btn btn-lg btn-buy">{i18n._(t`store.paid`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
                     <i className="fa fas fa-euro-sign" />
                 </button>

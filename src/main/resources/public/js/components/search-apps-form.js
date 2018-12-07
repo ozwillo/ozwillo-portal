@@ -206,7 +206,7 @@ export default class SearchAppsForm extends React.Component {
                     </LabelSection>
                 }
                 {/*MODE*/}
-                <LabelSection label={i18n._('mode')}>
+                <LabelSection label={i18n._('store.mode')}>
                     <PillInputButton label={i18n._('store.free')} id={"free-checkbox"}
                                 checked={payment.free} name={'free'} onChange={this._handleOnPaymentChange}/>
 
@@ -215,7 +215,7 @@ export default class SearchAppsForm extends React.Component {
 
                 </LabelSection>
                 {/*AUDIENCE*/}
-                <LabelSection label={i18n._('audience')}>
+                <LabelSection label={i18n._('store.audience')}>
                     <PillInputButton label={i18n._('store.citizens')} id={"citizens-checkbox"}
                                 checked={audience.citizens} name={'citizens'} onChange={this._handleAudienceChange}/>
 

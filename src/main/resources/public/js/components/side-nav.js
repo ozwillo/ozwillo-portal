@@ -54,7 +54,7 @@ export default class SideNav extends React.Component {
 
         return (
             <React.Fragment>
-                <div style={this._displaySideNav()} className={"side-nav"}>
+                <div style={this._displaySideNav()} className={"side-nav"} id={"side-nav"}>
                     <div className={"side-nav-header"}>
                         <div className={"open-header-children"}>
                             {isOpenHeader}
