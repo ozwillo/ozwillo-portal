@@ -20,14 +20,14 @@ apply plugin: 'org.springframework.boot'
 apply plugin: 'io.spring.dependency-management'
 apply plugin: 'com.moowork.node'
 
-version = '1.52.x-dev'
+version = '1.54.0-RC2'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 node {
-    version = '9.4.0'
-    yarnVersion = '1.3.2'
+    version = '10.14.1'
+    yarnVersion = '1.12.3'
     download = true
 }
 
@@ -54,9 +54,9 @@ dependencies {
     compile('org.apache.httpcomponents:httpclient')
     compile('org.apache.httpcomponents:httpcore')
     compile('org.apache.commons:commons-csv:1.5')
-    compile('com.github.ozwillo:ozwillo-java-spring-integration:1.27.0-RC1')
+    compile('com.github.ozwillo:ozwillo-java-spring-integration:1.27.0')
     // uncomment this when locally developing on ozwillo-java-spring-integration lib
-    //compile('com.ozwillo:ozwillo-java-spring-integration:1.27.0-RC1')
+    // compile('com.ozwillo:ozwillo-java-spring-integration:1.27.0-RC2')
 
     compile 'io.projectreactor:reactor-core'
 
