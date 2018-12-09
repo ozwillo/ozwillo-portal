@@ -2,12 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import { DropdownBlockError } from '../../notification-messages';
+import { i18n } from "../../../app.js"
 
 class AddInstanceDropdownHeader extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
+    
 
     static propTypes = {
         apps: PropTypes.array.isRequired,
@@ -44,11 +42,11 @@ class AddInstanceDropdownHeader extends React.Component {
                 console.error(err);
                 let message = '';
                 if(err.status.toString().startsWith('4')) {
-                    message = this.context.t('could-not-install-app-400')
+                    message = i18n._('could-not-install-app-400')
                 }else if(err.status.toString().startsWith('5')){
-                    message = this.context.t('could-not-install-app-500')
+                    message = i18n._('could-not-install-app-500')
                 }else{
-                    message = this.context.t('ui.error')
+                    message = i18n._('ui.error')
                 }
 
                 this.setState({error: {message: message, http_status: err.status}, isLoading: false});
@@ -66,14 +64,14 @@ class AddInstanceDropdownHeader extends React.Component {
                     labelKey="name"
                     onChange={this.onOptionChange}
                     options={this.props.apps}
-                    placeholder={this.context.t('organization.desc.applications')}
+                    placeholder={i18n._('organization.desc.applications')}
                     required={true}/>
 
                 <div className="options flex-row">
                     {
                         !this.state.isLoading ?
                         <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
-                            {this.context.t('install')}
+                            {i18n._('install')}
                         </button> : null
                     }
 
@@ -86,7 +84,7 @@ class AddInstanceDropdownHeader extends React.Component {
             </form>
             {
                 error.message &&
-                    <DropdownBlockError errorMessage={error.message + ' ('+ this.context.t('error-code')+' : ' + error.http_status+')'}/>
+                    <DropdownBlockError errorMessage={error.message + ' ('+ i18n._('error-code')+' : ' + error.http_status+')'}/>
             }
 
         </header>;

@@ -2,13 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {connect} from "react-redux";
+import { i18n } from "../app.js"
+import { t } from "@lingui/macro"
+
 
 class MyNav extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
     render() {
         return <nav className="navbar navbar-default navbar-auth" id="oz-nav">
             <div className="container-fluid">
@@ -26,20 +24,20 @@ class MyNav extends React.Component {
                     <ul className="nav navbar-nav">
                         <li className="menu">
                             <Link className="link" to="/my/">
-                                <i className="fa fa-home icon" alt={this.context.t('my.dashboard')}/>
-                                <span>{this.context.t('my.dashboard')}</span>
+                                <i className="fa fa-home icon" alt={i18n._(t`my.dashboard`)}/>
+                                <span>{i18n._(t`my.dashboard`)}</span>
                             </Link>
                         </li>
                         <li className="menu">
                             <Link className="link" to="/my/profile">
-                                <i className="fa fa-user icon" alt={this.context.t('my.profile')}/>
-                                <span>{this.context.t('my.profile')}</span>
+                                <i className="fa fa-user icon" alt={i18n._(t`my.profile`)}/>
+                                <span>{i18n._(t`my.profile`)}</span>
                             </Link>
                         </li>
                         <li className="menu">
                             <Link className="link" to="/my/organization">
-                                <i className="fa fa-building icon" alt={this.context.t('my.organization')}/>
-                                <span>{this.context.t('my.organization')}</span>
+                                <i className="fa fa-building icon" alt={i18n._(t`my.organization`)}/>
+                                <span>{i18n._(t`my.organization`)}</span>
                             </Link>
                         </li>
                     </ul>
@@ -47,19 +45,19 @@ class MyNav extends React.Component {
                         <li className="menu">
                             <Link className="link" to={`/${this.props.language}/store`}>
                                 <i className="fa fa-shopping-cart icon" alt="Store icon"/>
-                                <span>{this.context.t('ui.appstore')}</span>
+                                <span>{i18n._(t`ui.appstore`)}</span>
                             </Link>
                         </li>
                         <li className="menu">
                             <a className="link" href={`${this.props.opendataEndPoint}/${this.props.language}`}>
                                 <i className="fa fa-signal icon" alt="Data icon"/>
-                                <span>{this.context.t('ui.datastore')}</span>
+                                <span>{i18n._(t`ui.datastore`)}</span>
                             </a>
                         </li>
                         <li className="menu">
                             <a className="link" href="/logout">
                                 <i className="fas fa-sign-out-alt icon" alt="Logout icon"/>
-                                <span>{this.context.t('ui.logout')}</span>
+                                <span>{i18n._(t`ui.logout`)}</span>
                             </a>
                         </li>
                     </ul>
@@ -69,9 +67,6 @@ class MyNav extends React.Component {
     }
 }
 
-MyNav.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 const mapStateToProps = state => {
     return {

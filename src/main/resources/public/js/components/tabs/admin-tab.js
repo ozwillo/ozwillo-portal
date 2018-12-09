@@ -12,16 +12,15 @@ import {fetchCountries} from '../../actions/config';
 import {updateOrganizationFormAction} from '../../actions/components/organization-form';
 import {fetchOrganizationInfo, fetchUpdateOrganization} from '../../actions/organization';
 
-class AdminTabHeader extends React.Component {
+import { i18n } from "../../app.js"
+import { t } from "@lingui/macro"
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
+class AdminTabHeader extends React.Component {
 
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/admin`}>
             <header className="tab-header">
-                <span>{this.context.t('organization.desc.admin')}</span>
+                <span>{i18n._(t`organization.desc.admin`)}</span>
             </header>
         </Link>;
     }
@@ -35,10 +34,6 @@ const AdminTabHeaderWithRedux = connect(state => {
 })(AdminTabHeader);
 
 class AdminTab extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired,
-    };
 
     constructor(props) {
         super(props);
@@ -70,7 +65,7 @@ class AdminTab extends React.Component {
             .then(() => {
                 this.setState({
                     isLoading: false,
-                    success: this.context.t('organization.desc.form.success')
+                    success: i18n._(t`organization.desc.form.success`)
                 })
             })
             .catch(err => {
@@ -95,7 +90,7 @@ class AdminTab extends React.Component {
 
                     <OrganizationForm onSubmit={this.onSubmit} countries={this.props.countries}
                                       isLoading={this.state.isLoading}
-                                      label={this.context.t('ui.save')}
+                                      label={i18n._(t`ui.save`)}
                                       alreadyRegistered={true}
                                       initialTaxRegNum={this.props.orgInfo.tax_reg_num}/>
 

@@ -2,16 +2,13 @@ import React from 'react';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import PropTypes from "prop-types";
+import { i18n } from "../app.js"
+import { t } from "@lingui/macro"
 
 class Header extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
     render() {
         const isLogged = !!this.props.userInfo.sub;
-
         return <header className="oz-header flex-row">
             <div className="logo-home">
                 {
@@ -31,16 +28,15 @@ class Header extends React.Component {
                     <p className="text-center welcome" data-toggle="tooltip" data-placement="bottom"
                        title={this.props.message}>
                         <Link to="/my/notif">
-                            <span>{this.context.t('ui.welcome')} {this.props.userInfo.nickname} </span>
+                            <span>{i18n._(t`ui.welcome`)} {this.props.userInfo.nickname} </span>
                             <span className="badge badge-notifications">
                             {this.props.notificationsCount}
-                                <span className="sr-only">{this.props.message}</span>
+                                <span className="sr-only">{i18n._(`my.n_notifications`,{value: this.props.notificationsCount})}</span>
                         </span>
                         </Link>
                     </p>
                 </div>
             }
-
         </header>
     }
 
@@ -49,10 +45,9 @@ class Header extends React.Component {
 const mapStateToProps = (state) => {
     return {
         notificationsCount: state.notifications.count,
-        message: state.notifications.message,
         userInfo: state.userInfo,
         config: state.config
     }
-}
+};
 
 export default connect(mapStateToProps)(Header);

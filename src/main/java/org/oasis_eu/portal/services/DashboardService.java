@@ -1,29 +1,23 @@
 package org.oasis_eu.portal.services;
 
+import org.oasis_eu.portal.dao.DashboardRepository;
+import org.oasis_eu.portal.dao.HiddenPendingAppsRepository;
+import org.oasis_eu.portal.model.GenericEntity;
+import org.oasis_eu.portal.model.dashboard.*;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
+import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.services.kernel.ApplicationInstanceStoreImpl;
 import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
-import org.oasis_eu.portal.model.GenericEntity;
-import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
-import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
-import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
-import org.oasis_eu.portal.model.kernel.instance.Subscription;
-import org.oasis_eu.portal.dao.DashboardRepository;
-import org.oasis_eu.portal.dao.HiddenPendingAppsRepository;
-import org.oasis_eu.portal.model.images.ImageFormat;
-import org.oasis_eu.portal.model.dashboard.Dashboard;
-import org.oasis_eu.portal.model.dashboard.HiddenPendingApps;
-import org.oasis_eu.portal.model.dashboard.UserContext;
-import org.oasis_eu.portal.model.dashboard.UserSubscription;
-import org.oasis_eu.portal.model.dashboard.DashboardApp;
-import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -43,9 +37,6 @@ public class DashboardService {
 
     @Autowired
     private HttpServletRequest request;
-
-    @Autowired
-    private MessageSource messageSource;
 
     @Autowired
     private DashboardRepository dashboardRepository;
@@ -288,7 +279,7 @@ public class DashboardService {
 
             Dashboard dashboard = new Dashboard();
             dashboard.setUserId(user.getUserId());
-            dashboard.getContexts().add(new UserContext().setId(UUID.randomUUID().toString()).setName(messageSource.getMessage("my.default-dashboard-name", new Object[]{}, RequestContextUtils.getLocale(request))).setPrimary(true));
+            dashboard.getContexts().add(new UserContext().setId(UUID.randomUUID().toString()).setName("Dashboard").setPrimary(true));
             return dashboardRepository.save(dashboard);
         }
     }

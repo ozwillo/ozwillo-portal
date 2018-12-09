@@ -12,17 +12,16 @@ import {
 } from "../../actions/organization";
 import InstanceService from "../../util/instance-service";
 
+import { i18n } from "../../app.js"
+import { t } from "@lingui/macro"
 
 class MembersTabHeader extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/members`}>
             <header className="tab-header">
-                <span>{this.context.t('organization.desc.members')}</span>
+                <span>{i18n._(t`organization.desc.members`)}</span>
             </header>
         </Link>;
     }
@@ -36,10 +35,6 @@ const MembersTabHeaderWithRedux = connect(state => {
 })(MembersTabHeader);
 
 class MembersTab extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired,
-    };
 
     constructor(props) {
         super(props);

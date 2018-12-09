@@ -1,5 +1,7 @@
 import {setLanguage, setTranslations} from "redux-i18n";
 import customFetch, {urlBuilder} from "../util/custom-fetch";
+import { i18n } from "../app.js"
+
 
 export const FETCH_CONFIG = 'FETCH_CONFIG';
 export const FETCH_SET_LANGUAGE = 'FETCH_SET_LANGUAGE';
@@ -27,10 +29,7 @@ export const fetchConfig = () => {
                 //Config
                 dispatch(fetchConfigAction(res));
 
-                // Language
-                dispatch(setLanguage(res.language));
-                dispatch(setLanguageAction(res.language));
-                dispatch(setTranslations(res.i18n));
+                i18n.activate(res.language);
             })
     };
 };
@@ -69,7 +68,7 @@ export const fetchSetLanguage= (language) => {
                 //i18n-redux
                 dispatch(setLanguage(language));
                 dispatch(setLanguageAction(language));
-                dispatch(setTranslations(i18n, {preserveExisting: true}));
+                i18n.activate(language);
             });
     };
 };

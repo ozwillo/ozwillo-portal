@@ -10,16 +10,15 @@ import Config from '../../../config/config';
 import {fetchServicesOfInstance} from "../../../actions/instance";
 import customFetch from '../../../util/custom-fetch';
 
+import { i18n } from "../../../app.js"
+import { t } from "@lingui/macro"
+
 const instanceStatus = Config.instanceStatus;
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes
 
 class InstanceDropdownHeader extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
+    
     static propTypes = {
         instance: PropTypes.object.isRequired,
         onRemoveInstance: PropTypes.func.isRequired,
@@ -86,8 +85,8 @@ class InstanceDropdownHeader extends React.Component {
 
         const days = Math.round((deletionDate - now) / TIME_DAY);
 
-        return (days > 0) ? this.context.t('ui.message.will-be-deleted-plural').format(days) :
-            this.context.t('ui.message.will-be-deleted');
+        return (days > 0) ? i18n._(t`ui.message.will-be-deleted-plural`).format(days) :
+            i18n._(t`ui.message.will-be-deleted`);
     }
 
     _displayError = () => {
@@ -98,14 +97,14 @@ class InstanceDropdownHeader extends React.Component {
             return (
                 <div className="alert alert-danger" role="alert"
                      style={{marginBottom: 0, alignItems: 'center'}}>
-                    <strong>{this.context.t('sorry')}</strong>
+                    <strong>{i18n._(t`sorry`)}</strong>
                     &nbsp;
-                    {this.context.t(message) + ' (' + this.context.t('error-code') + ' : ' + http_status + ')'}
+                    {i18n._(t`${message}`) + ' (' + i18n._(t`error-code`) + ' : ' + http_status + ')'}
                     &nbsp;
                     <button type="button" className="close" data-dismiss="alert"
                             onClick={() => this.setState({error: defaultError})}>
                         <span aria-hidden="true">&times;</span>
-                        <span className="sr-only">{this.context.t('ui.close')}</span>
+                        <span className="sr-only">{i18n._(t`ui.close`)}</span>
                     </button>
                 </div>
             )
@@ -129,7 +128,7 @@ class InstanceDropdownHeader extends React.Component {
 
                     {
                         !isStopped && !isPending && isAdmin &&
-                        <CustomTooltip title={this.context.t('tooltip.config')}>
+                        <CustomTooltip title={i18n._(t`tooltip.config`)}>
                             <button type="button" className="btn icon" onClick={this.onClickConfigIcon}>
                                 <i className="fa fa-cog option-icon"/>
                             </button>
@@ -138,14 +137,14 @@ class InstanceDropdownHeader extends React.Component {
 
                     {
                         isPending &&
-                        <CustomTooltip title={this.context.t('tooltip.pending')}>
+                        <CustomTooltip title={i18n._(t`tooltip.pending`)}>
                             <button type="button" className="btn icon">
                                 <i className="fa fa-stopwatch option-icon loading"/>
                             </button>
                         </CustomTooltip>
                     }
 
-                    <CustomTooltip title={this.context.t('tooltip.remove.instance')}
+                    <CustomTooltip title={i18n._(t`tooltip.remove.instance`)}
                                    className={`${(isStopped || !isAdmin) ? 'invisible' : ''}`}>
                         <button type="submit" className="btn icon delete">
                             <i className="fa fa-trash option-icon delete"/>
@@ -160,7 +159,7 @@ class InstanceDropdownHeader extends React.Component {
                                 {this.numberOfDaysBeforeDeletion}
                             </span>,
                             <button key={`${instance.id}-submit`} type="submit" className="btn btn-default-inverse">
-                                {this.context.t('ui.cancel')}
+                                {i18n._(t`ui.cancel`)}
                             </button>
                         ]
                     }

@@ -1,11 +1,11 @@
 package org.oasis_eu.portal.services.kernel;
 
+import org.oasis_eu.portal.dao.InstalledStatusRepository;
+import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance.InstantiationStatus;
 import org.oasis_eu.portal.model.kernel.store.*;
 import org.oasis_eu.portal.model.store.ApplicationInstanceCreationException;
-import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
-import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance.InstantiationStatus;
-import org.oasis_eu.portal.dao.InstalledStatusRepository;
 import org.oasis_eu.portal.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.exception.TechnicalErrorException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
@@ -24,7 +24,10 @@ import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 
 import static org.oasis_eu.spring.kernel.model.AuthenticationBuilder.*;
 

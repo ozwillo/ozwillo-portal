@@ -7,6 +7,7 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
+import {i18n} from "../app";
 
 
 export default class AppInstall extends React.Component {
@@ -172,13 +173,13 @@ export class InstallForm extends React.Component {
     _createOptions = () => {
         let options = [];
         this._hasCitizens() ? options.push({
-            value: this.context.t('install.org.type.PERSONAL'),
+            value: i18n._('install.org.type.PERSONAL'),
             label: 'PERSONAL',
             id: 1
         }) : null;
 
         this._hasOrganizations() ? options.push({
-            value: this.context.t('install.org.type.ORG'),
+            value: i18n._('install.org.type.ORG'),
             label: 'ORG',
             id: 2
         }) : null;
@@ -264,23 +265,23 @@ export class InstallForm extends React.Component {
                         <div className="install installed">
                             <Link className="btn btn-default-inverse pull-right btn-install"
                                   to={`/${this.props.config.language}/store`}>
-                                {this.context.t('market')}
+                                {i18n._('market')}
                             </Link>
                             <Link className="btn btn-default-inverse pull-right btn-install dashboard"
                                   to={'/my/dashboard'}>
-                                {this.context.t('dashboard')}
+                                {i18n._('dashboard')}
                             </Link>
                         </div>
                         :
                         <div className="install">
                             <button className="btn pull-right btn-install" disabled={this._installButtonIsDisabled()}
-                                    onClick={this._doInstallApp}>{this.context.t('install')}</button>
+                                    onClick={this._doInstallApp}>{i18n._('install')}</button>
                         </div>
                     }
                 </div>
                 {error.http_status !== 200 &&
                 <div className={'alert alert-danger'}>
-                    <p>{this.context.t('could-not-install-app')}</p>
+                    <p>{i18n._('could-not-install-app')}</p>
                 </div>
                 }
             </React.Fragment>
@@ -289,10 +290,6 @@ export class InstallForm extends React.Component {
 
 }
 
-
-InstallForm.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 InstallForm.propTypes = {
     app: PropTypes.object.isRequired,

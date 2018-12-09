@@ -2,15 +2,12 @@
 
 import React from 'react';
 import PropTypes from 'prop-types';
+import { i18n } from "../app.js"
+import { t } from "@lingui/macro"
 
-const Loading = ({className}, context) =>
+const Loading = ({className}) =>
     <p className={'text-center ' + className}>
-        <i className="fa fa-spinner fa-spin loading"/> {context.t('ui.loading')}
+        <i className="fa fa-spinner fa-spin loading"/> {i18n._(t`ui.loading`)}
     </p>
-
-Loading.contextTypes = {
-    t: PropTypes.func.isRequired
-};
-
 
 export default Loading;

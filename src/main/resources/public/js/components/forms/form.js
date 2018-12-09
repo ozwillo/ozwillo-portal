@@ -4,6 +4,9 @@ import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 
+import { i18n } from "../../app.js"
+import { t } from "@lingui/macro"
+
 const Form = ({id, onSubmit, children}) =>
     <form id={id} onSubmit={onSubmit} className="oz-form">
         {children}
@@ -114,10 +117,6 @@ class CountrySelector extends React.Component {
         required: false
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
     componentWillMount() {
         // get countries from DC
         $.ajax({
@@ -142,7 +141,7 @@ class CountrySelector extends React.Component {
         return (
             <div className='flex-row'>
                 <Label htmlFor="gender" className="label" required={this.props.required}>
-                    {this.context.t('my.profile.personal.country')}
+                    {i18n._(t`my.profile.personal.country`)}
                 </Label>
                 <Select name="country" value={this.props.value} placeholder=""
                         onChange={this.props.onChange} className="select field"
@@ -162,32 +161,28 @@ class GenderSelector extends React.Component {
         required: false
     };
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
-    constructor(props, context) {
+    constructor(props) {
         super(props);
 
         this.state = {
-            options: this.createOptions(context)
+            options: this.createOptions()
         };
 
         this.createOptions = this.createOptions.bind(this);
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
+    componentWillReceiveProps(nextProps) {
         this.setState({
-            options: this.createOptions(nextContext)
+            options: this.createOptions()
         });
     }
 
-    createOptions(context) {
+    createOptions() {
         return [{
-            label: context.t('my.profile.personal.gender.male'),
+            label: i18n._(t`my.profile.personal.gender.male`),
             value: 'male'
         }, {
-            label: context.t('my.profile.personal.gender.female'),
+            label: i18n._(t`my.profile.personal.gender.female`),
             value: 'female'
         }];
     }
@@ -195,7 +190,7 @@ class GenderSelector extends React.Component {
     render() {
         return <div className='flex-row'>
             <Label htmlFor="gender" className="label" required={this.props.required}>
-                {this.context.t('my.profile.personal.gender')}
+                {i18n._(t`my.profile.personal.gender`)}
             </Label>
             <Select name="gender" value={this.props.value} placeholder=""
                     clearable={false} options={this.state.options}

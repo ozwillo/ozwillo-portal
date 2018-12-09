@@ -4,17 +4,18 @@ import PropTypes from 'prop-types';
 import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
-import CustomTooltip from "../custom-tooltip";
+import { i18n } from "../../app"
+import { t } from "@lingui/macro"
+import { Trans } from '@lingui/macro';
+
+
+
 import OrganizationInvitationInstances from "./organization-invitation-instances";
 import Stepper from "../stepper";
 import PillButton from "../pill-button";
 import InstanceService from "../../util/instance-service";
 
 export default class OrganizationInvitationForm extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -66,7 +67,7 @@ export default class OrganizationInvitationForm extends React.Component {
             this._removeAlreadyPresentMembers(emailArray);
             const response = await this._organizationService.inviteMultipleUsers(this.props.organization.id, emailArray);
             this.setState({
-                success: this.context.t('ui.request.send'),
+                success: i18n._('ui.request.send'),
                 error: ''
             });
             this.props.callBackMembersInvited(response);
@@ -125,14 +126,14 @@ export default class OrganizationInvitationForm extends React.Component {
                     this._addMembersToInstances([res.email]);
                     this.props.callBackMembersInvited(res);
                     this.setState({
-                        success: this.context.t('ui.request.send')
+                        success: i18n._('ui.request.send')
                     });
                     this._resetForm();
                 })
                 .catch((err) => {
                     this.setState({
                         isLoading: false,
-                        error: err.error
+                        error: i18n._('error.msg.user-already-invited')
                     });
                 });
         }
@@ -158,16 +159,13 @@ export default class OrganizationInvitationForm extends React.Component {
         const submitButton =
             <button type="submit" className="btn btn-submit" disabled={(isFetchingUsers || csvLoading || isLoading)}
                     onClick={this.onSubmit}>
-                {this.context.t('my.network.invite-user')}
+                {i18n._(t`my.network.invite-user`)}
             </button>;
         const required = !(emailsFromCSV.length > 0 || email !== '');
 
-        const emailFormated = `<strong>${email}</strong>`;
-        const csvFileNameFormated = `<strong>${csvFileName}</strong>`;
 
-
-        return <header className="organization-invitation-form">
-            <p className={"invitation-title"}>{this.context.t("organization.desc.add-new-members")}</p>
+        return<header className="organization-invitation-form">
+            <p className={"invitation-title"}>{i18n._(t`organization.desc.add-new-members`)}</p>
 
             <Stepper activeStep={activeStep} nbSteps={3} onClickStep={(activeStep) => this._handleStep(activeStep)}/>
 
@@ -177,12 +175,12 @@ export default class OrganizationInvitationForm extends React.Component {
                 <div>
                     <div className={"organization-form-sentence sentence"}>
                         {/*email input*/}
-                        <p>{this.context.t("organization.desc.from-email")}</p>
+                        <p>{i18n._(t`organization.desc.from-email`)}</p>
                         <input required={required} name="email" type="email"
                                className="field form-control no-auto"
                                onChange={this.handleChange} value={this.state.email}/>
                         {/*CSV INPUT*/}
-                        <p>{this.context.t("organization.desc.from-CSV")}*</p>
+                        <p>{i18n._(t`organization.desc.from-CSV`)}*</p>
                         <CSVReader
                             fileName={csvFileName}
                             required={required}
@@ -191,7 +189,7 @@ export default class OrganizationInvitationForm extends React.Component {
                             onFileRead={(emails) => this._handleCSVRead(emails)}/>
                     </div>
                     <div className={"organization-form-sentence"}>
-                        <p className={"helper-text"}>(*)<em>&nbsp;{this.context.t("organization.desc.CSV-helper")}.</em>
+                        <p className={"helper-text"}>(*)<em>&nbsp;{i18n._("organization.desc.CSV-helper")}.</em>
                         </p>
                     </div>
                 </div>
@@ -210,11 +208,11 @@ export default class OrganizationInvitationForm extends React.Component {
                 <div className={"summarize"}>
                     <div>
                         <ul>
-                            {emailsFromCSV && <li dangerouslySetInnerHTML={{__html :this.context.t('organization.desc.summarize-members-added', {csvFileName: csvFileNameFormated})}}/>}
-                            {email && <li dangerouslySetInnerHTML={{__html :this.context.t('organization.desc.summarize-member-added', {email: emailFormated})}}/>}
+                            {emailsFromCSV.length > 0 && <li><Trans>Emails from CSV file <strong>{csvFileName}</strong> will be invited to the organization</Trans></li>}
+                            {email && <li><Trans><strong>{email}</strong> will be invited to the organization</Trans></li>}
                             {instancesSelected.length > 0 &&
                             <React.Fragment>
-                                <li>{this.context.t("organization.desc.summarize-apps-added")} :</li>
+                                <li>{i18n._(t`organization.desc.summarize-apps-added`)} :</li>
                                 <div className={"instances-summarize"}>
                                     {
                                         instancesSelected.map(instance => {
@@ -244,7 +242,7 @@ export default class OrganizationInvitationForm extends React.Component {
                             onClick={() => this._handleStep(activeStep + 1)}
                             disabled={!emailsFromCSV.length > 0 && !email}
                     >
-                        {this.context.t("ui.next-step")}
+                        {i18n._(t`ui.next-step`)}
                     </button>
                 </div>
                 :
