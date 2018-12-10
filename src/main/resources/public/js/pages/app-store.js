@@ -234,21 +234,6 @@ export default class AppStore extends React.Component {
 
     };
 
-    _handleScroll = (e) => {
-        const newScrollValue = e.target.scrollTop;
-        const {scrollValue} = this.state;
-        let diff = Math.abs(newScrollValue - scrollValue);
-        if (diff > 5 && newScrollValue > 80) {
-            if (newScrollValue > scrollValue) {
-                this.setState({isSearchBarVisible: "folds", scrollValue: newScrollValue});
-            } else {
-                this.setState({isSearchBarVisible: "visible", scrollValue: newScrollValue});
-            }
-        } else if (newScrollValue < 80) {
-            this.setState({isSearchBarVisible: "fix", scrollValue: newScrollValue});
-        }
-    };
-
     render() {
         this.cancel = i18n._("ui.cancel");
         const {loading, activeFiltersNumber, config, filters, maybeMoreApps, moreAppsLoading} = this.state;
@@ -284,14 +269,14 @@ export default class AppStore extends React.Component {
                             <SearchAppForm ref={"searchAppForm"} updateFilter={this.updateFilters} config={config}
                                            filters={filters}/>
                         </SideNav>
-                        <div className={"app-store-container"} id="store-apps" onScroll={this._handleScroll}>
+                        <div className={"app-store-container"} id="store-apps">
 
                             <header className="title">
                                 <span>{i18n._('ui.appstore')}</span>
                             </header>
 
                             <input type="text" id="fulltext"
-                                   className={"form-control search-bar " + this.state.isSearchBarVisible}
+                                   className={"form-control search-bar"}
                                    onChange={this._handleFullTextSearchChanged}
                                    placeholder={i18n._("keywords")} name="fullTextSearch"/>
                             <div className={"app-list"}>
