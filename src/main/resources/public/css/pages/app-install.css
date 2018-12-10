@@ -1,4 +1,5 @@
 .app-install-wrapper {
+    flex-grow: 1;
     padding: 3em 1em 0 1em;
 }
 
@@ -44,6 +45,11 @@
 
 .app-install-wrapper .app-install-description p.long{
     text-align: justify !important;
+}
+
+.app-install-wrapper .app-install-description .load-more {
+    padding: 0.2em 0.3em 0.2em 0.3em;
+    font-size: 1.2em;
 }
 
 

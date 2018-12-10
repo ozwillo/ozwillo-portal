@@ -9,6 +9,7 @@ import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
 import {i18n} from '../app';
 import {t, Trans} from '@lingui/macro'
+import UpdateTitle from '../components/update-title';
 
 
 export default class AppInstall extends React.Component {
@@ -119,6 +120,7 @@ export default class AppInstall extends React.Component {
 
         return (
             <div className={'app-install-wrapper'}>
+                <UpdateTitle title={app.name}/>
                 <div className={'flex-row header-app-install'}>
                     <div className={'information-app flex-row'}>
                         <img alt={'app icon'} src={app.icon}/>
@@ -168,7 +170,7 @@ export default class AppInstall extends React.Component {
                             <React.Fragment>
                                 <p>{app.description}</p>
                                 {displayLongDescription.button &&
-                                <button className="btn btn-lg btn-default"
+                                <button className="btn btn-lg btn-default load-more"
                                         onClick={this._handleDescriptionLoader}>
                                     {i18n._(t`store.load-more`)}
                                 </button>

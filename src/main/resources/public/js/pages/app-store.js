@@ -10,6 +10,7 @@ import {i18n} from "../app";
 import swal from "sweetalert2";
 import {fetchUserInfo} from "../actions/user";
 import { t } from "@lingui/macro"
+import UpdateTitle from '../components/update-title';
 
 export default class AppStore extends React.Component {
 
@@ -258,6 +259,7 @@ export default class AppStore extends React.Component {
 
         return (
             <React.Fragment>
+                <UpdateTitle title={i18n._(t`ui.appstore`)}/>
                 {loading ?
                     <div className={"app-store-wrapper"}>
                         <div className="app-store-container-loading text-center">
