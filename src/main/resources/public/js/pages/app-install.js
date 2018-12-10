@@ -7,9 +7,8 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
-import {i18n} from "../app";
-import {Trans} from "@lingui/macro"
-
+import {i18n} from '../app';
+import {t, Trans} from '@lingui/macro'
 
 
 export default class AppInstall extends React.Component {
@@ -26,7 +25,8 @@ export default class AppInstall extends React.Component {
             tos: ''
         },
         config: {},
-        organizationsAvailable: []
+        organizationsAvailable: [],
+        displayLongDescription: {button: false, text: false}
     };
 
     constructor(props) {
@@ -36,6 +36,11 @@ export default class AppInstall extends React.Component {
 
     componentDidMount() {
         const {app, config} = this.props.location.state;
+
+        if(app.description.endsWith("…")){
+            this.setState({displayLongDescription: {button: true, text: false}});
+        }
+
         this.setState({app: app, config: config}, () => {
             this._loadAppDetails()
             this._loadOrgs()
@@ -96,9 +101,14 @@ export default class AppInstall extends React.Component {
         this.refs.modalImage._openModal(imageSrc);
     };
 
+    _handleDescriptionLoader = () => {
+        const displayLongDescription = {button: false, text: true};
+        this.setState({displayLongDescription});
+    };
+
 
     render() {
-        const {app, appDetails, organizationsAvailable, config} = this.state;
+        const {app, appDetails, organizationsAvailable, config, displayLongDescription} = this.state;
         const settings = {
             dots: true,
             speed: 500,
@@ -115,7 +125,7 @@ export default class AppInstall extends React.Component {
                         <div className={'information-app-details'}>
                             <p><strong>{app.name}</strong></p>
                             <p>{app.provider}</p>
-                            <p>{app.description}</p>
+                            <p>{app.description} <a href={"#long-description"}><i className="fas fa-external-link-alt"></i></a></p>
                             <div className={'rate-content'}>
                                 <RatingWrapper rating={appDetails.rating} rateable={appDetails.rateable}
                                                rate={this._rateApp}/>
@@ -144,14 +154,28 @@ export default class AppInstall extends React.Component {
 
                 {
                     appDetails.screenshots && appDetails.screenshots.length === 1 &&
-                        <div className={"unique-screenshot"} onClick={() => this._openModal(appDetails.screenshots[0])}>
-                            <img src={appDetails.screenshots[0]} alt={"screenshot "+appDetails.screenshots[0]}/>
-                        </div>
+                    <div className={'unique-screenshot'} onClick={() => this._openModal(appDetails.screenshots[0])}>
+                        <img src={appDetails.screenshots[0]} alt={'screenshot ' + appDetails.screenshots[0]}/>
+                    </div>
 
                 }
 
-                <div className={'flex-row app-install-description'}>
-                    {app.description}
+                <div className={'flex-row app-install-description'} id={"long-description"}>
+                    {
+                        displayLongDescription.text ?
+                            <p className={'long'}>{appDetails.longdescription}</p>
+                            :
+                            <React.Fragment>
+                                <p>{app.description}</p>
+                                {displayLongDescription.button &&
+                                <button className="btn btn-lg btn-default"
+                                        onClick={this._handleDescriptionLoader}>
+                                    {i18n._(t`store.load-more`)}
+                                </button>
+                                }
+                            </React.Fragment>
+                    }
+
                 </div>
                 < ModalImage
                     ref={'modalImage'}
@@ -234,7 +258,7 @@ export class InstallForm extends React.Component {
         return (
             <React.Fragment>
                 {!installed &&
-                <div className={"install-selector"}>
+                <div className={'install-selector'}>
                     <label><Trans>For which usage</Trans></label>
                     <Select
                         className="select"
@@ -248,7 +272,7 @@ export class InstallForm extends React.Component {
                 }
 
                 {!installed && !(installType === 'PERSONAL') && !(app.type === 'service') ?
-                    <div className={"install-selector"}>
+                    <div className={'install-selector'}>
                         <label><Trans>For which organization</Trans></label>
                         <Select
                             disabled={disabledOrganization}

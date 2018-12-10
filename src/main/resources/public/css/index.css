@@ -259,6 +259,7 @@ form .alert {
 /* width */
 ::-webkit-scrollbar {
     width: 0.7em;
+    height: 0.7em;
 }
 
 /* Track */
