@@ -256,3 +256,26 @@ form .alert {
     }
 }
 
+/* width */
+::-webkit-scrollbar {
+    width: 0.7em;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--gray-color);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 0.3em;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+

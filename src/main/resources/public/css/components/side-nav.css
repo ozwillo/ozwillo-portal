@@ -66,3 +66,27 @@
 }
 
 
+
+/* width */
+.side-nav::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+/* Track */
+.side-nav::-webkit-scrollbar-track {
+    background: var(--gray-color);
+}
+
+/* Handle */
+.side-nav::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 0.2em;
+
+}
+
+/* Handle on hover */
+.side-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
+
