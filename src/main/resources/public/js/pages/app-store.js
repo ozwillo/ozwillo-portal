@@ -9,6 +9,7 @@ import PropTypes from "prop-types";
 import {i18n} from "../app";
 import swal from "sweetalert2";
 import {fetchUserInfo} from "../actions/user";
+import { t } from "@lingui/macro"
 
 export default class AppStore extends React.Component {
 
@@ -66,11 +67,11 @@ export default class AppStore extends React.Component {
             });
         } else if (potentialOldFilters && askFilterPermission && numberPotentialActiveFilters > 0) {
             swal({
-                title: i18n._("apply-old-filters"),
+                title: i18n._(`store.apply-old-filters`),
                 type: 'info',
                 showCancelButton: true,
-                cancelButtonText: i18n._("ui.cancel"),
-                confirmButtonText: i18n._("ui.yes")
+                cancelButtonText: i18n._(t`ui.cancel`),
+                confirmButtonText: i18n._(t`ui.yes`)
             }).then((result) => {
                 if (result.value) {
                     this.setState({filters: potentialOldFilters}, () => {
@@ -209,12 +210,12 @@ export default class AppStore extends React.Component {
             <div className={"load-more-apps"}>
                 {moreAppsLoading && maybeMoreApps ?
                     <div className="text-center">
-                        <i className="fa fa-spinner fa-spin loading"></i> {i18n._('ui.loading')}
+                        <i className="fa fa-spinner fa-spin loading"></i> {i18n._(t`ui.loading`)}
                     </div>
                     : (
                         maybeMoreApps ? <div className="text-center">
                             <button className="btn btn-lg btn-default"
-                                    onClick={this._loadMoreApps}>{i18n._('load-more')}</button>
+                                    onClick={this._loadMoreApps}>{i18n._(t`store.load-more`)}</button>
                         </div> : null
                     )
                 }
@@ -235,20 +236,20 @@ export default class AppStore extends React.Component {
     };
 
     render() {
-        this.cancel = i18n._("ui.cancel");
+        this.cancel = i18n._(t`ui.cancel`);
         const {loading, activeFiltersNumber, config, filters, maybeMoreApps, moreAppsLoading} = this.state;
         const filterCounter = activeFiltersNumber > 0 &&
             <div className={"badge-filter-close"}>
-                <CustomTooltip title={i18n._("active-filters")}>{activeFiltersNumber}</CustomTooltip>
+                <CustomTooltip title={i18n._(t`active-filters`)}>{activeFiltersNumber}</CustomTooltip>
             </div>;
         const filterCounterHeader = activeFiltersNumber > 0 &&
             <React.Fragment>
-                <CustomTooltip title={i18n._("reset-filters")}>
+                <CustomTooltip title={i18n._(t`reset-filters`)}>
                     <i className={"reset-filters fa fa-trash"} onClick={this._resetFilters}/>
                 </CustomTooltip>
-                <div className={"active-filters"}>{i18n._("active-filters")} :</div>
+                <div className={"active-filters"}>{i18n._(t`active-filters`)} :</div>
                 <div className={"badge-filter-open"}>
-                    <CustomTooltip title={i18n._("active")}>
+                    <CustomTooltip title={i18n._(t`active`)}>
                         {activeFiltersNumber}
                     </CustomTooltip>
                 </div>
@@ -272,13 +273,13 @@ export default class AppStore extends React.Component {
                         <div className={"app-store-container"} id="store-apps">
 
                             <header className="title">
-                                <span>{i18n._('ui.appstore')}</span>
+                                <span>{i18n._(t`ui.appstore`)}</span>
                             </header>
 
                             <input type="text" id="fulltext"
                                    className={"form-control search-bar"}
                                    onChange={this._handleFullTextSearchChanged}
-                                   placeholder={i18n._("keywords")} name="fullTextSearch"/>
+                                   placeholder={i18n._(t`store.keywords`)} name="fullTextSearch"/>
                             <div className={"app-list"}>
                                 {this._displayApps()}
                             </div>

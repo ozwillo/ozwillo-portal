@@ -8,6 +8,8 @@ import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
 import {i18n} from "../app";
+import {Trans} from "@lingui/macro"
+
 
 
 export default class AppInstall extends React.Component {
@@ -67,7 +69,6 @@ export default class AppInstall extends React.Component {
     _loadAppDetails = async () => {
         const {app} = this.state;
         const data = await fetchAppDetails(app.type, app.id);
-        console.log(data);
         this.setState({appDetails: data});
     };
 
@@ -234,7 +235,7 @@ export class InstallForm extends React.Component {
             <React.Fragment>
                 {!installed &&
                 <div className={"install-selector"}>
-                    <label>For which usage</label>
+                    <label><Trans>For which usage</Trans></label>
                     <Select
                         className="select"
                         value={installType}
@@ -248,7 +249,7 @@ export class InstallForm extends React.Component {
 
                 {!installed && !(installType === 'PERSONAL') && !(app.type === 'service') ?
                     <div className={"install-selector"}>
-                        <label>For which organization</label>
+                        <label><Trans>For which organization</Trans></label>
                         <Select
                             disabled={disabledOrganization}
                             className={'select'}
@@ -284,7 +285,7 @@ export class InstallForm extends React.Component {
                         :
                         <div className="install">
                             <button className="btn pull-right btn-install" disabled={this._installButtonIsDisabled()}
-                                    onClick={this._doInstallApp}>{i18n._('install')}</button>
+                                    onClick={this._doInstallApp}>{i18n._('store.install')}</button>
                         </div>
                     }
                 </div>

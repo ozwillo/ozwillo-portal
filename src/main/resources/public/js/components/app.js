@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
 import {i18n} from "../app";
+import { t } from "@lingui/macro"
 
 
 class App extends React.PureComponent{
@@ -64,7 +65,7 @@ export class Indicator extends React.PureComponent {
         if (status === "installed") {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-installed">{i18n._('store.installed')}</button>,
+                        className="btn btn-lg btn-installed">{i18n._(t`store.installed`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-installed-indicator">
                     <i className="fa fa-check" />
                 </button>
@@ -72,7 +73,7 @@ export class Indicator extends React.PureComponent {
         } else if (status === "free") {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-free">{i18n._('store.free')}</button>,
+                        className="btn btn-lg btn-free">{i18n._(t`store.free`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-free-indicator">
                     <i className="fa fa-gift" />
                 </button>
@@ -80,7 +81,7 @@ export class Indicator extends React.PureComponent {
         } else {
             btns = [
                 <button type="button" key="indicator_button"
-                        className="btn btn-lg btn-buy">{i18n._('store.paid')}</button>,
+                        className="btn btn-lg btn-buy">{i18n._(t`store.paid`)}</button>,
                 <button type="button" key="indicator_icon" className="btn btn-lg btn-buy-indicator">
                     <i className="fa fas fa-euro-sign" />
                 </button>

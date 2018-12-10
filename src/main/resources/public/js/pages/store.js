@@ -335,7 +335,7 @@ const LoadMore = createClass({
             return (
                 <div className="text-center">
                     <button className="btn btn-lg btn-default"
-                            onClick={this.props.loadMoreApps}>{i18n._(t`load-more`)}</button>
+                            onClick={this.props.loadMoreApps}>{i18n._(t`store.load-more`)}</button>
                 </div>
             );
         }
