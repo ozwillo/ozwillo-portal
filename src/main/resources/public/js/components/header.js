@@ -13,17 +13,6 @@ class Header extends React.Component {
         const isLogged = !!this.props.userInfo.sub;
 
         return <header className="oz-header flex-row">
-            <div className="logo-home">
-                {
-                    isLogged &&
-                    <Link to='/my/dashboard'>
-                        <div className="logo"/>
-                    </Link>
-                }
-                {
-                    !isLogged && <div className="logo"/>
-                }
-            </div>
 
             {
                 isLogged &&
