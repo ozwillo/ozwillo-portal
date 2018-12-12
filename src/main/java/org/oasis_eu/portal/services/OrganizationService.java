@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import com.google.common.base.Strings;
 import org.oasis_eu.portal.model.organization.*;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
@@ -25,6 +24,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.support.RequestContextUtils;
 import reactor.core.publisher.Flux;
@@ -213,7 +213,7 @@ public class OrganizationService {
      * Update organization in DC and create data in kernel
      */
     public UIOrganization update(DCOrganization dcOrganization) {
-        if (Strings.isNullOrEmpty(dcOrganization.getLang())) {
+        if (StringUtils.isEmpty(dcOrganization.getLang())) {
             dcOrganization.setLang(RequestContextUtils.getLocale(request).getLanguage());
         }
 

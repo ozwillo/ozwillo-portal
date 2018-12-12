@@ -1,7 +1,5 @@
 package org.oasis_eu.portal.services.dc;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
 import org.oasis_eu.portal.services.SystemUserService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
@@ -236,7 +234,7 @@ public class DCOrganizationService {
      * Change rights of DC Organization.
      */
     public boolean changeDCOrganizationRights(DCResource dcResource, String kOrgId) {
-        final List<String> newRights = new ImmutableList.Builder<String>().add(kOrgId).build();
+        final List<String> newRights = Collections.singletonList(kOrgId);
         final List<String> dcResultErrOutter = new ArrayList<>();
 
         //get admin authentication and change organization rights
@@ -396,14 +394,13 @@ public class DCOrganizationService {
         return null;
     }
 
-    private static final Map<String, String> dcOrgPrefixToSuffix = new ImmutableMap.Builder<String, String>()
-        //.put("org", "Organisation") //org:Organisation_0 when there is no country defined (but it neve should happen)
-        .put("orgfr", "Organisation")
-        .put("orgbg", "Организация")
-        .put("orgit", "Organizzazione")
-        .put("orgtr", "Organizasyon")
-        .put("orges", "Organización")
-        .build();
+    private static final Map<String, String> dcOrgPrefixToSuffix = new HashMap<String, String>() {{
+        put("orgfr", "Organisation");
+        put("orgbg", "Организация");
+        put("orgit", "Organizzazione");
+        put("orgtr", "Organizasyon");
+        put("orges", "Organización");
+    }};
 
     private static final String dcOrgStatusActive = "Normal Activity";
     private static final String dcOrgStatusInactive = "Inactive";

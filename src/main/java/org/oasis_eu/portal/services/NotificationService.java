@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import com.google.common.base.Strings;
 import org.markdown4j.Markdown4jProcessor;
 import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
@@ -18,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -131,7 +131,7 @@ public class NotificationService {
                 notif.setFormattedText(getFormattedText(n, locale));
                 notif.setId(n.getId());
 
-                if (Strings.isNullOrEmpty(n.getActionUri())) {
+                if (StringUtils.isEmpty(n.getActionUri())) {
                     if (serviceEntry != null) {
                         notif.setUrl(serviceEntry.getNotificationUrl());
                     }
@@ -139,7 +139,7 @@ public class NotificationService {
                     notif.setUrl(n.getActionUri());
                 }
 
-                if (Strings.isNullOrEmpty(n.getActionLabel())) {
+                if (StringUtils.isEmpty(n.getActionLabel())) {
                     notif.setActionText(messageSource.getMessage("notif.manage", new Object[0], locale));
                 } else {
                     notif.setActionText(n.getActionLabel(locale));

@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import com.google.common.base.Strings;
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
 import org.oasis_eu.portal.dao.DirectAccessImageRepo;
@@ -13,12 +12,12 @@ import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.imageio.ImageIO;
@@ -249,7 +248,7 @@ public class ImageService {
 
     private String getFileName(String url) {
 
-        if (Strings.isNullOrEmpty(url)) {
+        if (StringUtils.isEmpty(url)) {
             return "";
         }
 
@@ -265,7 +264,7 @@ public class ImageService {
     }
 
     private String stripSlash(String input) {
-        if (Strings.isNullOrEmpty(input)) {
+        if (StringUtils.isEmpty(input)) {
             return "";
         } else if (input.endsWith("/")) {
             return input.substring(0, input.length() - 1);
