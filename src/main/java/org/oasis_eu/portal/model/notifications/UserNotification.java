@@ -1,10 +1,10 @@
 package org.oasis_eu.portal.model.notifications;
 
-import java.time.Instant;
-
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
+
+import java.time.Instant;
 
 /**
  * User: schambon

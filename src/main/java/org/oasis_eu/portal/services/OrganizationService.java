@@ -1,16 +1,19 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.model.organization.*;
+import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
 import org.oasis_eu.portal.model.organization.InvitationRequest;
+import org.oasis_eu.portal.model.organization.UIOrganization;
+import org.oasis_eu.portal.model.organization.UIOrganizationMember;
+import org.oasis_eu.portal.model.organization.UIPendingOrganizationMember;
 import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
-import org.oasis_eu.portal.model.dc.DCOrganization;
-import org.oasis_eu.portal.services.kernel.*;
+import org.oasis_eu.portal.services.kernel.UserMembershipService;
+import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.datacore.model.DCResource;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
@@ -21,7 +24,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -56,9 +58,6 @@ public class OrganizationService {
     private HttpServletRequest request;
 
     @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
     private UserMembershipService userMembershipService;
 
     @Autowired
@@ -67,8 +66,6 @@ public class OrganizationService {
     @Autowired
     private ApplicationService applicationService;
 
-    @Autowired
-    private SubscriptionStoreImpl subscriptionStore;
 
     @Autowired
     private DCOrganizationService dcOrganizationService;
@@ -553,9 +550,7 @@ public class OrganizationService {
             organizationStore.setStatus(uiOrganization.getId(), uiOrganization.getStatus());
         } catch (HttpClientErrorException e) {
             if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
-                String translatedBusinessMessage = messageSource.getMessage("error.msg.delete-organization",
-                        new Object[]{}, RequestContextUtils.getLocale(request));
-                throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
+                throw new ForbiddenException("Cannot delete organization", HttpStatus.FORBIDDEN.value());
             }
 
             throw e;
@@ -620,12 +615,6 @@ public class OrganizationService {
         try {
             return userMembershipService.createMembership(email, isAdmin, organizationId, null);
         } catch (WrongQueryException wqex) {
-            if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
-                // Translated msg. see issue #201
-                String translatedBusinessMessage = messageSource.getMessage("error.msg.user-already-invited",
-                        new Object[]{}, RequestContextUtils.getLocale(request));
-                wqex.setTranslatedBusinessMessage(translatedBusinessMessage);
-            }
             throw wqex;
         }
     }
@@ -666,11 +655,6 @@ public class OrganizationService {
         try {
             userMembershipService.removePendingMembership(id, eTag);
         } catch (WrongQueryException wqex) {
-            if (wqex.getStatusCode() == org.springframework.http.HttpStatus.CONFLICT.value()) {
-                String translatedBusinessMessage = messageSource.getMessage("error.msg.data-conflict",
-                        new Object[]{}, RequestContextUtils.getLocale(request));
-                wqex.setTranslatedBusinessMessage(translatedBusinessMessage);
-            }
             throw wqex;
         }
     }

@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.dao.UserOrganizationsHistoryRepository;
-import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.history.OrganizationHistory;
 import org.oasis_eu.portal.model.history.UserOrganizationsHistory;
+import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

@@ -3,11 +3,12 @@ import PropTypes from 'prop-types';
 import {Link} from "react-router-dom";
 import RedirectButtonWithTooltip from "./redirect-button-with-tooltip";
 import CustomTooltip from "./custom-tooltip";
-import customFetch from "../util/custom-fetch";
 import Config from "../config/config";
 import Popup from "react-popup/dist";
 import OrganizationService from '../util/organization-service';
 
+import { i18n } from "../app.js"
+import { t } from "@lingui/macro"
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes
 
@@ -43,8 +44,8 @@ export default class OrganizationCard extends React.PureComponent {
 
         const days = Math.round((deletionDate - now) / TIME_DAY);
 
-        return (days > 0) ? this.context.t('ui.message.will-be-deleted-plural').format(days) :
-            this.context.t('ui.message.will-be-deleted');
+        return (days > 0) ? i18n._(`ui.message.will-be-deleted-plural`, {value: days}) :
+            i18n._(t`ui.message.will-be-deleted`);
     }
 
     _handleCancelRemoveOrganization = async (e) => {
@@ -73,7 +74,7 @@ export default class OrganizationCard extends React.PureComponent {
         }catch(err){
             if (err.status === 403) {
                 this.setState({error: ''});
-                const lines = err.error.split('\n');
+                const lines = i18n._(`error.msg.delete-organization`).split('\n');
 
                 Popup.create({
                     title: orgDetails.name,
@@ -82,7 +83,7 @@ export default class OrganizationCard extends React.PureComponent {
                     </p>,
                     buttons: {
                         right: [{
-                            text: this.context.t('ui.ok'),
+                            text: i18n._(t`ui.ok`),
                             action: () => {
                                 Popup.close();
                             }
@@ -122,7 +123,7 @@ export default class OrganizationCard extends React.PureComponent {
                         <p className={"card-title"}>{name}</p>
                         <div className={"card-body"}>
                             <RedirectButtonWithTooltip link={url + 'instances'}
-                                                       tooltipTitle={this.context.t('tooltip.instances')}>
+                                                       tooltipTitle={i18n._(t`tooltip.instances`)}>
                                 <i className="fa fa-list-alt option-icon"/>
                             </RedirectButtonWithTooltip>
                         </div>
@@ -139,22 +140,22 @@ export default class OrganizationCard extends React.PureComponent {
                         <div className={"card-body"}>
                             <div className={"flex-row"}>
                                 <RedirectButtonWithTooltip link={url + 'members'}
-                                                           tooltipTitle={this.context.t('tooltip.members')}>
+                                                           tooltipTitle={i18n._(t`tooltip.members`)}>
                                     <i className="fa fa-users option-icon"/>
                                 </RedirectButtonWithTooltip>
 
                                 {isAdmin &&
                                 <React.Fragment>
                                     <RedirectButtonWithTooltip link={url + 'instances'}
-                                                               tooltipTitle={this.context.t('tooltip.instances')}>
+                                                               tooltipTitle={i18n._(t`tooltip.instances`)}>
                                         <i className="fa fa-list-alt option-icon"/>
                                     </RedirectButtonWithTooltip>
                                     <RedirectButtonWithTooltip link={url + 'admin'}
-                                                               tooltipTitle={this.context.t('tooltip.admin')}>
+                                                               tooltipTitle={i18n._(t`tooltip.admin`)}>
                                         <i className="fa fa-info-circle option-icon"/>
                                     </RedirectButtonWithTooltip>
                                     <CustomTooltip className={`delete ${!dcOrganizationId && 'invisible' || ''}`}
-                                                   title={this.context.t('tooltip.delete.organization')}>
+                                                   title={i18n._(t`tooltip.delete.organization`)}>
                                         <i onClick={this._handleRemoveOrganization}
                                            className="fa fa-trash option-icon"/>
                                     </CustomTooltip>
@@ -175,7 +176,7 @@ export default class OrganizationCard extends React.PureComponent {
                             <button
                                 onClick={this._handleCancelRemoveOrganization}
                                 className="btn btn-default-inverse">
-                                {this.context.t('ui.cancel')}
+                                {i18n._(t`ui.cancel`)}
                             </button>
                         </div>
                     </div>
@@ -188,8 +189,4 @@ export default class OrganizationCard extends React.PureComponent {
 OrganizationCard.propTypes = {
     organization: PropTypes.object.isRequired,
     callBackError: PropTypes.func.isRequired
-};
-
-OrganizationCard.contextTypes = {
-    t: PropTypes.func.isRequired
 };

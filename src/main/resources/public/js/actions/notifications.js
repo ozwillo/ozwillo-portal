@@ -5,10 +5,9 @@ export const DELETE_NOTIFICATION = 'DELETE_NOTIFICATION';
 export const FETCH_NOTIFICATIONS = 'FETCH_NOTIFICATIONS';
 
 // Actions
-const fetchNotificationsCountAction = (message, count) => {
+const fetchNotificationsCountAction = (count) => {
     return {
         type: FETCH_NOTIFICATIONS_COUNT,
-        message,
         count
     };
 };
@@ -32,7 +31,7 @@ const deleteNotificationAction = (id) => {
 export const fetchNotificationsCount = () => {
     return (dispatch) => {
         return customFetch('/my/api/notifications/summary').then((res) => {
-            dispatch(fetchNotificationsCountAction(res.notificationsMessage, res.notificationsCount));
+            dispatch(fetchNotificationsCountAction(res));
         });
     };
 };

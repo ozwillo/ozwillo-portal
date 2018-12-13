@@ -8,16 +8,15 @@ import AddInstanceDropdown from '../dropdown_menus/instance/add-instance-dropdow
 import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
 import customFetch from '../../util/custom-fetch';
 
-class InstancesTabHeader extends React.Component {
+import { i18n } from "../../app.js"
+import { t } from "@lingui/macro"
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
+class InstancesTabHeader extends React.Component {
 
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/instances`}>
             <header className="tab-header">
-                <span>{this.context.t('organization.desc.applications')}</span>
+                <span>{i18n._(t`organization.desc.applications`)}</span>
             </header>
         </Link>;
     }
@@ -31,10 +30,6 @@ const InstancesTabHeaderWithRedux = connect(state => {
 
 
 class InstancesTab extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired,
-    };
 
     state = {
         organizationMembers: null

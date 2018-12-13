@@ -1,6 +1,6 @@
 .oz-footer {
     background: var(--footer-color);
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+    border-top: solid 1px var(--primary-color);
 }
 
 .oz-footer .logo .image,
@@ -40,10 +40,6 @@
 .oz-footer > .flex-row:first-child {
     position: relative !important;
     margin-top: 1em;
-}
-
-.oz-footer > .flex-row {
-    margin: 20px 0;
 }
 
 .oz-footer .outer-links-list,

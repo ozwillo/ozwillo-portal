@@ -17,7 +17,6 @@ export default (state = defaultState, action) => {
 
     switch (action.type) {
         case FETCH_NOTIFICATIONS_COUNT:
-            nextState.message = action.message;
             nextState.count = action.count;
             break;
         case FETCH_NOTIFICATIONS:

@@ -1,13 +1,13 @@
 package org.oasis_eu.portal.services;
 
 import org.markdown4j.Markdown4jProcessor;
-import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.notifications.NotifApp;
 import org.oasis_eu.portal.model.notifications.UserNotification;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -15,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -54,8 +53,6 @@ public class NotificationService {
     @Value("${application.notificationsEnabled:true}")
     private boolean notificationsEnabled;
 
-    @Autowired
-    private MessageSource messageSource;
 
     public int countNotifications() {
         if (!notificationsEnabled) {
@@ -140,7 +137,7 @@ public class NotificationService {
                 }
 
                 if (StringUtils.isEmpty(n.getActionLabel())) {
-                    notif.setActionText(messageSource.getMessage("notif.manage", new Object[0], locale));
+                    notif.setActionText("Manage");
                 } else {
                     notif.setActionText(n.getActionLabel(locale));
                 }

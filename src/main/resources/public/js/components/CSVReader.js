@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tools from "../util/tools";
-import OrganizationCard from "./organization-card";
+import { i18n } from "../app.js"
 
 export default class CSVReader extends React.Component {
 
@@ -50,7 +50,7 @@ export default class CSVReader extends React.Component {
                 reader.readAsText(files[0]);
                 this.setState({error: null})
             } else if(files && files.length > 0) {
-                this.setState({error: this.context.t('error.msg.csv-file-required')});
+                this.setState({error: i18n._('error.msg.csv-file-required')});
                 this.cleanInput();
             }
         } catch (e) {
@@ -72,7 +72,7 @@ export default class CSVReader extends React.Component {
         return (
             <div className={"csv-reader"}>
                 <label className="label btn btn-default" htmlFor="fileSelect">
-                    {this.context.t("organization.desc.choose-file")}
+                    {i18n._("organization.desc.choose-file")}
                 </label>
                 <p>
                     {fileName}
@@ -96,7 +96,3 @@ CSVReader.propTypes = {
     fileName: PropTypes.string,
 };
 
-
-CSVReader.contextTypes = {
-    t: PropTypes.func.isRequired
-};

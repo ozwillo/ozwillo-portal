@@ -242,7 +242,7 @@ public class ImageService {
     }
 
     public boolean isDefaultIcon(String icon) {
-        String defaultIconUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
+        String defaultIconUrl = envPropertiesService.getCurrentConfig().getDefaultIconUrl();
         return defaultIconUrl.equals(icon);
     }
 

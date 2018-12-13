@@ -7,6 +7,9 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
+import {i18n} from '../app';
+import {t, Trans} from '@lingui/macro'
+import UpdateTitle from '../components/update-title';
 
 
 export default class AppInstall extends React.Component {
@@ -33,6 +36,7 @@ export default class AppInstall extends React.Component {
 
     componentDidMount() {
         const {app, config} = this.props.location.state;
+
         this.setState({app: app, config: config}, () => {
             this._loadAppDetails()
             this._loadOrgs()
@@ -93,6 +97,13 @@ export default class AppInstall extends React.Component {
         this.refs.modalImage._openModal(imageSrc);
     };
 
+    scrollToLongDescription = () => { // run this method to execute scrolling.
+        window.scrollTo({
+            top: this.longDescription.offsetTop,
+            behavior: 'smooth'  // Optional, adds animation
+        })
+    };
+
 
     render() {
         const {app, appDetails, organizationsAvailable, config} = this.state;
@@ -106,13 +117,22 @@ export default class AppInstall extends React.Component {
 
         return (
             <div className={'app-install-wrapper'}>
+                <UpdateTitle title={app.name}/>
                 <div className={'flex-row header-app-install'}>
                     <div className={'information-app flex-row'}>
                         <img alt={'app icon'} src={app.icon}/>
                         <div className={'information-app-details'}>
                             <p><strong>{app.name}</strong></p>
                             <p>{app.provider}</p>
-                            <p>{app.description}</p>
+                            <p>{app.description}
+                                &nbsp;
+                                {
+                                    appDetails.longdescription === app.description ?
+                                        null :
+                                        <i className="fas fa-external-link-alt go-to-long-description"
+                                           onClick={this.scrollToLongDescription}></i>
+                                }
+                            </p>
                             <div className={'rate-content'}>
                                 <RatingWrapper rating={appDetails.rating} rateable={appDetails.rateable}
                                                rate={this._rateApp}/>
@@ -129,7 +149,7 @@ export default class AppInstall extends React.Component {
 
 
                 {
-                    appDetails.screenshots && appDetails.screenshots.length > 0 &&
+                    appDetails.screenshots && appDetails.screenshots.length > 1 &&
                     <div className={'app-install-carousel'}>
                         <div className={'carousel-container'}>
                             <Slider {...settings}>
@@ -139,8 +159,21 @@ export default class AppInstall extends React.Component {
                     </div>
                 }
 
-                <div className={'flex-row app-install-description'}>
-                    {app.description}
+                {
+                    appDetails.screenshots && appDetails.screenshots.length === 1 &&
+                    <div className={'unique-screenshot'} onClick={() => this._openModal(appDetails.screenshots[0])}>
+                        <img src={appDetails.screenshots[0]} alt={'screenshot ' + appDetails.screenshots[0]}/>
+                    </div>
+
+                }
+
+                <div className={'flex-row app-install-description'} ref={(ref) => this.longDescription = ref}>
+                    {
+                        appDetails.longdescription === app.description ?
+                            <p>{app.description}</p>
+                            :
+                            <p className={'long'}>{appDetails.longdescription}</p>
+                    }
                 </div>
                 < ModalImage
                     ref={'modalImage'}
@@ -172,13 +205,13 @@ export class InstallForm extends React.Component {
     _createOptions = () => {
         let options = [];
         this._hasCitizens() ? options.push({
-            value: this.context.t('install.org.type.PERSONAL'),
+            value: i18n._('install.org.type.PERSONAL'),
             label: 'PERSONAL',
             id: 1
         }) : null;
 
         this._hasOrganizations() ? options.push({
-            value: this.context.t('install.org.type.ORG'),
+            value: i18n._('install.org.type.ORG'),
             label: 'ORG',
             id: 2
         }) : null;
@@ -223,8 +256,8 @@ export class InstallForm extends React.Component {
         return (
             <React.Fragment>
                 {!installed &&
-                <div className={"install-selector"}>
-                    <label>For which usage</label>
+                <div className={'install-selector'}>
+                    <label><Trans>For which usage</Trans></label>
                     <Select
                         className="select"
                         value={installType}
@@ -237,8 +270,8 @@ export class InstallForm extends React.Component {
                 }
 
                 {!installed && !(installType === 'PERSONAL') && !(app.type === 'service') ?
-                    <div className={"install-selector"}>
-                        <label>For which organization</label>
+                    <div className={'install-selector'}>
+                        <label><Trans>For which organization</Trans></label>
                         <Select
                             disabled={disabledOrganization}
                             className={'select'}
@@ -264,23 +297,23 @@ export class InstallForm extends React.Component {
                         <div className="install installed">
                             <Link className="btn btn-default-inverse pull-right btn-install"
                                   to={`/${this.props.config.language}/store`}>
-                                {this.context.t('market')}
+                                {i18n._('market')}
                             </Link>
                             <Link className="btn btn-default-inverse pull-right btn-install dashboard"
                                   to={'/my/dashboard'}>
-                                {this.context.t('dashboard')}
+                                {i18n._('dashboard')}
                             </Link>
                         </div>
                         :
                         <div className="install">
                             <button className="btn pull-right btn-install" disabled={this._installButtonIsDisabled()}
-                                    onClick={this._doInstallApp}>{this.context.t('install')}</button>
+                                    onClick={this._doInstallApp}>{i18n._('store.install')}</button>
                         </div>
                     }
                 </div>
                 {error.http_status !== 200 &&
                 <div className={'alert alert-danger'}>
-                    <p>{this.context.t('could-not-install-app')}</p>
+                    <p>{i18n._('could-not-install-app')}</p>
                 </div>
                 }
             </React.Fragment>
@@ -289,10 +322,6 @@ export class InstallForm extends React.Component {
 
 }
 
-
-InstallForm.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 InstallForm.propTypes = {
     app: PropTypes.object.isRequired,

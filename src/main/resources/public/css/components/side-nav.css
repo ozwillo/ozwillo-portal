@@ -5,7 +5,9 @@
     z-index: 1;
     overflow-x: hidden;
     flex-direction: column;
-    max-height: 80vh;
+    max-height: 100vh;
+    position: sticky;
+    top: 0px;
 }
 
 
@@ -15,7 +17,6 @@
 }
 
 .side-nav-tongue{
-    position: relative;
     font-size: 1.25em;
     color: var(--primary-color);
     background-color: var(--tertiary-color);
@@ -29,7 +30,9 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    position: sticky;
     top: 1%;
+    margin-top: 1%;
 }
 
 .side-nav-tongue .fa{
@@ -60,6 +63,30 @@
     flex-flow: row wrap;
     align-items: center;
     width: 80%;
+}
+
+
+
+/* width */
+.side-nav::-webkit-scrollbar {
+    width: 0.5em;
+}
+
+/* Track */
+.side-nav::-webkit-scrollbar-track {
+    background: var(--gray-color);
+}
+
+/* Handle */
+.side-nav::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 0.2em;
+
+}
+
+/* Handle on hover */
+.side-nav::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
 }
 
 

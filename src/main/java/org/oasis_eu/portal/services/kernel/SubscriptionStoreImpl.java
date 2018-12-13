@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.services.kernel;
 
-import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
+import org.oasis_eu.portal.dao.InstalledStatusRepository;
 import org.oasis_eu.portal.model.kernel.instance.Subscription;
 import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
-import org.oasis_eu.portal.dao.InstalledStatusRepository;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.model.store.InstalledStatus;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.service.Kernel;
@@ -16,7 +16,6 @@ import org.springframework.context.MessageSource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
@@ -86,10 +85,7 @@ public class SubscriptionStoreImpl {
             // validate response body
             newSub =  kernel.getBodyUnlessClientError(kernelResp, Subscription.class, uri);
         } catch(RestClientException e) { //TODO: Trigger another exception like WrongQueryException to check HttpStatus
-            String translatedBusinessMessage = messageSource.getMessage("error.msg.user-is-already-subscribed",
-                    new Object[]{}, RequestContextUtils.getLocale(request));
-
-            throw new WrongQueryException(translatedBusinessMessage, HttpStatus.BAD_REQUEST.value());
+            throw new WrongQueryException("User already subscribed", HttpStatus.BAD_REQUEST.value());
         }
 
         return newSub;
