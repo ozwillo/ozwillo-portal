@@ -26,8 +26,7 @@ export default class AppInstall extends React.Component {
             tos: ''
         },
         config: {},
-        organizationsAvailable: [],
-        displayLongDescription: {button: false, text: false}
+        organizationsAvailable: []
     };
 
     constructor(props) {
@@ -37,10 +36,6 @@ export default class AppInstall extends React.Component {
 
     componentDidMount() {
         const {app, config} = this.props.location.state;
-
-        if(app.description.endsWith("…")){
-            this.setState({displayLongDescription: {button: true, text: false}});
-        }
 
         this.setState({app: app, config: config}, () => {
             this._loadAppDetails()
@@ -102,14 +97,16 @@ export default class AppInstall extends React.Component {
         this.refs.modalImage._openModal(imageSrc);
     };
 
-    _handleDescriptionLoader = () => {
-        const displayLongDescription = {button: false, text: true};
-        this.setState({displayLongDescription});
+    scrollToLongDescription = () => { // run this method to execute scrolling.
+        window.scrollTo({
+            top: this.longDescription.offsetTop,
+            behavior: 'smooth'  // Optional, adds animation
+        })
     };
 
 
     render() {
-        const {app, appDetails, organizationsAvailable, config, displayLongDescription} = this.state;
+        const {app, appDetails, organizationsAvailable, config} = this.state;
         const settings = {
             dots: true,
             speed: 500,
@@ -127,7 +124,15 @@ export default class AppInstall extends React.Component {
                         <div className={'information-app-details'}>
                             <p><strong>{app.name}</strong></p>
                             <p>{app.provider}</p>
-                            <p>{app.description} <a href={"#long-description"}><i className="fas fa-external-link-alt"></i></a></p>
+                            <p>{app.description}
+                                &nbsp;
+                                {
+                                    appDetails.longdescription === app.description ?
+                                        null :
+                                        <i className="fas fa-external-link-alt go-to-long-description"
+                                           onClick={this.scrollToLongDescription}></i>
+                                }
+                            </p>
                             <div className={'rate-content'}>
                                 <RatingWrapper rating={appDetails.rating} rateable={appDetails.rateable}
                                                rate={this._rateApp}/>
@@ -162,22 +167,13 @@ export default class AppInstall extends React.Component {
 
                 }
 
-                <div className={'flex-row app-install-description'} id={"long-description"}>
+                <div className={'flex-row app-install-description'} ref={(ref) => this.longDescription = ref}>
                     {
-                        displayLongDescription.text ?
-                            <p className={'long'}>{appDetails.longdescription}</p>
+                        appDetails.longdescription === app.description ?
+                            <p>{app.description}</p>
                             :
-                            <React.Fragment>
-                                <p>{app.description}</p>
-                                {displayLongDescription.button &&
-                                <button className="btn btn-lg btn-default load-more"
-                                        onClick={this._handleDescriptionLoader}>
-                                    {i18n._(t`store.load-more`)}
-                                </button>
-                                }
-                            </React.Fragment>
+                            <p className={'long'}>{appDetails.longdescription}</p>
                     }
-
                 </div>
                 < ModalImage
                     ref={'modalImage'}

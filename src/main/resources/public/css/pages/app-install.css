@@ -47,14 +47,13 @@
     text-align: justify !important;
 }
 
-.app-install-wrapper .app-install-description .load-more {
-    padding: 0.2em 0.3em 0.2em 0.3em;
-    font-size: 1.2em;
+.app-install-wrapper .go-to-long-description{
+    color: var(--black-color);
+    cursor: pointer;
 }
 
-
-.app-install-wrapper .install-selector{
-
+.app-install-wrapper .rate-content{
+    min-width: 8em;
 }
 
 .app-install-wrapper .rate-content img {
@@ -70,7 +69,7 @@
 
 .app-install-carousel .screenshot:hover {
     opacity: 0.7;
-    cursor: pointer;
+    cursor: zoom-in;
 }
 
 .slick-slide {
