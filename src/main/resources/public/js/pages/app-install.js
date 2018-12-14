@@ -12,6 +12,9 @@ import {t, Trans} from '@lingui/macro'
 import UpdateTitle from '../components/update-title';
 
 
+const Showdown = require('showdown');
+const converter = new Showdown.Converter({tables: true});
+
 export default class AppInstall extends React.Component {
 
     state = {
@@ -34,12 +37,12 @@ export default class AppInstall extends React.Component {
         this._organizationService = new OrganizationService();
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         const {app, config} = this.props.location.state;
 
-        this.setState({app: app, config: config}, () => {
-            this._loadAppDetails()
-            this._loadOrgs()
+        this.setState({app: app, config: config}, async () => {
+              await this._loadAppDetails()
+              await this._loadOrgs()
         });
     }
 
@@ -161,8 +164,10 @@ export default class AppInstall extends React.Component {
 
                 {
                     appDetails.screenshots && appDetails.screenshots.length === 1 &&
-                    <div className={'unique-screenshot'} onClick={() => this._openModal(appDetails.screenshots[0])}>
-                        <img src={appDetails.screenshots[0]} alt={'screenshot ' + appDetails.screenshots[0]}/>
+                    <div className={'unique-screenshot'}>
+                        <img src={appDetails.screenshots[0]}
+                             onClick={() => this._openModal(appDetails.screenshots[0])}
+                             alt={'screenshot ' + appDetails.screenshots[0]}/>
                     </div>
 
                 }
@@ -170,9 +175,9 @@ export default class AppInstall extends React.Component {
                 <div className={'flex-row app-install-description'} ref={(ref) => this.longDescription = ref}>
                     {
                         appDetails.longdescription === app.description ?
-                            <p>{app.description}</p>
+                            <div dangerouslySetInnerHTML={{__html: converter.makeHtml(app.description)}}></div>
                             :
-                            <p className={'long'}>{appDetails.longdescription}</p>
+                            <div className={'long'} dangerouslySetInnerHTML={{__html: converter.makeHtml(appDetails.longdescription)}}></div>
                     }
                 </div>
                 < ModalImage

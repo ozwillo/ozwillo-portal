@@ -43,7 +43,12 @@
     font-size: 1.25em;
 }
 
-.app-install-wrapper .app-install-description p.long{
+.app-install-wrapper .app-install-description div.long{
+    justify-content: center;
+    display: flex;
+}
+
+.app-install-wrapper .app-install-description div.long > *{
     text-align: justify !important;
 }
 

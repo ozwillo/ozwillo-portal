@@ -61,7 +61,7 @@ export const fetchSetLanguage= (language) => {
         }
 
         return customFetch(`/api/config/language/${language}`)
-            .then(({ i18n, siteMapFooter }) => {
+            .then(({ siteMapFooter }) => {
                 //Config
                 dispatch(fetchConfigAction({ language, siteMapFooter }));
 
