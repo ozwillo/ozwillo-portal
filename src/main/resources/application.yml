@@ -5,6 +5,8 @@ spring:
   servlet.multipart.max-file-size: 200KB
   # mandatory since 1.4 even if we do not use it directly
   session.store-type: none
+  main:
+    allow-bean-definition-overriding: true
   # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
   # In prod, replace journal=true by w=majority&readPreference=primaryPreferred
   # TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
