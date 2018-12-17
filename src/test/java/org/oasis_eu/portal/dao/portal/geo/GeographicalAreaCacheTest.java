@@ -2,10 +2,10 @@ package org.oasis_eu.portal.dao.portal.geo;
 
 import static org.junit.Assert.assertEquals;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.joda.time.Instant;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.dao.GeographicalAreaCache;

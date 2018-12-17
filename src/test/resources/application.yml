@@ -3,6 +3,8 @@ spring:
   # only for 64x64 pngs which should be mostly below 5000B
   data.mongodb.uri: mongodb://localhost/portal_test
   servlet.multipart.max-file-size: 20KB
+  main:
+    allow-bean-definition-overriding: true
 
 server:
   compression.enabled: true
