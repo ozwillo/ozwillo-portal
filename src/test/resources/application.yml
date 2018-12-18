@@ -65,6 +65,7 @@ confs:
     baseUrl: https://portal.ozwillo.com
     baseImageUrl: ${confs.ozwillo.baseUrl}/media
     defaultIconUrl: ${confs.ozwillo.baseUrl}/img/noicon.png
+    isDefaultConf: true
     web:
       googleTag: UA-11111111-1
       home: https://www.ozwillo-dev.eu

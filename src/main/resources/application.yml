@@ -79,6 +79,7 @@ rest:
 
 confs:
   localhost:
+    isDefaultConf: true
     baseUrl: http://localhost:3000
     baseImageUrl: ${confs.localhost.baseUrl}/media
     defaultIconUrl: ${confs.localhost.baseUrl}/img/noicon.png

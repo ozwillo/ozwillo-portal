@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Map;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 @Service
 public class EnvPropertiesService {
@@ -25,41 +27,54 @@ public class EnvPropertiesService {
         if (envConfig != null) {
             return envConfig;
         } else {
-            return envProperties.getConfs().get("ozwillo");
+            return envProperties.getConfs().get(extractDefaultConfKey());
         }
     }
 
-    public String extractEnvKey(){
+    public String extractEnvKey() {
         String URL = extractURL(request.getRequestURL().toString());
         Map<String, EnvConfig> envConfigMap = envProperties.getConfs();
 
-        for(Map.Entry<String,EnvConfig> entry : envConfigMap.entrySet()){
+        for (Map.Entry<String, EnvConfig> entry : envConfigMap.entrySet()) {
             String key = entry.getKey();
             EnvConfig envConfig = entry.getValue();
 
-            if(envConfig.getBaseUrl().contains(URL)){
+            if (envConfig.getBaseUrl().contains(URL)) {
                 return key;
             }
         }
 
-        return "ozwillo";
+        return extractDefaultConfKey();
     }
 
 
-    public EnvConfig getCurrentConfig(){
+    public EnvConfig getCurrentConfig() {
         try {
             return getConfig();
-        }catch(Exception e){
+        } catch (Exception e) {
             return null;
         }
     }
 
-    private String extractURL(String URL){
+    private String extractURL(String URL) {
         Pattern p = Pattern.compile("((https|http)?:\\/\\/)(.*?)(?=\\/)");
         Matcher m = p.matcher(URL);
         m.find();
         return m.group(0);
     }
 
+
+    public String extractDefaultConfKey() {
+          String defaultConfKey = envProperties
+                    .getConfs()
+                    .entrySet()
+                    .stream()
+                    .filter(elem -> elem.getValue().getIsDefaultConf())
+                    .map(defaultConfElem -> defaultConfElem.getKey())
+                    .findFirst()
+                    .orElse(null);
+
+         return defaultConfKey;
+    }
 
 }

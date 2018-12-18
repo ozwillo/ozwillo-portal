@@ -14,6 +14,8 @@ public class EnvConfig {
 
     private String defaultIconUrl;
 
+    private boolean isDefaultConf;
+
     public String getBaseUrl() {
         return baseUrl;
     }
@@ -60,6 +62,14 @@ public class EnvConfig {
 
     public void setDefaultIconUrl(String defaultIconUrl) {
         this.defaultIconUrl = defaultIconUrl;
+    }
+
+    public boolean getIsDefaultConf() {
+        return isDefaultConf;
+    }
+
+    public void setIsDefaultConf(boolean defaultConf) {
+        isDefaultConf = defaultConf;
     }
 }
 
