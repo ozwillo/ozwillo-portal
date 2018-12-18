@@ -52,9 +52,10 @@ class App extends React.Component {
         return (
             <I18nProvider i18n={i18n}>
                 <BrowserRouter>
+                    <GoogleAnalytics>
                     <Router/>
+                    </GoogleAnalytics>
                 </BrowserRouter>
-                <GoogleAnalytics/>
                 <HtmlHead/>
             </I18nProvider>
 
