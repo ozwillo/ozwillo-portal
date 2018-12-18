@@ -9,7 +9,7 @@ import PropTypes from "prop-types";
 import {i18n} from "../app";
 import swal from "sweetalert2";
 import {fetchUserInfo} from "../actions/user";
-import { t } from "@lingui/macro"
+import { t, Trans } from "@lingui/macro"
 import UpdateTitle from '../components/update-title';
 
 export default class AppStore extends React.Component {
@@ -68,7 +68,7 @@ export default class AppStore extends React.Component {
             });
         } else if (potentialOldFilters && askFilterPermission && numberPotentialActiveFilters > 0) {
             swal({
-                title: i18n._(`store.apply-old-filters`),
+                title: i18n._(t`store.apply-old-filters`),
                 type: 'info',
                 showCancelButton: true,
                 cancelButtonText: i18n._(t`ui.cancel`),
@@ -211,7 +211,7 @@ export default class AppStore extends React.Component {
             <div className={"load-more-apps"}>
                 {moreAppsLoading && maybeMoreApps ?
                     <div className="text-center">
-                        <i className="fa fa-spinner fa-spin loading"></i> {i18n._(t`ui.loading`)}
+                        <i className="fa fa-spinner fa-spin loading"/> {i18n._(t`ui.loading`)}
                     </div>
                     : (
                         maybeMoreApps ? <div className="text-center">
@@ -248,7 +248,7 @@ export default class AppStore extends React.Component {
                 <CustomTooltip title={i18n._(t`reset-filters`)}>
                     <i className={"reset-filters fa fa-trash"} onClick={this._resetFilters}/>
                 </CustomTooltip>
-                <div className={"active-filters"}>{i18n._(t`active-filters`)} :</div>
+                <div className={"active-filters"}><Trans>Active filters</Trans> :</div>
                 <div className={"badge-filter-open"}>
                     <CustomTooltip title={i18n._(t`active`)}>
                         {activeFiltersNumber}

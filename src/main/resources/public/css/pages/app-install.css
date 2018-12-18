@@ -105,6 +105,11 @@
 }
 .install-app .dropdown{
     margin-top: -1em;
+    height:100%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+    flex-direction: column;
 }
 
 .install-app .dropdown > *{
@@ -124,6 +129,27 @@
 .install-area > :last-child{
     margin-left: 0.5em;
 }
+
+.dropdown .redirect-to-connection{
+    margin-bottom: 0em;
+}
+
+.app-install-wrapper .organization-spinner{
+    position: absolute;
+    left: -1.5em;
+}
+
+.app-install-wrapper .select-organization{
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+}
+
+.app-install-wrapper .select{
+    width: 100%;
+    min-width: 300px;
+}
+
 
 .install .btn-install{
     width: 8em;
@@ -145,6 +171,7 @@
     flex:1;
     justify-content: center;
     align-items: center;
+    margin-top: 2.5em;
 }
 
 .unique-screenshot img{
@@ -155,3 +182,5 @@
 .dashboard{
     background-color: var(--primary-color) !important;
 }
+
+

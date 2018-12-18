@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import customFetch from "../util/custom-fetch";
 import GeoAreaAutosuggest from "./autosuggests/geoarea-autosuggest";
 import LabelSection from "./label-section";
-import {fetchUserInfos} from "../util/user-service";
 import PillInputButton from './pill-input-button';
+import UserService from '../util/user-service';
 
 import { i18n } from "../app.js"
 import { t } from "@lingui/macro"
@@ -32,12 +32,18 @@ export default class SearchAppsForm extends React.Component {
 
     };
 
+    constructor(props){
+        super(props);
+        this._userService = new UserService();
+
+    }
+
     componentDidMount = async () =>  {
         this._initializeFilters(this.props.filters);
         await this.initializeLanguage();
 
         //organization input is just available when user is connected
-        const userInfo = await fetchUserInfos();
+        const userInfo = await this._userService.fetchUserInfos();
         if(userInfo){
             customFetch("/my/api/organization").then((organizations) => {
                 organizations.unshift({name:i18n._(t`store.language.all`), id: ''});

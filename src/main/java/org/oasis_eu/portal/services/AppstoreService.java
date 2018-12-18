@@ -156,7 +156,7 @@ public class AppstoreService {
 
         String providerName = getOrganizationName(entry);
 
-        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64, false), providerName, getInstallationOption(entry));
+        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64, false), providerName);
 
     }
 
@@ -192,29 +192,6 @@ public class AppstoreService {
         subscription.setServiceId(appId);
 
         return subscriptionStore.create(userInfoService.currentUser().getUserId(), subscription);
-    }
-
-    private InstallationOption getInstallationOption(CatalogEntry entry) {
-        InstallationOption paymentOption = InstallationOption.valueOf(entry.getPaymentOption().toString());
-        if (!userInfoService.isAuthenticated()) {
-            return paymentOption; // urgh. clean this up sometime!
-        }
-
-        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(entry.getType(), entry.getId(), userInfoService.currentUser().getUserId());
-        if (status != null) {
-            return status.isInstalled() ? InstallationOption.INSTALLED : paymentOption;
-        }
-
-        InstallationOption option = computeInstallationOption(entry);
-
-        status = new InstalledStatus();
-        status.setCatalogEntryType(entry.getType());
-        status.setCatalogEntryId(entry.getId());
-        status.setUserId(userInfoService.currentUser().getUserId());
-        status.setInstalled(option.equals(InstallationOption.INSTALLED));
-        installedStatusRepository.save(status);
-
-        return option;
     }
 
     private InstallationOption getApplicationInstallationOptionFromOrganization(UIOrganization organization, CatalogEntry entry){
