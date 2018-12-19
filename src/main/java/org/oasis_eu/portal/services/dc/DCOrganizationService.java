@@ -13,11 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -55,12 +53,6 @@ public class DCOrganizationService {
     private String dcOrgSearchCountry;
     @Value("${application.dcOrgSearch.useTypeAsModel:false}")
     private boolean useTypeAsModel;
-
-    @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private MessageSource messageSource;
 
     public DCOrganization searchOrganization(String lang, String country_uri, String sector, String regNumber) {
 

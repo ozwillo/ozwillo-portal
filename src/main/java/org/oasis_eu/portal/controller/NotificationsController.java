@@ -4,7 +4,6 @@ import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
 import org.oasis_eu.portal.services.NotificationService;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
@@ -16,9 +15,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestController
 @RequestMapping("/my/api/notifications")
 public class NotificationsController {
-
-    @Autowired
-    protected MessageSource messageSource;
 
     @Autowired
     private NotificationService notificationService;

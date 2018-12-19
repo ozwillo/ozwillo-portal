@@ -7,14 +7,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -27,12 +25,6 @@ public class InstanceACLStoreImpl {
 
     @Autowired
     private Kernel kernel;
-
-    @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private MessageSource messageSource;
 
     @Value("${kernel.portal_endpoints.apps}")
     private String endpoint;

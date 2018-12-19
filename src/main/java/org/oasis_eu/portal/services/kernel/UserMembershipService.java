@@ -15,13 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.MessageSource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -38,12 +36,6 @@ public class UserMembershipService {
 
     @Autowired
     private Kernel kernel;
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private HttpServletRequest request;
 
     @Cacheable("user-memberships")
     public List<UserMembership> getMembershipsOfUser(String userId) throws WrongQueryException {

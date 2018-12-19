@@ -12,12 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.MessageSource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 
@@ -40,12 +38,6 @@ public class SubscriptionStoreImpl {
 
     @Autowired
     private InstalledStatusRepository installedStatusRepository;
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private HttpServletRequest request;
 
     @Cacheable("subscriptions")
     public List<Subscription> findByUserId(String userId) {
