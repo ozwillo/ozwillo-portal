@@ -2,6 +2,8 @@ package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.config.environnements.EnvProperties;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,6 +16,7 @@ import java.util.stream.Collectors;
 
 @Service
 public class EnvPropertiesService {
+    private static final Logger logger = LoggerFactory.getLogger(EnvPropertiesService.class);
 
     @Autowired
     private EnvProperties envProperties;
@@ -23,49 +26,47 @@ public class EnvPropertiesService {
 
     public EnvConfig getConfig() {
         String website = extractEnvKey();
-        EnvConfig envConfig = envProperties.getConfs().get(website);
-        if (envConfig != null) {
-            return envConfig;
-        } else {
-            return envProperties.getConfs().get(extractDefaultConfKey());
-        }
+        return envProperties.getConfs().get(website);
     }
 
     public String extractEnvKey() {
-        String URL = extractURL(request.getRequestURL().toString());
-        Map<String, EnvConfig> envConfigMap = envProperties.getConfs();
+        try {
+            String URL = extractURL(request.getRequestURL().toString());
+            Map<String, EnvConfig> envConfigMap = envProperties.getConfs();
 
-        for (Map.Entry<String, EnvConfig> entry : envConfigMap.entrySet()) {
-            String key = entry.getKey();
-            EnvConfig envConfig = entry.getValue();
+            for (Map.Entry<String, EnvConfig> entry : envConfigMap.entrySet()) {
+                String key = entry.getKey();
+                EnvConfig envConfig = entry.getValue();
 
-            if (envConfig.getBaseUrl().contains(URL)) {
-                return key;
+                if (envConfig.getBaseUrl().contains(URL)) {
+                    return key;
+                }
             }
+        } catch (Exception e) {
+            logger.trace("No request defined, so extract default conf");
         }
-
         return extractDefaultConfKey();
     }
 
 
-    public EnvConfig getCurrentConfig() {
-        try {
-            return getConfig();
-        } catch (Exception e) {
-            return null;
+        public EnvConfig getCurrentConfig () {
+            try {
+                return getConfig();
+            } catch (Exception e) {
+                return null;
+            }
         }
-    }
 
-    private String extractURL(String URL) {
-        Pattern p = Pattern.compile("((https|http)?:\\/\\/)(.*?)(?=\\/)");
-        Matcher m = p.matcher(URL);
-        m.find();
-        return m.group(0);
-    }
+        private String extractURL (String URL){
+            Pattern p = Pattern.compile("((https|http)?:\\/\\/)(.*?)(?=\\/)");
+            Matcher m = p.matcher(URL);
+            m.find();
+            return m.group(0);
+        }
 
 
-    public String extractDefaultConfKey() {
-          String defaultConfKey = envProperties
+        public String extractDefaultConfKey () {
+            String defaultConfKey = envProperties
                     .getConfs()
                     .entrySet()
                     .stream()
@@ -74,7 +75,7 @@ public class EnvPropertiesService {
                     .findFirst()
                     .orElse(null);
 
-         return defaultConfKey;
-    }
+            return defaultConfKey;
+        }
 
-}
+    }
