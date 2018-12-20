@@ -3,7 +3,6 @@ import {BrowserRouter} from 'react-router-dom';
 import Router from './config/router';
 import {I18nProvider} from '@lingui/react';
 import customFetch from './util/custom-fetch';
-import GoogleAnalytics from './components/google-analytics';
 import HtmlHead from './components/html-head';
 import {setupI18n} from '@lingui/core'
 
@@ -22,8 +21,9 @@ export const i18n = setupI18n();
 class App extends React.Component {
 
     state = {
-        i18nLoaded: false
-    }
+        i18nLoaded: false,
+        googleTag: null
+    };
 
     componentDidMount = async () => {
         await i18n.load({
@@ -36,25 +36,27 @@ class App extends React.Component {
         });
         await i18n.activate('en');
 
-        this.setState({i18nLoaded: true})
+        const {tag: googleTag} = await customFetch('/api/config/googleTag');
+        localStorage.setItem('googleTag', googleTag);
+
+        this.setState({i18nLoaded: true, googleTag: googleTag});
         //Change css var, depends on the domain name
         const styleProperties = await customFetch('/api/config/style');
         styleProperties.map(cssVar => {
             document.body.style.setProperty(cssVar.key, cssVar.value);
         });
-    }
+    };
 
     render() {
-        if (!this.state.i18nLoaded) {
+        if (!this.state.i18nLoaded || !this.state.googleTag) {
             return null;
         }
+
 
         return (
             <I18nProvider i18n={i18n}>
                 <BrowserRouter>
-                    <GoogleAnalytics>
                     <Router/>
-                    </GoogleAnalytics>
                 </BrowserRouter>
                 <HtmlHead/>
             </I18nProvider>
