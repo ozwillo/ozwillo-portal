@@ -1,9 +1,8 @@
 package org.oasis_eu.portal.services.icons;
 
 import com.mongodb.client.MongoCollection;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.config.environnements.helpers.KernelEnv;
 import org.oasis_eu.portal.dao.ImageDownloadAttemptRepository;
@@ -20,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StreamUtils;
 
@@ -31,11 +29,10 @@ import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ImageServiceIntegrationTest {
 
@@ -61,7 +58,7 @@ public class ImageServiceIntegrationTest {
 	@MockBean
 	private EnvPropertiesService envPropertiesService;
 
-	@Before
+	@BeforeEach
 	public void clean() {
 		blacklist = mongoTemplate.getCollection("image_download_attempt");
 

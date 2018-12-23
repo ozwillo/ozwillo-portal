@@ -1,15 +1,14 @@
 package org.oasis_eu.portal.services.sitemap;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.BDDMockito.given;
 
 import java.util.List;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.config.environnements.helpers.WebEnv;
 import org.oasis_eu.portal.dao.SiteMapComponentsRepository;
@@ -25,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.web.client.RestTemplate;
 
 
@@ -33,7 +31,6 @@ import org.springframework.web.client.RestTemplate;
  * User: schambon
  * Date: 1/8/15
  */
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class SiteMapFooterParserTest {
 
@@ -52,7 +49,7 @@ public class SiteMapFooterParserTest {
 	@MockBean
 	private EnvPropertiesService envPropertiesService;
 
-	@Before
+	@BeforeEach
 	public void init() {
 		siteMapUpdater.initializeSiteMapComponents();
 
@@ -65,7 +62,7 @@ public class SiteMapFooterParserTest {
 		given(envPropertiesService.getCurrentConfig()).willReturn(envConfig);
 	}
 
-    @After
+    @AfterEach
 	public void clean() {
 		siteMapComponentsRepository.deleteAll();
 	}

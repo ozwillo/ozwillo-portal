@@ -1,9 +1,8 @@
 package org.oasis_eu.portal.controller.icon;
 
 import com.mongodb.client.MongoCollection;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.config.environnements.helpers.KernelEnv;
 import org.oasis_eu.portal.dao.ImageRepository;
@@ -18,7 +17,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.util.StreamUtils;
@@ -28,7 +26,7 @@ import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -36,7 +34,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 @ActiveProfiles("test")
@@ -58,7 +55,7 @@ public class ImageControllerTest {
 
 	private MongoCollection collection;
 
-	@Before
+	@BeforeEach
 	public void setup() {
 		collection = mongoTemplate.getCollection("image");
 		collection.drop();

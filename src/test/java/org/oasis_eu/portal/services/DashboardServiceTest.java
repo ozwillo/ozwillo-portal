@@ -1,8 +1,7 @@
 package org.oasis_eu.portal.services;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.dao.DashboardRepository;
 import org.oasis_eu.portal.model.dashboard.UserContext;
 import org.oasis_eu.portal.OzwilloPortal;
@@ -14,7 +13,6 @@ import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -25,7 +23,6 @@ import static org.springframework.test.web.client.match.MockRestRequestMatchers.
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
 public class DashboardServiceTest {
@@ -42,7 +39,7 @@ public class DashboardServiceTest {
 	@Autowired
 	private DashboardRepository dashboardRepository;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		UserInfo dummy = new UserInfo();
 		dummy.setUserId(USER_ID);

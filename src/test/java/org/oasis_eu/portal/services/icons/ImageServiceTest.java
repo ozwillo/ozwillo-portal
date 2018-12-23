@@ -1,6 +1,6 @@
 package org.oasis_eu.portal.services.icons;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.services.ImageService;
 import org.springframework.util.StreamUtils;
@@ -11,7 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Random;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ImageServiceTest {
 

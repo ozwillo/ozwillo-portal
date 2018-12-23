@@ -1,9 +1,8 @@
 package org.oasis_eu.portal.core.dao.impl;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.model.kernel.store.Audience;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
@@ -20,7 +19,6 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
@@ -32,11 +30,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringBootTest(classes = CatalogStoreImplTest.class)
 @ComponentScan(basePackages = "org.oasis_eu.portal")
@@ -49,7 +46,7 @@ public class CatalogStoreImplTest {
 	@Autowired
 	private CatalogStoreImpl catalogStore;
 
-	@Before
+	@BeforeEach
 	public void setupAuthenticationContext() {
 		OpenIdCAuthentication authentication = new OpenIdCAuthentication("test", "accesstoken", "idtoken", java.time.Instant.now(), java.time.Instant.now(), true, false);
 		SecurityContextHolder.setContext(SecurityContextHolder.createEmptyContext());
@@ -57,12 +54,12 @@ public class CatalogStoreImplTest {
 
 	}
 
-	@After
+	@AfterEach
 	public void clearAuthentication() {
 		SecurityContextHolder.clearContext();
 	}
 
-	@Before
+	@BeforeEach
 	public void setupRequestContext() {
 		MockHttpServletRequest request = new MockHttpServletRequest();
 		RequestContextHolder.setRequestAttributes(new ServletRequestAttributes(request));

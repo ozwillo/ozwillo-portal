@@ -1,8 +1,7 @@
 package org.oasis_eu.portal.services;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.dao.RatingRepository;
 import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
@@ -14,10 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -25,7 +24,6 @@ import static org.mockito.Mockito.when;
  * User: schambon
  * Date: 10/31/14
  */
-@RunWith(SpringJUnit4ClassRunner.class)
 @WebAppConfiguration
 @SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
 public class RatingServiceTest {
@@ -38,7 +36,7 @@ public class RatingServiceTest {
 	@Autowired
 	private RatingService ratingService;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 		logger.warn("Emptying database");
 		repository.deleteAll();
@@ -64,23 +62,23 @@ public class RatingServiceTest {
 		assertEquals(4, ratingService.getRating("application", "citizenkin"), 0.01);
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testMultipleRating() {
 		setAuthentication("toto");
 		ratingService.rate("application", "citizenkin", 3);
-		ratingService.rate("application", "citizenkin", 4);
+		assertThrows(IllegalArgumentException.class, () -> ratingService.rate("application", "citizenkin", 4));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testRatingTooLow() {
 		setAuthentication("toto");
-		ratingService.rate("application", "citizenkin", -1);
+		assertThrows(IllegalArgumentException.class, () -> ratingService.rate("application", "citizenkin", -1));
 	}
 
-	@Test(expected = IllegalArgumentException.class)
+	@Test
 	public void testRatingTooHigh() {
 		setAuthentication("toto");
-		ratingService.rate("application", "citizenkin", 6);
+		assertThrows(IllegalArgumentException.class, () -> ratingService.rate("application", "citizenkin", 6));
 	}
 
 	@Test
