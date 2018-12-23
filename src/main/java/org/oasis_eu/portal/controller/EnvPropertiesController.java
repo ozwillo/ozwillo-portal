@@ -17,7 +17,6 @@ public class EnvPropertiesController {
 
     @GetMapping()
     public String envPropertyName(){
-        return envPropertiesService.extractEnvKey();
+        return envPropertiesService.getCurrentKey();
     }
-
 }

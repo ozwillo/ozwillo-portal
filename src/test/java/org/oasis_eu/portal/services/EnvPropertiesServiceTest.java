@@ -3,6 +3,7 @@ package org.oasis_eu.portal.services;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.oasis_eu.portal.OzwilloPortal;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.mock.web.MockServletContext;
@@ -20,13 +21,10 @@ public class EnvPropertiesServiceTest {
     @Autowired
     private EnvPropertiesService envPropertiesService;
 
-
-
     @Test
     public void defaultConfTest() {
-        String defaultConf = this.envPropertiesService.extractDefaultConfKey();
+        EnvConfig defaultConf = this.envPropertiesService.getDefaultConfig();
         assertNotNull(defaultConf);
-        assertEquals("ozwillo", defaultConf);
+        assertEquals("https://portal.ozwillo.com", defaultConf.getBaseUrl());
     }
-
 }

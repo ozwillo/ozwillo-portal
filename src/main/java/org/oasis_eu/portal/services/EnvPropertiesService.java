@@ -7,75 +7,75 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.Map;
 import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-import java.util.stream.Collectors;
+import java.util.function.Predicate;
 
 @Service
 public class EnvPropertiesService {
-    private static final Logger logger = LoggerFactory.getLogger(EnvPropertiesService.class);
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnvPropertiesService.class);
+
+    private final EnvProperties envProperties;
+
+    private final HttpServletRequest request;
 
     @Autowired
-    private EnvProperties envProperties;
-
-    @Autowired
-    private HttpServletRequest request;
-
-    public EnvConfig getConfig() {
-        String website = extractEnvKey();
-        return envProperties.getConfs().get(website);
+    public EnvPropertiesService(EnvProperties envProperties, HttpServletRequest request) {
+        this.envProperties = envProperties;
+        this.request = request;
     }
 
-    public String extractEnvKey() {
+    @PostConstruct
+    public void checkDefaultConfig() {
+        if (getDefaultConfig() == null) {
+            throw new RuntimeException("There is no default portal defined !");
+        }
+    }
+
+    public String getCurrentKey() {
+        return extractCurrentEnv().getKey();
+    }
+
+    public EnvConfig getCurrentConfig() {
+        return extractCurrentEnv().getValue();
+    }
+
+    /**
+     * Only used by background jobs that need to run in an authenticated context
+     * with the system admin user's refresh token.
+     */
+    public EnvConfig getDefaultConfig() {
+        return getFirstConfMatching(entry -> entry.getValue().getIsDefaultConf())
+                .map(Map.Entry::getValue)
+                .orElse(null);
+    }
+
+    private Map.Entry<String, EnvConfig> extractCurrentEnv() {
+        Optional<String> hostname = extractHostname(request.getRequestURL().toString());
+        return getFirstConfMatching(entry -> hostname.isPresent() && entry.getValue().getBaseUrl().contains(hostname.get()))
+                .orElseThrow(() -> new RuntimeException("No configuration found for " + hostname));
+    }
+
+    private Optional<Map.Entry<String, EnvConfig>> getFirstConfMatching(Predicate<? super Map.Entry<String, EnvConfig>> predicate) {
+        return envProperties.getConfs()
+                .entrySet()
+                .stream()
+                .filter(predicate)
+                .findFirst();
+    }
+
+    private Optional<String> extractHostname(String requestUrl) {
         try {
-            String URL = extractURL(request.getRequestURL().toString());
-            Map<String, EnvConfig> envConfigMap = envProperties.getConfs();
-
-            for (Map.Entry<String, EnvConfig> entry : envConfigMap.entrySet()) {
-                String key = entry.getKey();
-                EnvConfig envConfig = entry.getValue();
-
-                if (envConfig.getBaseUrl().contains(URL)) {
-                    return key;
-                }
-            }
-        } catch (Exception e) {
-            logger.trace("No request defined, so extract default conf");
+            URL url = new URL(requestUrl);
+            return Optional.of(url.getHost());
+        } catch (MalformedURLException e) {
+            LOGGER.error("Really unexpected malformed URL : {}", requestUrl);
+            return Optional.empty();
         }
-        return extractDefaultConfKey();
     }
-
-
-        public EnvConfig getCurrentConfig () {
-            try {
-                return getConfig();
-            } catch (Exception e) {
-                return null;
-            }
-        }
-
-        private String extractURL (String URL){
-            Pattern p = Pattern.compile("((https|http)?:\\/\\/)(.*?)(?=\\/)");
-            Matcher m = p.matcher(URL);
-            m.find();
-            return m.group(0);
-        }
-
-
-        public String extractDefaultConfKey () {
-            String defaultConfKey = envProperties
-                    .getConfs()
-                    .entrySet()
-                    .stream()
-                    .filter(elem -> elem.getValue().getIsDefaultConf())
-                    .map(defaultConfElem -> defaultConfElem.getKey())
-                    .findFirst()
-                    .orElse(null);
-
-            return defaultConfKey;
-        }
-
-    }
+}

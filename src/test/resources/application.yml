@@ -14,13 +14,10 @@ ha:
   failover:
 
 application:
-  url: http://localhost:8080
   security:
     fetchUserInfo: true
     # requires devmode, to ease up development ex. of Catalog only
     noauthdevmode: false
-  baseImageUrl: ${application.url}/media
-  defaultIconUrl: ${application.url}/img/noicon.png
   store:
     load_size: 50
     # don't enable it until applications have filled the supported_locales field
@@ -55,9 +52,7 @@ application:
   importPassword: importPassword
 
 web:
-  home: http://www.ozwillo-dev.eu
   sitemap:
-    url_footer: https://www.ozwillo.com/footer.xml
     refresh: 0 0 3 ? DEC SUN
 
 confs:
@@ -78,6 +73,9 @@ confs:
       post_logout_redirect_uri: ${confs.ozwillo.baseUrl}/fr/store
       home_uri: ${confs.ozwillo.baseUrl}
       error_401_uri: ${confs.ozwillo.baseUrl}/my
+    datacore:
+      adminUserRefreshToken: changeit
+      nonce: changeit
     opendata:
       url: https://opendata.ozwillo.com
 
@@ -107,10 +105,7 @@ kernel:
   organization_endpoint: ${kernel.base_uri}/d/org
   event_bus_endpoint: ${kernel.base_uri}/e
   notifications_endpoint: ${kernel.base_uri}/n
-  client_id: portal
-  client_secret: changeit
   scopes_to_require: openid profile email address
-
   portal_endpoints:
     usercontext: http://localhost:8081/ctx
     subscriptions: http://localhost:8081/subs
@@ -119,16 +114,7 @@ kernel:
     apps: http://localhost:8081/apps
 
 datacore:
-  #url: http://localhost:8080
   url: https://plnm-dev-dc # dev, requires installing gen'd cert
-  #url: https://data.ozwillo-dev.eu # dev, doesn't work with current gen'd cert
-  # alt_uri ??
-  systemAdminUser:  #Get it using Node.js util / with portal clientId
-    refreshToken: changeit
-    nonce: changeit      #Set it when getting the refreshToken
-
-opendata:
-  url: https://opendata-preprod.data-ozwillo.org
 
 cache:
   hosts:

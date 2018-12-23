@@ -8,6 +8,8 @@ public class EnvConfig {
 
     private KernelEnv kernel;
 
+    private DatacoreEnv datacore;
+
     private OpenDataEnv opendata;
 
     private String baseImageUrl;
@@ -38,6 +40,14 @@ public class EnvConfig {
 
     public void setKernel(KernelEnv kernel) {
         this.kernel = kernel;
+    }
+
+    public DatacoreEnv getDatacore() {
+        return datacore;
+    }
+
+    public void setDatacore(DatacoreEnv datacore) {
+        this.datacore = datacore;
     }
 
     public OpenDataEnv getOpendata() {
