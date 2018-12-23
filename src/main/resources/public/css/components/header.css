@@ -1,6 +1,5 @@
 .oz-header {
     position: relative;
-    min-height: 60px;
     margin-top: 1em;
     margin-bottom: 1em;
 }
@@ -33,7 +32,6 @@
 
 .oz-header .welcome {
     font-size: 18px;
-    margin-top: 25px;
 }
 
 .oz-header .welcome .badge {

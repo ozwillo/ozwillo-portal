@@ -7,8 +7,15 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
-import {i18n} from "../app";
+import {i18n} from '../app';
+import {t, Trans} from '@lingui/macro'
+import UpdateTitle from '../components/update-title';
+import Spinner from '../components/spinner';
+import UserService from '../util/user-service';
 
+
+const Showdown = require('showdown');
+const converter = new Showdown.Converter({tables: true});
 
 export default class AppInstall extends React.Component {
 
@@ -24,44 +31,53 @@ export default class AppInstall extends React.Component {
             tos: ''
         },
         config: {},
-        organizationsAvailable: []
+        organizationsAvailable: {organizations: [], loading: true},
+        user: {}
     };
 
     constructor(props) {
         super(props);
         this._organizationService = new OrganizationService();
+        this._userService = new UserService();
     }
 
-    componentDidMount() {
+    componentDidMount = async () => {
         const {app, config} = this.props.location.state;
-        this.setState({app: app, config: config}, () => {
-            this._loadAppDetails()
-            this._loadOrgs()
+        const user = await this._userService.fetchUserInfos();
+        this.setState({app: app, config: config, user: user}, async () => {
+            await this._loadAppDetails();
+            if(user) {
+                await this._loadOrgs();
+            }
         });
-    }
+    };
 
     _loadOrgs = async () => {
         const {app} = this.state;
         const data = await fetchAvailableOrganizations(app.type, app.id);
-        this.setState({organizationsAvailable: data});
+        this.setState({organizationsAvailable: {organizations: data, loading: true}});
 
         const newOrganizationsAvailable = await this._disableOrganizationWhereAppAlreadyInstalled(data);
-        this.setState({organizationsAvailable: newOrganizationsAvailable});
+        this.setState({organizationsAvailable: {organizations: newOrganizationsAvailable, loading: false}});
     };
 
     _disableOrganizationWhereAppAlreadyInstalled = async (organizations) => {
         const {app} = this.state;
-        for (let organization of organizations) {
-            let orgComplete = await this._organizationService.getOrganizationComplete(organization.id);
-            orgComplete.instances.map(instance => {
-                if (app.type === 'application' && instance.applicationInstance.application_id === app.id) {
-                    organization.disabled = true;
-                } else if (app.type === 'service' && instance.applicationInstance.provider_id === app.id) {
-                    organization.disabled = true;
-                }
-            });
-        }
-        return organizations;
+        let requestOrganizationsComplete = organizations.map((organization) => {
+            return this._organizationService.getOrganizationComplete(organization.id);
+        });
+        return await Promise.all(requestOrganizationsComplete).then((organizationsComplete) => {
+            for (let organization of organizationsComplete) {
+                organization.instances.map(instance => {
+                    if (app.type === 'application' && instance.applicationInstance.application_id === app.id) {
+                        organization.disabled = true;
+                    } else if (app.type === 'service' && instance.applicationInstance.provider_id === app.id) {
+                        organization.disabled = true;
+                    }
+                });
+            }
+            return organizationsComplete;
+        })
     };
 
     _loadAppDetails = async () => {
@@ -94,9 +110,16 @@ export default class AppInstall extends React.Component {
         this.refs.modalImage._openModal(imageSrc);
     };
 
+    scrollToLongDescription = () => { // run this method to execute scrolling.
+        window.scrollTo({
+            top: this.longDescription.offsetTop,
+            behavior: 'smooth'  // Optional, adds animation
+        })
+    };
+
 
     render() {
-        const {app, appDetails, organizationsAvailable, config} = this.state;
+        const {app, appDetails, organizationsAvailable, config, user} = this.state;
         const settings = {
             dots: true,
             speed: 500,
@@ -107,13 +130,22 @@ export default class AppInstall extends React.Component {
 
         return (
             <div className={'app-install-wrapper'}>
+                <UpdateTitle title={app.name}/>
                 <div className={'flex-row header-app-install'}>
                     <div className={'information-app flex-row'}>
                         <img alt={'app icon'} src={app.icon}/>
                         <div className={'information-app-details'}>
                             <p><strong>{app.name}</strong></p>
                             <p>{app.provider}</p>
-                            <p>{app.description}</p>
+                            <p>{app.description}
+                                &nbsp;
+                                {
+                                    appDetails.longdescription === app.description ?
+                                        null :
+                                        <i className="fas fa-external-link-alt go-to-long-description"
+                                           onClick={this.scrollToLongDescription}/>
+                                }
+                            </p>
                             <div className={'rate-content'}>
                                 <RatingWrapper rating={appDetails.rating} rateable={appDetails.rateable}
                                                rate={this._rateApp}/>
@@ -122,7 +154,8 @@ export default class AppInstall extends React.Component {
                     </div>
                     <div className={'install-app'}>
                         <div className={'dropdown'}>
-                            <InstallForm app={app} organizationsAvailable={organizationsAvailable} config={config}/>
+                            <InstallForm user={user} app={app} organizationsAvailable={organizationsAvailable}
+                                         config={config}/>
                         </div>
 
                     </div>
@@ -130,7 +163,7 @@ export default class AppInstall extends React.Component {
 
 
                 {
-                    appDetails.screenshots && appDetails.screenshots.length > 0 &&
+                    appDetails.screenshots && appDetails.screenshots.length > 1 &&
                     <div className={'app-install-carousel'}>
                         <div className={'carousel-container'}>
                             <Slider {...settings}>
@@ -140,8 +173,24 @@ export default class AppInstall extends React.Component {
                     </div>
                 }
 
-                <div className={'flex-row app-install-description'}>
-                    {app.description}
+                {
+                    appDetails.screenshots && appDetails.screenshots.length === 1 &&
+                    <div className={'unique-screenshot'}>
+                        <img src={appDetails.screenshots[0]}
+                             onClick={() => this._openModal(appDetails.screenshots[0])}
+                             alt={'screenshot ' + appDetails.screenshots[0]}/>
+                    </div>
+
+                }
+
+                <div className={'flex-row app-install-description'} ref={(ref) => this.longDescription = ref}>
+                    {
+                        appDetails.longdescription === app.description ?
+                            <div dangerouslySetInnerHTML={{__html: converter.makeHtml(app.description)}}/>
+                            :
+                            <div className={'long'}
+                                 dangerouslySetInnerHTML={{__html: converter.makeHtml(appDetails.longdescription)}}/>
+                    }
                 </div>
                 < ModalImage
                     ref={'modalImage'}
@@ -218,14 +267,26 @@ export class InstallForm extends React.Component {
     render() {
         const options = this._createOptions();
         const {installType, organizationSelected, buying, installed, error} = this.state;
-        const {organizationsAvailable, app} = this.props;
+        const {organizationsAvailable, app, user} = this.props;
         let disabledOrganization = !installType;
+
+        if (!user) {
+            return (
+                <div className={'flex-row install-area redirect-to-connection'}>
+                    <div className="install">
+                        <button className="btn pull-right btn-install">{i18n._('store.install')}</button>
+                    </div>
+
+                </div>
+            )
+        }
+
 
         return (
             <React.Fragment>
                 {!installed &&
-                <div className={"install-selector"}>
-                    <label>For which usage</label>
+                <div className={'install-selector'}>
+                    <label><Trans>For which usage</Trans></label>
                     <Select
                         className="select"
                         value={installType}
@@ -238,44 +299,44 @@ export class InstallForm extends React.Component {
                 }
 
                 {!installed && !(installType === 'PERSONAL') && !(app.type === 'service') ?
-                    <div className={"install-selector"}>
-                        <label>For which organization</label>
-                        <Select
-                            disabled={disabledOrganization}
-                            className={'select'}
-                            value={organizationSelected}
-                            labelKey="name"
-                            valueKey="id"
-                            onChange={(value) => this.setState({organizationSelected: value})}
-                            clearable={false}
-                            options={organizationsAvailable}
-                        />
+                    <div className={'install-selector'}>
+                        <label><Trans>For which organization</Trans></label>
+                        <div className={'select-organization'}>
+                            <Spinner display={organizationsAvailable.loading} className={'organization-spinner'}/>
+                            <Select
+                                disabled={disabledOrganization || organizationsAvailable.loading}
+                                className={'select'}
+                                value={organizationSelected}
+                                labelKey="name"
+                                valueKey="id"
+                                onChange={(value) => this.setState({organizationSelected: value})}
+                                clearable={false}
+                                options={organizationsAvailable.organizations}
+                            />
+                        </div>
                     </div>
                     : null
                 }
 
                 <div className={'flex-row install-area'}>
-                    {buying &&
-                    <div className="container-loading text-center">
-                        <i className="fa fa-spinner fa-spin loading"/>
-                    </div>
-                    }
+                    <Spinner display={buying}/>
 
                     {installed ?
                         <div className="install installed">
                             <Link className="btn btn-default-inverse pull-right btn-install"
                                   to={`/${this.props.config.language}/store`}>
-                                {i18n._('market')}
+                                {i18n._('ui.appstore')}
                             </Link>
                             <Link className="btn btn-default-inverse pull-right btn-install dashboard"
                                   to={'/my/dashboard'}>
-                                {i18n._('dashboard')}
+                                {i18n._('my.dashboard')}
                             </Link>
                         </div>
                         :
                         <div className="install">
-                            <button className="btn pull-right btn-install" disabled={this._installButtonIsDisabled()}
-                                    onClick={this._doInstallApp}>{i18n._('install')}</button>
+                            <button className="btn pull-right btn-install"
+                                    disabled={this._installButtonIsDisabled()}
+                                    onClick={this._doInstallApp}>{i18n._('store.install')}</button>
                         </div>
                     }
                 </div>
@@ -293,7 +354,8 @@ export class InstallForm extends React.Component {
 
 InstallForm.propTypes = {
     app: PropTypes.object.isRequired,
-    organizationsAvailable: PropTypes.array.isRequired
+    organizationsAvailable: PropTypes.object.isRequired,
+    user: PropTypes.object
 };
 
 

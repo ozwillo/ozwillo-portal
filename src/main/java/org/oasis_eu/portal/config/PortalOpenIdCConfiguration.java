@@ -5,19 +5,17 @@ import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.spring.kernel.security.StaticOpenIdCConfiguration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.web.context.request.RequestContextHolder;
 
-/**
- * User: schambon
- * Date: 10/17/14
- */
 public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
 
     @Value("${application.security.noauthdevmode:false}")
     private boolean noauthdevmode;
     @Value("${application.devmode:false}")
     private boolean devmode;
+
     @Autowired
-    EnvPropertiesService envPropertiesService;
+    private EnvPropertiesService envPropertiesService;
 
     @Override
     public boolean requireAuthenticationForPath(String path) {
@@ -33,31 +31,44 @@ public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
 
     @Override
     public String getClientId() {
-        EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
-        if (envConfig != null) {
-            return envConfig.getKernel().getClient_id();
+        if (RequestContextHolder.getRequestAttributes() != null) {
+            EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
+            if (envConfig != null) {
+                return envConfig.getKernel().getClient_id();
+            } else {
+                return "invalid";
+            }
         } else {
-            return "invalid";
+            return envPropertiesService.getDefaultConfig().getKernel().getClient_id();
         }
     }
 
     @Override
     public String getClientSecret() {
-        EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
-        if (envConfig != null) {
-            return envConfig.getKernel().getClient_secret();
+        if (RequestContextHolder.getRequestAttributes() != null) {
+            EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
+            if (envConfig != null) {
+                return envConfig.getKernel().getClient_secret();
+            } else {
+                return "invalid";
+            }
         } else {
-            return "invalid";
+            return envPropertiesService.getDefaultConfig().getKernel().getClient_secret();
         }
     }
 
     @Override
     public String getCallbackUri() {
-        EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
-        if (envConfig != null) {
-            return envConfig.getKernel().getCallback_uri();
+        if (RequestContextHolder.getRequestAttributes() != null) {
+            EnvConfig envConfig = this.envPropertiesService.getCurrentConfig();
+            if (envConfig != null) {
+                return envConfig.getKernel().getCallback_uri();
+            } else {
+                return "invalid";
+            }
+        } else {
+            return envPropertiesService.getDefaultConfig().getKernel().getCallback_uri();
         }
-        return null;
     }
 
     @Override

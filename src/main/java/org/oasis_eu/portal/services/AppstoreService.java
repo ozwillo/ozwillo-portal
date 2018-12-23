@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.dao.InstalledStatusRepository;
 import org.oasis_eu.portal.model.images.ImageFormat;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
@@ -14,7 +13,6 @@ import org.oasis_eu.portal.model.kernel.store.PaymentOption;
 import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.store.AppstoreHit;
 import org.oasis_eu.portal.model.store.InstallationOption;
-import org.oasis_eu.portal.model.store.InstalledStatus;
 import org.oasis_eu.portal.services.dc.GeographicalAreaService;
 import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
@@ -67,9 +65,6 @@ public class AppstoreService {
 
     @Autowired
     private OrganizationService organizationService;
-
-    @Autowired
-    private InstalledStatusRepository installedStatusRepository;
 
     @Value("${application.store.addCurrentToSupportedLocalesIfNone:false}")
     private boolean addCurrentToSupportedLocalesIfNone;
@@ -156,7 +151,7 @@ public class AppstoreService {
 
         String providerName = getOrganizationName(entry);
 
-        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64, false), providerName, getInstallationOption(entry));
+        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64, false), providerName);
 
     }
 
@@ -194,29 +189,6 @@ public class AppstoreService {
         return subscriptionStore.create(userInfoService.currentUser().getUserId(), subscription);
     }
 
-    private InstallationOption getInstallationOption(CatalogEntry entry) {
-        InstallationOption paymentOption = InstallationOption.valueOf(entry.getPaymentOption().toString());
-        if (!userInfoService.isAuthenticated()) {
-            return paymentOption; // urgh. clean this up sometime!
-        }
-
-        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(entry.getType(), entry.getId(), userInfoService.currentUser().getUserId());
-        if (status != null) {
-            return status.isInstalled() ? InstallationOption.INSTALLED : paymentOption;
-        }
-
-        InstallationOption option = computeInstallationOption(entry);
-
-        status = new InstalledStatus();
-        status.setCatalogEntryType(entry.getType());
-        status.setCatalogEntryId(entry.getId());
-        status.setUserId(userInfoService.currentUser().getUserId());
-        status.setInstalled(option.equals(InstallationOption.INSTALLED));
-        installedStatusRepository.save(status);
-
-        return option;
-    }
-
     private InstallationOption getApplicationInstallationOptionFromOrganization(UIOrganization organization, CatalogEntry entry){
         boolean installed = organization.getInstances().stream()
                 .map(MyAppsInstance::getApplicationInstance)
@@ -228,25 +200,6 @@ public class AppstoreService {
             return InstallationOption.INSTALLED;
         }else{
             return InstallationOption.NOT_INSTALLED;
-        }
-    }
-
-    private InstallationOption computeInstallationOption(CatalogEntry entry) {
-        if (CatalogEntryType.SERVICE.equals(entry.getType())) {
-            Set<String> subscriptions =
-                    subscriptionStore.findByUserId(userInfoService.currentUser().getUserId())
-                            .stream()
-                            .map(Subscription::getServiceId)
-                            .collect(Collectors.toSet());
-            return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
-                PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
-        } else {
-            return organizationService.getMyOrganizations()
-                    .stream()
-                    .filter(UIOrganization::isAdmin)
-                    .flatMap(uiOrganization -> applicationService.getMyInstances(uiOrganization, false).stream())
-                    .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
-                        ? InstallationOption.INSTALLED : PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
         }
     }
 }

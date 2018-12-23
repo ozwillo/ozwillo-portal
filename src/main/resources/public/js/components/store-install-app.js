@@ -267,9 +267,9 @@ const AppDescriptionComponent = createClass({
             const storeUrl = `/${this.props.config.language}/store`;
             launchOrInstallButton = !isLogged
                 ? (<a className="btn btn-default btn-lg pull-right"
-                      href={storeUrl + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{i18n._('install')}</a>)
+                      href={storeUrl + "/login?appId=" + this.props.app.id + "&appType=" + this.props.app.type}>{i18n._('store.install')}</a>)
                 : (<button type="button" className="btn btn-default btn-lg pull-right"
-                           onClick={this.props.onInstallButton}>{i18n._('install')}</button>)
+                           onClick={this.props.onInstallButton}>{i18n._('store.install')}</button>)
         }
 
         return (

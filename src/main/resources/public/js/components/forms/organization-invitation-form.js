@@ -5,8 +5,7 @@ import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
 import { i18n } from "../../app"
-import { t } from "@lingui/macro"
-import { Trans } from '@lingui/macro';
+import { t , Trans} from "@lingui/macro"
 
 
 

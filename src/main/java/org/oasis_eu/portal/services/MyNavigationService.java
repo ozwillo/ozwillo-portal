@@ -35,7 +35,7 @@ public class MyNavigationService {
     }
 
     public Map<Integer, List<SiteMapEntry>> getSiteMapFooter(String language) {
-        List<SiteMapEntry> siteMapEntries = siteMapService.getSiteMapFooter(envPropertiesService.extractEnvKey(),language);
+        List<SiteMapEntry> siteMapEntries = siteMapService.getSiteMapFooter(envPropertiesService.getCurrentKey(),language);
 
         if (siteMapEntries == null) {
             return Collections.emptyMap();

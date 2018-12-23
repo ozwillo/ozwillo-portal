@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import customFetch from "../util/custom-fetch";
 import GeoAreaAutosuggest from "./autosuggests/geoarea-autosuggest";
 import LabelSection from "./label-section";
-import {fetchUserInfos} from "../util/user-service";
 import PillInputButton from './pill-input-button';
+import UserService from '../util/user-service';
 
 import { i18n } from "../app.js"
 import { t } from "@lingui/macro"
@@ -32,12 +32,18 @@ export default class SearchAppsForm extends React.Component {
 
     };
 
+    constructor(props){
+        super(props);
+        this._userService = new UserService();
+
+    }
+
     componentDidMount = async () =>  {
         this._initializeFilters(this.props.filters);
         await this.initializeLanguage();
 
         //organization input is just available when user is connected
-        const userInfo = await fetchUserInfos();
+        const userInfo = await this._userService.fetchUserInfos();
         if(userInfo){
             customFetch("/my/api/organization").then((organizations) => {
                 organizations.unshift({name:i18n._(t`store.language.all`), id: ''});
@@ -206,7 +212,7 @@ export default class SearchAppsForm extends React.Component {
                     </LabelSection>
                 }
                 {/*MODE*/}
-                <LabelSection label={i18n._('mode')}>
+                <LabelSection label={i18n._('store.mode')}>
                     <PillInputButton label={i18n._('store.free')} id={"free-checkbox"}
                                 checked={payment.free} name={'free'} onChange={this._handleOnPaymentChange}/>
 
@@ -215,7 +221,7 @@ export default class SearchAppsForm extends React.Component {
 
                 </LabelSection>
                 {/*AUDIENCE*/}
-                <LabelSection label={i18n._('audience')}>
+                <LabelSection label={i18n._('store.audience')}>
                     <PillInputButton label={i18n._('store.citizens')} id={"citizens-checkbox"}
                                 checked={audience.citizens} name={'citizens'} onChange={this._handleAudienceChange}/>
 

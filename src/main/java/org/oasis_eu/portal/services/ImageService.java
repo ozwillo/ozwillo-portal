@@ -1,8 +1,8 @@
 package org.oasis_eu.portal.services;
 
-import com.google.common.base.Strings;
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.dao.DirectAccessImageRepo;
 import org.oasis_eu.portal.dao.ImageDownloadAttemptRepository;
 import org.oasis_eu.portal.dao.ImageRepository;
@@ -13,12 +13,12 @@ import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.imageio.ImageIO;
@@ -154,6 +154,10 @@ public class ImageService {
             .toUriString();
     }
 
+    public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
+        return getImageForURLInEnvConfig(inputUrl, format, force, envPropertiesService.getCurrentConfig());
+    }
+
     /**
      * Retrieves URL where image is served in the case where the original (be it proxied
      * or uploaded) URL is stored in the business object
@@ -163,9 +167,9 @@ public class ImageService {
      * @param force
      * @return
      */
-    public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
-        String baseImageUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
-        String defaultIconUrl = envPropertiesService.getCurrentConfig().getDefaultIconUrl();
+    private String getImageForURLInEnvConfig(String inputUrl, ImageFormat format, boolean force, EnvConfig envConfig) {
+        String baseImageUrl = envConfig.getBaseImageUrl();
+        String defaultIconUrl = envConfig.getDefaultIconUrl();
 
         if (inputUrl != null && inputUrl.startsWith(baseImageUrl)) {
             // Self-served (Portal object icon) image
@@ -229,27 +233,24 @@ public class ImageService {
 
     @Scheduled(fixedRate = 600000)
     public void refreshOldImages() {
-        if(envPropertiesService.getCurrentConfig() !=  null) {
-            logger.debug("Refreshing images");
+        logger.debug("Refreshing images");
 
-            // every 10 minutes, try to download the 10 oldest images not already downloaded in the last 60 minutes (phew)
-            List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), PageRequest.of(0, 10, Sort.Direction.ASC, "downloadedTime"));
+        // every 10 minutes, try to download the 10 oldest images not already downloaded in the last 60 minutes (phew)
+        List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), PageRequest.of(0, 10, Sort.Direction.ASC, "downloadedTime"));
 
-            logger.debug("Found {} image(s) to refresh", images.size());
+        logger.debug("Found {} image(s) to refresh", images.size());
 
-            images.forEach(i -> getImageForURL(i.getUrl(), i.getImageFormat(), true));
-        }
-
+        images.forEach(i -> getImageForURLInEnvConfig(i.getUrl(), i.getImageFormat(), true, envPropertiesService.getDefaultConfig()));
     }
 
     public boolean isDefaultIcon(String icon) {
-        String defaultIconUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
+        String defaultIconUrl = envPropertiesService.getCurrentConfig().getDefaultIconUrl();
         return defaultIconUrl.equals(icon);
     }
 
     private String getFileName(String url) {
 
-        if (Strings.isNullOrEmpty(url)) {
+        if (StringUtils.isEmpty(url)) {
             return "";
         }
 
@@ -265,7 +266,7 @@ public class ImageService {
     }
 
     private String stripSlash(String input) {
-        if (Strings.isNullOrEmpty(input)) {
+        if (StringUtils.isEmpty(input)) {
             return "";
         } else if (input.endsWith("/")) {
             return input.substring(0, input.length() - 1);

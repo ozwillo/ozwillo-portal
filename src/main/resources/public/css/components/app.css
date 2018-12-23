@@ -1,5 +1,6 @@
 #store-apps .container-app {
     min-width: 230px;
+    padding: 2% 1.5% 2% 1.5%;
 }
 
 .container-app.installed-app{

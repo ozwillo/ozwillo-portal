@@ -71,7 +71,7 @@ class AddInstanceDropdownHeader extends React.Component {
                     {
                         !this.state.isLoading ?
                         <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
-                            {i18n._('install')}
+                            {i18n._('store.install')}
                         </button> : null
                     }
 

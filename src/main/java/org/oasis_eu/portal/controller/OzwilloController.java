@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
@@ -14,7 +13,6 @@ import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -28,8 +26,6 @@ import java.util.stream.Collectors;
 @RestController
 @RequestMapping("/api")
 public class OzwilloController {
-
-    private final MessageSource messageSource;
 
     private final MyNavigationService navigationService;
 
@@ -61,8 +57,7 @@ public class OzwilloController {
     private GoogleAnalyticsTagRepository googleAnalyticsTagRepository;
 
     @Autowired
-    public OzwilloController(MessageSource messageSource, MyNavigationService navigationService, UserInfoService userInfoService) {
-        this.messageSource = messageSource;
+    public OzwilloController(MyNavigationService navigationService, UserInfoService userInfoService) {
         this.navigationService = navigationService;
         this.userInfoService = userInfoService;
     }
@@ -73,19 +68,15 @@ public class OzwilloController {
     }
 
     @GetMapping("/config")
-    public Config getConfig() throws JsonProcessingException {
-        //get the config depending on which web is called
-        EnvConfig envConfig = envPropertiesService.getConfig();
-        // i18n
-        Locale locale = RequestContextUtils.getLocale(request);
+    public Config getConfig() {
+        EnvConfig envConfig = envPropertiesService.getCurrentConfig();
 
+        Locale locale = RequestContextUtils.getLocale(request);
         List<String> languages = Arrays.stream(Languages.values())
                 .map(l -> l.getLocale().getLanguage()).collect(Collectors.toList());
 
-        //Site map
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter();
 
-        //MyConfig object
         Config config = new Config();
         config.language = locale.getLanguage();
         config.languages = languages;
@@ -101,7 +92,7 @@ public class OzwilloController {
 
     @GetMapping("/config/style")
     public List<StyleProperty> getStyleProperties() {
-        String website = envPropertiesService.extractEnvKey();
+        String website = envPropertiesService.getCurrentKey();
         StylePropertiesMap stylePropertiesMap = stylePropertiesMapRepository.findByWebsite(website);
         if(stylePropertiesMap != null && !stylePropertiesMap.getStyleProperties().isEmpty()){
             return stylePropertiesMap.getStyleProperties();
@@ -112,13 +103,13 @@ public class OzwilloController {
 
     @GetMapping("/config/googleTag")
     public GoogleAnalyticsTag getGoogleAnalyticsTag(){
-        String website = envPropertiesService.extractEnvKey();
+        String website = envPropertiesService.getCurrentKey();
         return googleAnalyticsTagRepository.findByWebsite(website);
     }
 
 
     @GetMapping("/config/language/{lang}")
-    public Config getLanguage(@PathVariable String lang) throws JsonProcessingException {
+    public Config getLanguage(@PathVariable String lang) {
         //Site map
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter(lang);
 
