@@ -3,13 +3,11 @@ package org.oasis_eu.portal.services.geoarea;
 import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.dao.GeographicalAreaCache;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
-import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
@@ -22,8 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
  * @author schambon
  *
  */
-@WebAppConfiguration
-@SpringBootTest(classes = {OzwilloPortal.class}, webEnvironment = SpringBootTest.WebEnvironment.MOCK)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class GeographicalAreaReplicationTest {
 
 	@Autowired

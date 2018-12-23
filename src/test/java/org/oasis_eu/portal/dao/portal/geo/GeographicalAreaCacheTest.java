@@ -11,16 +11,12 @@ import org.oasis_eu.portal.dao.GeographicalAreaCache;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.model.search.Tokenizer;
-import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-@WebAppConfiguration
-@SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class GeographicalAreaCacheTest {
 
 	@Autowired

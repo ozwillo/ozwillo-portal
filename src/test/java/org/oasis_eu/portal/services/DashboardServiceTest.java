@@ -4,16 +4,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.dao.DashboardRepository;
 import org.oasis_eu.portal.model.dashboard.UserContext;
-import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockServletContext;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 
@@ -22,9 +19,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.requestTo;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-
-@WebAppConfiguration
-@SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class DashboardServiceTest {
 
 	// well-known "alice" user id

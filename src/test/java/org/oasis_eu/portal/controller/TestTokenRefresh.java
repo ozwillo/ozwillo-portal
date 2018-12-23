@@ -2,7 +2,6 @@ package org.oasis_eu.portal.controller;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.oasis_eu.portal.OzwilloPortal;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthProvider;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +10,6 @@ import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
@@ -28,8 +26,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
  * User: schambon
  * Date: 9/1/14
  */
-@WebAppConfiguration
-@SpringBootTest(classes={OzwilloPortal.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @DirtiesContext
 public class TestTokenRefresh {
 

@@ -8,18 +8,14 @@ import org.oasis_eu.portal.model.kernel.store.Audience;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.PaymentOption;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
-import org.oasis_eu.spring.config.KernelConfiguration;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.client.MockRestServiceServer;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.context.request.RequestContextHolder;
@@ -34,10 +30,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.springframework.test.web.client.match.MockRestRequestMatchers.*;
 import static org.springframework.test.web.client.response.MockRestResponseCreators.withSuccess;
 
-@WebAppConfiguration
-@SpringBootTest(classes = CatalogStoreImplTest.class)
-@ComponentScan(basePackages = "org.oasis_eu.portal")
-@Import(KernelConfiguration.class)
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class CatalogStoreImplTest {
 
 	@Autowired
