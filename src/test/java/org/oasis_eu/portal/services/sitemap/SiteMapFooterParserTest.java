@@ -17,7 +17,6 @@ import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.model.sitemap.SiteMapMenuFooter;
 import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.SiteMapService;
-import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
 import org.oasis_eu.portal.model.sitemap.Footer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -43,15 +42,12 @@ public class SiteMapFooterParserTest {
 	@Autowired
 	private SiteMapService siteMapService;
 
-	@Autowired
-	private SiteMapUpdater siteMapUpdater;
-
 	@MockBean
 	private EnvPropertiesService envPropertiesService;
 
 	@BeforeEach
 	public void init() {
-		siteMapUpdater.initializeSiteMapComponents();
+		siteMapService.initializeSiteMapComponents();
 
 		EnvConfig envConfig = new EnvConfig();
 		envConfig.setBaseImageUrl("http://localhost:3000/media");
@@ -89,7 +85,7 @@ public class SiteMapFooterParserTest {
 	@Test
 	@DirtiesContext
 	public void testUpdateSiteMap()  {
-		siteMapUpdater.reloadFooter();
+		siteMapService.reloadFooter();
 
         List<SiteMapEntry> siteMapEN = siteMapService.getSiteMapFooter("ozwillo","en");
 		List<SiteMapEntry> siteMapFR = siteMapService.getSiteMapFooter("ozwillo","fr");
