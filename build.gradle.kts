@@ -67,6 +67,7 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude("junit")
     }
+    testImplementation("org.springframework.security:spring-security-test")
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
     testImplementation("org.junit.jupiter:junit-jupiter-params:5.3.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.2")

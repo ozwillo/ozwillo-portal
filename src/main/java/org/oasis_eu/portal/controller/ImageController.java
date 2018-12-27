@@ -2,8 +2,6 @@ package org.oasis_eu.portal.controller;
 
 import org.oasis_eu.portal.model.images.Image;
 import org.oasis_eu.portal.services.ImageService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.*;
 import org.springframework.util.StreamUtils;
@@ -14,12 +12,12 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.concurrent.TimeUnit;
 
 @RestController
 public class ImageController {
-
-    private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
 
     private final ImageService imageService;
 
@@ -28,9 +26,6 @@ public class ImageController {
         this.imageService = imageService;
     }
 
-    /**
-     * serves image
-     */
     @GetMapping("/media/{id}/{name}")
     public void getIcon(@PathVariable String id, @RequestHeader(required = false, value = "If-None-Match") String hash, HttpServletResponse response) throws IOException {
         if (hash != null) {
@@ -79,6 +74,9 @@ public class ImageController {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public void emptyUpload() {}
 
+    @ExceptionHandler(UploadException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public void uploadException() {}
 
     static class IconNotFound extends RuntimeException {
 
@@ -106,8 +104,7 @@ public class ImageController {
      * @param iconFile has also filename, size etc.
      */
     @PostMapping(value = "/media/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}")
-    @ResponseBody
-    public String handleFileUpload(@PathVariable String objectId, @RequestParam("iconFile") MultipartFile iconFile) {
+    public ResponseEntity<?> handleFileUpload(@PathVariable String objectId, @RequestParam("iconFile") MultipartFile iconFile) {
         if (iconFile.isEmpty())
             throw new EmptyUploadException();
 
@@ -117,10 +114,11 @@ public class ImageController {
             imageToStore.setBytes(bytes);
             imageToStore.setFilename(iconFile.getOriginalFilename());
             imageToStore = imageService.storeImageForObjectId(objectId, imageToStore);
-            return imageService.buildImageServedUrl(imageToStore); // ex. http://localhost:8080/media/$id/icon.png
-        } catch (IOException ex) {
-            throw new UploadException("IO exception while getting uploaded content of file "
-                + iconFile.getOriginalFilename(), ex); // TODO problem with upload
+            String imageUri = imageService.buildImageServedUrl(imageToStore);
+            return ResponseEntity.ok().location(new URI(imageUri)).build();
+        } catch (IOException | URISyntaxException ex) {
+            throw new UploadException("Exception while creating image "
+                + iconFile.getOriginalFilename(), ex);
         }
     }
 }
