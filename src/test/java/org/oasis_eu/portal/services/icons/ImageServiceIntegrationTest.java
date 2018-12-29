@@ -19,7 +19,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.support.PropertySourcesPlaceholderConfigurer;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.annotation.DirtiesContext;
-import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.util.StreamUtils;
 
 import java.io.IOException;
@@ -36,116 +35,105 @@ import static org.mockito.Mockito.*;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class ImageServiceIntegrationTest {
 
-	private MongoCollection blacklist;
+    private MongoCollection blacklist;
 
-	@Bean
-	public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
-		return new PropertySourcesPlaceholderConfigurer();
-	}
+    @Bean
+    public static PropertySourcesPlaceholderConfigurer propertyPlaceholderConfigurer() {
+        return new PropertySourcesPlaceholderConfigurer();
+    }
 
-	@Autowired
-	private ImageService imageService;
+    @Autowired
+    private ImageService imageService;
 
-	@Autowired
-	private MongoTemplate mongoTemplate;
+    @MockBean
+    private HttpImageDownloader httpImageDownloader;
 
-	@Autowired
-	private ImageRepository imageRepository;
+    @Autowired
+    private MongoTemplate mongoTemplate;
 
-	@Autowired
-	private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
+    @Autowired
+    private ImageRepository imageRepository;
 
-	@MockBean
-	private EnvPropertiesService envPropertiesService;
+    @Autowired
+    private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
-	@BeforeEach
-	public void clean() {
-		blacklist = mongoTemplate.getCollection("image_download_attempt");
+    @MockBean
+    private EnvPropertiesService envPropertiesService;
 
-		imageRepository.deleteAll();
-		imageDownloadAttemptRepository.deleteAll();
+    @BeforeEach
+    public void clean() {
+        blacklist = mongoTemplate.getCollection("image_download_attempt");
 
-		EnvConfig envConfig = new EnvConfig();
-		envConfig.setBaseImageUrl("http://localhost:3000/media");
-		envConfig.setBaseUrl("http://localhost:3000");
-		KernelEnv kernelEnv = new KernelEnv();
-		kernelEnv.setCallback_uri("http://localhost:3000/callback");
-		envConfig.setKernel(kernelEnv);
-		given(envPropertiesService.getCurrentConfig()).willReturn(envConfig);
-	}
+        imageRepository.deleteAll();
+        imageDownloadAttemptRepository.deleteAll();
 
-	@Test
-	@DirtiesContext
-	public void testIconService() throws IOException {
-		assertNotNull(imageService);
+        EnvConfig envConfig = new EnvConfig();
+        envConfig.setBaseImageUrl("http://localhost:3000/media");
+        envConfig.setBaseUrl("http://localhost:3000");
+        KernelEnv kernelEnv = new KernelEnv();
+        kernelEnv.setCallback_uri("http://localhost:3000/callback");
+        envConfig.setKernel(kernelEnv);
+        given(envPropertiesService.getCurrentConfig()).willReturn(envConfig);
+    }
 
-		HttpImageDownloader downloader = mock(HttpImageDownloader.class);
-		when(downloader.download("http://www.citizenkin.com/icon/one.png")).thenReturn(load("images/64.png"));
+    @Test
+    @DirtiesContext
+    public void testIconService() throws IOException {
 
-		ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
+        when(httpImageDownloader.download("http://www.citizenkin.com/icon/one.png"))
+                .thenReturn(load("images/64.png"));
 
-		String iconUri = imageService.getImageForURL("http://www.citizenkin.com/icon/one.png", ImageFormat.PNG_64BY64, false);
-		assertEquals(1, mongoTemplate.getCollection("image").count());
-		assertNotNull(iconUri);
-		// test that this matches a regexp including a UUID
-		String applicationUrl = envPropertiesService.getCurrentConfig().getBaseUrl();
-		Pattern pattern = Pattern.compile(applicationUrl + "/media/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
-		Matcher matcher = pattern.matcher(iconUri);
-		assertTrue(matcher.matches());
+        String iconUri = imageService.getImageForURL("http://www.citizenkin.com/icon/one.png", ImageFormat.PNG_64BY64, false);
+        assertEquals(1, mongoTemplate.getCollection("image").count());
+        assertNotNull(iconUri);
+        // test that this matches a regexp including a UUID
+        String applicationUrl = envPropertiesService.getCurrentConfig().getBaseUrl();
+        Pattern pattern = Pattern.compile(applicationUrl + "/media/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/one.png");
+        Matcher matcher = pattern.matcher(iconUri);
+        assertTrue(matcher.matches());
 
-		String id = matcher.group(1);
-		assertNotNull(id);
-		String hash = imageService.getHash(id);
-		assertNotNull(hash);
-		assertEquals("b357025fb8c2027cae8550b2e33df8f924d1aae35e2e5de4d4c14430636be6ab", hash);
+        String id = matcher.group(1);
+        assertNotNull(id);
+        String hash = imageService.getHash(id);
+        assertNotNull(hash);
+        assertEquals("b357025fb8c2027cae8550b2e33df8f924d1aae35e2e5de4d4c14430636be6ab", hash);
 
-		Optional<Image> image = imageService.getImage(id);
-		assertTrue(image.isPresent());
-		assertEquals(hash, image.get().getHash());
-	}
+        Optional<Image> image = imageService.getImage(id);
+        assertTrue(image.isPresent());
+        assertEquals(hash, image.get().getHash());
+    }
 
-	@Test
-	public void testBlacklisting() throws Exception {
-		HttpImageDownloader downloader = mock(HttpImageDownloader.class);
-		when(downloader.download("http://www.citizenkin.com/icon/fake.png")).thenReturn(null);
-		when(downloader.download("http://www.citizenkin.com/icon/rectangular.png")).thenReturn(load("images/rectangular.png"));
-		when(downloader.download("http://www.citizenkin.com/icon/icon.tiff")).thenReturn(load("images/img-test.tiff"));
+    @Test
+    public void testBlacklisting() throws Exception {
 
-		ReflectionTestUtils.setField(imageService, "imageDownloader", downloader);
+        when(httpImageDownloader.download("http://www.citizenkin.com/icon/fake.png")).thenReturn(null);
+        when(httpImageDownloader.download("http://www.citizenkin.com/icon/rectangular.png")).thenReturn(load("images/rectangular.png"));
+        when(httpImageDownloader.download("http://www.citizenkin.com/icon/icon.tiff")).thenReturn(load("images/img-test.tiff"));
 
-		assertEquals(0, blacklist.count());
+        assertEquals(0, blacklist.countDocuments());
 
-		imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
-		assertEquals(1, blacklist.count());
+        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
+        assertEquals(1, blacklist.countDocuments());
 
-		imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64, false);
-		assertEquals(2, blacklist.count());
+        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64, false);
+        assertEquals(2, blacklist.countDocuments());
 
-		imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64, false);
-		imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
-		imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64, false);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/fake.png", ImageFormat.PNG_64BY64, false);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/rectangular.png", ImageFormat.PNG_64BY64, false);
+        imageService.getImageForURL("http://www.citizenkin.com/icon/icon.tiff", ImageFormat.PNG_64BY64, false);
 
-		// check that we only called the downloader three times
-		verify(downloader, times(3)).download(anyString());
+        // check that we only called the downloader three times
+        verify(httpImageDownloader, times(3)).download(anyString());
+    }
 
-		// the following really only tests MongoDB's TTL eviction code. It takes a couple minutes to run and doesn't
-		// test our code, so let's forget about it for now.
+    @Test
+    public void testDummyData() {
+        assertNull(imageService.getHash(UUID.randomUUID().toString()));
+        assertFalse(imageService.getImage(UUID.randomUUID().toString()).isPresent());
+    }
 
-//		LoggerFactory.getLogger(IconServiceIntegrationTest.class).info("Waiting for two minutes so MongoDB's TTL eviction kicks in - go brew a cup of tea or something.");
-//
-//		Thread.sleep(120000);
-//
-//		assertEquals(0, blacklist.count());
-	}
-
-	@Test
-	public void testDummyData() {
-		assertNull(imageService.getHash(UUID.randomUUID().toString()));
-		assertFalse(imageService.getImage(UUID.randomUUID().toString()).isPresent());
-	}
-
-	private byte[] load(String name) throws IOException {
-		InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
+    private byte[] load(String name) throws IOException {
+        InputStream stream = getClass().getClassLoader().getResourceAsStream(name);
         return StreamUtils.copyToByteArray(stream);
-	}
+    }
 }
