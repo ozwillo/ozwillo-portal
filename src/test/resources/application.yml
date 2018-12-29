@@ -94,7 +94,6 @@ kernel:
     userinfo_endpoint: ${kernel.base_uri}/a/userinfo
     revoke_endpoint: ${kernel.base_uri}/a/revoke
     logout_endpoint: ${kernel.base_uri}/a/logout
-    callback_uri: ${application.url}/login
   account_france_connect_uri: ${kernel.account_uri}/a/franceconnect
   kernel_france_connect_uri: ${kernel.base_uri}/a/franceconnect
   france_connect:
