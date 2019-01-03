@@ -21,8 +21,6 @@ body {
     /* BUTTON */
     --button-primary-color: #6f438e; /* Border + text */
     --button-secondary-color: #FFF; /* background */
-    --button-hover-color: #4c2d62; /* background on hover */
-
 
     /* COLOR */
     --black-color: #4c4c4c;
