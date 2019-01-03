@@ -25,6 +25,8 @@ import InstanceService from "../../../util/instance-service";
 
 import { i18n } from "../../../app.js"
 import { t } from "@lingui/macro"
+import { CSSTransition, TransitionGroup} from 'react-transition-group';
+
 
 class InstanceDropdown extends React.Component {
 
@@ -290,100 +292,108 @@ class InstanceDropdown extends React.Component {
                     </tr>
                     </thead>
                     <tbody>
-                    {
+                    <TransitionGroup component={null}>
+                        {
 
-                        members && members.map((user, i) => {
-                            const status = this.state.status[user.id];
-                            return <tr key={user.id || user.email}>
-                                <td className="fill-content">
-                                    <article className="item">
-                                        {
-                                            user.id &&
-                                            <span className="name">{user.name}</span>
-                                        }
-                                        {
-                                            user.email &&
-                                            <span
-                                                className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
-                                        }
-                                    </article>
-                                </td>
-
-                                {/* error messages */}
-                                {
-                                    status && status.error &&
-                                    <td className="fill-content">
-                                        <span className="error">{status.error}</span>
-                                    </td>
-                                }
-
-
-                                {/* Services */}
-                                {
-                                    user.id && services &&
-                                    services.map((service) => {
-                                        const sub = this.searchSubForUser(user, service);
-                                        return <td key={service.catalogEntry.id} className="fill-content col-md-1">
-                                            {
-                                                !sub &&
-                                                <CustomTooltip title={i18n._(t`tooltip.add.icon`)}>
-                                                    <button className="btn icon"
-                                                            onClick={this.createSubscriptionFromEvent}
-                                                            disabled={status && status.isLoading}
-                                                            data-user={user.id} data-service={service.catalogEntry.id}>
-                                                        <i className="fas fa-plus option-icon service"/>
-                                                    </button>
-                                                </CustomTooltip>
-                                            }
-
-                                            {
-                                                sub &&
-                                                <CustomTooltip title={i18n._(t`tooltip.remove.icon`)}>
-                                                    <button className="btn icon" onClick={this.deleteSubscription}
-                                                            disabled={status && status.isLoading}
-                                                            data-sub={sub.id}
-                                                            data-user={user.id} data-service={service.catalogEntry.id}>
-                                                        <i className="fas fa-home option-icon service"/>
-                                                    </button>
-                                                </CustomTooltip>
-                                            }
+                            members && members.map((user, i) => {
+                                const status = this.state.status[user.id];
+                                return  <CSSTransition
+                                    timeout={50 * (i+1)}
+                                    key={user.id || user.email}
+                                    classNames={"fade"}
+                                >
+                                    <tr>
+                                        <td className="fill-content">
+                                            <article className="item">
+                                                {
+                                                    user.id &&
+                                                    <span className="name">{user.name}</span>
+                                                }
+                                                {
+                                                    user.email &&
+                                                    <span
+                                                        className={`email ${(user.id && 'separator') || ''}`}>{user.email}</span>
+                                                }
+                                            </article>
                                         </td>
-                                    })
-                                }
 
-
-                                {/* Options */}
-                                {
-                                    !user.id && services &&
-                                    <React.Fragment>
-                                        {/* empty space to replace services */}
+                                        {/* error messages */}
                                         {
-                                            (services.length - 1) > 0 &&
-                                            <td className="fill-content center empty"
-                                                colSpan={services.length - 1}/>
+                                            status && status.error &&
+                                            <td className="fill-content">
+                                                <span className="error">{status.error}</span>
+                                            </td>
+                                        }
+
+
+                                        {/* Services */}
+                                        {
+                                            user.id && services &&
+                                            services.map((service) => {
+                                                const sub = this.searchSubForUser(user, service);
+                                                return <td key={service.catalogEntry.id} className="fill-content col-md-1">
+                                                    {
+                                                        !sub &&
+                                                        <CustomTooltip title={i18n._(t`tooltip.add.icon`)}>
+                                                            <button className="btn icon"
+                                                                    onClick={this.createSubscriptionFromEvent}
+                                                                    disabled={status && status.isLoading}
+                                                                    data-user={user.id} data-service={service.catalogEntry.id}>
+                                                                <i className="fas fa-plus option-icon service"/>
+                                                            </button>
+                                                        </CustomTooltip>
+                                                    }
+
+                                                    {
+                                                        sub &&
+                                                        <CustomTooltip title={i18n._(t`tooltip.remove.icon`)}>
+                                                            <button className="btn icon" onClick={this.deleteSubscription}
+                                                                    disabled={status && status.isLoading}
+                                                                    data-sub={sub.id}
+                                                                    data-user={user.id} data-service={service.catalogEntry.id}>
+                                                                <i className="fas fa-home option-icon service"/>
+                                                            </button>
+                                                        </CustomTooltip>
+                                                    }
+                                                </td>
+                                            })
+                                        }
+
+
+                                        {/* Options */}
+                                        {
+                                            !user.id && services &&
+                                            <React.Fragment>
+                                                {/* empty space to replace services */}
+                                                {
+                                                    (services.length - 1) > 0 &&
+                                                    <td className="fill-content center empty"
+                                                        colSpan={services.length - 1}/>
+                                                }
+
+                                                <td className="fill-content col-md-1">
+                                                    <CustomTooltip title={i18n._(t`tooltip.pending`)}>
+                                                        <button type="button" className="btn icon">
+                                                            <i className="fa fa-stopwatch option-icon loading"/>
+                                                        </button>
+                                                    </CustomTooltip>
+                                                </td>
+                                            </React.Fragment>
                                         }
 
                                         <td className="fill-content col-md-1">
-                                            <CustomTooltip title={i18n._(t`tooltip.pending`)}>
-                                                <button type="button" className="btn icon">
-                                                    <i className="fa fa-stopwatch option-icon loading"/>
+                                            <CustomTooltip title={i18n._(t`tooltip.remove.member`)}>
+                                                <button className="btn icon delete" data-member={i}
+                                                        onClick={this.removeUserAccessToInstance}>
+                                                    <i className="fa fa-trash option-icon delete"/>
                                                 </button>
                                             </CustomTooltip>
                                         </td>
-                                    </React.Fragment>
-                                }
-
-                                <td className="fill-content col-md-1">
-                                    <CustomTooltip title={i18n._(t`tooltip.remove.member`)}>
-                                        <button className="btn icon delete" data-member={i}
-                                                onClick={this.removeUserAccessToInstance}>
-                                            <i className="fa fa-trash option-icon delete"/>
-                                        </button>
-                                    </CustomTooltip>
-                                </td>
-                            </tr>
-                        })
-                    }
+                                    </tr>
+                                </CSSTransition>
+                            })
+                        }
+                    </TransitionGroup>
                     </tbody>
                 </table>
                 <InstanceInvitationForm members={membersWithoutAccess} instance={instance}
