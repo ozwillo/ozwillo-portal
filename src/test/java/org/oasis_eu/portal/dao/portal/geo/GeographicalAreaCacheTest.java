@@ -1,29 +1,22 @@
 package org.oasis_eu.portal.dao.portal.geo;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.Test;
 import org.oasis_eu.portal.dao.GeographicalAreaCache;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.model.geo.GeographicalAreaReplicationStatus;
 import org.oasis_eu.portal.model.search.Tokenizer;
-import org.oasis_eu.portal.OzwilloPortal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Query;
-import org.springframework.mock.web.MockServletContext;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@WebAppConfiguration
-@SpringBootTest(classes = {OzwilloPortal.class, MockServletContext.class})
+@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 public class GeographicalAreaCacheTest {
 
 	@Autowired

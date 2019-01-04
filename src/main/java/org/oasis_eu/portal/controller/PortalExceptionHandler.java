@@ -44,7 +44,7 @@ public class PortalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public ResponseEntity<String> handle403(HttpServletRequest request, ForbiddenException fex) {
         return ResponseEntity
-                .status(HttpStatus.valueOf(fex.getStatusCode()))
+                .status(HttpStatus.FORBIDDEN)
                 .body("error.msg.action-forbidden");
     }
 
@@ -52,8 +52,8 @@ public class PortalExceptionHandler extends ResponseEntityExceptionHandler {
     @ResponseBody
     public ResponseEntity<String> handle400(HttpServletRequest request, WrongQueryException wqex) {
         return ResponseEntity
-                .status(HttpStatus.valueOf(wqex.getStatusCode()))
-                .body("error.msg.action-cant-be-done");
+                .status(HttpStatus.BAD_REQUEST)
+                .body(wqex.getMessage() != null ? wqex.getMessage() : "error.msg.action-cant-be-done");
     }
 
     @ExceptionHandler(EntityNotFoundException.class)

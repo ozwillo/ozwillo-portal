@@ -64,7 +64,13 @@ dependencies {
 
     implementation("org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.1")
 
-    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    testImplementation("org.springframework.boot:spring-boot-starter-test") {
+        exclude("junit")
+    }
+    testImplementation("org.springframework.security:spring-security-test")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.3.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.2")
 
     runtime("commons-fileupload:commons-fileupload:1.3.3")
 
@@ -78,6 +84,14 @@ dependencies {
 }
 
 defaultTasks("bootRun")
+
+tasks.test {
+    environment("SPRING_PROFILES_ACTIVE", "test")
+    useJUnitPlatform()
+    testLogging {
+        events("passed", "skipped", "failed")
+    }
+}
 
 tasks.bootRun {
     environment("SPRING_PROFILES_ACTIVE", "dev")

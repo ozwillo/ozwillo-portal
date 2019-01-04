@@ -13,10 +13,7 @@ import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -29,7 +26,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -87,12 +83,12 @@ public class ImageService {
         ImageFormat format = getFormat(iconBytes);
         if (!ensurePNG(iconBytes)) {
             logger.error("Icon URL {} is not a PNG, returning default icon", servedImageUrl);
-            throw new WrongQueryException("Image must be 64x64 PNG", HttpStatus.BAD_REQUEST.value());
+            throw new WrongQueryException("Image is not a PNG", HttpStatus.BAD_REQUEST.value());
         }
 
         if (format == ImageFormat.INVALID) {
             logger.error("Invalid format of image for object.");
-            throw new WrongQueryException("Image must be 64x64 PNG", HttpStatus.BAD_REQUEST.value());
+            throw new WrongQueryException("Image format is invalid", HttpStatus.BAD_REQUEST.value());
         }
 
         Image image = imageRepository.findByUrl(servedImageUrl);
@@ -110,12 +106,10 @@ public class ImageService {
         try {
             image.setFilename(URLEncoder.encode(imageToStore.getFilename(), "UTF-8")); //image.setFilename(ICONIMAGE_NAME);
         } catch (UnsupportedEncodingException e) {
-            throw new WrongQueryException("The icon name is incorrect", HttpStatus.BAD_REQUEST.value());
+            throw new WrongQueryException("The image name has an unsupported encoding", HttpStatus.BAD_REQUEST.value());
         }
 
-        imageRepository.save(image);
-
-        return image;
+        return imageRepository.save(image);
     }
 
     /**
@@ -163,11 +157,9 @@ public class ImageService {
      * or uploaded) URL is stored in the business object
      *
      * @param inputUrl the original (be it proxied or uploaded) URL of the image
-     * @param format
-     * @param force
-     * @return
+     * @param force whether to force downloading image even it already present in repository
      */
-    private String getImageForURLInEnvConfig(String inputUrl, ImageFormat format, boolean force, EnvConfig envConfig) {
+    public String getImageForURLInEnvConfig(String inputUrl, ImageFormat format, boolean force, EnvConfig envConfig) {
         String baseImageUrl = envConfig.getBaseImageUrl();
         String defaultIconUrl = envConfig.getDefaultIconUrl();
 
@@ -229,18 +221,6 @@ public class ImageService {
 
     public String getHash(String id) {
         return directAccessImageRepo.getHashForIcon(id);
-    }
-
-    @Scheduled(fixedRate = 600000)
-    public void refreshOldImages() {
-        logger.debug("Refreshing images");
-
-        // every 10 minutes, try to download the 10 oldest images not already downloaded in the last 60 minutes (phew)
-        List<Image> images = imageRepository.findByDownloadedTimeBefore(DateTime.now().minusMinutes(60), PageRequest.of(0, 10, Sort.Direction.ASC, "downloadedTime"));
-
-        logger.debug("Found {} image(s) to refresh", images.size());
-
-        images.forEach(i -> getImageForURLInEnvConfig(i.getUrl(), i.getImageFormat(), true, envPropertiesService.getDefaultConfig()));
     }
 
     public boolean isDefaultIcon(String icon) {
@@ -342,16 +322,13 @@ public class ImageService {
     }
 
     private void blacklist(String url) {
-        ImageDownloadAttempt attempt = new ImageDownloadAttempt();
-        attempt.setTime(DateTime.now());
-        attempt.setUrl(url);
+        ImageDownloadAttempt attempt = new ImageDownloadAttempt(url);
 
         if (imageDownloadAttemptRepository.findByUrl(url) == null) { // checking is overkill, but in case of multiple threads doing the same thing, let's keep it easy
-            logger.info("Blacklisting url {}", url);
+            logger.info("Blacklisting URL {}", url);
             imageDownloadAttemptRepository.save(attempt);
         } else {
-            logger.warn("Cannot blacklist url {} because it is already present in the collection", url);
+            logger.debug("URL {} is already blacklisted", url);
         }
     }
-
 }
