@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Popup from "react-popup";
 import CustomTooltip from '../../custom-tooltip';
-import { i18n } from "../../../app.js"
+import { i18n } from "../../../config/i18n-config"
 import { t } from "@lingui/macro"
 
 class MemberDropdownHeader extends React.Component {

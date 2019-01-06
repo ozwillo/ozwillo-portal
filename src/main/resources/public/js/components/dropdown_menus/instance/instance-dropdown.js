@@ -23,7 +23,7 @@ import {fetchUpdateServiceConfig} from '../../../actions/instance';
 import InstanceService from "../../../util/instance-service";
 
 
-import { i18n } from "../../../app.js"
+import { i18n } from "../../../config/i18n-config"
 import { t } from "@lingui/macro"
 import { CSSTransition, TransitionGroup} from 'react-transition-group';
 

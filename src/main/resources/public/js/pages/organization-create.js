@@ -10,7 +10,7 @@ import UpdateTitle from '../components/update-title';
 import {fetchCountries} from '../actions/config';
 import OrganizationService from "../util/organization-service";
 import {resetOrganizationFormAction} from '../actions/components/organization-form';
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 
 class OrganizationCreate extends React.Component {

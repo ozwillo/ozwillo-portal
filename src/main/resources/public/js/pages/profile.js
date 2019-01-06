@@ -23,8 +23,9 @@ import UpdateTitle from '../components/update-title';
 import customFetch from "../util/custom-fetch";
 import { DropdownBlockSuccess } from '../components/notification-messages';
 
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
+import {i18nComponentInstance} from '../app';
 
 class Profile extends React.Component {
     state = {
@@ -78,6 +79,8 @@ class Profile extends React.Component {
             json: this.state.userProfile
         })
         .then(() => {
+            i18nComponentInstance.loadLanguage(this.state.userProfile.locale);
+
             this.setState({updateSucceeded: true});
             const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
             if (!!voluntaryClaims.length || !!essentialClaims.length) {
@@ -192,7 +195,7 @@ class ProfileAccount extends React.Component {
                     </ConditionalClaimsField>
 
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='nickname'>
-                        <InputText name="nickname" value={this.props.userProfile.nickname} 
+                        <InputText name="nickname" value={this.props.userProfile.nickname}
                                 isRequired={conditionalClaimsRequired('nickname', true, essentialClaims)}
                                 onChange={e => this.props.onValueChange('nickname', e.target.value)}
                                 label={i18n._(t`my.profile.personal.nickname`)}/>

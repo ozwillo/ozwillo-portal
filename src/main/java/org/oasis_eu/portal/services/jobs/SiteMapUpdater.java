@@ -6,10 +6,8 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.oasis_eu.portal.config.environnements.EnvProperties;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
-import org.oasis_eu.portal.dao.GoogleAnalyticsTagRepository;
 import org.oasis_eu.portal.dao.SiteMapComponentsRepository;
 import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
-import org.oasis_eu.portal.model.sitemap.*;
 import org.oasis_eu.portal.services.SiteMapService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,10 +43,6 @@ public class SiteMapUpdater {
     @Autowired
     private StylePropertiesMapRepository stylePropertiesMapRepository;
 
-    @Autowired
-    private GoogleAnalyticsTagRepository googleAnalyticsTagRepository;
-
-
     @Scheduled(cron = "${web.sitemap.refresh}")
     public void reload() {
         logger.info("Reloading site map: Header, Footer");
@@ -67,16 +61,6 @@ public class SiteMapUpdater {
                 siteMapComponentsRepository.save(siteMapComponents);
             }
         });
-    }
-
-    public void initializeGoogleAnalyticsTags() {
-        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
-        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
-            String website = entry.getKey();
-
-            String googleTag = envProperties.getConfs().get(website).getWeb().getGoogleTag();
-            googleAnalyticsTagRepository.save(new GoogleAnalyticsTag(googleTag, website));
-        }
     }
 
     public void initializeStylePropertiesMap() {

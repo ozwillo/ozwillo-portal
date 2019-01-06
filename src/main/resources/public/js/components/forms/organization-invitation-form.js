@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
 import CSVReader from "../CSVReader";
 import OrganizationService from "../../util/organization-service";
-import { i18n } from "../../app"
+import { i18n } from "../../config/i18n-config"
 import { t , Trans} from "@lingui/macro"
 
 

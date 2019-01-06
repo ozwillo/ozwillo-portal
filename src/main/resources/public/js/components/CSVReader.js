@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Tools from "../util/tools";
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 
 export default class CSVReader extends React.Component {
 

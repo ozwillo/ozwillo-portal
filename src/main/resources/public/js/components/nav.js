@@ -4,7 +4,7 @@ import {connect} from 'react-redux';
 import { withRouter } from 'react-router';
 import {Link} from 'react-router-dom';
 import {fetchSetLanguage} from '../actions/config';
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 
 

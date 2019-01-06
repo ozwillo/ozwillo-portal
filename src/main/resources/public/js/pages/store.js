@@ -9,7 +9,7 @@ import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import AppModal from '../components/store-install-app'
 import UpdateTitle from '../components/update-title';
 
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 
 

@@ -2,10 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 import { DropdownBlockError } from '../../notification-messages';
-import { i18n } from "../../../app.js"
+import { i18n } from "../../../config/i18n-config"
 
 class AddInstanceDropdownHeader extends React.Component {
-    
+
 
     static propTypes = {
         apps: PropTypes.array.isRequired,

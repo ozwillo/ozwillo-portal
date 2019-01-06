@@ -1,12 +1,12 @@
 import React from "react";
-import App from "../components/app";
+import App from "../components/application";
 import customFetch from "../util/custom-fetch";
 import FilterApp from "../model/filter-app";
 import SideNav from "../components/side-nav";
 import SearchAppForm from "../components/search-apps-form";
 import CustomTooltip from "../components/custom-tooltip";
 import PropTypes from "prop-types";
-import {i18n} from "../app";
+import {i18n} from "../config/i18n-config";
 import swal from "sweetalert2";
 import {fetchUserInfo} from "../actions/user";
 import { t, Trans } from "@lingui/macro"

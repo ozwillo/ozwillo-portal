@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 
 import { DropdownBlockError, DropdownBlockSuccess } from '../../notification-messages';
-import { i18n } from "../../../app.js"
+import { i18n } from "../../../config/i18n-config"
 import { t } from "@lingui/macro"
 
 class MemberDropdownFooter extends React.Component {

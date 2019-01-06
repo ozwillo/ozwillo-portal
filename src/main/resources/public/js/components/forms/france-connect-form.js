@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {SubmitButton} from "./form";
 
-import { i18n } from "../../app.js"
+import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
 
 class FranceConnectForm extends React.Component {

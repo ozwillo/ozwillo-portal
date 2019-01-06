@@ -6,7 +6,7 @@ import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messag
 
 //Action
 import InstanceService from "../../util/instance-service";
-import { i18n } from "../../app.js"
+import { i18n } from "../../config/i18n-config"
 
 export default class InstanceInvitationForm extends React.Component {
 

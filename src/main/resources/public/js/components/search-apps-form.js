@@ -6,7 +6,7 @@ import LabelSection from "./label-section";
 import PillInputButton from './pill-input-button';
 import UserService from '../util/user-service';
 
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 
 

@@ -13,7 +13,7 @@ import {fetchUpdateRoleMember} from '../../../actions/member';
 import InstanceService from "../../../util/instance-service";
 import OrganizationService from "../../../util/organization-service";
 
-import { i18n } from "../../../app.js"
+import { i18n } from "../../../config/i18n-config"
 
 class MemberDropdown extends React.Component {
 

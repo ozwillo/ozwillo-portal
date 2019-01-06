@@ -7,7 +7,7 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
-import {i18n} from '../app';
+import {i18n} from '../config/i18n-config';
 import {t, Trans} from '@lingui/macro'
 import UpdateTitle from '../components/update-title';
 import Spinner from '../components/spinner';

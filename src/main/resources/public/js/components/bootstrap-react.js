@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
 import PropTypes from 'prop-types';
-import { i18n } from "../app.js";
+import { i18n } from "../config/i18n-config";
 
 /**
  * Bootstrap Modal encapsulation.

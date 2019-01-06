@@ -12,7 +12,7 @@ import {fetchCountries} from '../../actions/config';
 import {updateOrganizationFormAction} from '../../actions/components/organization-form';
 import {fetchOrganizationInfo, fetchUpdateOrganization} from '../../actions/organization';
 
-import { i18n } from "../../app.js"
+import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
 
 class AdminTabHeader extends React.Component {

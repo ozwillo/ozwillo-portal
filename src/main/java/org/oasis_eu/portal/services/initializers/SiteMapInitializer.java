@@ -1,6 +1,5 @@
 package org.oasis_eu.portal.services.initializers;
 
-import org.oasis_eu.portal.dao.GoogleAnalyticsTagRepository;
 import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
 import org.oasis_eu.portal.services.jobs.SiteMapUpdater;
 import org.slf4j.Logger;
@@ -21,9 +20,6 @@ public class SiteMapInitializer implements ApplicationListener<ContextRefreshedE
     @Autowired
     private StylePropertiesMapRepository stylePropertiesMapRepository;
 
-    @Autowired
-    private GoogleAnalyticsTagRepository googleAnalyticsTagRepository;
-
     @Override
     public void onApplicationEvent(ContextRefreshedEvent event) {
         logger.debug("Context refreshed, checking header and footer status !");
@@ -33,8 +29,5 @@ public class SiteMapInitializer implements ApplicationListener<ContextRefreshedE
 
         if(stylePropertiesMapRepository.count() == 0)
             siteMapUpdater.initializeStylePropertiesMap();
-
-        if(googleAnalyticsTagRepository.count() == 0)
-            siteMapUpdater.initializeGoogleAnalyticsTags();
     }
 }

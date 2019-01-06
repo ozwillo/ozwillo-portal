@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import {i18n} from "../app";
+import {i18n} from "../config/i18n-config";
 import { t } from "@lingui/macro"
 
 
-class App extends React.PureComponent{
+class Application extends React.PureComponent{
 
     openInstallAppPage = () =>{
         const {app, config} = this.props;
@@ -49,12 +49,12 @@ class App extends React.PureComponent{
     }
 }
 
-App.propTypes = {
+Application.propTypes = {
     app: PropTypes.object,
     config: PropTypes.object
 };
 
-export default withRouter(App);
+export default withRouter(Application);
 
 
 

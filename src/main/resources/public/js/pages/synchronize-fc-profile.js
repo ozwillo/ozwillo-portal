@@ -7,7 +7,7 @@ import PropTypes from "prop-types";
 import UpdateTitle from '../components/update-title';
 import customFetch from "../util/custom-fetch";
 
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 
 const languageData = {
