@@ -44,7 +44,8 @@ class Profile extends React.Component {
         passwordChangeEndpoint: '',
         unlinkFranceConnectEndpoint: '',
         linkFranceConnectEndpoint: '',
-        franceConnectEnabled: false
+        franceConnectEnabled: false,
+        brandId: ''
     };
 
 
@@ -71,6 +72,10 @@ class Profile extends React.Component {
         this.setState({userProfile: fields})
     }
 
+    buildBrandURL = (url) => {
+        return `${url}?brand=${this.state.brandId}`;
+    };
+
     onSubmit(e) {
         e.preventDefault();
 
@@ -78,17 +83,17 @@ class Profile extends React.Component {
             method: 'POST',
             json: this.state.userProfile
         })
-        .then(() => {
-            i18nComponentInstance.loadLanguage(this.state.userProfile.locale);
+            .then(() => {
+                i18nComponentInstance.loadLanguage(this.state.userProfile.locale);
 
-            this.setState({updateSucceeded: true});
-            const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
-            if (!!voluntaryClaims.length || !!essentialClaims.length) {
-                window.opener.postMessage('updated', '*');
-                window.close()
-            }
-            this.componentDidMount();
-        })
+                this.setState({updateSucceeded: true});
+                const {voluntaryClaims, essentialClaims} = getConditionalClaims(this.props.location.search);
+                if (!!voluntaryClaims.length || !!essentialClaims.length) {
+                    window.opener.postMessage('updated', '*');
+                    window.close()
+                }
+                this.componentDidMount();
+            })
     }
 
     render() {
@@ -122,10 +127,11 @@ class Profile extends React.Component {
 
                 {(!voluntaryClaims.length && !essentialClaims.length) &&
                     <Fragment>
-                        <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                        <PasswordAccount passwordChangeEndpoint={this.buildBrandURL(this.state.passwordChangeEndpoint)}
                                         passwordExist={!!userProfile.email_verified}/>
                         { this.state.franceConnectEnabled &&
-                              <FranceConnectForm passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                              <FranceConnectForm brandId={this.state.brandId}
+                                        passwordChangeEndpoint={this.state.passwordChangeEndpoint}
                                         linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
                                         unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
                                         userProfile={userProfile} className="box"/>
