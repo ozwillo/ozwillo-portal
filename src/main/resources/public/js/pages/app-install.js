@@ -300,7 +300,7 @@ export class InstallForm extends React.Component {
 
                 {!installed && !(installType === 'PERSONAL') && !(app.type === 'service') ?
                     <div className={'install-selector'}>
-                        <label><Trans>For which organization</Trans></label>
+                        <label className={organizationsAvailable.loading ? 'label-spinner' : null}><Trans>For which organization</Trans></label>
                         <div className={'select-organization'}>
                             <Spinner display={organizationsAvailable.loading} className={'organization-spinner'}/>
                             <Select

@@ -47,6 +47,8 @@ class FranceConnectForm extends React.Component {
             {
                 !userProfile.franceconnect_sub && userProfile.email_verified &&
                 <fieldset>
+                    <input type="hidden" name="brand"
+                           value={this.props.brandId}/>
                     <input type="hidden" name="continue"
                            value={`${window.location.origin}/my/profile/franceconnect`}/>
                     <SubmitButton label={i18n._(t`franceconnect.form.synchronise`)}/>

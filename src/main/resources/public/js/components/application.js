@@ -20,13 +20,6 @@ class Application extends React.PureComponent{
         const {app} = this.props;
 
         const indicatorStatus = app.installed ? "installed" : (app.paid ? "paid" : "free");
-        const pubServiceIndicator = app.public_service ?
-            <div className="public-service-indicator">
-                <div className="triangle"/>
-                <div className="label">
-                    <i className="triangle fas fa-university" />
-                </div>
-            </div> : null;
 
         return (
             <div className={`col-lg-2 col-md-3 col-sm-4 col-xs-6 container-app ${indicatorStatus}-app`}>
@@ -35,7 +28,6 @@ class Application extends React.PureComponent{
                         <img src={app.icon}/>
                     </div>
                     <div className="description">
-                        {pubServiceIndicator}
                         <div className="app-header">
                             <span className="app-name">{app.name}</span>
                             <p className="app-provider">{app.provider}</p>
