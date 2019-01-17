@@ -195,8 +195,6 @@
   "ui.loading": "Chargement...",
   "ui.login": "Connexion",
   "ui.logout": "Déconnexion",
-  "ui.message.will-be-deleted": "Sera supprimée",
-  "ui.message.will-be-deleted-plural": "Sera supprimée dans {value} jour(s)",
   "ui.next": "Suivant",
   "ui.next-step": "Étape suivante",
   "ui.notifications": "Notifications",
@@ -208,5 +206,6 @@
   "ui.welcome": "Bienvenue",
   "ui.yes": "Oui",
   "{0}": "",
+  "{days, plural, one {Will be deleted} other {Will be deleted in {days} days}}": "{days, plural, one {Sera supprimée} other {Sera supprimée dans {days} jour(s)}}",
   "{message}": ""
 }
