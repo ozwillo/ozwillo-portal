@@ -1,18 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import {DropdownBlockError, DropdownBlockSuccess} from '../notification-messages';
-import CSVReader from "../CSVReader";
-import OrganizationService from "../../util/organization-service";
-import { i18n } from "../../config/i18n-config"
-import { t , Trans} from "@lingui/macro"
+import CSVReader from '../CSVReader';
+import OrganizationService from '../../util/organization-service';
+import {i18n} from '../../config/i18n-config'
+import {t, Trans} from '@lingui/macro'
 
 
-
-import OrganizationInvitationInstances from "./organization-invitation-instances";
-import Stepper from "../stepper";
-import PillButton from "../pill-button";
-import InstanceService from "../../util/instance-service";
+import OrganizationInvitationInstances from './organization-invitation-instances';
+import Stepper from '../stepper';
+import PillButton from '../pill-button';
+import InstanceService from '../../util/instance-service';
+import NotificationMessageBlock from '../notification-message-block';
 
 export default class OrganizationInvitationForm extends React.Component {
 
@@ -26,7 +24,7 @@ export default class OrganizationInvitationForm extends React.Component {
             success: '',
             error: '',
             emailsFromCSV: [],
-            csvFileName: "",
+            csvFileName: '',
             csvLoading: false,
             isFetchingUsers: false,
             activeStep: 1,
@@ -103,7 +101,7 @@ export default class OrganizationInvitationForm extends React.Component {
 
     _handleStep = (wantedStep) => {
         const {email, emailsFromCSV} = this.state;
-        if ((wantedStep > 1 && (email || emailsFromCSV.length > 0)) || wantedStep === 1) {
+        if ((wantedStep > 1 && (email || emailsFromCSV.length > 0)) || wantedStep === 1) {
             this.setState({activeStep: wantedStep});
         }
     };
@@ -145,7 +143,7 @@ export default class OrganizationInvitationForm extends React.Component {
             isLoading: false,
             error: '',
             emailsFromCSV: [],
-            csvFileName: "",
+            csvFileName: '',
             csvLoading: false,
             isFetchingUsers: false,
             activeStep: 1,
@@ -163,8 +161,8 @@ export default class OrganizationInvitationForm extends React.Component {
         const required = !(emailsFromCSV.length > 0 || email !== '');
 
 
-        return<header className="organization-invitation-form">
-            <p className={"invitation-title"}>{i18n._(t`organization.desc.add-new-members`)}</p>
+        return <header className="organization-invitation-form">
+            <p className={'invitation-title'}>{i18n._(t`organization.desc.add-new-members`)}</p>
 
             <Stepper activeStep={activeStep} nbSteps={3} onClickStep={(activeStep) => this._handleStep(activeStep)}/>
 
@@ -172,7 +170,7 @@ export default class OrganizationInvitationForm extends React.Component {
                 {/*STEP 1*/}
                 {activeStep === 1 &&
                 <div>
-                    <div className={"organization-form-sentence sentence"}>
+                    <div className={'organization-form-sentence sentence'}>
                         {/*email input*/}
                         <p>{i18n._(t`organization.desc.from-email`)}</p>
                         <input required={required} name="email" type="email"
@@ -187,8 +185,8 @@ export default class OrganizationInvitationForm extends React.Component {
                             onFileReading={() => this.setState({csvLoading: true})}
                             onFileRead={(emails) => this._handleCSVRead(emails)}/>
                     </div>
-                    <div className={"organization-form-sentence"}>
-                        <p className={"helper-text"}>(*)<em>&nbsp;{i18n._("organization.desc.CSV-helper")}.</em>
+                    <div className={'organization-form-sentence'}>
+                        <p className={'helper-text'}>(*)<em>&nbsp;{i18n._('organization.desc.CSV-helper')}.</em>
                         </p>
                     </div>
                 </div>
@@ -204,15 +202,18 @@ export default class OrganizationInvitationForm extends React.Component {
 
                 {/*STEP 3*/}
                 {activeStep === 3 &&
-                <div className={"summarize"}>
+                <div className={'summarize'}>
                     <div>
                         <ul>
-                            {emailsFromCSV.length > 0 && <li><Trans>Emails from CSV file <strong>{csvFileName}</strong> will be invited to the organization</Trans></li>}
-                            {email && <li><Trans><strong>{email}</strong> will be invited to the organization</Trans></li>}
+                            {emailsFromCSV.length > 0 &&
+                            <li><Trans>Emails from CSV file <strong>{csvFileName}</strong> will be invited to the
+                                organization</Trans></li>}
+                            {email &&
+                            <li><Trans><strong>{email}</strong> will be invited to the organization</Trans></li>}
                             {instancesSelected.length > 0 &&
                             <React.Fragment>
                                 <li>{i18n._(t`organization.desc.summarize-apps-added`)} :</li>
-                                <div className={"instances-summarize"}>
+                                <div className={'instances-summarize'}>
                                     {
                                         instancesSelected.map(instance => {
                                             return (
@@ -236,8 +237,8 @@ export default class OrganizationInvitationForm extends React.Component {
 
             {/*NEXT STEP BUTTONS*/}
             {activeStep < 3 ?
-                <div className={"next-step-container"}>
-                    <button className={"btn btn-default next-step"}
+                <div className={'next-step-container'}>
+                    <button className={'btn btn-default next-step'}
                             onClick={() => this._handleStep(activeStep + 1)}
                             disabled={!emailsFromCSV.length > 0 && !email}
                     >
@@ -245,26 +246,23 @@ export default class OrganizationInvitationForm extends React.Component {
                     </button>
                 </div>
                 :
-                <div className={"next-step-container"}>
+                <div className={'next-step-container'}>
                     {/*Submit button*/}
                     <div>
                         {submitButton}
                     </div>
                     {(isLoading || csvLoading || isFetchingUsers) &&
-                    <div className={"spinner-container"}>
+                    <div className={'spinner-container'}>
                         <i className="fa fa-spinner fa-spin action-icon"/>
                     </div>
                     }
                 </div>
             }
 
-            {
-                this.state.error && <DropdownBlockError errorMessage={this.state.error}/>
-            }
-
-            {
-                this.state.success && <DropdownBlockSuccess successMessage={this.state.success}/>
-            }
+            <NotificationMessageBlock type={this.state.error ? 'danger' : 'success'}
+                                      display={this.state.error !== '' || this.state.success !== ''}
+                                      close={() => this.setState({error: '', success: ''})}
+                                      message={this.state.error ? this.state.error : this.state.success}/>
 
         </header>;
     }

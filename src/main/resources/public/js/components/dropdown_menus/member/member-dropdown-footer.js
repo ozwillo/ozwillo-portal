@@ -2,9 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-import { DropdownBlockError, DropdownBlockSuccess } from '../../notification-messages';
 import { i18n } from "../../../config/i18n-config"
 import { t } from "@lingui/macro"
+import NotificationMessageBlock from '../../notification-message-block';
 
 class MemberDropdownFooter extends React.Component {
 
@@ -77,9 +77,12 @@ class MemberDropdownFooter extends React.Component {
                 </div>
             </form>
 
-            {
-                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
-            }
+
+            <NotificationMessageBlock type={'danger'}
+                                      display={this.state.error !== ""}
+                                      close={() => this.setState({error: ''})}
+                                      message={this.state.error}/>
+
         </header>;
     }
 
