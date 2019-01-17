@@ -126,7 +126,7 @@ export default class SearchAppsForm extends React.Component {
         geoArea.name = value;
         this.setState({geoArea});
         if(value===''){
-            this.props.updateFilter(null, "geoArea", '');
+            this.props.updateFilter(null, "geoArea",  {name:'', ancestors: []});
         }
     };
 
@@ -138,7 +138,6 @@ export default class SearchAppsForm extends React.Component {
 
     _handleInstallStatusChange = (event) => {
         const installStatus = event.target.value;
-        console.log(installStatus);
         this.setState({installStatus: installStatus});
         this.props.updateFilter(null, "installStatus", installStatus);
     };
