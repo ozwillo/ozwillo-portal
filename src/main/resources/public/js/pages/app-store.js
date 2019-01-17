@@ -281,6 +281,7 @@ export default class AppStore extends React.Component {
                             <input type="text" id="fulltext"
                                    className={"form-control search-bar"}
                                    onChange={this._handleFullTextSearchChanged}
+                                   value={this.state.filters.searchText}
                                    placeholder={i18n._(t`store.keywords`)} name="fullTextSearch"/>
                             <div className={"app-list"}>
                                 {this._displayApps()}
