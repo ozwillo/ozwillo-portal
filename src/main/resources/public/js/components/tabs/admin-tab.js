@@ -39,7 +39,9 @@ class AdminTab extends React.Component {
         super(props);
 
         this.state = {
-            isLoading: true
+            isLoading: true,
+            success: '',
+            error: ''
         };
 
         this.onSubmit = this.onSubmit.bind(this);
