@@ -1,45 +1,31 @@
 import React from 'react';
 import {BrowserRouter} from 'react-router-dom';
 import Router from './config/router';
-import {I18nProvider} from '@lingui/react';
 import customFetch from './util/custom-fetch';
-import HtmlHead from './components/html-head';
-import {setupI18n} from '@lingui/core'
+import HtmlHead from './config/html-head';
+import I18nConfig from './config/i18n-config';
 
-import catalogEn from '@lingui/loader!../locales/en/messages.json';
-import catalogFr from '@lingui/loader!../locales/fr/messages.json';
-import catalogEs from '@lingui/loader!../locales/es/messages.json';
-import catalogCa from '@lingui/loader!../locales/ca/messages.json';
-import catalogBg from '@lingui/loader!../locales/bg/messages.json';
-import catalogTr from '@lingui/loader!../locales/tr/messages.json';
-
-export const i18n = setupI18n();
-
-// mind the `en` key
-
+export let i18nComponentInstance;
 
 class App extends React.Component {
 
     state = {
         i18nLoaded: false,
+        hostName: null,
         googleTag: null
     };
 
+
     componentDidMount = async () => {
-        await i18n.load({
-            en: catalogEn,
-            fr: catalogFr,
-            es: catalogEs,
-            ca: catalogCa,
-            bg: catalogBg,
-            tr: catalogTr
-        });
-        await i18n.activate('en');
+        let res = await customFetch(`/api/env`);
+        let config = await customFetch('/api/config');
+        const googleTag = await customFetch('/api/config/googleTag');
 
-        const {tag: googleTag} = await customFetch('/api/config/googleTag');
         localStorage.setItem('googleTag', googleTag);
+        this.setState({language: config.language, googleTag: googleTag})
+        this.stockEnv(res);
 
-        this.setState({i18nLoaded: true, googleTag: googleTag});
+
         //Change css var, depends on the domain name
         const styleProperties = await customFetch('/api/config/style');
         styleProperties.map(cssVar => {
@@ -47,19 +33,30 @@ class App extends React.Component {
         });
     };
 
+    stockEnv = (env) => {
+        localStorage.setItem('env', env);
+        this.setState({hostName: env});
+    };
+
+    i18nLoaded = () => {
+        this.setState({i18nLoaded: true})
+    };
+
+
     render() {
-        if (!this.state.i18nLoaded || !this.state.googleTag) {
-            return null;
-        }
-
-
+        const {hostName, i18nLoaded, language, googleTag} = this.state;
         return (
-            <I18nProvider i18n={i18n}>
-                <BrowserRouter>
-                    <Router/>
-                </BrowserRouter>
-                <HtmlHead/>
-            </I18nProvider>
+            <I18nConfig loaded={this.i18nLoaded} env={hostName} language={language} ref={ref => i18nComponentInstance = ref}>
+                {i18nLoaded && googleTag ?
+                    <React.Fragment>
+                        <BrowserRouter>
+                            <Router/>
+                        </BrowserRouter>
+                        <HtmlHead env={hostName}/>
+                    </React.Fragment>
+                    : null
+                }
+            </I18nConfig>
 
         );
     }

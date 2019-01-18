@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
-import org.oasis_eu.portal.dao.GoogleAnalyticsTagRepository;
 import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
 import org.oasis_eu.portal.model.sitemap.*;
 import org.oasis_eu.portal.services.EnvPropertiesService;
@@ -54,9 +53,6 @@ public class OzwilloController {
     private StylePropertiesMapRepository stylePropertiesMapRepository;
 
     @Autowired
-    private GoogleAnalyticsTagRepository googleAnalyticsTagRepository;
-
-    @Autowired
     public OzwilloController(MyNavigationService navigationService, UserInfoService userInfoService) {
         this.navigationService = navigationService;
         this.userInfoService = userInfoService;
@@ -102,9 +98,8 @@ public class OzwilloController {
     }
 
     @GetMapping("/config/googleTag")
-    public GoogleAnalyticsTag getGoogleAnalyticsTag(){
-        String website = envPropertiesService.getCurrentKey();
-        return googleAnalyticsTagRepository.findByWebsite(website);
+    public String getGoogleAnalyticsTag() {
+        return envPropertiesService.getCurrentConfig().getWeb().getGoogleTag();
     }
 
 

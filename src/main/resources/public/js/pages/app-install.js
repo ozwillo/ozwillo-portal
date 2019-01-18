@@ -7,7 +7,7 @@ import Select from 'react-select';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import OrganizationService from '../util/organization-service';
-import {i18n} from '../app';
+import {i18n} from '../config/i18n-config';
 import {t, Trans} from '@lingui/macro'
 import UpdateTitle from '../components/update-title';
 import Spinner from '../components/spinner';
@@ -300,7 +300,7 @@ export class InstallForm extends React.Component {
 
                 {!installed && !(installType === 'PERSONAL') && !(app.type === 'service') ?
                     <div className={'install-selector'}>
-                        <label><Trans>For which organization</Trans></label>
+                        <label className={organizationsAvailable.loading ? 'label-spinner' : null}><Trans>For which organization</Trans></label>
                         <div className={'select-organization'}>
                             <Spinner display={organizationsAvailable.loading} className={'organization-spinner'}/>
                             <Select

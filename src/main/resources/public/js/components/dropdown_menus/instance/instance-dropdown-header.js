@@ -10,15 +10,16 @@ import Config from '../../../config/config';
 import {fetchServicesOfInstance} from "../../../actions/instance";
 import customFetch from '../../../util/custom-fetch';
 
-import { i18n } from "../../../app.js"
-import { t } from "@lingui/macro"
+import { i18n } from "../../../config/i18n-config"
+import {plural} from '@lingui/macro'
+import { t, date } from "@lingui/macro"
 
 const instanceStatus = Config.instanceStatus;
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes
 
 class InstanceDropdownHeader extends React.Component {
-    
+
     static propTypes = {
         instance: PropTypes.object.isRequired,
         onRemoveInstance: PropTypes.func.isRequired,
@@ -85,8 +86,11 @@ class InstanceDropdownHeader extends React.Component {
 
         const days = Math.round((deletionDate - now) / TIME_DAY);
 
-        return (days > 0) ? i18n._(t`ui.message.will-be-deleted-plural`).format(days) :
-            i18n._(t`ui.message.will-be-deleted`);
+        return i18n._(plural({
+          value: days,
+          one: `Will be deleted`,
+          other: `Will be deleted in ${days} days`
+        }));
     }
 
     _displayError = () => {

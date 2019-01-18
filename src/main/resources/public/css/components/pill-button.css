@@ -20,3 +20,9 @@
     overflow: hidden;
 }
 
+.pill-button.btn-default-inverse:hover{
+    color: var(--button-secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+    background-color: var(--secondary-color) !important;
+}
+

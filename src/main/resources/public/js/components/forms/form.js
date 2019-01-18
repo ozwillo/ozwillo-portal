@@ -4,7 +4,7 @@ import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 
-import { i18n } from "../../app.js"
+import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
 
 const Form = ({id, onSubmit, children}) =>
@@ -17,7 +17,7 @@ Form.propTypes = {
     onSubmit: PropTypes.func.isRequired
 };
 
-const Label = ({ children, required, ...rest }) => 
+const Label = ({ children, required, ...rest }) =>
     <label {...rest}>{children}{required && ' *'}</label>
 
 const InputText = ({name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled}) =>

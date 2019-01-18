@@ -5,15 +5,15 @@ import {Link} from 'react-router-dom';
 
 //Components
 import OrganizationForm from '../forms/organization-form';
-import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
 
 //actions
 import {fetchCountries} from '../../actions/config';
 import {updateOrganizationFormAction} from '../../actions/components/organization-form';
 import {fetchOrganizationInfo, fetchUpdateOrganization} from '../../actions/organization';
 
-import { i18n } from "../../app.js"
+import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
+import NotificationMessageBlock from '../notification-message-block';
 
 class AdminTabHeader extends React.Component {
 
@@ -95,14 +95,10 @@ class AdminTab extends React.Component {
                                       initialTaxRegNum={this.props.orgInfo.tax_reg_num}/>
 
                     <div className="text-center">
-                        {
-                            this.state.error &&
-                                <DropdownBlockError errorMessage={this.state.error}/>
-                        }
-                        {
-                            this.state.success &&
-                                <DropdownBlockSuccess successMessage={this.state.success}/>
-                        }
+                        <NotificationMessageBlock type={this.state.error ? 'danger' : 'success'}
+                                                  display={this.state.error !== '' || this.state.success !== ''}
+                                                  close={() => this.setState({error: '', success: ''})}
+                                                  message={this.state.error ? this.state.error : this.state.success}/>
                     </div>
                 </article>
             );

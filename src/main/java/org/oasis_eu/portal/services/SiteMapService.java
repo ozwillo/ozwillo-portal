@@ -5,7 +5,6 @@ import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
 import org.oasis_eu.portal.config.environnements.EnvProperties;
 import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
-import org.oasis_eu.portal.dao.GoogleAnalyticsTagRepository;
 import org.oasis_eu.portal.dao.SiteMapComponentsRepository;
 import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
 import org.oasis_eu.portal.model.sitemap.*;
@@ -43,11 +42,7 @@ public class SiteMapService {
 
     @Autowired
     private StylePropertiesMapRepository stylePropertiesMapRepository;
-
-    @Autowired
-    private GoogleAnalyticsTagRepository googleAnalyticsTagRepository;
-
-
+    
     @Cacheable(value = "sitemapfooter", key = "#website.toString() + #language.toString()")
     public List<SiteMapEntry> getSiteMapFooter(String website, String language) {
         SiteMapMenuFooter siteMapMenuFooter = siteMapComponentsRepository.findByWebsite(website)
@@ -110,16 +105,6 @@ public class SiteMapService {
                 siteMapComponentsRepository.save(siteMapComponents);
             }
         });
-    }
-
-    public void initializeGoogleAnalyticsTags() {
-        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
-        for (Map.Entry<String, EnvConfig> entry : mapEnvConfig.entrySet()) {
-            String website = entry.getKey();
-
-            String googleTag = envProperties.getConfs().get(website).getWeb().getGoogleTag();
-            googleAnalyticsTagRepository.save(new GoogleAnalyticsTag(googleTag, website));
-        }
     }
 
     public void initializeStylePropertiesMap() {

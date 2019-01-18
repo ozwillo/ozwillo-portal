@@ -7,7 +7,7 @@ import Config from "../config/config";
 import Popup from "react-popup/dist";
 import OrganizationService from '../util/organization-service';
 
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes

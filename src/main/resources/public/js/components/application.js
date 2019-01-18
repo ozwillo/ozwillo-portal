@@ -1,11 +1,11 @@
 import React from "react";
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom';
-import {i18n} from "../app";
+import {i18n} from "../config/i18n-config";
 import { t } from "@lingui/macro"
 
 
-class App extends React.PureComponent{
+class Application extends React.PureComponent{
 
     openInstallAppPage = () =>{
         const {app, config} = this.props;
@@ -20,13 +20,6 @@ class App extends React.PureComponent{
         const {app} = this.props;
 
         const indicatorStatus = app.installed ? "installed" : (app.paid ? "paid" : "free");
-        const pubServiceIndicator = app.public_service ?
-            <div className="public-service-indicator">
-                <div className="triangle"/>
-                <div className="label">
-                    <i className="triangle fas fa-university" />
-                </div>
-            </div> : null;
 
         return (
             <div className={`col-lg-2 col-md-3 col-sm-4 col-xs-6 container-app ${indicatorStatus}-app`}>
@@ -35,7 +28,6 @@ class App extends React.PureComponent{
                         <img src={app.icon}/>
                     </div>
                     <div className="description">
-                        {pubServiceIndicator}
                         <div className="app-header">
                             <span className="app-name">{app.name}</span>
                             <p className="app-provider">{app.provider}</p>
@@ -49,12 +41,12 @@ class App extends React.PureComponent{
     }
 }
 
-App.propTypes = {
+Application.propTypes = {
     app: PropTypes.object,
     config: PropTypes.object
 };
 
-export default withRouter(App);
+export default withRouter(Application);
 
 
 

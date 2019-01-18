@@ -21,10 +21,11 @@ import {
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import UpdateTitle from '../components/update-title';
 import customFetch from "../util/custom-fetch";
-import { DropdownBlockSuccess } from '../components/notification-messages';
 
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
+import {i18nComponentInstance} from '../app';
+import NotificationMessageBlock from '../components/notification-message-block';
 
 class Profile extends React.Component {
     state = {
@@ -43,7 +44,8 @@ class Profile extends React.Component {
         passwordChangeEndpoint: '',
         unlinkFranceConnectEndpoint: '',
         linkFranceConnectEndpoint: '',
-        franceConnectEnabled: false
+        franceConnectEnabled: false,
+        brandId: ''
     };
 
 
@@ -70,6 +72,10 @@ class Profile extends React.Component {
         this.setState({userProfile: fields})
     }
 
+    buildBrandURL = (url) => {
+        return `${url}?brand=${this.state.brandId}`;
+    };
+
     onSubmit(e) {
         e.preventDefault();
 
@@ -77,15 +83,17 @@ class Profile extends React.Component {
             method: 'POST',
             json: this.state.userProfile
         })
-        .then(() => {
-            this.setState({updateSucceeded: true});
-            const { voluntaryClaims, essentialClaims } = getConditionalClaims(this.props.location.search);
-            if (!!voluntaryClaims.length || !!essentialClaims.length) {
-                window.opener.postMessage('updated', '*');
-                window.close()
-            }
-            this.componentDidMount();
-        })
+            .then(() => {
+                i18nComponentInstance.loadLanguage(this.state.userProfile.locale);
+
+                this.setState({updateSucceeded: true});
+                const {voluntaryClaims, essentialClaims} = getConditionalClaims(this.props.location.search);
+                if (!!voluntaryClaims.length || !!essentialClaims.length) {
+                    window.opener.postMessage('updated', '*');
+                    window.close()
+                }
+                this.componentDidMount();
+            })
     }
 
     render() {
@@ -111,18 +119,23 @@ class Profile extends React.Component {
                                         voluntaryClaims={voluntaryClaims}
                                         essentialClaims={essentialClaims} />
                         <SubmitButton label={i18n._(t`ui.save`)} className="btn-lg"/>
-                        {renderIf(this.state.updateSucceeded)(
-                            <DropdownBlockSuccess successMessage={i18n._(t`my.profile.account.update`)}/>
-                        )}
+
+
+                        <NotificationMessageBlock type={'success'}
+                                                  display={this.state.updateSucceeded}
+                                                  close={() => this.setState({updateSucceeded: false})}
+                                                  message={i18n._(t`my.profile.account.update`)}/>
+
                     </Form>
                 </section>
 
                 {(!voluntaryClaims.length && !essentialClaims.length) &&
                     <Fragment>
-                        <PasswordAccount passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                        <PasswordAccount passwordChangeEndpoint={this.buildBrandURL(this.state.passwordChangeEndpoint)}
                                         passwordExist={!!userProfile.email_verified}/>
                         { this.state.franceConnectEnabled &&
-                              <FranceConnectForm passwordChangeEndpoint={this.state.passwordChangeEndpoint}
+                              <FranceConnectForm brandId={this.state.brandId}
+                                        passwordChangeEndpoint={this.state.passwordChangeEndpoint}
                                         linkFranceConnectEndpoint={this.state.linkFranceConnectEndpoint}
                                         unlinkFranceConnectEndpoint={this.state.unlinkFranceConnectEndpoint}
                                         userProfile={userProfile} className="box"/>
@@ -192,7 +205,7 @@ class ProfileAccount extends React.Component {
                     </ConditionalClaimsField>
 
                     <ConditionalClaimsField voluntaryClaims={voluntaryClaims} essentialClaims={essentialClaims} field='nickname'>
-                        <InputText name="nickname" value={this.props.userProfile.nickname} 
+                        <InputText name="nickname" value={this.props.userProfile.nickname}
                                 isRequired={conditionalClaimsRequired('nickname', true, essentialClaims)}
                                 onChange={e => this.props.onValueChange('nickname', e.target.value)}
                                 label={i18n._(t`my.profile.personal.nickname`)}/>

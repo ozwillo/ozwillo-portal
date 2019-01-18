@@ -8,7 +8,7 @@ import AddInstanceDropdown from '../dropdown_menus/instance/add-instance-dropdow
 import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
 import customFetch from '../../util/custom-fetch';
 
-import { i18n } from "../../app.js"
+import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
 
 class InstancesTabHeader extends React.Component {

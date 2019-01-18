@@ -1,6 +1,6 @@
 import {setLanguage, setTranslations} from "redux-i18n";
 import customFetch, {urlBuilder} from "../util/custom-fetch";
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 
 
 export const FETCH_CONFIG = 'FETCH_CONFIG';

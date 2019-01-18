@@ -208,5 +208,6 @@
   "ui.welcome": "Hoş geldin",
   "ui.yes": "Evet",
   "{0}": "",
+  "{days, plural, one {Will be deleted} other {Will be deleted in {days} days}}": "",
   "{message}": ""
 }

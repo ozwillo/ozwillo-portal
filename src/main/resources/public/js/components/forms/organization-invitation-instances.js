@@ -1,7 +1,7 @@
 import React from "react";
 import PillButton from "../pill-button";
 import PropTypes from "prop-types";
-import {i18n} from "../../app";
+import {i18n} from "../../config/i18n-config";
 import { t } from "@lingui/macro"
 
 

@@ -134,9 +134,12 @@
     margin-bottom: 0em;
 }
 
+.app-install-wrapper .label-spinner{
+    padding-left: 25px;
+}
+
 .app-install-wrapper .organization-spinner{
-    position: absolute;
-    left: -1.5em;
+    padding-right: 10px;
 }
 
 .app-install-wrapper .select-organization{

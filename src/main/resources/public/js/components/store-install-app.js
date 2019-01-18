@@ -13,7 +13,7 @@ const converter = new Showdown.Converter({tables: true});
 import {Modal} from './bootstrap-react';
 import {RatingWrapper} from './rating';
 import customFetch from '../util/custom-fetch';
-import { i18n } from "../app.js"
+import { i18n } from "../config/i18n-config"
 
 
 class AppModal extends React.Component {

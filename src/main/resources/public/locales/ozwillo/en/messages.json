@@ -5,6 +5,7 @@
   "For which organization": "For which organization",
   "For which usage": "For which usage",
   "active": "Activated",
+  "active-filters": "active-filters",
   "agree-to-tos": "agree-to-tos",
   "all": "all",
   "already-rated": "already-rated",
@@ -207,5 +208,6 @@
   "ui.welcome": "Welcome",
   "ui.yes": "Yes",
   "{0}": "{0}",
+  "{days, plural, one {Will be deleted} other {Will be deleted in {days} days}}": "{days, plural, one {Will be deleted} other {Will be deleted in {days} days}}",
   "{message}": "{message}"
 }

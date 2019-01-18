@@ -9,7 +9,7 @@ import TaxRegActivityAutosuggest from '../autosuggests/tax-reg-activity-autosugg
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
 
 
-import { i18n } from "../../app.js"
+import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
 
 //Actions

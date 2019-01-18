@@ -106,6 +106,9 @@ if (TARGET === 'start' || !TARGET) {
             progress: true,
             stats: {colors: true},
             port: 3000,
+            allowedHosts: [
+                '.localtest.me'
+            ],
             proxy: {
                 "*": "http://localhost:8080"
             }

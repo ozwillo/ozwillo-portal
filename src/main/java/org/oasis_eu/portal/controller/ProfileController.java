@@ -3,6 +3,7 @@ package org.oasis_eu.portal.controller;
 import org.oasis_eu.portal.model.OasisLocales;
 import org.oasis_eu.portal.model.kernel.user.UserProfile;
 import org.oasis_eu.portal.model.user.UIUserProfile;
+import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.kernel.FranceConnectService;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -27,6 +28,9 @@ public class ProfileController {
     @Autowired
     private FranceConnectService franceConnectService;
 
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
+
     @Value("${kernel.auth.password_change_endpoint:''}")
     private String passwordChangeEndpoint;
 
@@ -43,7 +47,8 @@ public class ProfileController {
     public UIUserProfile userInfos() {
         UserProfile userProfile = userProfileService.findUserProfile(userInfoService.currentUser().getUserId());
         List<String> languages = OasisLocales.locales().stream().map(Locale::getLanguage).collect(Collectors.toList());
-        return new UIUserProfile(userProfile, languages, passwordChangeEndpoint,
+        String brandId = envPropertiesService.getCurrentConfig().getKernel().getClient_id();
+        return new UIUserProfile(userProfile, languages, brandId, passwordChangeEndpoint,
                 linkFranceConnectEndpoint, unlinkFranceConnectEndpoint, franceConnectEnabled);
     }
 

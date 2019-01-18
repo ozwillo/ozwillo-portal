@@ -5,6 +5,14 @@
   ],
   "plugins": [
     "@babel/plugin-proposal-class-properties",
-    "macros"
-  ]
+    "macros",
+    "syntax-dynamic-import"
+  ],
+  "env": {
+    "test": {
+      "plugins": [
+        "dynamic-import-node"
+      ]
+    }
+  }
 }
