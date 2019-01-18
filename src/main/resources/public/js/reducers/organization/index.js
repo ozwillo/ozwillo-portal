@@ -124,6 +124,12 @@ export default (state = defaultState, action) => {
         case FETCH_UPDATE_SERVICE_CONFIG:
         case FETCH_ADD_INSTANCE_TO_ORG:
         case FETCH_UPDATE_INSTANCE_STATUS:
+            // nextState.current.instances = action.
+            for(let instance of nextState.current.instances){
+                if(instance.id === action.instanceId){
+                    instance.applicationInstance = action.instance.applicationInstance
+                }
+            }
         case FETCH_CREATE_ACL:
         case FETCH_DELETE_ACL:
         case FETCH_ORGANIZATION_WITH_ID:

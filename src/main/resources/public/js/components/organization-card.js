@@ -8,7 +8,7 @@ import Popup from "react-popup/dist";
 import OrganizationService from '../util/organization-service';
 
 import { i18n } from "../config/i18n-config"
-import { t } from "@lingui/macro"
+import {plural, t} from '@lingui/macro'
 
 const TIME_DAY = 1000 * 3600 * 24; // millisecondes
 
@@ -44,8 +44,12 @@ export default class OrganizationCard extends React.PureComponent {
 
         const days = Math.round((deletionDate - now) / TIME_DAY);
 
-        return (days > 0) ? i18n._(`ui.message.will-be-deleted-plural`, {value: days}) :
-            i18n._(t`ui.message.will-be-deleted`);
+
+        return i18n._(plural({
+            value: days,
+            one: `Will be deleted`,
+            other: `Will be deleted in ${days} days`
+        }));
     }
 
     _handleCancelRemoveOrganization = async (e) => {
@@ -74,7 +78,7 @@ export default class OrganizationCard extends React.PureComponent {
         }catch(err){
             if (err.status === 403) {
                 this.setState({error: ''});
-                const lines = i18n._(`error.msg.delete-organization`).split('\n');
+                const lines = i18n._(t`error.msg.delete-organization`).split('\n');
 
                 Popup.create({
                     title: orgDetails.name,

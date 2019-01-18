@@ -15,7 +15,7 @@
   "could-not-install-app-400": "",
   "could-not-install-app-500": "",
   "create": "",
-  "error-code": "",
+  "error-code": "Code d'erreur",
   "error.msg.csv-file-required": "Mauvais type de fichier, seul les .csv sont acceptés",
   "error.msg.user-already-invited": "L'utilisateur a déjà été invité, l'e-mail ne sera pas renvoyé ...",
   "franceconnect.form.desynchronize": "Désynchroniser votre compte avec FranceConnect",
