@@ -21,11 +21,11 @@ import {
 import GeoAreaAutosuggest from '../components/autosuggests/geoarea-autosuggest';
 import UpdateTitle from '../components/update-title';
 import customFetch from "../util/custom-fetch";
-import { DropdownBlockSuccess } from '../components/notification-messages';
 
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 import {i18nComponentInstance} from '../app';
+import NotificationMessageBlock from '../components/notification-message-block';
 
 class Profile extends React.Component {
     state = {
@@ -119,9 +119,13 @@ class Profile extends React.Component {
                                         voluntaryClaims={voluntaryClaims}
                                         essentialClaims={essentialClaims} />
                         <SubmitButton label={i18n._(t`ui.save`)} className="btn-lg"/>
-                        {renderIf(this.state.updateSucceeded)(
-                            <DropdownBlockSuccess successMessage={i18n._(t`my.profile.account.update`)}/>
-                        )}
+
+
+                        <NotificationMessageBlock type={'success'}
+                                                  display={this.state.updateSucceeded}
+                                                  close={() => this.setState({updateSucceeded: false})}
+                                                  message={i18n._(t`my.profile.account.update`)}/>
+
                     </Form>
                 </section>
 

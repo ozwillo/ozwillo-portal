@@ -2,11 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
-
 //Action
 import InstanceService from "../../util/instance-service";
 import { i18n } from "../../config/i18n-config"
+import NotificationMessageBlock from '../notification-message-block';
 
 export default class InstanceInvitationForm extends React.Component {
 
@@ -139,13 +138,10 @@ export default class InstanceInvitationForm extends React.Component {
                 </button>
             </div>
 
-            {
-                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
-            }
-
-            {
-                this.state.success && <DropdownBlockSuccess successMessage={this.state.success} />
-            }
+            <NotificationMessageBlock type={this.state.error ? 'danger' : 'success'}
+                                      display={this.state.error !== '' || this.state.success !== ''}
+                                      close={() => this.setState({error: '', success: ''})}
+                                      message={this.state.error ? this.state.error : this.state.success}/>
         </form>;
     }
 

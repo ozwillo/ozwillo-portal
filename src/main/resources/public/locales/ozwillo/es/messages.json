@@ -208,5 +208,6 @@
   "ui.welcome": "Welcome",
   "ui.yes": "Sí",
   "{0}": "",
+  "{days, plural, one {Will be deleted} other {Will be deleted in {days} days}}": "",
   "{message}": ""
 }

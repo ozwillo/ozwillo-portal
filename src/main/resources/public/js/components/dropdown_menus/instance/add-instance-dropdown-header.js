@@ -1,8 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import { DropdownBlockError } from '../../notification-messages';
 import { i18n } from "../../../config/i18n-config"
+import NotificationMessageBlock from '../../notification-message-block';
 
 class AddInstanceDropdownHeader extends React.Component {
 
@@ -82,11 +82,11 @@ class AddInstanceDropdownHeader extends React.Component {
                 </div>
 
             </form>
-            {
-                error.message &&
-                    <DropdownBlockError errorMessage={error.message + ' ('+ i18n._('error-code')+' : ' + error.http_status+')'}/>
-            }
 
+            <NotificationMessageBlock type={'danger'}
+                                      display={error.message !== ''}
+                                      close={() => this.setState(prevState => ({error : {...prevState.error, message: ''}}))}
+                                      message={error.message + ' ('+ i18n._('error-code')+' : ' + error.http_status+')'}/>
         </header>;
     }
 }
