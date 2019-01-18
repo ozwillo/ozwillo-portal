@@ -32,11 +32,18 @@ const InstancesTabHeaderWithRedux = connect(state => {
 class InstancesTab extends React.Component {
 
     state = {
-        organizationMembers: null
+        organizationMembers: null,
+        instances: null
     };
 
     componentDidMount(){
+        const instances = [...this.props.organization.instances];
+        this.setState({instances})
         this.fetchOrganizationMembers();
+    }
+
+    componentWillReceiveProps(nextProps, nextContext) {
+        this.setState({instances: nextProps.organization.instances})
     }
 
     fetchOrganizationMembers = () => {
@@ -48,7 +55,11 @@ class InstancesTab extends React.Component {
 
     render() {
         const org = this.props.organization;
-        const {organizationMembers} = this.state;
+        const {organizationMembers, instances} = this.state;
+
+        if(!instances){
+            return null
+        }
 
         return <article className="instances-tab">
 
@@ -63,8 +74,8 @@ class InstancesTab extends React.Component {
             <section>
                 <ul className="instances-list undecorated-list flex-col">
                     {
-                        org.instances.map(instance => {
-                            return <li key={instance.id} className="instance">
+                        instances.map(instance => {
+                            return <li key={instance.id + instance.applicationInstance.status} className="instance">
                                 <InstanceDropdown instance={instance} organizationMembers={organizationMembers} isAdmin={org.admin}/>
                             </li>
                         })
