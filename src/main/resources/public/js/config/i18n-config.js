@@ -37,7 +37,7 @@ export default class I18nConfig extends React.Component {
 
     loadLanguage = async (language) => {
         const {env} = this.state;
-        let catalog = await import(`../../locales/${env}/${language}/messages.js`);
+        let catalog = await import(`../../locales/${env}/${language}/messages.json`);
 
         this.setState(state => ({
             catalogs: {
