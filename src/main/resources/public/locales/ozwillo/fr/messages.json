@@ -114,7 +114,7 @@
   "notif.read": "Archivées",
   "notif.unread": "Non lues",
   "organization.desc.CSV-helper": "Le fichier CSV doit contenir une unique colonne email",
-  "organization.desc.add-instances-to-members": "",
+  "organization.desc.add-instances-to-members": "Vous pouvez éventuellement ajouter des applications aux membres précédement invités",
   "organization.desc.add-new-members": "Ajoutez de nouveaux membres",
   "organization.desc.add-to-instance-by-email": "par courriel (externe)",
   "organization.desc.add-to-instance-from-members": "De l'organisation",

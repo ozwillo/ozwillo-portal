@@ -15,6 +15,7 @@ import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.services.kernel.UserMembershipService;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
 import org.oasis_eu.spring.datacore.model.DCResource;
+import org.oasis_eu.spring.kernel.exception.EntityNotFoundException;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
 import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.*;
@@ -347,6 +348,10 @@ public class OrganizationService {
         boolean isPersonal = userId.equals(organizationId);
 
         Organization org = (isPersonal) ? getPersonalOrganization() : organizationStore.find(organizationId);
+
+        if(org == null){
+            throw new EntityNotFoundException("Organization not found");
+        }
 
         UIOrganization uiOrganization = UIOrganization.fromKernelOrganization(org, computeDeletionPlanned(org), getUserName(org.getStatusChangeRequesterId()));
         boolean isAdmin = (isPersonal) ? true : userIsAdmin(organizationId);
