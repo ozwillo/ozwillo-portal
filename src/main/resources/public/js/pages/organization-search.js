@@ -115,12 +115,13 @@ class OrganizationSearch extends React.Component {
                         }}
                         placeholder={i18n._(t`search.organization.search-organization`)}
                     />
-                    <div className="flex-row options">
-                        <Link to="/my/organization/create" className={"new-organization"}>
-                            {i18n._(t`organization.search.new`)}
-                        </Link>
-                    </div>
                 </form>
+                <div className={"organization-create-new"}>
+                    <span>{i18n._(t`organization.search.create`)}</span>
+                    <Link to="/my/organization/create" className="btn btn-submit" style={{ 'marginLeft': '1em' }}>
+                        {i18n._(t`organization.search.new`)}
+                    </Link>
+                </div>
 
                 <div className={"container-organization-history"}>
                     <p className={"history-title"}>
