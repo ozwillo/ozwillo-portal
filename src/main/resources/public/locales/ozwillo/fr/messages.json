@@ -184,6 +184,7 @@
   "tooltip.remove.instance": "Retirer l'application",
   "tooltip.remove.member": "Retirer l'utilisateur",
   "tooltip.remove.right.admin": "Supprimer le droit administrateur",
+  "tooltip.see.app.member": "Afficher les applications du membre",
   "tos": "",
   "ui.add": "Ajouter",
   "ui.appstore": "Catalogue",
