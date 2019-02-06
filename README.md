@@ -58,7 +58,7 @@ spring.data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal
 yarn start
 ```
 
-Open http://localhost:3000/my (root would redirect to the [Ozwillo website](https://www.ozwillo.com)) with your favorite browser.
+Open http://localhost:3000/
 
 NB. to be used, Portal features require Kernel and Datacore servers to be deployed and configured in [application.yml](https://github.com/ozwillo/ozwillo-portal/blob/master/src/main/resources/application.yml).
 You can deploy your own, or [ask on the ML](https://github.com/ozwillo/ozwillo-issues#other-information-channels) to get access to the online Ozwillo dev environment.
@@ -67,8 +67,9 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ## Using the portal
 
 * Front-end access: 
-  * DEV  : http://localhost:3000/my
-  * PROD : http://www.ozwillo.com
+  * DEV  : http://localhost:3000
+  * PREPROD : https://portal.ozwillo-preprod.eu
+  * PROD : https://portal.ozwillo.com
 
 ## Renew Refresh_Token to DC http access
 
@@ -83,6 +84,33 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ```
 ./gradlew assemble
 ```
+## Customizing languages per portal instance 
+
+#### Config & compilation
+
+In `package.json` file choose the instance for which you want to generate the translations.
+
+To do so you have to replace the `targetToCompile` variable with the directory name of your instance :
+
+```
+ "lingui": {
+    ...
+    "localeDir": "src/main/resources/public/locales/{targetToCompile}",
+    ...
+  }
+```
+Then do a `yarn compile`.
+
+Do it for all if you need to have a multi domain site. Soon LinguiJs will integrate directly this kind of [feature](https://github.com/lingui/js-lingui/pull/326) and this chore will be avoided.
+
+#### Extract traduction
+
+`yarn extract` will extract all tags or sentence present in the code as :
+
+- ```i18n._(t`somethingToTrad`)```
+- `<Trans>Something To trad</Trans>`
+
+Extracted translations will be present in the directory defined in the `package.json` (cf: config & compilation).
 
 =====================================================
 
