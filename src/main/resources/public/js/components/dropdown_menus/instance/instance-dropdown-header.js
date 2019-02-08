@@ -12,12 +12,11 @@ import customFetch from '../../../util/custom-fetch';
 
 import { i18n } from "../../../config/i18n-config"
 import {plural} from '@lingui/macro'
-import { t, date } from "@lingui/macro"
+import { t } from "@lingui/macro"
 import NotificationMessageBlock from '../../notification-message-block';
+import moment from 'moment';
 
 const instanceStatus = Config.instanceStatus;
-
-const TIME_DAY = 1000 * 3600 * 24; // millisecondes
 
 class InstanceDropdownHeader extends React.Component {
 
@@ -83,10 +82,9 @@ class InstanceDropdownHeader extends React.Component {
     }
 
     get numberOfDaysBeforeDeletion() {
-        const now = Date.now();
-        const deletionDate = new Date(this.props.instance.deletion_planned).getTime();
-
-        const days = Math.round((deletionDate - now) / TIME_DAY);
+        const now = moment();
+        const deletionDate = moment(this.props.instance.deletion_planned);
+        const days = Math.round(deletionDate.diff(now, 'days', true));
 
         return i18n._(plural({
           value: days,
