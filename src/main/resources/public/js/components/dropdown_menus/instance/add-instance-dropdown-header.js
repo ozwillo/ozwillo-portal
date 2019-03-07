@@ -3,15 +3,19 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import { i18n } from "../../../config/i18n-config"
 import NotificationMessageBlock from '../../notification-message-block';
+import customFetch from '../../../util/custom-fetch';
+import Config from '../../../config/config';
+
+const AppTypes = Config.appTypes;
+const MIN_APPS_NEEDED_TO_SCROLL = 7;
 
 class AddInstanceDropdownHeader extends React.Component {
 
-
     static propTypes = {
-        apps: PropTypes.array.isRequired,
         app: PropTypes.object,
         onAddInstance: PropTypes.func.isRequired,
-        onChangeInstance: PropTypes.func.isRequired
+        onChangeInstance: PropTypes.func.isRequired,
+        organization: PropTypes.object
     };
 
     constructor(props) {
@@ -19,12 +23,19 @@ class AddInstanceDropdownHeader extends React.Component {
 
         this.state = {
             error: {message: '', http_status: 200},
-            isLoading: false
+            isLoading: false,
+            apps: [],
+            maybeMoreApps: false,
+            totalAppsFetched: 0
         };
 
         //bind methods
         this.onOptionChange = this.onOptionChange.bind(this);
         this.onSubmit = this.onSubmit.bind(this);
+    }
+
+    componentDidMount = async () =>  {
+        await this._handleApplications();
     }
 
     onOptionChange(selectedOption) {
@@ -53,19 +64,57 @@ class AddInstanceDropdownHeader extends React.Component {
             });
     }
 
+    _fetchApplications = async () => {
+        const {totalAppsFetched} = this.state;
+        const {organization} = this.props;
+
+        return await customFetch(`/api/store/applications`, {urlParams: {
+                target_citizens: !organization.type,
+                target_publicbodies: organization.type === 'PUBLIC_BODY',
+                target_companies: organization.type === 'COMPANY',
+                free: true,
+                paid: true,
+                appType: AppTypes.application,
+                last: totalAppsFetched
+            }});
+    };
+
+    _handleApplications = async () => {
+        const {apps, maybeMoreApps, totalAppsFetched} = this.state;
+        const {apps: appsFetched, maybeMoreApps: maybeMoreAppsFetched}  = await this._fetchApplications();
+
+        let appsRes = appsFetched.concat(apps);
+        this.setState({apps: appsRes , maybeMoreApps: maybeMoreAppsFetched, totalAppsFetched: totalAppsFetched + appsFetched.length},async ()  => {
+            if(appsRes.length < MIN_APPS_NEEDED_TO_SCROLL && maybeMoreAppsFetched){
+                await this._handleApplications();
+            }
+        });
+
+        return {apps: apps, maybeMoreApps: maybeMoreApps}
+    };
+
+    _handleMoreApplications = async () => {
+        const {totalAppsFetched, apps} =  this.state;
+        const {apps: appsFetched, maybeMoreApps} = await this._fetchApplications();
+        this.setState({apps: appsFetched.concat(apps), totalAppsFetched: totalAppsFetched + appsFetched.length, maybeMoreApps: maybeMoreApps})
+    };
+
     render() {
-        let {error} = this.state;
+        let {error, apps} = this.state;
         return <header className="dropdown-header">
             <form className="form flex-row" onSubmit={this.onSubmit}>
                 <Select
+                    valueKey={'id'}
                     className="select add-instance-select"
                     name="app"
                     value={this.props.app}
                     labelKey="name"
                     onChange={this.onOptionChange}
-                    options={this.props.apps}
+                    options={apps}
                     placeholder={i18n._('organization.desc.applications')}
-                    required={true}/>
+                    required={true}
+                    onMenuScrollToBottom={this._handleMoreApplications}
+                />
 
                 <div className="options flex-row">
                     {
@@ -90,5 +139,16 @@ class AddInstanceDropdownHeader extends React.Component {
         </header>;
     }
 }
+
+const styles = {
+    displayMore :{
+        position: "absolute",
+        height: "50%",
+        width: "15%",
+        display: "flex",
+        alignItems:"flex-end",
+        justifyContent: "center"
+    }
+};
 
 export default AddInstanceDropdownHeader;

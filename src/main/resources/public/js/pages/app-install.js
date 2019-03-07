@@ -55,7 +55,7 @@ export default class AppInstall extends React.Component {
     _loadOrgs = async () => {
         const {app} = this.state;
         const data = await fetchAvailableOrganizations(app.type, app.id);
-        this.setState({organizationsAvailable: {organizations: data, loading: true}});
+        this.setState({organizationsAvailable: {organizations: data, loading: false }});
 
         const newOrganizationsAvailable = await this._disableOrganizationWhereAppAlreadyInstalled(data);
         this.setState({organizationsAvailable: {organizations: newOrganizationsAvailable, loading: false}});
