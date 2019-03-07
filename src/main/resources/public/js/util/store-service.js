@@ -27,3 +27,7 @@ export const buyApplication  = async (appId, appType, organizationSelected) =>{
         json: request
     })
 };
+
+export const unavailableOrganizationToInstallAnApp = async (appId, appType) => {
+    return await customFetch(`/api/store/${appType}/${appId}/organization/unavailable`)
+}
