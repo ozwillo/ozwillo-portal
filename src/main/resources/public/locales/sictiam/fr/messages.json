@@ -18,7 +18,7 @@
   "create": "créer",
   "error-code": "code erreur",
   "error.msg.csv-file-required": "Mauvais type de fichier, seuls les .csv sont acceptés",
-  "error.msg.delete-organization": "",
+  "error.msg.delete-organization": "Vous ne pouvez pas supprimer l'organisation ... \nVérifiez que l'organisation ne possède plus d'applications installées.",
   "error.msg.user-already-invited": "L'utilisateur a déjà été invité, l'e-mail ne sera pas renvoyé. Si besoin, contactez l'administrateur de la collectivité.",
   "franceconnect.form.desynchronize": "Désynchroniser votre compte de FranceConnect",
   "franceconnect.form.desynchronize-without-pwd": "Désynchroniser votre compte de FranceConnect",
