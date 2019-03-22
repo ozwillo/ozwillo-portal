@@ -44,7 +44,7 @@ export default class SearchAppsForm extends React.Component {
 
         //organization input is just available when user is connected
         const userInfo = await this._userService.fetchUserInfos();
-        if(userInfo){
+        if(userInfo && userInfo.name){
             customFetch("/my/api/organization").then((organizations) => {
                 organizations.unshift({name:i18n._(t`store.language.all`), id: ''});
                 this.setState({organizations: organizations});
