@@ -8,14 +8,14 @@ import LegalNameAutosuggest from '../autosuggests/legal-name-autosuggest';
 import TaxRegActivityAutosuggest from '../autosuggests/tax-reg-activity-autosuggest';
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
 
+
+import { i18n } from "../../config/i18n-config"
+import { t } from "@lingui/macro"
+
 //Actions
 import {updateOrganizationFormAction, resetOrganizationFormAction} from '../../actions/components/organization-form';
 
 class OrganizationForm extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     static propTypes = {
         countries: PropTypes.array,
@@ -82,9 +82,9 @@ class OrganizationForm extends React.Component {
         }
 
         return {
-            taxRegNum: this.context.t(`search.organization.business-id.${lang}`),
-            taxRegOfficialId: this.context.t(`my.network.organization.tax_reg_official_id.${lang}`),
-            taxRegActivity: this.context.t(`my.network.organization.tax_reg_activity.${lang}`)
+            taxRegNum: i18n._(`search.organization.business-id.${lang}`),
+            taxRegOfficialId: i18n._(`my.network.organization.tax_reg_official_id.${lang}`),
+            taxRegActivity: i18n._(`my.network.organization.tax_reg_activity.${lang}`)
         };
     }
 
@@ -192,10 +192,10 @@ class OrganizationForm extends React.Component {
         return <form className="oz-form" onSubmit={this.onSubmit}>
             {/*     Organization     */}
             <fieldset className="oz-fieldset">
-                <legend className="oz-legend">{this.context.t('organization.form.title')}</legend>
+                <legend className="oz-legend">{i18n._(t`organization.form.title`)}</legend>
                 <div className="flex-row">
                     <label htmlFor="country"
-                           className="label">{this.context.t('my.network.organization.country')} *</label>
+                           className="label">{i18n._(t`my.network.organization.country`)} *</label>
                     <Select className="select field" value={organization.country_uri}
                             onChange={this.handleCountryChange}
                             options={this.createOptions(this.props.countries)} clearable={false}
@@ -207,7 +207,7 @@ class OrganizationForm extends React.Component {
                     <div>
                         <div className="flex-row">
                             <label htmlFor="legal_name" className="label">
-                                {this.context.t('my.network.organization.legal_name')} *
+                                {i18n._(t`my.network.organization.legal_name`)} *
                             </label>
                             <LegalNameAutosuggest name="legal_name" required={true} value={organization.legal_name}
                                                   onChange={this.handleFieldChange}
@@ -224,7 +224,7 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="sector_type" className="label">
-                                {this.context.t('search.organization.sector-type')} *
+                                {i18n._(t`search.organization.sector-type`)} *
                             </label>
 
                             <div className="align-radio">
@@ -232,14 +232,14 @@ class OrganizationForm extends React.Component {
                                     <input type="radio" name="sector_type" value="PUBLIC_BODY" required={true}
                                            disabled={this.props.static} onChange={this.handleFieldChange}
                                            checked={isPublic}/>
-                                    {this.context.t('search.organization.sector-type.PUBLIC_BODY')}
+                                    {i18n._(t`search.organization.sector-type.PUBLIC_BODY`)}
                                 </label>
 
                                 <label className="radio-inline field">
                                     <input type="radio" name="sector_type" value="COMPANY"
                                            disabled={this.props.static} onChange={this.handleFieldChange}
                                            checked={isPrivate}/>
-                                    {this.context.t('search.organization.sector-type.COMPANY')}
+                                    {i18n._(t`search.organization.sector-type.COMPANY`)}
                                 </label>
                             </div>
                         </div>
@@ -252,7 +252,7 @@ class OrganizationForm extends React.Component {
                     <div>
                         <div className="flex-row">
                             <label htmlFor="in_activity" className="label">
-                                {this.context.t('my.network.organization.in_activity')}
+                                {i18n._(t`my.network.organization.in_activity`)}
                             </label>
                             <input id="in_activity" name="in_activity" type="checkbox"
                                    checked={organization.in_activity}
@@ -261,7 +261,7 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="alt_name" className="label">
-                                {this.context.t('my.network.organization.alt_name')}
+                                {i18n._(t`my.network.organization.alt_name`)}
                             </label>
                             <input name="alt_name" className="form-control field" id="alt_name" type="text"
                                    value={organization.alt_name} onChange={this.handleFieldChange}/>
@@ -269,11 +269,11 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="org_type" className="label">
-                                {this.context.t('my.network.organization.org_type')}
+                                {i18n._(t`my.network.organization.org_type`)}
                             </label>
                             <input name="org_type" className="form-control field" id="org_type" type="text"
                                    value={organization.org_type} onChange={this.handleFieldChange}
-                                   placeholder={this.context.t('my.network.organization.org_type.placeholder')}/>
+                                   placeholder={i18n._(t`my.network.organization.org_type.placeholder`)}/>
                         </div>
 
                         <div className="flex-row">
@@ -300,7 +300,7 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="jurisdiction" className="label">
-                                {this.context.t('my.network.organization.jurisdiction')} {(isPublic && '*') || ''}
+                                {i18n._(t`my.network.organization.jurisdiction`)} {(isPublic && '*') || ''}
                             </label>
                             <GeoAreaAutosuggest name="jurisdiction" required={isPublic}
                                                 value={organization.jurisdiction}
@@ -312,7 +312,7 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="phone_number" className="label">
-                                {this.context.t('my.network.organization.phone_number')}
+                                {i18n._(t`my.network.organization.phone_number`)}
                             </label>
                             <input id="phone_number" name="phone_number" type="number" value={organization.phone_number}
                                    onChange={this.handleFieldChange} className="form-control field"/>
@@ -320,7 +320,7 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="web_site" className="label">
-                                {this.context.t('my.network.organization.web_site')}
+                                {i18n._(t`my.network.organization.web_site`)}
                             </label>
                             <input id="web_site" name="web_site" type="text" value={organization.web_site}
                                    onChange={this.handleFieldChange} className="form-control field"/>
@@ -328,7 +328,7 @@ class OrganizationForm extends React.Component {
 
                         <div className="flex-row">
                             <label htmlFor="email" className="label">
-                                {this.context.t('my.network.organization.email')}
+                                {i18n._(t`my.network.organization.email`)}
                             </label>
                             <input id="email" name="email" type="email" value={organization.email}
                                    onChange={this.handleFieldChange} className="form-control field"/>
@@ -342,10 +342,10 @@ class OrganizationForm extends React.Component {
             {
                 this.state.isRegistrable &&
                 <fieldset className="oz-fieldset">
-                    <legend className="oz-legend">{this.context.t('organization.form.contact-information')}</legend>
+                    <legend className="oz-legend">{i18n._(t`organization.form.contact-information`)}</legend>
                     <div className="flex-row">
                         <label htmlFor="street_and_number" className="label">
-                            {this.context.t('my.network.organization.street_and_number')} *
+                            {i18n._(t`my.network.organization.street_and_number`)} *
                         </label>
                         <input id="street_and_number" name="street_and_number" type="text" required={true}
                                value={organization.street_and_number} className="form-control field"
@@ -354,7 +354,7 @@ class OrganizationForm extends React.Component {
 
                     <div className="flex-row">
                         <label htmlFor="po_box"
-                               className="label">{this.context.t('my.network.organization.po_box')}</label>
+                               className="label">{i18n._(t`my.network.organization.po_box`)}</label>
                         <input id="po_box" name="po_box" type="text"
                                value={organization.po_box} className="form-control field"
                                onChange={this.handleFieldChange}/>
@@ -362,7 +362,7 @@ class OrganizationForm extends React.Component {
 
                     <div className="flex-row">
                         <label htmlFor="city"
-                               className="label">{this.context.t('my.network.organization.city')} *</label>
+                               className="label">{i18n._(t`my.network.organization.city`)} *</label>
                         <GeoAreaAutosuggest name="city" required={true}
                                             countryUri={organization.country_uri}
                                             endpoint="cities"
@@ -373,7 +373,7 @@ class OrganizationForm extends React.Component {
                     </div>
 
                     <div className="flex-row">
-                        <label htmlFor="zip" className="label">{this.context.t('my.network.organization.zip')} *</label>
+                        <label htmlFor="zip" className="label">{i18n._(t`my.network.organization.zip`)} *</label>
                         <input id="zip" name="zip" type="text" maxLength={6} required={true}
                                className="form-control field"
                                value={organization.zip} onChange={this.handleFieldChange} readOnly={true}/>
@@ -381,7 +381,7 @@ class OrganizationForm extends React.Component {
 
                     <div className="flex-row">
                         <label htmlFor="cedex"
-                               className="label">{this.context.t('my.network.organization.cedex')}</label>
+                               className="label">{i18n._(t`my.network.organization.cedex`)}</label>
                         <input id="cedex" name="cedex" type="text" maxLength={3} value={organization.cedex}
                                className="form-control field" onChange={this.handleFieldChange}/>
                     </div>
@@ -405,7 +405,7 @@ class OrganizationForm extends React.Component {
                 {
                     !this.state.isRegistrable && organization.tax_reg_num &&
                         <div className="alert alert-danger center-block">
-                            {this.context.t('my.network.organization.not-registrable')}
+                            {i18n._(t`my.network.organization.not-registrable`)}
                         </div>
                 }
             </div>

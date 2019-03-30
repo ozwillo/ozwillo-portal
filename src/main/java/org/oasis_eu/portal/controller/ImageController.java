@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -23,8 +22,7 @@ import java.util.Arrays;
  * User: schambon
  * Date: 9/2/14
  */
-@Controller
-@RequestMapping(method = RequestMethod.GET, value = "/media")
+@RestController
 public class ImageController {
 
     private static final Logger logger = LoggerFactory.getLogger(ImageController.class);
@@ -34,13 +32,8 @@ public class ImageController {
 
     /**
      * serves image
-     *
-     * @param id
-     * @param hash
-     * @param response
-     * @throws IOException
      */
-    @RequestMapping("/{id}/{name}")
+    @GetMapping("/media/{id}/{name}")
     public void getIcon(@PathVariable String id, @RequestHeader(required = false, value = "If-None-Match") String hash, HttpServletResponse response) throws IOException {
         if (hash != null) {
             // we have an etag!
@@ -114,7 +107,7 @@ public class ImageController {
      * @param objectId whose icon we're POSTing
      * @param iconFile has also filename, size etc.
      */
-    @RequestMapping(value = "/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}", method = RequestMethod.POST)
+    @PostMapping(value = "/media/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}")
     public
     @ResponseBody
     String serviceHandleFileUploadWithNoFilename(@PathVariable("objectId") String objectId,
@@ -122,7 +115,7 @@ public class ImageController {
         return this.handleFileUpload(objectId, iconFile, null);
     }
 
-    @RequestMapping(value = "/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}/{filename}", method = RequestMethod.POST)
+    @PostMapping(value = "/media/" + ImageService.OBJECTICONIMAGE_PATHELEMENT + "/{objectId}/{filename}")
     public
     @ResponseBody
     String serviceHandleFileUpload(@PathVariable("objectId") String objectId,
@@ -156,5 +149,4 @@ public class ImageController {
             throw new EmptyUploadException(); // TODO no upload
         }
     }
-
 }

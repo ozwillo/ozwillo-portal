@@ -1,7 +1,7 @@
 package org.oasis_eu.portal.model.instance;
 
-import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 
 import java.util.List;
 

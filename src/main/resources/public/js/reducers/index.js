@@ -2,7 +2,6 @@ import {combineReducers} from 'redux';
 import {i18nState} from 'redux-i18n';
 
 //Reducers
-import appStore from './app-store';
 import config from './config';
 import notifications from './notifications';
 import organization from './organization';
@@ -12,7 +11,6 @@ import userInfo from './user-info';
 import organizationForm from './components/organization-form';
 
 export default combineReducers({
-    appStore,
     config,
     notifications,
     organization,

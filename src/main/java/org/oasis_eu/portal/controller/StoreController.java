@@ -1,21 +1,24 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.store.ApplicationInstanceCreationException;
+import org.oasis_eu.portal.model.dc.DCRegActivity;
+import org.oasis_eu.portal.model.dc.DCRegActivityResponse;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
 import org.oasis_eu.portal.model.kernel.store.Audience;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.model.kernel.store.PaymentOption;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
-import org.oasis_eu.portal.model.kernel.instance.Subscription;
-import org.oasis_eu.portal.model.images.ImageFormat;
-import org.oasis_eu.portal.services.*;
-import org.oasis_eu.portal.model.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.organization.UIOrganization;
+import org.oasis_eu.portal.model.store.ApplicationInstanceCreationException;
 import org.oasis_eu.portal.model.store.AppstoreHit;
 import org.oasis_eu.portal.model.store.InstallationOption;
-import org.oasis_eu.portal.model.organization.UIOrganization;
+import org.oasis_eu.portal.services.AppstoreService;
+import org.oasis_eu.portal.services.ImageService;
+import org.oasis_eu.portal.services.OrganizationService;
+import org.oasis_eu.portal.services.RatingService;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
-import org.oasis_eu.portal.model.dc.DCRegActivity;
-import org.oasis_eu.portal.model.dc.DCRegActivityResponse;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
@@ -77,6 +80,8 @@ public class StoreController {
         @RequestParam boolean free,
         @RequestParam boolean paid,
         @RequestParam(required = false) List<String> supported_locales,
+        @RequestParam(required = false) String organizationId,
+        @RequestParam(required = false) String installed_status,
         @RequestParam(required = false) List<String> geoArea_AncestorsUris,
         @RequestParam(required = false) List<String> category_ids,
         @RequestParam(required = false) String q,
@@ -97,21 +102,12 @@ public class StoreController {
         List<Locale> supportedLocales = supported_locales == null ? null : supported_locales.stream()
             .map(localeString -> Locale.forLanguageTag(localeString)).collect(Collectors.toList());
         List<StoreApplication> apps = appstoreService.getAll(audiences, paymentOptions,
-            supportedLocales, geoArea_AncestorsUris, category_ids, q, last).stream()
+            supportedLocales, organizationId, installed_status, geoArea_AncestorsUris, category_ids, q, last).stream()
             .map(this::toStoreApplication)
             .collect(Collectors.toList());
         //apps = new ArrayList<StoreApplication>(); // for easy testing
 
         return new StoreAppResponse(apps, apps.size() == loadSize); // if we got exactly as many as we'd have liked, there are likely more
-    }
-
-    /**
-     * for loading default_app, else when direct link is not displayed if not in first page see #152
-     */
-    @RequestMapping("/application/{type}/{id}")
-    public StoreApplication application(@PathVariable String type, @PathVariable String id) {
-        AppstoreHit hit = appstoreService.getInfo(id, CatalogEntryType.valueOf(type.toUpperCase()));
-        return toStoreApplication(hit);
     }
 
     @RequestMapping("/details/{type}/{id}")
@@ -141,13 +137,34 @@ public class StoreController {
     }
 
     @PostMapping("/buy/service/{serviceId}")
-    public Subscription buyApplication(@PathVariable String serviceId) {
+    public Subscription buyService(@PathVariable String serviceId) {
         return appstoreService.buyService(serviceId);
     }
 
     @RequestMapping(value = "/rate/{appType}/{appId}", method = RequestMethod.POST)
     public void rate(@PathVariable String appType, @PathVariable String appId, @RequestBody RateRequest rateRequest) {
         ratingService.rate(appType, appId, rateRequest.rate);
+    }
+
+    @RequestMapping(value = "/{appType}/{appId}/organization/unavailable", method = GET)
+    public List<UIOrganization> organizationsUnavailable(@PathVariable String appType, @PathVariable String appId) {
+        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType.toUpperCase())); // #152 services can also be installed
+        List<UIOrganization> organizations = organizationService.getMyOrganizations();
+
+        return organizations
+                .stream()
+                .filter(o -> o.isAdmin()
+                        && OrganizationStatus.AVAILABLE.equals(o.getStatus())
+                        && info.getCatalogEntry().getTargetAudience().stream().anyMatch(audience -> audience.isCompatibleWith(o.getType())))
+                .map(o ->  organizationService.getOrganizationFromKernel(o.getId()))
+                .filter(o ->
+                        o.getInstances()
+                        .stream()
+                        .anyMatch(instance ->
+                                (instance.getApplicationInstance().getApplicationId().equals(appId) ||
+                                        instance.getApplicationInstance().getProviderId().equals(appId)))
+                )
+                .collect(Collectors.toList());
     }
 
     /**
@@ -179,7 +196,9 @@ public class StoreController {
         application.paid = hit.getCatalogEntry().getPaymentOption().equals(PaymentOption.PAID);
         application.providerName = hit.getProviderName();
         String providerId = hit.getCatalogEntry().getProviderId();
-        application.installed = hit.getInstallationOption().equals(InstallationOption.INSTALLED);
+        if(hit.getInstallationOption() != null){
+            application.installed = hit.getInstallationOption().equals(InstallationOption.INSTALLED);
+        }
 
         // let's be paranoid about nulls here
         if (providerId != null) {

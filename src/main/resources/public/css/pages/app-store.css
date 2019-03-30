@@ -1,0 +1,132 @@
+.app-store-wrapper{
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+}
+
+.app-store-container{
+    display: flex;
+    flex-flow: wrap row;
+    flex: 1;
+    padding: 0em 0 1em 0;
+    align-items: flex-start;
+    /*max-height: 80vh;*/
+    justify-content: center;
+}
+
+.app-list{
+    display: flex;
+    justify-content: center;
+    flex-flow: wrap row;
+    min-height: 59vh;
+    padding: 5% 3.5%  5% 3.5%;
+
+}
+
+.app-store-wrapper .app-store-container-loading{
+    align-self: center;
+    justify-self: center;
+    width: 100%;
+    font-size: 4em;
+}
+
+.app-store-container .search-bar{
+    width: 40vw;
+    z-index: 2;
+    /*border-radius: 50px;*/
+    /*margin-top: 0;*/
+    box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, .3);
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-color: var(--primary-color);
+    transform: translate(0,0);
+    transition: transform 0.3s ease-in;
+    position: sticky !important;
+    top: -1px;
+    margin-left: 20vw;
+    margin-right: 20vw;
+    border: 1px solid var(--primary-color) !important;
+}
+
+.app-store-container .title{
+    width: 100%;
+    max-height: 5vh;
+}
+
+.app-store-wrapper::-webkit-scrollbar-thumb{
+    background: red;
+}
+
+.reset-filters {
+    font-size: 1.5em;
+    cursor: pointer;
+    color:var(--secondary-color);
+}
+
+.badge-filter-open{
+    background-color: var(--alert-color);
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    color: var(--tertiary-color);
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    /*position: relative;*/
+    /*top: -0.8em;*/
+    /*right: 0.5em;*/
+}
+
+.badge-filter-close {
+    background-color: var(--alert-color);
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: var(--tertiary-color);
+    position: relative;
+    bottom: -0.3em;
+    left: -1em;
+}
+
+.active-filters {
+    font-size: 1.2em;
+    margin-left: 0.5em;
+    margin-right: 1em;
+
+}
+
+#store-loadmore {
+    padding: 30px 0 30px 0;
+}
+
+.load-more-apps{
+    display: flex;
+    justify-content: center;
+    width: 100%;
+}
+
+
+
+
+/*Sweet alert style*/
+
+.swal2-icon{
+    color: var(--secondary-color) !important;
+    border-color: var(--primary-color) !important;
+}
+
+.swal2-cancel, .swal2-cancel:focus {
+    background-color: var(--alert-color) !important;
+    box-shadow: none !important;
+}
+
+.swal2-confirm, .swal2-confirm:focus {
+    background-color: var(--primary-color) !important;
+    box-shadow: none !important;
+}
+
+
+

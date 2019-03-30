@@ -1,0 +1,531 @@
+{
+  "menuset": {
+    "menu": [
+      {
+        "locale": "fr",
+        "item": [
+          {
+            "href": "/fr/association",
+            "row": "0",
+            "label": "Association"
+          },
+          {
+            "href": "/fr/gouvernance",
+            "row": "0",
+            "label": "Gouvernance"
+          },
+          {
+            "href": "/fr/communaute",
+            "row": "0",
+            "label": "Communauté"
+          },
+          {
+            "href": "/fr/equipe",
+            "row": "0",
+            "label": "Équipe"
+          },
+          {
+            "href": "/fr/offre-donnes",
+            "row": "1",
+            "label": "Données"
+          },
+          {
+            "href": "/fr/offre-portail",
+            "row": "1",
+            "label": "Portail"
+          },
+          {
+            "href": "/fr/offre-projets",
+            "row": "1",
+            "label": "Projets"
+          },
+          {
+            "href": "/fr/genese",
+            "row": "2",
+            "label": "Genèse"
+          },
+          {
+            "href": "/fr/contributions",
+            "row": "2",
+            "label": "Contributions"
+          },
+          {
+            "href": "/doc",
+            "row": "2",
+            "label": "Développeurs"
+          },
+          {
+            "href": "/fr/actualites",
+            "row": "3",
+            "label": "Actualités"
+          },
+          {
+            "href": "/fr/contact",
+            "row": "3",
+            "label": "Contact"
+          },
+          {
+            "href": "/fr/mentions-legales",
+            "row": "3",
+            "label": "Mentions légales"
+          },
+          {
+            "href": "/fr/cgu",
+            "row": "3",
+            "label": "CGU"
+          }
+        ]
+      },
+      {
+        "locale": "en",
+        "item": [
+          {
+            "href": "/en/association",
+            "row": "0",
+            "label": "Association"
+          },
+          {
+            "href": "/en/governance",
+            "row": "0",
+            "label": "Governance"
+          },
+          {
+            "href": "/en/community",
+            "row": "0",
+            "label": "Community"
+          },
+          {
+            "href": "/en/team",
+            "row": "0",
+            "label": "Team"
+          },
+          {
+            "href": "/en/offer-data",
+            "row": "1",
+            "label": "Data"
+          },
+          {
+            "href": "/en/offer-portal",
+            "row": "1",
+            "label": "Portal"
+          },
+          {
+            "href": "/en/offer-projects",
+            "row": "1",
+            "label": "Projects"
+          },
+          {
+            "href": "/en/genesis",
+            "row": "2",
+            "label": "Genesis"
+          },
+          {
+            "href": "/en/contributions",
+            "row": "2",
+            "label": "Contributions"
+          },
+          {
+            "href": "/doc",
+            "row": "2",
+            "label": "Developers"
+          },
+          {
+            "href": "/en/news",
+            "row": "3",
+            "label": "News"
+          },
+          {
+            "href": "/en/contact",
+            "row": "3",
+            "label": "Contact"
+          },
+          {
+            "href": "/en/legal-notices",
+            "row": "3",
+            "label": "Legal notices"
+          },
+          {
+            "href": "/en/terms",
+            "row": "3",
+            "label": "General terms of use"
+          }
+        ]
+      },
+      {
+        "locale": "ca",
+        "item": [
+          {
+            "href": "/ca/associacio",
+            "row": "0",
+            "label": "Associació"
+          },
+          {
+            "href": "/ca/governanca",
+            "row": "0",
+            "label": "Governança"
+          },
+          {
+            "href": "/ca/comunitat",
+            "row": "0",
+            "label": "Comunitat"
+          },
+          {
+            "href": "/ca/equip",
+            "row": "0",
+            "label": "Equip"
+          },
+          {
+            "href": "/ca/dades-proposades",
+            "row": "1",
+            "label": "Dades"
+          },
+          {
+            "href": "/ca/portal-proposat",
+            "row": "1",
+            "label": "Portal"
+          },
+          {
+            "href": "/ca/projectes-proposats",
+            "row": "1",
+            "label": "Projectes"
+          },
+          {
+            "href": "/ca/genesis",
+            "row": "2",
+            "label": "Gènesis"
+          },
+          {
+            "href": "/ca/contribucions",
+            "row": "2",
+            "label": "Contribucions"
+          },
+          {
+            "href": "/doc",
+            "row": "2",
+            "label": "Desenvolupadors"
+          },
+          {
+            "href": "/ca/noticies",
+            "row": "3",
+            "label": "Noticies"
+          },
+          {
+            "href": "/ca/contacte",
+            "row": "3",
+            "label": "Contacte"
+          },
+          {
+            "href": "/ca/avis-legal",
+            "row": "3",
+            "label": "Avís legal"
+          },
+          {
+            "href": "/ca/condicions",
+            "row": "3",
+            "label": "Condicions d'ús"
+          }
+        ]
+      },
+      {
+        "locale": "es",
+        "item": [
+          {
+            "href": "/es/asociacion",
+            "row": "0",
+            "label": "Asociación"
+          },
+          {
+            "href": "/es/gobernanza",
+            "row": "0",
+            "label": "Gobernanza"
+          },
+          {
+            "href": "/es/comunidad",
+            "row": "0",
+            "label": "Comunidad"
+          },
+          {
+            "href": "/es/equipo",
+            "row": "0",
+            "label": "Equipo"
+          },
+          {
+            "href": "/es/datos-propuestos",
+            "row": "1",
+            "label": "Datos"
+          },
+          {
+            "href": "/es/portal-propuestos",
+            "row": "1",
+            "label": "Portal"
+          },
+          {
+            "href": "/es/proyectos-propuestos",
+            "row": "1",
+            "label": "Proyectos"
+          },
+          {
+            "href": "/es/genesis",
+            "row": "2",
+            "label": "Génesis"
+          },
+          {
+            "href": "/es/contribuciones",
+            "row": "2",
+            "label": "Contribuciones"
+          },
+          {
+            "href": "/doc",
+            "row": "2",
+            "label": "Desarrolladores"
+          },
+          {
+            "href": "/es/noticias",
+            "row": "3",
+            "label": "Noticias"
+          },
+          {
+            "href": "/es/contacto",
+            "row": "3",
+            "label": "Contacto"
+          },
+          {
+            "href": "/es/aviso-legal",
+            "row": "3",
+            "label": "Aviso legal"
+          },
+          {
+            "href": "/es/condiciones",
+            "row": "3",
+            "label": "Condiciones de uso"
+          }
+        ]
+      },
+      {
+        "locale": "it",
+        "item": [
+          {
+            "href": "/it/associatione",
+            "row": "0",
+            "label": "Associazione"
+          },
+          {
+            "href": "/it/governance",
+            "row": "0",
+            "label": "Governance"
+          },
+          {
+            "href": "/it/comunita",
+            "row": "0",
+            "label": "Comunità"
+          },
+          {
+            "href": "/it/team",
+            "row": "0",
+            "label": "Team"
+          },
+          {
+            "href": "/it/offerta-dati",
+            "row": "1",
+            "label": "Dati"
+          },
+          {
+            "href": "/it/offerta-portale",
+            "row": "1",
+            "label": "Portale"
+          },
+          {
+            "href": "/it/offerta-progetto",
+            "row": "1",
+            "label": "Progetti"
+          },
+          {
+            "href": "/it/genesi",
+            "row": "2",
+            "label": "Genesi"
+          },
+          {
+            "href": "/it/contributi",
+            "row": "2",
+            "label": "Contributi"
+          },
+          {
+            "href": "/doc",
+            "row": "2",
+            "label": "Sviluppatori"
+          },
+          {
+            "href": "/it/notizie",
+            "row": "3",
+            "label": "Notizie"
+          },
+          {
+            "href": "/it/contatto",
+            "row": "3",
+            "label": "Contatto"
+          },
+          {
+            "href": "/it/note-legali",
+            "row": "3",
+            "label": "Note legali"
+          },
+          {
+            "href": "/it/termini",
+            "row": "3",
+            "label": "Termini di utilizzo"
+          }
+        ]
+      },
+      {
+        "locale": "tr",
+        "item": [
+          {
+            "href": "/tr/dernek",
+            "row": "0",
+            "label": "Dernek"
+          },
+          {
+            "href": "/tr/yonetisim",
+            "row": "0",
+            "label": "Yönetişim"
+          },
+          {
+            "href": "/tr/topluluk",
+            "row": "0",
+            "label": "Topluluk"
+          },
+          {
+            "href": "/tr/ekip",
+            "row": "0",
+            "label": "Ekip"
+          },
+          {
+            "href": "/tr/veri-teklifi",
+            "row": "1",
+            "label": "Veriler"
+          },
+          {
+            "href": "/tr/portal-teklifi",
+            "row": "1",
+            "label": "Portal"
+          },
+          {
+            "href": "/tr/proje-teklifi",
+            "row": "1",
+            "label": "Projeler"
+          },
+          {
+            "href": "/tr/olusum",
+            "row": "2",
+            "label": "Oluşum"
+          },
+          {
+            "href": "/tr/katkilar",
+            "row": "2",
+            "label": "Katkılar"
+          },
+          {
+            "href": "/doc",
+            "row": "2",
+            "label": "Geliştiriciler"
+          },
+          {
+            "href": "/tr/haberler",
+            "row": "3",
+            "label": "Haberler"
+          },
+          {
+            "href": "/tr/iletisim",
+            "row": "3",
+            "label": "İletişim"
+          },
+          {
+            "href": "/tr/yasal-uyarilar",
+            "row": "3",
+            "label": "Yasal uyarılar"
+          },
+          {
+            "href": "/tr/sartlari",
+            "row": "3",
+            "label": "Kullanım Şartları"
+          }
+        ]
+      },
+      {
+        "locale": "bg",
+        "item": [
+          {
+            "href": "/bg/сдружение",
+            "row": "0",
+            "label": "Сдружение"
+          },
+          {
+            "href": "/bg/управление",
+            "row": "0",
+            "label": "Управление"
+          },
+          {
+            "href": "/bg/общност",
+            "row": "0",
+            "label": "Общност"
+          },
+          {
+            "href": "/bg/екип",
+            "row": "0",
+            "label": "Екип"
+          },
+          {
+            "href": "/bg/предложение-за-данни",
+            "row": "1",
+            "label": "Данни"
+          },
+          {
+            "href": "/bg/предложение-за-портал",
+            "row": "1",
+            "label": "Портал"
+          },
+          {
+            "href": "/bg/предложение-за-проект",
+            "row": "1",
+            "label": "Проекти"
+          },
+          {
+            "href": "/bg/генезис",
+            "row": "2",
+            "label": "Генезис"
+          },
+          {
+            "href": "/bg/принос",
+            "row": "2",
+            "label": "Участия"
+          },
+          {
+            "href": "/doc",
+            "row": "2",
+            "label": "Разработчици"
+          },
+          {
+            "href": "/bg/новини",
+            "row": "3",
+            "label": "Новини"
+          },
+          {
+            "href": "/bg/контакт",
+            "row": "3",
+            "label": "Контакт"
+          },
+          {
+            "href": "/bg/правна-информация",
+            "row": "3",
+            "label": "Правна информация"
+          },
+          {
+            "href": "/bg/yсловия-за-ползване",
+            "row": "3",
+            "label": "Условия за ползване"
+          }
+        ]
+      }
+    ]
+  }
+}

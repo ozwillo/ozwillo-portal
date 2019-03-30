@@ -9,7 +9,6 @@ import com.hazelcast.spring.cache.HazelcastCacheManager;
 import org.oasis_eu.portal.PortalPackage;
 import org.oasis_eu.spring.util.RequestBoundCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -22,10 +21,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 import org.springframework.scheduling.annotation.EnableScheduling;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.Arrays;
 import java.util.HashMap;
@@ -114,7 +111,6 @@ public class PortalCoreConfiguration extends CachingConfigurerSupport {
         mapConfigs.put("organizations", getMapConfig("organizations"));
         mapConfigs.put("applications", getMapConfig("applications"));
         mapConfigs.put("sitemap", getMapConfig("sitemap"));
-        mapConfigs.put("sitemapheader", getMapConfig("sitemapheader"));
         mapConfigs.put("services", getMapConfig("services"));
 
         Config config = new Config();
@@ -146,13 +142,4 @@ public class PortalCoreConfiguration extends CachingConfigurerSupport {
         config.setTimeToLiveSeconds(900);
         return config;
     }
-
-    @Bean
-    @Qualifier("xmlAwareRestTemplate")
-    public RestTemplate xmlAwareRestTemplate() {
-        RestTemplate rt = new RestTemplate(new HttpComponentsClientHttpRequestFactory());
-        rt.setMessageConverters(Arrays.asList(new XmlParserConverter()));
-        return rt;
-    }
-
 }

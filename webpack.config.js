@@ -1,25 +1,31 @@
-
 const path = require('path');
 const webpack = require('webpack');
 const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const CleanPlugin = require('clean-webpack-plugin');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+const paths = {
+    publicDir: 'src/main/resources/public',
+    node_modules: 'node_modules',
+    build: 'src/main/resources/public/build'
+};
 
 const TARGET = process.env.npm_lifecycle_event;
 const PATHS = {
-    app: path.join(__dirname, 'src/main/resources/public'),
-    build: path.join(__dirname, 'src/main/resources/public/build'),
-    nodeModules: path.join(__dirname, 'node_modules')
+    app: path.join(__dirname, paths.publicDir),
+    build: path.join(__dirname, paths.build),
+    nodeModules: path.join(__dirname, paths.node_modules)
 };
 
-const commonEntryPointsLoadersAndServers = ['bootstrap-loader', /*'font-awesome-webpack',*/
+const commonEntryPointsLoadersAndServers = ['bootstrap-loader',
     path.join(PATHS.nodeModules, 'react-select/dist/react-select.css'),
     path.join(PATHS.nodeModules, 'react-datepicker/dist/react-datepicker.css'),
+    path.join(PATHS.nodeModules, 'slick-carousel/slick/slick.css'),
+    path.join(PATHS.nodeModules, 'slick-carousel/slick/slick-theme.css'),
     path.join(PATHS.nodeModules, 'react-tippy/dist/tippy.css')];
 const devEntryPointsLoadersAndServers = ['webpack-dev-server/client?http://localhost:3000', 'webpack/hot/only-dev-server'];
 
-const extractCSS = new ExtractTextPlugin({ filename: 'bundle.css' });
+const extractCSS = new ExtractTextPlugin({filename: 'bundle.css'});
 
 const common = {
     entry: {
@@ -42,39 +48,41 @@ const common = {
     module: {
         loaders: [
             /* bootstrap-sass-loader */
-            { test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports-loader?$=jquery' },
+            {test: /bootstrap-sass\/assets\/javascripts\//, loader: 'imports-loader?$=jquery'},
 
             /* loaders for urls */
-            { test: /\.png$/, loader: "url-loader?limit=10000" },
+            {test: /\.png$/, loader: "url-loader?limit=10000"},
 
             {
                 test: /\.(js|jsx)$/,
                 loader: 'babel',
                 exclude: /node_modules/
-            }
+            },
         ],
         rules: [
             // JS
-            { test: require.resolve("jquery"), use: "imports-loader?$=jquery" },
+            {test: require.resolve("jquery"), use: "imports-loader?$=jquery"},
             {
                 test: /\.(js|jsx)$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['es2015', 'react', 'stage-0',
-                            ["env", {
-                                "targets": {
-                                    "browsers": ["last 2 Chrome versions"]
-                                }
-                            }]]
+                        presets: [
+                            "@babel/preset-env",
+                            "@babel/preset-react"
+                        ],
+                        plugins: [
+                            "@babel/plugin-proposal-class-properties",
+                            "macros"
+                        ]
                     }
                 }
             },
 
             //Ressources
             {
-                test: /.(ttf|otf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
+                test: /.(ttf|otf|eot|svg|gif|woff(2)?)(\?[a-z0-9]+)?$/,
                 use: [{
                     loader: 'file-loader',
                     options: {
@@ -88,7 +96,7 @@ const common = {
 };
 
 // Default configuration
-if(TARGET === 'start' || !TARGET) {
+if (TARGET === 'start' || !TARGET) {
     module.exports = merge(common, {
         devServer: {
             publicPath: common.output.publicPath,
@@ -96,9 +104,12 @@ if(TARGET === 'start' || !TARGET) {
             hot: true,
             inline: true,
             progress: true,
-            stats: { colors: true },
+            stats: {colors: true},
             port: 3000,
-            proxy : {
+            allowedHosts: [
+                '.localtest.me'
+            ],
+            proxy: {
                 "*": "http://localhost:8080"
             }
         },
@@ -117,7 +128,7 @@ if(TARGET === 'start' || !TARGET) {
                     use: ['css-hot-loader'].concat(extractCSS.extract({
                         fallback: 'style-loader',
                         use: [
-                            { loader: 'css-loader', options: { importLoaders: 1 } },
+                            {loader: 'css-loader', options: {importLoaders: 1}},
                             'postcss-loader'
                         ]
                     }))
@@ -126,7 +137,7 @@ if(TARGET === 'start' || !TARGET) {
                     test: /\.scss$/,
                     use: ['css-hot-loader'].concat(extractCSS.extract({
                         fallback: 'style-loader',
-                        use: [ 'css-loader', 'sass-loader' ]
+                        use: ['css-loader', 'sass-loader']
                     }))
                 }
             ]
@@ -134,7 +145,7 @@ if(TARGET === 'start' || !TARGET) {
     });
 }
 
-if(TARGET === 'build' || TARGET === 'stats') {
+if (TARGET === 'build' || TARGET === 'stats') {
     module.exports = merge(common, {
         plugins: [
             new CleanPlugin([PATHS.build]),
@@ -154,7 +165,7 @@ if(TARGET === 'build' || TARGET === 'stats') {
                     use: extractCSS.extract({
                         fallback: 'style-loader',
                         use: [
-                            { loader: 'css-loader', options: { importLoaders: 1, minimize: true } },
+                            {loader: 'css-loader', options: {importLoaders: 1, minimize: true}},
                             'postcss-loader'
                         ]
                     })
@@ -166,8 +177,8 @@ if(TARGET === 'build' || TARGET === 'stats') {
                         use: [
                             {
                                 loader: "css-loader", // translates CSS into CommonJS
-                                options: { minimize: true }
-                            },{
+                                options: {minimize: true}
+                            }, {
                                 loader: 'sass-loader'
                             }
                         ]

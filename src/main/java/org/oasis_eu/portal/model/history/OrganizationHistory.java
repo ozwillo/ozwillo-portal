@@ -2,6 +2,7 @@ package org.oasis_eu.portal.model.history;
 
 
 import java.util.Date;
+import java.util.Objects;
 
 public class OrganizationHistory implements Comparable<OrganizationHistory>{
     private String dcOrganizationId;
@@ -9,6 +10,10 @@ public class OrganizationHistory implements Comparable<OrganizationHistory>{
     private Date date;
 
     public OrganizationHistory() {}
+
+    public OrganizationHistory(String dcOrganizationId){
+        this.dcOrganizationId = dcOrganizationId;
+    }
 
     public OrganizationHistory(String dcOrganizationId, String name, Date date) {
         this.dcOrganizationId = dcOrganizationId;
@@ -39,5 +44,18 @@ public class OrganizationHistory implements Comparable<OrganizationHistory>{
     @Override
     public int compareTo(OrganizationHistory o) {
         return getDate().compareTo(o.getDate());
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        OrganizationHistory that = (OrganizationHistory) o;
+        return Objects.equals(dcOrganizationId, that.dcOrganizationId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(dcOrganizationId, name);
     }
 }

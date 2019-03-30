@@ -1,6 +1,6 @@
 .oz-footer {
     background: var(--footer-color);
-    box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
+    border-top: solid 1px var(--primary-color);
 }
 
 .oz-footer .logo .image,
@@ -42,19 +42,6 @@
     margin-top: 1em;
 }
 
-.oz-footer > .flex-row:first-child:before {
-    content: '';
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    height: 2px;
-    background-color: var(--primary-color);
-}
-
-.oz-footer > .flex-row {
-    margin: 20px 0;
-}
-
 .oz-footer .outer-links-list,
 .oz-footer .logo,
 .oz-footer .outer-links,
@@ -82,6 +69,10 @@
     background-color: #6f438e;
     border: solid 1px #4c2d62;
     border-radius: 30px;
+}
+
+.oz-footer > .flex-row.additional-oz-footer {
+    border-top: 2px solid var(--primary-color);
 }
 
 @media (max-width: 425px) {

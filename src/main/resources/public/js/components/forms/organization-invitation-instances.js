@@ -1,6 +1,9 @@
 import React from "react";
 import PillButton from "../pill-button";
 import PropTypes from "prop-types";
+import {i18n} from "../../config/i18n-config";
+import { t } from "@lingui/macro"
+
 
 
 export default class OrganizationInvitationInstances extends React.Component {
@@ -65,7 +68,7 @@ export default class OrganizationInvitationInstances extends React.Component {
     render() {
         return (
             <div className={"organization-invitation-instance"}>
-                <p>{this.context.t("organization.desc.add-instances-to-members")} : </p>
+                <p>{i18n._(t`organization.desc.add-instances-to-members`)} : </p>
                 <div className={"content"}>
                     {this._displayPillButtons()}
                 </div>
@@ -79,8 +82,4 @@ OrganizationInvitationInstances.propTypes = {
     instances: PropTypes.array,
     callBackInstances: PropTypes.func,
     instancesSelected: PropTypes.array
-};
-
-OrganizationInvitationInstances.contextTypes ={
-    t: PropTypes.func.isRequired
 };

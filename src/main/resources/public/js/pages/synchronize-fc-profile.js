@@ -7,6 +7,9 @@ import PropTypes from "prop-types";
 import UpdateTitle from '../components/update-title';
 import customFetch from "../util/custom-fetch";
 
+import { i18n } from "../config/i18n-config"
+import { t } from "@lingui/macro"
+
 const languageData = {
     'given_name': 'my.profile.personal.firstname',
     'middle_name': 'my.profile.personal.middlename',
@@ -34,9 +37,6 @@ class SynchronizeFCProfile extends React.Component {
         this.save = this.save.bind(this);
     }
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     componentDidMount() {
         //Load FranceConnect data
@@ -111,7 +111,7 @@ class SynchronizeFCProfile extends React.Component {
                 {
                     Object.keys(this.state.franceConnectProfile).map((item) => {
                         return <fieldset key={item}>
-                            <legend>{this.context.t(languageData[item])}</legend>
+                            <legend>{i18n._(t`${languageData[item]}`)}</legend>
                             <div className="row">
                                 <label className="item">
                                     <input id={item} type="radio" name={item} value={userProfile[item]}/>
@@ -139,17 +139,13 @@ const SynchronizeFCProfileWithRouter = withRouter(SynchronizeFCProfile);
 
 class SynchronizeFCProfileWrapper extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
-
     render() {
         return <div className="oz-body wrapper flex-col">
 
-            <UpdateTitle title={this.context.t('my.profile')}/>
+            <UpdateTitle title={i18n._(t`my.profile`)}/>
 
             <header className="title">
-                <span>{this.context.t('my.profile')}</span>
+                <span>{i18n._(t`my.profile`)}</span>
             </header>
 
             <SynchronizeFCProfileWithRouter/>

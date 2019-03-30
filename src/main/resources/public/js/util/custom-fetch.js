@@ -10,16 +10,14 @@ import store from './store'
 *   - Insert in the request header a csrf field
 */
 
-const buildError = (res) => {
-    return res.text()
-        .then((message) => {
-            const err = {
-                error: message,
-                status: res.status
-            };
-            console.error(err);
-            throw err;
-        });
+const buildError = (error) => {
+    const err = {
+        error: error.message,
+        status: error.status
+    };
+    console.error(err);
+    throw err;
+
 };
 
 export default (url, params = {headers: {}}) => {
@@ -39,15 +37,21 @@ export default (url, params = {headers: {}}) => {
         params.headers['Content-Type'] = 'application/json';
     }
 
+    if (params.urlParams) {
+        let query = Object.keys(params.urlParams)
+            .map(k => encodeURIComponent(k) + '=' + encodeURIComponent(params.urlParams[k]))
+            .join('&');
+        url += '?' + query;
+    }
+
     return fetch(url, params)
         .then((res) => {
             if (!res.ok) {
-                throw res;
+                throw buildError(res);
             }
 
             return res;
         })
-        .catch(buildError)
         .catch(error => { //user is disconnected
             if (error.status === 401) {
                 location.reload();

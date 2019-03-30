@@ -12,8 +12,10 @@ import UpdateTitle from '../components/update-title';
 
 //actions
 import {fetchOrganizationWithId, fetchOrganizationInfo} from "../actions/organization";
-import {fetchApplications} from "../actions/app-store";
 import customFetch from "../util/custom-fetch";
+
+import { i18n } from "../config/i18n-config"
+import { t } from "@lingui/macro"
 
 const tabsHeaders = {
     instances: InstancesTabHeader,
@@ -31,10 +33,6 @@ const defaultTabToDisplay = 'instances';
 
 
 class OrganizationDesc extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -83,7 +81,6 @@ class OrganizationDesc extends React.Component {
 
     componentDidMount() {
         this.initialize(this.props.match.params.id);
-        this.props.fetchApplications();
     }
 
     isPersonal = () => {
@@ -146,7 +143,7 @@ class OrganizationDesc extends React.Component {
                     {
                         this.isPersonal() && <React.Fragment>
                             <header className="title">
-                                <span>{this.context.t('organization.desc.applications')}</span>
+                                <span>{i18n._(t`organization.desc.applications`)}</span>
                             </header>
 
                             <section className="box">
@@ -174,9 +171,6 @@ const
         return {
             fetchOrganizationWithId(id) {
                 return dispatch(fetchOrganizationWithId(id));
-            },
-            fetchApplications() {
-                return dispatch(fetchApplications());
             },
             fetchOrganizationInfo(dcId) {
                 return dispatch(fetchOrganizationInfo(dcId));

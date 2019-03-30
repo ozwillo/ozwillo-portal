@@ -1,12 +1,12 @@
 package org.oasis_eu.portal.services.kernel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.organization.UIPendingOrganizationMember;
-import org.oasis_eu.spring.kernel.exception.ForbiddenException;
-import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
+import org.oasis_eu.portal.model.organization.UIPendingOrganizationMember;
+import org.oasis_eu.spring.kernel.exception.ForbiddenException;
+import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.oasis_eu.spring.kernel.model.Authentication;
 import org.oasis_eu.spring.kernel.service.Kernel;
 import org.slf4j.Logger;
@@ -15,14 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.context.MessageSource;
 import org.springframework.http.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.servlet.support.RequestContextUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -39,12 +36,6 @@ public class UserMembershipService {
 
     @Autowired
     private Kernel kernel;
-
-    @Autowired
-    private MessageSource messageSource;
-
-    @Autowired
-    private HttpServletRequest request;
 
     @Cacheable("user-memberships")
     public List<UserMembership> getMembershipsOfUser(String userId) throws WrongQueryException {
@@ -120,9 +111,7 @@ public class UserMembershipService {
             kernel.getBodyUnlessClientError(kernelResp, Void.class, membershipUri);
         } catch (HttpClientErrorException e) {
             if (HttpStatus.FORBIDDEN.equals(e.getStatusCode())) {
-                String translatedBusinessMessage = messageSource.getMessage("error.msg.update-membership",
-                        new Object[]{}, RequestContextUtils.getLocale(this.request));
-
+                String translatedBusinessMessage = "You can't remove the admin role. An organization must has at least have an admin member";
                 throw new ForbiddenException(translatedBusinessMessage, HttpStatus.FORBIDDEN.value());
             }
 

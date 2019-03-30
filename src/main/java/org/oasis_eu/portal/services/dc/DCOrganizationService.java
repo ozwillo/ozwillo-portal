@@ -1,10 +1,8 @@
 package org.oasis_eu.portal.services.dc;
 
-import com.google.common.collect.ImmutableList;
-import com.google.common.collect.ImmutableMap;
-import org.oasis_eu.portal.services.SystemUserService;
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.dc.DCRegActivity;
+import org.oasis_eu.portal.services.SystemUserService;
 import org.oasis_eu.spring.datacore.DatacoreClient;
 import org.oasis_eu.spring.datacore.model.*;
 import org.oasis_eu.spring.kernel.exception.EntityNotFoundException;
@@ -15,12 +13,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.servlet.support.RequestContextUtils;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -58,12 +53,6 @@ public class DCOrganizationService {
     private String dcOrgSearchCountry;
     @Value("${application.dcOrgSearch.useTypeAsModel:false}")
     private boolean useTypeAsModel;
-
-    @Autowired
-    private HttpServletRequest request;
-
-    @Autowired
-    private MessageSource messageSource;
 
     public DCOrganization searchOrganization(String lang, String country_uri, String sector, String regNumber) {
 
@@ -194,9 +183,7 @@ public class DCOrganizationService {
 
         // if found check that version hasn't changed since filling the form (i.e. since clicking on "search")
         if (dcResource != null && dcResource.getVersion() != Integer.parseInt(dcOrganization.getVersion())) {
-            String translatedBusinessMessage = messageSource.getMessage("my.network.organization.error.already_exist",
-                    new Object[]{}, RequestContextUtils.getLocale(request));
-            throw new WrongQueryException(translatedBusinessMessage, HttpStatus.BAD_REQUEST.value());
+            throw new WrongQueryException("Already exist", HttpStatus.BAD_REQUEST.value());
         }
 
         if (dcResource != null) { //found in DC
@@ -236,7 +223,7 @@ public class DCOrganizationService {
      * Change rights of DC Organization.
      */
     public boolean changeDCOrganizationRights(DCResource dcResource, String kOrgId) {
-        final List<String> newRights = new ImmutableList.Builder<String>().add(kOrgId).build();
+        final List<String> newRights = Collections.singletonList(kOrgId);
         final List<String> dcResultErrOutter = new ArrayList<>();
 
         //get admin authentication and change organization rights
@@ -396,14 +383,13 @@ public class DCOrganizationService {
         return null;
     }
 
-    private static final Map<String, String> dcOrgPrefixToSuffix = new ImmutableMap.Builder<String, String>()
-        //.put("org", "Organisation") //org:Organisation_0 when there is no country defined (but it neve should happen)
-        .put("orgfr", "Organisation")
-        .put("orgbg", "Организация")
-        .put("orgit", "Organizzazione")
-        .put("orgtr", "Organizasyon")
-        .put("orges", "Organización")
-        .build();
+    private static final Map<String, String> dcOrgPrefixToSuffix = new HashMap<String, String>() {{
+        put("orgfr", "Organisation");
+        put("orgbg", "Организация");
+        put("orgit", "Organizzazione");
+        put("orgtr", "Organizasyon");
+        put("orges", "Organización");
+    }};
 
     private static final String dcOrgStatusActive = "Normal Activity";
     private static final String dcOrgStatusInactive = "Inactive";

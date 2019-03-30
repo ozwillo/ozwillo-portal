@@ -9,20 +9,21 @@ import MemberDropdown from '../dropdown_menus/member/member-dropdown';
 import DropDownMenu from '../dropdown-menu';
 import {
     fetchOrganizationMembers,
-} from "../../actions/organization";
-import InstanceService from "../../util/instance-service";
+} from '../../actions/organization';
+import InstanceService from '../../util/instance-service';
+
+import {i18n} from '../../config/i18n-config'
+import {t} from '@lingui/macro'
+import { CSSTransition, TransitionGroup} from 'react-transition-group';
 
 
 class MembersTabHeader extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/members`}>
             <header className="tab-header">
-                <span>{this.context.t('organization.desc.members')}</span>
+                <span>{i18n._(t`organization.desc.members`)}</span>
             </header>
         </Link>;
     }
@@ -36,10 +37,6 @@ const MembersTabHeaderWithRedux = connect(state => {
 })(MembersTabHeader);
 
 class MembersTab extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired,
-    };
 
     constructor(props) {
         super(props);
@@ -98,6 +95,7 @@ class MembersTab extends React.Component {
                 members={members}
             />;
 
+
         return <article className="members-tab">
             {
                 org.admin &&
@@ -108,17 +106,32 @@ class MembersTab extends React.Component {
             <section>
 
                 <ul className="members-list undecorated-list flex-col">
+                    <TransitionGroup
+                    >
                     {
-                        !isLoading && members && members.map(member => {
-                            return <li key={member.id} className="member">
-                                <MemberDropdown
-                                    member={member}
-                                    organization={this.props.organization}
-                                    memberRemoved={this._removeMember}
-                                />
-                            </li>
+                        !isLoading && members && members.map((member,index) => {
+                            return (
+                                <CSSTransition
+                                    timeout={50 * (index+1)}
+                                    key={member.id}
+                                    classNames={"fade"}
+                                    >
+                                    {(state) => {
+                                        return (
+                                            <li className="member">
+                                                <MemberDropdown
+                                                    member={member}
+                                                    organization={this.props.organization}
+                                                    memberRemoved={this._removeMember}
+                                                />
+                                            </li>
+                                        )
+                                    }}
+                                </CSSTransition>
+                            )
                         })
                     }
+                    </TransitionGroup>
                     {
                         isLoading &&
                         <div className="container-loading text-center">

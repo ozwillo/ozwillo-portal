@@ -4,7 +4,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import createClass from 'create-react-class';
 import PropTypes from 'prop-types';
-
+import { i18n } from "../config/i18n-config";
 
 /**
  * Bootstrap Modal encapsulation.
@@ -59,7 +59,7 @@ const Modal = createClass({
             if (this.props.buttonLabels) {
                 label = this.props.buttonLabels["ok"];
             } else {
-                label = this.context.t('ui.close');
+                label = i18n._('ui.close');
             }
             buttons = [
                 <button type="button" key="close" className="btn btn-default-inverse"
@@ -71,8 +71,8 @@ const Modal = createClass({
                 cancelLabel = this.props.buttonLabels["cancel"];
                 saveLabel = this.props.buttonLabels["save"];
             } else {
-                cancelLabel = this.context.t('ui.cancel');
-                saveLabel = this.context.t('ui.save');
+                cancelLabel = i18n._('ui.cancel');
+                saveLabel = i18n._('ui.save');
             }
             var saveButtonClass = this.props.saveButtonClass ? "btn " + this.props.saveButtonClass : "btn btn-submit";
 
@@ -109,9 +109,7 @@ const Modal = createClass({
         );
     }
 });
-Modal.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 
 /**
  * Bootstrap Modal encapsulation with a form inside.
@@ -160,8 +158,8 @@ const ModalWithForm = createClass({
             cancelLabel = this.props.buttonLabels["cancel"];
             saveLabel = this.props.buttonLabels["save"];
         } else {
-            cancelLabel = this.context.t('ui.cancel');
-            saveLabel = this.context.t('ui.save');
+            cancelLabel = i18n._('ui.cancel');
+            saveLabel = i18n._('ui.save');
         }
 
         buttons = [
@@ -196,8 +194,5 @@ const ModalWithForm = createClass({
         );
     }
 });
-ModalWithForm.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 module.exports = {Modal, ModalWithForm};

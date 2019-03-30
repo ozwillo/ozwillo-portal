@@ -1,12 +1,12 @@
 package org.oasis_eu.portal.controller;
 
-import org.oasis_eu.portal.model.kernel.organization.UserMembership;
-import org.oasis_eu.portal.model.organization.UIOrganizationMember;
-import org.oasis_eu.portal.model.organization.InvitationRequest;
-import org.oasis_eu.portal.services.OrganizationService;
-import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.dc.DCOrganization;
+import org.oasis_eu.portal.model.kernel.organization.UserMembership;
+import org.oasis_eu.portal.model.organization.InvitationRequest;
+import org.oasis_eu.portal.model.organization.UIOrganization;
+import org.oasis_eu.portal.model.organization.UIOrganizationMember;
 import org.oasis_eu.portal.model.organization.UIPendingOrganizationMember;
+import org.oasis_eu.portal.services.OrganizationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

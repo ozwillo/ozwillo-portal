@@ -26,8 +26,17 @@
 @import 'components/forms/organization-invitation-form.css';
 @import 'components/forms/organization-invitation-instance.css';
 @import 'components/organization-card.css';
+@import 'components/side-nav.css';
+@import 'components/search-apps-form.css';
+@import 'components/label-section.css';
+@import 'components/pill-button.css';
+@import 'components/pill-input-button.css';
+@import 'components/modal-image.css';
+@import 'components/app.css';
 @import 'components/CSVReader.css';
 @import 'components/stepper.css';
+@import 'components/animation.css';
+@import 'components/select.css';
 /* Pages */
 @import 'pages/dashboard.css';
 @import 'pages/notifications.css';
@@ -35,10 +44,12 @@
 @import 'pages/organization-search.css';
 @import 'pages/organization-desc.css';
 @import 'pages/profile.css';
-@import 'pages/store.css';
 @import 'pages/synchronize-fc-profile.css';
+@import 'pages/app-store.css';
+@import 'pages/app-install.css';
 /* Helper */
 @import './helper.css';
+
 
 /* styles needed to have a responsive fixed footer
      while having main content (with page-row-expanded class) taking up all available space */
@@ -246,4 +257,28 @@ form .alert {
         padding: 0px;
     }
 }
+
+/* width */
+::-webkit-scrollbar {
+    width: 0.7em;
+    height: 0.7em;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: var(--gray-color);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 0.3em;
+
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: var(--secondary-color);
+}
+
 

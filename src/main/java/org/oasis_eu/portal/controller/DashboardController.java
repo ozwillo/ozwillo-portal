@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.oasis_eu.portal.model.dashboard.UserContext;
 import org.oasis_eu.portal.model.dashboard.DashboardApp;
 import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
+import org.oasis_eu.portal.model.dashboard.UserContext;
 import org.oasis_eu.portal.services.DashboardService;
 import org.oasis_eu.portal.services.NotificationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -94,8 +94,8 @@ public class DashboardController {
 
 
     @RequestMapping(value = "/notifications", method = GET)
-    public Map<String, Integer> getAppNotificationCounts() {
-        return notificationService.getAppNotificationCounts();
+    public Map<String, Integer> getNotificationsCountByService() {
+        return notificationService.getNotificationsCountByService();
     }
 
 }

@@ -1,7 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
 import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
+import { i18n } from "../config/i18n-config"
+import { t } from "@lingui/macro"
+
+
 
 // Components
 import UpdateTitle from '../components/update-title';
@@ -12,12 +15,9 @@ import {fetchUserOrganizations} from '../actions/organization';
 import OrganizationAutoSuggest from "../components/autosuggests/organization-autosuggest";
 import OrganizationCard from "../components/organization-card"
 import {Redirect} from "react-router";
+import UserOrganizationHistoryService from '../util/user-organization-history-service';
 
 class OrganizationSearch extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     constructor(props) {
         super(props);
@@ -31,24 +31,27 @@ class OrganizationSearch extends React.Component {
             organizationHistoryMessage: ''
         };
 
-        this.handleChange = this.handleChange.bind(this);
+        this._userOrganizationHistory = new UserOrganizationHistoryService();
     }
 
     componentDidMount() {
         this._handleOrganizationsHistory();
     }
 
-    _handleOrganizationsHistory = () => {
-        customFetch("/my/api/organizationHistory")
-            .then(res => {
-                if(res && res.length >0){
-                    this._sortOrganizationHistoryByDate(res);
-                    this.setState({organizationsHistory: res, organizationHistoryMessage: ''});
-                } else {
-                    this.setState({organizationHistoryMessage: this.context.t("organization.search.history.empty")});
-                }
-            });
+    _handleOrganizationsHistory = async () => {
+        try {
+            let res = await this._userOrganizationHistory.getOrganizationHistory();
+            if(res && res.length >0){
+                this._sortOrganizationHistoryByDate(res);
+                this.setState({organizationsHistory: res, organizationHistoryMessage: ''});
+            } else {
+                this.setState({organizationHistoryMessage: i18n._(t`organization.search.history.empty`)});
+            }
+        }catch(err){
+            console.error(err);
+        }
     };
+
 
     _sortOrganizationHistoryByDate = (array) =>{
         array.sort(function(a,b){
@@ -56,11 +59,19 @@ class OrganizationSearch extends React.Component {
         });
     };
 
-    handleChange(e) {
-        this.setState({
-            [e.currentTarget.name]: e.currentTarget.value
-        });
-    }
+    _handleOrganizationCardError = async (error, dcOrganizationId) => {
+        try {
+            let res = await this._userOrganizationHistory.deleteOrganizationHistoryEntry(dcOrganizationId);
+            if(res && res.length > 0) {
+                this.setState({organizationsHistory: res, organizationHistoryMessage: ''})
+            }else{
+                this._handleOrganizationsHistory()
+            }
+        }catch(err){
+            console.error(err);
+        }
+
+    };
 
     _displayOrganizationsHistory = () => {
         const {organizationsHistory, organizationHistoryMessage} = this.state;
@@ -69,7 +80,7 @@ class OrganizationSearch extends React.Component {
             organizationsHistory.map(organization => {
                 let dcOrganizationId = organization.dcOrganizationId;
                 let organizationCard = (
-                    <OrganizationCard key={dcOrganizationId} organization={organization}/>);
+                    <OrganizationCard key={dcOrganizationId} organization={organization} callBackError={this._handleOrganizationCardError}/>);
                 result.push(organizationCard)
             });
             return result;
@@ -86,11 +97,11 @@ class OrganizationSearch extends React.Component {
 
         return <section className="organization-search oz-body wrapper flex-col">
 
-            <UpdateTitle title={this.context.t('organization.search.title')}/>
+            <UpdateTitle title={i18n._(t`organization.search.title`)}/>
 
             <section>
                 <header className="title">
-                    <span>{this.context.t('organization.search.title')}</span>
+                    <span>{i18n._(t`organization.search.title`)}</span>
                 </header>
 
                 <form className="search oz-form">
@@ -102,19 +113,20 @@ class OrganizationSearch extends React.Component {
                         onOrganizationSelected={(value) => {
                             this.setState({organizationSelected: value})
                         }}
-                        placeholder={this.context.t('search.organization.search-organization')}
+                        placeholder={i18n._(t`search.organization.search-organization`)}
                     />
-                    <div className="flex-row options">
-                        <Link to="/my/organization/create" className={"new-organization"}>
-                            {this.context.t('organization.search.new')}
-                        </Link>
-                    </div>
                 </form>
+                <div className={"organization-create-new"}>
+                    <span>{i18n._(t`organization.search.create`)}</span>
+                    <Link to="/my/organization/create" className="btn btn-submit" style={{ 'marginLeft': '1em' }}>
+                        {i18n._(t`organization.search.new`)}
+                    </Link>
+                </div>
 
                 <div className={"container-organization-history"}>
                     <p className={"history-title"}>
                         <i className={"fa fa-star"}/>
-                        {this.context.t("organization.search.history.description")} :
+                        {i18n._(t`organization.search.history.description`)} :
                     </p>
                     <div className={"content-card-history"}>
                         {this._displayOrganizationsHistory()}

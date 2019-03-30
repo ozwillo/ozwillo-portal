@@ -11,12 +11,18 @@
     flex: 1;
 }
 
-.pill-button .pill-text{
+.pill-button .pill-text {
     margin: 0;
 
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
     overflow: hidden;
-
 }
+
+.pill-button.btn-default-inverse:hover{
+    color: var(--button-secondary-color) !important;
+    border-color: var(--secondary-color) !important;
+    background-color: var(--secondary-color) !important;
+}
+

@@ -8,6 +8,10 @@ import Select from 'react-select';
 //Config
 import Config from '../../config/config';
 
+
+import { i18n } from "../../config/i18n-config"
+import { t } from "@lingui/macro"
+
 const instanceVisibility = Config.instanceVisibility;
 const iconMaxSize = Config.iconMaxSize;
 
@@ -20,10 +24,6 @@ class InstanceConfigForm extends React.Component {
         instance: PropTypes.object.isRequired,
         onSubmit: PropTypes.func.isRequired,
         isLoading: PropTypes.bool
-    };
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -159,7 +159,7 @@ class InstanceConfigForm extends React.Component {
                                 <div className="desc-field text-center">
                                     <input type="text" name="iconUrl" id="iconUrl" className="form-control"
                                            value={this.state.iconUrl} onChange={this.handleChange} required={true}/>
-                                    <span className="desc">{this.context.t('my.apps.upload')}</span>
+                                    <span className="desc">{i18n._(t`my.apps.upload`)}</span>
                                 </div>
                             </div>
                         </div>

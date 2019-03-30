@@ -9,12 +9,12 @@ import UpdateTitle from '../components/update-title';
 //Action
 import {fetchCountries} from '../actions/config';
 import OrganizationService from "../util/organization-service";
+import { i18n } from "../config/i18n-config"
+import { t } from "@lingui/macro"
 
 class OrganizationCreate extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
+
 
     constructor(props) {
         super(props);
@@ -52,10 +52,10 @@ class OrganizationCreate extends React.Component {
 
     render() {
         return <section className="organization-create oz-body wrapper flex-col">
-            <UpdateTitle title={this.context.t('organization.form.create')}/>
+            <UpdateTitle title={i18n._(t`organization.form.create`)}/>
 
             <header className="title">
-                <span>{this.context.t('organization.form.create')}</span>
+                <span>{i18n._(t`organization.form.create`)}</span>
             </header>
 
             <div className="box">
@@ -64,7 +64,7 @@ class OrganizationCreate extends React.Component {
                 </div>
                 <OrganizationForm onSubmit={this.onSubmit} isLoading={this.state.isLoading}
                                   countries={this.props.countries}
-                                  label={this.context.t('organization.form.create')}/>
+                                  label={i18n._(t`organization.form.create`)}/>
             </div>
         </section>;
     }

@@ -1,24 +1,30 @@
 package org.oasis_eu.portal.controller;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.oasis_eu.portal.services.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class HomeController {
 
-    @Value("${web.home}")
-    private String webHome;
+    private final UserService userService;
 
-    @RequestMapping("/")
-    public ResponseEntity<?> index() {
-        HttpHeaders headers = new HttpHeaders();
-        // Let the website handle the display language based on which he knows and our browsing preferences
-        headers.add("Location", webHome);
+    @Autowired
+    public HomeController(UserService userService) {
+        this.userService = userService;
+    }
 
-        return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+    @GetMapping("/")
+    public String index() {
+        return "redirect:/my";
+    }
+
+    @GetMapping("/my")
+    public String show() {
+        if (userService.requiresLogout()) {
+            return "redirect:/logout";
+        }
+        return "forward:/index.html";
     }
 }

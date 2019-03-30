@@ -9,6 +9,9 @@ import config from '../config/config';
 
 const notificationInterval = config.notificationsInterval;
 import UpdateTitle from '../components/update-title';
+import { i18n } from "../config/i18n-config"
+import { t } from "@lingui/macro"
+
 
 //actions
 import {fetchNotifications, deleteNotification} from "../actions/notifications";
@@ -120,7 +123,7 @@ const NotificationTable = createClass({
 
         if (notificationNodes.length == 0) {
             notificationNodes = <tr>
-                <td className="message" colSpan="4">{this.context.t('notif.no-notification')}</td>
+                <td className="message" colSpan="4">{i18n._('notif.no-notification')}</td>
             </tr>;
         }
 
@@ -135,11 +138,11 @@ const NotificationTable = createClass({
                     <table className="table table-striped">
                         <thead>
                         <tr>
-                            <SortableHeader name="date" label={this.context.t('notif.date')} size="2" sortBy={this.sortBy}
+                            <SortableHeader name="date" label={i18n._('notif.date')} size="2" sortBy={this.sortBy}
                                             sort={this.state.currentSort}/>
-                            <SortableHeader name="appName" size="2" label={this.context.t('notif.app')} sortBy={this.sortBy}
+                            <SortableHeader name="appName" size="2" label={i18n._('notif.app')} sortBy={this.sortBy}
                                             sort={this.state.currentSort}/>
-                            <th className="col-sm-5">{this.context.t('notif.message')}</th>
+                            <th className="col-sm-5">{i18n._('notif.message')}</th>
                             <th className="col-sm-3"></th>
                         </tr>
                         </thead>
@@ -153,9 +156,6 @@ const NotificationTable = createClass({
     }
 
 });
-NotificationTable.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 const mapStateToProps = state => {
     return {
@@ -191,14 +191,12 @@ const SortableHeader = createClass({
 
         return (
             <th className={className}
-                onClick={this.props.sortBy(this.props.name)}>{this.context.t(this.props.label)} {sortIcon}</th>
+                onClick={this.props.sortBy(this.props.name)}>{i18n._(this.props.label)} {sortIcon}</th>
         );
     }
 
 });
-SortableHeader.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 
 const NotificationHeader = createClass({
     render: function () {
@@ -210,9 +208,9 @@ const NotificationHeader = createClass({
                     </div>
                     <div className="form-group">
                         <select name="status" className="form-control" onChange={this.props.updateStatus}>
-                            <option value="UNREAD">{this.context.t('notif.unread')}</option>
-                            <option value="READ">{this.context.t('notif.read')}</option>
-                            <option value="ANY">{this.context.t('notif.any')}</option>
+                            <option value="UNREAD">{i18n._('notif.unread')}</option>
+                            <option value="READ">{i18n._('notif.read')}</option>
+                            <option value="ANY">{i18n._('notif.any')}</option>
                         </select>
                     </div>
                 </form>
@@ -220,9 +218,7 @@ const NotificationHeader = createClass({
         );
     }
 });
-NotificationHeader.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 
 const AppFilter = createClass({
     render: function () {
@@ -231,15 +227,12 @@ const AppFilter = createClass({
         });
         return (
             <select name="app" className="form-control" onChange={this.props.onChange}>
-                <option value="all">{this.context.t('notif.all-apps')}</option>
+                <option value="all">{i18n._('notif.all-apps')}</option>
                 {options}
             </select>
         );
     }
 });
-AppFilter.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 const Notification = createClass({
     displayName: "Notification",
@@ -257,7 +250,7 @@ const Notification = createClass({
         }
         if (this.props.notif.status !== "READ") {
             action_archive = <a href="#" className="btn btn-default pull-right"
-                                onClick={this.removeNotif}>{this.context.t('notif.archive')}</a>;
+                                onClick={this.removeNotif}>{i18n._('notif.archive')}</a>;
         }
 
         return (
@@ -273,23 +266,16 @@ const Notification = createClass({
         );
     }
 });
-Notification.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 class NotificationTableWrapper extends React.Component {
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     render() {
         return <div className="oz-body wrapper flex-col">
 
-            <UpdateTitle title={this.context.t('ui.notifications')}/>
+            <UpdateTitle title={i18n._(t`ui.notifications`)}/>
 
             <header className="title">
-                <span>{this.context.t('ui.notifications')}</span>
+                <span>{i18n._(t`ui.notifications`)}</span>
             </header>
 
             <NotificationTableWithRedux/>

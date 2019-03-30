@@ -19,10 +19,12 @@ import Notification from '../pages/notifications';
 import OrganizationCreate from '../pages/organization-create';
 import OrganizationSearch from '../pages/organization-search';
 import OrganizationDesc from '../pages/organization-desc';
-import Store from '../pages/store';
+import AppStore from '../pages/app-store';
 
 // Actions
-import {fetchUserInfo} from "../actions/user";
+import {fetchUserInfo} from '../actions/user';
+import AppInstall from '../pages/app-install';
+import GoogleAnalytics from '../components/google-analytics';
 
 class RouterWithUser extends React.Component {
     render() {
@@ -53,9 +55,9 @@ class RouterWithUser extends React.Component {
 class PopupRouterWithUser extends React.Component {
     render() {
         return <IfUser>
-            <Switch>
-                <Route path="/popup/profile" component={Profile}/>
-            </Switch>
+                <Switch>
+                    <Route path="/popup/profile" component={Profile}/>
+                </Switch>
         </IfUser>;
     }
 }
@@ -64,8 +66,8 @@ class RouterWithoutUser extends React.Component {
     render() {
         return <Layout>
             <Switch>
-                <Route path="/:lang/store/:type?/:id?" component={Store}/>
-                <Route path="/:lang/store" component={Store}/>
+                <Route path="/:lang/store/:type/:id" component={AppInstall}/>
+                <Route path="/:lang/store" component={AppStore}/>
             </Switch>
         </Layout>;
     }
@@ -86,15 +88,24 @@ class AppRouter extends React.Component {
     }
 
     render() {
+        const routes =
+            <Switch>
+                <Route path="/my" component={RouterWithUser}/>
+                <Route path="/popup" component={PopupRouterWithUser}/>
+                <Route path="/:lang/store" component={RouterWithoutUser}/>
+                <Redirect to="/my"/>
+            </Switch>;
+
+        const production = process.env.NODE_ENV;
+
         return <Router history={history}>
             <BootLoader>
                 <Popup/>
-                <Switch>
-                    <Route path="/my" component={RouterWithUser}/>
-                    <Route path="/popup" component={PopupRouterWithUser}/>
-                    <Route path="/:lang/store" component={RouterWithoutUser}/>
-                    <Redirect to="/my"/>
-                </Switch>
+                {!production ? routes :
+                    <GoogleAnalytics>
+                        {routes}
+                    </GoogleAnalytics>
+                }
             </BootLoader>
         </Router>;
     }

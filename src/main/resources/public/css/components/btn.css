@@ -71,13 +71,13 @@
 
 .btn-default-inverse {
     color: var(--button-secondary-color) !important;
-    border-color: var(--button-hover-color) !important;
-    background-color: var(--button-hover-color) !important;
+    border-color: var(--secondary-color) !important;
+    background-color: var(--secondary-color) !important;
 }
 
 .btn-default-inverse:hover,
 .btn-default-inverse:focus,
 .btn-default-inverse:active {
-    color: var(--button-hover-color) !important;
+    color: var(--secondary-color) !important;
     background-color: var(--button-secondary-color) !important;
 }

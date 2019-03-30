@@ -75,6 +75,9 @@ public class CatalogEntry implements Serializable {
     @JsonProperty("policy_uri")
     private String policyUri;
 
+    private Set<String> portals;
+
+
     public String getId() {
         return id;
     }
@@ -277,6 +280,14 @@ public class CatalogEntry implements Serializable {
 
     public void setTosUri(String tosUri) {
         this.tosUri = tosUri;
+    }
+
+    public Set<String> getPortals() {
+        return portals;
+    }
+
+    public void setPortals(Set<String> portals) {
+        this.portals = portals;
     }
 
     @Override

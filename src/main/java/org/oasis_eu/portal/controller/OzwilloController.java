@@ -1,32 +1,30 @@
 package org.oasis_eu.portal.controller;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
-import org.oasis_eu.portal.model.sitemap.SiteMapMenuSet;
 import org.oasis_eu.portal.model.Languages;
+import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
+import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
+import org.oasis_eu.portal.model.sitemap.*;
+import org.oasis_eu.portal.services.EnvPropertiesService;
 import org.oasis_eu.portal.services.MyNavigationService;
-import org.oasis_eu.portal.utils.i18nMessages;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.*;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/api")
 public class OzwilloController {
-
-    private final MessageSource messageSource;
 
     private final MyNavigationService navigationService;
 
@@ -38,9 +36,6 @@ public class OzwilloController {
     @Value("${kernel.account_uri}")
     private String accountEndPoint;
 
-    @Value("${opendata.url}")
-    private String opendataEndPoint;
-
     // TODO : check it still has uses
     @Value("${application.devmode:false}")
     private boolean devMode;
@@ -49,8 +44,16 @@ public class OzwilloController {
     private boolean notificationsEnabled;
 
     @Autowired
-    public OzwilloController(MessageSource messageSource, MyNavigationService navigationService, UserInfoService userInfoService) {
-        this.messageSource = messageSource;
+    private HttpServletRequest request;
+
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
+
+    @Autowired
+    private StylePropertiesMapRepository stylePropertiesMapRepository;
+
+    @Autowired
+    public OzwilloController(MyNavigationService navigationService, UserInfoService userInfoService) {
         this.navigationService = navigationService;
         this.userInfoService = userInfoService;
     }
@@ -61,48 +64,52 @@ public class OzwilloController {
     }
 
     @GetMapping("/config")
-    public Config getConfig(HttpServletRequest request) throws JsonProcessingException {
-        // i18n
-        Locale locale = RequestContextUtils.getLocale(request);
-        Map<String, Map<String, String>> i18n = new HashMap<>();
-        i18n.put(locale.getLanguage(), i18nMessages.getI18n_all(locale, messageSource));
+    public Config getConfig() {
+        EnvConfig envConfig = envPropertiesService.getCurrentConfig();
 
+        Locale locale = RequestContextUtils.getLocale(request);
         List<String> languages = Arrays.stream(Languages.values())
                 .map(l -> l.getLocale().getLanguage()).collect(Collectors.toList());
 
-        //Site map
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter();
-        SiteMapMenuSet siteMapHeader = navigationService.getSiteMapHeader();
 
-        //MyConfig object
         Config config = new Config();
         config.language = locale.getLanguage();
         config.languages = languages;
-        config.i18n = i18n;
         config.siteMapFooter = siteMapFooter;
-        config.siteMapHeader = siteMapHeader;
         config.kernelEndPoint = kernelEndPoint;
         config.accountEndPoint = accountEndPoint;
-        config.opendataEndPoint = opendataEndPoint;
+        config.opendataEndPoint = envConfig.getOpendata().getUrl();
         config.devMode = devMode;
         config.notificationsEnabled = notificationsEnabled;
 
         return config;
     }
 
-    @GetMapping("/config/language/{lang}")
-    public Config getLanguage(@PathVariable String lang) throws JsonProcessingException {
-        Map<String, Map<String, String>> i18n = new HashMap<>();
-        i18n.put(lang, i18nMessages.getI18n_all(new Locale(lang) , messageSource));
+    @GetMapping("/config/style")
+    public List<StyleProperty> getStyleProperties() {
+        String website = envPropertiesService.getCurrentKey();
+        StylePropertiesMap stylePropertiesMap = stylePropertiesMapRepository.findByWebsite(website);
+        if(stylePropertiesMap != null && !stylePropertiesMap.getStyleProperties().isEmpty()){
+            return stylePropertiesMap.getStyleProperties();
+        }else{
+            return stylePropertiesMapRepository.findByWebsite("ozwillo").getStyleProperties();
+        }
+    }
 
+    @GetMapping("/config/googleTag")
+    public String getGoogleAnalyticsTag() {
+        return envPropertiesService.getCurrentConfig().getWeb().getGoogleTag();
+    }
+
+
+    @GetMapping("/config/language/{lang}")
+    public Config getLanguage(@PathVariable String lang) {
         //Site map
         Map<Integer, List<SiteMapEntry>> siteMapFooter = navigationService.getSiteMapFooter(lang);
-        SiteMapMenuSet siteMapHeader = navigationService.getSiteMapHeader(lang);
 
         Config config = new Config();
         config.siteMapFooter = siteMapFooter;
-        config.siteMapHeader = siteMapHeader;
-        config.i18n = i18n;
         return config;
     }
 
@@ -114,13 +121,7 @@ public class OzwilloController {
         List<String> languages;
 
         @JsonProperty
-        Map<String, Map<String, String>> i18n;
-
-        @JsonProperty
         Map<Integer, List<SiteMapEntry>> siteMapFooter;
-
-        @JsonProperty
-        SiteMapMenuSet siteMapHeader;
 
         @JsonProperty
         String kernelEndPoint;
@@ -130,6 +131,9 @@ public class OzwilloController {
 
         @JsonProperty
         String opendataEndPoint;
+
+        @JsonProperty
+        List<StyleProperty> styleProperties;
 
         @JsonProperty
         boolean devMode;

@@ -1,6 +1,5 @@
 .oz-header {
     position: relative;
-    min-height: 60px;
     margin-top: 1em;
     margin-bottom: 1em;
 }
@@ -9,8 +8,8 @@
     margin-left: 10px;
 }
 
-.oz-header .logo-home img.logo,
-.oz-header .logo-home img.logo:after {
+.oz-header .logo-home .logo,
+.oz-header .logo-home .logo:after {
     display: block;
     content: var(--logo-url);
     width: var(--logo-width);
@@ -18,8 +17,8 @@
 
 /* IE10+ */
 @media all and (-ms-high-contrast: none), (-ms-high-contrast: active) {
-    .oz-header .logo-home img.logo,
-    .oz-header .logo-home img.logo:after {
+    .oz-header .logo-home .logo,
+    .oz-header .logo-home .logo:after {
         content: '';
         background: var(--logo-url) no-repeat;
         width: 160px;
@@ -29,13 +28,10 @@
 
 .my-oasis {
     width: 100%;
-    position: absolute;
-    left: 0;
 }
 
 .oz-header .welcome {
     font-size: 18px;
-    margin-top: 25px;
 }
 
 .oz-header .welcome .badge {

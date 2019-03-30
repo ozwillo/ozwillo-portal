@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
 import {withRouter} from 'react-router';
 import createClass from 'create-react-class';
@@ -22,6 +21,9 @@ import {
 } from '../actions/dashboard';
 
 import UpdateTitle from '../components/update-title';
+
+import { i18n } from "../config/i18n-config"
+import { t } from "@lingui/macro"
 
 const Dashboard = withRouter(createClass({
     notificationsChecked: false,
@@ -52,6 +54,11 @@ const Dashboard = withRouter(createClass({
         this.loadApps(dashId);
 
     },
+    componentWillUnmount() {
+        if (this.state.timeoutId) {
+            clearTimeout(this.state.timeoutId);
+        }
+    },
     loadApps(dashId) {
         Promise.all([fetchApps(dashId), fetchPendingApps()])
             .then(data => {
@@ -79,7 +86,8 @@ const Dashboard = withRouter(createClass({
                     this.setState({ apps: apps });
                 }).catch(err => console.error("Cannot check notifications", status, err));
         }
-        window.setTimeout(this.checkNotifications, 10000);
+        const timeoutId = window.setTimeout(this.checkNotifications, 10000);
+        this.setState({ timeoutId: timeoutId })
     },
     initNotificationsCheck() {
         if (!this.notificationsChecked) {
@@ -308,7 +316,7 @@ const DashList = createClass({
         if (this.props.loading) {
             return (
                 <div className="text-center">
-                    <i className="fa fa-spinner fa-spin loading"/> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"/> {i18n._(t`ui.loading`)}
                 </div>
             );
         } else {
@@ -335,9 +343,7 @@ const DashList = createClass({
         }
     }
 });
-DashList.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 
 const DashItem = createClass({
     getInitialState: function () {
@@ -410,12 +416,12 @@ const DashActions = createClass({
                 <i className="fas fa-pencil-alt" onClick={this.props.edit}/>
             );
         } else {
-            const buttonLabels = {"save": this.context.t('ui.confirm'), "cancel": this.context.t('ui.cancel')};
+            const buttonLabels = {"save": i18n._(t`ui.confirm`), "cancel": i18n._(t`ui.cancel`)};
             return (
                 <span>
-                    <Modal title={this.context.t('my.confirm-delete-dash')} successHandler={this.remove}
+                    <Modal title={i18n._(t`my.confirm-delete-dash`)} successHandler={this.remove}
                            buttonLabels={buttonLabels} saveButtonClass="btn-default-inverse" ref="modal">
-                        <span>{this.context.t('my.confirm-delete-dash-long')}</span>
+                        <span>{i18n._(t`my.confirm-delete-dash-long`)}</span>
                     </Modal>
 
                     <i className="fas fa-pencil-alt" onClick={this.props.edit}/>
@@ -425,9 +431,6 @@ const DashActions = createClass({
         }
     }
 });
-DashActions.contextTypes = {
-    t: PropTypes.func.isRequired
-};
 
 
 const EditingDash = createClass({
@@ -489,20 +492,20 @@ const CreateDashboard = createClass({
         }
     },
     render: function () {
-        const buttonLabels = {'save': this.context.t('ui.confirm'), 'cancel': this.context.t('ui.cancel')};
+        const buttonLabels = {'save': i18n._(t`ui.confirm`), 'cancel': i18n._(t`ui.cancel`)};
         const formGroupClass = this.state.error ? 'form-group has-error' : 'form-group';
 
         return (
             <li>
-                <ModalWithForm title={this.context.t('create')} successHandler={this.submit}
+                <ModalWithForm title={i18n._(t`create`)} successHandler={this.submit}
                                buttonLabels={buttonLabels} ref="modal">
                     <div className={formGroupClass}>
                         <label htmlFor="dashboardName" className="col-sm-4 control-label required">
-                            {this.context.t('my.name')} *
+                            {i18n._(t`my.name`)} *
                         </label>
                         <div className="col-sm-8">
                             <input type="text" id="dashboardName" className="form-control"
-                                   placeholder={this.context.t('name')} onChange={this.change}/>
+                                   placeholder={i18n._(t`name`)} onChange={this.change}/>
                         </div>
                     </div>
                 </ModalWithForm>
@@ -513,9 +516,7 @@ const CreateDashboard = createClass({
         );
     }
 });
-CreateDashboard.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 
 const DeleteApp = createClass({
     getInitialState: function () {
@@ -550,19 +551,19 @@ const DeleteApp = createClass({
     },
     render: function () {
         const className = 'appzone' + (this.state.over ? ' over' : '');
-        const buttonLabels = {save: this.context.t('ui.confirm'), cancel: this.context.t('ui.cancel')};
+        const buttonLabels = {save: i18n._(t`ui.confirm`), cancel: i18n._(t`ui.cancel`)};
 
         return (
             <div className={className}
                  onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop}>
-                <Modal title={this.context.t('my.confirm-remove-app')} successHandler={this.removeApp}
+                <Modal title={i18n._(t`my.confirm-remove-app`)} successHandler={this.removeApp}
                        cancelHandler={this.cancel}
                        buttonLabels={buttonLabels} ref="modal">
-                    <p>{this.context.t('my.confirm-remove-app-long')}</p>
+                    <p>{i18n._(t`my.confirm-remove-app-long`)}</p>
                 </Modal>
                 <div className="app">
                     <div className="action-icon">
-                        <span title={this.context.t('my.drop-to-remove')}>
+                        <span title={i18n._(t`my.drop-to-remove`)}>
                             <i className="fa fa-trash fa-3x fa-border"/>
                         </span>
                     </div>
@@ -571,9 +572,7 @@ const DeleteApp = createClass({
         );
     }
 });
-DeleteApp.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 
 const Desktop = createClass({
     getInitialState: function () {
@@ -583,7 +582,7 @@ const Desktop = createClass({
         if (this.props.loading) {
             return (
                 <div className="col-sm-12 text-center">
-                    <i className="fa fa-spinner fa-spin loading"/> {this.context.t('ui.loading')}
+                    <i className="fa fa-spinner fa-spin loading"/> {i18n._(t`ui.loading`)}
                 </div>
             );
         }
@@ -643,9 +642,7 @@ const Desktop = createClass({
         );
     }
 });
-Desktop.contextTypes = {
-    t: PropTypes.func.isRequired
-};
+
 
 const AppZone = createClass({
     render: function () {
@@ -742,16 +739,13 @@ const AppIcon = createClass({
 
 class DashboardWrapper extends React.Component {
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     render() {
         return <section className="oz-body wrapper flex-col">
-            <UpdateTitle title={this.context.t('my.dashboard')}/>
+            <UpdateTitle title={i18n._(t`my.dashboard`)}/>
 
             <header className="title">
-                <span>{this.context.t('my.dashboard')}</span>
+                <span>{i18n._(t`my.dashboard`)}</span>
             </header>
 
             <Dashboard/>

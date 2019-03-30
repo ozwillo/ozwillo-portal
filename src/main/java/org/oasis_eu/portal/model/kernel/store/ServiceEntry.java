@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.List;
+import java.util.Set;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class ServiceEntry extends CatalogEntry {
@@ -30,6 +31,8 @@ public class ServiceEntry extends CatalogEntry {
 
     @JsonProperty("post_logout_redirect_uris")
     private List<String> postLogoutRedirectUris;
+
+    private Set<String> portals;
 
     private Status status;
 
@@ -99,5 +102,13 @@ public class ServiceEntry extends CatalogEntry {
 
     public enum Status {
         AVAILABLE, NOT_AVAILABLE;
+    }
+
+    public Set<String> getPortals() {
+        return portals;
+    }
+
+    public void setPortals(Set<String> portals) {
+        this.portals = portals;
     }
 }

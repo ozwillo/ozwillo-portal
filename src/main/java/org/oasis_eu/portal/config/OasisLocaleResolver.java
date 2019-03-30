@@ -1,11 +1,11 @@
 package org.oasis_eu.portal.config;
 
-import com.google.common.base.Strings;
 import org.oasis_eu.spring.kernel.model.UserInfo;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +30,7 @@ public class OasisLocaleResolver extends SessionLocaleResolver {
     public Locale resolveLocale(HttpServletRequest request) {
         // Try to use profile information
         UserInfo currentUser = userInfoService.currentUser();
-        if (currentUser != null && !Strings.isNullOrEmpty(currentUser.getLocale())) {
+        if (currentUser != null && !StringUtils.isEmpty(currentUser.getLocale())) {
             Locale userLocale = Locale.forLanguageTag(currentUser.getLocale());
             if (!userLocale.getLanguage().isEmpty()) {
                 return userLocale; // ex. "en-GB fr" => en

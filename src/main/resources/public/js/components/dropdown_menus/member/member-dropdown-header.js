@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Popup from "react-popup";
 import CustomTooltip from '../../custom-tooltip';
+import { i18n } from "../../../config/i18n-config"
+import { t } from "@lingui/macro"
 
 class MemberDropdownHeader extends React.Component {
 
@@ -11,10 +13,6 @@ class MemberDropdownHeader extends React.Component {
         onRemoveMemberInOrganization: PropTypes.func.isRequired,
         onUpdateRoleMember: PropTypes.func.isRequired,
         onRemoveInvitationToJoinAnOrg: PropTypes.func.isRequired
-    };
-
-    static contextTypes = {
-        t: PropTypes.func.isRequired
     };
 
     constructor(props) {
@@ -61,7 +59,7 @@ class MemberDropdownHeader extends React.Component {
                         </p>,
                         buttons: {
                             right: [{
-                                text: this.context.t('ui.ok'),
+                                text: i18n._(t`ui.ok`),
                                 action: () => {
                                     Popup.close();
                                 }
@@ -91,7 +89,7 @@ class MemberDropdownHeader extends React.Component {
 
                     {
                         isPending &&
-                        <CustomTooltip title={this.context.t('tooltip.pending')}>
+                        <CustomTooltip title={i18n._(t`tooltip.pending`)}>
                             <button type="button" className="btn icon">
                                 <i className="fa fa-stopwatch option-icon loading"/>
                             </button>
@@ -99,28 +97,41 @@ class MemberDropdownHeader extends React.Component {
                     }
 
                     {
-                        member.admin &&
-                        <CustomTooltip title={this.context.t('tooltip.remove.right.admin')}>
+                        member.admin && isOrgAdmin &&
+                        <CustomTooltip title={i18n._(t`tooltip.remove.right.admin`)}>
                             <button type="button" className="btn icon"
                                     onClick={!isPending && isOrgAdmin && this.memberRoleToggle || null}>
                                 <i className="fa fa-chess-king option-icon"/>
                             </button>
                         </CustomTooltip>
+                        || member.admin &&
+                            <CustomTooltip title={i18n._(t`tooltip.member.admin.info`)}>
+                            <button type="button" className="btn icon">
+                                <i className="fa fa-chess-king option-icon"/>
+                            </button>
+                            </CustomTooltip>
+
                     }
 
                     {
-                        !member.admin && !isPending &&
-                        <CustomTooltip title={this.context.t('tooltip.add.right.admin')}>
+                        !member.admin && !isPending && isOrgAdmin &&
+                        <CustomTooltip title={i18n._(t`tooltip.add.right.admin`)}>
                             <button type="button" className="btn icon"
                                     onClick={!isPending && isOrgAdmin && this.memberRoleToggle || null}>
                                 <i className="fa fa-chess-pawn option-icon"/>
                             </button>
                         </CustomTooltip>
+                        || !member.admin && !isPending &&
+                            <CustomTooltip title={i18n._(t`tooltip.member.no.admin.info`)}>
+                                <button type="button" className="btn icon">
+                                    <i className="fa fa-chess-pawn option-icon"/>
+                                </button>
+                        </CustomTooltip>
                     }
 
                     {
                         isOrgAdmin &&
-                        <CustomTooltip title={this.context.t('tooltip.delete.member')}>
+                        <CustomTooltip title={i18n._(t`tooltip.delete.member`)}>
                             <button type="button" className="btn icon delete"
                                     onClick={!isPending && this.onRemoveMemberInOrganization || this.onRemoveInvitationToJoinAnOrg}>
                                 <i className="fa fa-trash option-icon delete"/>

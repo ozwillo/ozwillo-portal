@@ -1,8 +1,8 @@
 package org.oasis_eu.portal.services;
 
-import com.google.common.base.Strings;
 import org.apache.tika.Tika;
 import org.joda.time.DateTime;
+import org.oasis_eu.portal.config.environnements.helpers.EnvConfig;
 import org.oasis_eu.portal.dao.DirectAccessImageRepo;
 import org.oasis_eu.portal.dao.ImageDownloadAttemptRepository;
 import org.oasis_eu.portal.dao.ImageRepository;
@@ -13,12 +13,12 @@ import org.oasis_eu.spring.kernel.exception.WrongQueryException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import javax.imageio.ImageIO;
@@ -63,11 +63,8 @@ public class ImageService {
     @Autowired
     private ImageDownloadAttemptRepository imageDownloadAttemptRepository;
 
-    @Value("${application.baseImageUrl}")
-    private String baseImageUrl;
-
-    @Value("${application.defaultIconUrl}")
-    private String defaultIconUrl;
+    @Autowired
+    private EnvPropertiesService envPropertiesService;
 
 
     /**
@@ -130,6 +127,7 @@ public class ImageService {
      * @return URL that is unique for mongo, but not where this image will be served
      */
     private String buildObjectIconImageVirtualUrl(String objectId) {
+        String baseImageUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
         return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
             .path("/")
             .path(OBJECTICONIMAGE_PATHELEMENT)
@@ -146,6 +144,7 @@ public class ImageService {
      * @return URL where this image will be served
      */
     public String buildImageServedUrl(Image image) {
+        String baseImageUrl = envPropertiesService.getCurrentConfig().getBaseImageUrl();
         return UriComponentsBuilder.fromHttpUrl(baseImageUrl)
             .path("/")
             .path(image.getId())
@@ -153,6 +152,10 @@ public class ImageService {
             .path(image.getFilename())
             .build()
             .toUriString();
+    }
+
+    public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
+        return getImageForURLInEnvConfig(inputUrl, format, force, envPropertiesService.getCurrentConfig());
     }
 
     /**
@@ -164,21 +167,18 @@ public class ImageService {
      * @param force
      * @return
      */
-    public String getImageForURL(String inputUrl, ImageFormat format, boolean force) {
+    private String getImageForURLInEnvConfig(String inputUrl, ImageFormat format, boolean force, EnvConfig envConfig) {
+        String baseImageUrl = envConfig.getBaseImageUrl();
+        String defaultIconUrl = envConfig.getDefaultIconUrl();
 
         if (inputUrl != null && inputUrl.startsWith(baseImageUrl)) {
             // Self-served (Portal object icon) image
             return inputUrl;
-            // NB. could also allow to cache portal-served images besides POSTed ones (but for what need ?) :
-            /*if (!inputUrl.contains("objectIcon")) { // TODO better parse URI & startsWith
-				return inputUrl;
-			}
-			//throw new RuntimeException("Self-served (Portal object icon) image not found " + inputUrl);*/
         }
 
         if (imageDownloadAttemptRepository.findByUrl(inputUrl) != null) {
             logger.debug("Image input URL {} is blacklisted, returning default icon", inputUrl);
-            return defaultIcon();
+            return defaultIconUrl;
         }
 
         Image image = imageRepository.findByUrl(inputUrl);
@@ -190,19 +190,19 @@ public class ImageService {
             if (iconBytes == null) {
                 logger.error("Could not load icon from URL {}, returning default", inputUrl);
                 blacklist(inputUrl);
-                return defaultIcon();
+                return defaultIconUrl;
             }
 
             // 2. make sure it is a 64x64 PNG (NB this will change in the future with more intelligent format detection / conversion)
             if (!ensurePNG(iconBytes)) {
                 logger.error("Icon URL {} is not a PNG, returning default icon", inputUrl);
                 blacklist(inputUrl);
-                return defaultIcon();
+                return defaultIconUrl;
             }
             if (!format.equals(getFormat(iconBytes))) {
                 logger.error("Icon URL {} does not point to an image of correct format ({}), returning default icon", inputUrl, format);
                 blacklist(inputUrl);
-                return defaultIcon();
+                return defaultIconUrl;
             }
 
             // 3. compute the hash and store the icon
@@ -240,23 +240,17 @@ public class ImageService {
 
         logger.debug("Found {} image(s) to refresh", images.size());
 
-        images.forEach(i -> getImageForURL(i.getUrl(), i.getImageFormat(), true));
-
-    }
-
-    // TODO provide a default for all image formats (eg 800×450)
-    private String defaultIcon() {
-        return defaultIconUrl;
-
+        images.forEach(i -> getImageForURLInEnvConfig(i.getUrl(), i.getImageFormat(), true, envPropertiesService.getDefaultConfig()));
     }
 
     public boolean isDefaultIcon(String icon) {
+        String defaultIconUrl = envPropertiesService.getCurrentConfig().getDefaultIconUrl();
         return defaultIconUrl.equals(icon);
     }
 
     private String getFileName(String url) {
 
-        if (Strings.isNullOrEmpty(url)) {
+        if (StringUtils.isEmpty(url)) {
             return "";
         }
 
@@ -272,7 +266,7 @@ public class ImageService {
     }
 
     private String stripSlash(String input) {
-        if (Strings.isNullOrEmpty(input)) {
+        if (StringUtils.isEmpty(input)) {
             return "";
         } else if (input.endsWith("/")) {
             return input.substring(0, input.length() - 1);

@@ -1,23 +1,21 @@
 package org.oasis_eu.portal.services;
 
-import org.oasis_eu.portal.model.organization.UIOrganization;
-import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
-import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
+import org.oasis_eu.portal.model.images.ImageFormat;
+import org.oasis_eu.portal.model.instance.MyAppsInstance;
 import org.oasis_eu.portal.model.kernel.ApplicationInstantiationRequest;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
+import org.oasis_eu.portal.model.kernel.instance.Subscription;
+import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
 import org.oasis_eu.portal.model.kernel.store.Audience;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntryType;
 import org.oasis_eu.portal.model.kernel.store.PaymentOption;
-import org.oasis_eu.portal.model.kernel.instance.Subscription;
-import org.oasis_eu.portal.model.kernel.instance.SubscriptionType;
-import org.oasis_eu.portal.dao.InstalledStatusRepository;
-import org.oasis_eu.portal.model.images.ImageFormat;
-import org.oasis_eu.portal.model.store.InstalledStatus;
-import org.oasis_eu.portal.model.instance.MyAppsInstance;
+import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.store.AppstoreHit;
 import org.oasis_eu.portal.model.store.InstallationOption;
 import org.oasis_eu.portal.services.dc.GeographicalAreaService;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
+import org.oasis_eu.portal.services.kernel.SubscriptionStoreImpl;
 import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.service.OrganizationStore;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -68,9 +66,6 @@ public class AppstoreService {
     @Autowired
     private OrganizationService organizationService;
 
-    @Autowired
-    private InstalledStatusRepository installedStatusRepository;
-
     @Value("${application.store.addCurrentToSupportedLocalesIfNone:false}")
     private boolean addCurrentToSupportedLocalesIfNone;
 
@@ -88,7 +83,7 @@ public class AppstoreService {
      * @return
      */
     public List<AppstoreHit> getAll(List<Audience> targetAudiences, List<PaymentOption> paymentOptions,
-                                    List<Locale> supportedLocales, List<String> geographicalAreas,
+                                    List<Locale> supportedLocales, String organizationId, String installed_status, List<String> geographicalAreas,
                                     List<String> categoryIds, String q, int from) {
 
         if (addCurrentToSupportedLocalesIfNone) {
@@ -99,12 +94,30 @@ public class AppstoreService {
 
         String currentHl = RequestContextUtils.getLocale(request).getLanguage(); // optimization
         List<CatalogEntry> catalogEntryLst = catalogStore.findAllVisible(targetAudiences, paymentOptions, supportedLocales,
-            geographicalAreas, categoryIds, q, currentHl, from);
+                geographicalAreas, categoryIds, q, currentHl, from);
 
-        return catalogEntryLst.stream().filter(catalogEntry -> catalogEntry != null)
+        //if an organization is selected, display the specifics app with the install option
+        if(organizationId != null && !organizationId.equals("")) {
+            UIOrganization organization = organizationService.getOrganizationFromKernel(organizationId);
+
+            catalogEntryLst = catalogEntryLst.stream()
+                    .filter(app -> app.getTargetAudience().stream().anyMatch(audience -> audience.isCompatibleWith(organization.getType())))
+                    .collect(Collectors.toList());
+
+            //return all the applications available for a specific organization with the install option
+            return catalogEntryLst.stream()
+                    .filter(Objects::nonNull)
+                    .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry,
+                            imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false),
+                            getOrganizationName(catalogEntry), getApplicationInstallationOptionFromOrganization(organization, catalogEntry)))
+                    .filter(appstoreHit -> installed_status.equals("") || appstoreHit.getInstallationOption().toString().equals(installed_status.toUpperCase()))
+                    .collect(Collectors.toList());
+        }
+
+        return catalogEntryLst.stream().filter(Objects::nonNull)
             .map(catalogEntry -> new AppstoreHit(RequestContextUtils.getLocale(request), catalogEntry,
                 imageService.getImageForURL(catalogEntry.getIcon(RequestContextUtils.getLocale(request)), ImageFormat.PNG_64BY64, false),
-                getOrganizationName(catalogEntry), getInstallationOption(catalogEntry)))
+                getOrganizationName(catalogEntry)))
             .collect(Collectors.toList());
     }
 
@@ -138,7 +151,7 @@ public class AppstoreService {
 
         String providerName = getOrganizationName(entry);
 
-        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64, false), providerName, getInstallationOption(entry));
+        return new AppstoreHit(locale, entry, imageService.getImageForURL(entry.getIcon(locale), ImageFormat.PNG_64BY64, false), providerName);
 
     }
 
@@ -176,45 +189,17 @@ public class AppstoreService {
         return subscriptionStore.create(userInfoService.currentUser().getUserId(), subscription);
     }
 
-    private InstallationOption getInstallationOption(CatalogEntry entry) {
-        InstallationOption paymentOption = InstallationOption.valueOf(entry.getPaymentOption().toString());
-        if (!userInfoService.isAuthenticated()) {
-            return paymentOption; // urgh. clean this up sometime!
-        }
-
-        InstalledStatus status = installedStatusRepository.findByCatalogEntryTypeAndCatalogEntryIdAndUserId(entry.getType(), entry.getId(), userInfoService.currentUser().getUserId());
-        if (status != null) {
-            return status.isInstalled() ? InstallationOption.INSTALLED : paymentOption;
-        }
-
-        InstallationOption option = computeInstallationOption(entry);
-
-        status = new InstalledStatus();
-        status.setCatalogEntryType(entry.getType());
-        status.setCatalogEntryId(entry.getId());
-        status.setUserId(userInfoService.currentUser().getUserId());
-        status.setInstalled(option.equals(InstallationOption.INSTALLED));
-        installedStatusRepository.save(status);
-
-        return option;
-    }
-
-    private InstallationOption computeInstallationOption(CatalogEntry entry) {
-        if (CatalogEntryType.SERVICE.equals(entry.getType())) {
-            Set<String> subscriptions =
-                    subscriptionStore.findByUserId(userInfoService.currentUser().getUserId())
-                            .stream()
-                            .map(Subscription::getServiceId)
-                            .collect(Collectors.toSet());
-            return subscriptions.contains(entry.getId()) ? InstallationOption.INSTALLED :
-                PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
-        } else {
-            return organizationService.getMyOrganizations()
-                    .stream()
-                    .filter(UIOrganization::isAdmin)
-                    .flatMap(uiOrganization -> applicationService.getMyInstances(uiOrganization, false).stream())
-                    .anyMatch(instance -> instance.getApplicationInstance().getApplicationId().equals(entry.getId()))
-                        ? InstallationOption.INSTALLED : PaymentOption.FREE.equals(entry.getPaymentOption()) ? InstallationOption.FREE : InstallationOption.PAID;
+    private InstallationOption getApplicationInstallationOptionFromOrganization(UIOrganization organization, CatalogEntry entry){
+        boolean installed = organization.getInstances().stream()
+                .map(MyAppsInstance::getApplicationInstance)
+                .anyMatch(instance ->
+                   entry.getId() != null && entry.getType().equals(CatalogEntryType.APPLICATION) && entry.getId().equals(instance.getApplicationId())
+                           || entry.getProviderId() != null && entry.getType().equals(CatalogEntryType.SERVICE) && entry.getProviderId().equals(instance.getProviderId())
+                );
+        if(installed){
+            return InstallationOption.INSTALLED;
+        }else{
+            return InstallationOption.NOT_INSTALLED;
         }
     }
 }

@@ -152,7 +152,7 @@ header.dropdown-header {
 }
 
 .dropdown-header .delete {
-    color: var(--tertiary-color)
+    color: var(--primary-color)
 }
 
 .dropdown-header .btn.icon {

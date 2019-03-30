@@ -2,15 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-import { DropdownBlockError, DropdownBlockSuccess } from '../notification-messages';
-
 //Action
 import InstanceService from "../../util/instance-service";
+import { i18n } from "../../config/i18n-config"
+import NotificationMessageBlock from '../notification-message-block';
 
 export default class InstanceInvitationForm extends React.Component {
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
 
     static propTypes = {
         instance: PropTypes.object.isRequired,
@@ -56,7 +53,7 @@ export default class InstanceInvitationForm extends React.Component {
                 isLoading: false,
                 selectedOption: null,
                 email: '',
-                success: this.context.t('ui.request.send'),
+                success: i18n._('ui.request.send'),
                 error: ''
             });
         } else {
@@ -95,10 +92,10 @@ export default class InstanceInvitationForm extends React.Component {
 
         return <form className={`instance-invitation-form flex-col end ${this.props.className || ''}`}
                      onSubmit={this.onSubmit}>
-            <div className={'instance-invitation-title'}>{this.context.t('organization.desc.add-user-to-instance')}</div>
+            <div className={'instance-invitation-title'}>{i18n._('organization.desc.add-user-to-instance')}</div>
             <div className="content">
                 <label className="label">
-                    {this.context.t('organization.desc.add-to-instance-from-members')}
+                    {i18n._('organization.desc.add-to-instance-from-members')}
                 </label>
                 {this.props.members ?
                     <Select
@@ -109,7 +106,7 @@ export default class InstanceInvitationForm extends React.Component {
                         valueKey="id"
                         onChange={this.onOptionChange}
                         options={formattedMembers}
-                        placeholder={this.context.t('organization.desc.members')}
+                        placeholder={i18n._('organization.desc.members')}
                         required={!this.state.email}/>
                     :
                     <div className="container-loading text-center">
@@ -117,11 +114,11 @@ export default class InstanceInvitationForm extends React.Component {
                     </div>
                 }
 
-                <em className="sep-text">{this.context.t('ui.or')}</em>
+                <em className="sep-text">{i18n._('ui.or')}</em>
 
                 <div className="new-user-fieldset flex-row">
                     <label className="label">
-                        {this.context.t('organization.desc.add-to-instance-by-email')}
+                        {i18n._('organization.desc.add-to-instance-by-email')}
                         <input name="email" type="email" className="form-control field"
                                required={!this.state.selectedOption}
                                value={this.state.email} onChange={this.handleChange}/>
@@ -131,7 +128,7 @@ export default class InstanceInvitationForm extends React.Component {
                 <button type="submit" className="btn btn-submit" disabled={this.state.isLoading}>
                     {
                         !this.state.isLoading &&
-                        this.context.t('ui.invite')
+                        i18n._('ui.invite')
                     }
 
                     {
@@ -141,13 +138,10 @@ export default class InstanceInvitationForm extends React.Component {
                 </button>
             </div>
 
-            {
-                this.state.error && <DropdownBlockError errorMessage={this.state.error} />
-            }
-
-            {
-                this.state.success && <DropdownBlockSuccess successMessage={this.state.success} />
-            }
+            <NotificationMessageBlock type={this.state.error ? 'danger' : 'success'}
+                                      display={this.state.error !== '' || this.state.success !== ''}
+                                      close={() => this.setState({error: '', success: ''})}
+                                      message={this.state.error ? this.state.error : this.state.success}/>
         </form>;
     }
 

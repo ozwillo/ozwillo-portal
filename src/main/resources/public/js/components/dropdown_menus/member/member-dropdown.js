@@ -13,11 +13,9 @@ import {fetchUpdateRoleMember} from '../../../actions/member';
 import InstanceService from "../../../util/instance-service";
 import OrganizationService from "../../../util/organization-service";
 
-class MemberDropdown extends React.Component {
+import { i18n } from "../../../config/i18n-config"
 
-    static contextTypes = {
-        t: PropTypes.func.isRequired
-    };
+class MemberDropdown extends React.Component {
 
     static propTypes = {
         member: PropTypes.object.isRequired,
@@ -152,7 +150,7 @@ class MemberDropdown extends React.Component {
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
                                              onUpdateRoleMember={this.onUpdateRoleMember}
                                              onRemoveInvitationToJoinAnOrg={this.removeInvitationToJoinAnOrg}/>;
-        const dropDownicon = <i className="fa fa-list-alt option-icon"/>;
+        const dropDownicon = <CustomTooltip title={i18n._(`tooltip.see.app.member`)}><i className="fa fa-list-alt option-icon"/></CustomTooltip>;
         return <DropDownMenu header={Header} dropDownIcon={dropDownicon} isAvailable={!isPending} dropDownChange={this.handleDropDown}>
             { org.admin &&
                 <section className="dropdown-content">
@@ -164,7 +162,7 @@ class MemberDropdown extends React.Component {
                                         <td className="fill-content">{instance.name}</td>
                                         <td className="fill-content">{this.state.errors[instance.id]}</td>
                                         <td className="fill-content col-md-1">
-                                            <CustomTooltip title={this.context.t('tooltip.remove.instance')}>
+                                            <CustomTooltip title={i18n._(`tooltip.remove.instance`)}>
                                                 <button className="btn icon delete"
                                                         onClick={this.removeAccessToInstance} data-instance={instance.id}>
                                                     <i className="fa fa-trash option-icon delete"/>

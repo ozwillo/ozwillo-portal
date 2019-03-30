@@ -1,14 +1,13 @@
 package org.oasis_eu.portal.services;
 
-import com.google.common.base.Strings;
 import org.markdown4j.Markdown4jProcessor;
-import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.store.CatalogEntry;
 import org.oasis_eu.portal.model.kernel.store.ServiceEntry;
 import org.oasis_eu.portal.model.notifications.NotifApp;
 import org.oasis_eu.portal.model.notifications.UserNotification;
 import org.oasis_eu.portal.model.notifications.UserNotificationResponse;
+import org.oasis_eu.portal.services.kernel.CatalogStoreImpl;
 import org.oasis_eu.spring.kernel.model.InboundNotification;
 import org.oasis_eu.spring.kernel.model.NotificationStatus;
 import org.oasis_eu.spring.kernel.service.UserInfoService;
@@ -16,8 +15,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
@@ -54,8 +53,6 @@ public class NotificationService {
     @Value("${application.notificationsEnabled:true}")
     private boolean notificationsEnabled;
 
-    @Autowired
-    private MessageSource messageSource;
 
     public int countNotifications() {
         if (!notificationsEnabled) {
@@ -131,7 +128,7 @@ public class NotificationService {
                 notif.setFormattedText(getFormattedText(n, locale));
                 notif.setId(n.getId());
 
-                if (Strings.isNullOrEmpty(n.getActionUri())) {
+                if (StringUtils.isEmpty(n.getActionUri())) {
                     if (serviceEntry != null) {
                         notif.setUrl(serviceEntry.getNotificationUrl());
                     }
@@ -139,8 +136,8 @@ public class NotificationService {
                     notif.setUrl(n.getActionUri());
                 }
 
-                if (Strings.isNullOrEmpty(n.getActionLabel())) {
-                    notif.setActionText(messageSource.getMessage("notif.manage", new Object[0], locale));
+                if (StringUtils.isEmpty(n.getActionLabel())) {
+                    notif.setActionText("Manage");
                 } else {
                     notif.setActionText(n.getActionLabel(locale));
                 }
@@ -155,20 +152,12 @@ public class NotificationService {
             .collect(Collectors.toList());
     }
 
-    public Map<String, Integer> getAppNotificationCounts() {
+    public Map<String, Integer> getNotificationsCountByService() {
 
-        List<InboundNotification> inboundNotifications =
-            knNotificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
+        return knNotificationService.getNotifications(userInfoHelper.currentUser().getUserId(), NotificationStatus.UNREAD)
                 .stream()
-                .filter(inboundNotification -> inboundNotification.getServiceId() != null || inboundNotification.getInstanceId() != null)
-                .collect(Collectors.toList());
-
-        List<UserNotification> userNotifications = extractNotifications(RequestContextUtils.getLocale(request),
-            NotificationStatus.UNREAD, inboundNotifications);
-
-        return userNotifications.stream()
-            .filter(userNotification -> !Strings.isNullOrEmpty(userNotification.getServiceId()))
-            .collect(Collectors.groupingBy(UserNotification::getServiceId, Collectors.reducing(0, n -> 1, Integer::sum)));
+                .filter(inboundNotification -> inboundNotification.getServiceId() != null)
+                .collect(Collectors.groupingBy(InboundNotification::getServiceId, Collectors.reducing(0, n -> 1, Integer::sum)));
     }
 
     private static String getFormattedText(InboundNotification notification, Locale locale) {
