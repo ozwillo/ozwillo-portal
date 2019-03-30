@@ -179,6 +179,8 @@
   "tooltip.delete.member": "Üyeyi sil",
   "tooltip.delete.organization": "Kurumu sil",
   "tooltip.instances": "Uygulama listesini göster",
+  "tooltip.member.admin.info": "",
+  "tooltip.member.no.admin.info": "",
   "tooltip.members": "Üye listesini göster",
   "tooltip.pending": "Beklemede",
   "tooltip.remove.icon": "Kontrol Panelindeki ikonu kaldır",

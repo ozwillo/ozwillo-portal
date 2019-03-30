@@ -179,6 +179,8 @@
   "tooltip.delete.member": "Delete member",
   "tooltip.delete.organization": "Delete organization",
   "tooltip.instances": "Display applications list",
+  "tooltip.member.admin.info": "",
+  "tooltip.member.no.admin.info": "",
   "tooltip.members": "Display members list",
   "tooltip.pending": "Pending",
   "tooltip.remove.icon": "Remove icon in dashboard",
