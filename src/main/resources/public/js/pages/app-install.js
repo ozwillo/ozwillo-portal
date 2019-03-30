@@ -1,7 +1,13 @@
 import React from 'react';
 import Slider from 'react-slick';
 import ModalImage from '../components/modal-image';
-import {buyApplication, fetchAppDetails, fetchAvailableOrganizations, fetchRateApp} from '../util/store-service';
+import {
+    buyApplication,
+    fetchAppDetails,
+    fetchAvailableOrganizations,
+    fetchRateApp,
+    unavailableOrganizationToInstallAnApp
+} from '../util/store-service';
 import RatingWrapper from '../components/rating';
 import Select from 'react-select';
 import PropTypes from 'prop-types';
@@ -55,29 +61,23 @@ export default class AppInstall extends React.Component {
     _loadOrgs = async () => {
         const {app} = this.state;
         const data = await fetchAvailableOrganizations(app.type, app.id);
-        this.setState({organizationsAvailable: {organizations: data, loading: true}});
+        this.setState({organizationsAvailable: {organizations: data, loading: false}});
 
         const newOrganizationsAvailable = await this._disableOrganizationWhereAppAlreadyInstalled(data);
         this.setState({organizationsAvailable: {organizations: newOrganizationsAvailable, loading: false}});
     };
 
-    _disableOrganizationWhereAppAlreadyInstalled = async (organizations) => {
+    _disableOrganizationWhereAppAlreadyInstalled = async (allOrganizations) => {
         const {app} = this.state;
-        let requestOrganizationsComplete = organizations.map((organization) => {
-            return this._organizationService.getOrganizationComplete(organization.id);
+        const organizationUnavailable = await unavailableOrganizationToInstallAnApp(app.id, app.type)
+        allOrganizations.forEach(org => {
+            organizationUnavailable.forEach(unAvailableOrg => {
+                if(org.id === unAvailableOrg.id){
+                    org.disabled = true;
+                }
+            })
         });
-        return await Promise.all(requestOrganizationsComplete).then((organizationsComplete) => {
-            for (let organization of organizationsComplete) {
-                organization.instances.map(instance => {
-                    if (app.type === 'application' && instance.applicationInstance.application_id === app.id) {
-                        organization.disabled = true;
-                    } else if (app.type === 'service' && instance.applicationInstance.provider_id === app.id) {
-                        organization.disabled = true;
-                    }
-                });
-            }
-            return organizationsComplete;
-        })
+        return allOrganizations;
     };
 
     _loadAppDetails = async () => {
@@ -239,7 +239,7 @@ export class InstallForm extends React.Component {
     _installButtonIsDisabled = () => {
         const {app} = this.props;
         const {installType, organizationSelected, buying} = this.state;
-        if (!installType || buying) {
+        if (!installType || buying || (organizationSelected && organizationSelected.disabled)) {
             return true;
         } else if (installType && !(installType === 'PERSONAL') && !(app.type === 'service') && organizationSelected) {
             return false;

@@ -97,22 +97,35 @@ class MemberDropdownHeader extends React.Component {
                     }
 
                     {
-                        member.admin &&
+                        member.admin && isOrgAdmin &&
                         <CustomTooltip title={i18n._(t`tooltip.remove.right.admin`)}>
                             <button type="button" className="btn icon"
                                     onClick={!isPending && isOrgAdmin && this.memberRoleToggle || null}>
                                 <i className="fa fa-chess-king option-icon"/>
                             </button>
                         </CustomTooltip>
+                        || member.admin &&
+                            <CustomTooltip title={i18n._(t`tooltip.member.admin.info`)}>
+                            <button type="button" className="btn icon">
+                                <i className="fa fa-chess-king option-icon"/>
+                            </button>
+                            </CustomTooltip>
+
                     }
 
                     {
-                        !member.admin && !isPending &&
+                        !member.admin && !isPending && isOrgAdmin &&
                         <CustomTooltip title={i18n._(t`tooltip.add.right.admin`)}>
                             <button type="button" className="btn icon"
                                     onClick={!isPending && isOrgAdmin && this.memberRoleToggle || null}>
                                 <i className="fa fa-chess-pawn option-icon"/>
                             </button>
+                        </CustomTooltip>
+                        || !member.admin && !isPending &&
+                            <CustomTooltip title={i18n._(t`tooltip.member.no.admin.info`)}>
+                                <button type="button" className="btn icon">
+                                    <i className="fa fa-chess-pawn option-icon"/>
+                                </button>
                         </CustomTooltip>
                     }
 

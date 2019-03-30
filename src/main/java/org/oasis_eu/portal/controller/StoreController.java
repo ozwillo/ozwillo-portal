@@ -146,6 +146,27 @@ public class StoreController {
         ratingService.rate(appType, appId, rateRequest.rate);
     }
 
+    @RequestMapping(value = "/{appType}/{appId}/organization/unavailable", method = GET)
+    public List<UIOrganization> organizationsUnavailable(@PathVariable String appType, @PathVariable String appId) {
+        AppstoreHit info = appstoreService.getInfo(appId, CatalogEntryType.valueOf(appType.toUpperCase())); // #152 services can also be installed
+        List<UIOrganization> organizations = organizationService.getMyOrganizations();
+
+        return organizations
+                .stream()
+                .filter(o -> o.isAdmin()
+                        && OrganizationStatus.AVAILABLE.equals(o.getStatus())
+                        && info.getCatalogEntry().getTargetAudience().stream().anyMatch(audience -> audience.isCompatibleWith(o.getType())))
+                .map(o ->  organizationService.getOrganizationFromKernel(o.getId()))
+                .filter(o ->
+                        o.getInstances()
+                        .stream()
+                        .anyMatch(instance ->
+                                (instance.getApplicationInstance().getApplicationId().equals(appId) ||
+                                        instance.getApplicationInstance().getProviderId().equals(appId)))
+                )
+                .collect(Collectors.toList());
+    }
+
     /**
      * called by store to get organizations in which an app or service may be installed (org dropdown in the app modal)
      */

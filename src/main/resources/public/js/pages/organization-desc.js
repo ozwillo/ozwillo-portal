@@ -12,7 +12,6 @@ import UpdateTitle from '../components/update-title';
 
 //actions
 import {fetchOrganizationWithId, fetchOrganizationInfo} from "../actions/organization";
-import {fetchApplications} from "../actions/app-store";
 import customFetch from "../util/custom-fetch";
 
 import { i18n } from "../config/i18n-config"
@@ -82,7 +81,6 @@ class OrganizationDesc extends React.Component {
 
     componentDidMount() {
         this.initialize(this.props.match.params.id);
-        this.props.fetchApplications();
     }
 
     isPersonal = () => {
@@ -173,9 +171,6 @@ const
         return {
             fetchOrganizationWithId(id) {
                 return dispatch(fetchOrganizationWithId(id));
-            },
-            fetchApplications() {
-                return dispatch(fetchApplications());
             },
             fetchOrganizationInfo(dcId) {
                 return dispatch(fetchOrganizationInfo(dcId));

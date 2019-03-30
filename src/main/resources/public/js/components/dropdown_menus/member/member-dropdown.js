@@ -150,7 +150,7 @@ class MemberDropdown extends React.Component {
                                              onRemoveMemberInOrganization={this.removeMemberInOrganization}
                                              onUpdateRoleMember={this.onUpdateRoleMember}
                                              onRemoveInvitationToJoinAnOrg={this.removeInvitationToJoinAnOrg}/>;
-        const dropDownicon = <i className="fa fa-list-alt option-icon"/>;
+        const dropDownicon = <CustomTooltip title={i18n._(`tooltip.see.app.member`)}><i className="fa fa-list-alt option-icon"/></CustomTooltip>;
         return <DropDownMenu header={Header} dropDownIcon={dropDownicon} isAvailable={!isPending} dropDownChange={this.handleDropDown}>
             { org.admin &&
                 <section className="dropdown-content">

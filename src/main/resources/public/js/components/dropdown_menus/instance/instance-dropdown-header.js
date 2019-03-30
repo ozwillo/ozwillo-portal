@@ -12,11 +12,11 @@ import customFetch from '../../../util/custom-fetch';
 
 import { i18n } from "../../../config/i18n-config"
 import {plural} from '@lingui/macro'
-import { t, date } from "@lingui/macro"
+import { t } from "@lingui/macro"
+import NotificationMessageBlock from '../../notification-message-block';
+import moment from 'moment';
 
 const instanceStatus = Config.instanceStatus;
-
-const TIME_DAY = 1000 * 3600 * 24; // millisecondes
 
 class InstanceDropdownHeader extends React.Component {
 
@@ -45,6 +45,7 @@ class InstanceDropdownHeader extends React.Component {
     }
 
     onRemoveInstance(e) {
+        e.preventDefault();
         this.props.onRemoveInstance(this.props.instance);
     }
 
@@ -81,10 +82,9 @@ class InstanceDropdownHeader extends React.Component {
     }
 
     get numberOfDaysBeforeDeletion() {
-        const now = Date.now();
-        const deletionDate = new Date(this.props.instance.deletion_planned).getTime();
-
-        const days = Math.round((deletionDate - now) / TIME_DAY);
+        const now = moment();
+        const deletionDate = moment(this.props.instance.deletion_planned);
+        const days = Math.round(deletionDate.diff(now, 'days', true));
 
         return i18n._(plural({
           value: days,
@@ -93,29 +93,9 @@ class InstanceDropdownHeader extends React.Component {
         }));
     }
 
-    _displayError = () => {
-        const {status, http_status, message} = this.state.error;
-        const defaultError = {status: false, http_status: 200};
-
-        if (status) {
-            return (
-                <div className="alert alert-danger" role="alert"
-                     style={{marginBottom: 0, alignItems: 'center'}}>
-                    <strong>{i18n._(t`sorry`)}</strong>
-                    &nbsp;
-                    {i18n._(t`${message}`) + ' (' + i18n._(t`error-code`) + ' : ' + http_status + ')'}
-                    &nbsp;
-                    <button type="button" className="close" data-dismiss="alert"
-                            onClick={() => this.setState({error: defaultError})}>
-                        <span aria-hidden="true">&times;</span>
-                        <span className="sr-only">{i18n._(t`ui.close`)}</span>
-                    </button>
-                </div>
-            )
-        }
-    };
-
     render() {
+        const {error} = this.state;
+        const defaultError = {status: false, http_status: 200};
         const isAdmin = this.props.isAdmin;
         const instance = this.props.instance;
         const isPending = instance.applicationInstance.status === instanceStatus.pending;
@@ -170,7 +150,9 @@ class InstanceDropdownHeader extends React.Component {
                 </div>
             </form>
 
-            {this._displayError()}
+            <NotificationMessageBlock type={'danger'}
+                                      message={i18n._(`${error.message}`) + ' (' + i18n._(t`error-code`) + ' : ' + error.http_status + ')'}
+                                      display={error.status} close={() => this.setState({error: defaultError})}/>
 
         </header>;
     }

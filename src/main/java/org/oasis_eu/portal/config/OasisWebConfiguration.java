@@ -5,12 +5,10 @@ import org.oasis_eu.spring.kernel.rest.ResponseProviderInterceptor;
 import org.oasis_eu.spring.kernel.security.TokenRefreshInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.embedded.tomcat.TomcatContextCustomizer;
 import org.springframework.boot.web.embedded.tomcat.TomcatServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
@@ -28,9 +26,6 @@ import java.util.Collections;
 public class OasisWebConfiguration implements WebMvcConfigurer {
 
     private static final Logger logger = LoggerFactory.getLogger(OasisWebConfiguration.class);
-
-    @Autowired
-    ApplicationContext applicationContext;
 
     @Value("${ha.enabled:false}")
     private boolean highAvailability; // are we in HA mode?

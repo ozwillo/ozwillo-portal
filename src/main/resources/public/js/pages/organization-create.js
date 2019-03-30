@@ -9,7 +9,6 @@ import UpdateTitle from '../components/update-title';
 //Action
 import {fetchCountries} from '../actions/config';
 import OrganizationService from "../util/organization-service";
-import {resetOrganizationFormAction} from '../actions/components/organization-form';
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 

@@ -160,6 +160,9 @@ export default class OrganizationInvitationForm extends React.Component {
             </button>;
         const required = !(emailsFromCSV.length > 0 || email !== '');
 
+        const emailFormated = `<strong>${email}</strong>`;
+        const csvFileNameFormated = `<strong>${csvFileName}</strong>`;
+
 
         return <header className="organization-invitation-form">
             <p className={'invitation-title'}>{i18n._(t`organization.desc.add-new-members`)}</p>
@@ -263,6 +266,7 @@ export default class OrganizationInvitationForm extends React.Component {
                                       display={this.state.error !== '' || this.state.success !== ''}
                                       close={() => this.setState({error: '', success: ''})}
                                       message={this.state.error ? this.state.error : this.state.success}/>
+
 
         </header>;
     }

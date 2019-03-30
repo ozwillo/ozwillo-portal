@@ -18,7 +18,7 @@ public class UserOrganizationsHistoryController {
         this.userOrganizationsHistoryService = userOrganizationsHistoryService;
     }
 
-    @GetMapping()
+    @GetMapping
     public List<OrganizationHistory> getOrganizationHistory() {
         return userOrganizationsHistoryService.getLastVistited();
     }
@@ -28,8 +28,9 @@ public class UserOrganizationsHistoryController {
         return userOrganizationsHistoryService.addLastVisited(dcOrganizationId);
     }
 
+    // FIXME : should not return the whole updated list, only a 204 status code
     @DeleteMapping(value = "/delete/{dcOrganizationId}")
-    public List<OrganizationHistory> deleteOrganizationHistory(@PathVariable String dcOrganizationId){
+    public List<OrganizationHistory> deleteOrganizationHistory(@PathVariable String dcOrganizationId) {
         return userOrganizationsHistoryService.deleteOrganizationHistory(dcOrganizationId);
     }
 

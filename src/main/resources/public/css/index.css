@@ -36,6 +36,7 @@
 @import 'components/CSVReader.css';
 @import 'components/stepper.css';
 @import 'components/animation.css';
+@import 'components/select.css';
 /* Pages */
 @import 'pages/dashboard.css';
 @import 'pages/notifications.css';

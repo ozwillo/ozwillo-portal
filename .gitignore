@@ -34,5 +34,7 @@ out/
 # Node
 node_modules/
 
+# Lingui
+**/_build
 
 src/test/resources/application-test\.yml

@@ -8,12 +8,6 @@ import AddInstanceDropdownHeader from './add-instance-dropdown-header';
 //Action
 import {fetchAddInstanceToOrg} from '../../../actions/app-store';
 
-//config
-import Config from '../../../config/config';
-import PropTypes from 'prop-types';
-
-const AppTypes = Config.appTypes;
-
 class AddInstanceDropdown extends React.Component {
 
 
@@ -31,7 +25,6 @@ class AddInstanceDropdown extends React.Component {
         this.onRemoveMember = this.onRemoveMember.bind(this);
         this.onChangeApp = this.onChangeApp.bind(this);
         this.filterMembersWithoutAccess = this.filterMembersWithoutAccess.bind(this);
-        this.filterApps = this.filterApps.bind(this);
     }
 
     componentWillReceiveProps(nextProps) {
@@ -78,26 +71,11 @@ class AddInstanceDropdown extends React.Component {
         });
     }
 
-    filterApps(app) {
-        const org = this.props.organization;
-
-        // only applications
-        if (AppTypes.application !== app.type) {
-            return false;
-        }
-
-        //Check types
-        return (app.target_publicbodies && org.type === 'PUBLIC_BODY') ||
-            (app.target_companies && org.type === 'COMPANY') ||
-            (app.target_citizens && !org.type);
-    }
-
     render() {
-        const apps = this.props.apps.filter(this.filterApps);
         const app = this.state.app;
 
         const Header = <AddInstanceDropdownHeader
-            apps={apps}
+            organization={this.props.organization}
             app={app}
             onAddInstance={this.onAddInstance}
             onChangeInstance={this.onChangeApp}/>;
@@ -110,7 +88,6 @@ class AddInstanceDropdown extends React.Component {
 
 const mapStateToProps = state => {
     return {
-        apps: state.appStore.apps,
         organization: state.organization.current
     };
 };
