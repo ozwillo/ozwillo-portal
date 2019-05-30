@@ -14,7 +14,9 @@ spring:
 
 server:
   compression.enabled: true
-  tomcat.accesslog.enabled: true
+  tomcat:
+    accesslog.enabled: true
+    basedir: build
 
 ha:
   enabled: false
