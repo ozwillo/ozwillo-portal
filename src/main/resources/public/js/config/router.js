@@ -9,7 +9,6 @@ import history from './history';
 import IfUser from '../components/IfUser';
 import Layout from '../components/layout';
 import BootLoader from '../components/boot-loader';
-import NotificationsCount from '../components/notifications-count-loader';
 
 //Pages
 import Dashboard from '../pages/dashboard';
@@ -29,7 +28,6 @@ import GoogleAnalytics from '../components/google-analytics';
 class RouterWithUser extends React.Component {
     render() {
         return <IfUser>
-            <NotificationsCount/>
             <Layout>
                 <Switch>
                     {/* Redirect old pages */}

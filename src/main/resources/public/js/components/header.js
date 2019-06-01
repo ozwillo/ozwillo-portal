@@ -1,14 +1,37 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
-import PropTypes from "prop-types";
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
+import customFetch from "../util/custom-fetch";
+import config from '../config/config';
 
 class Header extends React.Component {
 
+    constructor(props) {
+        super(props);
+        this.state = {
+            userInfo: {},
+            intervalId: 0
+        }
+    }
+
+    componentDidMount() {
+        customFetch('/api/user')
+            .then((userInfo) => this.setState({ userInfo: userInfo }));
+        this.loadNotificationsCount();
+        const intervalId = setInterval(this.loadNotificationsCount, config.notificationsCountInterval);
+        this.setState({ intervalId: intervalId });
+    }
+
+    loadNotificationsCount = async () => {
+        const res = await customFetch('/my/api/notifications/summary');
+        this.setState({
+            notificationsCount: res
+        });
+    }
+
     render() {
-        const isLogged = !!this.props.userInfo.sub;
+        const isLogged = !!this.state.userInfo.sub;
         return <header className="oz-header flex-row">
 
             {
@@ -17,11 +40,11 @@ class Header extends React.Component {
                     <p className="text-center welcome" data-toggle="tooltip" data-placement="bottom"
                        title={this.props.message}>
                         <Link to="/my/notif">
-                            <span>{i18n._(t`ui.welcome`)} {this.props.userInfo.nickname} </span>
+                            <span>{i18n._(t`ui.welcome`)} {this.state.userInfo.nickname} </span>
                             <span className="badge badge-notifications">
-                            {this.props.notificationsCount}
-                                <span className="sr-only">{i18n._(`my.n_notifications`,{value: this.props.notificationsCount})}</span>
-                        </span>
+                                {this.state.notificationsCount}
+                                <span className="sr-only">{i18n._(`my.n_notifications`,{value: this.state.notificationsCount})}</span>
+                            </span>
                         </Link>
                     </p>
                 </div>
@@ -31,12 +54,4 @@ class Header extends React.Component {
 
 }
 
-const mapStateToProps = (state) => {
-    return {
-        notificationsCount: state.notifications.count,
-        userInfo: state.userInfo,
-        config: state.config
-    }
-};
-
-export default connect(mapStateToProps)(Header);
+export default Header;
