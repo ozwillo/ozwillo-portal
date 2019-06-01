@@ -2,25 +2,18 @@
 
 import React from 'react';
 import PropTypes from "prop-types";
-import {connect} from 'react-redux';
 import createClass from 'create-react-class';
 
-import config from '../config/config';
-
-const notificationInterval = config.notificationsInterval;
 import UpdateTitle from '../components/update-title';
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
-
-
-//actions
-import {fetchNotifications, deleteNotification} from "../actions/notifications";
+import customFetch, {urlBuilder} from '../util/custom-fetch';
 
 const NotificationTable = createClass({
     getInitialState: function () {
         return {
-            n: this.props.notifications || [],
-            apps: this.props.apps || [],
+            notifications: [],
+            apps: [],
             currentSort: {
                 prop: 'date', // date, changing to dataText to test issue #217
                 dir: -1
@@ -28,29 +21,22 @@ const NotificationTable = createClass({
             filter: {
                 appId: null,
                 status: "UNREAD"
-            },
-            intervalId: 0
+            }
         };
-    },
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            n: nextProps.notifications.sort(this.sortElement),
-            apps: nextProps.apps
-        });
-    },
-    loadNotifications: function () {
-        this.props.fetchNotifications(this.state.filter.status);
     },
     componentDidMount: function () {
         this.loadNotifications();
-        const intervalId = setInterval(this.loadNotifications, notificationInterval);
-
-        this.setState({
-            intervalId
-        });
     },
-    componentWillUnmount() {
-        clearInterval(this.state.intervalId);
+    loadNotifications: function () {
+        customFetch(urlBuilder('/my/api/notifications', { status: this.state.filter.status } )).then(data => this.setState(data));
+    },
+    archive: function(id) {
+        customFetch(`/my/api/notifications/${id}`, {
+            method: 'DELETE'
+        }).then(() => {
+            const notifications = this.state.notifications;
+            this.setState({ notifications: notifications.filter(n => n.id !== id) })
+        });
     },
     sortBy: function (criterion) {
         return () => {
@@ -65,7 +51,7 @@ const NotificationTable = createClass({
             currentSort.dir = sortDirection;
 
             this.setState({
-                n: this.state.n.sort(this.sortElement),
+                notifications: this.state.notifications.sort(this.sortElement),
                 currentSort
             });
         };
@@ -113,12 +99,11 @@ const NotificationTable = createClass({
         this.setState(state);
     },
     render: function () {
-        const callback = this.props.deleteNotification;
         const appId = this.state.filter.appId;
         const status = this.state.filter.status;
-        let notificationNodes = this.state.n
+        let notificationNodes = this.state.notifications
             .filter(notif => appId == null || notif.applicationId == appId)
-            .map(notif => <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={callback}/>
+            .map(notif => <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={this.archive}/>
             );
 
         if (notificationNodes.length == 0) {
@@ -156,26 +141,6 @@ const NotificationTable = createClass({
     }
 
 });
-
-const mapStateToProps = state => {
-    return {
-        notifications: state.notifications.notifications,
-        apps: state.notifications.apps
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchNotifications(status, sort) {
-            return dispatch(fetchNotifications(status, sort));
-        },
-        deleteNotification(id) {
-            return dispatch(deleteNotification(id));
-        }
-    };
-};
-
-const NotificationTableWithRedux = connect(mapStateToProps, mapDispatchToProps)(NotificationTable)
 
 const SortableHeader = createClass({
     render: function () {
@@ -278,7 +243,7 @@ class NotificationTableWrapper extends React.Component {
                 <span>{i18n._(t`ui.notifications`)}</span>
             </header>
 
-            <NotificationTableWithRedux/>
+            <NotificationTable />
 
             <div className="push"/>
         </div>;
