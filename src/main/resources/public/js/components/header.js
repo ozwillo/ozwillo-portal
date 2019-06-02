@@ -4,11 +4,15 @@ import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 import customFetch from "../util/custom-fetch";
 import config from '../config/config';
+import UserService from '../util/user-service';
 
 class Header extends React.Component {
 
     constructor(props) {
         super(props);
+
+        this._userService = new UserService();
+
         this.state = {
             userInfo: {},
             intervalId: 0
@@ -16,7 +20,7 @@ class Header extends React.Component {
     }
 
     componentDidMount() {
-        customFetch('/api/user')
+        this._userService.fetchUserInfos()
             .then((userInfo) => this.setState({ userInfo: userInfo }));
         this.loadNotificationsCount();
         const intervalId = setInterval(this.loadNotificationsCount, config.notificationsCountInterval);
@@ -31,7 +35,7 @@ class Header extends React.Component {
     }
 
     render() {
-        const isLogged = !!this.state.userInfo.sub;
+        const isLogged = !!this.state.userInfo;
         return <header className="oz-header flex-row">
 
             {

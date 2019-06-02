@@ -30,14 +30,14 @@ class Tabs extends React.Component {
                             const Component = this.props.headers[tabName];
                             return <li key={tabName} data-tab={tabName}
                                        className={`header ${(tabName === tabToDisplay && 'active') || ''}`}>
-                                <Component/>
+                                <Component organization={this.props.organization}/>
                             </li>
                         })
                     }
                 </ul>
             </header>
             <article className="tab-content">
-                {tabName && <Component/>}
+                {tabName && <Component organization={this.props.organization}/>}
             </article>
 
         </section>

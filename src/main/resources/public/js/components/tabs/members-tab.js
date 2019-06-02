@@ -1,24 +1,19 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
-//Components
 import OrganizationInvitationForm from '../forms/organization-invitation-form';
 import MemberDropdown from '../dropdown_menus/member/member-dropdown';
 import DropDownMenu from '../dropdown-menu';
-import {
-    fetchOrganizationMembers,
-} from '../../actions/organization';
 import InstanceService from '../../util/instance-service';
 
 import {i18n} from '../../config/i18n-config'
 import {t} from '@lingui/macro'
 import { CSSTransition, TransitionGroup} from 'react-transition-group';
+import customFetch from "../../util/custom-fetch";
 
 
 class MembersTabHeader extends React.Component {
-
 
     render() {
         return <Link className="undecorated-link" to={`/my/organization/${this.props.organization.id}/members`}>
@@ -30,12 +25,6 @@ class MembersTabHeader extends React.Component {
 
 }
 
-const MembersTabHeaderWithRedux = connect(state => {
-    return {
-        organization: state.organization.current
-    };
-})(MembersTabHeader);
-
 class MembersTab extends React.Component {
 
     constructor(props) {
@@ -43,34 +32,20 @@ class MembersTab extends React.Component {
 
         this.state = {
             isLoading: false,
-            members: this.props.organization.members ? this.props.organization.members : []
+            members: [],
+            organizationInstances: []
         };
 
         this._instanceService = new InstanceService();
     }
 
     componentDidMount() {
-        //TODO find a solution to supress that (new method in the kernel which allow to get all the instances of one user) cf: TODO in MemberDropdown
         if (this.props.organization.admin) {
-            this.props.organization.instances.forEach(async (instance) => {
-                instance.users = await this._instanceService.fetchUsersOfInstance(instance.id);
-            });
+            this._instanceService.fetchInstancesOfOrganization(this.props.organization.id)
+                .then(instances => this.setState({ organizationInstances: instances }));
         }
-        if (this.props.organization.id) {
-            if (!this.props.organization.members) {
-                this.setState({isLoading: true});
-                this.props.fetchOrganizationMembers(this.props.organization.id);
-            } else {
-                //we have members to display BUT we want to check if new ones are available
-                this.props.fetchOrganizationMembers(this.props.organization.id);
-            }
-        }
-    }
-
-    componentWillReceiveProps(nextProps) {
-        if (nextProps.members) {
-            this.setState({isLoading: false, members: nextProps.members})
-        }
+        customFetch(`/my/api/organization/${this.props.organization.id}/members`)
+            .then(members => this.setState({ members: members }));
     }
 
     _updateMembers = (newMembers) => {
@@ -83,6 +58,13 @@ class MembersTab extends React.Component {
         let {members} = this.state;
         members.splice(members.findIndex(elem => elem.id === member.id), 1);
         this.setState({members});
+    };
+
+    _updateMemberRole = (memberId, isAdmin) => {
+        let {members} = this.state;
+        let memberToUpdate = members.find(elem => elem.id === memberId);
+        memberToUpdate.admin = isAdmin;
+        this.setState({ members });
     };
 
     render() {
@@ -122,7 +104,9 @@ class MembersTab extends React.Component {
                                                 <MemberDropdown
                                                     member={member}
                                                     organization={this.props.organization}
+                                                    organizationInstances={this.state.organizationInstances}
                                                     memberRemoved={this._removeMember}
+                                                    memberRoleUpdated={this._updateMemberRole}
                                                 />
                                             </li>
                                         )
@@ -144,28 +128,7 @@ class MembersTab extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        organization: state.organization.current,
-        members: state.organization.current.members
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchOrganizationMembers(organizationId) {
-            return dispatch(fetchOrganizationMembers(organizationId));
-        }
-    };
-};
-
-const MemberTabWithRedux = connect(mapStateToProps, mapDispatchToProps)(MembersTab);
-
-
-export {
-    MembersTabHeaderWithRedux as MembersTabHeader,
-    MemberTabWithRedux as MembersTab
-};
+export { MembersTabHeader, MembersTab };
 
 
 

@@ -12,7 +12,8 @@ class App extends React.Component {
     state = {
         i18nLoaded: false,
         hostName: null,
-        googleTag: null
+        googleTag: null,
+        language: null
     };
 
 

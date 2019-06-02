@@ -1,12 +1,10 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 
-//Components
 import AddInstanceDropdown from '../dropdown_menus/instance/add-instance-dropdown';
 import InstanceDropdown from '../dropdown_menus/instance/instance-dropdown';
 import customFetch from '../../util/custom-fetch';
+import InstanceService from "../../util/instance-service";
 
 import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
@@ -22,28 +20,23 @@ class InstancesTabHeader extends React.Component {
     }
 }
 
-const InstancesTabHeaderWithRedux = connect(state => {
-    return {
-        organization: state.organization.current
-    };
-})(InstancesTabHeader);
-
-
 class InstancesTab extends React.Component {
 
-    state = {
-        organizationMembers: null,
-        instances: null
-    };
+    constructor(props) {
+        super(props);
 
-    componentDidMount(){
-        const instances = [...this.props.organization.instances];
-        this.setState({instances})
-        this.fetchOrganizationMembers();
+        this.state = {
+            organizationMembers: null,
+            instances: null
+        };
+
+        this._instanceService = new InstanceService();
     }
 
-    componentWillReceiveProps(nextProps, nextContext) {
-        this.setState({instances: nextProps.organization.instances})
+    componentDidMount() {
+        this._instanceService.fetchInstancesOfOrganization(this.props.organization.id)
+            .then(instances => this.setState({ instances }));
+        this.fetchOrganizationMembers();
     }
 
     fetchOrganizationMembers = () => {
@@ -52,6 +45,14 @@ class InstancesTab extends React.Component {
             this.setState({organizationMembers: res});
         })
     };
+
+    onChangeInstanceStatus = (instanceId, status) => {
+        const instances = this.state.instances;
+        const instance = instances.find(instance => instance.id === instanceId);
+        instance.status = status;
+        instance.applicationInstance.status = status;
+        this.setState({ instances });
+    }
 
     render() {
         const org = this.props.organization;
@@ -66,7 +67,7 @@ class InstancesTab extends React.Component {
             {
                 org.admin &&
                 <section className="add-instance">
-                    <AddInstanceDropdown/>
+                    <AddInstanceDropdown organization={this.props.organization}/>
                 </section>
             }
 
@@ -76,7 +77,11 @@ class InstancesTab extends React.Component {
                     {
                         instances.map(instance => {
                             return <li key={instance.id + instance.applicationInstance.status} className="instance">
-                                <InstanceDropdown instance={instance} organizationMembers={organizationMembers} isAdmin={org.admin}/>
+                                <InstanceDropdown organization={this.props.organization}
+                                                  instance={instance}
+                                                  organizationMembers={organizationMembers}
+                                                  isAdmin={org.admin}
+                                                  onChangeInstanceStatus={this.onChangeInstanceStatus}/>
                             </li>
                         })
                     }
@@ -87,16 +92,4 @@ class InstancesTab extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        organization: state.organization.current,
-    };
-};
-
-const InstanceTabWithRedux = connect(mapStateToProps)(InstancesTab);
-
-
-export {
-    InstanceTabWithRedux as InstancesTab,
-    InstancesTabHeaderWithRedux as InstancesTabHeader
-};
+export { InstancesTab, InstancesTabHeader };

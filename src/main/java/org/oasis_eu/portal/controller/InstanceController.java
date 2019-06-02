@@ -29,6 +29,16 @@ public class InstanceController {
         return applicationService.getAllAppUsers(instanceId);
     }
 
+    @GetMapping("/organization/{organizationId}/user/{userId}")
+    public List<MyAppsInstance> getInstancesOfUserForOrganization(@PathVariable String organizationId, @PathVariable String userId) {
+        return applicationService.getInstancesOfUserForOrganization(organizationId, userId);
+    }
+
+    @GetMapping("/organization/{organizationId}")
+    public List<MyAppsInstance> getInstancesOfOrganization(@PathVariable String organizationId) {
+        return applicationService.getOrganizationInstances(organizationId, false);
+    }
+
     @GetMapping("/{instanceId}/services")
     public List<InstanceService> getServices(@PathVariable String instanceId,
                                              @RequestParam(defaultValue = "false") Boolean withSubscriptions){

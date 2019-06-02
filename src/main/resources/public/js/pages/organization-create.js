@@ -1,35 +1,28 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import {connect} from 'react-redux';
-
-//Component
 import OrganizationForm from '../components/forms/organization-form';
 import UpdateTitle from '../components/update-title';
-
-//Action
-import {fetchCountries} from '../actions/config';
 import OrganizationService from "../util/organization-service";
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
+import customFetch from "../util/custom-fetch";
 
 class OrganizationCreate extends React.Component {
-
-
 
     constructor(props) {
         super(props);
 
         this.state = {
+            countries: [],
             isLoading: false,
             error: ''
         };
 
-        //bind methods
         this._organizationService = new OrganizationService();
     }
 
     componentDidMount() {
-        this.props.fetchCountries();
+        customFetch('/api/geo/countries')
+            .then((countries) => this.setState({ countries: countries.areas }));
     }
 
     onSubmit = async (organization) => {
@@ -63,7 +56,7 @@ class OrganizationCreate extends React.Component {
                     <span>{this.state.error}</span>
                 </div>
                 <OrganizationForm onSubmit={this.onSubmit} isLoading={this.state.isLoading}
-                                  countries={this.props.countries}
+                                  countries={this.state.countries}
                                   label={i18n._(t`organization.form.create`)}/>
             </div>
         </section>;
@@ -71,20 +64,4 @@ class OrganizationCreate extends React.Component {
 
 }
 
-const mapStateToProps = state => {
-    return {
-        countries: state.config.countries,
-        userInfo: state.userInfo,
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchCountries() {
-            return dispatch(fetchCountries());
-        }
-    };
-};
-
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationCreate);
+export default OrganizationCreate;

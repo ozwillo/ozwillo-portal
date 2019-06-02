@@ -2,8 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
 
-//Action
-import InstanceService from "../../util/instance-service";
 import { i18n } from "../../config/i18n-config"
 import NotificationMessageBlock from '../notification-message-block';
 
@@ -25,8 +23,6 @@ export default class InstanceInvitationForm extends React.Component {
             error: '',
             success: ''
         };
-
-        this._instanceService = new InstanceService();
     }
 
     onOptionChange = (selectedOption) => {

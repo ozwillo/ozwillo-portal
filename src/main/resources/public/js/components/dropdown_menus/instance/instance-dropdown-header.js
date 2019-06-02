@@ -7,7 +7,6 @@ import CustomTooltip from '../../custom-tooltip';
 
 //Config
 import Config from '../../../config/config';
-import {fetchServicesOfInstance} from "../../../actions/instance";
 import customFetch from '../../../util/custom-fetch';
 
 import { i18n } from "../../../config/i18n-config"
@@ -74,7 +73,7 @@ class InstanceDropdownHeader extends React.Component {
     }
 
     onClickConfigIcon() {
-        fetchServicesOfInstance(this.props.instance.applicationInstance.id)
+        customFetch(`/my/api/instance/${this.props.instance.applicationInstance.id}/services`)
             .then((services) => {
                 this.props.instance.services = services;
                 this.props.onClickConfigIcon(this.props.instance)

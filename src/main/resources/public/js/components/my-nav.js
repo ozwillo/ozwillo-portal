@@ -1,12 +1,26 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Link} from 'react-router-dom';
-import {connect} from "react-redux";
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
+import customFetch from "../util/custom-fetch";
 
 
 class MyNav extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            config: {}
+        }
+    }
+
+    componentDidMount = async () => {
+        let config = await customFetch('/api/config');
+        this.setState({ config: config });
+    }
+
     render() {
         return <nav className="navbar navbar-default navbar-auth" id="oz-nav">
             <div className="container-fluid">
@@ -43,13 +57,13 @@ class MyNav extends React.Component {
                     </ul>
                     <ul className="nav navbar-nav navbar-right">
                         <li className="menu">
-                            <Link className="link" to={`/${this.props.language}/store`}>
+                            <Link className="link" to={`/${this.state.config.language}/store`}>
                                 <i className="fa fa-shopping-cart icon" alt="Store icon"/>
                                 <span>{i18n._(t`ui.appstore`)}</span>
                             </Link>
                         </li>
                         <li className="menu">
-                            <a className="link" href={`${this.props.opendataEndPoint}/${this.props.language}`}>
+                            <a className="link" href={`${this.state.config.opendataEndPoint}/${this.state.config.language}`}>
                                 <i className="fa fa-signal icon" alt="Data icon"/>
                                 <span>{i18n._(t`ui.datastore`)}</span>
                             </a>
@@ -67,12 +81,4 @@ class MyNav extends React.Component {
     }
 }
 
-
-const mapStateToProps = state => {
-    return {
-        language: state.config.language,
-        opendataEndPoint: state.config.opendataEndPoint
-    };
-};
-
-export default connect(mapStateToProps)(MyNav);
+export default MyNav;

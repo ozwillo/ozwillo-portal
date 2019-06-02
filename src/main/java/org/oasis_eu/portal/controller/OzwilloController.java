@@ -102,6 +102,10 @@ public class OzwilloController {
         return envPropertiesService.getCurrentConfig().getWeb().getGoogleTag();
     }
 
+    @GetMapping("/config/siteMapFooter")
+    public Map<Integer, List<SiteMapEntry>> getSiteMapFooter() {
+        return navigationService.getSiteMapFooter();
+    }
 
     @GetMapping("/config/language/{lang}")
     public Config getLanguage(@PathVariable String lang) {

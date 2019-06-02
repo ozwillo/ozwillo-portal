@@ -1,20 +1,33 @@
 import React from 'react';
-import {connect} from 'react-redux';
 
-//Components
 import Header from './header';
 import MyNav from './my-nav';
 import Nav from './nav';
 import Footer from './footer';
+import UserService from '../util/user-service';
 
 class Layout extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this._userService = new UserService();
+
+        this.state = {
+            isLoggedIn: false
+        }
+    }
+
+    componentDidMount = async () => {
+        const userInfo = await this._userService.fetchUserInfos();
+        this.setState({ isLoggedIn: !!userInfo });
+    }
+
     render() {
-        const isLogged = !!this.props.userInfo.sub;
         return <section className="layout wrapper">
             <Header/>
             {
-                (isLogged && <MyNav/>) || <Nav/>
+                (this.state.isLoggedIn && <MyNav/>) || <Nav/>
             }
             {this.props.children}
             <Footer/>
@@ -22,10 +35,4 @@ class Layout extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        userInfo: state.userInfo
-    };
-};
-
-export default connect(mapStateToProps)(Layout);
+export default Layout;

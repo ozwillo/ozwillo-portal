@@ -18,7 +18,7 @@ import {
     fetchDeleteApp,
     fetchDeletePendingApp,
     moveToDash
-} from '../actions/dashboard';
+} from '../util/dashboard';
 
 import UpdateTitle from '../components/update-title';
 

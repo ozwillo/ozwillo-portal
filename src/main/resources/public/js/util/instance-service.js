@@ -11,6 +11,14 @@ export  default class InstanceService {
         return await customFetch(`/my/api/instance/${instanceId}/users`);
     };
 
+    fetchInstancesOfUserForOrganization = async (organizationId, userId) => {
+        return await customFetch(`/my/api/instance/organization/${organizationId}/user/${userId}`);
+    };
+
+    fetchInstancesOfOrganization = async (organizationId) => {
+        return await customFetch(`/my/api/instance/organization/${organizationId}`);
+    };
+
     fetchCreateSubscription = async (serviceId, userId) => {
         return await customFetch(`/my/api/service/${serviceId}/subscription/${userId}`, {
             method: 'POST'
@@ -42,4 +50,13 @@ export  default class InstanceService {
             }
         });
     }
+
+    updateInstanceStatus = async (instance, status) => {
+        return await customFetch(`/my/api/instance/${instance.id}/status`, {
+            method: 'POST',
+            json: {applicationInstance: {id: instance.id, status}}
+        })
+    }
+
+
 }

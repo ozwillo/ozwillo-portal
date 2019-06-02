@@ -1,4 +1,4 @@
-import customFetch from '../util/custom-fetch';
+import customFetch from './custom-fetch';
 
 export const fetchDashboards = () => {
     return customFetch('/my/api/dashboard/dashboards');

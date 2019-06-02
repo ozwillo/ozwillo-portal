@@ -1,17 +1,8 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import {Link} from 'react-router-dom';
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
-
-
-
-// Components
 import UpdateTitle from '../components/update-title';
-import customFetch from '../util/custom-fetch';
-
-//action
-import {fetchUserOrganizations} from '../actions/organization';
 import OrganizationAutoSuggest from "../components/autosuggests/organization-autosuggest";
 import OrganizationCard from "../components/organization-card"
 import {Redirect} from "react-router";
@@ -139,18 +130,4 @@ class OrganizationSearch extends React.Component {
 
 }
 
-const mapStateToProps = state => {
-    return {
-        userOrganizations: state.organization.organizations
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchUserOrganizations() {
-            return dispatch(fetchUserOrganizations());
-        }
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationSearch);
+export default OrganizationSearch;

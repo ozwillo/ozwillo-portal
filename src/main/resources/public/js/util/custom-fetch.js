@@ -1,5 +1,4 @@
 import 'isomorphic-fetch';
-import store from './store'
 
 /*
 * Custom fetch
@@ -20,14 +19,29 @@ const buildError = (error) => {
 
 };
 
+function getCookie(name) {
+    var cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+            var cookie = jQuery.trim(cookies[i]);
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+
 export default (url, params = {headers: {}}) => {
     if (!params.headers) {
         params.headers = {};
     }
 
-    if (store && store.getState().config.csrfHeader) {
-        let csrfHeader = store.getState().config.csrfHeader;
-        params.headers[csrfHeader] = store.getState().config.csrfToken;
+    const csrftoken = getCookie('XSRF-TOKEN');
+    if (csrftoken) {
+        params.headers['X-XSRF-TOKEN'] = csrftoken;
     }
 
     params.credentials = 'same-origin';

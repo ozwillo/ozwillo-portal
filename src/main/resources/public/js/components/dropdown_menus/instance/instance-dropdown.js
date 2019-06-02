@@ -1,39 +1,33 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import PropTypes from 'prop-types';
 import Popup from 'react-popup';
 
-//Components
 import DropDownMenu from '../../dropdown-menu';
 import InstanceInvitationForm from '../../forms/instance-invitation-form';
 import InstanceDropdownHeader from './instance-dropdown-header';
 import InstanceConfigForm from '../../forms/instance-config-form';
 import CustomTooltip from '../../custom-tooltip';
 
-//action
-import {fetchUpdateInstanceStatus} from '../../../actions/instance';
-
-//Config
 import Config from '../../../config/config';
 
 const instanceStatus = Config.instanceStatus;
 
-//Action
-import {fetchUpdateServiceConfig} from '../../../actions/instance';
 import InstanceService from "../../../util/instance-service";
-
 
 import { i18n } from "../../../config/i18n-config"
 import { t } from "@lingui/macro"
 import { CSSTransition, TransitionGroup} from 'react-transition-group';
+import customFetch from "../../../util/custom-fetch";
 
 
 class InstanceDropdown extends React.Component {
 
     static propTypes = {
+        organization: PropTypes.object.isRequired,
         instance: PropTypes.object.isRequired,
         organizationMembers: PropTypes.array,
-        isAdmin: PropTypes.bool
+        isAdmin: PropTypes.bool,
+        onChangeInstanceStatus: PropTypes.func.isRequired
     };
 
     static defaultProps = {
@@ -48,48 +42,36 @@ class InstanceDropdown extends React.Component {
             status: {},
             isLoading: false,
             services: [],
-            members: null
+            members: null,
         };
 
         this._instanceService = new InstanceService();
-
-
     }
 
-
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            instance: nextProps.instance,
-            organizationMembers: nextProps.organizationMembers
+    updateServiceConfig = (instanceId, catalogEntry) => {
+        return customFetch(`/my/api/service/${catalogEntry.id}`, {
+            method: 'PUT',
+            json: catalogEntry
+        }).then(() => {
+            Popup.close();
         });
-
-        if (nextProps.organizationMembers) {
-            this.setState({isLoading: false})
-        }
-
-    }
-
-
-    fetchUpdateServiceConfig = (instanceId, catalogEntry) => {
-        return this.props.fetchUpdateServiceConfig(instanceId, catalogEntry)
-            .then(() => {
-                Popup.close();
-            });
     };
 
     onClickConfigIcon = (instance) => {
         Popup.create({
             title: instance.name,
-            content: <InstanceConfigForm instance={instance} onSubmit={this.fetchUpdateServiceConfig}/>
+            content: <InstanceConfigForm instance={instance} onSubmit={this.updateServiceConfig}/>
         }, true);
     };
 
     onRemoveInstance = (instance) => {
-        this.props.fetchUpdateInstanceStatus(instance, instanceStatus.stopped);
+        this._instanceService.updateInstanceStatus(instance, instanceStatus.stopped)
+            .then(() => this.props.onChangeInstanceStatus(instance.id, instanceStatus.stopped));
     };
 
     onCancelRemoveInstance = (instance) => {
-        this.props.fetchUpdateInstanceStatus(instance, instanceStatus.running);
+        this._instanceService.updateInstanceStatus(instance, instanceStatus.running)
+            .then(() => this.props.onChangeInstanceStatus(instance.id, instanceStatus.running));
     };
 
     filterMemberWithoutAccess = (member) => {
@@ -110,7 +92,7 @@ class InstanceDropdown extends React.Component {
             await this._instanceService.fetchCreateAcl(user, this.props.instance);
             members.push(user);
             this.setState({members});
-            services.map(async (service) => {
+            user.id && services.map(async (service) => {
                 await this._createSubscription(service.catalogEntry.id, user.id);
             });
             await this._refreshServices();
@@ -127,7 +109,7 @@ class InstanceDropdown extends React.Component {
 
         this._instanceService.fetchDeleteAcl(member, this.props.instance)
             .then(() => {
-                members.splice(members.indexOf(member.id), 1);
+                members.splice(members.findIndex(elem => elem.id === member.id), 1);
                 this.setState({
                     status: Object.assign({}, this.state.status, {
                         [member.id]: {error: null}
@@ -403,15 +385,4 @@ class InstanceDropdown extends React.Component {
     }
 }
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchUpdateInstanceStatus(instance, status) {
-            return dispatch(fetchUpdateInstanceStatus(instance, status));
-        },
-        fetchUpdateServiceConfig(instanceId, catalogEntry) {
-            return dispatch(fetchUpdateServiceConfig(instanceId, catalogEntry));
-        }
-    };
-};
-
-export default connect(null, mapDispatchToProps)(InstanceDropdown);
+export default InstanceDropdown;

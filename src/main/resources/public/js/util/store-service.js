@@ -28,6 +28,16 @@ export const buyApplication  = async (appId, appType, organizationSelected) =>{
     })
 };
 
+export const addInstanceToOrg = async (organizationId, {id}) => {
+    return await customFetch('/api/store/buy/application', {
+        method: 'POST',
+        json: {
+            organizationId,
+            appId: id
+        }
+    })
+};
+
 export const unavailableOrganizationToInstallAnApp = async (appId, appType) => {
     return await customFetch(`/api/store/${appType}/${appId}/organization/unavailable`)
 }
