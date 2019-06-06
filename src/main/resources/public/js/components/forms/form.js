@@ -1,6 +1,5 @@
 import React from "react";
 import PropTypes from 'prop-types';
-import renderIf from "render-if";
 import DatePicker from 'react-datepicker';
 import Select from 'react-select';
 
@@ -20,7 +19,7 @@ Form.propTypes = {
 const Label = ({ children, required, ...rest }) =>
     <label {...rest}>{children}{required && ' *'}</label>
 
-const InputText = ({name, value, label, onChange, labelClassName, divClassName, error, errorMsg, isRequired, disabled}) =>
+const InputText = ({name, value, label, onChange, labelClassName, error, errorMsg, isRequired, disabled}) =>
     <div className={`flex-row ${(error && 'has-error') || ''}`}>
         <Label htmlFor={name} required={isRequired} className={`label ${labelClassName} ${(isRequired && 'required') || ''}`}>
             {label}
@@ -28,14 +27,12 @@ const InputText = ({name, value, label, onChange, labelClassName, divClassName, 
         <input className="form-control field" name={name} type="text" value={value} onChange={onChange}
                disabled={disabled}/>
         {
-            renderIf(error && errorMsg)(
+            error && errorMsg &&
                 <span className="help-block">{errorMsg}</span>
-            )
         }
     </div>;
 
 InputText.defaultProps = {
-    divClassName: 'col-sm-7',
     labelClassName: 'control-label col-sm-3',
     disabled: false,
     value: ''
