@@ -2,16 +2,18 @@
 
 import React from 'react';
 import PropTypes from "prop-types";
-import createClass from 'create-react-class';
 
 import UpdateTitle from '../components/update-title';
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 import customFetch, {urlBuilder} from '../util/custom-fetch';
 
-const NotificationTable = createClass({
-    getInitialState: function () {
-        return {
+class NotificationTable extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
             notifications: [],
             apps: [],
             currentSort: {
@@ -23,72 +25,62 @@ const NotificationTable = createClass({
                 status: "UNREAD"
             }
         };
-    },
-    componentDidMount: function () {
+    }
+
+    componentDidMount = async () => {
         this.loadNotifications();
-    },
-    loadNotifications: function () {
+    }
+
+    loadNotifications = async () => {
         customFetch(urlBuilder('/my/api/notifications', { status: this.state.filter.status } )).then(data => this.setState(data));
-    },
-    archive: function(id) {
+    }
+
+    archive = async (id) => {
         customFetch(`/my/api/notifications/${id}`, {
             method: 'DELETE'
         }).then(() => {
             const notifications = this.state.notifications;
             this.setState({ notifications: notifications.filter(n => n.id !== id) })
         });
-    },
-    sortBy: function (criterion) {
-        return () => {
-            const currentSort = this.state.currentSort;
+    }
 
-            let sortDirection = -1;
-            if (currentSort.prop == criterion) {
-                // we are already sorting by the given criterion, so let's sort inversely
-                sortDirection = currentSort.dir * -1;
-            }
-            currentSort.prop = criterion;
-            currentSort.dir = sortDirection;
+    sortBy = async (criterion) => {
+        const currentSort = this.state.currentSort;
 
-            this.setState({
-                notifications: this.state.notifications.sort(this.sortElement),
-                currentSort
-            });
-        };
-    },
-    sortElement: function (a, b) {
-        var currentSort = this.state.currentSort;
-
-        if (typeof a[currentSort.prop] == typeof b[currentSort.prop]) {
-            if (typeof a[currentSort.prop] == "number") {
-                return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
-            }
-            if (typeof a[currentSort.prop] == "string") {
-                return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
-            } else {
-                return currentSort.dir;
-            }
+        let sortDirection = -1;
+        if (currentSort.prop === criterion) {
+            // we are already sorting by the given criterion, so let's sort inversely
+            sortDirection = currentSort.dir * -1;
         }
+        currentSort.prop = criterion;
+        currentSort.dir = sortDirection;
 
-        if (typeof a[currentSort.prop] == "undefined") {
-            return -currentSort.dir;
-        }
-        if (typeof b[currentSort.prop] == "undefined") {
-            return currentSort.dir;
-        }
+        this.setState({
+            notifications: this.state.notifications.sort((a, b) => {
+                if (currentSort.prop === 'appName') {
+                    if (a['appName'] === null)
+                        return -currentSort.dir;
+                    else
+                        return a['appName'].localeCompare(b['appName']) * currentSort.dir;
+                } else if (currentSort.prop === 'date') {
+                    return a['date'].localeCompare(b['date']) * currentSort.dir;
+                } else {
+                    return a - b;
+                }
+            }),
+            currentSort
+        });
+    }
 
-        // In all other case, a basic and hazardous comparaison
-        return (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
-
-    },
-    filterByStatus: function (event) {
+    filterByStatus = async (event) => {
         event.preventDefault();
         const state = this.state;
         state.filter.status = event.target.value;
         this.setState(state);
         this.loadNotifications();
-    },
-    filterByApp: function (event) {
+    }
+
+    filterByApp = async (event) => {
         event.preventDefault();
         const state = this.state;
         let appId = event.target.value;
@@ -97,8 +89,9 @@ const NotificationTable = createClass({
         }
         state.filter.appId = appId;
         this.setState(state);
-    },
-    render: function () {
+    }
+
+    render() {
         const appId = this.state.filter.appId;
         const status = this.state.filter.status;
         let notificationNodes = this.state.notifications
@@ -140,10 +133,10 @@ const NotificationTable = createClass({
         );
     }
 
-});
+};
 
-const SortableHeader = createClass({
-    render: function () {
+class SortableHeader extends React.Component {
+    render() {
         const className = "col-sm-" + this.props.size + " sortable color";
         let sortIcon = <i className="fa fa-sort"></i>;
         if (this.props.sort.prop == this.props.name) {
@@ -156,15 +149,14 @@ const SortableHeader = createClass({
 
         return (
             <th className={className}
-                onClick={this.props.sortBy(this.props.name)}>{i18n._(this.props.label)} {sortIcon}</th>
+                onClick={() => this.props.sortBy(this.props.name)}>{i18n._(this.props.label)} {sortIcon}</th>
         );
     }
+};
 
-});
 
-
-const NotificationHeader = createClass({
-    render: function () {
+class NotificationHeader extends React.Component {
+    render() {
         return (
             <div className="pull-right">
                 <form className="form-inline">
@@ -182,11 +174,11 @@ const NotificationHeader = createClass({
             </div>
         );
     }
-});
+};
 
 
-const AppFilter = createClass({
-    render: function () {
+class AppFilter extends React.Component {
+    render() {
         const options = this.props.apps.map(function (app) {
             return <option key={app.id} value={app.id}>{app.name}</option>;
         });
@@ -197,14 +189,14 @@ const AppFilter = createClass({
             </select>
         );
     }
-});
+};
 
-const Notification = createClass({
-    displayName: "Notification",
-    removeNotif: function () {
+class Notification extends React.Component {
+    removeNotif = async () => {
         this.props.onRemoveNotif(this.props.notif.id);
-    },
-    render: function () {
+    }
+
+    render() {
         let action_by_url = null;
         let action_archive = null;
 
@@ -230,7 +222,7 @@ const Notification = createClass({
             </tr>
         );
     }
-});
+};
 
 class NotificationTableWrapper extends React.Component {
 
