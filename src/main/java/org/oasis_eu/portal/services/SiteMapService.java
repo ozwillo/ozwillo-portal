@@ -10,101 +10,50 @@ import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
 import org.oasis_eu.portal.model.sitemap.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * User: schambon
- * Date: 12/15/14
- */
 @Service
 public class SiteMapService {
     private static final Logger logger = LoggerFactory.getLogger(SiteMapService.class);
 
-    @SuppressWarnings("SpringJavaAutowiringInspection")
-    @Autowired
-    private SiteMapComponentsRepository siteMapComponentsRepository;
+    private final SiteMapComponentsRepository siteMapComponentsRepository;
 
-    @Autowired
-    private EnvPropertiesService envPropertiesService;
+    private final EnvPropertiesService envPropertiesService;
 
-    @Autowired
-    private EnvProperties envProperties;
+    private final EnvProperties envProperties;
 
-    @Autowired
-    private StylePropertiesMapRepository stylePropertiesMapRepository;
-    
-    @Cacheable(value = "sitemapfooter", key = "#website.toString() + #language.toString()")
+    private final StylePropertiesMapRepository stylePropertiesMapRepository;
+
+    public SiteMapService(SiteMapComponentsRepository siteMapComponentsRepository, EnvPropertiesService envPropertiesService,
+            EnvProperties envProperties, StylePropertiesMapRepository stylePropertiesMapRepository) {
+        this.siteMapComponentsRepository = siteMapComponentsRepository;
+        this.envPropertiesService = envPropertiesService;
+        this.envProperties = envProperties;
+        this.stylePropertiesMapRepository = stylePropertiesMapRepository;
+    }
+
     public List<SiteMapEntry> getSiteMapFooter(String website, String language) {
-        SiteMapMenuFooter siteMapMenuFooter = siteMapComponentsRepository.findByWebsite(website)
-                .getSiteMapMenuFooter()
+        return siteMapComponentsRepository.findByWebsite(website)
+                .map(SiteMapComponents::getSiteMapMenuFooter)
+                .orElse(Collections.emptyList())
                 .stream()
                 .filter(footer -> footer.getLanguage().equals(language))
                 .findFirst()
-                .orElse(null);
-
-
-        if (siteMapMenuFooter != null) {
-            return siteMapMenuFooter.getEntries()
-                    .stream()
-                    .map(this::fixSME)
-                    .collect(Collectors.toList());
-        }else{
-            return null;
-        }
+                .map(siteMapMenuFooter -> siteMapMenuFooter.getSMEEntries(envPropertiesService.getCurrentConfig().getWeb().getHome()))
+                .orElse(Collections.emptyList());
     }
 
-    private SiteMapEntry fixSME(SiteMapEntry entry) {
-        if (entry == null) return new SiteMapEntry();
+    private void updateWebsiteFooter(String website, List<SiteMapMenuFooter> menuset) {
+        Optional<SiteMapComponents> optSiteMapComponents = siteMapComponentsRepository.findByWebsite(website);
+        optSiteMapComponents.ifPresent(siteMapComponentsRepository::delete);
 
-        String webHome = envPropertiesService.getCurrentConfig().getWeb().getHome();
-        entry.setUrl(webHome + entry.getUrl());
-        return entry;
-    }
-
-    @CacheEvict(value = "sitemapfooter", key = "#website.toString() + #language.toString()")
-    public void updateSiteMapFooter(String website, String language, SiteMapMenuFooter siteMapFooter) {
-
-        SiteMapComponents siteMapComponents = siteMapComponentsRepository.findByWebsite(website);
-
-        List<SiteMapMenuFooter> siteMapMenuFooters = siteMapComponents.getSiteMapMenuFooter();
-
-        SiteMapMenuFooter siteMapMenuFooter =
-                siteMapMenuFooters
-                        .stream()
-                        .filter(header -> header.getLanguage().equals(language))
-                        .findFirst()
-                        .orElse(null);
-
-        if (siteMapMenuFooter == null)
-            siteMapComponents.getSiteMapMenuFooter().add(siteMapFooter);
-
-        siteMapMenuFooter = siteMapFooter;
-        siteMapMenuFooter.setId(null);
-        siteMapMenuFooter.setLanguage(language);
-
+        SiteMapComponents siteMapComponents = new SiteMapComponents(website, menuset);
         siteMapComponentsRepository.save(siteMapComponents);
-    }
-
-    public void initializeSiteMapComponents() {
-        Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
-        mapEnvConfig.forEach((website, envConfig) -> {
-            SiteMapComponents siteMapComponents = siteMapComponentsRepository.findByWebsite(website);
-            if (siteMapComponents == null) {
-                siteMapComponents = new SiteMapComponents();
-                siteMapComponents.setWebsite(website);
-                siteMapComponentsRepository.save(siteMapComponents);
-            }
-        });
     }
 
     public void initializeStylePropertiesMap() {
@@ -168,6 +117,7 @@ public class SiteMapService {
 
         Map<String, EnvConfig> mapEnvConfig = envProperties.getConfs();
         mapEnvConfig.forEach((website, envConfig) -> {
+            logger.debug("Updating menu for website {}", website);
             String url_footer = envConfig.getWeb().getSitemap().getUrl_footer();
 
             // Loads and updates the footer from JSON resource
@@ -186,10 +136,10 @@ public class SiteMapService {
                             siteMap.setEntries(filteredEntries);
                         }
                 );
-                menuset.forEach(menu -> updateSiteMapFooter(website, menu.getLanguage(), menu));
-                logger.debug("Footer Loaded!");
+                updateWebsiteFooter(website, menuset);
+                logger.debug("Footer successfully loaded for website {}!", website);
             } catch (RestClientException rce) {
-                logger.error("The Footer file was not Loaded due to error: " + rce);
+                logger.error("Unable to load footer file for website {}", website, rce);
             }
         });
     }

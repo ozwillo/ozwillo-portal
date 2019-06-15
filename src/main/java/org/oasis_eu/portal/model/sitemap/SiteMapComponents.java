@@ -15,8 +15,15 @@ public class SiteMapComponents {
     private String id;
 
     private String website = "";
-
     private List<SiteMapMenuFooter> siteMapMenuFooter = new ArrayList<>();
+
+    public SiteMapComponents() {
+    }
+
+    public SiteMapComponents(String website, List<SiteMapMenuFooter> siteMapMenuFooter) {
+        this.website = website;
+        this.siteMapMenuFooter = siteMapMenuFooter;
+    }
 
     public String getWebsite() {
         return website;

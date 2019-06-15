@@ -26,7 +26,6 @@ public class SiteMapInitializer implements ApplicationListener<ContextRefreshedE
     public void onApplicationEvent(ContextRefreshedEvent event) {
         logger.debug("Context refreshed, checking header and footer status !");
 
-        siteMapService.initializeSiteMapComponents();
         siteMapService.reloadFooter();
 
         if(stylePropertiesMapRepository.count() == 0)

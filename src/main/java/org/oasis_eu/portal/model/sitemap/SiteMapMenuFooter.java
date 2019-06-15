@@ -7,6 +7,7 @@ import org.springframework.data.annotation.Id;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * User: schambon
@@ -42,6 +43,12 @@ public class SiteMapMenuFooter implements Serializable {
 
     public List<SiteMapEntry> getEntries() {
         return entries;
+    }
+
+    public List<SiteMapEntry> getSMEEntries(String webHome) {
+        return entries.stream()
+                .peek(siteMapEntry -> siteMapEntry.setUrl(webHome + siteMapEntry.getUrl()))
+                .collect(Collectors.toList());
     }
 
     public void setEntries(List<SiteMapEntry> entries) {

@@ -24,8 +24,6 @@ public class SiteMapUpdater {
     @Scheduled(cron = "${web.sitemap.refresh}")
     public void reload() {
         logger.info("Reloading site map footer");
-        //parse and create new entries for website
-        siteMapService.initializeSiteMapComponents();
         siteMapService.reloadFooter();
     }
 
