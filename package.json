@@ -10,7 +10,9 @@
     "stats": "webpack --profile --json > stats.json",
     "add-locale": "lingui add-locale",
     "extract": "lingui extract",
-    "compile": "lingui compile"
+    "compile": "lingui compile",
+    "snyk-protect": "snyk protect",
+    "prepublish": "npm run snyk-protect"
   },
   "keywords": [
     "Ozwillo"
@@ -101,7 +103,8 @@
     "showdown": "^1.8.6",
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^7.28.4",
-    "url-search-params": "^0.10.2"
+    "url-search-params": "^0.10.2",
+    "snyk": "^1.192.3"
   },
   "lingui": {
     "sourceLocale": "en",
@@ -110,5 +113,6 @@
       "src/main/resources/public/js/"
     ],
     "format": "minimal"
-  }
+  },
+  "snyk": true
 }
