@@ -2,9 +2,8 @@
 
 import React from 'react';
 import {Link} from 'react-router-dom';
-import {withRouter} from 'react-router';
-import createClass from 'create-react-class';
 import customFetch from "../util/custom-fetch";
+import config from '../config/config';
 
 import {ModalWithForm, Modal} from '../components/bootstrap-react';
 import {
@@ -25,10 +24,13 @@ import UpdateTitle from '../components/update-title';
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
 
-const Dashboard = withRouter(createClass({
-    notificationsChecked: false,
-    getInitialState: function () {
-        return {
+class Dashboard extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            notificationsChecked: false,
             dashboards: null,
             dash: null,
             apps: null,
@@ -37,10 +39,11 @@ const Dashboard = withRouter(createClass({
             draggingPending: false,
             loadingDashboards: true,
             loadingApps: true
-        };
-    },
-    componentDidMount: function () {
-        const dashId = this.props.match.params.id;
+        }
+    }
+
+    componentDidMount = () => {
+        const dashId = this.props.id;
 
         fetchDashboards()
             .then(dashboards => {
@@ -52,14 +55,39 @@ const Dashboard = withRouter(createClass({
             });
 
         this.loadApps(dashId);
+    }
 
-    },
-    componentWillUnmount() {
+    componentWillReceiveProps = (nextProps) => {
+        if (!this.state.dashboards) {
+            return;
+        }
+
+        const currentDash = this.state.dashboards.find(dash => {
+            return dash.id === nextProps.id;
+        }) || this.state.dashboards[0];
+
+        //Update dashboard
+        this.setState({dash: currentDash, apps: [], loadingApps: true});
+
+        //Load apps
+        const oldState = this.state;
+        fetchApps(currentDash.id)
+            .then((apps) => {
+                this.setState({apps, loadingApps: false});
+            })
+            .catch((err) => { //cancel
+                console.error(err);
+                this.setState(oldState);
+            });
+    }
+
+    componentWillUnmount = () => {
         if (this.state.timeoutId) {
             clearTimeout(this.state.timeoutId);
         }
-    },
-    loadApps(dashId) {
+    }
+
+    loadApps = (dashId) => {
         Promise.all([fetchApps(dashId), fetchPendingApps()])
             .then(data => {
                 this.setState({
@@ -69,8 +97,9 @@ const Dashboard = withRouter(createClass({
                 });
                 this.initNotificationsCheck();
             });
-    },
-    checkNotifications() {
+    }
+
+    checkNotifications = () => {
         if (this.state.apps) {
             customFetch("/my/api/dashboard/notifications")
                 .then(appNotifs => {
@@ -86,40 +115,47 @@ const Dashboard = withRouter(createClass({
                     this.setState({ apps: apps });
                 }).catch(err => console.error("Cannot check notifications", status, err));
         }
-        const timeoutId = window.setTimeout(this.checkNotifications, 10000);
+        const timeoutId = window.setTimeout(this.checkNotifications, config.dashboardNotificationsInterval);
         this.setState({ timeoutId: timeoutId })
-    },
-    initNotificationsCheck() {
+    }
+
+    initNotificationsCheck = () => {
         if (!this.notificationsChecked) {
             this.notificationsChecked = true;
             this.checkNotifications();
         }
-    },
-    findById: function (array, obj) {
+    }
+
+    findById = (array, obj) => {
         return array.findIndex((item) => {
             return item.id === obj.id;
         });
-    },
-    startDrag: function (app) {
-        return function (event) {
+    }
+
+    startDrag = (app) => {
+        return (event) => {
             event.dataTransfer.setData('application/json', JSON.stringify({app}));
             this.setState({dragging: true});
-        }.bind(this);
-    },
-    startDragPending: function (app) {
-        return function (event) {
+        };
+    }
+
+    startDragPending = (app) => {
+        return (event) => {
             event.dataTransfer.setData('application/json', JSON.stringify({app}));
             this.setState({draggingPending: true});
-        }.bind(this);
-    },
-    endDrag: function () {
+        };
+    }
+
+    endDrag = () => {
         this.setState({dragging: false});
-    },
-    endDragPending: function () {
+    }
+
+    endDragPending = () => {
         this.setState({draggingPending: false});
-    },
-    reorderApps: function (before) {
-        return function (app) {
+    }
+
+    reorderApps = (before) => {
+        return (app) => {
             const oldApps = this.state.apps;
             const apps = Object.assign([], this.state.apps);
 
@@ -133,15 +169,16 @@ const Dashboard = withRouter(createClass({
                 dragging: false
             });
 
-            fetchReorderApps(state.dash.id, apps)
+            fetchReorderApps(this.state.dash.id, apps)
                 .catch((err) => { //cancel
                     console.error(err);
                     this.setState({apps: oldApps});
                 });
-        }.bind(this);
-    },
-    moveToDash: function (dash) {
-        return function (app) {
+        };
+    }
+
+    moveToDash = (dash) => {
+        return (app) => {
             const oldApps = this.state.apps;
             const apps = Object.assign([], this.state.apps);
 
@@ -159,10 +196,10 @@ const Dashboard = withRouter(createClass({
                     console.error(err);
                     this.setState({apps: oldApps});
                 });
-        }.bind(this);
-    },
+        };
+    }
 
-    deleteApp: function (app) {
+    deleteApp = (app) => {
         const oldApps = this.state.apps;
         const apps = Object.assign([], this.state.apps);
 
@@ -180,9 +217,9 @@ const Dashboard = withRouter(createClass({
                 console.error(err);
                 this.setState({apps: oldApps});
             });
-    },
+    }
 
-    deletePending: function (app) {
+    deletePending = (app) => {
         const oldApps = this.state.apps;
         const apps = Object.assign([], this.state.apps);
 
@@ -200,19 +237,19 @@ const Dashboard = withRouter(createClass({
                 console.error(err);
                 this.setState({apps: oldApps});
             });
-    },
+    }
 
-    createDash: function (name) {
+    createDash = (name) => {
         fetchCreateDashboard(name)
             .then((dashboard) => {
                 const dashboards = Object.assign([], this.state.dashboards);
                 dashboards.push(dashboard);
                 this.setState({dashboards});
             });
-    },
+    }
 
-    renameDash: function (dash) {
-        return function (name) {
+    renameDash = (dash) => {
+        return (name) => {
             const oldDashboards = this.state.dashboards;
             const dashboards = Object.assign([], this.state.dashboards);
             const i = this.findById(dashboards, dash);
@@ -225,10 +262,11 @@ const Dashboard = withRouter(createClass({
                     this.setState({dashboards: oldDashboards});
                 });
 
-        }.bind(this);
-    },
-    removeDash: function (dash) {
-        return function () {
+        };
+    }
+
+    removeDash = (dash) => {
+        return () => {
             this.setState({loadingDashboards: true});
 
             fetchDeleteDashboard(dash.id)
@@ -246,41 +284,12 @@ const Dashboard = withRouter(createClass({
                     console.error(err);
                     this.setState({loadingDashboards: false});
                 });
-        }.bind(this);
-    },
-    componentWillReceiveProps: function (nextProps) {
-        if (!this.state.dashboards) {
-            return;
-        }
+        };
+    }
 
-        const currentDash = this.state.dashboards.find(dash => {
-            return dash.id === nextProps.match.params.id;
-        }) || this.state.dashboards[0];
-
-        //Update dashboard
-        this.setState({dash: currentDash, apps: [], loadingApps: true});
-
-        //Load apps
-        const oldState = this.state;
-        fetchApps(currentDash.id)
-            .then((apps) => {
-                this.setState({apps, loadingApps: false});
-            })
-            .catch((err) => { //cancel
-                console.error(err);
-                this.setState(oldState);
-            });
-    },
-    render: function () {
+    render() {
         return (
             <section id="dashboard" className="flex-col">
-                <div className="alert alert-danger" role="alert" style={{ 'textAlign': 'center', 'fontWeight':'bold', 'fontSize': '1.2em'}}>
-                    <span>Chers adhérents du SICTIAM, votre portail de services fait peau neuve et a déménagé à une nouvelle
-                        adresse.</span><br/>
-                    <span>Vous pouvez dès maintenant vous y connecter avec vos identifiants habituels et y retrouver toutes vos
-                        applications.</span><br/>
-                    <div style={{ 'marginTop': '0.5em'}}><a href="https://services.sictiam.fr/my">Je veux découvrir mon nouveau portail !</a></div>
-                </div>
                 <DashList
                     loading={this.state.loadingDashboards}
                     dashboards={this.state.dashboards}
@@ -308,65 +317,81 @@ const Dashboard = withRouter(createClass({
             </section>
         );
     }
-}));
+};
 
 
-const DashList = createClass({
-    render: function () {
-        if (this.props.loading) {
+function DashList(props) {
+    if (props.loading) {
+        return (
+            <div className="text-center">
+                <i className="fa fa-spinner fa-spin loading"/> {i18n._(t`ui.loading`)}
+            </div>
+        );
+    } else {
+        const dashboards = props.dashboards.map(dash => {
             return (
-                <div className="text-center">
-                    <i className="fa fa-spinner fa-spin loading"/> {i18n._(t`ui.loading`)}
-                </div>
+                <DashItem
+                    key={dash.id}
+                    dash={dash}
+                    active={dash.id === props.currentDash.id}
+                    dragging={props.dragging}
+                    moveToDash={props.moveToDash(dash)}
+                    rename={props.renameDash(dash)}
+                    remove={props.removeDash(dash)}
+                />
             );
-        } else {
-            const dashboards = this.props.dashboards.map(function (dash) {
-                return (
-                    <DashItem
-                        key={dash.id}
-                        dash={dash}
-                        active={dash.id === this.props.currentDash.id}
-                        dragging={this.props.dragging}
-                        moveToDash={this.props.moveToDash(dash)}
-                        rename={this.props.renameDash(dash)}
-                        remove={this.props.removeDash(dash)}
-                    />
-                );
-            }.bind(this));
+        });
 
-            return (
-                <ul className="nav nav-tabs" role="tablist">
-                    {dashboards}
-                    <CreateDashboard addDash={this.props.createDash}/>
-                </ul>
-            );
+        return (
+            <ul className="nav nav-tabs" role="tablist">
+                {dashboards}
+                <CreateDashboard addDash={props.createDash}/>
+            </ul>
+        );
+    }
+};
+
+
+class DashItem extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            over: false,
+            editing: false
         }
     }
-});
 
+    onDragEnterOrOver = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.setState({ over: true });
+    }
 
-const DashItem = createClass({
-    getInitialState: function () {
-        return {over: false, editing: false};
-    },
-    over: function (isOver) {
-        return function (event) {
-            event.preventDefault();
-            this.setState({over: isOver});
-        }.bind(this);
-    },
-    drop: function (event) {
-        const app = JSON.parse(event.dataTransfer.getData("application/json")).app;
+    onDragLeave = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.setState({ over: false });
+    }
+
+    drop = async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const app = JSON.parse(e.dataTransfer.getData("application/json")).app;
         this.props.moveToDash(app);
         this.setState({over: false});
-    },
-    edit: function () {
+    }
+
+    edit = async () => {
         this.setState({editing: true});
-    },
-    cancelEditing: function () {
+    }
+
+    cancelEditing = async () => {
         this.setState({editing: false});
-    },
-    render: function () {
+    }
+
+    render() {
         if (this.props.active) {
             if (this.state.editing) {
                 return <EditingDash name={this.props.dash.name} rename={this.props.rename}
@@ -385,8 +410,9 @@ const DashItem = createClass({
             const className = this.props.dragging ? (this.state.over ? 'dragging over' : 'dragging') : '';
             return (
                 <li role="presentation"
-                    onDragOver={this.over(true)}
-                    onDragLeave={this.over(false)}
+                    onDragEnter={this.onDragEnterOrOver}
+                    onDragOver={this.onDragEnterOrOver}
+                    onDragLeave={this.onDragLeave}
                     onDrop={this.drop}>
                     <Link to={`/my/dashboard/${this.props.dash.id}`}
                           className={className}
@@ -399,18 +425,20 @@ const DashItem = createClass({
             );
         }
     }
-});
+};
 
-const DashActions = createClass({
+class DashActions extends React.Component {
 
-    remove: function () {
+    remove = () => {
         this.props.remove();
         this.refs.modal.close();
-    },
-    showRemove: function () {
+    }
+
+    showRemove = () => {
         this.refs.modal.open();
-    },
-    render: function () {
+    }
+
+    render() {
         if (this.props.primary) {
             return (
                 <i className="fas fa-pencil-alt" onClick={this.props.edit}/>
@@ -430,31 +458,40 @@ const DashActions = createClass({
             );
         }
     }
-});
+};
 
+class EditingDash extends React.Component {
 
-const EditingDash = createClass({
-    getInitialState: function () {
-        return {val: this.props.name};
-    },
-    componentDidMount: function () {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            val: this.props.name
+        }
+    }
+
+    componentDidMount = () => {
         const input = this.refs.input;
         input.focus();
         input.select();
-    },
-    change: function (event) {
+    }
+
+    change = (event) => {
         this.setState({val: event.target.value});
-    },
-    click: function (event) {
+    }
+
+    click = (event) => {
         event.preventDefault();
         event.stopPropagation();
-    },
-    submit: function (event) {
+    }
+
+    submit = (event) => {
         event.preventDefault();
         this.props.rename(this.state.val);
         this.props.cancel();
-    },
-    render: function () {
+    }
+
+    render() {
         return (
             <li className="active">
                 <form onSubmit={this.submit}>
@@ -466,32 +503,39 @@ const EditingDash = createClass({
             </li>
         );
     }
-});
+};
 
-const CreateDashboard = createClass({
-    getInitialState: function () {
-        return {
+class CreateDashboard extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
             val: '',
             error: false
-        };
-    },
-    change: function (event) {
+        }
+    }
+
+    change = (event) => {
         this.setState({val: event.target.value});
-    },
-    showCreate: function () {
+    }
+
+    showCreate = () => {
         this.refs.modal.open();
-    },
-    submit: function (event) {
+    }
+
+    submit = (event) => {
         event.preventDefault();
         if (this.state.val === '') {
-            this.setState({error: true});
+            this.setState({ error: true });
         } else {
             this.props.addDash(this.state.val);
-            this.setState(this.getInitialState());
+            this.setState({ val: '', error: false });
             this.refs.modal.close();
         }
-    },
-    render: function () {
+    }
+
+    render() {
         const buttonLabels = {'save': i18n._(t`ui.confirm`), 'cancel': i18n._(t`ui.cancel`)};
         const formGroupClass = this.state.error ? 'form-group has-error' : 'form-group';
 
@@ -515,28 +559,43 @@ const CreateDashboard = createClass({
             </li>
         );
     }
-});
+};
 
 
-const DeleteApp = createClass({
-    getInitialState: function () {
-        return {over: false, app: null, pending: false};
-    },
-    over: function (isOver) {
-        return function (event) {
-            if (isOver) {
-                event.preventDefault();
-            }
-            this.setState({over: isOver});
-        }.bind(this);
-    },
-    drop: function (event) {
-        const app = JSON.parse(event.dataTransfer.getData("application/json")).app;
+class DeleteApp extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            over: false,
+            app: null,
+            pending: false
+        }
+    }
+
+    onDragEnterOrOver = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.setState({ over: true });
+    }
+
+    onDragLeave = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.setState({ over: false });
+    }
+
+    drop = async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+
+        const app = JSON.parse(e.dataTransfer.getData("application/json")).app;
         this.setState({over: true, app: app, pending: this.props.draggingPending});
         this.refs.modal.open();
-    },
-    removeApp: function () {
+    }
+
+    removeApp = () => {
         const app = this.state.app;
         if (!this.state.pending) {
             this.props.delete(app);
@@ -544,18 +603,21 @@ const DeleteApp = createClass({
             this.props.deletePending(app);
         }
         this.refs.modal.close();
-        this.setState(this.getInitialState());
-    },
-    cancel: function () {
-        this.setState(this.getInitialState());
-    },
-    render: function () {
+        this.setState({ over: false, app: null, pending: false });
+    }
+
+    cancel = () => {
+        this.setState({ over: false, app: null, pending: false });
+    }
+
+    render() {
         const className = 'appzone' + (this.state.over ? ' over' : '');
         const buttonLabels = {save: i18n._(t`ui.confirm`), cancel: i18n._(t`ui.cancel`)};
 
         return (
             <div className={className}
-                 onDragOver={this.over(true)} onDragLeave={this.over(false)} onDrop={this.drop}>
+                 onDragOver={this.onDragEnterOrOver} onDragEnter={this.onDragEnterOrOver}
+                 onDragLeave={this.onDragLeave} onDrop={this.drop}>
                 <Modal title={i18n._(t`my.confirm-remove-app`)} successHandler={this.removeApp}
                        cancelHandler={this.cancel}
                        buttonLabels={buttonLabels} ref="modal">
@@ -571,14 +633,20 @@ const DeleteApp = createClass({
             </div>
         );
     }
-});
+};
 
 
-const Desktop = createClass({
-    getInitialState: function () {
-        return {dragging: false};
-    },
-    render: function () {
+class Desktop extends React.Component {
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            dragging: false
+        }
+    }
+
+    render() {
         if (this.props.loading) {
             return (
                 <div className="col-sm-12 text-center">
@@ -641,118 +709,123 @@ const Desktop = createClass({
             </section>
         );
     }
-});
+};
 
 
-const AppZone = createClass({
-    render: function () {
-        return (
-            <div className="appzone" title={this.props.app.name}>
-                <DropZone dragging={this.props.dragging} dropCallback={this.props.dropCallback(this.props.app)}>
-                    <AppIcon app={this.props.app} startDrag={this.props.startDrag} endDrag={this.props.endDrag}/>
-                </DropZone>
+function AppZone(props) {
+    return (
+        <div className="appzone" title={props.app.name}>
+            <DropZone dragging={props.dragging} dropCallback={props.dropCallback(props.app)}>
+                <AppIcon app={props.app} startDrag={props.startDrag} endDrag={props.endDrag}/>
+            </DropZone>
+        </div>
+    );
+};
+
+function PendingApp(props) {
+    return (
+        <div className="appzone">
+            <div className="app pending disabled" draggable="true" onDragStart={props.startDrag(props.app)}
+                 onDragEnd={props.endDrag}>
+                <img className="image" src={props.app.icon} alt={props.app.name} draggable="false"/>
+
+                <p>{props.app.name} <i className="fa fa-stopwatch"/></p>
+
             </div>
-        );
-    }
-});
+        </div>
+    );
+};
 
-const PendingApp = createClass({
-    render: function () {
-        return (
-            <div className="appzone">
-                <div className="app pending disabled" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
-                     onDragEnd={this.props.endDrag}>
-                    <img className="image" src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
+function StoppedApp(props) {
+    return (
+        <div className="appzone">
+            <div className="app pending disabled" draggable="true" onDragStart={props.startDrag(props.app)}
+                 onDragEnd={props.endDrag}>
+                <img className="image" src={props.app.icon} alt={props.app.name} draggable="false"/>
 
-                    <p>{this.props.app.name} <i className="fa fa-stopwatch"/></p>
+                <p>{props.app.name} <i className="fa fa-stop-circle"/></p>
 
-                </div>
             </div>
-        );
-    }
-});
+        </div>
+    );
+};
 
-const StoppedApp = createClass({
-    render: function () {
-        return (
-            <div className="appzone">
-                <div className="app pending disabled" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
-                     onDragEnd={this.props.endDrag}>
-                    <img className="image" src={this.props.app.icon} alt={this.props.app.name} draggable="false"/>
+class DropZone extends React.Component {
 
-                    <p>{this.props.app.name} <i className="fa fa-stop-circle"/></p>
+    constructor(props) {
+        super(props);
 
-                </div>
-            </div>
-        );
-    }
-});
-
-const DropZone = createClass({
-    getInitialState: function () {
-        return {over: false};
-    },
-    dragOver: function (event) {
-        if (this.props.dragging) {
-            event.preventDefault();         // allow dropping here!
-            this.setState({over: true});
+        this.state = {
+            over: false
         }
-    },
-    dragLeave: function () {
-        this.setState({over: false});
-    },
-    drop: function (event) {
-        const data = JSON.parse(event.dataTransfer.getData("application/json"));
+    }
+
+    onDragEnterOrOver = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.setState({ over: true });
+    }
+
+    onDragLeave = (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        this.setState({ over: false });
+    }
+
+    drop = async (e) => {
+        e.stopPropagation();
+        e.preventDefault();
+        const data = JSON.parse(e.dataTransfer.getData("application/json"));
         this.props.dropCallback(data.app);
         this.setState({over: false});
-    },
-    render: function () {
+    }
+
+    render() {
         const className = "dropzone" + (this.state.over ? " dragover" : "") + (this.props.dragging ? " dragging" : "");
 
-        return <div className={className} onDragOver={this.dragOver} onDragLeave={this.dragLeave} onDrop={this.drop}>
+        return <div className={className}
+                    onDragEnter={this.onDragEnterOrOver}
+                    onDragOver={this.onDragEnterOrOver}
+                    onDragLeave={this.onDragLeave}
+                    onDrop={this.drop}>
             {this.props.children}
         </div>;
     }
-});
+};
 
-const AppIcon = createClass({
-    render: function () {
-        let notif = null;
-        const url = this.props.app.url;
-        if (this.props.app.notificationCount !== 0) {
-            notif = (
-                <span className="badge badge-notifications">{this.props.app.notificationCount}</span>
-            );
-        }
-        return (
-            <div className="app" draggable="true" onDragStart={this.props.startDrag(this.props.app)}
-                 onDragEnd={this.props.endDrag}>
-                <a href={url} target="_blank" rel="noopener" className="app-link" draggable="false">
-                    <img className="image" src={this.props.app.icon} alt={this.props.app.name}/>
-                    {notif}
-                </a>
-                <p>{this.props.app.name}</p>
-            </div>
+function AppIcon(props) {
+    let notif = null;
+    const url = props.app.url;
+    if (props.app.notificationCount !== 0) {
+        notif = (
+            <span className="badge badge-notifications">{props.app.notificationCount}</span>
         );
     }
-});
+    return (
+        <div className="app" draggable="true" onDragStart={props.startDrag(props.app)}
+             onDragEnd={props.endDrag}>
+            <a href={url} target="_blank" rel="noopener" className="app-link" draggable="false">
+                <img className="image" src={props.app.icon} alt={props.app.name}/>
+                {notif}
+            </a>
+            <p>{props.app.name}</p>
+        </div>
+    );
+};
 
-class DashboardWrapper extends React.Component {
+function DashboardWrapper(props) {
 
+    return <section className="oz-body wrapper flex-col">
+        <UpdateTitle title={i18n._(t`my.dashboard`)}/>
 
-    render() {
-        return <section className="oz-body wrapper flex-col">
-            <UpdateTitle title={i18n._(t`my.dashboard`)}/>
+        <header className="title">
+            <span>{i18n._(t`my.dashboard`)}</span>
+        </header>
 
-            <header className="title">
-                <span>{i18n._(t`my.dashboard`)}</span>
-            </header>
+        <Dashboard id={props.match.params.id} history={props.history}/>
 
-            <Dashboard/>
-
-            <div className="push"/>
-        </section>;
-    }
+        <div className="push"/>
+    </section>;
 }
 
 export default DashboardWrapper;

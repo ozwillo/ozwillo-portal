@@ -2,7 +2,6 @@
 
 import React from 'react';
 import ReactDOM from 'react-dom';
-import createClass from 'create-react-class';
 import PropTypes from 'prop-types';
 import { i18n } from "../config/i18n-config";
 
@@ -21,8 +20,8 @@ import { i18n } from "../config/i18n-config";
  * Children as content.
  * Open explicitly by calling the open() method. The close() method is also available.
  */
-const Modal = createClass({
-    propTypes: {
+class Modal extends React.Component {
+    static propTypes = {
         title: PropTypes.string.isRequired,
         successHandler: PropTypes.func,
         cancelHandler: PropTypes.func,
@@ -30,8 +29,9 @@ const Modal = createClass({
         saveButtonClass: PropTypes.string,
         large: PropTypes.bool,
         infobox: PropTypes.bool
-    },
-    componentDidMount: function () {
+    }
+
+    componentDidMount = () => {
         $(ReactDOM.findDOMNode(this)).modal({show: false});
         if (this.props.cancelHandler) {
             var handler = this.props.cancelHandler;
@@ -39,18 +39,22 @@ const Modal = createClass({
                 handler();
             });
         }
-    },
-    componentWillUnmount: function () {
+    }
+
+    componentWillUnmount = () => {
         $(ReactDOM.findDOMNode(this)).off('hidden');
-    },
-    close: function (event) {
+    }
+
+    close = () => {
         $(ReactDOM.findDOMNode(this)).modal('hide');
         // cancel handler will be called on the hide event registered in componentDidMount
-    },
-    open: function () {
+    }
+
+    open = () => {
         $(ReactDOM.findDOMNode(this)).modal('show');
-    },
-    render: function () {
+    }
+
+    render() {
 
         var buttons;
 
@@ -74,7 +78,7 @@ const Modal = createClass({
                 cancelLabel = i18n._('ui.cancel');
                 saveLabel = i18n._('ui.save');
             }
-            var saveButtonClass = this.props.saveButtonClass ? "btn " + this.props.saveButtonClass : "btn btn-submit";
+            const saveButtonClass = this.props.saveButtonClass ? "btn " + this.props.saveButtonClass : "btn btn-submit";
 
             buttons = [
                 <button type="button" key="cancel" className="btn btn-default-inverse"
@@ -84,7 +88,7 @@ const Modal = createClass({
             ];
         }
 
-        var className = this.props.large ? "modal-dialog modal-lg" : "modal-dialog";
+        const className = this.props.large ? "modal-dialog modal-lg" : "modal-dialog";
 
         return (
             <div className="modal fade oz-simple-modal" tabIndex="-1" role="dialog" aria-labelledby="modalLabel">
@@ -108,7 +112,7 @@ const Modal = createClass({
             </div>
         );
     }
-});
+};
 
 
 /**
@@ -122,14 +126,15 @@ const Modal = createClass({
  * Children as form fields.
  * Open explicitly by calling the open() method. The close() method is also available.
  */
-const ModalWithForm = createClass({
-    propTypes: {
+class ModalWithForm extends React.Component {
+    static propTypes = {
         title: PropTypes.string.isRequired,
         successHandler: PropTypes.func.isRequired,
         cancelHandler: PropTypes.func,
         buttonLabels: PropTypes.object
-    },
-    componentDidMount: function () {
+    }
+
+    componentDidMount = () => {
         $(ReactDOM.findDOMNode(this)).modal({show: false});
         if (this.props.cancelHandler) {
             var handler = this.props.cancelHandler;
@@ -137,20 +142,24 @@ const ModalWithForm = createClass({
                 handler();
             });
         }
-    },
-    componentWillUnmount: function () {
+    }
+
+    componentWillUnmount = () => {
         $(ReactDOM.findDOMNode(this)).off('hidden');
-    },
-    close: function (event) {
+    }
+
+    close = (event) => {
         $(ReactDOM.findDOMNode(this)).modal('hide');
         if (this.props.onClose) {
             this.props.onClose(event);
         }
-    },
-    open: function () {
+    }
+
+    open = () => {
         $(ReactDOM.findDOMNode(this)).modal('show');
-    },
-    render: function () {
+    }
+
+    render() {
 
         var buttons;
         var cancelLabel, saveLabel;
@@ -193,6 +202,6 @@ const ModalWithForm = createClass({
             </div>
         );
     }
-});
+};
 
-module.exports = {Modal, ModalWithForm};
+module.exports = { Modal, ModalWithForm };

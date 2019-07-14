@@ -1,5 +1,6 @@
 export default {
-    notificationsCountInterval: 60000,
+    notificationsCountInterval: 600000,
+    dashboardNotificationsInterval: 600000,
     sizeQueryBeforeFetch: 2,
     instanceStatus: {
         pending: 'PENDING',

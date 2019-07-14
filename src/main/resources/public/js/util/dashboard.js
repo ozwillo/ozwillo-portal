@@ -37,7 +37,7 @@ export const fetchReorderApps = (dashId, apps) => {
     return customFetch(`/my/api/dashboard/apps/${dashId}`,
         {
             method: 'PUT',
-            json: {apps}
+            json: apps
         });
 };
 
