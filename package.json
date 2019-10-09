@@ -104,7 +104,7 @@
     "slick-carousel": "^1.8.1",
     "sweetalert2": "^7.28.4",
     "url-search-params": "^0.10.2",
-    "snyk": "^1.192.3"
+    "snyk": "^1.231.0"
   },
   "lingui": {
     "sourceLocale": "en",
