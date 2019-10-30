@@ -21,10 +21,15 @@ class Header extends React.Component {
 
     componentDidMount() {
         this._userService.fetchUserInfos()
-            .then((userInfo) => this.setState({ userInfo: userInfo }));
-        this.loadNotificationsCount();
-        const intervalId = setInterval(this.loadNotificationsCount, config.notificationsCountInterval);
-        this.setState({ intervalId: intervalId });
+            .then((userInfo) => {
+                this.setState({ userInfo: userInfo })
+                const isLogged = !!userInfo;
+                if (isLogged) {
+                    this.loadNotificationsCount();
+                    const intervalId = setInterval(this.loadNotificationsCount, config.notificationsCountInterval);
+                    this.setState({ intervalId: intervalId });
+                }
+            });
     }
 
     loadNotificationsCount = async () => {
