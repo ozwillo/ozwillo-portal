@@ -59,7 +59,7 @@ public class ImageController {
 
     private ResponseEntity<byte[]> toIconBodyResponse(Image image) {
         HttpHeaders headers = new HttpHeaders();
-        headers.setETag(image.getHash());
+        headers.setETag("\"" + image.getHash() + "\"");
         headers.setContentType(MediaType.IMAGE_PNG);
         headers.setContentLength(image.getBytes().length);
         headers.setCacheControl(CacheControl.maxAge(365, TimeUnit.DAYS).cachePublic());
