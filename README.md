@@ -1,7 +1,7 @@
 Ozwillo portal implementation
 ===========================
 
-[![Build Status](https://travis-ci.org/ozwillo/ozwillo-portal.svg?branch=develop)](https://travis-ci.org/ozwillo/ozwillo-portal)
+[![Build Status](https://travis-ci.org/ozwillo/ozwillo-portal.svg?branch=master)](https://travis-ci.org/ozwillo/ozwillo-portal)
 
 ## Prerequisites
 
