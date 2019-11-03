@@ -15,7 +15,7 @@ plugins {
     id("com.github.node-gradle.node") version "1.3.0"
 }
 
-version = "1.55.0-SNAPSHOT"
+version = "1.55.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_1_8
