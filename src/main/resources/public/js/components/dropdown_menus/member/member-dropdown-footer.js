@@ -27,12 +27,6 @@ class MemberDropdownFooter extends React.Component {
         this.onOptionChange = this.onOptionChange.bind(this);
     }
 
-    componentWillReceiveProps(nextProps){
-        if(nextProps.instances){
-            this.setState({selectedOption: null})
-        }
-    }
-
     onSubmit(e) {
         e.preventDefault();
 

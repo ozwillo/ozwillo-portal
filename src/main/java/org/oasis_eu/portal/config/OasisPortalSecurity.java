@@ -11,7 +11,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.access.ExceptionTranslationFilter;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
-import org.springframework.security.web.csrf.CsrfFilter;
+import org.springframework.security.web.csrf.CookieCsrfTokenRepository;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import java.util.Arrays;
@@ -58,9 +58,9 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
                 .antMatchers("/my/**").authenticated()
                 .antMatchers("/popup/**").authenticated()
                 .anyRequest().permitAll().and()
-                .csrf().ignoringAntMatchers("/api/organization/import").and()
-                .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class)
-                .addFilterAfter(new CsrfTokenGeneratorFilter(), CsrfFilter.class);
+                .csrf().ignoringAntMatchers("/api/organization/import")
+                    .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
+                .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);
         }
         http
             .addFilterAfter(oasisExceptionTranslationFilter(authenticationEntryPoint()), ExceptionTranslationFilter.class);

@@ -16,7 +16,7 @@ const instanceVisibility = Config.instanceVisibility;
 const iconMaxSize = Config.iconMaxSize;
 
 //Action
-import {uploadFile} from '../../actions/file-upload';
+import customFetch from "../../util/custom-fetch";
 
 class InstanceConfigForm extends React.Component {
 
@@ -104,6 +104,18 @@ class InstanceConfigForm extends React.Component {
         });
     }
 
+    uploadFile = (file, id) => {
+        // also fills "filename" etc. in multipart Boundary line
+        // else HTTP error Required MultipartFile parameter 'iconFile' is not present or Multipart boundary missing
+        const formData = new FormData();
+        formData.append('iconFile', file);
+
+        return customFetch(`/media/objectIcon/${id}`, {
+            method: 'POST',
+            body: formData
+        });
+    }
+
     uploadIconFile(e) {
         const file = e.currentTarget.files[0];
 
@@ -113,7 +125,7 @@ class InstanceConfigForm extends React.Component {
             return;
         }
 
-        uploadFile(file, this.state.serviceSelected.id)
+        this.uploadFile(file, this.state.serviceSelected.id)
             .then(iconUrl => {
                 this.setState({iconUrl, iconError: ''});
             })

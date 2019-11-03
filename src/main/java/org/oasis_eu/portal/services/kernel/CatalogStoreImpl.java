@@ -101,6 +101,17 @@ public class CatalogStoreImpl {
         return kernel.getEntityOrException(appsEndpoint + "/app/{id}", CatalogEntry.class, userIfExists(), id);
     }
 
+    @Cacheable("applications")
+    public CatalogEntry findApplicationOrNull(String id) {
+        return kernel.getEntityOrNull(appsEndpoint + "/app/{id}", CatalogEntry.class, userIfExists(), id);
+    }
+
+    @Cacheable("services")
+    public ServiceEntry findServiceOrNull(String id) {
+        return kernel.getEntityOrNull(appsEndpoint + "/service/{id}",
+                ServiceEntry.class, userIfExists(), id);
+    }
+
     @Cacheable("services")
     public ServiceEntry findService(String id) {
         ServiceEntry serviceEntry;

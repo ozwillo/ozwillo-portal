@@ -8,14 +8,16 @@ import CustomTooltip from "../components/custom-tooltip";
 import PropTypes from "prop-types";
 import {i18n} from "../config/i18n-config";
 import swal from "sweetalert2";
-import {fetchUserInfo} from "../actions/user";
 import { t, Trans } from "@lingui/macro"
 import UpdateTitle from '../components/update-title';
+import UserService from '../util/user-service';
 
 export default class AppStore extends React.Component {
 
-    constructor() {
-        super();
+    constructor(props) {
+        super(props);
+
+        this._userService = new UserService();
     }
 
     state = {
@@ -32,7 +34,7 @@ export default class AppStore extends React.Component {
 
     componentDidMount = async () => {
         //check if the user is connected
-        const user = await fetchUserInfo();
+        const user = await this._userService.fetchUserInfos();
         if (user) {
             this._askForFilters();
         } else {

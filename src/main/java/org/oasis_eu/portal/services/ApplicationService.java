@@ -16,6 +16,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.util.Pair;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
@@ -77,7 +78,7 @@ public class ApplicationService {
             .collect(Collectors.toList());
     }
 
-    private List<MyAppsInstance> getOrganizationInstances(String knOrganizationId, boolean fetchServices) {
+    public List<MyAppsInstance> getOrganizationInstances(String knOrganizationId, boolean fetchServices) {
         return applicationInstanceStore.findByOrganizationId(knOrganizationId)
             .stream()
             .sorted(Comparator.comparing(ApplicationInstance::getStatus).reversed()
@@ -85,6 +86,15 @@ public class ApplicationService {
             .map(i -> fetchInstance(i, fetchServices)) // skip if application Forbidden (else #208 Catalog not displayed), deleted...
             .filter(Objects::nonNull)
             .collect(Collectors.toList());
+    }
+
+    public List<MyAppsInstance> getInstancesOfUserForOrganization(String organizationId, String userId) {
+        return getOrganizationInstances(organizationId, false)
+                .stream()
+                .map(myAppsInstance -> Pair.of(myAppsInstance, getAppUsers(myAppsInstance.getId(), true)))
+                .filter(pair -> pair.getSecond().stream().anyMatch(user -> user.getUserid().equals(userId)))
+                .map(Pair::getFirst)
+                .collect(Collectors.toList());
     }
 
     public MyAppsInstance fetchInstance(ApplicationInstance instance, boolean fetchServices) {
@@ -227,5 +237,4 @@ public class ApplicationService {
 
         return fetchInstance(instanceUpdated, false);
     }
-
 }

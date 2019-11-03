@@ -6,73 +6,66 @@ import org.oasis_eu.portal.model.dashboard.DashboardPendingApp;
 import org.oasis_eu.portal.model.dashboard.UserContext;
 import org.oasis_eu.portal.services.DashboardService;
 import org.oasis_eu.portal.services.NotificationService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
 
-import static org.springframework.web.bind.annotation.RequestMethod.*;
-
-/**
- * User: schambon
- * Date: 11/17/14
- */
 @RestController
 @RequestMapping("/my/api/dashboard")
 public class DashboardController {
 
-    @Autowired
-    private DashboardService dashboardService;
+    private final DashboardService dashboardService;
 
-    @Autowired
-    private NotificationService notificationService;
+    private final NotificationService notificationService;
 
-    @RequestMapping(value = "/dashboards", method = GET)
+    public DashboardController(DashboardService dashboardService, NotificationService notificationService) {
+        this.dashboardService = dashboardService;
+        this.notificationService = notificationService;
+    }
+
+    @GetMapping(value = "/dashboards")
     public List<UserContext> getContexts() {
         return dashboardService.getUserContexts();
     }
 
-    @RequestMapping(value = "/apps", method = GET)
+    @GetMapping(value = "/apps")
     private List<DashboardApp> getAppsForMainContext() {
         return dashboardService.getMainDashboardApps();
     }
 
-    @RequestMapping(value = "/apps/{contextId}", method = GET)
+    @GetMapping(value = "/apps/{contextId}")
     public List<DashboardApp> getAppsForContext(@PathVariable String contextId) {
         return dashboardService.getDashboardApps(contextId);
     }
 
-    @RequestMapping(value = "/apps/{contextId}", method = PUT)
+    @PutMapping(value = "/apps/{contextId}")
     public void updateApps(@PathVariable String contextId, @RequestBody List<DashboardApp> apps) {
         dashboardService.setAppsInContext(contextId, apps);
     }
 
-    @RequestMapping(value = "/apps/move/{appId}/to/{contextId}", method = POST)
+    @PostMapping(value = "/apps/move/{appId}/to/{contextId}")
     public void moveAppTo(@PathVariable String appId, @PathVariable String contextId) {
         dashboardService.moveAppTo(appId, contextId);
     }
 
-    @RequestMapping(value = "/apps/remove/{appId}", method = DELETE)
+    @DeleteMapping(value = "/apps/remove/{appId}")
     public void removeApp(@PathVariable String appId) {
         dashboardService.unsubscribeApp(appId);
     }
 
-    @RequestMapping(value = "/pending-apps/{appId}", method = DELETE)
+    @DeleteMapping(value = "/pending-apps/{appId}")
     public void removePendingApp(@PathVariable String appId) {
         dashboardService.removePendingApp(appId);
     }
 
-    @RequestMapping(value = "/pending-apps", method = GET)
+    @GetMapping(value = "/pending-apps")
     public List<DashboardPendingApp> pendingApps() {
         return dashboardService.getPendingApps();
     }
 
 
-    @RequestMapping(value = "/dashboards", method = POST)
+    @PostMapping(value = "/dashboards")
     public UserContext createDashboard(@RequestBody CreateDashRequest request) {
         return dashboardService.createContext(request.name);
     }
@@ -82,20 +75,19 @@ public class DashboardController {
         String name;
     }
 
-    @RequestMapping(value = "/dashboard/{contextId}", method = PUT)
+    @PutMapping(value = "/dashboard/{contextId}")
     public void renameContext(@PathVariable String contextId, @RequestBody UserContext userContext) {
         dashboardService.renameContext(contextId, userContext.getName());
     }
 
-    @RequestMapping(value = "/dashboard/{contextId}", method = DELETE)
+    @DeleteMapping(value = "/dashboard/{contextId}")
     public void deleteContext(@PathVariable String contextId) {
         dashboardService.deleteContext(contextId);
     }
 
 
-    @RequestMapping(value = "/notifications", method = GET)
+    @GetMapping(value = "/notifications")
     public Map<String, Integer> getNotificationsCountByService() {
         return notificationService.getNotificationsCountByService();
     }
-
 }

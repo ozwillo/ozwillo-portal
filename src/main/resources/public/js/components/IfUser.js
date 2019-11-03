@@ -1,10 +1,25 @@
 import React from 'react';
-import {connect} from 'react-redux';
+import UserService from '../util/user-service';
 
 class IfUser extends React.Component {
 
+    constructor(props) {
+        super(props);
+
+        this._userService = new UserService();
+
+        this.state = {
+            isLoggedIn: false
+        }
+    }
+
+    componentDidMount = async () => {
+        const userInfo = await this._userService.fetchUserInfos();
+        this.setState({ isLoggedIn: !!userInfo });
+    }
+
     render() {
-        if (!this.props.userInfo.sub) {
+        if (!this.state.isLoggedIn) {
             return null;
         }
 
@@ -12,10 +27,4 @@ class IfUser extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        userInfo: state.userInfo
-    };
-};
-
-export default connect(mapStateToProps)(IfUser);
+export default IfUser;

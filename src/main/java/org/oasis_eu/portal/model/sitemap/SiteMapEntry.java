@@ -1,24 +1,27 @@
 package org.oasis_eu.portal.model.sitemap;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlText;
 
 import java.io.Serializable;
 
-/**
- * User: schambon
- * Date: 12/15/14
- */
 public class SiteMapEntry implements Serializable {
     private static final long serialVersionUID = 5598242680668173525L;
 
     @JsonProperty(value = "href")
-    private String url = "";
+    private String url;
 
-    private Integer row = 0;
+    private Integer row;
 
-    private String label = "";
+    private String label;
+
+    public SiteMapEntry() {
+    }
+
+    public SiteMapEntry(String url, Integer row, String label) {
+        this.url = url;
+        this.row = row;
+        this.label = label;
+    }
 
     public String getUrl() {
         return url;

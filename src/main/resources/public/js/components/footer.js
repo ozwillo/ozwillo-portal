@@ -1,18 +1,26 @@
 import React from 'react';
-import {connect} from 'react-redux';
-
+import ConfigService from '../util/config-service';
 
 class Footer extends React.Component {
-    state = {
-        env: ''
+
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            env: '',
+            siteMapFooter: {}
+        }
+
+        this._configService = new ConfigService();
     }
 
     componentDidMount = async () => {
-        this.setState({ env: localStorage.getItem("env") });
+        const siteMapFooter = await this._configService.fetchSiteMapFooter();
+        this.setState({ env: localStorage.getItem("env"), siteMapFooter: siteMapFooter });
     }
 
     render() {
-        const siteMapFooter = this.props.siteMapFooter;
+        const siteMapFooter = this.state.siteMapFooter;
         return <footer className="oz-footer">
             <div className="flex-row">
                 <section className="logo">
@@ -63,10 +71,4 @@ class Footer extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        siteMapFooter: state.config.currentSiteMapFooter
-    }
-}
-
-export default connect(mapStateToProps)(Footer);
+export default Footer;

@@ -20,6 +20,11 @@ public class ImageDownloadAttempt {
 
     private DateTime time;
 
+    public ImageDownloadAttempt(String url) {
+        this.url = url;
+        this.time = DateTime.now();
+    }
+
     public String getId() {
         return id;
     }

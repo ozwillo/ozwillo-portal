@@ -2,6 +2,7 @@ import React, {Component} from 'react'
 import PropTypes from 'prop-types';
 import Autosuggest from 'react-autosuggest';
 import Config from '../../config/config';
+import customFetch, { urlBuilder } from "../../util/custom-fetch";
 
 const sizeQueryBeforeFetch = Config.sizeQueryBeforeFetch;
 
@@ -35,18 +36,8 @@ class GeoAreaAutosuggest extends Component {
     };
 
     searchCities(query) {
-        $.ajax({
-            url: `/api/geo/${this.props.endpoint}`,
-            dataType: 'json',
-            data: {country_uri: this.props.countryUri, q: query},
-            type: 'get',
-            success: function (data) {
-                this.setState({suggestions: data.areas});
-            }.bind(this),
-            error: function (xhr, status, err) {
-                console.error("Error while searching for cities with query " + query, status, err.toString())
-            }
-        })
+        customFetch(urlBuilder(`/api/geo/${this.props.endpoint}`, {country_uri: this.props.countryUri, q: query}))
+            .then((res) => this.setState({ suggestions: res.areas }));
     }
 
     onSuggestionsFetchRequested = ({value}) => {

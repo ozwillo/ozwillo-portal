@@ -1,5 +1,4 @@
 import React from 'react';
-import {connect} from 'react-redux';
 import {Route} from 'react-router-dom';
 import {Router, Switch, Redirect} from 'react-router';
 import Popup from 'react-popup';
@@ -8,8 +7,6 @@ import history from './history';
 // Components
 import IfUser from '../components/IfUser';
 import Layout from '../components/layout';
-import BootLoader from '../components/boot-loader';
-import NotificationsCount from '../components/notifications-count-loader';
 
 //Pages
 import Dashboard from '../pages/dashboard';
@@ -20,16 +17,12 @@ import OrganizationCreate from '../pages/organization-create';
 import OrganizationSearch from '../pages/organization-search';
 import OrganizationDesc from '../pages/organization-desc';
 import AppStore from '../pages/app-store';
-
-// Actions
-import {fetchUserInfo} from '../actions/user';
 import AppInstall from '../pages/app-install';
 import GoogleAnalytics from '../components/google-analytics';
 
 class RouterWithUser extends React.Component {
     render() {
         return <IfUser>
-            <NotificationsCount/>
             <Layout>
                 <Switch>
                     {/* Redirect old pages */}
@@ -77,14 +70,6 @@ class AppRouter extends React.Component {
 
     constructor(props) {
         super(props);
-
-        history.listen(() => {
-            this.props.fetchUserInfo();
-        });
-    }
-
-    componentDidMount() {
-        this.props.fetchUserInfo();
     }
 
     render() {
@@ -99,30 +84,16 @@ class AppRouter extends React.Component {
         const production = process.env.NODE_ENV;
 
         return <Router history={history}>
-            <BootLoader>
+            <React.Fragment>
                 <Popup/>
                 {!production ? routes :
                     <GoogleAnalytics>
                         {routes}
                     </GoogleAnalytics>
                 }
-            </BootLoader>
+            </React.Fragment>
         </Router>;
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        userInfo: state.userInfo
-    };
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchUserInfo() {
-            return dispatch(fetchUserInfo());
-        }
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(AppRouter);
+export default AppRouter;

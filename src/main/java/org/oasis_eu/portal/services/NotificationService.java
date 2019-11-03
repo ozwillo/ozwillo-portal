@@ -97,7 +97,7 @@ public class NotificationService {
                 ServiceEntry serviceEntry = null;
 
                 if (n.getServiceId() != null) {
-                    serviceEntry = catalogStore.findService(n.getServiceId());
+                    serviceEntry = catalogStore.findServiceOrNull(n.getServiceId());
                     if (serviceEntry == null) {
                         logger.warn("Service {} not found or no longer authorized", n.getServiceId());
                         archive(n.getId());
@@ -115,10 +115,16 @@ public class NotificationService {
                         archive(n.getId());
                         return null; // skip deleted or (newly) Forbidden app instance (rather than displaying no name)
                     } else {
-                        CatalogEntry application = catalogStore.findApplication(instance.getApplicationId());
-                        notif.setAppName(application.getName(locale));
-                        notif.setServiceId(n.getInstanceId());
-                        notif.setApplicationId(application.getId());
+                        CatalogEntry application = catalogStore.findApplicationOrNull(instance.getApplicationId());
+                        if (application != null) {
+                            notif.setAppName(application.getName(locale));
+                            notif.setServiceId(n.getInstanceId());
+                            notif.setApplicationId(application.getId());
+                        } else {
+                            logger.warn("Application {} not found or no longer authorized", instance.getApplicationId());
+                            archive(n.getId());
+                            return null;
+                        }
                     }
                 }
 

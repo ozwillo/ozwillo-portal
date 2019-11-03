@@ -2,9 +2,6 @@ import customFetch from "./custom-fetch";
 
 
 export default class OrganizationService {
-    getOrganizationComplete = async (organizationId) => {
-        return await customFetch(`/my/api/organization/${organizationId}`);
-    };
 
     getOrganizationLight = async (dcOrganizationId) => {
         return await customFetch(`/my/api/organization/light/${dcOrganizationId}`);
@@ -38,6 +35,12 @@ export default class OrganizationService {
         return await customFetch(`/my/api/organization/${orgId}/membership/${member.id}`, {
             method: 'DELETE'
         });
+    };
+
+    updateUserRole = async (orgId, userId, isAdmin) => {
+        return await customFetch(`/my/api/organization/${orgId}/membership/${userId}/role/${isAdmin}`, {
+            method: 'PUT'
+        })
     };
 
     createOrganization = async (organization) => {

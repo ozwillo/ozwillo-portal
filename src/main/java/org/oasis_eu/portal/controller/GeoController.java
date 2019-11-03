@@ -39,7 +39,7 @@ public class GeoController {
     }
 
     @GetMapping(value = "/countries")
-    public GeographicalAreaResponse dcCountries(@RequestParam String q) {
+    public GeographicalAreaResponse dcCountries(@RequestParam(required = false) String q) {
         int loadSize = 10;
         List<GeographicalArea> countries = geographicalAreaService.findCountries(q);
 

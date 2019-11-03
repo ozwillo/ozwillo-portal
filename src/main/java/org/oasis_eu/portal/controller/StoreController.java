@@ -193,7 +193,7 @@ public class StoreController {
         application.description = hit.getDescription();
         application.icon = hit.getIconUrl();
         application.name = hit.getName();
-        application.paid = hit.getCatalogEntry().getPaymentOption().equals(PaymentOption.PAID);
+        application.paid = PaymentOption.PAID.equals(hit.getCatalogEntry().getPaymentOption());
         application.providerName = hit.getProviderName();
         String providerId = hit.getCatalogEntry().getProviderId();
         if(hit.getInstallationOption() != null){

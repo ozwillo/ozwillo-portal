@@ -2,25 +2,20 @@
 
 import React from 'react';
 import PropTypes from "prop-types";
-import {connect} from 'react-redux';
-import createClass from 'create-react-class';
 
-import config from '../config/config';
-
-const notificationInterval = config.notificationsInterval;
 import UpdateTitle from '../components/update-title';
 import { i18n } from "../config/i18n-config"
 import { t } from "@lingui/macro"
+import customFetch, {urlBuilder} from '../util/custom-fetch';
 
+class NotificationTable extends React.Component {
 
-//actions
-import {fetchNotifications, deleteNotification} from "../actions/notifications";
+    constructor(props) {
+        super(props);
 
-const NotificationTable = createClass({
-    getInitialState: function () {
-        return {
-            n: this.props.notifications || [],
-            apps: this.props.apps || [],
+        this.state = {
+            notifications: [],
+            apps: [],
             currentSort: {
                 prop: 'date', // date, changing to dataText to test issue #217
                 dir: -1
@@ -28,81 +23,64 @@ const NotificationTable = createClass({
             filter: {
                 appId: null,
                 status: "UNREAD"
-            },
-            intervalId: 0
+            }
         };
-    },
-    componentWillReceiveProps(nextProps) {
-        this.setState({
-            n: nextProps.notifications.sort(this.sortElement),
-            apps: nextProps.apps
-        });
-    },
-    loadNotifications: function () {
-        this.props.fetchNotifications(this.state.filter.status);
-    },
-    componentDidMount: function () {
+    }
+
+    componentDidMount = async () => {
         this.loadNotifications();
-        const intervalId = setInterval(this.loadNotifications, notificationInterval);
+    }
+
+    loadNotifications = async () => {
+        customFetch(urlBuilder('/my/api/notifications', { status: this.state.filter.status } )).then(data => this.setState(data));
+    }
+
+    archive = async (id) => {
+        customFetch(`/my/api/notifications/${id}`, {
+            method: 'DELETE'
+        }).then(() => {
+            const notifications = this.state.notifications;
+            this.setState({ notifications: notifications.filter(n => n.id !== id) })
+        });
+    }
+
+    sortBy = async (criterion) => {
+        const currentSort = this.state.currentSort;
+
+        let sortDirection = -1;
+        if (currentSort.prop === criterion) {
+            // we are already sorting by the given criterion, so let's sort inversely
+            sortDirection = currentSort.dir * -1;
+        }
+        currentSort.prop = criterion;
+        currentSort.dir = sortDirection;
 
         this.setState({
-            intervalId
+            notifications: this.state.notifications.sort((a, b) => {
+                if (currentSort.prop === 'appName') {
+                    if (a['appName'] === null)
+                        return -currentSort.dir;
+                    else
+                        return a['appName'].localeCompare(b['appName']) * currentSort.dir;
+                } else if (currentSort.prop === 'date') {
+                    return a['date'].localeCompare(b['date']) * currentSort.dir;
+                } else {
+                    return a - b;
+                }
+            }),
+            currentSort
         });
-    },
-    componentWillUnmount() {
-        clearInterval(this.state.intervalId);
-    },
-    sortBy: function (criterion) {
-        return () => {
-            const currentSort = this.state.currentSort;
+    }
 
-            let sortDirection = -1;
-            if (currentSort.prop == criterion) {
-                // we are already sorting by the given criterion, so let's sort inversely
-                sortDirection = currentSort.dir * -1;
-            }
-            currentSort.prop = criterion;
-            currentSort.dir = sortDirection;
-
-            this.setState({
-                n: this.state.n.sort(this.sortElement),
-                currentSort
-            });
-        };
-    },
-    sortElement: function (a, b) {
-        var currentSort = this.state.currentSort;
-
-        if (typeof a[currentSort.prop] == typeof b[currentSort.prop]) {
-            if (typeof a[currentSort.prop] == "number") {
-                return (a[currentSort.prop] - b[currentSort.prop]) * currentSort.dir;
-            }
-            if (typeof a[currentSort.prop] == "string") {
-                return a[currentSort.prop].localeCompare(b[currentSort.prop]) * currentSort.dir;
-            } else {
-                return currentSort.dir;
-            }
-        }
-
-        if (typeof a[currentSort.prop] == "undefined") {
-            return -currentSort.dir;
-        }
-        if (typeof b[currentSort.prop] == "undefined") {
-            return currentSort.dir;
-        }
-
-        // In all other case, a basic and hazardous comparaison
-        return (a[currentSort.prop] < b[currentSort.prop] ? -1 : a[currentSort.prop] > b[currentSort.prop] ? 1 : 0) * currentSort.dir;
-
-    },
-    filterByStatus: function (event) {
+    filterByStatus = async (event) => {
         event.preventDefault();
         const state = this.state;
         state.filter.status = event.target.value;
         this.setState(state);
         this.loadNotifications();
-    },
-    filterByApp: function (event) {
+    }
+
+    filterByApp = async (event) => {
         event.preventDefault();
         const state = this.state;
         let appId = event.target.value;
@@ -111,14 +89,14 @@ const NotificationTable = createClass({
         }
         state.filter.appId = appId;
         this.setState(state);
-    },
-    render: function () {
-        const callback = this.props.deleteNotification;
+    }
+
+    render() {
         const appId = this.state.filter.appId;
         const status = this.state.filter.status;
-        let notificationNodes = this.state.n
+        let notificationNodes = this.state.notifications
             .filter(notif => appId == null || notif.applicationId == appId)
-            .map(notif => <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={callback}/>
+            .map(notif => <Notification key={notif.id} notif={notif} status={status} onRemoveNotif={this.archive}/>
             );
 
         if (notificationNodes.length == 0) {
@@ -155,30 +133,10 @@ const NotificationTable = createClass({
         );
     }
 
-});
-
-const mapStateToProps = state => {
-    return {
-        notifications: state.notifications.notifications,
-        apps: state.notifications.apps
-    };
 };
 
-const mapDispatchToProps = dispatch => {
-    return {
-        fetchNotifications(status, sort) {
-            return dispatch(fetchNotifications(status, sort));
-        },
-        deleteNotification(id) {
-            return dispatch(deleteNotification(id));
-        }
-    };
-};
-
-const NotificationTableWithRedux = connect(mapStateToProps, mapDispatchToProps)(NotificationTable)
-
-const SortableHeader = createClass({
-    render: function () {
+class SortableHeader extends React.Component {
+    render() {
         const className = "col-sm-" + this.props.size + " sortable color";
         let sortIcon = <i className="fa fa-sort"></i>;
         if (this.props.sort.prop == this.props.name) {
@@ -191,15 +149,14 @@ const SortableHeader = createClass({
 
         return (
             <th className={className}
-                onClick={this.props.sortBy(this.props.name)}>{i18n._(this.props.label)} {sortIcon}</th>
+                onClick={() => this.props.sortBy(this.props.name)}>{i18n._(this.props.label)} {sortIcon}</th>
         );
     }
+};
 
-});
 
-
-const NotificationHeader = createClass({
-    render: function () {
+class NotificationHeader extends React.Component {
+    render() {
         return (
             <div className="pull-right">
                 <form className="form-inline">
@@ -217,11 +174,11 @@ const NotificationHeader = createClass({
             </div>
         );
     }
-});
+};
 
 
-const AppFilter = createClass({
-    render: function () {
+class AppFilter extends React.Component {
+    render() {
         const options = this.props.apps.map(function (app) {
             return <option key={app.id} value={app.id}>{app.name}</option>;
         });
@@ -232,14 +189,14 @@ const AppFilter = createClass({
             </select>
         );
     }
-});
+};
 
-const Notification = createClass({
-    displayName: "Notification",
-    removeNotif: function () {
+class Notification extends React.Component {
+    removeNotif = async () => {
         this.props.onRemoveNotif(this.props.notif.id);
-    },
-    render: function () {
+    }
+
+    render() {
         let action_by_url = null;
         let action_archive = null;
 
@@ -265,7 +222,7 @@ const Notification = createClass({
             </tr>
         );
     }
-});
+};
 
 class NotificationTableWrapper extends React.Component {
 
@@ -278,7 +235,7 @@ class NotificationTableWrapper extends React.Component {
                 <span>{i18n._(t`ui.notifications`)}</span>
             </header>
 
-            <NotificationTableWithRedux/>
+            <NotificationTable />
 
             <div className="push"/>
         </div>;

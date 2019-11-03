@@ -1,4 +1,4 @@
-import customFetch from '../util/custom-fetch';
+import customFetch from './custom-fetch';
 
 export const fetchDashboards = () => {
     return customFetch('/my/api/dashboard/dashboards');
@@ -37,7 +37,7 @@ export const fetchReorderApps = (dashId, apps) => {
     return customFetch(`/my/api/dashboard/apps/${dashId}`,
         {
             method: 'PUT',
-            json: {apps}
+            json: apps
         });
 };
 

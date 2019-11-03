@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {connect} from 'react-redux';
 
-//Component
 import LegalNameAutosuggest from '../autosuggests/legal-name-autosuggest';
 import TaxRegActivityAutosuggest from '../autosuggests/tax-reg-activity-autosuggest';
 import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
@@ -11,9 +9,6 @@ import GeoAreaAutosuggest from '../autosuggests/geoarea-autosuggest';
 
 import { i18n } from "../../config/i18n-config"
 import { t } from "@lingui/macro"
-
-//Actions
-import {updateOrganizationFormAction, resetOrganizationFormAction} from '../../actions/components/organization-form';
 
 class OrganizationForm extends React.Component {
 
@@ -37,7 +32,32 @@ class OrganizationForm extends React.Component {
         super(props);
 
         this.state = {
-            isRegistrable: props.alreadyRegistered
+            isRegistrable: props.alreadyRegistered,
+            organization: props.organization || {
+                cedex: '',
+                city: '',
+                city_uri: '',
+                country: '',
+                country_uri: '',
+                email: '',
+                in_activity: false,
+                jurisdiction: '',
+                jurisdiction_uri: '',
+                legal_name: '',
+                org_type: '',
+                phone_number: '',
+                po_box: '',
+                sector_type: '',
+                street_and_number: '',
+                tax_reg_official_id: '',
+                tax_reg_activity: '',
+                tax_reg_activity_uri: '',
+                tax_reg_num: '',
+                web_site: '',
+                zip: '',
+                alt_name: '',
+                version: '0'
+            }
         };
 
         this.onSubmit = this.onSubmit.bind(this);
@@ -50,17 +70,17 @@ class OrganizationForm extends React.Component {
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.verifyTaxRegNum = this.verifyTaxRegNum.bind(this);
         this.verifyCountry = this.verifyCountry.bind(this);
-        this.createOptions = this.createOptions.bind(this);
+        OrganizationForm.createOptions = OrganizationForm.createOptions.bind(this);
     }
 
     // TODO: change that !!!!
     get taxLabels() {
-        if (!this.props.organization.country || !this.props.organization.country_uri) {
+        if (!this.state.organization.country || !this.state.organization.country_uri) {
             return '';
         }
 
         let lang = '';
-        switch (this.props.organization.country) {
+        switch (this.state.organization.country) {
             case 'България' :
                 lang = 'bg';
                 break;
@@ -88,16 +108,7 @@ class OrganizationForm extends React.Component {
         };
     }
 
-    componentWillReceiveProps(nextProps) {
-
-        const nextTaxRegNum = nextProps.organization.tax_reg_num;
-        if ((!this.props.alreadyRegistered && this.props.organization.tax_reg_num !== nextTaxRegNum && nextTaxRegNum !== '')
-            || (this.props.alreadyRegistered && this.props.initialTaxRegNum !== nextTaxRegNum)) {
-            this.checkKernelAvailability(nextProps.organization.country_uri, nextProps.organization.tax_reg_num);
-        }
-    }
-
-    createOptions(countries) {
+    static createOptions(countries) {
         return countries && countries.map(country => {
             return {label: country.name, value: country.uri};
         }) || [];
@@ -122,41 +133,30 @@ class OrganizationForm extends React.Component {
 
     onSubmit(e) {
         e.preventDefault();
-        this.props.onSubmit(this.props.organization, e);
+        this.props.onSubmit(this.state.organization, e);
     }
 
     onOrganizationSelected(organization) {
-        this.props.updateOrganizationForm(organization);
+        this.setState({ organization: organization });
     }
 
     handleCountryChange(country) {
-        this.props.resetOrganizationForm();
-        this.props.updateOrganizationForm({
-            country_uri: country.value,
-            country: country.label
-        });
+        this.setState({ organization: Object.assign({}, { country_uri: country.value, country: country.label } )});
     }
 
     handleTaxRegActivityChange(taxRegActivity) {
-        this.props.updateOrganizationForm({
-            tax_reg_activity_uri: taxRegActivity.uri,
-            tax_reg_activity: taxRegActivity.name
-        });
+        this.setState({ organization: Object.assign(this.state.organization,
+                { tax_reg_activity_uri: taxRegActivity.uri, tax_reg_activity: taxRegActivity.name } )});
     }
 
     handleJurisdictionChange(e,jurisdiction) {
-        this.props.updateOrganizationForm({
-            jurisdiction_uri: jurisdiction.uri,
-            jurisdiction: jurisdiction.name
-        });
+        this.setState({ organization: Object.assign(this.state.organization,
+                { jurisdiction_uri: jurisdiction.uri, jurisdiction: jurisdiction.name } )});
     }
 
     handleCityChange(e,city) {
-        this.props.updateOrganizationForm({
-            city_uri: city.uri,
-            city: city.name,
-            zip: city.postalCode
-        });
+        this.setState({ organization: Object.assign(this.state.organization,
+                { city_uri: city.uri, city: city.name, zip: city.postalCode } )});
     }
 
     handleFieldChange(e) {
@@ -164,15 +164,21 @@ class OrganizationForm extends React.Component {
         const field = el.name;
         const value = (el.type === 'checkbox') ? el.checked : el.value;
 
-        this.props.updateOrganizationForm({[field]: value});
+        this.setState({ organization: Object.assign(this.state.organization,
+                { [field]: value } )});
     }
 
     // Verify fields
     verifyTaxRegNum(e) {
         const el = e.currentTarget;
-        const msg = (/^[A-Za-z\d]*$/.test(this.props.organization.tax_reg_num)) ? '' :
+        const msg = (/^[A-Za-z\d]*$/.test(this.state.organization.tax_reg_num)) ? '' :
             'The field must contain only letters or numbers without spaces';
         el.setCustomValidity(msg);
+
+        if ((!this.props.alreadyRegistered && this.state.organization.tax_reg_num !== '')
+            || (this.props.alreadyRegistered && this.props.initialTaxRegNum !== this.state.organization.tax_reg_num)) {
+            this.checkKernelAvailability(this.state.organization.country_uri, this.state.organization.tax_reg_num);
+        }
     }
 
     verifyCountry(e) {
@@ -183,7 +189,7 @@ class OrganizationForm extends React.Component {
 
 
     render() {
-        const organization = this.props.organization;
+        const organization = this.state.organization;
         const countryIsSelected = !!(organization.country && organization.country_uri);
         const taxLabels = this.taxLabels;
         const isPublic = (organization.sector_type === 'Public' || organization.sector_type === 'PUBLIC_BODY');
@@ -198,8 +204,8 @@ class OrganizationForm extends React.Component {
                            className="label">{i18n._(t`my.network.organization.country`)} *</label>
                     <Select className="select field" value={organization.country_uri}
                             onChange={this.handleCountryChange}
-                            options={this.createOptions(this.props.countries)} clearable={false}
-                            required={true} disabled={this.props.organization.id !== undefined}/>
+                            options={OrganizationForm.createOptions(this.props.countries)} clearable={false}
+                            required={true} disabled={this.state.organization.id !== undefined}/>
                 </div>
 
                 {
@@ -413,21 +419,4 @@ class OrganizationForm extends React.Component {
     }
 }
 
-const mapStateToProps = state => {
-    return {
-        organization: state.organizationForm
-    }
-};
-
-const mapDispatchToProps = dispatch => {
-    return {
-        updateOrganizationForm(organization) {
-            return dispatch(updateOrganizationFormAction(organization));
-        },
-        resetOrganizationForm() {
-            return dispatch(resetOrganizationFormAction());
-        }
-    }
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(OrganizationForm);
+export default OrganizationForm;
