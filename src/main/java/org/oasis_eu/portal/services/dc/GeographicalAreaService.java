@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -64,17 +65,14 @@ public class GeographicalAreaService {
             .collect(Collectors.toList());
     }
 
-    /**
-     * @param q
-     * @return
-     */
     public List<GeographicalArea> findCountries(String q) {
         String[] queryTerms = null;
         if (q != null && !q.isEmpty()) {
-            List<String> termsLst = tokenizer.tokenize(q).stream().collect(Collectors.toList());
-            queryTerms = termsLst.toArray(new String[termsLst.size()]);
+            List<String> termsLst = new ArrayList<>(tokenizer.tokenize(q));
+            queryTerms = termsLst.toArray(new String[0]);
         }
-        return cache.findOneToken(null, new String[]{countryModel, countryModelHier}, RequestContextUtils.getLocale(request).getLanguage(), queryTerms)
+        return cache.findOneToken(null, new String[] { countryModel, countryModelHier },
+                RequestContextUtils.getLocale(request).getLanguage(), queryTerms)
             .collect(Collectors.toList());
     }
 }

@@ -3,7 +3,6 @@ package org.oasis_eu.portal.controller;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import org.oasis_eu.portal.model.geo.GeographicalArea;
 import org.oasis_eu.portal.services.dc.GeographicalAreaService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -16,8 +15,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/geo")
 public class GeoController {
 
-    @Autowired
-    private GeographicalAreaService geographicalAreaService;
+    private final GeographicalAreaService geographicalAreaService;
+
+    public GeoController(GeographicalAreaService geographicalAreaService) {
+        this.geographicalAreaService = geographicalAreaService;
+    }
 
     @GetMapping(value = "/areas")
     public GeographicalAreaResponse geographicalAreas(@RequestParam String country_uri, @RequestParam String q) {
