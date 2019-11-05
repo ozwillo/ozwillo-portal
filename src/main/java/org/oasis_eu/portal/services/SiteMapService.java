@@ -93,8 +93,6 @@ public class SiteMapService {
                     "\n" +
                     "\n" +
                     "    /* LOGO */\n" +
-                    "    {key:\"--logo-url\",value: \"url('/img/logo-ozwillo.png')\"},\n" +
-                    "    {key:\"--logo-width\",value: \"120px\"},\n" +
                     "    {key:\"--footer-logo-url\",value: 'url(\"/img/logo-ozwillo-footer.png\")'},\n" +
                     "    \n" +
                     "]" +

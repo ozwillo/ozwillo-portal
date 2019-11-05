@@ -29,8 +29,6 @@ body {
     --gray-color: #e4e4e4;
 
     /* LOGO */
-    --logo-url: url("/img/logo-ozwillo.png");
-    --logo-width: 120px;
     --footer-logo-url: url("/img/logo-ozwillo-footer.png");
 
     /* SCREEN SIZE
