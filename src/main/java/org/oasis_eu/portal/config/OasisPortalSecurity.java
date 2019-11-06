@@ -32,7 +32,7 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
     @Primary
     public OpenIdCConfiguration openIdCConfiguration() {
         StaticOpenIdCConfiguration configuration = new PortalOpenIdCConfiguration();
-        configuration.addSkippedPaths(Arrays.asList("/img/", "/js/", "/css/", "/status", "/api/", "/build/", "/media"));
+        configuration.addSkippedPaths(Arrays.asList("/img/", "/js/", "/css/", "/api/", "/build/", "/media"));
         return configuration;
     }
 
@@ -53,11 +53,12 @@ public class OasisPortalSecurity extends OasisSecurityConfiguration {
                 .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessHandler(logoutHandler()).and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint()).and()
                 .authorizeRequests()
-                .antMatchers("/api/env").permitAll()
-                .antMatchers("/api/organization/import").permitAll()
-                .antMatchers("/my/**").authenticated()
-                .antMatchers("/popup/**").authenticated()
-                .anyRequest().permitAll().and()
+                    .antMatchers("/actuator/**").permitAll()
+                    .antMatchers("/api/env").permitAll()
+                    .antMatchers("/api/organization/import").permitAll()
+                    .antMatchers("/my/**").authenticated()
+                    .antMatchers("/popup/**").authenticated()
+                    .anyRequest().permitAll().and()
                 .csrf().ignoringAntMatchers("/api/organization/import")
                     .csrfTokenRepository(CookieCsrfTokenRepository.withHttpOnlyFalse()).and()
                 .addFilterBefore(oasisAuthenticationFilter(), AbstractPreAuthenticatedProcessingFilter.class);

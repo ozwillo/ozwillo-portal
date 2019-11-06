@@ -26,7 +26,7 @@ public class PortalOpenIdCConfiguration extends StaticOpenIdCConfiguration {
     @Override
     public boolean skipAuthenticationForPath(String path) {
         return path.contains("/api/organization/import") || path.contains("/status")
-                || path.contains("/media");
+                || path.contains("/media") || path.startsWith("/actuator");
     }
 
     @Override
