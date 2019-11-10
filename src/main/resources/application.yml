@@ -97,8 +97,8 @@ confs:
       client_secret: changeit
       callback_uri: ${confs.localhost.baseUrl}/callback
       post_logout_redirect_uri: ${confs.localhost.baseUrl}/fr/store
-      home_uri: ${conf.localhost.baseUrl}
-      error_401_uri: ${conf.localhost.baseUrl}/my
+      home_uri: ${confs.localhost.baseUrl}
+      error_401_uri: ${confs.localhost.baseUrl}/my
     datacore:
       adminUserRefreshToken: changeit
       nonce: changeit
