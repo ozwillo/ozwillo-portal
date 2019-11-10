@@ -84,33 +84,6 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ```
 ./gradlew assemble
 ```
-## Customizing languages per portal instance 
-
-#### Config & compilation
-
-In `package.json` file choose the instance for which you want to generate the translations.
-
-To do so you have to replace the `targetToCompile` variable with the directory name of your instance :
-
-```
- "lingui": {
-    ...
-    "localeDir": "src/main/resources/public/locales/{targetToCompile}",
-    ...
-  }
-```
-Then do a `yarn compile`.
-
-Do it for all if you need to have a multi domain site. Soon LinguiJs will integrate directly this kind of [feature](https://github.com/lingui/js-lingui/pull/326) and this chore will be avoided.
-
-#### Extract traduction
-
-`yarn extract` will extract all tags or sentence present in the code as :
-
-- ```i18n._(t`somethingToTrad`)```
-- `<Trans>Something To trad</Trans>`
-
-Extracted translations will be present in the directory defined in the `package.json` (cf: config & compilation).
 
 =====================================================
 
