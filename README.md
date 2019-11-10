@@ -5,9 +5,9 @@ Ozwillo portal implementation
 
 ## Prerequisites
 
-Building requires **Java 8**.
+Building requires Java 8 or later.
 
-"Unit" tests require a working **MongoDB** database at localhost:27017. We use 2.6 in the project (but it works with newer versions, such as the 3.4 one). "Integration" tests require an Internet connection and generally that the Ozwillo ecosystem (kernel, data core, etc.) is set up and in the expected condition. They are therefore more brittle and for that reason, they do not fail the build (you should make sure they pass, though).
+"Unit" tests require a working MongoDB 4.2 database at localhost:27017. "Integration" tests require an Internet connection and generally that the Ozwillo ecosystem (kernel, data core, etc.) is set up and in the expected condition. They are therefore more brittle and for that reason, they do not fail the build (you should make sure they pass, though).
 
 
 ## Installation
@@ -114,6 +114,6 @@ Extracted translations will be present in the directory defined in the `package.
 
 =====================================================
 
-Copyright (c) 2013-2018 Open Wide & Ozwillo - http://www.openwide.fr - https://www.ozwillo.com
+Copyright (c) 2013-2019 Open Wide & Ozwillo - http://www.openwide.fr - https://www.ozwillo.com
 
 =====================================================
