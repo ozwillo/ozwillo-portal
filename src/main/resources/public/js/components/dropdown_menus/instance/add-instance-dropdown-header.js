@@ -45,10 +45,10 @@ class AddInstanceDropdownHeader extends React.Component {
     onSubmit(e) {
         e.preventDefault();
 
-        this.setState({error: '',isLoading: true});
+        this.setState({error: {message:''},isLoading: true});
 
         this.props.onAddInstance()
-            .then(() => this.setState({error: '', isLoading: false}))
+            .then(() => this.setState({error: {message:'', http_status: 200}, isLoading: false}))
             .catch(err => {
                 console.error(err);
                 let message = '';
