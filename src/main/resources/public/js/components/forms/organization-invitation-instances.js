@@ -3,19 +3,28 @@ import PillButton from "../pill-button";
 import PropTypes from "prop-types";
 import {i18n} from "../../config/i18n-config";
 import { t } from "@lingui/macro"
+import InstanceService from "../../util/instance-service";
 
 
 
 export default class OrganizationInvitationInstances extends React.Component {
 
-    state = {
-        instancesArray: [],
-        instancesSelected: this.props.instancesSelected ? [...this.props.instancesSelected] :[]
-    };
+    constructor(props) {
+        super(props)
 
+        this.state = {
+            instances: [],
+            instancesArray: [],
+            instancesSelected: this.props.instancesSelected ? [...this.props.instancesSelected] :[]
+        };
+
+        this._instanceService = new InstanceService();
+    }
 
     componentDidMount = async () => {
         this.setState({instancesArray: this.props.instancesSelected});
+        this._instanceService.fetchInstancesOfOrganization(this.props.organizationId)
+            .then((res) => this.setState({instances: res}))
     };
 
     _sortByName = (a, b) => {
@@ -51,7 +60,7 @@ export default class OrganizationInvitationInstances extends React.Component {
     };
 
     _displayPillButtons = () => {
-        const {instances} = this.props;
+        const {instances} = this.state;
         instances.sort(this._sortByName);
         return instances.map(instance => {
             return (

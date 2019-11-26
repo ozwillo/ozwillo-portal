@@ -198,7 +198,7 @@ export default class OrganizationInvitationForm extends React.Component {
                 {/*STEP 2*/}
                 {activeStep === 2 &&
                 <OrganizationInvitationInstances
-                    instances={this.props.organization.instances}
+                    organizationId={this.props.organization.id}
                     callBackInstances={this._handleInstancesSelected}
                     instancesSelected={instancesSelected}/>
                 }
