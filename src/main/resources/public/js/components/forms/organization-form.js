@@ -69,7 +69,6 @@ class OrganizationForm extends React.Component {
         this.handleCityChange = this.handleCityChange.bind(this);
         this.handleFieldChange = this.handleFieldChange.bind(this);
         this.verifyTaxRegNum = this.verifyTaxRegNum.bind(this);
-        this.verifyCountry = this.verifyCountry.bind(this);
         OrganizationForm.createOptions = OrganizationForm.createOptions.bind(this);
     }
 
@@ -180,13 +179,6 @@ class OrganizationForm extends React.Component {
             this.checkKernelAvailability(this.state.organization.country_uri, this.state.organization.tax_reg_num);
         }
     }
-
-    verifyCountry(e) {
-        const el = e.currentTarget;
-        const msg = (!this.props.organization.country_uri) ? 'You must select a country.' : '';
-        el.setCustomValidity(msg);
-    }
-
 
     render() {
         const organization = this.state.organization;
@@ -374,8 +366,7 @@ class OrganizationForm extends React.Component {
                                             endpoint="cities"
                                             onChange={this.handleFieldChange}
                                             onGeoAreaSelected={this.handleCityChange}
-                                            value={organization.city}
-                                            onBlur={this.verifyCountry}/>
+                                            value={organization.city} />
                     </div>
 
                     <div className="flex-row">
