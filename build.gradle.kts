@@ -15,11 +15,11 @@ plugins {
     id("com.github.node-gradle.node") version "1.3.0"
 }
 
-version = "1.55.4"
+version = "1.55.5"
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
 }
 
 node {
