@@ -67,14 +67,12 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ## Using the portal
 
 * Front-end access: 
-  * DEV  : http://localhost:3000
-  * PREPROD : https://portal.ozwillo-preprod.eu
-  * PROD : https://portal.ozwillo.com
+  * Dev: http://localhost:3000
+  * Prod: https://portal.ozwillo.com
 
 ## Renew Refresh_Token to DC http access
 
- * Use the js client app to generate a refresh_token that must be set in file application.yml (Portal and DC credentials can be found in **DC project/puppet** protected repository) :
-    https://github.com/ozwillo/ozwillo-node-client
+ * Use the js client app to generate a refresh_token that must be set in file application.yml (Portal and DC credentials can be found in **DC project/puppet** protected repository): https://github.com/ozwillo/ozwillo-node-client
  * With the obtained new code, reset it in the application.yml file and restart the Portal app
 
 ## Release
@@ -84,6 +82,8 @@ Also, a valid refresh_token needs to be set in the configuration (explained belo
 ```
 ./gradlew assemble
 ```
+
+A new self-executable jar file, named `ozwillo-portal-${version}.jar` is generated in the `build/libs` directory.
 
 =====================================================
 
