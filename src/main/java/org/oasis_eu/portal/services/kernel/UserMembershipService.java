@@ -89,6 +89,12 @@ public class UserMembershipService {
         return Arrays.asList(kernel.getEntityOrException(uri, OrgMembership[].class, user()));
     }
 
+    public boolean isAdminOfOrganization(String organizationId, String userId) {
+        return getAdminsOfOrganization(organizationId)
+                .stream()
+                .anyMatch(orgMembership -> orgMembership.getAccountId().equals(userId));
+    }
+
     @CacheEvict(value = "org-memberships", key = "#organizationId")
     public void updateMembership(OrgMembership om, boolean admin, String organizationId) throws WrongQueryException {
         updateMembership(om.getMembershipUri(), om.getMembershipEtag(), admin);

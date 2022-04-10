@@ -90,7 +90,7 @@ class OrganizationImportController {
                         country_uri.append(countries.get(0).getUri());
                     }
 
-                    if (!StringUtils.isEmpty(country_uri.toString())) {
+                    if (StringUtils.hasLength(country_uri.toString())) {
                         List<GeographicalArea> cities = geographicalAreaService.findCities(cityCSV, country_uri.toString(), 0, 1);
                         if (!cities.isEmpty()) {
                             city.append(cities.get(0).getName());
@@ -99,9 +99,9 @@ class OrganizationImportController {
                     }
                 });
 
-                if (!StringUtils.isEmpty(name) && !StringUtils.isEmpty(siren) && !StringUtils.isEmpty(nic) &&
-                    !StringUtils.isEmpty(cityCSV) && !StringUtils.isEmpty(city.toString()) &&
-                    !StringUtils.isEmpty(city_uri.toString())) {
+                if (StringUtils.hasLength(name) && StringUtils.hasLength(siren) && StringUtils.hasLength(nic) &&
+                    StringUtils.hasLength(cityCSV) && StringUtils.hasLength(city.toString()) &&
+                    StringUtils.hasLength(city_uri.toString())) {
                     String siret = siren + String.join("", Collections.nCopies(5 - nic.length(), "0")) + nic;
                     DCOrganization dcOrganization = new DCOrganization();
                     dcOrganization.setId(dcOrganizationService.generateDcId(country_uri.toString(), siret));

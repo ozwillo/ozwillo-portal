@@ -230,7 +230,7 @@ public class ImageService {
 
     private String getFileName(String url) {
 
-        if (StringUtils.isEmpty(url)) {
+        if (!StringUtils.hasLength(url)) {
             return "";
         }
 
@@ -246,7 +246,7 @@ public class ImageService {
     }
 
     private String stripSlash(String input) {
-        if (StringUtils.isEmpty(input)) {
+        if (!StringUtils.hasLength(input)) {
             return "";
         } else if (input.endsWith("/")) {
             return input.substring(0, input.length() - 1);

@@ -1,9 +1,9 @@
 package org.oasis_eu.portal.model.dc;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.data.annotation.Id;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 

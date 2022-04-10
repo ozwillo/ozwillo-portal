@@ -163,7 +163,7 @@ public class GeographicalAreaCache {
 
         return collected.values()
             .stream()
-            .sorted((pair1, pair2) -> new Float(pair2.score()).compareTo(new Float(pair1.score())))
+            .sorted((pair1, pair2) -> Float.compare(pair2.score(), pair1.score()))
             .map(pair -> pair.area)
             .skip(start)
             .limit(limit);
@@ -242,8 +242,8 @@ public class GeographicalAreaCache {
             criteria.andOperator(andCriteria.toArray(new Criteria[andCriteria.size()]));
         }
         return query(criteria)
-            .with(new Sort(Sort.Direction.ASC, "name"))
-            .with(new Sort(Sort.Direction.ASC, "replicationTime"))
+            .with(Sort.by(Sort.Direction.ASC, "name"))
+            .with(Sort.by(Sort.Direction.ASC, "replicationTime"))
             .limit(findOneTokenLimit); // limit to prevent too much performance-hampering object scanning
     }
 
@@ -272,7 +272,7 @@ public class GeographicalAreaCache {
         threadPoolTaskScheduler.setPoolSize(1);
         threadPoolTaskScheduler.afterPropertiesSet();
         threadPoolTaskScheduler.schedule(() -> {
-            if (mongoTemplate.getCollection("geographical_area").count() == 0) {
+            if (mongoTemplate.getCollection("geographical_area").countDocuments() == 0) {
                 logger.info("Geo area cache is empty, initializing it");
                 replicate();
             }
@@ -310,7 +310,8 @@ public class GeographicalAreaCache {
             long switchStart = System.currentTimeMillis();
             this.switchToOnline();
             logger.debug("Switched to online in {} ms", System.currentTimeMillis() - switchStart);
-            logger.info("Finish replication of {} geographical records from data core", mongoTemplate.getCollection("geographical_area").count());
+            logger.info("Finish replication of {} geographical records from data core",
+                    mongoTemplate.getCollection("geographical_area").countDocuments());
         } catch (RestClientException e) {
             logger.error("Error while updating the geo area cache", e);
 

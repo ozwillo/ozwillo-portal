@@ -2,7 +2,6 @@ package org.oasis_eu.portal.model.organization;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.portal.config.CustomInstantSerializer;
 import org.oasis_eu.portal.model.instance.InstanceService;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
@@ -10,6 +9,7 @@ import org.oasis_eu.spring.kernel.model.Organization;
 import org.oasis_eu.spring.kernel.model.OrganizationStatus;
 import org.oasis_eu.spring.kernel.model.OrganizationType;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.net.URI;
 import java.time.Instant;

@@ -84,7 +84,7 @@ public class ImageServiceIntegrationTest {
                 .thenReturn(load("images/64.png"));
 
         String iconUri = imageService.getImageForURL("http://www.citizenkin.com/icon/one.png", ImageFormat.PNG_64BY64, false);
-        assertEquals(1, mongoTemplate.getCollection("image").count());
+        assertEquals(1, mongoTemplate.getCollection("image").countDocuments());
         assertNotNull(iconUri);
         // test that this matches a regexp including a UUID
         String applicationUrl = envPropertiesService.getCurrentConfig().getBaseUrl();

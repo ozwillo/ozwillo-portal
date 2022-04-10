@@ -12,6 +12,7 @@ import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.user.User;
 import org.oasis_eu.portal.services.kernel.*;
 import org.oasis_eu.spring.kernel.exception.ForbiddenException;
+import org.oasis_eu.spring.kernel.service.UserInfoService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,10 +57,13 @@ public class ApplicationService {
     private ImageService imageService;
 
     @Autowired
-    private OrganizationService organizationService;
+    private UserProfileService userProfileService;
 
     @Autowired
-    private UserProfileService userProfileService;
+    private UserMembershipService userMembershipService;
+
+    @Autowired
+    private UserInfoService userInfoService;
 
     public List<MyAppsInstance> getMyInstances(UIOrganization uiOrganization, boolean fetchServices) {
         if (uiOrganization.isPersonal())
@@ -147,7 +151,9 @@ public class ApplicationService {
 
     public InstanceService updateService(String serviceId, ServiceEntry serviceEntry) {
         ApplicationInstance appInstance = catalogStore.findApplicationInstance(serviceEntry.getInstanceId());
-        if (!organizationService.userIsAdminOrPersonalAppInstance(appInstance)) {
+        String userId = userInfoService.currentUser().getUserId();
+        if (!appInstance.isPersonalApp() &&
+                !userMembershipService.isAdminOfOrganization(appInstance.getProviderId(), userId)) {
             // let it with the default forbidden error message
             throw new ForbiddenException();
         }
@@ -227,8 +233,10 @@ public class ApplicationService {
     }
 
     public MyAppsInstance setInstanceStatus(MyAppsInstance uiInstance) {
-        ApplicationInstance existingInstance = catalogStore.findApplicationInstance(uiInstance.getId());
-        if (!organizationService.userIsAdminOrPersonalAppInstance(existingInstance)) {
+        ApplicationInstance appInstance = catalogStore.findApplicationInstance(uiInstance.getId());
+        String userId = userInfoService.currentUser().getUserId();
+        if (!appInstance.isPersonalApp() &&
+                !userMembershipService.isAdminOfOrganization(appInstance.getProviderId(), userId)) {
             throw new AccessDeniedException("Unauthorized access");
         }
 
