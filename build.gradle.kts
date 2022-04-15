@@ -69,10 +69,10 @@ dependencies {
         exclude("junit")
     }
     testImplementation("org.springframework.security:spring-security-test")
-    testImplementation("org.junit.jupiter:junit-jupiter-api:5.3.2")
-    testImplementation("org.junit.jupiter:junit-jupiter-params:5.3.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-api:5.8.2")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.8.2")
     testImplementation("com.github.tomakehurst:wiremock-standalone:2.20.0")
-    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.3.2")
+    testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 
     runtime("commons-fileupload:commons-fileupload:1.3.3")
 
