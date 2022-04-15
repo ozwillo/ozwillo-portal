@@ -81,7 +81,7 @@ dependencies {
     runtime("org.codehaus.groovy:groovy:2.4.7")
 
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
-    runtime("com.google.code.gson:gson:2.8.2")
+    runtime("com.google.code.gson:gson:2.9.0")
     runtime("com.ibm.icu:icu4j:60.1")
 }
 
