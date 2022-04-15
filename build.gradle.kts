@@ -78,7 +78,7 @@ dependencies {
 
     // required to parse logback-spring.groovy
     // TODO : quite a fat dependency for a configuration file
-    runtime("org.codehaus.groovy:groovy:2.4.7")
+    runtime("org.codehaus.groovy:groovy:3.0.10")
 
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
     runtime("com.google.code.gson:gson:2.9.0")
