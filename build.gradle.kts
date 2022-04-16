@@ -59,8 +59,8 @@ dependencies {
     implementation("io.projectreactor:reactor-core")
 
     /* Our specific dependencies */
-    implementation("de.javakaffee.msm:memcached-session-manager:2.1.1")
-    implementation("de.javakaffee.msm:memcached-session-manager-tc8:2.1.1")
+    implementation("de.javakaffee.msm:memcached-session-manager:2.3.2")
+    implementation("de.javakaffee.msm:memcached-session-manager-tc8:2.3.2")
     implementation("org.apache.tika:tika-core:1.16")
 
     implementation("org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.1")
