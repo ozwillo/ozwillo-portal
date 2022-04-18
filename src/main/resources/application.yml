@@ -11,6 +11,9 @@ spring:
   # In prod, replace journal=true by w=majority&readPreference=primaryPreferred
   # TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
   data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
 
 server:
   compression.enabled: true
@@ -20,7 +23,7 @@ server:
 
 ha:
   enabled: false
-  nodes: n1:localhost:11211,n2:192.168.56.102:11211
+  nodes: n1:localhost:11211
   failover: n1
 
 application:
@@ -84,7 +87,7 @@ rest:
 confs:
   localhost:
     isDefaultConf: true
-    baseUrl: http://localhost:3000
+    baseUrl: http://localhost:8080
     baseImageUrl: ${confs.localhost.baseUrl}/media
     defaultIconUrl: ${confs.localhost.baseUrl}/img/noicon.png
     web:

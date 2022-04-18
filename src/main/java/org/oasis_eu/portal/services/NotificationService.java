@@ -134,7 +134,7 @@ public class NotificationService {
                 notif.setFormattedText(getFormattedText(n, locale));
                 notif.setId(n.getId());
 
-                if (StringUtils.isEmpty(n.getActionUri())) {
+                if (!StringUtils.hasLength(n.getActionUri())) {
                     if (serviceEntry != null) {
                         notif.setUrl(serviceEntry.getNotificationUrl());
                     }
@@ -142,7 +142,7 @@ public class NotificationService {
                     notif.setUrl(n.getActionUri());
                 }
 
-                if (StringUtils.isEmpty(n.getActionLabel())) {
+                if (!StringUtils.hasLength(n.getActionLabel())) {
                     notif.setActionText("Manage");
                 } else {
                     notif.setActionText(n.getActionLabel(locale));

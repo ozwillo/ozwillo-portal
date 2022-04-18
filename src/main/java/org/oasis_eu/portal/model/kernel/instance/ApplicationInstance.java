@@ -4,11 +4,11 @@ import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import com.fasterxml.jackson.annotation.JsonAnySetter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.oasis_eu.spring.kernel.model.instance.ScopeNeeded;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.time.Instant;
 import java.util.HashMap;
@@ -228,6 +228,11 @@ public class ApplicationInstance {
 
     public enum InstantiationStatus {
         PENDING, RUNNING, STOPPED // STOPPED means trashed (replaces deletion)
+    }
+
+    @JsonIgnore
+    public boolean isPersonalApp() {
+        return this.getProviderId() == null;
     }
 
     @Override

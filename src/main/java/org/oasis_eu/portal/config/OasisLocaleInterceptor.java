@@ -4,6 +4,7 @@ import org.oasis_eu.portal.model.Languages;
 import org.oasis_eu.spring.kernel.security.OpenIdCAuthentication;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -15,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
  *
  * @author mkalam-alami
  */
-public class OasisLocaleInterceptor extends HandlerInterceptorAdapter {
+public class OasisLocaleInterceptor implements HandlerInterceptor {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) {

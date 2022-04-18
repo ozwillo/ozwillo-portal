@@ -2,7 +2,6 @@ package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.model.dc.DCOrganization;
 import org.oasis_eu.portal.model.instance.MyAppsInstance;
-import org.oasis_eu.portal.model.kernel.instance.ApplicationInstance;
 import org.oasis_eu.portal.model.kernel.organization.OrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.PendingOrgMembership;
 import org.oasis_eu.portal.model.kernel.organization.UserMembership;
@@ -10,7 +9,6 @@ import org.oasis_eu.portal.model.organization.InvitationRequest;
 import org.oasis_eu.portal.model.organization.UIOrganization;
 import org.oasis_eu.portal.model.organization.UIOrganizationMember;
 import org.oasis_eu.portal.model.organization.UIPendingOrganizationMember;
-import org.oasis_eu.portal.model.user.UserGeneralInfo;
 import org.oasis_eu.portal.services.dc.DCOrganizationService;
 import org.oasis_eu.portal.services.kernel.UserMembershipService;
 import org.oasis_eu.portal.services.kernel.UserProfileService;
@@ -211,7 +209,7 @@ public class OrganizationService {
      * Update organization in DC and create data in kernel
      */
     public UIOrganization update(DCOrganization dcOrganization) {
-        if (StringUtils.isEmpty(dcOrganization.getLang())) {
+        if (!StringUtils.hasLength(dcOrganization.getLang())) {
             dcOrganization.setLang(RequestContextUtils.getLocale(request).getLanguage());
         }
 
@@ -343,7 +341,7 @@ public class OrganizationService {
                 .collect(Collectors.toList());
     }
 
-    private UIOrganization getKernelOrganization(String organizationId) {
+    UIOrganization getKernelOrganization(String organizationId) {
         String userId = userInfoService.currentUser().getUserId();
         boolean isPersonal = userId.equals(organizationId);
 
@@ -388,8 +386,7 @@ public class OrganizationService {
 
     private List<MyAppsInstance> getOrganizationInstances(String organizationId) {
         UIOrganization uiOrganization = getKernelOrganization(organizationId);
-        List<MyAppsInstance> instances = applicationService.getMyInstances(uiOrganization, false);
-        return instances;
+        return applicationService.getMyInstances(uiOrganization, false);
     }
 
     private Instant computeDeletionPlanned(Organization organization) {
@@ -578,11 +575,6 @@ public class OrganizationService {
         return nameHasChanged || typeHasChanged || territoryIdHasChanged;
     }
 
-    public UserGeneralInfo getCurrentUser() {
-        UserInfo userInfo = userInfoService.currentUser();
-        return new UserGeneralInfo(userInfo.getGivenName(), userInfo.getFamilyName(), userInfo.getEmail(), userInfo.getAddress());
-    }
-
     private String getUserName(String accountId) {
         if (accountId != null) {
             return userProfileService.findUserProfile(accountId).getDisplayName();
@@ -601,14 +593,6 @@ public class OrganizationService {
         return userMembershipService.getAdminsOfOrganization(organizationId)
                 .stream()
                 .anyMatch(orgMembership -> orgMembership.getAccountId().equals(userId));
-    }
-
-    public boolean userIsAdminOrPersonalAppInstance(ApplicationInstance existingInstance) {
-        return isPersonalAppInstance(existingInstance) || this.userIsAdmin(existingInstance.getProviderId());
-    }
-
-    private boolean isPersonalAppInstance(ApplicationInstance existingInstance) {
-        return existingInstance.getProviderId() == null;
     }
 
     public UIPendingOrganizationMember invite(String email, boolean isAdmin, String organizationId) {

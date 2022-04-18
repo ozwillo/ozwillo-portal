@@ -1,5 +1,3 @@
-import com.moowork.gradle.node.yarn.YarnTask
-
 buildscript {
     repositories {
         mavenCentral()
@@ -10,9 +8,9 @@ buildscript {
 plugins {
     java
     idea
-    id("org.springframework.boot") version "2.1.1.RELEASE"
-    id("io.spring.dependency-management") version "1.0.6.RELEASE"
-    id("com.github.node-gradle.node") version "1.3.0"
+    id("org.springframework.boot") version "2.6.6"
+    id("io.spring.dependency-management") version "1.0.11.RELEASE"
+    id("com.github.node-gradle.node") version "3.2.1"
 }
 
 version = "1.55.5"
@@ -23,9 +21,9 @@ java {
 }
 
 node {
-    version = "10.14.1"
-    yarnVersion = "1.12.3"
-    download = true
+    version.set("16.14.0")
+    yarnVersion.set("1.22.18")
+    download.set(true)
 }
 
 repositories {
@@ -55,13 +53,12 @@ dependencies {
     implementation("com.github.ozwillo:ozwillo-java-spring-integration:1.27.0")
     // uncomment this when locally developing on ozwillo-java-spring-integration lib
     // implementation("com.ozwillo:ozwillo-java-spring-integration:1.27.0-RC2")
-
     implementation("io.projectreactor:reactor-core")
 
     /* Our specific dependencies */
     implementation("de.javakaffee.msm:memcached-session-manager:2.3.2")
     implementation("de.javakaffee.msm:memcached-session-manager-tc8:2.3.2")
-    implementation("org.apache.tika:tika-core:1.16")
+    implementation("org.apache.tika:tika-core:1.22")
 
     implementation("org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.1")
 
@@ -74,15 +71,11 @@ dependencies {
     testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 
-    runtime("commons-fileupload:commons-fileupload:1.3.3")
-
-    // required to parse logback-spring.groovy
-    // TODO : quite a fat dependency for a configuration file
-    runtime("org.codehaus.groovy:groovy:3.0.10")
+    runtimeOnly("commons-fileupload:commons-fileupload:1.4")
 
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
-    runtime("com.google.code.gson:gson:2.9.0")
-    runtime("com.ibm.icu:icu4j:60.1")
+    runtimeOnly("com.google.code.gson:gson:2.9.0")
+    runtimeOnly("com.ibm.icu:icu4j:60.1")
 }
 
 defaultTasks("bootRun")
@@ -109,8 +102,8 @@ tasks.getting(ProcessResources::class) {
     exclude("public/js", "public/css")
 }
 
-tasks.register<YarnTask>("frontBundle") {
-    args = listOf("run", "build")
+tasks.register<com.github.gradle.node.yarn.task.YarnTask>("frontBundle") {
+    args.set(listOf("run", "build"))
     doLast {
         copy {
             from("src/main/resources/public/build")

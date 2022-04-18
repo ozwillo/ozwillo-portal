@@ -1,10 +1,10 @@
 package org.oasis_eu.portal.model.kernel.store;
 
 import com.fasterxml.jackson.annotation.*;
-import org.hibernate.validator.constraints.NotEmpty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.*;

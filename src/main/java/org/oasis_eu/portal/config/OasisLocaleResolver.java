@@ -30,7 +30,7 @@ public class OasisLocaleResolver extends SessionLocaleResolver {
     public Locale resolveLocale(HttpServletRequest request) {
         // Try to use profile information
         UserInfo currentUser = userInfoService.currentUser();
-        if (currentUser != null && !StringUtils.isEmpty(currentUser.getLocale())) {
+        if (currentUser != null && StringUtils.hasLength(currentUser.getLocale())) {
             Locale userLocale = Locale.forLanguageTag(currentUser.getLocale());
             if (!userLocale.getLanguage().isEmpty()) {
                 return userLocale; // ex. "en-GB fr" => en

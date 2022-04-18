@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <appender name="console" class="ch.qos.logback.core.ConsoleAppender">
+        <!-- encoders are assigned the type ch.qos.logback.classic.encoder.PatternLayoutEncoder by default -->
+        <encoder>
+            <pattern>%d{HH:mm:ss.SSS} [%thread] %highlight(%-5level) %logger{36} - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="reactor.netty.http.client" level="DEBUG"/>
+    <logger name="org.springframework.data.mongodb.core" level="DEBUG" />
+    <logger name="org.oasis_eu.portal" level="DEBUG"/>
+    <logger name="org.oasis_eu.spring.util.KernelLoggingInterceptor" level="DEBUG" />
+    <logger name="kernelLogging.logFullErrorResponses" level="DEBUG" />
+
+    <root level="INFO">
+        <appender-ref ref="console" />
+    </root>
+
+</configuration>
