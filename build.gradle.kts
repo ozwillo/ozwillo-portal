@@ -1,5 +1,3 @@
-import com.moowork.gradle.node.yarn.YarnTask
-
 buildscript {
     repositories {
         mavenCentral()
@@ -12,7 +10,7 @@ plugins {
     idea
     id("org.springframework.boot") version "2.6.6"
     id("io.spring.dependency-management") version "1.0.11.RELEASE"
-    id("com.github.node-gradle.node") version "1.3.0"
+    id("com.github.node-gradle.node") version "3.2.1"
 }
 
 version = "1.55.5"
@@ -23,9 +21,9 @@ java {
 }
 
 node {
-    version = "16.0"
-    yarnVersion = "1.22.18"
-    download = true
+    version.set("16.14.0")
+    yarnVersion.set("1.22.18")
+    download.set(true)
 }
 
 repositories {
@@ -104,8 +102,8 @@ tasks.getting(ProcessResources::class) {
     exclude("public/js", "public/css")
 }
 
-tasks.register<YarnTask>("frontBundle") {
-    args = listOf("run", "build")
+tasks.register<com.github.gradle.node.yarn.task.YarnTask>("frontBundle") {
+    args.set(listOf("run", "build"))
     doLast {
         copy {
             from("src/main/resources/public/build")
