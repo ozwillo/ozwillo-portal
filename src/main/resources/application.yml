@@ -91,6 +91,7 @@ confs:
     baseImageUrl: ${confs.localhost.baseUrl}/media
     defaultIconUrl: ${confs.localhost.baseUrl}/img/noicon.png
     web:
+      # FIXME set it even if not used as it prevents app from loading if unset
       googleTag: UA-11111111-2
       home: https://www.ozwillo.com
       sitemap:
