@@ -10,6 +10,10 @@ import org.oasis_eu.portal.dao.StylePropertiesMapRepository;
 import org.oasis_eu.portal.model.sitemap.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.web.client.RestTemplateBuilder;
+import org.springframework.http.MediaType;
+import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -120,7 +124,16 @@ public class SiteMapService {
 
             // Loads and updates the footer from JSON resource
             try {
-                RestTemplate restTemplate = new RestTemplate();
+
+                // allow any media type mainly for footers served on raw content from GH
+                // in this case, content type of the response is always text/plain
+                RestTemplate restTemplate = new RestTemplateBuilder().build();
+                List<HttpMessageConverter<?>> messageConverters = new ArrayList<>();
+                MappingJackson2HttpMessageConverter converter = new MappingJackson2HttpMessageConverter();
+                converter.setSupportedMediaTypes(Collections.singletonList(MediaType.ALL));
+                messageConverters.add(converter);
+                restTemplate.setMessageConverters(messageConverters);
+
                 FooterMenuSet footerMenuSet = restTemplate.getForObject(url_footer, FooterMenuSet.class);
                 Footer footer = footerMenuSet.getFooter();
                 List<SiteMapMenuFooter> menuset = footer.getMenuset();
