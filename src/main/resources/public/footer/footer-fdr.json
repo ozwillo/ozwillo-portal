@@ -1,0 +1,21 @@
+{
+  "menuset": {
+    "menu": [
+      {
+        "item": [
+          {
+            "href": "mailto:contact@fnccr.org",
+            "label": "Contact",
+            "row": "0"
+          },
+          {
+            "href": "/mentions-legales",
+            "label": "Mentions légales",
+            "row": "0"
+          }
+        ],
+        "locale": "fr"
+      }
+    ]
+  }
+}
