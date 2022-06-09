@@ -13,7 +13,7 @@ plugins {
     id("com.github.node-gradle.node") version "3.2.1"
 }
 
-version = "1.55.5"
+version = "1.56.0"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_11
@@ -119,4 +119,3 @@ tasks.named("jar") {
 tasks.named("frontBundle") {
     dependsOn("yarn_install")
 }
-
