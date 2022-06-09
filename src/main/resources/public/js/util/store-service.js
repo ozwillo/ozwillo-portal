@@ -22,10 +22,15 @@ export const buyApplication  = async (appId, appType, organizationSelected) =>{
     if (organizationSelected && organizationSelected.id) {
         request.organizationId = organizationSelected.id;
     }
-    return await customFetch(`/api/store/buy/${appType}`, {
-        method: 'POST',
-        json: request
-    })
+    if (appType === 'service')
+        return await customFetch(`/api/store/buy/${appType}/${appId}`, {
+            method: 'POST'
+        });
+    else
+        return await customFetch(`/api/store/buy/${appType}`, {
+            method: 'POST',
+            json: request
+        });
 };
 
 export const addInstanceToOrg = async (organizationId, {id}) => {
