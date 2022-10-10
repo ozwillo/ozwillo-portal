@@ -10,7 +10,7 @@ spring:
   # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
   # In prod, replace journal=true by w=majority&readPreference=primaryPreferred
   # TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
-  data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
+  data.mongodb.uri: mongodb://localhost:27017/portal?connectTimeoutMS=300&journal=true
   mvc:
     pathmatch:
       matching-strategy: ant_path_matcher
@@ -50,7 +50,7 @@ application:
     findOneTokenLimit: 100
     # use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year => 0 0/30 * * * (every 30 minutes) | 0 30 * * * (at the minute 30 of any hour)
     # examples http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
-    replication: 0 0 1 1/5 * ?    #Runs at 1am every 5 days every month, starting on the first day of the month
+    replication: 0 0 1 1/5 * ? #Runs at 1am every 5 days every month, starting on the first day of the month
   dcOrg:
     project: org
     orgModel: org:Organization_0
@@ -64,20 +64,20 @@ application:
   applicationInstanceDaysTillDeletedFromTrash: 7
   importPassword: importPassword
 
-# some switches:
-# devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
-# production = include piwik js
-# notificationsEnabled = enable notifications
-# at some point we should use these as default values & instead look for the values in the database
-# (to allow live switching of feature flags)
+  # some switches:
+  # devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
+  # production = include piwik js
+  # notificationsEnabled = enable notifications
+  # at some point we should use these as default values & instead look for the values in the database
+  # (to allow live switching of feature flags)
   devmode: false
   production: true
   notificationsEnabled: true
 
 web:
   sitemap:
-      #refresh: 0 0/5 * * * *
-      refresh: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
+    #refresh: 0 0/5 * * * *
+    refresh: 0 0 1 1/5 * ? #Runs at 1am every 5 days every month, starting on the first day of the month
 
 rest:
   # by default uses mere HttpURLConnection, better : https://jira.spring.io/browse/ANDROID-54 http://stackoverflow.com/questions/25698072/simpleclienthttprequestfactory-vs-httpcomponentsclienthttprequestfactory-for-htt
@@ -85,27 +85,27 @@ rest:
   revertToApacheHttpComponentsClient: false
 
 confs:
-  localhost:
+  ozwillo:
     isDefaultConf: true
     baseUrl: http://localhost:8080
-    baseImageUrl: ${confs.localhost.baseUrl}/media
-    defaultIconUrl: ${confs.localhost.baseUrl}/img/noicon.png
+    baseImageUrl: ${confs.ozwillo.baseUrl}/media
+    defaultIconUrl: ${confs.ozwillo.baseUrl}/img/noicon.png
     web:
       # FIXME set it even if not used as it prevents app from loading if unset
       googleTag: UA-11111111-2
       home: https://www.ozwillo.com
       sitemap:
-        url_footer: ${confs.localhost.web.home}/footer.json
+        url_footer: ${confs.ozwillo.web.home}/footer.json
     kernel:
       client_id: portal
-      client_secret: changeit
-      callback_uri: ${confs.localhost.baseUrl}/callback
-      post_logout_redirect_uri: ${confs.localhost.baseUrl}/fr/store
-      home_uri: ${confs.localhost.baseUrl}
-      error_401_uri: ${confs.localhost.baseUrl}/my
+      client_secret: 1pimkXJiEEDQr1rA89V39SFSqt779weBJqYAhgJ7kX4
+      callback_uri: ${confs.ozwillo.baseUrl}/callback
+      post_logout_redirect_uri: ${confs.ozwillo.baseUrl}/fr/store
+      home_uri: ${confs.ozwillo.baseUrl}
+      error_401_uri: ${confs.ozwillo.baseUrl}/my
     datacore:
-      adminUserRefreshToken: changeit
-      nonce: changeit
+      adminUserRefreshToken: eyJpZCI6IjI0NzFjZThmLTE2MWYtNGU2Ni04M2ZmLTdkMTc4YTc4MThjZS9BaXBRanB6UlVERU16SXRZZFRDaDNnIiwiaWF0IjoxNDQxMzYyOTQ2MDQ4LCJleHAiOjMwMTgxNjI5NDYwNDh9
+      nonce: 970774665428326
     opendata:
       url: https://opendata.ozwillo.com
 
