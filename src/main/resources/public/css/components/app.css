@@ -84,7 +84,7 @@
 }
 
 #store-apps .app .description .app-provider {
-  color: var(--clr-primary-3);
+  color: #e41a5b;
   font-size: 15px;
   text-align: center;
   display: block;
