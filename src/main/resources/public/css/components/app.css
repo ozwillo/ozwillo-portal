@@ -32,7 +32,7 @@
   margin: auto;
   width: 64px;
   height: 64px;
-  background: var(--clr-primary-5);
+  background: white;
   color: var(--clr-primary-1);
   padding: 0.5rem;
   display: inline-block;
@@ -67,20 +67,6 @@
   display: inline-block;
   text-overflow: ellipsis;
   width: 100%;
-}
-#store-apps .app .description .app-name:hover {
-  overflow: visible;
-  background: white;
-  left: auto;
-  top: auto;
-  width: auto;
-  max-width: 20rem;
-  /* border: 1px solid #eaebec; */
-  padding: 0 0.5rem;
-  white-space: normal;
-  word-wrap: break-word;
-  margin: 90px 0 10px 0;
-  display: block;
 }
 
 #store-apps .app .description .app-provider {
@@ -151,28 +137,28 @@
 }
 
 #store-apps .app .description .app-status .btn-buy {
-  background-color: #ef769d;
+  background-color: #ec5f8c;
 }
 #store-apps .app .description .app-status .btn-buy:hover {
   background: #e41a5b;
 }
 
 #store-apps .app .description .app-status .btn-buy-indicator {
-  background-color: #ef769d;
+  background-color: #ec5f8c;
 }
 #store-apps .app .description .app-status .btn-buy-indicator:hover {
   background-color: #e41a5b;
 }
 
 #store-apps .app .description .app-status .btn-free {
-  background-color: #b7a1c7;
+  background-color: #9a7bb0;
 }
 #store-apps .app .description .app-status .btn-free:hover {
   background-color: #6e428e;
 }
 
 #store-apps .app .description .app-status .btn-free-indicator {
-  background-color: #b7a1c7;
+  background-color: #9a7bb0;
 }
 #store-apps .app .description .app-status .btn-free-indicator:hover {
   background-color: #6e428e;
