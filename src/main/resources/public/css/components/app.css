@@ -39,7 +39,7 @@
 }
 
 #store-apps .app .description {
-  background-color: var(--clr-grey-10);
+  background-color: white;
   border: 1px solid var(--primary-color);
   display: block;
   position: relative;
