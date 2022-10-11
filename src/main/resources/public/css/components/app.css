@@ -85,7 +85,7 @@
 
 #store-apps .app .description .app-provider {
   color: #e41a5b;
-  font-size: 15px;
+  font-size: 16px;
   text-align: center;
   display: block;
   letter-spacing: var(--spacing);
