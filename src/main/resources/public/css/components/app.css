@@ -70,7 +70,7 @@
 }
 #store-apps .app .description .app-name:hover {
   overflow: visible;
-  background: var(--clr-grey-10);
+  background: white;
   left: auto;
   top: auto;
   width: auto;
@@ -99,7 +99,7 @@
   width: 100%;
 }
 #store-apps .app .description .app-provider :hover {
-  overflow: auto;
+  overflow: visible;
 }
 
 #store-apps .app .description .app-description {
