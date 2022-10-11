@@ -151,19 +151,19 @@
 }
 
 #store-apps .app .description .app-status .btn-buy {
-  background-color: #eebbc3;
+  background-color: #ec5f8c;
 }
 
 #store-apps .app .description .app-status .btn-buy-indicator {
-  background-color: #eebbc3;
+  background-color: #ec5f8c;
 }
 
 #store-apps .app .description .app-status .btn-free {
-  background-color: #b5d8cc;
+  background-color: #9a7bb0;
 }
 
 #store-apps .app .description .app-status .btn-free-indicator {
-  background-color: #b5d8cc;
+  background-color: #9a7bb0;
 }
 
 #store-apps .app .description .app-status .btn-installed {
