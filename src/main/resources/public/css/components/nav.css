@@ -37,12 +37,13 @@
 
 #oz-nav .navbar-nav > .menu > .link {
   display: flex;
-  color: #e41a5b;
+  color: #cd1752;
   padding: 0;
   margin: auto;
   align-items: center;
   width: 100%;
   height: 100%;
+  font-weight: bold;
 }
 
 .navbar-toggle {
