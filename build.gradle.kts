@@ -10,7 +10,7 @@ plugins {
     idea
     id("org.springframework.boot") version "2.6.7"
     id("io.spring.dependency-management") version "1.0.13.RELEASE"
-    id("com.github.node-gradle.node") version "3.2.1"
+    id("com.github.node-gradle.node") version "3.5.0"
 }
 
 version = "1.56.0"
