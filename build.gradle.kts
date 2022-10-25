@@ -74,7 +74,7 @@ dependencies {
     runtimeOnly("commons-fileupload:commons-fileupload:1.4")
 
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
-    runtimeOnly("com.google.code.gson:gson:2.9.0")
+    runtimeOnly("com.google.code.gson:gson:2.10")
     runtimeOnly("com.ibm.icu:icu4j:71.1")
 }
 
