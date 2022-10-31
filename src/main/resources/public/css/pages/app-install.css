@@ -1,189 +1,188 @@
 .app-install-wrapper {
-    flex-grow: 1;
-    padding: 3em 1em 0 1em;
+  flex-grow: 1;
+  padding: 3em 1em 0 1em;
 }
 
 .app-install-wrapper .header-app-install {
-    justify-content: space-between;
+  justify-content: space-between;
 }
 
 .app-install-wrapper .header-app-install .information-app {
-    height: 100%;
+  height: 100%;
 }
 
 .app-install-wrapper .header-app-install .information-app img {
-    width: 64px;
-    height: 64px;
-    align-self: center;
+  width: 64px;
+  height: 64px;
+  align-self: center;
 }
 
-.app-install-wrapper .header-app-install .information-app .information-app-details {
-    display: flex;
-    justify-content: start;
-    flex-flow: column wrap;
-    max-width: 50%;
-    margin-left: 2em;
+.app-install-wrapper
+  .header-app-install
+  .information-app
+  .information-app-details {
+  display: flex;
+  justify-content: start;
+  flex-flow: column wrap;
+  max-width: 50%;
+  margin-left: 2em;
 }
 
 .app-install-wrapper .app-install-carousel {
-    padding: 5em 5em 2em 5em;
+  padding: 5em 5em 2em 5em;
 }
 
 .app-install-wrapper .app-install-description {
-    justify-content: center;
-    align-items: center;
-    flex-flow: column wrap;
-    padding: 5% 0 5% 0;
-    text-align: center;
+  justify-content: center;
+  align-items: center;
+  flex-flow: column wrap;
+  padding: 5% 0 5% 0;
+  text-align: center;
 }
 
 .app-install-wrapper .app-install-description p {
-    width: 70%;
-    line-height: 1.8em;
-    font-size: 1.25em;
+  width: 70%;
+  line-height: 1.8em;
+  font-size: 1em;
 }
 
-.app-install-wrapper .app-install-description div.long{
-    justify-content: center;
-    display: flex;
+.app-install-wrapper .app-install-description div.long {
+  justify-content: space-evenly;
+  display: flex;
+  flex-wrap: wrap;
 }
 
-.app-install-wrapper .app-install-description div.long > *{
+/* .app-install-wrapper .app-install-description div.long > *{
     text-align: justify !important;
+} */
+
+.app-install-wrapper .go-to-long-description {
+  color: var(--black-color);
+  cursor: pointer;
 }
 
-.app-install-wrapper .go-to-long-description{
-    color: var(--black-color);
-    cursor: pointer;
-}
-
-.app-install-wrapper .rate-content{
-    min-width: 8em;
+.app-install-wrapper .rate-content {
+  min-width: 8em;
 }
 
 .app-install-wrapper .rate-content img {
-    max-width: 1.5em;
-    max-height: 1.5em;
+  max-width: 1.5em;
+  max-height: 1.5em;
 }
 
 .app-install-carousel .screenshot {
-    max-width: 25em;
-    max-height: 25em;
-    transition: 0.2s all;
+  max-width: 25em;
+  max-height: 25em;
+  transition: 0.2s all;
 }
 
 .app-install-carousel .screenshot:hover {
-    opacity: 0.7;
-    cursor: zoom-in;
+  opacity: 0.7;
+  cursor: zoom-in;
 }
 
 .slick-slide {
-    padding: 0 1em 0 1em;
+  padding: 0 1em 0 1em;
 }
 
-.slick-slide img{
-    border: 1px solid var(--primary-color);
-    cursor: zoom-in;
+.slick-slide img {
+  border: 1px solid var(--primary-color);
+  cursor: zoom-in;
 }
 
 .slick-prev::before,
 .slick-next::before {
-    color: black !important;
+  color: black !important;
 }
 
 .slick-slide .content {
-    width: 90%;
+  width: 90%;
 }
 
 .slick-list {
-    height: 15em !important;
+  height: 15em !important;
 }
-
 
 .install-app {
-    width: 25%;
+  width: 25%;
 }
-.install-app .dropdown{
-    margin-top: -1em;
-    height:100%;
-    display: flex;
-    justify-content: flex-end;
-    align-items: flex-end;
-    flex-direction: column;
-}
-
-.install-app .dropdown > *{
-    margin-bottom: 1.5em;
+.install-app .dropdown {
+  margin-top: -1em;
+  height: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
 }
 
-.install-app .dropdown > :last-child{
-    margin-top: -0.5em;
+.install-app .dropdown > * {
+  margin-bottom: 1.5em;
+}
+
+.install-app .dropdown > :last-child {
+  margin-top: -0.5em;
 }
 
 .install-area {
-    justify-content: flex-end;
-    align-items: center;
-    font-size: 1.5em;
+  justify-content: flex-end;
+  align-items: center;
+  font-size: 1.5em;
 }
 
-.install-area > :last-child{
-    margin-left: 0.5em;
+.install-area > :last-child {
+  margin-left: 0.5em;
 }
 
-.dropdown .redirect-to-connection{
-    margin-bottom: 0em;
+.dropdown .redirect-to-connection {
+  margin-bottom: 0em;
 }
 
-.app-install-wrapper .label-spinner{
-    padding-left: 25px;
+.app-install-wrapper .label-spinner {
+  padding-left: 25px;
 }
 
-.app-install-wrapper .organization-spinner{
-    padding-right: 10px;
+.app-install-wrapper .organization-spinner {
+  padding-right: 10px;
 }
 
-.app-install-wrapper .select-organization{
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
+.app-install-wrapper .select-organization {
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
 }
 
-.app-install-wrapper .select{
-    width: 100%;
-    min-width: 300px;
+.app-install-wrapper .select {
+  width: 100%;
+  min-width: 300px;
 }
 
-
-.install .btn-install{
-    width: 8em;
+.install .btn-install {
+  width: 8em;
 }
 
 .installed {
-    padding-top: 5em;
-    flex-flow: row wrap;
+  padding-top: 5em;
+  flex-flow: row wrap;
 }
 
-.installed > *{
-    margin-bottom: 0.5em;
-    margin-left: 0.5em;
+.installed > * {
+  margin-bottom: 0.5em;
+  margin-left: 0.5em;
 }
 
-
-.unique-screenshot{
-    display: flex;
-    flex:1;
-    justify-content: center;
-    align-items: center;
-    margin-top: 2.5em;
+.unique-screenshot {
+  display: flex;
+  flex: 1;
+  justify-content: center;
+  align-items: center;
+  margin-top: 2.5em;
 }
 
-.unique-screenshot img{
-    border: 1px solid var(--primary-color);
-    cursor: zoom-in;
+.unique-screenshot img {
+  border: 1px solid var(--primary-color);
+  cursor: zoom-in;
 }
 
-.dashboard{
-    background-color: var(--primary-color) !important;
+.dashboard {
+  background-color: var(--primary-color) !important;
 }
-
-
