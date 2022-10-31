@@ -56,6 +56,34 @@
     text-align: justify !important;
 } */
 
+table {
+  border-collapse: collapse !important;
+  margin: 25px 0 !important;
+  font-size: 0.9em !important;
+  font-family: sans-serif !important;
+  min-width: 400px !important;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.15) !important;
+}
+thead tr {
+  background-color: #f4a3bd;
+  color: #ffffff;
+  text-align: left;
+}
+th td {
+  padding: 12px 15px;
+}
+th {
+  padding: 5px;
+}
+tbody tr {
+  border-bottom: 1px solid #dddddd;
+}
+tbody tr:nth-of-type(even) {
+  background-color: #f3f3f3;
+}
+tbody tr:last-of-type {
+  border-bottom: 2px solid #e41a5b;
+}
 .app-install-wrapper .go-to-long-description {
   color: var(--black-color);
   cursor: pointer;
