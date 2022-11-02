@@ -164,7 +164,7 @@ export default class AppInstall extends React.Component {
                 &nbsp;
                 {appDetails.longdescription === app.description ? null : (
                   <i
-                    className="fas fa-external-link-alt go-to-long-description"
+                    // className="fas fa-external-link-alt go-to-long-description"
                     onClick={this.scrollToLongDescription}
                   />
                 )}

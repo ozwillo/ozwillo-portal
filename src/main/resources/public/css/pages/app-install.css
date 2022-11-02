@@ -28,8 +28,17 @@
   margin-left: 2em;
 }
 .information-app-name {
+  color: var(--primary-color);
 }
 .information-app-provider {
+  letter-spacing: 0.25rem;
+  text-transform: capitalize;
+  overflow: hidden;
+  white-space: nowrap;
+  display: inline-block;
+  text-overflow: ellipsis;
+  width: 100%;
+  color: #e41a5b;
 }
 .information-app-description {
 }
