@@ -1,189 +1,192 @@
 #dashboard {
-    height: 100%;
+  height: 100%;
 }
 
 #dashboard .nav-tabs {
-    border: none;
+  border: none;
 }
 
 #dashboard .all-apps .list {
-    flex-wrap: wrap;
+  flex-wrap: wrap;
 }
 
 #dashboard .all-apps .list > .item {
-    margin: 0.4em;
+  margin: 0.4em;
+  flex: 1 0 13%;
 }
 
 #dashboard ul.nav.nav-tabs > li {
-    margin-right: 0.7em;
-    box-shadow: -1px -1px 3px -1px rgba(0, 0, 0, 0.2)
+  margin-right: 0.7em;
+  box-shadow: -1px -1px 3px -1px rgba(0, 0, 0, 0.2);
 }
 
 #dashboard ul.nav.nav-tabs > li > a {
-    font-size: 20px;
-    border-radius: 0;
-    color: var(--primary-color);
-    background-color: #FFF;
-    border-color: transparent;
-    border-width: 2px 0 0 0;
-    margin: 0;
+  font-size: 20px;
+  border-radius: 0;
+  color: var(--primary-color);
+  background-color: #fff;
+  border-color: transparent;
+  border-width: 2px 0 0 0;
+  margin: 0;
 }
 
 #dashboard ul.nav.nav-tabs > li > a.over,
 #dashboard ul.nav.nav-tabs > li.active > a {
-    color: var(--primary-color);
-    background-color: #FFF;
-    border-color: var(--primary-color);
+  color: var(--primary-color);
+  background-color: #fff;
+  border-color: var(--primary-color);
 }
 
 #dashboard ul.nav.nav-tabs > li > a i {
-    margin-left: 5px;
+  margin-left: 5px;
 }
 
 #dashboard .all-apps {
-    height: 100%;
-    background-color: #FFF;
-    padding-left: 0;
-    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
-    4px 3px 3px rgba(0, 0, 0, 0.2);
-
+  height: 100%;
+  background-color: #fff;
+  padding-left: 0;
+  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2), 4px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
 #dashboard .appzone .dropzone {
-    transition: width 0.2s;
-    -moz-transition: width 0.2s;
-    -webkit-transition: width 0.2s;
-    -o-transition: width 0.2s;
-    -ms-transition: width 0.2s;
+  transition: width 0.2s;
+  -moz-transition: width 0.2s;
+  -webkit-transition: width 0.2s;
+  -o-transition: width 0.2s;
+  -ms-transition: width 0.2s;
 }
 
 #dashboard .appzone .app {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: flex-start;
-    overflow: hidden;
-    width: 130px;
-    height: 100%;
-    min-height:10em;
-    max-height:10em;
-    border-radius: 3px;
-    text-align: center;
-    padding: 10px;
-
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  overflow: hidden;
+  width: 130px;
+  height: 100%;
+  min-height: 10em;
+  max-height: 10em;
+  border-radius: 3px;
+  text-align: center;
+  padding: 10px;
 }
 
 #dashboard .appzone .app span.badge-notifications {
-    position: absolute;
-    right: 17px;
-    top: 0;
-    background: var(--alert-color);
-    text-align: center;
-    border-radius: 30px 30px 30px 30px;
-    color: white;
-    padding: 5px 8px;
-    font-size: 12px;
+  position: absolute;
+  right: 17px;
+  top: 0;
+  background: var(--alert-color);
+  text-align: center;
+  border-radius: 30px 30px 30px 30px;
+  color: white;
+  padding: 5px 8px;
+  font-size: 12px;
 }
 
 #dashboard .appzone .app.disabled {
-    opacity: 0.5;
-    user-drag: none;
-    user-select: none;
-    -moz-user-select: none;
-    -webkit-user-drag: none;
-    -webkit-user-select: none;
-    -ms-user-select: none;
+  opacity: 0.5;
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 #dashboard .appzone .app .image {
-    margin-bottom: 5px;
+  margin-bottom: 5px;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
 }
-
 
 #dashboard .appzone .dropzone.dragover .app,
 #dashboard .appzone .app:hover,
-#dashboard .appzone .app.pending:hover{
-    color: var(--primary-color);
-    background-color: var(--gray-color);
+#dashboard .appzone .app.pending:hover {
+  color: var(--primary-color);
+  background-color: var(--gray-color);
 }
 
 #dashboard .appzone {
-    position: relative;
+  position: relative;
 }
 
 #dashboard .appzone .app.pending:hover {
-    cursor: not-allowed;
+  cursor: not-allowed;
 }
 
 #dashboard .appzone .app .action-icon {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    height: 64px;
-    width: 64px;
-    margin: auto;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  height: 64px;
+  width: 64px;
+  margin: auto;
 }
 
 #dashboard .action-icon a {
-    color: var(--primary-color);
+  color: var(--primary-color);
 }
 
 #dashboard .app:hover .action-icon a {
-    color: var(--tertiary-color);
+  color: var(--tertiary-color);
 }
 
 #dashboard .top-menu {
-    display: flex;
-    flex-direction: row;
-    justify-content: flex-end;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
 }
 
 #dashboard .top-menu .action-icon {
-    font-size: 0.8em;
-    margin: 0 2px;
+  font-size: 0.8em;
+  margin: 0 2px;
 }
 
 #dashboard .top-menu .action-icon.delete-app {
-    color: var(--alert-color);
+  color: var(--alert-color);
 }
 
 #dashboard .action-icon .fa-trash {
-    color: var(--primary-color);
-    border-color: var(--primary-color);
+  color: var(--primary-color);
+  border-color: var(--primary-color);
 }
 
 #dashboard .app:hover .action-icon .fa-trash {
-    color: #FFF;
-    border-color: var(--primary-color);
-    background-color: var(--primary-color);
+  color: #fff;
+  border-color: var(--primary-color);
+  background-color: var(--primary-color);
 }
 
 #dashboard .appzone .app p {
-    margin: 0;
+  margin: 0;
 }
 
 /* See non-webkit sol : http://codepen.io/anon/pen/oXxKpE?editors=110 */
 @supports (-webkit-line-clamp: 4) {
-    #dashboard .appzone .app p {
-        display: -webkit-box;
-        -webkit-line-clamp: 4;
-        -webkit-box-orient: vertical;
-        text-overflow: ellipsis;
-        overflow: hidden;
-    }
+  #dashboard .appzone .app p {
+    display: -webkit-box;
+    -webkit-line-clamp: 4;
+    -webkit-box-orient: vertical;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    width: 100%;
+  }
 
-    #dashboard .appzone .app p:after {
-        display: none;
-    }
+  #dashboard .appzone .app p:after {
+    display: none;
+  }
 }
 
 @media (max-width: 425px) {
-    #dashboard ul.nav.nav-tabs > li {
-        width: 100%;
-    }
+  #dashboard ul.nav.nav-tabs > li {
+    width: 100%;
+  }
 
-    #dashboard .all-apps .list {
-        justify-content: center;
-    }
+  #dashboard .all-apps .list {
+    justify-content: center;
+  }
 }
