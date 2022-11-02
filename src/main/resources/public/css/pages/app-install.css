@@ -27,7 +27,12 @@
   max-width: 50%;
   margin-left: 2em;
 }
-
+.information-app-name {
+}
+.information-app-provider {
+}
+.information-app-description {
+}
 .app-install-wrapper .app-install-carousel {
   padding: 5em 5em 2em 5em;
 }
