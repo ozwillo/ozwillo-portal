@@ -393,6 +393,7 @@ export class InstallForm extends React.Component {
                 }
                 clearable={false}
                 options={organizationsAvailable.organizations}
+                placeholder="You need to be part of an organization"
               />
             </div>
           </div>
