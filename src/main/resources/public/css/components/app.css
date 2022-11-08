@@ -30,20 +30,19 @@
     margin: auto;
     width: 64px;
     height: 64px;
-    background: white;
+    background: var(--tertiary-color);
     color: var(--clr-primary-1);
     padding: 0.5rem;
     display: inline-block;
 }
 
 #store-apps .app .description {
-    background-color: white;
+    background-color: var(--tertiary-color);
     border: 1px solid var(--primary-color);
     display: block;
     position: relative;
     border-radius: 5px;
     box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
-    color: #b8c1ec;
 }
 
 #store-apps .app .description .app-header {
@@ -92,10 +91,7 @@
     display: block;
     height: 100px;
     max-width: 20rem;
-    margin-left: auto;
-    margin-right: auto;
-    margin-bottom: 1.25rem;
-    margin-top: 2rem;
+    margin: 2rem auto 1.25rem auto;
 }
 
 #store-apps .app .description .public-service-indicator {

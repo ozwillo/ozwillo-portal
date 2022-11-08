@@ -32,13 +32,8 @@
 .app-store-container .search-bar {
     width: 40vw;
     z-index: 2;
-    /* border-radius: 20px;
-  margin-top: 0; */
     box-shadow: var(--light-shadow);
-    border-top-left-radius: 2rem;
-    border-top-right-radius: 2rem;
-    border-bottom-left-radius: 2rem;
-    border-bottom-right-radius: 2rem;
+    border-radius: 2rem;
     border-color: var(--primary-color);
     transform: translate(0, 0);
     transition: transform 0.3s ease-in;
