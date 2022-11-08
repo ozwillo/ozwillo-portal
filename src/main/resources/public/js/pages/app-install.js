@@ -6,7 +6,7 @@ import {
     fetchAppDetails,
     fetchAvailableOrganizations,
     fetchRateApp,
-    unavailableOrganizationToInstallAnApp,
+    unavailableOrganizationToInstallAnApp
 } from '../util/store-service';
 import RatingWrapper from '../components/rating';
 import Select from 'react-select';
@@ -32,11 +32,11 @@ export default class AppInstall extends React.Component {
             rating: 0,
             screenshots: [],
             serviceUrl: null,
-            tos: '',
+            tos: ''
         },
         config: {},
         organizationsAvailable: { organizations: [], loading: true },
-        user: {},
+        user: {}
     };
 
     constructor(props) {
@@ -60,15 +60,15 @@ export default class AppInstall extends React.Component {
         const { app } = this.state;
         const data = await fetchAvailableOrganizations(app.type, app.id);
         this.setState({
-            organizationsAvailable: { organizations: data, loading: false },
+            organizationsAvailable: { organizations: data, loading: false }
         });
 
         const newOrganizationsAvailable = await this._disableOrganizationWhereAppAlreadyInstalled(data);
         this.setState({
             organizationsAvailable: {
                 organizations: newOrganizationsAvailable,
-                loading: false,
-            },
+                loading: false
+            }
         });
     };
 
@@ -119,7 +119,7 @@ export default class AppInstall extends React.Component {
         // run this method to execute scrolling.
         window.scrollTo({
             top: this.longDescription.offsetTop,
-            behavior: 'smooth', // Optional, adds animation
+            behavior: 'smooth' // Optional, adds animation
         });
     };
 
@@ -130,7 +130,7 @@ export default class AppInstall extends React.Component {
             speed: 500,
             slidesToScroll: 1,
             variableWidth: true,
-            accessibility: true,
+            accessibility: true
         };
 
         return (
@@ -148,10 +148,7 @@ export default class AppInstall extends React.Component {
                                 {app.description}
                                 &nbsp;
                                 {appDetails.longdescription === app.description ? null : (
-                                    <i
-                                        // className="fas fa-external-link-alt go-to-long-description"
-                                        onClick={this.scrollToLongDescription}
-                                    />
+                                    <i onClick={this.scrollToLongDescription} />
                                 )}
                             </div>
                             <div className={'rate-content'}>
@@ -197,14 +194,14 @@ export default class AppInstall extends React.Component {
                     {appDetails.longdescription === app.description ? (
                         <div
                             dangerouslySetInnerHTML={{
-                                __html: converter.makeHtml(app.description),
+                                __html: converter.makeHtml(app.description)
                             }}
                         />
                     ) : (
                         <div
                             className={'long'}
                             dangerouslySetInnerHTML={{
-                                __html: converter.makeHtml(appDetails.longdescription),
+                                __html: converter.makeHtml(appDetails.longdescription)
                             }}
                         />
                     )}
@@ -221,7 +218,7 @@ export class InstallForm extends React.Component {
         error: { status: false, http_status: 200 },
         organizationSelected: null,
         buying: false,
-        installed: false,
+        installed: false
     };
 
     _hasCitizens = () => {
@@ -238,7 +235,7 @@ export class InstallForm extends React.Component {
             ? options.push({
                   value: i18n._('install.org.type.PERSONAL'),
                   label: 'PERSONAL',
-                  id: 1,
+                  id: 1
               })
             : null;
 
@@ -246,7 +243,7 @@ export class InstallForm extends React.Component {
             ? options.push({
                   value: i18n._('install.org.type.ORG'),
                   label: 'ORG',
-                  id: 2,
+                  id: 2
               })
             : null;
 
@@ -279,7 +276,7 @@ export class InstallForm extends React.Component {
         this.setState({
             installed: false,
             buying: true,
-            error: { status: false, http_status: 200 },
+            error: { status: false, http_status: 200 }
         });
         try {
             await buyApplication(app.id, app.type, organizationSelected);
@@ -287,7 +284,7 @@ export class InstallForm extends React.Component {
         } catch (error) {
             this.setState({
                 buying: false,
-                error: { status: true, http_status: error.status },
+                error: { status: true, http_status: error.status }
             });
         }
     };
@@ -395,5 +392,5 @@ export class InstallForm extends React.Component {
 InstallForm.propTypes = {
     app: PropTypes.object.isRequired,
     organizationsAvailable: PropTypes.object.isRequired,
-    user: PropTypes.object,
+    user: PropTypes.object
 };
