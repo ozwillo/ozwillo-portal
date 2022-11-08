@@ -38,7 +38,7 @@
   display: inline-block;
   text-overflow: ellipsis;
   width: 100%;
-  color: #e41a5b;
+  color: var(--clr-secondary-5);
 }
 .information-app-description {
 }
@@ -96,7 +96,7 @@ tbody tr:nth-of-type(even) {
   background-color: #f3f3f3;
 }
 tbody tr:last-of-type {
-  border-bottom: 2px solid #e41a5b;
+  border-bottom: 2px solid var(--clr-secondary-5);
 }
 .app-install-wrapper .go-to-long-description {
   color: var(--black-color);

@@ -6,7 +6,7 @@ label.pill-label {
 
 .badge.pill-label {
   background-color: #ffffff;
-  color: #e41a5b;
+  color: var(--clr-secondary-5);
   border: solid 1px var(--primary-color);
   font-size: 1em;
   cursor: pointer;

@@ -37,7 +37,7 @@
 
 #oz-nav .navbar-nav > .menu > .link {
   display: flex;
-  color: #cd1752;
+  color: var(--clr-secondary-6);
   padding: 0;
   margin: auto;
   align-items: center;

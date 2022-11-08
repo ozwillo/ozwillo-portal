@@ -12,6 +12,21 @@
   --clr-primary-8: #9a7bb0;
   --clr-primary-9: #a98ebb;
   --clr-primary-10: #b7a1c7;
+  /* dark shades of secondary color*/
+  --clr-secondary-0: #ef769d;
+  --clr-secondary-1: #ec5f8c;
+  --clr-secondary-2: #e9487c;
+  --clr-secondary-3: #e7316b;
+  --clr-secondary-4: #e7316b;
+  /* secondary/main color */
+  --clr-secondary-5: #e41a5b;
+  /* lighter shades of primary color */
+  --clr-secondary-6: #cd1752;
+  --clr-secondary-7: #b61549;
+  --clr-secondary-8: #a01240;
+  --clr-secondary-9: #891037;
+  --clr-secondary-10: #720d2e;
+
   /* darkest grey - used for headings */
   --clr-grey-1: hsl(209, 61%, 16%);
   --clr-grey-2: hsl(211, 39%, 23%);
@@ -38,7 +53,7 @@
   --green-dark: #0f5132;
 }
 #card {
-  background-color: white;
+  background-color: var(--clr-white);
   border-radius: 8px;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
   display: flex;
@@ -90,7 +105,7 @@
   display: inline-block;
   text-overflow: ellipsis;
   width: 100%;
-  color: #e41a5b;
+  color: var(--clr-secondary-5);
 }
 .flex-text {
   flex-shrink: 1;
@@ -145,7 +160,7 @@
   border: 1px solid var(--border-color);
   border-radius: 25px;
   box-sizing: border-box;
-  background-color: #ef769d;
+  background-color: var(--clr-secondary-0);
   cursor: pointer;
   display: inline-flex;
   flex-shrink: 0;
@@ -184,11 +199,11 @@
 
 .btn-label {
   margin-left: 10px;
-  color: white;
+  color: var(--clr-white);
   font-size: 11px;
 }
 .category-icon {
-  color: white;
+  color: var(--clr-white);
 }
 .content-wrapper {
   min-width: 400px;
