@@ -1,281 +1,281 @@
 /* GLOBAL STYLES */
-@import "variables.css";
+@import 'variables.css';
 @import url(https://fonts.googleapis.com/css?family=Roboto:400, 100, 300, 700);
-@import url("https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Inter:wght@300&display=swap");
-@import url("https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Inter:wght@300&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Inter:wght@300&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Delius+Swash+Caps&family=Inter:wght@300&display=swap');
 /* Components */
-@import "components/btn.css";
-@import "components/pill-button.css";
-@import "components/custom-tooltip.css";
-@import "components/datepicker.css";
-@import "components/dropdown-helper.css";
-@import "components/dropdown-menu.css";
-@import "components/footer.css";
-@import "components/header.css";
-@import "components/layout.css";
-@import "components/modal.css";
-@import "components/nav.css";
-@import "components/popup.css";
-@import "components/react-autosuggest.css";
-@import "components/service.css";
-@import "components/tabs.css";
-@import "components/tabs/admin-tab.css";
-@import "components/tabs/instances-tab.css";
-@import "components/tabs/members-tab.css";
-@import "components/forms/form.css";
-@import "components/forms/instance-config-form.css";
-@import "components/forms/instance-invitation-form.css";
-@import "components/forms/organization-invitation-form.css";
-@import "components/forms/organization-invitation-instance.css";
-@import "components/organization-card.css";
-@import "components/side-nav.css";
-@import "components/search-apps-form.css";
-@import "components/label-section.css";
-@import "components/pill-button.css";
-@import "components/pill-input-button.css";
-@import "components/modal-image.css";
-@import "components/app.css";
-@import "components/CSVReader.css";
-@import "components/stepper.css";
-@import "components/animation.css";
-@import "components/select.css";
+@import 'components/btn.css';
+@import 'components/pill-button.css';
+@import 'components/custom-tooltip.css';
+@import 'components/datepicker.css';
+@import 'components/dropdown-helper.css';
+@import 'components/dropdown-menu.css';
+@import 'components/footer.css';
+@import 'components/header.css';
+@import 'components/layout.css';
+@import 'components/modal.css';
+@import 'components/nav.css';
+@import 'components/popup.css';
+@import 'components/react-autosuggest.css';
+@import 'components/service.css';
+@import 'components/tabs.css';
+@import 'components/tabs/admin-tab.css';
+@import 'components/tabs/instances-tab.css';
+@import 'components/tabs/members-tab.css';
+@import 'components/forms/form.css';
+@import 'components/forms/instance-config-form.css';
+@import 'components/forms/instance-invitation-form.css';
+@import 'components/forms/organization-invitation-form.css';
+@import 'components/forms/organization-invitation-instance.css';
+@import 'components/organization-card.css';
+@import 'components/side-nav.css';
+@import 'components/search-apps-form.css';
+@import 'components/label-section.css';
+@import 'components/pill-button.css';
+@import 'components/pill-input-button.css';
+@import 'components/modal-image.css';
+@import 'components/app.css';
+@import 'components/CSVReader.css';
+@import 'components/stepper.css';
+@import 'components/animation.css';
+@import 'components/select.css';
 /* Pages */
-@import "pages/dashboard.css";
-@import "pages/notifications.css";
-@import "pages/organization-create.css";
-@import "pages/organization-search.css";
-@import "pages/organization-desc.css";
-@import "pages/profile.css";
-@import "pages/synchronize-fc-profile.css";
-@import "pages/app-store.css";
-@import "pages/app-install.css";
+@import 'pages/dashboard.css';
+@import 'pages/notifications.css';
+@import 'pages/organization-create.css';
+@import 'pages/organization-search.css';
+@import 'pages/organization-desc.css';
+@import 'pages/profile.css';
+@import 'pages/synchronize-fc-profile.css';
+@import 'pages/app-store.css';
+@import 'pages/app-install.css';
 /* Helper */
-@import "./helper.css";
+@import './helper.css';
 
 /* styles needed to have a responsive fixed footer
      while having main content (with page-row-expanded class) taking up all available space */
 
 html,
 body {
-  height: 100%;
-  margin: 0;
+    height: 100%;
+    margin: 0;
 }
 
 #root {
-  display: flex;
-  min-height: 100%;
+    display: flex;
+    min-height: 100%;
 }
 
 body {
-  width: 100%;
-  min-height: 100vh;
-  background-color: var(--bg-content-color);
+    width: 100%;
+    min-height: 100vh;
+    background-color: var(--bg-content-color);
 }
 
 body,
 h1,
 h2 {
-  font-family: "Open Sans", sans-serif !important;
-  font-weight: 300 !important;
+    font-family: 'Open Sans', sans-serif !important;
+    font-weight: 300 !important;
 }
 
 h4 {
-  font-weight: 300 !important;
-  color: var(--primary-color) !important;
+    font-weight: 300 !important;
+    color: var(--primary-color) !important;
 }
 
 label {
-  font-weight: 300;
+    font-weight: 300;
 }
 
 label.required {
-  font-weight: 700;
+    font-weight: 700;
 }
 
 /* page-row */
 .page-row {
-  display: table-row;
+    display: table-row;
 }
 
 .page-row-expanded {
-  height: 100%;
+    height: 100%;
 }
 
 /* END page-row */
 
 /* oz-body */
 .oz-body {
-  background: var(--bg-content-color);
+    background: var(--bg-content-color);
 }
 
 .oz-body.wrapper {
-  padding: 20px 100px;
-  height: 100%;
+    padding: 20px 100px;
+    height: 100%;
 }
 
 .oz-body .title {
-  color: var(--primary-color);
-  font-weight: bold;
-  font-size: 2em;
-  text-transform: uppercase;
-  vertical-align: middle;
-  text-align: center;
-  margin: 20px 0;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 2em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    text-align: center;
+    margin: 20px 0;
 }
 
 .oz-body h1 span {
-  vertical-align: middle;
+    vertical-align: middle;
 }
 
 .oz-body h2 {
-  font-size: 20px;
-  display: block;
-  margin-bottom: 20px;
+    font-size: 20px;
+    display: block;
+    margin-bottom: 20px;
 }
 
 .oz-body h3 {
-  font-size: 18px;
+    font-size: 18px;
 }
 
 .oz-body .label {
-  color: inherit;
+    color: inherit;
 }
 
 /* END oz-body */
 
 .top {
-  margin-top: 25px;
+    margin-top: 25px;
 }
 
 .logo-twitter {
-  width: auto;
-  height: auto;
-  margin: 25px 0 0 0;
+    width: auto;
+    height: auto;
+    margin: 25px 0 0 0;
 }
 
 .action-icon {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .text-align-middle {
-  padding-top: 0.5em;
+    padding-top: 0.5em;
 }
 
 .error-message {
-  color: var(--alert-color);
-  width: 100%;
-  text-align: left;
-  margin: auto 5px;
+    color: var(--alert-color);
+    width: 100%;
+    text-align: left;
+    margin: auto 5px;
 }
 
 .success-message {
-  color: var(--primary-color);
-  width: 100%;
-  text-align: left;
-  margin: auto 5px;
+    color: var(--primary-color);
+    width: 100%;
+    text-align: left;
+    margin: auto 5px;
 }
 
 .box {
-  background-color: var(--tertiary-color);
-  margin: 10px 5px;
-  padding: 10px 20px;
-  box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2), 4px 3px 3px rgba(0, 0, 0, 0.2);
+    background-color: var(--tertiary-color);
+    margin: 10px 5px;
+    padding: 10px 20px;
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2), 4px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
 .oz-body .alert {
-  margin: 1em auto;
-  padding: 10px;
-  background-color: transparent;
-  border-radius: 0;
-  white-space: normal;
+    margin: 1em auto;
+    padding: 10px;
+    background-color: transparent;
+    border-radius: 0;
+    white-space: normal;
 }
 
 .oz-body .alert .close {
-  opacity: 1;
-  margin-left: 1em;
+    opacity: 1;
+    margin-left: 1em;
 }
 
 .oz-body .alert-danger {
-  color: var(--alert-color);
-  border-color: var(--alert-color);
+    color: var(--alert-color);
+    border-color: var(--alert-color);
 }
 
 .oz-body .alert-danger .close {
-  color: var(--alert-color);
+    color: var(--alert-color);
 }
 
 .oz-body .alert-success {
-  color: var(--success-color);
-  border-color: var(--success-color);
+    color: var(--success-color);
+    border-color: var(--success-color);
 }
 
 .oz-body .alert-success .close {
-  color: var(--success-color);
+    color: var(--success-color);
 }
 
 form .alert {
-  margin: 1em 25%;
+    margin: 1em 25%;
 }
 
 .alert-message {
-  font-size: 1.2em;
+    font-size: 1.2em;
 }
 
 .alert-message > .line {
-  display: block;
-  width: 100%;
-  margin: 5px 0;
+    display: block;
+    width: 100%;
+    margin: 5px 0;
 }
 
 /* Loading */
 .loading-container {
-  text-align: center;
+    text-align: center;
 }
 
 .loading-container .loading {
-  font-size: 2.5em;
+    font-size: 2.5em;
 }
 
 .loading {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 .caret {
-  margin-left: 10px !important;
+    margin-left: 10px !important;
 }
 
 /* tablet */
 @media (max-width: 768px) {
-  .oz-body.wrapper {
-    padding: 20px 50px;
-  }
+    .oz-body.wrapper {
+        padding: 20px 50px;
+    }
 }
 
 /* phone */
 @media (max-width: 425px) {
-  .oz-body.wrapper {
-    padding: 0px;
-  }
+    .oz-body.wrapper {
+        padding: 0px;
+    }
 }
 
 /* width */
 ::-webkit-scrollbar {
-  width: 0.7em;
-  height: 0.7em;
+    width: 0.7em;
+    height: 0.7em;
 }
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--gray-color);
+    background: var(--gray-color);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--primary-color);
-  border-radius: 0.3em;
+    background: var(--primary-color);
+    border-radius: 0.3em;
 }
 
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
-  background: var(--secondary-color);
+    background: var(--secondary-color);
 }

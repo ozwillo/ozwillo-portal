@@ -1,103 +1,103 @@
 #oz-nav {
-  width: 100%;
-  margin: 0 !important;
-  background: var(--nav-color);
-  border-bottom: solid 2px var(--primary-color);
-  min-height: auto;
-  z-index: 5;
+    width: 100%;
+    margin: 0 !important;
+    background: var(--nav-color);
+    border-bottom: solid 2px var(--primary-color);
+    min-height: auto;
+    z-index: 5;
 }
 
 #oz-nav .navbar-nav {
-  margin: 0 -15px;
+    margin: 0 -15px;
 }
 
 #oz-nav .navbar-nav > .menu > .link > .icon {
-  margin-right: 5px;
-  font-size: 1.6em;
-  color: var(--secondary-color);
+    margin-right: 5px;
+    font-size: 1.6em;
+    color: var(--secondary-color);
 }
 
 #oz-nav .navbar-nav > .menu {
-  display: flex;
-  height: 46px;
-  border-top: solid 2px transparent;
-  margin: auto 10px 0px 10px;
+    display: flex;
+    height: 46px;
+    border-top: solid 2px transparent;
+    margin: auto 10px 0px 10px;
 }
 
 #oz-nav .navbar-nav > .menu:hover {
-  border-color: var(--secondary-color);
+    border-color: var(--secondary-color);
 }
 
 #oz-nav .dropdown.open > .link,
 #oz-nav .dropdown-menu.open > .link,
 #oz-nav .dropdown-menu > .menu > .link:hover,
 #oz-nav .navbar-nav > .menu > .link:hover {
-  border-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 #oz-nav .navbar-nav > .menu > .link {
-  display: flex;
-  color: var(--clr-secondary-6);
-  padding: 0;
-  margin: auto;
-  align-items: center;
-  width: 100%;
-  height: 100%;
-  font-weight: bold;
+    display: flex;
+    color: var(--clr-secondary-6);
+    padding: 0;
+    margin: auto;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+    font-weight: bold;
 }
 
 .navbar-toggle {
-  cursor: pointer;
+    cursor: pointer;
 }
 
 .navbar-toggle,
 .navbar-toggle:hover,
 .navbar-toggle.collapsed:hover,
 .navbar-toggle.collapsed .icon-bar {
-  background-color: var(--secondary-color) !important;
-  color: var(--tertiary-color);
+    background-color: var(--secondary-color) !important;
+    color: var(--tertiary-color);
 }
 
 .navbar-toggle.collapsed,
 .navbar-toggle .icon-bar,
 .navbar-toggle:hover .icon-bar {
-  background-color: var(--tertiary-color) !important;
+    background-color: var(--tertiary-color) !important;
 }
 
 #ozwillo-navbar {
-  position: relative;
+    position: relative;
 }
 
 #oz-nav .dropdown-menu {
-  background-color: var(--tertiary-color);
+    background-color: var(--tertiary-color);
 }
 
 #oz-nav .dropdown-menu > .menu > .link {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }
 
 @media (min-width: 768px) {
-  #oz-nav.navbar {
-    border-radius: 0;
-  }
+    #oz-nav.navbar {
+        border-radius: 0;
+    }
 }
 
 @media (max-width: 767px) {
-  #oz-nav .navbar-nav > .menu {
-    border-top: none;
-  }
+    #oz-nav .navbar-nav > .menu {
+        border-top: none;
+    }
 
-  #oz-nav .navbar-nav > .menu:hover {
-    background-color: var(--primary-color);
-  }
+    #oz-nav .navbar-nav > .menu:hover {
+        background-color: var(--primary-color);
+    }
 
-  #oz-nav .navbar-nav > .menu:hover .link {
-    color: var(--tertiary-color);
-  }
+    #oz-nav .navbar-nav > .menu:hover .link {
+        color: var(--tertiary-color);
+    }
 }
 
 @media (max-width: 1024px) {
-  #oz-nav .navbar-nav > .menu > .link {
-    margin: auto 6px;
-  }
+    #oz-nav .navbar-nav > .menu > .link {
+        margin: auto 6px;
+    }
 }

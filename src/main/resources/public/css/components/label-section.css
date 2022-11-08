@@ -1,13 +1,13 @@
 .label-section-content {
-  margin-top: 1em;
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: center;
-  width: 100%;
-  align-items: center;
-  flex-grow: 1;
+    margin-top: 1em;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: center;
+    width: 100%;
+    align-items: center;
+    flex-grow: 1;
 }
 
 .control-label {
-  color: var(--primary-color);
+    color: var(--primary-color);
 }

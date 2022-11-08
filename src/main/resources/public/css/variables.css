@@ -1,91 +1,91 @@
 :root {
-  /* dark shades of primary color*/
-  --clr-primary-1: #432855;
-  --clr-primary-2: #4e2f63;
-  --clr-primary-3: #593672;
-  --clr-primary-4: #643c80;
-  /* primary/main color */
-  --clr-primary-5: #6f438e;
-  /* lighter shades of primary color */
-  --clr-primary-6: #7d5699;
-  --clr-primary-7: #8c69a5;
-  --clr-primary-8: #9a7bb0;
-  --clr-primary-9: #a98ebb;
-  --clr-primary-10: #b7a1c7;
-  /* dark shades of secondary color*/
-  --clr-secondary-0: #ef769d;
-  --clr-secondary-1: #ec5f8c;
-  --clr-secondary-2: #e9487c;
-  --clr-secondary-3: #e7316b;
-  --clr-secondary-4: #e7316b;
-  /* secondary/main color */
-  --clr-secondary-5: #e41a5b;
-  /* lighter shades of primary color */
-  --clr-secondary-6: #cd1752;
-  --clr-secondary-7: #b61549;
-  --clr-secondary-8: #a01240;
-  --clr-secondary-9: #891037;
-  --clr-secondary-10: #720d2e;
-  /* darkest grey - used for headings */
-  --clr-grey-1: hsl(209, 61%, 16%);
-  --clr-grey-2: hsl(211, 39%, 23%);
-  --clr-grey-3: hsl(209, 34%, 30%);
-  --clr-grey-4: hsl(209, 28%, 39%);
-  /* grey used for paragraphs */
-  --clr-grey-5: hsl(210, 22%, 49%);
-  --clr-grey-6: hsl(209, 23%, 60%);
-  --clr-grey-7: hsl(211, 27%, 70%);
-  --clr-grey-8: hsl(210, 31%, 80%);
-  --clr-grey-9: hsl(212, 33%, 89%);
-  --clr-grey-10: hsl(210, 36%, 96%);
-  --clr-white: #fff;
-  --ff-primary: "Open sans", sans-serif;
-  --transition: all 0.3s linear;
-  --spacing: 0.25rem;
-  --radius: 0.5rem;
-  --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-  --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-  /* Rest of the colors */
-  --red-light: #f8d7da;
-  --red-dark: #842029;
-  --green-light: #d1e7dd;
-  --green-dark: #0f5132;
+    /* dark shades of primary color*/
+    --clr-primary-1: #432855;
+    --clr-primary-2: #4e2f63;
+    --clr-primary-3: #593672;
+    --clr-primary-4: #643c80;
+    /* primary/main color */
+    --clr-primary-5: #6f438e;
+    /* lighter shades of primary color */
+    --clr-primary-6: #7d5699;
+    --clr-primary-7: #8c69a5;
+    --clr-primary-8: #9a7bb0;
+    --clr-primary-9: #a98ebb;
+    --clr-primary-10: #b7a1c7;
+    /* Lighter shades of secondary color*/
+    --clr-secondary-0: #ef769d;
+    --clr-secondary-1: #ec5f8c;
+    --clr-secondary-2: #e9487c;
+    --clr-secondary-3: #e7316b;
+    --clr-secondary-4: #e7316b;
+    /* secondary/main color */
+    --clr-secondary-5: #e41a5b;
+    /* Dark shades of primary color */
+    --clr-secondary-6: #cd1752;
+    --clr-secondary-7: #b61549;
+    --clr-secondary-8: #a01240;
+    --clr-secondary-9: #891037;
+    --clr-secondary-10: #720d2e;
+    /* darkest grey - used for headings */
+    --clr-grey-1: hsl(209, 61%, 16%);
+    --clr-grey-2: hsl(211, 39%, 23%);
+    --clr-grey-3: hsl(209, 34%, 30%);
+    --clr-grey-4: hsl(209, 28%, 39%);
+    /* grey used for paragraphs */
+    --clr-grey-5: hsl(210, 22%, 49%);
+    --clr-grey-6: hsl(209, 23%, 60%);
+    --clr-grey-7: hsl(211, 27%, 70%);
+    --clr-grey-8: hsl(210, 31%, 80%);
+    --clr-grey-9: hsl(212, 33%, 89%);
+    --clr-grey-10: hsl(210, 36%, 96%);
+    --clr-white: #fff;
+    --ff-primary: 'Open sans', sans-serif;
+    --transition: all 0.3s linear;
+    --spacing: 0.25rem;
+    --radius: 0.5rem;
+    --light-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    --dark-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    /* Rest of the colors */
+    --red-light: #f8d7da;
+    --red-dark: #842029;
+    --green-light: #d1e7dd;
+    --green-dark: #0f5132;
 }
 
 body {
-  --primary-color: #6f438e;
-  --secondary-color: #4c2d62;
-  --tertiary-color: #fff;
+    --primary-color: #6f438e;
+    --secondary-color: #4c2d62;
+    --tertiary-color: #fff;
 
-  --separator-color: #ccc;
-  --footer-color: #eee;
-  --nav-color: #fbfbfb;
-  --bg-content-color: #f4f4f4;
+    --separator-color: #ccc;
+    --footer-color: #eee;
+    --nav-color: #fbfbfb;
+    --bg-content-color: #f4f4f4;
 
-  /* STORE */
-  --buy-color: #ff4d37e8;
-  --buy-dark-color: rgba(150, 0, 42, 1);
+    /* STORE */
+    --buy-color: #ff4d37e8;
+    --buy-dark-color: rgba(150, 0, 42, 1);
 
-  --free-color: #d1e7dd;
-  --free-dark-color: #0f5132;
+    --free-color: #d1e7dd;
+    --free-dark-color: #0f5132;
 
-  --installed-color: #43a047;
-  --installed-dark-color: #2e7d32;
+    --installed-color: #43a047;
+    --installed-dark-color: #2e7d32;
 
-  /* BUTTON */
-  --button-primary-color: #6f438e; /* Border + text */
-  --button-secondary-color: #fff; /* background */
+    /* BUTTON */
+    --button-primary-color: #6f438e; /* Border + text */
+    --button-secondary-color: #fff; /* background */
 
-  /* COLOR */
-  --black-color: #4c4c4c;
-  --alert-color: #ff4d37;
-  --success-color: #388e3c;
-  --gray-color: #e4e4e4;
+    /* COLOR */
+    --black-color: #4c4c4c;
+    --alert-color: #ff4d37;
+    --success-color: #388e3c;
+    --gray-color: #e4e4e4;
 
-  /* LOGO */
-  --footer-logo-url: url("/img/logo-ozwillo-footer.png");
+    /* LOGO */
+    --footer-logo-url: url('/img/logo-ozwillo-footer.png');
 
-  /* SCREEN SIZE
+    /* SCREEN SIZE
     --sm-phone-width: 320;
     --m-phone-width: 375;
     --l-phone-width: 425;
