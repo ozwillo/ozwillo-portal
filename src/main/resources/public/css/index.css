@@ -39,6 +39,8 @@
 @import 'components/stepper.css';
 @import 'components/animation.css';
 @import 'components/select.css';
+@import 'components/catalog-card.css';
+
 /* Pages */
 @import 'pages/dashboard.css';
 @import 'pages/notifications.css';
