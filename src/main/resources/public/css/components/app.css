@@ -131,31 +131,19 @@
 }
 
 #store-apps .app .description .app-status .btn-buy {
-    background-color: #ec5f8c;
-}
-#store-apps .app .description .app-status .btn-buy:hover {
-    background: #e41a5b;
+    background-color: var(--buy-color);
 }
 
 #store-apps .app .description .app-status .btn-buy-indicator {
-    background-color: #ec5f8c;
-}
-#store-apps .app .description .app-status .btn-buy-indicator:hover {
-    background-color: #e41a5b;
+    background-color: var(--buy-dark-color);
 }
 
 #store-apps .app .description .app-status .btn-free {
-    background-color: #9a7bb0;
-}
-#store-apps .app .description .app-status .btn-free:hover {
-    background-color: #6e428e;
+    background-color: var(--free-color);
 }
 
 #store-apps .app .description .app-status .btn-free-indicator {
-    background-color: #9a7bb0;
-}
-#store-apps .app .description .app-status .btn-free-indicator:hover {
-    background-color: #6e428e;
+    background-color: var(--free-dark-color);
 }
 
 #store-apps .app .description .app-status .btn-installed {
