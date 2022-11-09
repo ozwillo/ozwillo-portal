@@ -5,6 +5,7 @@ import { withRouter } from 'react-router-dom';
 import { i18n } from '../config/i18n-config';
 import { t } from '@lingui/macro';
 import LabelSection from './label-section';
+import Tag from './Tag';
 
 class CatalogCard extends React.PureComponent {
     openInstallAppPage = () => {
@@ -112,21 +113,3 @@ CatalogCard.propTypes = {
 };
 
 export default withRouter(CatalogCard);
-
-export class Tag extends React.PureComponent {
-    render() {
-        const { className, text, classNameButton } = this.props;
-
-        return (
-            <button type="button" key="indicator_button" className={`category-btn ${classNameButton}`}>
-                <i className={className}></i>
-                <span className="btn-label">{text}</span>
-            </button>
-        );
-    }
-}
-Tag.propTypes = {
-    className: PropTypes.string,
-    text: PropTypes.string,
-    classNameButton: PropTypes.string
-};
