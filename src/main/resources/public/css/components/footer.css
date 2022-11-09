@@ -1,5 +1,5 @@
 .oz-footer {
-    background: #f1ecf4;
+    background: var(--clr-primary-11);
     border-top: solid 1px var(--primary-color);
 }
 

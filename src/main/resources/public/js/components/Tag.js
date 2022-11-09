@@ -21,4 +21,4 @@ Tag.propTypes = {
     classNameButton: PropTypes.string
 };
 
-export default withRouter(Tag);
+export default Tag;
