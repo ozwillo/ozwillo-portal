@@ -12,58 +12,58 @@ class CatalogCard extends React.PureComponent {
         const installAppPage = `/${config.language}/store/${app.type}/${app.id}`;
         this.props.history.push({
             pathname: installAppPage,
-            state: { app: app, config: config },
+            state: { app: app, config: config }
         });
     };
 
     getTags = app => {
-        let buttons = [];
+        let tags = [];
 
         if (app.installed) {
-            buttons.push({
+            tags.push({
                 className: 'fa fa-check category-icon',
-                text: i18n._(t`store.installed`),
+                text: i18n._(t`store.installed`)
             });
         }
 
         if (app.paid) {
-            buttons.push({
+            tags.push({
                 className: 'fa fas fa-euro-sign category-icon',
-                text: i18n._(t`store.paid`),
+                text: i18n._(t`store.paid`)
             });
         } else {
-            buttons.push({
+            tags.push({
                 className: 'fa fa-gift category-icon',
-                text: i18n._(t`store.free`),
+                text: i18n._(t`store.free`)
             });
         }
 
         const classNameButton = 'audience-btn';
         if (app.target_citizens) {
-            buttons.push({
+            tags.push({
                 className: 'fa fa-users category-icon',
                 text: i18n._(t`store.citizens`),
-                classNameButton,
+                classNameButton
             });
         }
 
         if (app.target_companies) {
-            buttons.push({
+            tags.push({
                 className: 'fa fa-briefcase category-icon',
                 text: i18n._(t`store.companies`),
-                classNameButton,
+                classNameButton
             });
         }
 
         if (app.target_publicbodies) {
-            buttons.push({
+            tags.push({
                 className: 'fa fa-building category-icon',
                 text: i18n._(t`store.publicbodies`),
-                classNameButton,
+                classNameButton
             });
         }
 
-        return buttons;
+        return tags;
     };
 
     render = () => {
@@ -108,7 +108,7 @@ class CatalogCard extends React.PureComponent {
 
 CatalogCard.propTypes = {
     app: PropTypes.object,
-    config: PropTypes.object,
+    config: PropTypes.object
 };
 
 export default withRouter(CatalogCard);
@@ -128,5 +128,5 @@ export class Tag extends React.PureComponent {
 Tag.propTypes = {
     className: PropTypes.string,
     text: PropTypes.string,
-    classNameButton: PropTypes.string,
+    classNameButton: PropTypes.string
 };
