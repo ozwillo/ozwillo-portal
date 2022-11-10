@@ -65,38 +65,13 @@
 
 #footer {
     box-sizing: border-box;
-    flex-shrink: 0;
     height: 48px;
-    padding-bottom: 20px;
-    padding-inline-end: 20px;
-    padding-top: 19px;
-    /* align-items: center; */
     display: flex;
-    flex-direction: row;
-    overflow: hidden;
-    /* overflow-y: scroll;
-  overflow-x: hidden; */
 }
-#footer :hover {
-    box-sizing: border-box;
-    flex-shrink: 0;
-    height: 48px;
-    padding-bottom: 20px;
-    padding-inline-end: 20px;
-    padding-top: 19px;
-    /* align-items: center; */
-    display: flex;
-    flex-direction: row;
-    overflow-y: scroll;
-    overflow-x: hidden;
-}
+
 .footer-infos {
     display: flex;
-    flex-direction: row;
-    flex: 1;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: 5px;
+    overflow-x: auto;
 }
 .category-btn {
     margin-inline-start: 8px;
