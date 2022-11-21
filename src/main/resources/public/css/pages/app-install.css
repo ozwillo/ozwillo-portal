@@ -24,7 +24,21 @@
     max-width: 50%;
     margin-left: 2em;
 }
-
+.information-app-name {
+    color: var(--primary-color);
+}
+.information-app-provider {
+    letter-spacing: 0.25rem;
+    text-transform: capitalize;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    text-overflow: ellipsis;
+    width: 100%;
+    color: var(--clr-secondary-5);
+}
+.information-app-description {
+}
 .app-install-wrapper .app-install-carousel {
     padding: 5em 5em 2em 5em;
 }
@@ -38,26 +52,51 @@
 }
 
 .app-install-wrapper .app-install-description p {
-    width: 70%;
+    width: 80%;
     line-height: 1.8em;
-    font-size: 1.25em;
+    font-size: 1em;
 }
 
-.app-install-wrapper .app-install-description div.long{
-    justify-content: center;
+.app-install-wrapper .app-install-description div.long {
+    justify-content: space-evenly;
     display: flex;
+    flex-wrap: wrap;
 }
 
-.app-install-wrapper .app-install-description div.long > *{
-    text-align: justify !important;
+table {
+    border-collapse: collapse !important;
+    margin: 25px 0 !important;
+    font-size: 0.9em !important;
+    font-family: sans-serif !important;
+    min-width: 400px !important;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.15) !important;
 }
-
-.app-install-wrapper .go-to-long-description{
+thead tr {
+    background-color: #f4a3bd;
+    color: var(--tertiary-color);
+    text-align: left;
+}
+th td {
+    padding: 12px 15px;
+}
+th {
+    padding: 5px;
+}
+tbody tr {
+    border-bottom: 1px solid #dddddd;
+}
+tbody tr:nth-of-type(even) {
+    background-color: #f3f3f3;
+}
+tbody tr:last-of-type {
+    border-bottom: 2px solid var(--clr-secondary-5);
+}
+.app-install-wrapper .go-to-long-description {
     color: var(--black-color);
     cursor: pointer;
 }
 
-.app-install-wrapper .rate-content{
+.app-install-wrapper .rate-content {
     min-width: 8em;
 }
 
@@ -81,7 +120,7 @@
     padding: 0 1em 0 1em;
 }
 
-.slick-slide img{
+.slick-slide img {
     border: 1px solid var(--primary-color);
     cursor: zoom-in;
 }
@@ -99,24 +138,23 @@
     height: 15em !important;
 }
 
-
 .install-app {
     width: 25%;
 }
-.install-app .dropdown{
+.install-app .dropdown {
     margin-top: -1em;
-    height:100%;
+    height: 100%;
     display: flex;
     justify-content: flex-end;
     align-items: flex-end;
     flex-direction: column;
 }
 
-.install-app .dropdown > *{
+.install-app .dropdown > * {
     margin-bottom: 1.5em;
 }
 
-.install-app .dropdown > :last-child{
+.install-app .dropdown > :last-child {
     margin-top: -0.5em;
 }
 
@@ -126,35 +164,34 @@
     font-size: 1.5em;
 }
 
-.install-area > :last-child{
+.install-area > :last-child {
     margin-left: 0.5em;
 }
 
-.dropdown .redirect-to-connection{
+.dropdown .redirect-to-connection {
     margin-bottom: 0em;
 }
 
-.app-install-wrapper .label-spinner{
+.app-install-wrapper .label-spinner {
     padding-left: 25px;
 }
 
-.app-install-wrapper .organization-spinner{
+.app-install-wrapper .organization-spinner {
     padding-right: 10px;
 }
 
-.app-install-wrapper .select-organization{
+.app-install-wrapper .select-organization {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
 }
 
-.app-install-wrapper .select{
+.app-install-wrapper .select {
     width: 100%;
     min-width: 300px;
 }
 
-
-.install .btn-install{
+.install .btn-install {
     width: 8em;
 }
 
@@ -163,27 +200,24 @@
     flex-flow: row wrap;
 }
 
-.installed > *{
+.installed > * {
     margin-bottom: 0.5em;
     margin-left: 0.5em;
 }
 
-
-.unique-screenshot{
+.unique-screenshot {
     display: flex;
-    flex:1;
+    flex: 1;
     justify-content: center;
     align-items: center;
     margin-top: 2.5em;
 }
 
-.unique-screenshot img{
+.unique-screenshot img {
     border: 1px solid var(--primary-color);
     cursor: zoom-in;
 }
 
-.dashboard{
+.dashboard {
     background-color: var(--primary-color) !important;
 }
-
-

@@ -1,149 +1,149 @@
 spring:
-  output.ansi.enabled: DETECT
-  # only for 64x64 pngs which should be mostly below 5000B
-  # now also for CSV of organizations to import, so upgraded to 200KB
-  servlet.multipart.max-file-size: 200KB
-  # mandatory since 1.4 even if we do not use it directly
-  session.store-type: none
-  main:
-    allow-bean-definition-overriding: true
-  # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
-  # In prod, replace journal=true by w=majority&readPreference=primaryPreferred
-  # TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
-  data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
-  mvc:
-    pathmatch:
-      matching-strategy: ant_path_matcher
+    output.ansi.enabled: DETECT
+    # only for 64x64 pngs which should be mostly below 5000B
+    # now also for CSV of organizations to import, so upgraded to 200KB
+    servlet.multipart.max-file-size: 200KB
+    # mandatory since 1.4 even if we do not use it directly
+    session.store-type: none
+    main:
+        allow-bean-definition-overriding: true
+    # URI format reminder : mongodb://user:secret@mongo1.example.com:12345,mongo2.example.com:23456/test
+    # In prod, replace journal=true by w=majority&readPreference=primaryPreferred
+    # TODO localThresholdMS=150 does not seem to be supported on Mongo 2.6
+    data.mongodb.uri: mongodb://localhost/portal?connectTimeoutMS=300&journal=true
+    mvc:
+        pathmatch:
+            matching-strategy: ant_path_matcher
 
 server:
-  compression.enabled: true
-  tomcat:
-    accesslog.enabled: true
-    basedir: build
+    compression.enabled: true
+    tomcat:
+        accesslog.enabled: true
+        basedir: build
 
 ha:
-  enabled: false
-  nodes: n1:localhost:11211
-  failover: n1
+    enabled: false
+    nodes: n1:localhost:11211
+    failover: n1
 
 application:
-  security:
-    fetchUserInfo: true
-    # requires devmode, to ease up development ex. of Catalog only
-    noauthdevmode: false
-  store:
-    load_size: 24
-    # don't enable it until applications have filled the supported_locales field
-    # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
-    addCurrentToSupportedLocalesIfNone: false
-  geoarea:
-    project: geo
-    displayNameField: odisp:name
-    areaModel: geo:Area_0
-    nameField: geo:name
-    codePostalField: geoci:zipCode
-    countryModel: geoco:Country_0
-    countryModelHier: geohier:Hierarchical_0
-    cityModel: addrpostci:PostalCity_0
-    countryField: geo:country
-    fallbackLanguage: en
-    findOneTokenLimit: 100
-    # use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year => 0 0/30 * * * (every 30 minutes) | 0 30 * * * (at the minute 30 of any hour)
-    # examples http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
-    replication: 0 0 1 1/5 * ?    #Runs at 1am every 5 days every month, starting on the first day of the month
-  dcOrg:
-    project: org
-    orgModel: org:Organization_0
-    baseUri: http://data.ozwillo.com/dc/type
-  dcOrgSearch:
-    sector: org:sector
-    legalName: org:legalName.v
-    regNumber: org:regNumber
-    country: adrpost:country
-  organizationDaysTillDeletedFromTrash: 7
-  applicationInstanceDaysTillDeletedFromTrash: 7
-  importPassword: importPassword
+    security:
+        fetchUserInfo: true
+        # requires devmode, to ease up development ex. of Catalog only
+        noauthdevmode: false
+    store:
+        load_size: 24
+        # don't enable it until applications have filled the supported_locales field
+        # (and even then it's better supported by UI sidebar's dropdown being inited to current locale)
+        addCurrentToSupportedLocalesIfNone: false
+    geoarea:
+        project: geo
+        displayNameField: odisp:name
+        areaModel: geo:Area_0
+        nameField: geo:name
+        codePostalField: geoci:zipCode
+        countryModel: geoco:Country_0
+        countryModelHier: geohier:Hierarchical_0
+        cityModel: addrpostci:PostalCity_0
+        countryField: geo:country
+        fallbackLanguage: en
+        findOneTokenLimit: 100
+        # use: Seconds | Min | Hour | Day-of-month | Month | Day-of-week(sunday=0) | Year => 0 0/30 * * * (every 30 minutes) | 0 30 * * * (at the minute 30 of any hour)
+        # examples http://www.quartz-scheduler.org/documentation/quartz-1.x/tutorials/crontrigger
+        replication: 0 0 1 1/5 * ? #Runs at 1am every 5 days every month, starting on the first day of the month
+    dcOrg:
+        project: org
+        orgModel: org:Organization_0
+        baseUri: http://data.ozwillo.com/dc/type
+    dcOrgSearch:
+        sector: org:sector
+        legalName: org:legalName.v
+        regNumber: org:regNumber
+        country: adrpost:country
+    organizationDaysTillDeletedFromTrash: 7
+    applicationInstanceDaysTillDeletedFromTrash: 7
+    importPassword: importPassword
 
-# some switches:
-# devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
-# production = include piwik js
-# notificationsEnabled = enable notifications
-# at some point we should use these as default values & instead look for the values in the database
-# (to allow live switching of feature flags)
-  devmode: false
-  production: true
-  notificationsEnabled: true
+    # some switches:
+    # devmode = show debug tools (app deprovisioning, etc.) + do not minify / compress javascript
+    # production = include piwik js
+    # notificationsEnabled = enable notifications
+    # at some point we should use these as default values & instead look for the values in the database
+    # (to allow live switching of feature flags)
+    devmode: false
+    production: true
+    notificationsEnabled: true
 
 web:
-  sitemap:
-      #refresh: 0 0/5 * * * *
-      refresh: 0 0 1 1/5 * ?  #Runs at 1am every 5 days every month, starting on the first day of the month
+    sitemap:
+        #refresh: 0 0/5 * * * *
+        refresh: 0 0 1 1/5 * ? #Runs at 1am every 5 days every month, starting on the first day of the month
 
 rest:
-  # by default uses mere HttpURLConnection, better : https://jira.spring.io/browse/ANDROID-54 http://stackoverflow.com/questions/25698072/simpleclienthttprequestfactory-vs-httpcomponentsclienthttprequestfactory-for-htt
-  # instead of using Apache HTTPComponents Client (would require specific conf for enabling SNI, which should be possible since 4.3.2)
-  revertToApacheHttpComponentsClient: false
+    # by default uses mere HttpURLConnection, better : https://jira.spring.io/browse/ANDROID-54 http://stackoverflow.com/questions/25698072/simpleclienthttprequestfactory-vs-httpcomponentsclienthttprequestfactory-for-htt
+    # instead of using Apache HTTPComponents Client (would require specific conf for enabling SNI, which should be possible since 4.3.2)
+    revertToApacheHttpComponentsClient: false
 
 confs:
-  localhost:
-    isDefaultConf: true
-    baseUrl: http://localhost:8080
-    baseImageUrl: ${confs.localhost.baseUrl}/media
-    defaultIconUrl: ${confs.localhost.baseUrl}/img/noicon.png
-    web:
-      # FIXME set it even if not used as it prevents app from loading if unset
-      googleTag: UA-11111111-2
-      home: https://www.ozwillo.com
-      sitemap:
-        url_footer: ${confs.localhost.web.home}/footer.json
-    kernel:
-      client_id: portal
-      client_secret: changeit
-      callback_uri: ${confs.localhost.baseUrl}/callback
-      post_logout_redirect_uri: ${confs.localhost.baseUrl}/fr/store
-      home_uri: ${confs.localhost.baseUrl}
-      error_401_uri: ${confs.localhost.baseUrl}/my
-    datacore:
-      adminUserRefreshToken: changeit
-      nonce: changeit
-    opendata:
-      url: https://opendata.ozwillo.com
+    localhost:
+        isDefaultConf: true
+        baseUrl: http://localhost:8080
+        baseImageUrl: ${confs.localhost.baseUrl}/media
+        defaultIconUrl: ${confs.localhost.baseUrl}/img/noicon.png
+        web:
+            # FIXME set it even if not used as it prevents app from loading if unset
+            googleTag: UA-11111111-2
+            home: https://www.ozwillo.com
+            sitemap:
+                url_footer: ${confs.localhost.web.home}/footer.json
+        kernel:
+            client_id: portal
+            client_secret: changeit
+            callback_uri: ${confs.localhost.baseUrl}/callback
+            post_logout_redirect_uri: ${confs.localhost.baseUrl}/fr/store
+            home_uri: ${confs.localhost.baseUrl}
+            error_401_uri: ${confs.localhost.baseUrl}/my
+        datacore:
+            adminUserRefreshToken: changeit
+            nonce: changeit
+        opendata:
+            url: https://opendata.ozwillo.com
 
 kernel:
-  base_uri: https://kernel.ozwillo.com
-  account_uri: https://accounts.ozwillo.com
-  alt_uri: ${kernel.base_uri}
-  auth:
-    issuer: ${kernel.base_uri}/
-    auth_endpoint: ${kernel.alt_uri}/a/auth
-    token_endpoint: ${kernel.base_uri}/a/token
-    keys_endpoint: ${kernel.base_uri}/a/keys
-    userinfo_endpoint: ${kernel.base_uri}/a/userinfo
-    password_change_endpoint: ${kernel.alt_uri}/a/password
-    revoke_endpoint: ${kernel.base_uri}/a/revoke
-    logout_endpoint: ${kernel.alt_uri}/a/logout
-  account_france_connect_uri: ${kernel.account_uri}/a/franceconnect
-  kernel_france_connect_uri: ${kernel.base_uri}/a/franceconnect
-  france_connect:
-    link_endpoint: ${kernel.account_france_connect_uri}/login
-    unlink_endpoint: ${kernel.account_france_connect_uri}/unlink
-    userinfo_endpoint: ${kernel.kernel_france_connect_uri}/userinfo
-    enabled: false
-  user_profile_endpoint: ${kernel.base_uri}/d/user
-  user_membership_endpoint: ${kernel.base_uri}/d
-  organization_endpoint: ${kernel.base_uri}/d/org
-  event_bus_endpoint: ${kernel.base_uri}/e
-  notifications_endpoint: ${kernel.base_uri}/n
-  # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
-  scopes_to_require: openid profile email address phone datacore
-  portal_endpoints:
-    subscriptions: ${kernel.base_uri}/apps/subscriptions
-    catalog: ${kernel.base_uri}/m
-    apps: ${kernel.base_uri}/apps
+    base_uri: https://kernel.ozwillo.com
+    account_uri: https://accounts.ozwillo.com
+    alt_uri: ${kernel.base_uri}
+    auth:
+        issuer: ${kernel.base_uri}/
+        auth_endpoint: ${kernel.alt_uri}/a/auth
+        token_endpoint: ${kernel.base_uri}/a/token
+        keys_endpoint: ${kernel.base_uri}/a/keys
+        userinfo_endpoint: ${kernel.base_uri}/a/userinfo
+        password_change_endpoint: ${kernel.alt_uri}/a/password
+        revoke_endpoint: ${kernel.base_uri}/a/revoke
+        logout_endpoint: ${kernel.alt_uri}/a/logout
+    account_france_connect_uri: ${kernel.account_uri}/a/franceconnect
+    kernel_france_connect_uri: ${kernel.base_uri}/a/franceconnect
+    france_connect:
+        link_endpoint: ${kernel.account_france_connect_uri}/login
+        unlink_endpoint: ${kernel.account_france_connect_uri}/unlink
+        userinfo_endpoint: ${kernel.kernel_france_connect_uri}/userinfo
+        enabled: false
+    user_profile_endpoint: ${kernel.base_uri}/d/user
+    user_membership_endpoint: ${kernel.base_uri}/d
+    organization_endpoint: ${kernel.base_uri}/d/org
+    event_bus_endpoint: ${kernel.base_uri}/e
+    notifications_endpoint: ${kernel.base_uri}/n
+    # NB. once Datacore cache is in place, move datacore scope to its dedicated system user
+    scopes_to_require: openid profile email address phone datacore
+    portal_endpoints:
+        subscriptions: ${kernel.base_uri}/apps/subscriptions
+        catalog: ${kernel.base_uri}/m
+        apps: ${kernel.base_uri}/apps
 
 datacore:
-  url: https://data.ozwillo.com
+    url: https://data.ozwillo.com
 
 cache:
-  hosts:
-    - 127.0.0.1
+    hosts:
+        - 127.0.0.1

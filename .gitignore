@@ -39,3 +39,6 @@ node_modules/
 
 src/test/resources/application-test\.yml
 src/main/resources/public/locales/**/messages.js
+
+# bin
+bin

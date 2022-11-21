@@ -12,18 +12,19 @@
 
 #dashboard .all-apps .list > .item {
     margin: 0.4em;
+    flex: 1 0 13%;
 }
 
 #dashboard ul.nav.nav-tabs > li {
     margin-right: 0.7em;
-    box-shadow: -1px -1px 3px -1px rgba(0, 0, 0, 0.2)
+    box-shadow: -1px -1px 3px -1px rgba(0, 0, 0, 0.2);
 }
 
 #dashboard ul.nav.nav-tabs > li > a {
     font-size: 20px;
     border-radius: 0;
     color: var(--primary-color);
-    background-color: #FFF;
+    background-color: #fff;
     border-color: transparent;
     border-width: 2px 0 0 0;
     margin: 0;
@@ -32,7 +33,7 @@
 #dashboard ul.nav.nav-tabs > li > a.over,
 #dashboard ul.nav.nav-tabs > li.active > a {
     color: var(--primary-color);
-    background-color: #FFF;
+    background-color: #fff;
     border-color: var(--primary-color);
 }
 
@@ -42,11 +43,9 @@
 
 #dashboard .all-apps {
     height: 100%;
-    background-color: #FFF;
+    background-color: #fff;
     padding-left: 0;
-    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2),
-    4px 3px 3px rgba(0, 0, 0, 0.2);
-
+    box-shadow: 0px 3px 3px rgba(0, 0, 0, 0.2), 4px 3px 3px rgba(0, 0, 0, 0.2);
 }
 
 #dashboard .appzone .dropzone {
@@ -65,12 +64,11 @@
     overflow: hidden;
     width: 130px;
     height: 100%;
-    min-height:10em;
-    max-height:10em;
+    min-height: 10em;
+    max-height: 10em;
     border-radius: 3px;
     text-align: center;
     padding: 10px;
-
 }
 
 #dashboard .appzone .app span.badge-notifications {
@@ -97,12 +95,14 @@
 
 #dashboard .appzone .app .image {
     margin-bottom: 5px;
+    width: 100px;
+    height: 100px;
+    object-fit: cover;
 }
-
 
 #dashboard .appzone .dropzone.dragover .app,
 #dashboard .appzone .app:hover,
-#dashboard .appzone .app.pending:hover{
+#dashboard .appzone .app.pending:hover {
     color: var(--primary-color);
     background-color: var(--gray-color);
 }
@@ -154,7 +154,7 @@
 }
 
 #dashboard .app:hover .action-icon .fa-trash {
-    color: #FFF;
+    color: #fff;
     border-color: var(--primary-color);
     background-color: var(--primary-color);
 }
@@ -171,6 +171,9 @@
         -webkit-box-orient: vertical;
         text-overflow: ellipsis;
         overflow: hidden;
+        white-space: nowrap;
+        display: inline-block;
+        width: 100%;
     }
 
     #dashboard .appzone .app p:after {

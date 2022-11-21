@@ -1,12 +1,11 @@
 .oz-footer {
-    background: var(--footer-color);
+    background: var(--clr-primary-11);
     border-top: solid 1px var(--primary-color);
 }
 
 .oz-footer .logo .image,
 .oz-footer .logo .image:after {
     content: var(--footer-logo-url);
-
 }
 
 /* IE10+ */
@@ -28,6 +27,7 @@
 .oz-footer .link {
     color: var(--primary-color);
     font-size: 0.9em;
+    font-weight: bold;
     margin: 4px 0;
     text-align: left;
     display: block;
@@ -76,7 +76,6 @@
 }
 
 @media (max-width: 425px) {
-
     .oz-footer > .flex-row {
         flex-wrap: wrap;
         justify-content: center;

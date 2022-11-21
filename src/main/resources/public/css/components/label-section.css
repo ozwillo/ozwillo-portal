@@ -1,4 +1,4 @@
-.label-section-content{
+.label-section-content {
     margin-top: 1em;
     display: flex;
     flex-flow: row wrap;
@@ -8,3 +8,6 @@
     flex-grow: 1;
 }
 
+.control-label {
+    color: var(--primary-color);
+}

@@ -1,0 +1,141 @@
+#card {
+    background-color: var(--clr-white);
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    height: 160px;
+}
+#main {
+    display: flex;
+    flex: 1;
+    min-height: 0;
+    padding: 16px 20px;
+}
+#icon-wrapper {
+    align-self: flex-start;
+    display: flex;
+    padding: 6px;
+    position: relative;
+}
+#icon {
+    height: 36px;
+    width: 36px;
+}
+.bloc {
+    display: block;
+}
+#content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    margin-inline-start: 24px;
+    overflow: hidden;
+}
+#app-name {
+    color: var(--clr-primary-5);
+    font-weight: bold;
+    margin-bottom: 4px;
+    align-items: center;
+    display: flex;
+    flex-direction: row;
+}
+#name {
+    margin-inline-end: 8px;
+}
+#app-provider {
+    letter-spacing: var(--spacing);
+    text-transform: capitalize;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    text-overflow: ellipsis;
+    width: 100%;
+    color: var(--clr-secondary-5);
+}
+.flex-text {
+    flex-shrink: 1;
+    white-space: nowrap;
+}
+#app-description {
+    flex: 1;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#footer {
+    box-sizing: border-box;
+    height: 48px;
+    display: flex;
+}
+
+.footer-infos {
+    display: flex;
+    overflow-x: auto;
+}
+.category-btn {
+    margin-inline-start: 8px;
+    --paper-ripple-opacity: 0.1;
+    -webkit-tap-highlight-color: transparent;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    box-sizing: border-box;
+    background-color: var(--clr-secondary-0);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    font-weight: 500;
+    height: 25px;
+    justify-content: center;
+    min-width: 5.14em;
+    outline-width: 0;
+    overflow: hidden;
+    padding: 8px 8px;
+    position: relative;
+    user-select: none;
+}
+.audience-btn {
+    margin-inline-start: 8px;
+    --paper-ripple-opacity: 0.1;
+    -webkit-tap-highlight-color: transparent;
+    align-items: center;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    box-sizing: border-box;
+    background-color: var(--clr-primary-8);
+    cursor: pointer;
+    display: inline-flex;
+    flex-shrink: 0;
+    font-weight: 500;
+    height: 25px;
+    justify-content: center;
+    min-width: 5.14em;
+    outline-width: 0;
+    overflow: hidden;
+    padding: 8px 8px;
+    position: relative;
+    user-select: none;
+}
+
+.btn-label {
+    margin-left: 10px;
+    color: var(--clr-white);
+    font-size: 11px;
+}
+.category-icon {
+    color: var(--clr-white);
+}
+.content-wrapper {
+    min-width: 400px;
+    padding: 10px 30px 30px;
+    display: block;
+}
+.cards-container {
+    display: grid;
+    grid-column-gap: 12px;
+    grid-row-gap: 12px;
+    grid-template-columns: repeat(auto-fill, 400px);
+    justify-content: center;
+    margin: auto;
+}

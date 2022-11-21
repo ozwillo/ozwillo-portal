@@ -1,4 +1,4 @@
-label.pill-label{
+label.pill-label {
     margin-bottom: 10px;
     margin-left: 2.5px;
     margin-right: 2.5px;
@@ -6,7 +6,7 @@ label.pill-label{
 
 .badge.pill-label {
     background-color: var(--tertiary-color);
-    color: var(--primary-color);
+    color: var(--clr-secondary-5);
     border: solid 1px var(--primary-color);
     font-size: 1em;
     cursor: pointer;
@@ -15,17 +15,16 @@ label.pill-label{
     white-space: normal;
     border-radius: 2rem;
 }
-.pill-label:hover{
-    box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, .3);
+.pill-label:hover {
+    box-shadow: 0.2em 0.2em 0.4em rgba(0, 0, 0, 0.3);
 }
 
-.pill-input:checked + .pill-label{
+.pill-input:checked + .pill-label {
     background-color: var(--primary-color);
     border-color: var(--secondary-color);
     color: var(--tertiary-color);
-
 }
 
-.pill-input{
+.pill-input {
     display: none;
 }

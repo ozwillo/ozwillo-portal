@@ -3,7 +3,7 @@
     padding: 2% 1.5% 2% 1.5%;
 }
 
-.container-app.installed-app{
+.container-app.installed-app {
     order: 2;
 }
 
@@ -30,6 +30,10 @@
     margin: auto;
     width: 64px;
     height: 64px;
+    background: var(--tertiary-color);
+    color: var(--clr-primary-1);
+    padding: 0.5rem;
+    display: inline-block;
 }
 
 #store-apps .app .description {
@@ -38,7 +42,7 @@
     display: block;
     position: relative;
     border-radius: 5px;
-    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2)
+    box-shadow: 1px 2px 3px rgba(0, 0, 0, 0.2);
 }
 
 #store-apps .app .description .app-header {
@@ -49,27 +53,45 @@
 }
 
 #store-apps .app .description .app-name {
-    color: var(--secondary-color);
-    font-size: 24px;
+    color: var(--primary-color);
+    font-size: 21px;
+    font-weight: bold;
     margin: 90px 0 10px 0;
+    margin-bottom: 0.5rem;
     text-align: center;
-    display: block;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    text-overflow: ellipsis;
+    width: 100%;
 }
 
 #store-apps .app .description .app-provider {
-    color: var(--primary-color);
-    font-size: 15px;
+    color: var(--clr-secondary-5);
+    font-size: 16px;
     text-align: center;
     display: block;
+    letter-spacing: var(--spacing);
+    text-transform: capitalize;
+    line-height: 1.25;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+    white-space: nowrap;
+    display: inline-block;
+    text-overflow: ellipsis;
+    width: 100%;
+}
+#store-apps .app .description .app-provider :hover {
+    overflow: visible;
 }
 
 #store-apps .app .description .app-description {
-    color: var(--black-color);
     font-size: 15px;
-    margin: 0 40px 28px 40px;
     text-align: center;
     display: block;
     height: 100px;
+    max-width: 20rem;
+    margin: 2rem auto 1.25rem auto;
 }
 
 #store-apps .app .description .public-service-indicator {
@@ -121,7 +143,7 @@
 }
 
 #store-apps .app .description .app-status .btn-free-indicator {
-    background-color: var(--free-dark-color)
+    background-color: var(--free-dark-color);
 }
 
 #store-apps .app .description .app-status .btn-installed {
