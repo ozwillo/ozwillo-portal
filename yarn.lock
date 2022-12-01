@@ -7858,10 +7858,10 @@ sntp@1.x.x:
   dependencies:
     hoek "2.x.x"
 
-snyk@^1.316.1:
-  version "1.746.0"
-  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.746.0.tgz#2fa2228098ca1eeab7b4ec148d63c90c7e4baa7c"
-  integrity sha512-RQlpKam8h/Gerx4PLex7oN2SWE60VosbqsYZZP6kEy9xj+B1z10FR3lJ+UpGuxqBn7zXwXavm3QEizH9tvxTfw==
+snyk@^1.1064.0:
+  version "1.1064.0"
+  resolved "https://registry.yarnpkg.com/snyk/-/snyk-1.1064.0.tgz#e73b3a1aff585f6266f73ddd498c5cfd5e67aff0"
+  integrity sha512-f9mNO5rUc5nVVZ1sN+do2i5/RGHKlOQoNk5HiEO9WkPEn2pFllJv2XAw5Bn7sFj1eLXNFVUOUlo6SVqGnX7lXw==
 
 sockjs-client@1.1.5:
   version "1.1.5"
