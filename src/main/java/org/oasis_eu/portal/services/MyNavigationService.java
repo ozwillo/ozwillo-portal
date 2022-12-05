@@ -1,7 +1,6 @@
 package org.oasis_eu.portal.services;
 
 import org.oasis_eu.portal.model.sitemap.SiteMapEntry;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.RequestContextUtils;
 
@@ -18,14 +17,17 @@ import java.util.stream.Collectors;
 @Service
 public class MyNavigationService {
 
-    @Autowired
-    private SiteMapService siteMapService;
+    private final SiteMapService siteMapService;
 
-    @Autowired
-    private HttpServletRequest httpRequest;
+    private final HttpServletRequest httpRequest;
 
-    @Autowired
-    private EnvPropertiesService envPropertiesService;
+    private final EnvPropertiesService envPropertiesService;
+
+    public MyNavigationService(SiteMapService siteMapService, HttpServletRequest httpRequest, EnvPropertiesService envPropertiesService) {
+        this.siteMapService = siteMapService;
+        this.httpRequest = httpRequest;
+        this.envPropertiesService = envPropertiesService;
+    }
 
     /**
      * @return a map of {@link SiteMapEntry} values keyed by the row in which they have to appear

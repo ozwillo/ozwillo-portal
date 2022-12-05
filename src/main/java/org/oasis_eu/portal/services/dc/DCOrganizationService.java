@@ -126,29 +126,6 @@ public class DCOrganizationService {
         return orgResource;
     }
 
-    public DCOrganization searchOrganizationById(String dc_id, String language) {
-        DCQueryParameters params = new DCQueryParameters("@id", DCOperator.EQ, dc_id);
-
-        String model = dcOrgModel.trim();
-
-        long queryStart = System.currentTimeMillis();
-        List<DCResource> resources = datacore.findResources(dcOrgProjectName.trim(), model, params, 0, 1);
-
-        long queryEnd = System.currentTimeMillis();
-        logger.debug("Fetched {} resources in {} ms", resources.size(), queryEnd - queryStart);
-
-        return resources.isEmpty() ? null : toDCOrganization(resources.get(0), language);
-    }
-
-    public Optional<DCResource> findOrganizationByCountryAndRegNumber(String countryUri, String regNumber) {
-
-        DCResult result = datacore.getResourceFromURI(dcOrgProjectName.trim(), generateDcId(countryUri, regNumber));
-        if (result.getType().equals(DCResultType.SUCCESS))
-            return Optional.of(result.getResource());
-        else
-            return Optional.empty();
-    }
-
     public Optional<DCOrganization> findOrganizationById(String dcId, String language) {
         DCResult result = datacore.getResourceFromURI(dcOrgProjectName.trim(), dcId);
         if (result.getType().equals(DCResultType.SUCCESS))
@@ -219,32 +196,10 @@ public class DCOrganizationService {
         return this.createOrUpdate(dcOrganization);
     }
 
-    /**
-     * Change rights of DC Organization.
-     */
-    public boolean changeDCOrganizationRights(DCResource dcResource, String kOrgId) {
-        final List<String> newRights = Collections.singletonList(kOrgId);
-        final List<String> dcResultErrOutter = new ArrayList<>();
-
-        //get admin authentication and change organization rights
-        systemUserService.runAs(
-            () -> {
-                DCRights dcRights = datacore.getRightsOnResource(dcOrgProjectName, dcResource).getRights();
-                dcRights.addOwners(newRights);
-                List<String> dcResultInner = datacore.setRightsOnResource(dcOrgProjectName, dcResource, dcRights).getErrorMessages();
-                dcResultErrOutter.addAll(dcResultInner);
-                if (dcResultInner != null && !dcResultInner.isEmpty()) {
-                    logger.error("There was an error while updating rights [{}] to resource : {}", dcRights, dcResource);
-                }
-            }
-        );
-        return dcResultErrOutter.isEmpty();
-    }
-
 
     public List<DCRegActivity> searchTaxRegActivity(String countryUri, String queryTerms, int start, int limit) {
         return fetchResourceByCountryAndNameStartingWith(queryTerms, "orgact:code", null, countryUri, "orgact:country", dcOrgProjectName, "orgact:Activity_0", limit - start)
-            .stream().map(resource -> toDCRegActivity(resource))
+            .stream().map(this::toDCRegActivity)
             .collect(Collectors.toList());
     }
 
@@ -498,7 +453,7 @@ public class DCOrganizationService {
             for (Object obj : (List<Object>) object) {
                 if (obj instanceof Map) {
                     Map<String, String> nameMap = (Map<String, String>) obj;
-                    logger.debug("nameMap: " + nameMap.toString());
+                    logger.debug("nameMap: " + nameMap);
                     String l = nameMap.get("l") != null ? nameMap.get("l") : nameMap.get("@language");
                     if (l == null) {
                         continue; /* shouldn't happen */

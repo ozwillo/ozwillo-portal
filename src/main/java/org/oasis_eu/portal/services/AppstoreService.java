@@ -88,7 +88,7 @@ public class AppstoreService {
 
         if (addCurrentToSupportedLocalesIfNone) {
             supportedLocales = (supportedLocales == null || supportedLocales.isEmpty()) ?
-                Arrays.asList(RequestContextUtils.getLocale(request)) : supportedLocales;
+                    List.of(RequestContextUtils.getLocale(request)) : supportedLocales;
             // TODO or rather use PortalController.currentLanguage() ?? anyway, rather init it on client js side ?!!
         }
 

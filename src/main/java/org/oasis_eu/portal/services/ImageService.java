@@ -24,6 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Optional;
@@ -103,11 +104,7 @@ public class ImageService {
         image.setBytes(iconBytes);
         image.setHash(getHash(iconBytes));
         image.setDownloadedTime(DateTime.now());
-        try {
-            image.setFilename(URLEncoder.encode(imageToStore.getFilename(), "UTF-8")); //image.setFilename(ICONIMAGE_NAME);
-        } catch (UnsupportedEncodingException e) {
-            throw new WrongQueryException("The image name has an unsupported encoding", HttpStatus.BAD_REQUEST.value());
-        }
+        image.setFilename(URLEncoder.encode(imageToStore.getFilename(), StandardCharsets.UTF_8));
 
         return imageRepository.save(image);
     }
