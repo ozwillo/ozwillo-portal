@@ -1,4 +1,5 @@
-:root {
+body {
+    /* New variables added */
     /* dark shades of primary color*/
     --clr-primary-1: #432855;
     --clr-primary-2: #4e2f63;
@@ -51,9 +52,8 @@
     --red-dark: #842029;
     --green-light: #d1e7dd;
     --green-dark: #0f5132;
-}
+    /* End of new variables */
 
-body {
     --primary-color: #6f438e;
     --secondary-color: #4c2d62;
     --tertiary-color: #fff;
