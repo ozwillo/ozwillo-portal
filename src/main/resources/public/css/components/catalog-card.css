@@ -6,6 +6,52 @@
     flex-direction: column;
     height: 160px;
 }
+
+@media (max-width: 481px) {
+    #card {
+        width: 400px;
+    }
+}
+@media (max-width: 428px) {
+    #card {
+        width: 385px;
+    }
+}
+
+@media screen and (min-width: 415px) and (max-width: 480px) {
+    #card {
+        width: 375px;
+    }
+}
+
+@media (max-width: 414px) {
+    #card {
+        width: 355px;
+    }
+}
+@media screen and (min-width: 385px) and (max-width: 413px) {
+    #card {
+        width: 340px;
+    }
+}
+
+@media (max-width: 384px) {
+    #card {
+        width: 335px;
+    }
+}
+@media (max-width: 360px) {
+    #card {
+        width: 310px;
+    }
+}
+
+@media screen and (max-width: 320px) {
+    #card {
+        width: 260px;
+    }
+}
+
 #main {
     display: flex;
     flex: 1;
