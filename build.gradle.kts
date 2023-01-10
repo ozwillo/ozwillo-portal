@@ -75,7 +75,7 @@ dependencies {
 
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
     runtimeOnly("com.google.code.gson:gson:2.10.1")
-    runtimeOnly("com.ibm.icu:icu4j:71.1")
+    runtimeOnly("com.ibm.icu:icu4j:72.1")
 }
 
 defaultTasks("bootRun")
