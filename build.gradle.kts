@@ -49,7 +49,7 @@ dependencies {
     implementation("joda-time:joda-time")
     implementation("org.apache.httpcomponents:httpclient")
     implementation("org.apache.httpcomponents:httpcore")
-    implementation("org.apache.commons:commons-csv:1.9.0")
+    implementation("org.apache.commons:commons-csv:1.10.0")
     implementation("com.github.ozwillo:ozwillo-java-spring-integration:1.28.0")
     // uncomment this when locally developing on ozwillo-java-spring-integration lib
     // implementation("com.ozwillo:ozwillo-java-spring-integration:1.27.0-RC2")
