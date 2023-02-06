@@ -58,7 +58,7 @@ dependencies {
     /* Our specific dependencies */
     implementation("de.javakaffee.msm:memcached-session-manager:2.3.2")
     implementation("de.javakaffee.msm:memcached-session-manager-tc8:2.3.2")
-    implementation("org.apache.tika:tika-core:2.4.1")
+    implementation("org.apache.tika:tika-core:2.7.0")
 
     implementation("org.commonjava.googlecode.markdown4j:markdown4j:2.2-cj-1.1")
 
