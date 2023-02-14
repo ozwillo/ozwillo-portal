@@ -71,7 +71,7 @@ dependencies {
     testImplementation("com.github.tomakehurst:wiremock-standalone:2.27.2")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:5.8.2")
 
-    runtimeOnly("commons-fileupload:commons-fileupload:1.4")
+    runtimeOnly("commons-fileupload:commons-fileupload:1.5")
 
     /* Runtime dependencies brought by ozwillo-java-spring-integration */
     runtimeOnly("com.google.code.gson:gson:2.10.1")
